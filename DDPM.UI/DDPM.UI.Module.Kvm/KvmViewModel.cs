@@ -467,7 +467,10 @@ namespace DDPM.UI.Module.Kvm
         {
             HotkeySettings hotkeySettings = new HotkeySettings
             {
-                DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                //DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                ModelName = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ModelName,
+                SerialNumber = KvmModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
+                ServiceTag = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag,
                 HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
             DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);
@@ -618,6 +621,7 @@ namespace DDPM.UI.Module.Kvm
                         if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
                         {
                             string pathData = string.Empty;
+                            _inputsList.Clear();
                             foreach (string item in inputList.Keys)
                             {
                                 if (item.StartsWith("HDMI"))
@@ -639,6 +643,7 @@ namespace DDPM.UI.Module.Kvm
                                     kvmModule = KvmModule
                                 });
                             }
+                            _usbsList.Clear();
                             foreach (string str in usbsList)
                             {
                                 if (str.StartsWith("USB-C") || str.StartsWith("Thunderbolt"))

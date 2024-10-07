@@ -40,7 +40,7 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
-                                <UXControls:UXTextBlock Grid.Row="0" Text="Profile" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                <UXControls:UXTextBlock x:Name="ProfileTitleTextBlock" Grid.Row="0" Text="Profile" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
 
                                 <StackPanel Grid.Row="1" Margin="0,10,0,10">
                                     <Grid Margin="10,0">
@@ -54,19 +54,19 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
-                                        <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="Automatic Startup:"  Margin="170,0,10,10"   />
-                                        <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="N/A" Margin="16,0,10,10" />
+                                        <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="170,0,10,10"/>
+                                        <UXControls:UXTextBlock x:Name="AutomaticStartupValueTextBlock" Grid.Row="0" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AutomaticStartupValue}" />
 
-                                        <UXControls:UXTextBlock Grid.Row="1" Grid.Column="0" Text="Launch by Time:" Margin="190,0,10,10"  />
-                                        <UXControls:UXTextBlock Grid.Row="1" Grid.Column="1" Text="N/A" Margin="16,0,10,10" />
+                                        <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="190,0,10,10"/>
+                                        <UXControls:UXTextBlock x:Name="LaunchByTimeValueTextBlock" Grid.Row="1" Grid.Column="1" Margin="16,0,10,10" Text="{Binding LaunchByTimeValue}" />
 
-                                        <UXControls:UXTextBlock Grid.Row="2" Grid.Column="0" Text="App/Document:" Margin="190,0,10,10"  />
-                                        <UXControls:UXTextBlock Grid.Row="2" Grid.Column="1" Text="N/A" Margin="16,0,10,10" />
+                                        <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="190,0,10,10"/>
+                                        <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AppDocumentValue}" />
                                     </Grid>
 
                                     <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
 
-                                    <UXControls:UXButton Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" IsEnabled="False"/>
+                                    <UXControls:UXButton x:Name="applybtn" Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

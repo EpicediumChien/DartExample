@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="DDPM.UI.Module.EzMemory.EzMemoryAddApplication"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Module.EzMemory"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common" d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
+             mc:Ignorable="d" Background="#0D121A" Loaded="UserControl_Loaded"
+             d:DesignHeight="735" d:DesignWidth="1378">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 上方的返回按鈕與標題 -->
+        <Grid Grid.Column="0" Margin="50,0,0,0">
+            <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
+                <Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />
+                <UXControls:UXTextBlock  FontSize="24" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" />
+            </StackPanel>
+        </Grid>
+
+        <!-- 搜尋框 -->
+        <Grid Grid.Row="1" Grid.Column="1" Margin="110,100,5,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="50,0,0,0">
+                <UXControls:UXTextBox x:Name="edFilter" Text="{Binding [Search], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontSize="14" Width="487" Height="40" Background="#141D28" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- 排序按鈕 -->
+            <Grid Grid.Row="1" Margin="50,0,0,0">
+                <StackPanel Orientation="horizontal" Grid.Row="1" >
+                    <UXControls:UXButton x:Name="btnSortbyName_Ascending" Content="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  Width="237.5" Height="40" Margin="24,8,16,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center"  Click="btnSortbyName_Ascending_Click"/>
+                    <UXControls:UXButton x:Name="btnSortbyDate_Ascending" Content="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Width="237.5" Height="40" Margin="0,8,24,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center" Click="btnSortbyDate_Ascending_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 安裝的應用程式列表 -->
+            <UXControls:UXScrollViewer Grid.Row="2">
+                <Grid Grid.Row="2" Margin="50,10,0,0">
+                    <ListView x:Name="lb_Installed_App" Margin="20,10,0,0" Width="487" Height="275" Background="#132F54" SelectionMode="Multiple" ItemsSource="{Binding InstalledApplications}" SelectedIndex="{Binding Selected}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />
+                                    <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
+                                    <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}" Foreground="White" VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </UXControls:UXScrollViewer>
+            <!-- 底部按鈕 -->
+            <Grid Grid.Row="3" Margin="0,0,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <UXControls:UXButton x:Name="btnSelect" Content="Select from folder" Width="177" Height="40" Margin="150,20,0,0" CornerRadius="2" Foreground="White" Background="#0672CB" Click="btnAdd_Click" />
+                </StackPanel>
+
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center">
+                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40" Margin="220,20,0,0" CornerRadius="2" Foreground="White" Background="#0672CB" Click="btnAdd_Click" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

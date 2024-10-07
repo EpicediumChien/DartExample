@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Microsoft.Win32;
 using System.ComponentModel;
@@ -11,6 +13,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
@@ -84,12 +87,54 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             FullView = null;
         }
+        public void Invoke_RefreshData()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += DoWork_RefreshData;
+            bw.RunWorkerCompleted += Set_Page_Done;
+            bw.RunWorkerAsync(); //myArg is the optional argument
+            IsBusy = true; 
+            OnPropertyChanged("IsBusy");
+        }
+
+        private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
+        {
+            try 
+            {
+                GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
+                Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
+                Lock_UpdatesPage = data.LockSettings.Lock_Settings_Updates;
+                Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
+                Lock_GeneralPage = data.LockSettings.Lock_Setting_ScreenNotification;
+                Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
+                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
+                RefreshUI();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void Set_Page_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
+        }
         #region General
         public GlobalSettingParam GlobalSettingParam { get; set; }
         public string EnableQuickAccessWidget_String
         {
             get
             {
+                //avoid null
+                if (GlobalSettingParam == null || GlobalSettingParam.GlobalSetting_WidgetSettings == null)
+                    return "OFF";
                 if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
                     return "ON";
@@ -101,6 +146,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             get
             {
+                //avoid null
+                if (GlobalSettingParam == null || GlobalSettingParam.GlobalSetting_WidgetSettings == null)
+                    return "OFF";
                 if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
                     return "ON";
@@ -159,11 +207,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
         }
-        private void Set_Page_Done(object sender, RunWorkerCompletedEventArgs e)
-        {
-            IsBusy = false;
-            OnPropertyChanged("IsBusy");
-        }
+        
         #endregion
         #region Update
         public FWUpdateInfoPackage FWUpdateInfoPackage { get; set; }

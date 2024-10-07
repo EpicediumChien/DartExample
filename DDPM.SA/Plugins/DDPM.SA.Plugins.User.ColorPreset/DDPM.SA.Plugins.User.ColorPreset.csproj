@@ -18,6 +18,10 @@
     <ProjectReference Include="..\..\Common\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
 	</ItemGroup>
 
-
+  <ItemGroup>
+    <Reference Include="DdmLibrary">
+      <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+    </Reference>  
+  </ItemGroup>
 
 </Project>

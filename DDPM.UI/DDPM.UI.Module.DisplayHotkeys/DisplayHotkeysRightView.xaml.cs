@@ -317,10 +317,21 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.FavoriteInputSource;
                 hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
-                hotkeyInfo.Description = "FavoriteInputSource";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.FavoriteInputSourceKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
+
+                if (vm.FavoriteInput_Selected == null)
+                {
+                    if(vm.InputsList != null && vm.InputsList.Count > 0)
+                    {
+                        vm.FavoriteInput_Selected = vm.InputsList[0];
+                    }
+                }
+                if (vm.FavoriteInput_Selected != null)
+                {
+                    hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
+                    hotkeyInfo.Description = "FavoriteInputSource";
+                    doLostFocus(hotkeyInfo, _strPreviousKey, vm.FavoriteInputSourceKey, ref BundleNewKeys);
+                    BundleNewKeys.Clear();
+                }
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;

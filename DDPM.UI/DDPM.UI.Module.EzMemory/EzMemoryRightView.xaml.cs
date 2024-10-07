@@ -2,6 +2,10 @@
 using System.Windows.Controls;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.Common;
+using System.Windows;
+using DDPM.UI.Plugin.Common.ViewModels;
+using DDPM.SA.Common;
+using DDPM.UI.Common.Models;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -10,17 +14,45 @@ namespace DDPM.UI.Module.EzMemory
     /// </summary>
     public partial class EzMemoryRightView : UserControl
     {
-        private EzMemoryViewModel? vm;
+        #region Private Members
+        private HomeDevice _homeDevice;
+        private IDeviceManagerSA _deviceManagerSA;
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;    
+        private readonly DisplayViewModel _vmDisplay;
+        private readonly IConsole _console;
+        private readonly ILog _log;
+        #endregion Private Members
 
-        public EzMemoryRightView(EzMemoryViewModel? vm)
+        public EzMemoryRightView(DisplayViewModel vmDisplay)
         {
             InitializeComponent();
-            DataContext = vm;
+
+            _vmDisplay = vmDisplay;
+            _homeDevice = vmDisplay.SelectedHomeDevice;
+            _console = vmDisplay.Console;
+            _deviceManagerSA = HomeDevice.DeviceManagerSA;
+
+            InitializeTextBlocks();
         }
 
-        private void CheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void InitializeTextBlocks()
         {
+            ProfileTitleTextBlock.Text = "Profile";
+            AutomaticStartupTextBlock.Text = "Automatic Startup:";
+            AutomaticStartupValueTextBlock.Text = "N/A"; 
+            LaunchByTimeTextBlock.Text = "Launch by Time:";
+            LaunchByTimeValueTextBlock.Text = "N/A";
+            AppDocumentTextBlock.Text = "App/Document:";
+            AppDocumentValueTextBlock.Text = "N/A";
 
+            applybtn.Content = "Apply";
+        }
+
+        private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
+        {
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
+            //ezFirst.DataContext = _vm;
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
         //private void CheckBox_Click_1(object sender, System.Windows.RoutedEventArgs e)

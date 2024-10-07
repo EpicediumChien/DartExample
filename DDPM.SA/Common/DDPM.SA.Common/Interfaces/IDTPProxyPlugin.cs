@@ -76,6 +76,35 @@ namespace DDPM.SA.Common
 
         Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+        Task SetProfile(string Guid, string newValue);
+        Task SetZoom(string Guid, int newValue);
+        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task SetAutoFramingSensitivity(string Guid, int newValue);
+        Task SetAutoFramingFrameSize(string Guid, int newValue);
+        Task SetFieldOfView(string Guid, int newValue);
+        Task SetIsFocusOn(string Guid, bool newValue);
+        Task SetFocus(string Guid, int newValue);
+        Task SetPriority(string Guid, int newValue);
+        Task SetIsHDROn(string Guid, bool newValue);
+        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task SetAutoWhiteBalance(string Guid, int newValue);
+        Task SetBrightness(string Guid, int newValue);
+        Task SetSharpness(string Guid, int newValue);
+        Task SetContrast(string Guid, int newValue);
+        Task SetSaturation(string Guid, int newValue);
+        Task SetAntiFlicker(string Guid, int newValue);
+        Task SetTilt(string Guid, int newValue);
+        Task SetPan(string Guid, int newValue);
+
+        // webcam presence detection
+        Task SetWALTime(string Guid, int newValue);
+        Task SetSnooze(string Guid, int newValue);
+        Task SetSnoozeLength(string Guid, int newValue);
+        Task SetIsProximitySensorEnable(string Guid, bool newValue);
+        Task SetIsWakeonApproachEnable(string Guid, bool newValue);
+        Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+
 
     }
 }

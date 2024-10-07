@@ -146,6 +146,9 @@ namespace DDPM.UI.Module.EzArrange
                         spItem = splitListView_2w.AddItemToList(newSplit.UC);
                         break;
 
+                    case 3:
+                        spItem = splitListView_3w.AddItemToList(newSplit.UC);
+                        break;
                     case 4:
                         spItem = splitListView_4w.AddItemToList(newSplit.UC);
                         break;
@@ -199,7 +202,12 @@ namespace DDPM.UI.Module.EzArrange
                         SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
                         itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
                         itemCustom.CustomId = (int)spj.CustomId;
-                    }
+
+                        //Robert_Lin, 2024-10-4 add max items check
+                        if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
+                            break;
+
+                    } //(SplitJson spj in eaSettings.CustomList)
                 }
             } //if (eaSettings != null)
 
@@ -233,6 +241,10 @@ namespace DDPM.UI.Module.EzArrange
                 int idxRecentList = 0;
                 foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
                 {
+                    //Robert_Lin, 2024-10-4 Check maximun items
+                    if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                        break;
+
                     //Validate RectentList items, skip the invalid items
                     //1 CustomId=0 and CustomName is empty is invalid
                     if ((spj.CustomId == 0) && (!String.IsNullOrWhiteSpace(spj.CustomName)))
@@ -326,6 +338,10 @@ namespace DDPM.UI.Module.EzArrange
             //
             foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
             {
+                //Robert_Lin, 2024-10-4 Check maximun items
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                    break;
+
                 if (itemCustom.Buddy == null)
                 {
                     //Duplicate a new SplitItem as item Buddy and add to ListRecent
@@ -350,6 +366,30 @@ namespace DDPM.UI.Module.EzArrange
             //E Add all Window items which has no buddy into recent list
             foreach (SplitItem itemWin in splitListView_2w.SplitList)
             {
+                //Robert_Lin, 2024-10-4 Check maximun items
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                    break;
+
+                if (itemWin.Buddy == null)
+                {
+                    //Duplicate a new SplitItem as item Buddy and add to ListRecent
+                    ISplitCtrl? ispWin = itemWin.ISplitCtrl;
+                    ISplitCtrl? ispRecent = ispWin.New();
+                    ispRecent.Settings = ispWin.Settings;
+                    ispRecent.FriendlyName = ispWin.FriendlyName;
+                    ispRecent.SplitMode = eSplitModes.Icon;
+
+                    SplitItem itemRecent = splitListView_Recent.AddItemToList(ispRecent.UC);
+                    itemRecent.Buddy = itemWin;
+                    itemWin.Buddy = itemRecent;
+                    itemRecent.CustomId = itemWin.CustomId;
+                }
+            }
+            foreach (SplitItem itemWin in splitListView_3w.SplitList)
+            {
+                //Robert_Lin, 2024-10-4 Check maximun items
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                    break;
                 if (itemWin.Buddy == null)
                 {
                     //Duplicate a new SplitItem as item Buddy and add to ListRecent
@@ -367,6 +407,9 @@ namespace DDPM.UI.Module.EzArrange
             }
             foreach (SplitItem itemWin in splitListView_4w.SplitList)
             {
+                //Robert_Lin, 2024-10-4 Check maximun items
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                    break;
                 if (itemWin.Buddy == null)
                 {
                     //Duplicate a new SplitItem as item Buddy and add to ListRecent
@@ -435,16 +478,58 @@ namespace DDPM.UI.Module.EzArrange
         #region SplitItem Selection
         private void OnListViewItemClicked(SplitItem spItem)
         {
-            if (spItem.InnerContent is ISplitCtrl)
-            {
-                ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
-                _vm.SelectedSplitItem = spItem;
-                _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+            //Only sopported for ISplitCtrl SplitItem (that is, EasyArrange) should be always
+            //If it's NOT a ISplitCtrl, then noting to do and return
+            if (spItem.InnerContent is not ISplitCtrl)
+                return;
 
-                splitListView_Recent.MoveSelectedItemToSecondPosition();
-                SaveEaSettings();
-                //_deviceManagerSA.WriteEasyArrangeSettings()
+            ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
+
+            //Set as current Selected item
+            _vm.SelectedSplitItem = spItem;
+            _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+
+            //Need to set it's buddy as IsSelected
+            
+            //If the selected item is in RecentList, then it should be has Buddy
+            if (spItem.SplitOwner == Common.EAEM.eSplitOwner.EaRecent)
+            {
+                //It should has Buddy, but if not (then ignored)
+                if (spItem.Buddy != null)
+                {
+                    //Select its Buddy also
+                    spItem.Buddy.IsSelected = true;
+                }
             }
+            else //Selected item is not in RecentList
+            {
+                //Check if it has Buddy in RecentList?
+                if (spItem.Buddy != null)
+                {
+                    //has Buddy, its Buddy should be in RecentList, make a check
+                    if (spItem.Buddy.SplitOwner == Common.EAEM.eSplitOwner.EaRecent)
+                    {
+                        //YES, the buddy of the selected item is in Recent, list
+                        //then we will move the buddy to the second position of the Recent List
+                        spItem.Buddy.IsSelected = true;
+                        //splitListView_Recent.MoveSelectedItemToSecondPosition();
+                    }
+                }
+                else
+                {
+                    //The selected item has no Buddy in Recent list => need to add
+                    SplitItem? itemRecent = AddNewItemToRecentList2ndPosition(spItem);
+
+                    if (itemRecent != null)
+                    {
+                        itemRecent.IsSelected = true;
+                    }
+                }
+                
+            }
+
+            splitListView_Recent.MoveSelectedItemToSecondPosition();
+            SaveEaSettings();
         }
         #endregion SplitItem Selection
 
@@ -604,17 +689,25 @@ namespace DDPM.UI.Module.EzArrange
                     itemCustom.ReplaceByEAArgs(e);
 
                     //Check if itemCustom has Buddy (in RecentList)
+                    SplitItem? itemRecent = null;
                     if (itemCustom.Buddy != null)
                     {
+                        itemRecent = itemCustom.Buddy;
+                        //Validation: itemRecent should be owned by ReceList
+                        bool shouleBeTrue = (itemRecent.SplitOwner == Common.EAEM.eSplitOwner.EaRecent);
                         //Replace with returned data
                         itemCustom.Buddy.ReplaceByEAArgs(e);
                     }
+                    else //No buddy in RecentList, need to add
+                    {
+                        itemRecent = AddNewItemToRecentList2ndPosition(itemCustom);
+                    }
                     //Set it as current selected
                     _vm.SelectedSplitItem = itemCustom;
-                    splitListView_Recent.MoveSelectedItemToSecondPosition();
+                    //splitListView_Recent.MoveSelectedItemToSecondPosition();
                     //_vm.SetWorkSplit(itemCustom.CellCount, itemCustom.SplitKey, itemCustom.Settings);
                 }
-                else
+                else //itemCustom==null
                 {
                     //Returned layout do not have same CustomName item in CustomList
                     //We will add a new one or replace to first one if reach the maximum count
@@ -639,25 +732,20 @@ namespace DDPM.UI.Module.EzArrange
                         itemCustom.CustomId = GenerateCustomId();
 
                         //Add a Buddy to Recent List
-                        //ISplitCtrl ispRecent = ISplitCtrl.Create(e.CellCount, e.SplitKey);
-                        ISplitCtrl ispRecent = ispCustom.Clone();
-                        if (ispRecent != null)
+                        SplitItem? itemRecent = AddNewItemToRecentList2ndPosition(itemCustom);
+                        if (itemRecent != null)
                         {
-                            ispRecent.Settings = e.Settings;
-                            ispRecent.FriendlyName = e.CustomName;
-                            SplitItem itemRecent = splitListView_Recent.AddSplitCtrlTo2ndPosition(ispRecent);
-                            itemRecent.CustomId = itemCustom.CustomId;
-
+                            //Setup Buddy
                             itemCustom.Buddy = itemRecent;
                             itemRecent.Buddy = itemCustom;
-                        }
 
+                        }
                         //Set it as current selected
                         _vm.SelectedSplitItem = itemCustom;
                         //_vm.SetWorkSplit(itemCustom.CellCount, itemCustom.SplitKey, itemCustom.Settings);
                         //SaveEaSettings();
                     }
-                    else
+                    else //CustomList Count >= max, we cannot add new item, will replace the first item
                     {
                         itemCustom = splitListView_Custom.GetAt(0);
                         if (itemCustom == null) return;
@@ -673,11 +761,12 @@ namespace DDPM.UI.Module.EzArrange
                         }
                         //Set it as current selected
                         _vm.SelectedSplitItem = itemCustom;
-                        splitListView_Recent.MoveSelectedItemToSecondPosition();
+                        //splitListView_Recent.MoveSelectedItemToSecondPosition();
                         //_vm.SetWorkSplit(itemCustom.CellCount, itemCustom.SplitKey, itemCustom.Settings);
                     } //if (splitListView_Custom.ItemCount < EAEMConstants.MaxCustomItems)
                 }
 
+                splitListView_Recent.MoveSelectedItemToSecondPosition();
                 _vm.SetWorkSplit(e.CellCount, e.SplitKey, e.Settings);
                 SaveEaSettings();
 
@@ -935,5 +1024,60 @@ namespace DDPM.UI.Module.EzArrange
 
         }
         #endregion Add Custom Layout
+
+        #region Recent List Manager
+        /// <summary>
+        /// Clone and add an new item into RecentList's second position.
+        /// 
+        /// </summary>
+        /// <param name="itemSource">The item of source to be added. It should be already in other (not Recent) list.</param>
+        /// <return>The new added item in RecentList</return>
+        private SplitItem? AddNewItemToRecentList2ndPosition(SplitItem itemSouce)
+        {
+            //Validatoin 
+            //1 itemSource should not in RecentList
+            if (itemSouce.SplitOwner == Common.EAEM.eSplitOwner.EaRecent)
+                return null;
+            //2 itemSoutve should not has Buddy (in RecentList)
+            if (itemSouce.Buddy != null)
+                return null;
+
+            //If the RecentList item count has up to the limitation (always be true, but we will check anyway)
+            if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+            {
+                //Remove the last item
+                SplitItem? itemLatest = splitListView_Recent.GetLatestItem();
+                //Unbound with its Buddy
+                if (itemLatest != null)
+                {
+                    if (itemLatest.Buddy != null)
+                        itemLatest.Buddy.Buddy = null;
+                    splitListView_Recent.DeleteSplitItem(itemLatest);
+                }
+            }
+
+            //Duplicate a SplitItem from SelectedItem, and add to 2nd position of RecentList
+
+            //Duplicate a new item from the itemSource
+            ISplitCtrl? ispSource = itemSouce.ISplitCtrl;
+            if (ispSource != null) //Support ISplitCtrl (EasyArrange only)
+            {
+                ISplitCtrl ispRecent = ispSource.Clone();
+                if (ispRecent != null)
+                {
+                    ispRecent.FriendlyName = itemSouce.CustomName;
+                    SplitItem itemRecent = splitListView_Recent.AddSplitCtrlTo2ndPosition(ispRecent);
+                    itemRecent.CustomId = itemSouce.CustomId;
+
+                    itemSouce.Buddy = itemRecent;
+                    itemRecent.Buddy = itemSouce;
+
+                    return itemRecent;
+                }
+            }
+
+            return null;
+        }
+        #endregion
     }
 }

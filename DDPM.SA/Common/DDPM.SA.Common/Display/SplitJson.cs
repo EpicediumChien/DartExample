@@ -19,6 +19,7 @@ namespace DDPM.SA.Common.Display
 
         #endregion Native Properties
 
+
         public string ToString()
         {
             return $"{CellCount}{SplitKey}[{Double_To_String(Settings)}],{CustomId}[{CustomName}]";
@@ -59,6 +60,23 @@ namespace DDPM.SA.Common.Display
             return true;
         }
 
+        #region Defaul Recent List
+        /// <summary>
+        /// Need to copy the DefaultSettings from DDPM.Easy.Common/SplitCtrlXX.xaml.cs
+        /// Never add SplitCtrl0A (Off) into the RecentList
+        /// </summary>
+        public static List<SplitJson> DefaultRecentList = new List<SplitJson>()
+        {
+            //[0] SplitCtrl2A
+            new  SplitJson() { CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
+            //[1] SplitCtrl2C
+            new  SplitJson() { CellCount = 2, SplitKey='C', Settings=new List<double>() { 7, 3 } },
+            //[2] SplitCtrl3E
+            new  SplitJson() { CellCount = 3, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1 } },
+            //[3] SplitCtrl4A
+            new  SplitJson() { CellCount = 4, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1 } }
 
+        };
+        #endregion Defaul Recent List
     }
 }

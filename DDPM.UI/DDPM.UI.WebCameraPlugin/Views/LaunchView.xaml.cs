@@ -19,6 +19,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -85,6 +86,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
                 ProfileItems.ItemsSource = _vm.ProfileItems;
+                Mouse.OverrideCursor = null;
             }
 
             //lock/unlock, no ui element currently
@@ -124,6 +126,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             RecordingTimer.Tick += RecordingTimer_Tick;
 
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
+
             Preview();
         }
 
@@ -134,6 +137,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private async void Preview()
         {
+            //return;
             if (_vm!.MediaCapture != null)
             { _ = CleanupMediaCaptureAsync(); }
 
@@ -560,7 +564,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm!.VideoCaptureFolder);
 
                 // Create storage file for the capture
-                var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("DDP'M'Videoyyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
+                var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("'DDPMVideo'yyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
 
                 var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto);
 
@@ -714,9 +718,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _vm!.CurrentProfileName = ((UXTextBlock)sender).Tag.ToString()!;
+            var profileName = ((UXTextBlock)sender).Tag.ToString()!;
+            if (profileName != _vm!.CurrentProfileName)
+            {
+                _vm!.CurrentProfileName = profileName;
+                _vm.SetProfile();
+            }
             btnPreset_Click(this, null);
-
         }
 
         private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
@@ -770,6 +778,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            var profileName = ((Image)sender).Tag.ToString()!;
+            if (profileName == _vm!.CurrentProfileName)
+            {
+                _vm!.CurrentProfileName = "Default";
+                _vm.SetProfile();
+            }
+            btnPreset_Click(this, null);
 
         }
 
@@ -829,6 +844,57 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             catch (Exception ex)
             {
                 MessageBox.Show($"Error initializing camera: {ex.Message}");
+            }
+        }
+
+        private void ChangePan(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image img)
+            {
+                var value = 0;
+                switch (img.Tag.ToString())
+                {
+                    case "L":
+                        if (_vm!.CurrentProfile.Pan == _vm.CurrentDeviceInfo!.PanMin)
+                            return;
+
+                        value = _vm.CurrentProfile.Pan - _vm.CurrentDeviceInfo.PanSteppingDelta;
+                        if (value < _vm.CurrentDeviceInfo!.PanMin)
+                            value = _vm.CurrentDeviceInfo!.PanMin;
+
+                        _vm.SetPan(value);
+                        break;
+                    case "R":
+                        if (_vm!.CurrentProfile.Pan == _vm.CurrentDeviceInfo!.PanMax)
+                            return;
+
+                        value = _vm.CurrentProfile.Pan + _vm.CurrentDeviceInfo.PanSteppingDelta;
+                        if (value > _vm.CurrentDeviceInfo!.PanMax)
+                            value = _vm.CurrentDeviceInfo!.PanMax;
+
+                        _vm.SetPan(value);
+                        break;
+                    case "T":
+                        if (_vm!.CurrentProfile.Tilt == _vm.CurrentDeviceInfo!.TiltMax)
+                            return;
+
+                        value = _vm.CurrentProfile.Tilt + _vm.CurrentDeviceInfo.TiltSteppingDelta;
+                        if (value > _vm.CurrentDeviceInfo!.TiltMax)
+                            value = _vm.CurrentDeviceInfo!.TiltMax;
+
+                        _vm.SetTilt(value);
+                        break;
+                    case "D":
+                        if (_vm!.CurrentProfile.Tilt == _vm.CurrentDeviceInfo!.TiltMin)
+                            return;
+
+                        value = _vm.CurrentProfile.Tilt - _vm.CurrentDeviceInfo.TiltSteppingDelta;
+                        if (value < _vm.CurrentDeviceInfo!.TiltMin)
+                            value = _vm.CurrentDeviceInfo!.TiltMin;
+
+                        _vm.SetTilt(value);
+                        break;
+                }
             }
         }
     }

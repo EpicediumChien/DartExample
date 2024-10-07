@@ -14,8 +14,8 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Edit"
-                               IsEditable="True" HoveringCell="2A1" />
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Icon"
+                               IsEditable="True" HoveringCell="2c1" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -32,28 +32,80 @@
                     <ColumnDefinition Width="{Binding Settings[1], Mode=TwoWay}" />
                 </Grid.ColumnDefinitions>
 
-                <Border Name="cell_2c1" Grid.Column="0">
+                <Border Name="cell_2c1" Grid.Column="0" >
                     <Border.Style>
-                        <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding HoveringCell}" Value="2c1">
+                       <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
+                           <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsWorkMode}" Value="True"/>
+                                        <Condition Binding="{Binding HoveringCell}" Value="2c1"/>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsAwsMode}" Value="True"/>
+                                        <Condition Binding="{Binding HoveringCell}" Value="2c1"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Background" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                       </Style>
+                   </Border.Style>
+                 </Border>
+                <local:CellBorder x:Name="cellBd_2c1" Grid.Column="0" CellName="2c1" CornerRadius="6,0,0,6">
+                    <!-- 
+                    <local:CellBorder.Style>
+                        <Style TargetType="local:CellBorder" BasedOn="{StaticResource  CellBorderStyle2}">
+                            <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHover, ElementName=cellBd_2c1}" Value="True">
+                                    <Setter Property="BkBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-                </Border>
+                    </local:CellBorder.Style>
+                    -->
+                </local:CellBorder>
+                
                 <Border Name="cell_2c2" Grid.Column="2">
-                    <Border.Style>
+                     <Border.Style>
                         <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding HoveringCell}" Value="2c2">
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsWorkMode}" Value="True"/>
+                                        <Condition Binding="{Binding HoveringCell}" Value="2c2"/>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
-                                </DataTrigger>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsAwsMode}" Value="True"/>
+                                        <Condition Binding="{Binding HoveringCell}" Value="2c2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Background" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
                 </Border>
+
+                <local:CellBorder x:Name="cellBd_2c2" Grid.Column="2" CellName="2c2" CornerRadius="0,6,6,0">
+                    <!-- 
+                    <local:CellBorder.Style>
+                        <Style TargetType="local:CellBorder" BasedOn="{StaticResource  CellBorderStyle2}">
+                            <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHover, ElementName=cellBd_2c2}" Value="True">
+                                    <Setter Property="BkBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </local:CellBorder.Style>
+                    -->
+                </local:CellBorder>
 
                 <GridSplitter Name="v1" Grid.Column="1" Style="{StaticResource SplitterStyle_Vert}" />
             </Grid>

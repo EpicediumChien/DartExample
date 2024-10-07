@@ -39,7 +39,7 @@ namespace DDPM.Subagent
         /// <summary>
         ///     A name for your product.
         /// </summary>
-        private const string ProductName = "DDPM Subagent";
+        private const string ProductName = "Dell Display And Peripheral Manager";  //"DDPM Subagent";
 
         /// <summary>
         ///     Service name for the product. Even if you are not running as a service always provide this because DCF provides you
@@ -85,7 +85,10 @@ namespace DDPM.Subagent
                 /*
                  * Populate any plugin wildcards. If you do not provides wildcards that match your plugin naming schema DCF will not load the plugins
                  */
-                PluginWildcards = new[] { "DDPM.SA.Plugins.*.dll" },
+                PluginWildcards = new string[] {
+                    "Dell.DTM.PlatinumClient.dll",
+                    "DDPM.SA.Plugins.*.dll",
+                },
                 /*
                  * Populate your user process mutex guid so it does not collide with any existing DCF products on the machine
                  */
@@ -98,7 +101,8 @@ namespace DDPM.Subagent
                     new Guid(IDs.DDPM_SETTINGS_MANAGER_PLUGIN_ID),
                     new Guid(IDs.CLI_Manager_Plugin),
                     new Guid(IDs.SWUpdate_PLUGIN_ID),
-                    new Guid(IDs.FWUPDATE_PLUGIN_ID)
+                    new Guid(IDs.FWUPDATE_PLUGIN_ID),
+                    new Guid(IDs.PlatinumSDK_Plugin),
                 },
                 /*
                  * This is the name used in the log file

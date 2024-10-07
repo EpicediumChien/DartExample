@@ -16,6 +16,12 @@
         /// <summary>
         /// The SplitCtrl are working in WorkWindow
         /// </summary>
-        Work
+        Work,
+
+        /// <summary>
+        /// The SplitCtrl is unsing AWS (Application Window Snap) mode
+        /// Robert_Lin, 2024-10-2 add
+        /// </summary>
+        AWS
     }
 }

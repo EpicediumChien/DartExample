@@ -37,10 +37,12 @@
     <None Remove="Resources\CameraColorImage.png" />
     <None Remove="Resources\CameraControl.png" />
     <None Remove="Resources\CameraPresenceDetection.png" />
+    <None Remove="Resources\CBvector.png" />
     <None Remove="Resources\Chat.png" />
     <None Remove="Resources\Close.png" />
     <None Remove="Resources\Connect_M_K.png" />
     <None Remove="Resources\DP.png" />
+    <None Remove="Resources\EzAdd.png" />
     <None Remove="Resources\G.png" />
     <None Remove="Resources\HD22Q.png" />
     <None Remove="Resources\HDMI.png" />
@@ -84,6 +86,7 @@
     <None Remove="Resources\Luminance.png" />
     <None Remove="Resources\Mic.png" />
     <None Remove="Resources\Microphone.png" />
+    <None Remove="Resources\Monitor_Outline.png" />
     <None Remove="Resources\popup_ArrowCorner.png" />
     <None Remove="Resources\Port.png" />
     <None Remove="Resources\Product_Display.png" />
@@ -182,6 +185,12 @@
     <Resource Include="Resources\AW.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\CBvector.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\EzAdd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\G.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -204,6 +213,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Lock.png" />
+    <Resource Include="Resources\Monitor_Outline.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\SB522A.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

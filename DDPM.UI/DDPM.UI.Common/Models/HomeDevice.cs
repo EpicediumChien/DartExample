@@ -3,7 +3,9 @@ using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
+using System.Drawing.Imaging;
 using System.Net;
+using System.Reflection;
 using System.Windows.Media;
 using VcpCore.Common;
 
@@ -74,6 +76,10 @@ namespace DDPM.UI.Common.Models
                 {
                     _monitorModelName = model;
                 }
+
+                //Robert_Lin, 2024-9-30 Add Monitor Product Images
+                DetermineMonitorImage();
+
                 OnPropertyChanged("DisplayName");
             }
         }
@@ -494,13 +500,46 @@ namespace DDPM.UI.Common.Models
             string name = DeviceInfo.Name; //"Dell Mobile Wireless Mouse MS3320W"
             var arr = name.Split(' ');
             string model = DeviceInfo.ModelNumber;
-            if (arr.Length > 0)
-            {
-                model = arr[arr.Length - 1];
-            }
+            //if (arr.Length > 0)
+            //{
+            //    model = arr[arr.Length - 1];
+            //}
             var colorCode = DeviceInfo.ColorCode == 0 ? "" : $"_{DeviceInfo.ColorCode}";
 
             DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}{colorCode}.png", assemblyName);
+        }
+
+        /// <summary>
+        /// Called in MonitorInfo setter, will output to HomeDevice.DeviceImage
+        /// </summary>
+        private void DetermineMonitorImage()
+        {
+            if (MonitorInfo == null)
+                return;
+
+            string assemblyName = "DDPM.UI.Resources";
+            if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
+            {
+                //The filename will come from MonitorInfo.ImageFileName
+                string imageFileName = MonitorInfo.ImageFileName;
+                //The ImageFileName will not have extention file name
+                //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
+
+                //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
+                ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
+                if (imgSource != null)
+                {
+                    DeviceImage = imgSource;
+                    return;
+                }
+            }
+            //Use LineArt.png instead
+            ImageSource? imgLineart = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/Lineart.png", assemblyName);
+            if (imgLineart != null) 
+            {
+                DeviceImage = imgLineart;
+                return;
+            }
         }
 
         #endregion DetermineDeviceImage - Robert_Lin 2024-6-20 added
@@ -509,6 +548,7 @@ namespace DDPM.UI.Common.Models
         private Dictionary<string, ObservableObject> _moduleData = new Dictionary<string, ObservableObject>();
 
         public EzArrangeViewModel vmEzArrange { get; set; }
+
         #endregion Module Data - Robert_Lin, 2024-6-23 added
 
         #region Sort and Grouping

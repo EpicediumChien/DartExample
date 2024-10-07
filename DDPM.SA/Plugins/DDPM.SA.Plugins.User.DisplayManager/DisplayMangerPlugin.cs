@@ -1890,6 +1890,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(_DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result);
         }
+        public Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo)
+        {
+            DisplayCurrentPropertiesInfo ret = new DisplayCurrentPropertiesInfo();
+            if (_DisplayPropertiesPlugin != null)
+            {
+                ret = _DisplayPropertiesPlugin.GetCurrentDisplayProperties(monitorInfo).Result;
+            }
+            return Task.FromResult(ret);
+        }
 
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
@@ -2621,7 +2630,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             if (_eaService != null)
             {
-                
+
                 return _eaService.ReloadEzSettings();
             }
             else

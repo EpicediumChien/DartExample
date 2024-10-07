@@ -46,7 +46,7 @@ namespace DDPM.UI.Module.Brightness
         {
             DDPMSettings data = null;
             if (DdpmCommonHelper.DeviceManagerSA != null)
-                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                data = DdpmCommonHelper.ReadDDPMSettings(true);// DeviceManagerSA.ReloadAppConfigData().Result;
 
             bool? isLocked_BriCont = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
             if (isLocked_BriCont != null)
@@ -56,8 +56,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible = (bool)isLocked_BriCont ? Visibility.Visible : Visibility.Collapsed;
-                        vm.TabSTOP = (bool)isLocked_BriCont ? "None" : "Cycle";
+                        vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
                         Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
                     }
                 }));
@@ -84,7 +83,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.synchronizeLock= isSyncLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Update_SyncLockStatus(isSyncLocked);                        
                         Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
                     }
                 }));
@@ -115,7 +114,7 @@ namespace DDPM.UI.Module.Brightness
         {
             BrightnessViewModel x = (BrightnessViewModel)DataContext;
 
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if ((bool)SynchronizeSwitch.IsChecked)
             {
@@ -129,7 +128,7 @@ namespace DDPM.UI.Module.Brightness
             }
 
             setting.UserSettings.IsSynchronizemonitor = x.IsSynchronize;
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void Expander_Manual_Expanded(object sender, RoutedEventArgs e)
@@ -417,103 +416,30 @@ namespace DDPM.UI.Module.Brightness
         {
             BrightnessViewModel vm = (BrightnessViewModel)VM_;
 
-            var ScheduleMaps_string = string.Empty;
-
-            if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-
             if (vm.hOurs1 > -1 && vm.hOurs2 > -1 && vm.mIns1 > -1 && vm.mIns2 > -1 && vm.dUration1 > -1 && vm.dUration2 > -1)
             {
-                if (vm.ScheduleMaps == null)
-                    vm.ScheduleMaps = new List<scheduleInfo>();
+                if (vm.ScheduleMap == null)
+                    vm.ScheduleMap = new scheduleInfo();
 
-                if (vm.ScheduleMaps.Count < 1)
-                {
-                    ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
-                    if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                        vm.ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-                }
-
-                if (vm.ScheduleMaps != null && vm.ScheduleMaps.Count > 0)
-                {
-                    bool find = false;
-
-                    foreach (scheduleInfo TMP in vm.ScheduleMaps)
-                    {
-                        if (TMP.Monitor.Equals(vm.SelectedHomeDevice.MonitorInfo.edid))
-                        {
-                            find = true;
-
-                            TMP.IsEnable = true;
-                            TMP.Pre1Name = vm.PR1Name;
-                            TMP.Pre2Name = vm.PR2Name;
-                            TMP.Hours1 = vm.hOurs1;
-                            TMP.Mins1 = vm.mIns1;
-                            TMP.Duration1 = vm.dUration1;
-                            TMP.Hours2 = vm.hOurs2;
-                            TMP.Mins2 = vm.mIns2;
-                            TMP.Duration2 = vm.dUration2;
-                            TMP.Brightness1 = vm.PR1BrightnessValue;
-                            TMP.Contrast1 = vm.PR1ContrastValue;
-                            TMP.Brightness2 = vm.PR2BrightnessValue;
-                            TMP.Contrast2 = vm.PR2ContrastValue;
-
-                            break;
-                        }
-                    }
-
-                    if (!find)
-                    {
-                        scheduleInfo newOne = new scheduleInfo();
-                        newOne.IsEnable = true;
-                        newOne.Monitor = vm.SelectedHomeDevice.MonitorInfo.edid;
-                        newOne.Pre1Name = vm.PR1Name;
-                        newOne.Pre2Name = vm.PR2Name;
-                        newOne.Hours1 = vm.hOurs1;
-                        newOne.Mins1 = vm.mIns1;
-                        newOne.Duration1 = vm.dUration1;
-                        newOne.Hours2 = vm.hOurs2;
-                        newOne.Mins2 = vm.mIns2;
-                        newOne.Duration2 = vm.dUration2;
-                        newOne.Brightness1 = vm.PR1BrightnessValue;
-                        newOne.Contrast1 = vm.PR1ContrastValue;
-                        newOne.Brightness2 = vm.PR2BrightnessValue;
-                        newOne.Contrast2 = vm.PR2ContrastValue;
-
-                        vm.ScheduleMaps.Add(newOne);
-                    }
-
-                    ScheduleMaps_string = JsonConvert.SerializeObject(vm.ScheduleMaps, Formatting.Indented);
-                }
-                else
-                {
-                    vm.ScheduleMaps = new List<scheduleInfo>();
-                    scheduleInfo newOne = new scheduleInfo();
-                    newOne.IsEnable = true;
-                    newOne.Monitor = vm.SelectedHomeDevice.MonitorInfo.edid;
-                    newOne.Pre1Name = vm.PR1Name;
-                    newOne.Pre2Name = vm.PR2Name;
-                    newOne.Hours1 = vm.hOurs1;
-                    newOne.Mins1 = vm.mIns1;
-                    newOne.Duration1 = vm.dUration1;
-                    newOne.Hours2 = vm.hOurs2;
-                    newOne.Mins2 = vm.mIns2;
-                    newOne.Duration2 = vm.dUration2;
-                    newOne.Brightness1 = vm.PR1BrightnessValue;
-                    newOne.Contrast1 = vm.PR1ContrastValue;
-                    newOne.Brightness2 = vm.PR2BrightnessValue;
-                    newOne.Contrast2 = vm.PR2ContrastValue;
-
-                    vm.ScheduleMaps.Add(newOne);
-
-                    ScheduleMaps_string = JsonConvert.SerializeObject(vm.ScheduleMaps, Formatting.Indented);
-                }
+                vm.ScheduleMap.IsEnable = true;
+                vm.ScheduleMap.model = vm.SelectedHomeDevice.MonitorInfo.modelName;
+                vm.ScheduleMap.serviceTag = vm.SelectedHomeDevice.MonitorInfo.edid.ServiceTag;
+                vm.ScheduleMap.Pre1Name = vm.PR1Name;
+                vm.ScheduleMap.Pre2Name = vm.PR2Name;
+                vm.ScheduleMap.Hours1 = vm.hOurs1;
+                vm.ScheduleMap.Mins1 = vm.mIns1;
+                vm.ScheduleMap.Duration1 = vm.dUration1;
+                vm.ScheduleMap.Hours2 = vm.hOurs2;
+                vm.ScheduleMap.Mins2 = vm.mIns2;
+                vm.ScheduleMap.Duration2 = vm.dUration2;
+                vm.ScheduleMap.Brightness1 = vm.PR1BrightnessValue;
+                vm.ScheduleMap.Contrast1 = vm.PR1ContrastValue;
+                vm.ScheduleMap.Brightness2 = vm.PR2BrightnessValue;
+                vm.ScheduleMap.Contrast2 = vm.PR2ContrastValue;
 
                 if ((!vm.IsMouseEnterSchedule_1 && !vm.IsMouseEnterSchedule_2) && (!vm.CheckIsTimeOverlap()) && (!vm.IsPR1Preview && !vm.IsPR2Preview))
                 {
-                    DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
-                    DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
-
+                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(vm.SelectedHomeDevice.MonitorInfo, vm.ScheduleMap);
                     vm.StartScheduleManger(60000);
                 }
             }

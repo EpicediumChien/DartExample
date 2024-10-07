@@ -7,7 +7,10 @@ namespace DDPM.SA.Common.Display
 {
     public class HotkeySettings
     {
-        public EDID DeviceInfo { get; set; }
+        //public EDID DeviceInfo { get; set; }
+        public string ModelName { get; set; }
+        public string SerialNumber { get; set; }
+        public string ServiceTag { get; set; }
         public List<HotkeyOption> HotkeyOptions { get; set; } = new List<HotkeyOption>();
 
         public List<HotkeyInfo> HotkeyInfo { get; set; }
@@ -89,5 +92,33 @@ namespace DDPM.SA.Common.Display
         LockBriCont,
         LockActiveInputSource,
         ToggleEzRecentSetting
+    }
+
+    public class DDMtoDDPM
+    {
+        public Dictionary<int, HotkeyType> HotkeyMap = new Dictionary<int, HotkeyType>()
+        {
+            {7, HotkeyType.SwapIputPIPPBP },
+            {0, HotkeyType.ChangePIPPosition },
+            {1, HotkeyType.None },
+            {2, HotkeyType.None},
+            {3, HotkeyType.VisionEngineToggle},
+            {4, HotkeyType.DarkStabilizerToggle},
+            {20, HotkeyType.DualResolutionToggle},
+            {5, HotkeyType.None },
+            {6, HotkeyType.KvmSwitchInputSource },
+            {8, HotkeyType.None},
+            {9, HotkeyType.None },
+            {10, HotkeyType.None},
+            {12, HotkeyType.ToggleInputSource},
+            {13, HotkeyType.ToggleInputSource},
+            {14, HotkeyType.FavoriteInputSource},
+            {15, HotkeyType.BrightnessIncrease},
+            {16, HotkeyType.BrightnessReduce},
+            {17, HotkeyType.ContrastIncrease},
+            {18, HotkeyType.ContrastReduce},
+            {11, HotkeyType.None },
+            {19, HotkeyType.None},
+        };
     }
 }

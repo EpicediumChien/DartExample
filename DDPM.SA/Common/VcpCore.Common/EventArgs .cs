@@ -33,4 +33,16 @@ namespace VcpCore.Common
         public bool DDCisON { get; set; }
         public MonitorInfo monitors { get; set; }
     }
+
+    public class ReadWriteRequest : EventArgs
+    {
+        public ReadWriteRequest_Type service { get; set; }
+        public MonitorInfo monitor { get; set; }
+    }
+
+    public enum ReadWriteRequest_Type
+    {
+        Read,
+        Write,
+    }
 }

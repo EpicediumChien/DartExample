@@ -96,7 +96,17 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
 
-        public bool AutoApply_Checked { get; set; }
+        private bool _autoApply_Checked;
+
+        public bool AutoApply_Checked 
+        {
+            get => _autoApply_Checked;
+            set
+            { 
+                SetProperty(ref _autoApply_Checked, value);
+                DdpmCommonHelper.DeviceManagerSA.SetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, _autoApply_Checked).Wait();
+            }
+        }
 
         public bool isSettingsEnable { get; set; } = true;
 
@@ -139,7 +149,8 @@ namespace DDPM.UI.Module.DisplayOthers
             try
             {
                 BackgroundWorker bwk = (BackgroundWorker)sender;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                AutoApply_Checked = DdpmCommonHelper.DeviceManagerSA.GetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo).Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (data.LockSettings.Lock_Display_PowerNap)
@@ -150,6 +161,7 @@ namespace DDPM.UI.Module.DisplayOthers
                         LockPowerNap_Opacity = 0.5;
                     }
                 }
+                OnPropertyChanged("AutoApply_Checked");
                 updatePowerNapUISetting();
             }
             catch (Exception)
@@ -238,8 +250,17 @@ namespace DDPM.UI.Module.DisplayOthers
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = saveFileDialog.FileName;
-                ImpExpSettings("Exp", filename);
-                return true;
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
+                {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else 
+                { 
+                    ImpExpSettings("Exp", filename);
+                    return true;
+                }
             }
             else
             {
@@ -259,8 +280,17 @@ namespace DDPM.UI.Module.DisplayOthers
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                ImpExpSettings("Imp", filename);
-                return true;
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else
+                {
+                    ImpExpSettings("Imp", filename);
+                    return true;
+                }
             }
             else
             {

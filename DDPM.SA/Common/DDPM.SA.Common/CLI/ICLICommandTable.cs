@@ -36,6 +36,7 @@ namespace DDPM.SA.Common
             "INAPPUPDATE",              //InAppUpdate               DDPMW-1329/1330
             "INAPPBRICONT",             //InAppBriCont              DDPMW-1342/1343
             "INAPPAUTOBRITEMP",         //InAppAutoBriTemp          DDPMW-1341
+            "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as InAppAutoBriTemp
             "INAPPRESTOREDEFAULTS",     //InAppRestoreDefaults      DDPMW-1333
             "INAPPRESTORE",             //InAppRestore              Same as InAppRestoreDefaults
             "RESTOREFACTORYDEFAULTS",   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
@@ -632,7 +633,6 @@ namespace DDPM.SA.Common
             //private enum CLI_COMMAND_TYPE {
             //    CLI_COMMAND_TYPE_GET = 0,
             //    CLI_COMMAND_TYPE_SET = 1,
-            //    CLI_COMMAND_TYPE_CONFIG = 2,
             //    CLI_COMMAND_TYPE_MAX
             //}
             // [HELP]: Store all the command set
@@ -640,22 +640,22 @@ namespace DDPM.SA.Common
             {
                 // Display | Application settings 
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },            { "Value", "N/A" },         { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },            { "Value", "N/A" },         { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoColorPreset" },            { "Value", "N/A" },         { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMVersion" },          { "Value", "N/A" },         { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ChangeMonitorId" },            { "Value", "[id]" },        { "Type", 2 }},  // ChangeMonitorId[id]
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVM" },                 { "Value", "[on/off]" },    { "Type", 2 }},  // NetworkKVM[on/off]
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "InAppNetworkKVM" },            { "Value", "N/A" },         { "Type", 2 }},  // InAppNetworkKVM[on/off]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ChangeMonitorId" },            { "Value", "[id]" },        { "Type", 1 }},  // ChangeMonitorId[id]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVM" },                 { "Value", "[on/off]" },    { "Type", 1 }},  // NetworkKVM[on/off]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "InAppNetworkKVM" },            { "Value", "N/A" },         { "Type", 1 }},  // InAppNetworkKVM[on/off]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVM" },                 { "Value", "N/A" },         { "Type", 0 }},  // NetworkKVM
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMAutoConnect" },      { "Value", "[on/off]" },    { "Type", 2 }},  // NetworkKVMAutoConnect [on/off]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMAutoConnect" },      { "Value", "[on/off]" },    { "Type", 1 }},  // NetworkKVMAutoConnect [on/off]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMAutoConnect" },      { "Value", "N/A" },         { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransfer" },  { "Value", "[on/off]" },    { "Type", 2 }}, // NetworkKVMContentTransfer [on/off]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransfer" },  { "Value", "[on/off]" },    { "Type", 1 }}, // NetworkKVMContentTransfer [on/off]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransfer" },  { "Value", "N/A" },         { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMIncomingPort" },     { "Value", "[1024-49151]" }, { "Type", 2 }}, // NetworkKVMIncomingPort[1024-49151]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMIncomingPort" },     { "Value", "[1024-49151]" }, { "Type", 1 }}, // NetworkKVMIncomingPort[1024-49151]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMIncomingPort" },  { "Value", "N/A" },         { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMOutgoingPort" },     { "Value", "[1024-49151]" }, { "Type", 2 }}, // NetworkKVMOutgoingPort[1024-49151]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMOutgoingPort" },     { "Value", "[1024-49151]" }, { "Type", 1 }}, // NetworkKVMOutgoingPort[1024-49151]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMOutgoingPort" }, { "Value", "N/A" },          { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransferPort " },{ "Value", "[1024-49151]" }, { "Type", 2 }}, // NetworkKVMContentTransferPort [1024 - 49151]
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMContentTransferPort" },{ "Value", "N/A" },    { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransferPort " },{ "Value", "[1024-49151]" }, { "Type", 1 }}, // NetworkKVMContentTransferPort [1024 - 49151]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMContentTransferPort" },{ "Value", "N/A" },    { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMAccessReset" },     { "Value", "N/A" },          { "Type", 0 }},
 
                 // Display | General Asset Management
@@ -718,11 +718,11 @@ namespace DDPM.SA.Common
                 //Display | Application or OS settings
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AllResolutionRefreshRate" },  { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
                 // new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "CurrentResolutionRefreshRate" }, { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 1 }},
 
 
                 // Design for advanced user, not publish to public
@@ -744,17 +744,17 @@ namespace DDPM.SA.Common
 
                 // === Application Level CLI ===
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 1 }},
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "FirmwareUpdate" },            { "Value", "N/A" }, { "Type", 2 }}, // TO DROP
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "FirmwareUpdate" },                { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "FirmwareUpdate" },                { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 1 }},
                 //new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceConnected" },               { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 1 }},

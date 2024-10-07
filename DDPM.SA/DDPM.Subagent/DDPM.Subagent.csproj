@@ -4,19 +4,22 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.40</Version>
+		<Version>2.0.0.41</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
 		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
+		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+		<PackageReference Include="Dell.DTM.Platinum.Sdk" Version="3.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
 		<ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugin.CLIManager\DDPM.SA.Plugins.CLIManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugin.PlatinumSDK\DDPM.SA.Plugins.PlatinumSDK.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SettingsManager\DDPM.SA.Plugins.SettingsManager.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SWUpdate\DDPM.SA.Plugins.SWUpdate.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.FWUpdate\DDPM.SA.Plugins.FWUpdate.csproj" />

@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Media.Animation;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
@@ -87,6 +88,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private void LogInfo(string msg)
         {
             _log?.Info(msg);
+        }
+
+        private void LogException(Exception ex, string msg)
+        {
+            _log?.Error(ex, msg);
         }
 
         private void ConsoleWriteLine(string msg)
@@ -750,20 +756,22 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 LogInfo("EABroker Start = = = = = = = =");
                 _vmArrange.DisplayManager = _displayManagerPlugin;
 
-                //InitInfoWindow();
-                //InitWorkWindows();
-                //InitEditWindow();
-                //InitSaveCustomWindow();
 
-                //[InfoWin Solution]
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
+                //new windows in separate STD threads 
                 //InitEditWindow();
                 //InitSaveCustomWindow();
                 //InitInfoWindow();
                 //InitWorkWindows();
+                //InitAwsWindow();
 
+                //new windows in the same STD thread
                 InitAllWindows();
+
+                //Debug purpose
+                //Debug_New3Windows();
+
                 sw.Stop();
                 LogInfo($"EABroker Init Windows duration=[{sw.ElapsedMilliseconds} msec]");
 
@@ -774,11 +782,63 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                    
                 }
                 
+                //Debug
+                _vmArrange.EzSettings.IsOnlyAllowWhenShiftKeyPressed = true;
 
                 //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
                 _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
                 _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                ConsoleWriteLine(" = = = = = = = = = =   EABroker Exit");
             }
+        }
+
+        private void Debug_New3Windows()
+        {
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    _log?.Info($"@ before new w1.");
+                    Window1 w1 = new Window1();
+                    _log?.Info($"@ after new w1.");
+                    w1.Show();
+                }
+                catch (Exception e1)
+                {
+                    _log?.Info(e1, $"new w1 exception");
+                }
+
+                try
+                {
+                    _log?.Info($"@ before new w2.");
+                    Window1 w2 = new Window1();
+                    _log?.Info($"@ after new w2.");
+                    w2.Show();
+                }
+                catch (Exception e2)
+                {
+                    _log?.Info(e2, $"new w2 exception");
+                }
+
+                try
+                {
+                    _log?.Info($"@ before new w3.");
+                    Window1 w3 = new Window1();
+                    _log?.Info($"@ after new w3.");
+                    w3.Show();
+                }
+                catch (Exception e3)
+                {
+                    _log?.Info(e3, $"new w3 exception");
+                }
+
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            _log?.Info($"@ Debug_New3Windows(), after thread.Start().");
         }
 
         public void EABroker_Stop()
@@ -843,36 +903,45 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     catch (Exception exA)
                     {
-                        LogInfo("EXCEPTION: " + exA.Message);
+                        LogException(exA, "EXCEPTION when new EAEditWindow()");
                     }
                 }
                 if (_saveCustomWindow == null)
                 {
-                    LogInfo("Before new SaveCustomWindow");
-                    _saveCustomWindow = new SaveCustomWindow();
-                    LogInfo("After new SaveCustomWindow");
-                    if (_editWindow != null)
+                    try
                     {
-                        LogInfo("Setting up SaveCustomWindow");
-                        _saveCustomWindow.Owner = _editWindow;
-                        _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
-                        _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
-                        LogInfo("Setting up SaveCustomWindow - done");
-
+                        LogInfo("Before new SaveCustomWindow");
+                        _saveCustomWindow = new SaveCustomWindow();
+                        LogInfo("After new SaveCustomWindow");
+                        if (_editWindow != null)
+                        {
+                            LogInfo("Setting up SaveCustomWindow");
+                            _saveCustomWindow.Owner = _editWindow;
+                            _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
+                            _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
+                            LogInfo("Setting up SaveCustomWindow - done");
+                        }
                     }
+                    catch (Exception exS)
+                    {
+                        LogException(exS, "EXCEPTION when new SaveCustomWindow");
+                    }
+
                 }
-                //if (_save2 == null)
-                //{
-                //    _save2 = new SaveCustomWindow();
-                //}
 
                 if (_infoWindow == null)
                 {
-                    LogInfo("Before new InfoWindow");
-                    _infoWindow = new InfoWindow(_vmArrange);
-                    LogInfo("After new InfoWindow");
-                    //_infoWindow.DataContext = _vmArrange;
-                    _infoWindow.Show();
+                    try
+                    {
+                        LogInfo("Before new InfoWindow");
+                        _infoWindow = new InfoWindow(_vmArrange);
+                        LogInfo("After new InfoWindow");
+                        _infoWindow.Show();
+                    }
+                    catch (Exception exIn)
+                    {
+                        LogException(exIn, "EXCEPTION when new InfoWindow");
+                    }
                 }
 
                 if (_workWin0 == null)
@@ -887,7 +956,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     catch (Exception exW0)
                     {
-                        LogInfo("EXCEPTION: " + exW0.Message);
+                        LogException(exW0, "EXCEPTION when new EAWorkWindow(0)");
                     }
                 }
 
@@ -903,7 +972,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     catch (Exception exW1)
                     {
-                        LogInfo("EXCEPTION: " + exW1.Message);
+                        LogException(exW1, "EXCEPTION when new EAWorkWindow(1)");
                     }
                 }
 
@@ -919,7 +988,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     catch (Exception exW2)
                     {
-                        LogInfo("EXCEPTION: " + exW2.Message);
+                        LogException(exW2, "EXCEPTION when new EAWorkWindow(2)");
                     }
                 }
 
@@ -935,7 +1004,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     catch (Exception exW3)
                     {
-                        LogInfo("EXCEPTION: " + exW3.Message);
+                        LogException(exW3, "EXCEPTION when new EAWorkWindow(3)");
                     }
                 }
 
@@ -951,98 +1020,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     catch (Exception exW4)
                     {
-                        LogInfo("EXCEPTION: " + exW4.Message);
+                        LogException(exW4, "EXCEPTION when new EAWorkWindow(4)");
                     }
                 }
 
-                //_vmArrange.STA_CreateWorkWindowsAddToList();
-                //_vmArrange.STA_CreateAndAddWorkWindowToList();
-                //_vmArrange.STA_CreateAndAddWorkWindowToList();
-                //_vmArrange.STA_CreateAndAddWorkWindowToList();
-                /*
-                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
+                if (_awsWindow == null)
                 {
                     try
                     {
-                        LogInfo($"Before new EAWorkWindow(0)");
-                        EAWorkWindow workWin0 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(0)");
-                        workWin0.Show();
-                        _vmArrange.AddWorkWindow(workWin0);
+                        LogInfo($"Before new AwsWindow()");
+                        _awsWindow = new AwsWindow(_vmArrange);
+                        LogInfo($"After new AwsWindow(3)");
+                        _awsWindow.Show();
+                        _vmArrange.AwsWindow = _awsWindow;
+
                     }
-                    catch (Exception exW0)
+                    catch (Exception exAws)
                     {
-                        LogInfo("EXCEPTION: " + exW0.Message);
+                        LogException(exAws, "EXCEPTION when new AwsWindow");
                     }
                 }
 
- 
 
-                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(1)");
-                        EAWorkWindow workWin1 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(1)");
-                        workWin1.Show();
-                        _vmArrange.AddWorkWindow(workWin1);
-
-                    }
-                    catch (Exception exW1)
-                    {
-                        LogInfo("EXCEPTION: " + exW1.Message);
-                    }
-                }
-
-                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(2)");
-                        EAWorkWindow workWin2 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(2)");
-                        workWin2.Show();
-                        _vmArrange.AddWorkWindow(workWin2);
-                    }
-                    catch (Exception exW2)
-                    {
-                        LogInfo("EXCEPTION: " + exW2.Message);
-                    }
-
-                }
-                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(3)");
-                        EAWorkWindow workWin3 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(3)");
-                        workWin3.Show();
-                        _vmArrange.AddWorkWindow(workWin3);
-                    }
-                    catch (Exception exW3)
-                    {
-                        LogInfo("EXCEPTION: " + exW3.Message);
-                    }
-                }
-
-                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(4)");
-                        EAWorkWindow workWin4 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(4)");
-                        workWin4.Show();
-                        _vmArrange.AddWorkWindow(workWin4);
-                    }
-                    catch (Exception exW4)
-                    {
-                        LogInfo("EXCEPTION: " + exW4.Message);
-                    }
-                }
-                */
 
                 added++;
 
@@ -1464,6 +1463,51 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         //}
 
         #endregion WorkWindows
+
+        #region AWS Window
+        private AwsWindow _awsWindow;
+
+        private void InitAwsWindow()
+        {
+            if (_awsWindow != null)
+                return;
+
+            int added = 0;
+            Task.Run(() =>
+            {
+                int addCount = 0;
+                Thread thread = new Thread(() =>
+                {
+                    LogInfo("Before new AwsWindow");
+                    _awsWindow = new AwsWindow(_vmArrange);
+                    LogInfo("After new AwsWindow");
+                    //_infoWindow.DataContext = _vmArrange;
+                    _awsWindow.Show();
+                    _vmArrange.AwsWindow = _awsWindow;  
+                    addCount++;
+                    added++;
+                    System.Windows.Threading.Dispatcher.Run();
+                });
+
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.IsBackground = true;
+                thread.Start();
+
+                while (addCount <= 0)
+                {
+                    Thread.Sleep(10);
+                }
+                //thread.Abort();
+                return Task.CompletedTask;
+            });
+            while (added <= 0)
+            {
+                Thread.Sleep(10);
+            }
+
+
+        }
+        #endregion AWS Window
 
         #region EditWindow and SaveCustomWindow
 

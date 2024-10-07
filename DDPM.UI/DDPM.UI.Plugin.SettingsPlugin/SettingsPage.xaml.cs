@@ -27,28 +27,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             DataContext = new SettingsPageViewModel();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
-                vm.SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
-                vm.RefreshUI();
-
+                vm.Invoke_RefreshData();
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                    if (vm != null)
-                    {
-                        vm.Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
-                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
-                        vm.Lock_UpdatesPage = data.LockSettings.Lock_Settings_Updates;
-                        Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
-                        vm.Lock_GeneralPage = data.LockSettings.Lock_Setting_ScreenNotification;
-                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
-                    }
-                }));
-
-
                 GeneralButton_Click(this, null);
             }
         }

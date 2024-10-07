@@ -7,6 +7,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.VisualBasic.Logging;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,6 +17,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using DdmLibrary;
+using DdmLibrary.Utility;
+using System.Linq.Expressions;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -66,6 +70,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
+        private static string folder_localappdata_Migration = "Migration\\UserFolder";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -96,25 +101,25 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private DDPMSettings _settings { get; set; }
         private string _settings_path { get; set; } = string.Empty;
         private List<ColorPresetSettings> _colorPresetSettings { get; set; }
-        private string _colorsettings_path { get; set; }
-        private string _appiconfolder_path { get; set; }
+        private string _colorsettings_path { get; set; } = string.Empty;
+        private string _appiconfolder_path { get; set; } = string.Empty;
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private Dictionary<string, List<DDPMMonitorSettings>>? _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
-        private string _display_path { get; set; }
+        private string _display_path { get; set; } = string.Empty;
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
         private List<HotkeySettings> _hotkeySettings { get; set; }
-        private string _hotkeysettings_path { get; set; }
-        private static List<HotkeySettings> _present_hotkey_settings = new List<HotkeySettings>();
+        private string _hotkeysettings_path { get; set; } = string.Empty ;
+        //private static List<HotkeySettings> _present_hotkey_settings = new List<HotkeySettings>();
 
         private List<PowerNapSetting> _powerNapSettings { get; set; }
-        private string _powerNapsettings_path { get; set; }
-        private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
+        private string _powerNapsettings_path { get; set; } = string.Empty;
+        //private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
         private static string _settingsAccessInfoAddr = string.Empty;
 
-        private string _GlobalSetting_path;
+        private string _GlobalSetting_path { get; set; } = string.Empty;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
         public event EventHandler SettingReadyEvent;
 
@@ -585,7 +590,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<ColorPresetSettings>> ReadColorPresetSettings()
         {
-            _preset_settings.Clear();
+            //_preset_settings.Clear();
+            if(string.IsNullOrEmpty(_colorsettings_path))
+                return Task.FromResult(_preset_settings);
 
             string strFilePath = _colorsettings_path;// GetMonitorColorPresetJsonPath();
 
@@ -624,26 +631,24 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (colorPresetSettings == null)
                 return Task.FromResult(false);
 
-            //string temp = RunSerializeObject(colorPresetSettings);
-            //if (!string.IsNullOrWhiteSpace(temp))
-            //    return Task.FromResult(true);
             string info;
-            //JObject obj = new JObject(colorPresetSettings);
+            bool result = false;
+
             JToken token = JToken.FromObject(colorPresetSettings);
             if (token.Type == JTokenType.Object)
             {
                 JObject obj = (JObject)token;
                 // Handle object
-                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
             }
             else if (token.Type == JTokenType.Array)
             {
                 JArray array = (JArray)token;
                 // Handle array
-                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
             }            
 
-            return Task.FromResult(false);
+            return Task.FromResult(result);
         }
 
         #endregion color preset settings
@@ -652,9 +657,41 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<HotkeySettings>> ReadHotkeySettings()
         {
-            _hotkeySettings?.Clear();
+            //_hotkeySettings?.Clear();
+            if (string.IsNullOrEmpty(_hotkeysettings_path))
+                _hotkeySettings = null;
+            else
+            {
+                string strFilePath = _hotkeysettings_path;
 
-            string strFilePath = _hotkeysettings_path;// GetMonitorColorPresetJsonPath();
+                if (File.Exists(strFilePath))
+                {
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _hotkeySettings = null;
+                        return Task.FromResult(_hotkeySettings);
+                    }
+                    try
+                    {
+                        _hotkeySettings = RunHotkeyDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _hotkeySettings = null;
+                    }
+                }
+                else
+                {
+                    _hotkeySettings = null;
+                }
+            }
+            return Task.FromResult(_hotkeySettings);
+
+            /*string strFilePath = _hotkeysettings_path;// GetMonitorColorPresetJsonPath();
 
             if (File.Exists(strFilePath))
             {
@@ -681,19 +718,42 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 File.Create(strFilePath).Close();
             }
 
-            return Task.FromResult(_present_hotkey_settings);
+            return Task.FromResult(_present_hotkey_settings);*/
         }
 
         public Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings)
         {
-            if (hotkeySettings == null)
+            /*if (hotkeySettings == null)
+                return Task.FromResult(false);
+
+            string info;
+            bool result = false;
+
+            JToken token = JToken.FromObject(hotkeySettings);
+            if (token.Type == JTokenType.Object)
+            {
+                JObject obj = (JObject)token;
+                // Handle object
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _hotkeysettings_path, out info);
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)token;
+                // Handle array
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _hotkeysettings_path, out info);
+            }*/
+
+            bool result = WriteSettings_Common(hotkeySettings, "hotkey");
+
+            return Task.FromResult(result);
+            /*if (hotkeySettings == null)
                 return Task.FromResult(false);
 
             string temp = RunSerializeObject(hotkeySettings);
             if (!string.IsNullOrWhiteSpace(temp))
                 return Task.FromResult(true);
 
-            return Task.FromResult(false);
+            return Task.FromResult(false);*/
         }
 
         #endregion hotkey settings
@@ -703,45 +763,57 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
             _powerNapSettings?.Clear();
-
-            string strFilePath = _powerNapsettings_path;
-
-            if (File.Exists(strFilePath))
-            {
-                string strReadJson = string.Empty;
-                using (var reader = new StreamReader(strFilePath))
-                {
-                    strReadJson = reader.ReadToEnd();
-                }
-
-                if (strReadJson == string.Empty || strReadJson.Length == 0)
-                    return Task.FromResult(_present_powerNap_settings);
-
-                try
-                {
-                    _present_powerNap_settings = RunPowerNapDeserializeObject(strReadJson);
-                }
-                catch (Exception)// ex)
-                {
-                    return Task.FromResult(_present_powerNap_settings);
-                }
-            }
+            if (string.IsNullOrEmpty(_powerNapsettings_path))
+                _powerNapSettings = null;
             else
             {
-                File.Create(strFilePath).Close();
-            }
+                string strFilePath = _powerNapsettings_path;
 
-            return Task.FromResult(_present_powerNap_settings);
+                if (File.Exists(strFilePath))
+                {
+                    //string strReadJson = string.Empty;
+                    //using (var reader = new StreamReader(strFilePath))
+                    //{
+                    //    strReadJson = reader.ReadToEnd();
+                    //}
+
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _powerNapSettings = null;
+                        return Task.FromResult(_powerNapSettings);
+                    }
+                    try
+                    {
+                        _powerNapSettings = RunPowerNapDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _powerNapSettings = null;
+                        return Task.FromResult(_powerNapSettings);
+                    }
+                }
+                else
+                {
+                    //File.Create(strFilePath).Close();
+                    _powerNapSettings = null;
+                }
+            }
+            return Task.FromResult(_powerNapSettings);
         }
 
         public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
         {
-            if (powerNapSettings == null)
+            /*if (powerNapSettings == null)
                 return Task.FromResult(false);
 
             string temp = RunSerializeObject(powerNapSettings);
             if (!string.IsNullOrWhiteSpace(temp))
-                return Task.FromResult(true);
+                return Task.FromResult(true);*/
+            bool result = WriteSettings_Common(powerNapSettings, "powernap");
 
             return Task.FromResult(false);
         }
@@ -753,7 +825,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
             {
                 WriteLog($"{nameof(ImportPowerNapSettings)} {FileInfo}");
-                return Task.FromResult(_present_powerNap_settings);
+                return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
             }
 
             string strReadJson = string.Empty;
@@ -763,16 +835,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             if (strReadJson == string.Empty || strReadJson.Length == 0)
-                return Task.FromResult(_present_powerNap_settings);
+                return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
             try
             {
-                _present_powerNap_settings = RunPowerNapDeserializeObject(strReadJson);
-                _present_powerNap_settings.RemoveAll(x => x.SerialNumber == null);
+                //_present_powerNap_settings = RunPowerNapDeserializeObject(strReadJson);
+                //_present_powerNap_settings.RemoveAll(x => x.SerialNumber == null);
+                _powerNapSettings = RunPowerNapDeserializeObject(strReadJson);
+                _powerNapSettings.RemoveAll(x => x.SerialNumber == null);
             }
             catch (Exception)// ex)
             {
             }
-            return Task.FromResult(_present_powerNap_settings);
+            return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
         }
 
         public Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath)
@@ -940,12 +1014,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
-            vcps = new List<VCP>();
+            vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -1009,13 +1083,140 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             else
             {
-                WriteLog("[DisplayImportSettings] Settings is null...");
+                WriteLog("[DisplayImportSettings] Settings is not DDPMSettings...");
             }
             
             return Task.FromResult<bool>(false);
         }
 
+        public Task<bool> DisplayImpDDMSettings(string path, bool isSameModel, out DDMImpSettings impSettings)
+        {
+            impSettings = new DDMImpSettings();
+            if (impSettings != null)
+            {
+                DDMMonitorSettings monitorSettings = new DDMMonitorSettings();
+                monitorSettings = impSettings.MonitorSettings;
+                WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
+                string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
+                WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
+                if (File.Exists(monitorSettings_path))
+                {
+                    impSettings = ReadDDMImpSettingsFile(path).Result;
+                    if (impSettings != null)
+                    {
+                        return Task.FromResult(true);
+                    }
+                    //if (impSettings != null)
+                    //{
+                    //    if (impSettings.Count != 0)
+                    //    {
+                    //        foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                    //        {
+                    //            if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                    //            {
+                    //                settings.Input = monitorSettings.Input;
+                    //                settings.KVM = monitorSettings.KVM;
+                    //                settings.VCPs = monitorSettings.VCPs;
+                    //                settings.EA = monitorSettings.EA;
+                    //                if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                    //                {
+                    //                    vcps = monitorSettings.VCPs;
+                    //                    if (!isSameModel)
+                    //                    {
+                    //                        return Task.FromResult<bool>(true);
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
+                    //                    WriteLog("[DisplayImportSettings] Import settings Fail...");
+                    //                    if (!isSameModel)
+                    //                    {
+                    //                        break;
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+                    //        if (isSameModel)
+                    //        {
+                    //            return Task.FromResult(true);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
+                    //}
+                }
+                else
+                {
+                    WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
+                }
+            }
+            else
+            {
+                WriteLog("[DisplayImportSettings] Settings is not DDMSettings...");
+            }
+            return Task<bool>.FromResult<bool>(false);
+        }
+
         #endregion DisplayImpExpSettings
+
+        #region Migration
+        public Task<bool> isDDMMigration(out string folder_appdatapath_migration)
+        {
+            string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+            folder_appdatapath_migration = folder + "\\" + folder_product + "\\" + folder_localappdata_Migration;
+            if (Directory.Exists(folder_appdatapath_migration))
+            {
+                return Task<bool>.FromResult(true);
+            }
+            return Task<bool>.FromResult(false);
+        }
+
+        public Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                    {
+                        return Task<bool>.FromResult(true);
+                    }
+                }
+            }
+            catch 
+            {
+                ;
+            }
+            return Task<bool>.FromResult(false);
+        }
+
+        public Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    if (DDMUserSettings.restoreDDMUserSettings(ref DDMusersettings, path))
+                    {
+                        return Task<bool>.FromResult(true);
+                    }
+                }
+            }
+            catch
+            {
+                ;
+            }
+            return Task<bool>.FromResult(false);
+        }
+        #endregion Migration
 
         #endregion ISettingManagerDev implementation
 
@@ -1338,6 +1539,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return impexpSettings;
         }
 
+        private DDMImpSettings RunDDMImpDeserializeObject(string value)
+        {
+            DDMImpSettings impSettings = new DDMImpSettings();
+
+            try
+            {
+                impSettings = JsonConvert.DeserializeObject<DDMImpSettings>(value);
+            }
+            catch (Exception)
+            {
+                ;
+            }
+
+            return impSettings;
+        }
+
         private bool WriteImpExpSettings(string path, DDPMImpExpSettings impexpSettings)
         {
             if (impexpSettings == null)
@@ -1351,12 +1568,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 return false;
             }
-            //string info;
-            //if (!DDPMFileSecurity.SetJsonContentFromSerializedString(jArray.ToString(), monitorSettings_path, out info))//, false))
-            //{
-            //    WriteLog(info);
-            //    return Task.FromResult(false);
-            //}
+            string info;
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(impexpSettings).ToString(), path, out info))
+            {
+                WriteLog(info);
+                return false;
+            }
 
             return true;
         }
@@ -1377,18 +1594,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         return ImpSettings;
                     }
                     string strReadJson = string.Empty;
-                    using (var reader = new StreamReader(path))
-                    {
-                        strReadJson = reader.ReadToEnd();
-                    }
+                    //using (var reader = new StreamReader(path))
+                    //{
+                    //    strReadJson = reader.ReadToEnd();
+                    //}
+                    //security SA
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
                         return ImpSettings;
                     try
                     {
-                        //string info;
-                        //string output = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
-                        WriteLog($"strReadJson: " + strReadJson);
+                        
+                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)
@@ -1400,61 +1619,117 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return ImpSettings;
         }
 
+        public Task<DDMImpSettings> ReadDDMImpSettingsFile(string path) 
+        {
+            DDMImpSettings ImpSettings = new DDMImpSettings();
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (File.Exists(path))
+                {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        WriteLog($"{nameof(ReadDDMImpSettingsFile)} {FileInfo}");
+                        return Task.FromResult(ImpSettings);
+                    }
+                    string strReadJson = string.Empty;
+                    //using (var reader = new StreamReader(path))
+                    //{
+                    //    strReadJson = reader.ReadToEnd();
+                    //}
+                    //security SA
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                        return Task.FromResult(ImpSettings);
+                    try
+                    {
+
+                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
+                        ImpSettings = RunDDMImpDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)
+                    {
+                        ;
+                    }
+                }
+            }
+
+            return Task.FromResult(ImpSettings);
+        }
+
         #endregion ImpExpSettings
 
         #region Global settings
         public Task<GlobalSettingParam> ReadGlobalSettings()
         {
-            string strFilePath = _GlobalSetting_path;
-
-            if (File.Exists(strFilePath))
+            if (string.IsNullOrEmpty(_GlobalSetting_path))
             {
-                //Elsa Add Security
-                string FileInfo;
-                if (!DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
-                {
-                    WriteLog($"{nameof(ReadGlobalSettings)} {FileInfo}");
-                    return Task.FromResult(_GlobalSettingParam);
-                }
-                string strReadJson = string.Empty;
-                using (var reader = new StreamReader(strFilePath))
-                {
-                    strReadJson = reader.ReadToEnd();
-                }
-                if (strReadJson == string.Empty || strReadJson.Length == 0)
-                {
-                    return Task.FromResult(_GlobalSettingParam);
-                }
-                try
-                {
-                    _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
-                    _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
-                }
-                catch (Exception)// ex)
-                {
-                    return Task.FromResult(_GlobalSettingParam);
-                }
+                _GlobalSettingParam = null;
             }
             else
             {
-                File.Create(strFilePath).Close();
+                string strFilePath = _GlobalSetting_path;
+
+                if (File.Exists(strFilePath))
+                {
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _GlobalSettingParam = null;
+                        return Task.FromResult(_GlobalSettingParam);
+                    }
+                    try
+                    {
+                        _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
+                        _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _GlobalSettingParam = null;
+                        //return Task.FromResult(_GlobalSettingParam);
+                    }
+                }
+                else
+                {
+                    _GlobalSettingParam = null;// File.Create(strFilePath).Close();
+                }
             }
             return Task.FromResult(_GlobalSettingParam);
         }
+
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam)
         {
-            if (globalSettingParam == null)
+            /*if (globalSettingParam == null)
             {
                 return Task.FromResult(false);
             }
-            string temp = RunSerializeObject(globalSettingParam);
-            if (!string.IsNullOrWhiteSpace(temp))
+            //string temp = RunSerializeObject(globalSettingParam);
+            string info;
+            bool result = false;
+            JToken token = JToken.FromObject(globalSettingParam);
+            if (token.Type == JTokenType.Object)
             {
-                return Task.FromResult(true);
+                JObject obj = (JObject)token;
+                // Handle object
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _GlobalSetting_path, out info);
             }
-            return Task.FromResult(false);
+            else if (token.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)token;
+                // Handle array
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _GlobalSetting_path, out info);
+            }*/
+
+            bool result = WriteSettings_Common(globalSettingParam, "global");
+
+            return Task.FromResult(result);
         }
-        private string RunSerializeObject(GlobalSettingParam globalSettingParam, string filePath)
+        /*private string RunSerializeObject(GlobalSettingParam globalSettingParam, string filePath)
         {
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(globalSettingParam);
@@ -1490,7 +1765,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 writer.Write(jsonString);
             }
             return jsonString;
-        }
+        }*/
         private GlobalSettingParam RunGlobalSettinDeserializeObject(string value)
         {
             GlobalSettingParam retList = new GlobalSettingParam();
@@ -1574,9 +1849,237 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return _settings;
         }
 
+        private bool WriteSettings_Common(object dataObj, string type)
+        {
+            if (dataObj == null)
+            {
+                return false;
+            }
+            string settings_path = string.Empty;
+            switch(type)
+            {
+                case "global":
+                    settings_path = _GlobalSetting_path;
+                    break;
+                case "hotkey":
+                    settings_path = _hotkeysettings_path;
+                    break;
+                case "powernap":
+                    settings_path = _powerNapsettings_path;
+                    break;
+                default:
+                    WriteLog($"[WriteSettings_Common] type:{type} is not defined in common code!");
+                    return false;
+            }
+
+            string info = string.Empty;
+            bool result = false;
+            JToken token = JToken.FromObject(dataObj);
+            if (token.Type == JTokenType.Object)
+            {
+                JObject obj = (JObject)token;
+                // Handle object
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), settings_path, out info);
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)token;
+                // Handle array
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), settings_path, out info);
+            }
+            else
+            {
+                WriteLog($"[WriteSettings_Common] unknow json type in program: {token.Type}");
+                return false;
+            }
+            if (!result)
+                WriteLog($"[SetJsonContentFromSerializedString] failed with info: {info}");
+
+            switch (type)
+            {
+                case "global":
+                    _GlobalSettingParam = (GlobalSettingParam)dataObj;
+                    break;
+                case "hotkey":
+                    _hotkeySettings = (List<HotkeySettings>)dataObj;
+                    break;
+                case "powernap":
+                    _powerNapSettings = (List<PowerNapSetting>)dataObj;
+                    break;
+                default:
+                    WriteLog($"[WriteSettings_Common] type:{type} is not defined in common code!");
+                    return false;
+            }
+
+            return result;
+        }
+
+        private object InitDDPMUserSettings_Common(string ConfigPath, string config_type)
+        {
+            string info;
+            FileInfo fileInfo = new FileInfo(ConfigPath);
+            if (fileInfo == null)
+            {
+                WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
+                return null;
+            }
+            if (string.IsNullOrEmpty(fileInfo.DirectoryName))
+            {
+                WriteLog($"[InitDDPMUserSettings_Common]: empty DirectoryName of fileInfo");
+                return null;
+            }
+            string fileFolder = fileInfo.DirectoryName;
+            try
+            {
+                DirectoryInfo di = System.IO.Directory.CreateDirectory(fileFolder);
+                WriteLog($"create folder {fileFolder} success");
+            }
+            catch
+            {
+                WriteLog($"CreateDirectory with {fileFolder} failed.");
+                return null;
+            }
+            if (!DDPMFileSecurity.IsFolderPathValid(fileFolder, out info))
+            {
+                WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
+                return null;
+            }
+
+            if (!DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info))
+            {
+                WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
+                return null;
+            }
+
+            //WriteLog($"config path is {ConfigPath}.");
+            object new_obj = null;
+            bool need_new = false;
+            if (File.Exists(ConfigPath))
+            {
+                if (!DDPMFileSecurity.IsFilePathValid(ConfigPath, out info))
+                {
+                    WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
+                    File.Delete(ConfigPath);
+                }
+                else
+                {
+                    //Read from settings
+                    switch (config_type)
+                    {
+                        case "color":
+                            List<ColorPresetSettings> color = ReadColorPresetSettings().Result;
+                            new_obj = color;
+                            if (color != null && color.Count == 0)
+                                need_new = true;
+                            break;
+                        case "global":
+                            GlobalSettingParam global = ReadGlobalSettings().Result;
+                            new_obj = global;
+                            break;
+                        case "hotkey":
+                            List<HotkeySettings> hotkey = ReadHotkeySettings().Result;
+                            new_obj = hotkey;
+                            if (hotkey != null && hotkey.Count == 0)
+                                need_new = true;
+                            break;
+                        case "powernap":
+                            List<PowerNapSetting> pnap = ReadPowerNapSettings().Result;
+                            new_obj = pnap;
+                            if (pnap != null && pnap.Count == 0)
+                                need_new = true;
+                            break;
+                        default:
+                            WriteLog($"[InitDDPMUserSettings_Common] config type {config_type} not support!!");
+                            return null;
+                    }
+                }
+            }
+            if (new_obj == null || need_new == true)
+            {
+                //create new setting file then save it
+                WriteLog("$[InitDDPMUserSettings_Common] {config_type} settings object is null, new an object");
+                //init data to file
+                switch (config_type)
+                {
+                    case "color":
+                        List<ColorPresetSettings> color = new List<ColorPresetSettings>();
+                        if (!WriteColorPresetSettings(color).Result)
+                        {
+                            WriteLog("[WriteColorPresetSettings] write new color preset setting failed");
+                        }
+                        new_obj = color;//keep memory data to allow program work properly
+                        break;
+                    case "global":
+                        GlobalSettingParam global = new GlobalSettingParam();
+                        if (!WriteGlobalSettings(global).Result)
+                        {
+                            WriteLog("[WriteGlobalSettings] write new global setting failed");
+                        }
+                        new_obj = global;//keep memory data to allow program work properly
+                        break;
+                    case "hotkey":
+                        List<HotkeySettings> hotkey = new List<HotkeySettings>();
+                        if (!WriteHotkeySettings(hotkey).Result)
+                        {
+                            WriteLog("[WriteHotkeySettings] write new hotkey setting failed");
+                        }
+                        new_obj = hotkey;//keep memory data to allow program work properly
+                        break;
+                    case "powernap":
+                        List<PowerNapSetting> pnap = new List<PowerNapSetting>();
+                        if (!WritePowerNapSettings(pnap).Result)
+                        {
+                            WriteLog("[WriteHotkeySettings] write new power nap setting failed");
+                        }
+                        new_obj = pnap;//keep memory data to allow program work properly
+                        break;
+                    default:
+                        new_obj = null;
+                        break;
+                }
+            }
+
+            if (File.Exists(ConfigPath))
+            {
+                //ACL function to check exist rule and apply rule if not exist
+                if (!DDPMFileSecurity.ApplyFileACLNormalUser(ConfigPath, out info))
+                    WriteLog($"[InitDDPMUserConfigFile] {config_type}: {info}");
+                else
+                    WriteLog($"[InitDDPMUserConfigFile] {config_type} setting apply ACL success");
+            }
+            return new_obj;
+        }
+
         private List<ColorPresetSettings> InitColorPresetConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"InitColorPresetConfigFile: appdata path: {folder}");
+            string file_path = Path.Combine(folder, folder_product, folder_localappdata_Applist, filename_colorpreset_peruser);
+            _colorsettings_path = file_path;
+            _colorPresetSettings = (List<ColorPresetSettings>)InitDDPMUserSettings_Common(_colorsettings_path, "color");
+
+            //create app icon folder if not exist
+            string folder_appicon_path = Path.Combine(folder, folder_product, folder_localappdata_Applist, folder_localappdata_Appicon);
+            try
+            {
+                DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_appicon_path);
+                WriteLog($"create folder {folder_appicon_path} success");
+                _appiconfolder_path = folder_appicon_path;
+
+                string info;
+                if (!DDPMFileSecurity.IsFolderPathValid(folder_appicon_path, out info))
+                {
+                    WriteLog($"{nameof(InitColorPresetConfigFile)} {info}");
+                }
+            }
+            catch
+            {
+                WriteLog($"CreateDirectory with {folder_appicon_path} failed.");
+            }            
+
+            return _colorPresetSettings;
+
+            /*string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             string folder_appdatapath_colorpreset = folder + "\\" + folder_product;
 
@@ -1652,12 +2155,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (!DDPMFileSecurity.ApplyFileACLNormalUser(_colorsettings_path, out info))
                 WriteLog($"[InitDDPMUserConfigFile] {info}");
 
-            return _colorPresetSettings;
+            return _colorPresetSettings;*/
         }
 
         private List<HotkeySettings> InitHotkeyConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"InitHotkeyConfigFile: appdata path: {folder}");
+            string file_path = Path.Combine(folder, folder_product, filename_hotkey_peruser);
+            _hotkeysettings_path = file_path;
+            _hotkeySettings = (List<HotkeySettings>)InitDDPMUserSettings_Common(_hotkeysettings_path, "hotkey");
+
+            return _hotkeySettings;
+
+            /*string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             string folder_appdatapath_hotkey = folder + "\\" + folder_product;
 
@@ -1715,12 +2226,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (!DDPMFileSecurity.ApplyFileACLNormalUser(_hotkeysettings_path, out info))
                 WriteLog($"[InitDDPMUserConfigFile] {info}");
 
-            return _hotkeySettings;
+            return _hotkeySettings;*/
         }
 
         private List<PowerNapSetting> InitPowerNapConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"InitHotkeyConfigFile: appdata path: {folder}");
+            string file_path = Path.Combine(folder, folder_product, filename_powernap_peruser);
+            _powerNapsettings_path = file_path;
+            _powerNapSettings = (List<PowerNapSetting>)InitDDPMUserSettings_Common(_powerNapsettings_path, "powernap");
+
+            return _powerNapSettings;
+            /*string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             string folder_appdatapath_powernap = folder + "\\" + folder_product;
 
@@ -1778,64 +2296,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (!DDPMFileSecurity.ApplyFileACLNormalUser(_powerNapsettings_path, out info))
                 WriteLog($"[InitPowerNapConfigFile] {info}");
 
-            return _powerNapSettings;
+            return _powerNapSettings;*/
         }
 
         private GlobalSettingParam InitGlobalSettingConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
-            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-            string folder_appdatapath = folder + "\\" + folder_product;
-
-            //create app list folder if not exist
-            string folder_applist_path = folder_appdatapath;
-            try
-            {
-                if (!Directory.Exists(folder_applist_path))
-                {
-                    DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_applist_path);
-                    WriteLog($"create folder {folder_applist_path} success");
-                }
-            }
-            catch
-            {
-                WriteLog($"CreateDirectory with {folder_applist_path} failed.");
-                _GlobalSetting_path = null;
-                return null;
-            }
-            //create powernap setting file if not exist
-            string file_path = folder_applist_path + "\\" + filename_GlobalSetting_peruser;
+            WriteLog($"InitGlobalSettingConfigFile: appdata path: {folder}");
+            string file_path = Path.Combine(folder, folder_product, filename_GlobalSetting_peruser);
             _GlobalSetting_path = file_path;
-            WriteLog($"_GlobalSetting_path is {_GlobalSetting_path}.");
-
-            // Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(_GlobalSetting_path, out FileInfo))
-            {
-                WriteLog($"{nameof(InitGlobalSettingConfigFile)} {FileInfo}");
-                File.Delete(_GlobalSetting_path);
-            }
-            if (File.Exists(_GlobalSetting_path))
-                _GlobalSettingParam = ReadGlobalSettings().Result;
-            else
-            {
-                FileInfo fileInfo = new FileInfo(_GlobalSetting_path);
-                fileInfo.Create().Close();
-                WriteLog("[InitGlobalSettingConfigFile] settings file not exist, new an object");
-                //init data to file
-                if (WriteGlobalSettings(_GlobalSettingParam).Result)
-                {
-                    WriteLog("[InitGlobalSettingConfigFile] PowerNap settings file create and write success");
-                }
-                else
-                {
-                    WriteLog("[InitGlobalSettingConfigFile] PowerNap settings file create and write failed");
-                }
-            }
-            //ACL function to check exist rule and apply rule if not exist
-            string info;
-            if (!DDPMFileSecurity.ApplyFileACLNormalUser(_GlobalSetting_path, out info))
-                WriteLog($"[InitGlobalSettingConfigFile] {info}");
+            _GlobalSettingParam = (GlobalSettingParam)InitDDPMUserSettings_Common(_GlobalSetting_path, "global");
 
             return _GlobalSettingParam;
         }
