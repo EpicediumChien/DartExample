@@ -86,6 +86,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private Logs _logs;
 
+        static bool _IsSkipCA = false;
+
         /// <summary>
         /// 現在正在進行下載或安裝流程的裝置資訊
         /// </summary>
@@ -616,7 +618,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     string downloadInfo = "";
                     // 將儲存路徑與從 URL 中提取的檔案名稱組合
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                    bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo);
+                    bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
                     _downloadTimer.Stop();
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
@@ -653,14 +655,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
-                        _notificationStr = $"Firmware update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
-                        continue;
-                    }
-                    if (!CheckSHA(_installationFileStoragePath, out string FileCAInfo))
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
                         _notificationStr = $"Firmware update unsuccessful.";
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
@@ -999,7 +993,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
             DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
         }
-
+        public void SetSkipCA(bool isSkipCA)
+        {
+            _IsSkipCA = isSkipCA;
+        }
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
@@ -1025,23 +1022,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         private FWUErrorCode Install(FWUpdateInfo fwUpdateInfo)
         {
-            //0614 Bruce 新增Dock韌體安裝功能
             try
             {
                 _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}  {nameof(Install)}  start");
                 CertificateCheck certificateCheck = new CertificateCheck();
                 if (!fwUpdateInfo.IsDisplay)
                 {
-                    //Bruce 0913 Add exe file check Thumbprint.
-                    bool isCheckSHA = false;
                     string FileCAInfo = string.Empty;
-                    isCheckSHA = certificateCheck.CheckFile_Thumbprint(fwUpdateInfo.InstallPaths, fwUpdateInfo.Thumbprint, out FileCAInfo);
-                    if (!isCheckSHA)
-                    {
-                        _notificationStr = $"Firmware update unsuccessful.";
-                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
-                        return FWUErrorCode.FileCheckFail;
-                    }
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(fwUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
                     {
@@ -1052,13 +1039,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    string FileCAInfo = string.Empty;
-                    if (!CheckSHA(fwUpdateInfo.InstallPaths, out FileCAInfo))
-                    {
-                        _notificationStr = $"Firmware update unsuccessful.";
-                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
-                        return FWUErrorCode.FileCheckFail;
-                    }
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(fwUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
                     {
@@ -1629,33 +1609,89 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return isCheckSHA;
         }
+        private bool CheckThumbprint(string filePath, out string fileThumbprintInfo)
+        {
+            CertificateCheck certificateCheck = new CertificateCheck();
+            bool ishumbprint = false;
+            fileThumbprintInfo = "Error";
+            if (!certificateCheck.CheckFile_Thumbprint(filePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
+            {
+                _logs.DebugMsg_1(_fWUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
+                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+            }
+            return ishumbprint;
+        }
         private bool Unzip(string filePath, string extractPath, out string exeFilePath)
         {
+            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {nameof(Unzip)} Start");
             _fWUpdateInfo.FWUErrorCode = FWUErrorCode.Unknow;
             bool ret = false;
             Unzip unzip = new Unzip(_logs);
             exeFilePath = "";
+            string FileCAInfo = "Pass";
             if (unzip.CheckFileIsZip(filePath))
             {
-                if (!unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
+                if (CheckSHA(filePath, out FileCAInfo))
                 {
-                    _logs.DebugMsg_1(_fWUpdateInfo.DeviceName + " Unzip Faile");
-                }
-                if (!string.IsNullOrEmpty(exeFilePath))
-                {
-                    CertificateCheck certificateCheck = new CertificateCheck();
-                    if (!certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
+                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
                     {
-                        _logs.DebugMsg_1(_fWUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
-                        _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                        if (!string.IsNullOrEmpty(exeFilePath))
+                        {
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
+                            CertificateCheck certificateCheck = new CertificateCheck();
+                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                            {
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                            }
+                            else
+                            {
+                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
                     }
                 }
+                else
+                {
+                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
+                }
+
             }
             else
             {
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is exe.");
+                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
                 exeFilePath = filePath;
-                ret = true;
+                if (CheckSHA(exeFilePath, out FileCAInfo))
+                {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
+                    CertificateCheck certificateCheck = new CertificateCheck();
+                    if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                    {
+                        ret = true;
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                    }
+                    else
+                    {
+                        _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                    }
+                }
+                else
+                {
+                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
+                }
             }
+            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {nameof(Unzip)} done");
             return ret;
         }
     }
