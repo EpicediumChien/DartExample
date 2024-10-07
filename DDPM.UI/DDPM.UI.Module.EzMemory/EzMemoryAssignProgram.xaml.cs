@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -40,9 +41,11 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly SplitListView _splitListView;
         #endregion Private Members
-        public EzMemoryAssignProgram(DisplayViewModel vmDisplay)
+        public EzMemoryAssignProgram(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
@@ -95,7 +98,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
             //UpdatePageContent();
         }
@@ -131,13 +134,13 @@ namespace DDPM.UI.Module.EzMemory
         }
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay);
+            EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezMemoryFirst);
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm._currentPageIndex++;
-            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay);
+            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
         }
 
@@ -181,7 +184,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
             _vm.ButtonName = button.Name;
-            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay);
+            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
         }
     }
