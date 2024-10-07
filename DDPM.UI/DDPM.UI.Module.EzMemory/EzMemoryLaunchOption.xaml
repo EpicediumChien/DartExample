@@ -8,7 +8,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common"
-             d:DataContext="{d:DesignInstance Type=viewmodels:EzMemoryViewModel}"
+             d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" 
              Background="#FF0D121A"
              d:DesignHeight="671" 
@@ -26,6 +26,20 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,8,0" />
+            </Style>
+
+            <Style x:Key="DdpmComboBoxStyleEzMemory" TargetType="ComboBox">
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+                <Setter Property="MinWidth" Value="81" />
+                <Setter Property="MinHeight" Value="40" />
+                <Setter Property="Height" Value="40" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -157,28 +171,26 @@
                             
                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
                             <!-- Title -->
-                                <UXControls:UXTextBlock Grid.Row="0" Text="Select a launch option" FontSize="16" Foreground="White" Margin="0,0,0,8" />
+                                <UXControls:UXTextBlock x:Name="TitleTB" Grid.Row="0" Text="" FontSize="16" Foreground="White" Margin="0,0,0,8" />
 
                             <!-- Radio Buttons for Manual or Automatic Launch -->
                                 <StackPanel Orientation="Vertical" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton Grid.Row="1" Content="Manually select the profiles created" IsChecked="True" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2"/>
+                                        <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" />
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton Grid.Row="2" x:Name="autoLaunchOption" Content="Automatically launch by time" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2"/>
+                                        <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}" />
                                 </StackPanel>
 
                                 <!-- Time Picker Controls (Disabled when manually select is checked) -->
-                                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="46,8,0,0" Width="305" Height="36" IsEnabled="{Binding ElementName=autoLaunchOption, Path=IsChecked}">
-                                        <UXControls:UXComboBox Background="#293B4D" Width="81" Height="36" BorderThickness="0.3" Margin="0,0,4,0">
+                                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="46,8,0,0" >
+                                        <UXControls:UXComboBox x:Name="HourCB" FontSize="14" Background="#293B4D" Width="81" Height="40" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="0,0,4,0" ItemsSource="{Binding HourList}"  SelectedItem="{Binding SelectedHour}"/>
 
-                                            <!-- 需添加更多時間選項 -->
-                                        </UXControls:UXComboBox>
-                                        <UXControls:UXComboBox Background="#293B4D" Width="81" Height="36" BorderThickness="0.3" Margin="4,0,4,0">
-                                        </UXControls:UXComboBox>
+                                        <!-- 添加時間選項 -->
+                                        <UXControls:UXComboBox x:Name="MinuteCB" FontSize="14" Background="#293B4D" Width="81" Height="40" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="4,0,4,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" ItemsSource="{Binding MinuteList}" SelectedItem="{Binding SelectedMinute}"/>
 
-                                        <UXControls:UXComboBox Background="#293B4D" Width="81" Height="36" BorderThickness="0.3" Margin="4,0,4,0">
+                                        <UXControls:UXComboBox x:Name="AMPMCB" Background="#293B4D" Width="81" Height="40" FontSize="14" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="4,0,4,0" SelectedItem="{Binding SelectedAMPM}">
                                             <ComboBoxItem Content="AM" Background="#293B4D"/>
                                             <ComboBoxItem Content="PM" Background="#293B4D"/>
                                         </UXControls:UXComboBox>
@@ -187,7 +199,7 @@
 
                             <!-- Launch during PC startup Checkbox -->
                                 <StackPanel Grid.Row="4" Orientation="Horizontal">
-                                    <UXControls:UXCheckBox Content="Launch during PC startup" FontSize="18" Foreground="White" Margin="0,16,0,0"/>
+                                    <UXControls:UXCheckBox x:Name="StartupCB" Content="" FontSize="18" Foreground="White" Margin="0,16,0,0" IsChecked="{Binding IsLaunchAtStartup}" Checked="StartupCB_Checked"/>
                                 </StackPanel>
                             </StackPanel>
                             </Grid>

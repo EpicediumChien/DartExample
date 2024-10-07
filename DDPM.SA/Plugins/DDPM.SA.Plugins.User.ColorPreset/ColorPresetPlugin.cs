@@ -67,6 +67,7 @@ namespace ColorPreset.Plugins
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _supported_preset = new List<string>();
 
+        List<string> HDR_ColorPresetNameList = new List<string>() { "Standard HDR", "Movie HDR", "Game HDR", "Vivid HDR", "Desktop", "Reference", "Multiscreen Match", "DisplayHDR", "HDR10", "HLG" };
         private List<string> ColorPresetSupportList = new List<string>();
 
         //20240802 jim add
@@ -163,13 +164,46 @@ namespace ColorPreset.Plugins
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
+                // chech if ModelName and SerialNumber is null
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
-                                                    //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                    {
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                            return -1;
+
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                            return -1;
+                    }
                 }
+
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                if (index == -1)
+                {
+                    // chech if ModelName and ServiceTag is null
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                    {
+                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                                return -1;
+
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+                                return -1;
+                        }
+                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                }
+
+                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
             }
             return index;
         }
@@ -217,7 +251,7 @@ namespace ColorPreset.Plugins
             return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
         }
 
-        public Task<List<ColorPresetSettings>> AddColorPresetForMonitorConfig(MonitorInfo mo, string AppName, string ColorPreset_Name, string supported_preset, List<ColorPresetSettings> config)
+        public Task<List<ColorPresetSettings>> AddColorPresetForMonitorConfig(MonitorInfo mo, string AppName, string ColorPreset_Name, string supported_preset, List<ColorPresetSettings> config , bool SmartHDR_ON=false)
         {
             ColorPresetSettings temp = get_cur_monitor_preset_config(mo, config);
 
@@ -263,7 +297,7 @@ namespace ColorPreset.Plugins
                 index = get_index_of_json_config_for_cur_monitor(mo);
             }
 
-            _supported_preset = ReadColorPreset(mo, supported_preset).Result;
+            _supported_preset = ReadColorPreset(mo, supported_preset, SmartHDR_ON).Result;
 
             int index_AppPresetIdx = 0;
 
@@ -345,7 +379,7 @@ namespace ColorPreset.Plugins
         /// 啟動 MonitorBorker 執行抓前景active app name
         /// </summary>
         /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false)
+        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             if (Log != null)
             {
@@ -367,7 +401,7 @@ namespace ColorPreset.Plugins
                         MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
                     }
                     else
                     {
@@ -379,7 +413,7 @@ namespace ColorPreset.Plugins
             return;
         }
 
-        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
@@ -403,7 +437,7 @@ namespace ColorPreset.Plugins
                     newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
                     {
                         // create and show the window
-                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, SmartHDR_ON);
+                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, SmartHDR_ON, ColorPresetSupportList);
 
                         // start the Dispatcher processing
                         // 啟動消息循環
@@ -425,7 +459,7 @@ namespace ColorPreset.Plugins
                 {
                     // jim add 20240605
                     if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, ColorPresetSupportList);
                 }
             }
             else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
@@ -446,7 +480,7 @@ namespace ColorPreset.Plugins
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
                 {
                     if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON, ColorPresetSupportList);
                 }
 
             }
@@ -787,8 +821,10 @@ namespace ColorPreset.Plugins
             thread.Start();
         }
 
-        public Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities)
+        public Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities, bool SmartHDR_ON = false)
         {
+            int index = -1;
+
             if (Log != null)
             {
                 Log.Info($"ReadColorPreset requested ...");
@@ -832,7 +868,136 @@ namespace ColorPreset.Plugins
                 }
             }
 
-            int index = 0;
+            if (SmartHDR_ON)
+            {
+                List<string> common_ColorPreset = ColorPresetSupportList.Intersect(HDR_ColorPresetNameList).ToList();
+
+                ColorPresetSupportList.Clear();
+
+                foreach (string info in common_ColorPreset)
+                {
+                    ColorPresetSupportList.Add(new string(info));
+                }
+
+            }
+            else
+            {
+                ColorPresetSupportList.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));                
+
+                // check Color Preset Strings Standard or Native
+
+                if (m.modelName.StartsWith("UP"))
+                {
+                    index = ColorPresetSupportList.FindIndex(x => x == "Standard/Native");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Native";
+                }
+                else
+                {
+                    index = ColorPresetSupportList.FindIndex(x => x == "Standard/Native");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Standard";
+                }
+
+                // check Color Preset Strings Custom 1/2/3 or User 1/2/3
+
+                if (m.modelName.StartsWith("UP3221Q"))
+                {
+                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 1 / User 1");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "User 1";
+
+                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 2 / User 2");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "User 2";
+
+                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 3 / User 3");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "User 3";
+                }
+                else
+                {
+                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 1 / User 1");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Custom 1";
+
+                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 2 / User 2");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Custom 2";
+
+                    index = ColorPresetSupportList.FindIndex(x => x == "Custom 3 / User 3");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Custom 3";
+                }
+
+                // check Color Preset Strings Game or Game1
+
+                index = ColorPresetSupportList.FindIndex(x => x == "Game2");
+
+                if (index >= 0)
+                {
+                    index = ColorPresetSupportList.FindIndex(x => x == "Game/Game1");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Game1";
+                }
+                else
+                {
+
+                    index = ColorPresetSupportList.FindIndex(x => x == "Game/Game1");
+                    if (index >= 0)
+                        ColorPresetSupportList[index] = "Game";
+                }
+
+                // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
+
+                string strFY = string.Empty;
+
+                for (int i = 0; i < m.modelName.Length; i++) // loop over the complete modelName
+                {
+                    if (Char.IsDigit(m.modelName[i])) //check if the current char is digit
+                    {
+                        strFY = m.modelName.Substring(i + 2, 2);
+                        break;
+                    }
+
+                }
+
+                if (ColorPresetSupportList.Contains("Rec.709 / BT.709"))
+                {
+                    if (strFY == "23")
+                    {
+                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
+                        if (index >= 0)
+                            ColorPresetSupportList[index] = "Rec.709";
+                    }
+                    else if (strFY == "25")
+                    {
+                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
+                        if (index >= 0)
+                            ColorPresetSupportList[index] = "BT.709";
+                    }
+                }
+
+                // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
+
+                if (ColorPresetSupportList.Contains("Rec.2020 / BT.2020"))
+                {
+                    if (strFY == "23")
+                    {
+                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
+                        if (index >= 0)
+                            ColorPresetSupportList[index] = "Rec.2020";
+                    }
+                    else if (strFY == "25")
+                    {
+                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
+                        if (index >= 0)
+                            ColorPresetSupportList[index] = "BT.2020";
+                    }
+                }
+            }
+
+            index = 0;
 
             Console.WriteLine("[" + m.AliasDeviceName + "] Color Preset SupportList : ");
 
@@ -1994,7 +2159,7 @@ namespace ColorPreset.Plugins
                             {
                                 if (strAppName == kvp_applist.Value.AppName)
                                 {
-                                    temp.IconName = _SettingsPlugin.GetAppIconFolderPath() + "\\" + strAppName + ".png";
+                                    temp.IconName = _SettingsPlugin.GetAppIconFolderPath() + "\\" + colorPresetSetting_Migration.AppInfos[i].ExeName + ".png";
                                 }
 
                             }

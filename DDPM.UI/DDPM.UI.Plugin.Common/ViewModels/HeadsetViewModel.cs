@@ -580,25 +580,33 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         // Please Wait logic
-        public void Invoke_PleaseWait(string model)
+        public void Invoke_PleaseWait(string model, HeadsetViewModel vm)
         {
             BackgroundWorker bw = new BackgroundWorker
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += (sender, e) => DoWork_PleaseWait(model);
+            bw.DoWork += (sender, e) => DoWork_PleaseWait(model, vm);
             bw.RunWorkerCompleted += RunWorkerCompleted_PleaseWait;
 
             ShowPleaseWait();
             bw.RunWorkerAsync();
         }
 
-        private void DoWork_PleaseWait(string model)
+        private void DoWork_PleaseWait(string model, HeadsetViewModel vm)
         {
             // Simulate time-consuming operation
-            //Thread.Sleep(1000);
-
+            Thread.Sleep(500);
+            int sun = 0;
+            while (vm.FirmwareVersion == "0000")
+            {
+                _deviceManager.GetDevices();
+                Thread.Sleep(2000);
+                sun++;
+                if (sun >= 3)
+                    break;
+            }
             // Call DetectPageShow
             DetectPageShow(model);
         }

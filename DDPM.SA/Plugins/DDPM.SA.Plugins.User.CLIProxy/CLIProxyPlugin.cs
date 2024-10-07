@@ -395,6 +395,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     "INAPPBRICONT",
                     "INAPPAUTOBRITEMP",
+                    "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as INAPPAUTOBRITEMP
                     "INAPPNETWORKKVM",
                     "INAPPCOLORPRESET",
                     //"POWERNAP", //do not add powernap here, go throw normal process via CLI Display plugin as well

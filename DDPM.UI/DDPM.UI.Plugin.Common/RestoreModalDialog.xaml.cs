@@ -9,7 +9,7 @@ namespace DDPM.UI.Plugin.Common
     public partial class RestoreModalDialog : Window
     {
         private readonly string Caption = "Restore to default";
-        private readonly string Message = "Are you sure you want to restore all default settings on your device?";
+        private readonly string Message = "Do you want to reset your monitor to factory settings now?";
         private readonly string Yes = "Yes";
         private readonly string No = "No";
 

@@ -43,7 +43,7 @@
                     Stretch="Fill" />
                 <controls:UXTextBlock
                     Name="HeaderText"
-                    Margin="24,10,45,24"
+                    Margin="{Binding HeaderMargin}"
                     FontFamily="Roboto"
                     FontSize="20"
                     Foreground="White"
@@ -53,7 +53,7 @@
                     Grid.Row="1"
                     MaxWidth="372"
                     MaxHeight="54"
-                    Margin="24,0,24,8"
+                    Margin="{Binding SubHeaderMargin}"
                     FontFamily="Roboto"
                     FontSize="15"
                     Foreground="White"

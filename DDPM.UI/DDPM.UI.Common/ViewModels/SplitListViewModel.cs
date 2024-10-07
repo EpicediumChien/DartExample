@@ -136,6 +136,14 @@ namespace DDPM.UI.Common.ViewModels
             }
             return null;
         }
+
+        public SplitItem? GetLatestItem()
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            return _splitList[ItemCount-1];
+        }
         #endregion Find
 
         #region Index

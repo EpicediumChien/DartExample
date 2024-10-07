@@ -146,17 +146,17 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             {
-                var arr = CurrentDeviceInfo.Name.Split(' ');
-                if (arr.Length > 0)
-                {
-                    Model = arr[arr.Length - 1];
-                }
-                else
-                {
+                //var arr = CurrentDeviceInfo.Name.Split(' ');
+                //if (arr.Length > 0)
+                //{
+                //    Model = arr[arr.Length - 1];
+                //}
+                //else
+                //{
                     Model = CurrentDeviceInfo.ModelNumber;
-                }
+                //}
                 //ID = CurrentDeviceInfo.ID.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
-                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
+                Name = CurrentDeviceInfo.Name;
             }
             if (instenceNo == "")
             {
