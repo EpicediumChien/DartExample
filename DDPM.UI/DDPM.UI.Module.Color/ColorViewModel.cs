@@ -492,6 +492,20 @@ namespace DDPM.UI.Module.Color
             bw.RunWorkerAsync();
         }
 
+        public void Invoke_DownloadICCData()
+        {
+            BackgroundWorker bw_icc = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw_icc.DoWork += DoWork_DownloadICCData;
+            bw_icc.RunWorkerCompleted += RunWorkerCompleted_DownloadICCData;
+            Log?.Info("RunWorkerCompleted_DownloadICCData start...");
+            //IsBusy = true;
+            bw_icc.RunWorkerAsync();
+        }
+
         // add jim 20240604
         public void WatchForProcessStart()
         {
@@ -808,7 +822,7 @@ namespace DDPM.UI.Module.Color
 
                 AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
 
-                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                //_ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {                    
@@ -886,6 +900,25 @@ namespace DDPM.UI.Module.Color
 
                 //Read user default lock value, these values are synced from IT lock event          
                 Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}"); 
+            }
+            catch (System.Exception)
+            {
+            }
+        }
+
+        private void DoWork_DownloadICCData(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
+
+                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    update_ui_over_runtype(config);
+                    RefreshUI();
+                }));
             }
             catch (System.Exception)
             {
@@ -1015,6 +1048,48 @@ namespace DDPM.UI.Module.Color
             }
             //UpdateHDRStatus();
         }
+
+        private void RunWorkerCompleted_DownloadICCData(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+
+            //IsBusy = false;
+
+            //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
+            if (e.Cancelled)
+            {
+                Log?.Info("** DownloadICCData is cancelled.");
+                return;
+            }
+            if (e.Error != null)
+            {
+                //The message is e.Error.Message
+                Log?.Info($"** DownloadICCData stopped by an exception: {e.Error.Message}");
+                return;
+            }
+            //
+            if (e.Result == null)
+            {
+                //In case that you never set value to e-Result
+                Log?.Info("** DownloadICCData abnormal stopped unknown reason.");
+            }
+            else
+            {
+                Log?.Info($"** DownloadICCData result: {e.Result}");
+
+                if (e.Result == "OK")
+                {
+                    //Result is passed.
+                }
+                else
+                {
+                    //Result is failed.
+                }
+            }
+            //UpdateHDRStatus();
+        }
+
+
 
         private void SyncNightlightStatus()
         {
@@ -1437,24 +1512,34 @@ namespace DDPM.UI.Module.Color
             }
 
             // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
+            int numFY = 0;
+            try
+            {
+                numFY = Int32.Parse(strFY);
 
-            if (strFY == "23")
-            {                    
-                if (curcolorPreset == "Rec.709 / BT.709")
-                    strSync_CurrentColorPreset = "Rec.709";
+                if (numFY <= 23)
+                {
+                    if (curcolorPreset == "Rec.709 / BT.709")
+                        strSync_CurrentColorPreset = "Rec.709";
 
-                if (curcolorPreset == "Rec.2020 / BT.2020")
-                    strSync_CurrentColorPreset = "Rec.2020";
+                    if (curcolorPreset == "Rec.2020 / BT.2020")
+                        strSync_CurrentColorPreset = "Rec.2020";
+
+                }
+                else if (numFY >= 25)
+                {
+                    if (curcolorPreset == "Rec.709 / BT.709")
+                        strSync_CurrentColorPreset = "BT.709";
+
+                    if (curcolorPreset == "Rec.2020 / BT.2020")
+                        strSync_CurrentColorPreset = "BT.2020";
+                }
 
             }
-            else if (strFY == "25")
-            {               
-                if (curcolorPreset == "Rec.709 / BT.709")
-                    strSync_CurrentColorPreset = "BT.709";
-
-                if (curcolorPreset == "Rec.2020 / BT.2020")
-                    strSync_CurrentColorPreset = "BT.2020";
-            }  
+            catch (FormatException e)
+            {
+                Log?.Error("check Color Preset Strings Rec.709 or BT.709 / Rec.2020 or BT.2020..." + e.Message);               
+            }            
 
             if (System.String.IsNullOrEmpty(strSync_CurrentColorPreset))
                 strSync_CurrentColorPreset = curcolorPreset;
