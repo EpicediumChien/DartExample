@@ -1289,9 +1289,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
-
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, path).Result;
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.False);
             File.Delete(settings_path_target_file);
             File.Delete(DisplayImportSettings_path2);
         }
