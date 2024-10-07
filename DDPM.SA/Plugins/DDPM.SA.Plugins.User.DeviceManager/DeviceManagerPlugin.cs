@@ -338,7 +338,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (string.IsNullOrEmpty(VCP_capbility))
                             VCP_capbility = GetVCPCapabilities(m).Result;
 
-                        _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility).Result;
+                        bool SmartHDR_ON = GetHDRStatus(m).Result;
+
+                        _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
                     }
                 }
             }
@@ -725,7 +727,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         MonitorBorkerWin = new MainWindow(this, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON, _SupportedColorPreset);
                     }
                     else
                     {
