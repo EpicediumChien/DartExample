@@ -70,7 +70,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
-        private static string folder_localappdata_Migration = "Migration\\UserFolder";
+        private static string folder_localappdata_Migration = "Migration";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -1014,12 +1014,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
-            vcps = new List<VCPCode>();
+            ImpExpSettings = ReadImportSettingsFile(path);
+            //List<VCPCode> vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -1042,9 +1042,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                     settings.KVM = monitorSettings.KVM;
                                     settings.VCPs = monitorSettings.VCPs;
                                     settings.EA = monitorSettings.EA;
+                                    settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
+                                    settings.scheduleInfo = monitorSettings.scheduleInfo;
                                     if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                                     {
-                                        vcps = monitorSettings.VCPs;
+                                        //vcps = monitorSettings.VCPs;
                                         if (!isSameModel)
                                         {
                                             return Task.FromResult<bool>(true);
@@ -1172,7 +1174,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             folder_appdatapath_migration = folder + "\\" + folder_product + "\\" + folder_localappdata_Migration;
-            if (Directory.Exists(folder_appdatapath_migration))
+            string folder_path = folder_appdatapath_migration + "\\UserFoler";
+            if (Directory.Exists(folder_path))
             {
                 return Task<bool>.FromResult(true);
             }

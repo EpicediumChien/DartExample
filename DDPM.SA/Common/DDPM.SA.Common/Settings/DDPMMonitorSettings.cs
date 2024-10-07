@@ -107,9 +107,10 @@ namespace DDPM.SA.Common.Settings
         public KVMSettings KVM { get; set; } = new KVMSettings();
         public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
+        public ColorPresetSettings ColorPreset { get; set; } = new ColorPresetSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
         public HotkeySettings hotkeySettings { get; set; }
         public scheduleInfo scheduleInfo { get; set; }
-        public ImpExpSettings ImpExpSettings { get; set; }
+        public ImpExpSettings ImpExpSettings { get; set; } = new ImpExpSettings();
     }
 }

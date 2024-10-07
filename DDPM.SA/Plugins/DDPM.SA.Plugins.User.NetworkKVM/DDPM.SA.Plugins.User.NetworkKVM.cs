@@ -130,7 +130,7 @@ namespace NetworkKVM.Plugins
                 _SupportedMonitors = GetSupportedNKVM().Result;
                 if (pipeServer.IsConnected)
                 {
-                    ResponseSupportedMonitor();
+                    //ResponseSupportedMonitor();
                     MonitorPlug();
                 }
                 _AllInfoMonitors.Clear();
@@ -144,8 +144,8 @@ namespace NetworkKVM.Plugins
                     //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
                     _SupportedMonitors = GetSupportedNKVM().Result;
                     _logs.DebugMsg("[NetworkKVM] NKVMState:" + NKVMState);
-                    if (NKVMState)
-                    {
+                    //if (NKVMState)
+                    //{
                         if (pipeServer != null)
                         {
                             if (pipeServer.IsConnected)
@@ -154,7 +154,7 @@ namespace NetworkKVM.Plugins
                                 MonitorPlug();
                             }
                         }
-                    }
+                    //}
                     _AllInfoMonitors.AddRange(monitorInfos);
                 }
                 else
@@ -396,6 +396,22 @@ namespace NetworkKVM.Plugins
                     case "U":
                     case "C":
                         return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> HaveSuppertMonitor()
+        {
+            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            {
+                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+            }
+            foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
+            {
+                if (isSupportMonitor(monitorInfo).Result)
+                {
+                    return Task.FromResult(true);
                 }
             }
             return Task.FromResult(false);
@@ -1003,7 +1019,7 @@ namespace NetworkKVM.Plugins
 
         private async Task NamedPipeServer()
         {
-            CreateNamedPipe();
+            CreateNamedPipe_init();
             while (_runloop)
             {
                 if (pipeServer.IsConnected)
@@ -1017,7 +1033,7 @@ namespace NetworkKVM.Plugins
                             if (response == "Disconnect")
                             {
                                 Disconnect();
-                                CreateNamedPipe();
+                                //CreateNamedPipe();
                             }
                             else
                             {
@@ -1037,6 +1053,34 @@ namespace NetworkKVM.Plugins
                 }
             }
             _agent.StopAgent();
+        }
+
+        private void CreateNamedPipe_init()
+        {
+            //#if Debug_NKVM
+            //            namedpipeName = "VCPNamedPipe";
+            //#else
+            //            namedpipeName = Guid.NewGuid().ToString("D");
+            //#endif
+            namedpipeName = "VCPNamedPipe";
+            _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
+
+            pipeServer = NamedPipeServerStreamAcl.Create(namedpipeName,
+                                                        PipeDirection.InOut,
+                                                        1,
+                                                        PipeTransmissionMode.Byte,
+                                                        PipeOptions.Asynchronous | PipeOptions.WriteThrough,
+                                                        0,
+                                                        0,
+                                                        pipeSecurity);
+            cancellationTokenSource = new CancellationTokenSource();
+            var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
+            if (HaveSuppertMonitor().Result)
+            {
+                CallNKVMConnent();
+            }
+            StartAsync().Wait();
         }
 
         private void CreateNamedPipe()
@@ -1060,10 +1104,7 @@ namespace NetworkKVM.Plugins
                                                         pipeSecurity);
             cancellationTokenSource = new CancellationTokenSource();
             var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
-            //if (NKVMState)
-            //{
-                CallNKVMConnent();
-            //}
+            CallNKVMConnent();
             StartAsync().Wait();
         }
 
@@ -1076,7 +1117,6 @@ namespace NetworkKVM.Plugins
             //if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
             //{
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
-                _SupportedMonitors = GetSupportedNKVM().Result;
                 ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
             //}
