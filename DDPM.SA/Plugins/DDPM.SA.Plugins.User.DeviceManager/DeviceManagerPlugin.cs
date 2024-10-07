@@ -4930,7 +4930,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnCheckUpdateScheduleEvent()
         {
-            CheckUpdate();
+            DDPMSettings data = ReloadAppConfigData().Result;
+            if (data != null)
+            {
+                if (!data.LockSettings.Lock_Settings_Updates)
+                {
+                    CheckUpdate();
+                }
+            }
         }
 
         private void OnGetDeviceinfos()
@@ -4966,7 +4973,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnCheckSWUpdateScheduleEvent()
         {
-            SW_CheckSWUpdate();
+            DDPMSettings data = ReloadAppConfigData().Result;
+            if (data != null)
+            {
+                if (!data.LockSettings.Lock_Settings_Updates)
+                {
+                    SW_CheckSWUpdate();
+                }
+            }
         }
 
         #endregion

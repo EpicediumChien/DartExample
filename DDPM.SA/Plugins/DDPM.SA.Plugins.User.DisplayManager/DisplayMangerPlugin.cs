@@ -3385,6 +3385,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 url = data[model].url,
                                 TheLastVersion = data[model].TheLastVersion,
                                 SHA256 = data[model].SHA256,
+                                SHA512 = data[model].SHA512,
+                                Thumbprint=data[model].Thumbprint,
                                 SupportedPlatform = data[model].SupportedPlatform,
                                 fileName = data[model].fileName,
                                 date = data[model].date,
@@ -3424,7 +3426,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         break;
                                     }
                                 }
-                                if (newVersion > oldVersion)
+                                if (newVersion >= oldVersion)
                                 {
                                     ret.Firmwares.Add(firmwares_item);
                                 }

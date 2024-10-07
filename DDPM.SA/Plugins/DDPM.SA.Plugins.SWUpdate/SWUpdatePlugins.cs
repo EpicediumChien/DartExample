@@ -241,6 +241,9 @@ namespace DDPM.SA.Plugins.SWUpdate
                         SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
                         NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
                         ServerPath = swUpdateHelper.Softwares[i].MiniInstallerServer_path,
+                        SHA256 = swUpdateHelper.Softwares[i].MiniInstaller_SHA256,
+                        SHA512 = swUpdateHelper.Softwares[i].MiniInstaller_SHA512,
+                        Thumbprint = swUpdateHelper.Softwares[i].MiniInstaller_Thumbprint,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
@@ -499,9 +502,10 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="e"></param>
         private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
+            _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
             TimeSpan difference = DateTime.Now - _SWUpdateInfoPackage.TheLastCheckTime;
-            int checkTime = 5;
-            if (difference.TotalMinutes > checkTime)
+            int checkTime = 24;
+            if (difference.TotalHours > checkTime)
             {
                 CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
             }

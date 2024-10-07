@@ -92,7 +92,7 @@ namespace MiniInstaller
         {
             bool isSkipCA = GetCheckCAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA,out string getMetadataInfo);
+            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo);
             LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
             List<SWUpdateInfo> swUpdateInfos = new List<SWUpdateInfo>();
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
@@ -104,7 +104,10 @@ namespace MiniInstaller
                         TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
                         ServerPath = swUpdateHelper.Softwares[i].ServerPath,
                         SoftwareName = "DDPM",
-                        FileSavepath = swUpdateHelper.Softwares[i].InstallPath
+                        FileSavepath = swUpdateHelper.Softwares[i].InstallPath,
+                        SHA256 = swUpdateHelper.Softwares[i].SHA256,
+                        SHA512 = swUpdateHelper.Softwares[i].SHA512,
+                        Thumbprint = swUpdateHelper.Softwares[i].Thumbprint
                     };
                     swUpdateInfos.Add(SWUpdateInfo);
                 }

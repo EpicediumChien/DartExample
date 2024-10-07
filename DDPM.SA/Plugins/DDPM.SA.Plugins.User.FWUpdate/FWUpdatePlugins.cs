@@ -460,6 +460,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         DeviceName = displayUpdateHelper.Firmwares[i].id,
                         SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                         SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
+                        Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
                         IsUOD = false
                     };
                     _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -829,9 +830,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="e"></param>
         private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
+            _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
             TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-            //0612 Bruce 將檢查更新區間修改為5分鐘
-            int checkTime = 5;
+            int checkTime = 24;
             if (difference.TotalMinutes > checkTime)
             {
                 CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
