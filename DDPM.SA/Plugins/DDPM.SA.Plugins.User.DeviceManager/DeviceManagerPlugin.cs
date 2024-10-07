@@ -69,7 +69,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.CLI_Manager_Plugin, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.DDPM_EMPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
-    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
+    //[DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
+    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
     public class DeviceMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDeviceManagerSA
     {
         #region Private Members
@@ -2233,13 +2234,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update implementation
 
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false)
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2357,7 +2358,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
-            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper).Result;
+            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
             bool b = true;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
             {
