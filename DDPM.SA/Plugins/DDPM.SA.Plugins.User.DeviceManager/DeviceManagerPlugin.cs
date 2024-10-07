@@ -3385,6 +3385,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ WriteUserListEAProfileDDPM: _SettingsPlugin is null.");
+                return false;
+            }
+
+            try
+            {
+                DDPMSettings ddpmSettings = await _SettingsPlugin.ReloadAppConfigData();
+                if (ddpmSettings == null)
+                {
+                    writelog($"@ WriteUserListEAProfileDDPM: ReloadAppConfigData return null.");
+                    return false;
+                }
+
+                if (ddpmSettings.UserSettings.EAProfile != null)
+                {
+
+                    ddpmSettings.UserSettings.EAProfile = eaProfileList;
+                    writelog($"@ WriteUserListEAProfileDDPM Update OK.");
+                }
+                else
+                {
+                    ddpmSettings.UserSettings = new DDPMUserSettings
+                    {
+                        EAProfile = new List<EAProfileDDPM>()
+                    };
+                    writelog($"@ WriteUserListEAProfileDDPM new List<EAProfileDDPM>() OK.");
+                }
+
+                if (await _SettingsPlugin.SetAppConfigData(ddpmSettings))
+                {
+                    writelog($"@ WriteUserListEAProfileDDPM OK.");
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ WriteUserEAProfileDDPM: Error occurred - {ex.Message}");
+                return false;
+            }
+        }
+
         /// <summary>
         /// Update Usersettings eaProfile
         /// </summary>

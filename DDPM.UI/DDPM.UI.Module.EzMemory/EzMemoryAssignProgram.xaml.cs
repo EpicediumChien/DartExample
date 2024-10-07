@@ -5,6 +5,7 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Microsoft;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -48,7 +49,7 @@ namespace DDPM.UI.Module.EzMemory
             _log = vmDisplay.Console.CreateLog("EzMemoryAssignProgram");
             _log.Info($"{nameof(EzMemoryAssignProgram)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
 
             if (_homeDevice.vmEzArrange == null)
