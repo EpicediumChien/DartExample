@@ -100,6 +100,11 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// </summary>
         public event EventHandler<PopupContentPackage> CallPopup;
 
+        /// <summary>
+        /// 回傳更新事件結果提供給CLI使用
+        /// </summary>
+        public event EventHandler<List<SWUpdateInfo>> DownloadAndInstall_Result_Notify;
+
         #endregion Events
 
         public SWUpdatePlugins(IAgent agent) : base(agent, PluginLogId)
@@ -590,9 +595,14 @@ namespace DDPM.SA.Plugins.SWUpdate
             string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
             SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
-            _logs.DebugMsg_1(sWUpdateInfoPackage.SWUpdateInfo.Count.ToString());
-            List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
-            DownloadAndInstall(sWUpdateInfo, "").Wait();
+            if (sWUpdateInfoPackage != null)
+            {
+                List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo; 
+                if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
+                {
+                    DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+                }
+            }
         }
 
         public void SetSkipCA(bool isSkipCA)

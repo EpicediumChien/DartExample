@@ -262,6 +262,7 @@ namespace VcpCore.Common
             { "CAL2", 6 },
             { "Metro", 7 },
             { "Paper", 8 },
+            { "Rec.709 / BT.709", 9 }, //20241004 jim add
             { "Rec. 709 / BT.709", 9 },
             { "Rec. 709/BT.709", 9 },  // 20240731 jim remove
             { "Rec.709/BT.709", 9 }, // 20240808 jim remove
@@ -353,7 +354,7 @@ namespace VcpCore.Common
             { 21, "CAL2" },
             { 24, "Metro" },
             { 25, "Paper" },
-            { 26, "Rec. 709 / BT.709" }, // 20240731 jim remove
+            { 26, "Rec.709 / BT.709" }, // 20241004 jim add
             //{ 26, "Rec. 709/BT.709" }, // 20240731 jim remove
             //{ 26, "Rec. 709" }, // 20240731 jim remove
             //{ 26, "Rec.709" }, // 20240731 jim add
@@ -407,6 +408,7 @@ namespace VcpCore.Common
             { "Adobe RGB D50 G2.2 L250", 43 },
             { "sRGB D65 sRGB L250", 11 },
             { "DCI P3 D65 G2.4 L100", 27 },
+            { "Rec.709 / BT.709", 26 }, // 20241004 jim add
             { "Rec. 709 / BT.709", 26 }, // 20240731 jim remove
             { "Rec. 709/BT.709", 26 }, // 20240731 jim remove
             { "Rec.709/BT.709", 26 }, // 20240731 jim add
@@ -490,6 +492,7 @@ namespace VcpCore.Common
             {"CAL2", 21},
             {"Metro", 24},
             {"Paper", 25},
+            {"Rec.709 / BT.709", 26}, // 20241004 jim add
             {"Rec. 709 / BT.709", 26}, // 20240731 jim add
             {"Rec. 709/BT.709", 26}, // 20240731 jim add
             {"Rec.709/BT.709", 26}, // 20240731 jim add
