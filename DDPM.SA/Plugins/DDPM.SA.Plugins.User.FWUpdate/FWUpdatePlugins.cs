@@ -996,8 +996,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
             FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
-            List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
-            DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+            if (fWUpdateInfoPackage != null)
+            {
+                List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
+                if (fWUpdateInfo != null && fWUpdateInfo.Count > 0)
+                {
+                    DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+                }
+            }
         }
 
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
