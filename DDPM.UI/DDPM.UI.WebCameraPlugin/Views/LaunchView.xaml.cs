@@ -722,7 +722,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (profileName != _vm!.CurrentProfileName)
             {
                 _vm!.CurrentProfileName = profileName;
-                _vm.SetProfile();
+                DdpmCommonHelper.DeviceManagerSA!.SetProfileName(_vm.CurrentDeviceInfo!.ID.ToString(), profileName);
+                //DdpmCommonHelper.DeviceManagerSA!.SetCreateCustomProfile(_vm.CurrentDeviceInfo!.ID.ToString(), profileName);
+                //var customProfiles = DdpmCommonHelper.DeviceManagerSA.GetCustomProfiles(_vm.CurrentDeviceInfo!.ID.ToString());
+                Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetProfileName(_vm.CurrentDeviceInfo!.ID.ToString());
+                var profile = task2.Result;
+                Task<JArray> task = DdpmCommonHelper.DeviceManagerSA.GetCustomProfiles(_vm.CurrentDeviceInfo!.ID.ToString());
+                var Profiles = JArray.FromObject(task.Result);
+                //_vm.SetProfile();
             }
             btnPreset_Click(this, null);
         }
@@ -779,6 +786,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var profileName = ((Image)sender).Tag.ToString()!;
+            DdpmCommonHelper.DeviceManagerSA!.DeleteProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), _vm.WebcamSettings.CustomProfiles[profileName].Id);
+            Task<JArray> task = DdpmCommonHelper.DeviceManagerSA.GetCustomProfiles(_vm.CurrentDeviceInfo!.ID.ToString());
+            var Profiles = JArray.FromObject(task.Result);
+
             if (profileName == _vm!.CurrentProfileName)
             {
                 _vm!.CurrentProfileName = "Default";

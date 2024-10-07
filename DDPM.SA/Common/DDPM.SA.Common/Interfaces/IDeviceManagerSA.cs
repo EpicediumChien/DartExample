@@ -86,7 +86,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
-        
+
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
@@ -597,6 +597,8 @@ namespace DDPM.SA.Common
 
         #region Webcam
         Task<JArray> GetPresetProfiles(string Guid);
+        Task<JArray> GetCustomProfiles(string Guid);
+        Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
@@ -627,6 +629,9 @@ namespace DDPM.SA.Common
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
+        Task SetProfileName(string Guid, string newValue);
+        Task CreateCustomProfile(string Guid, string newValue);
+        Task DeleteProfile(string Guid, string newValue);
         Task SetZoom(string Guid, int newValue);
         Task SetIsAutoFramingOn(string Guid, bool newValue);
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);

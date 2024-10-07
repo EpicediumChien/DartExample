@@ -42,8 +42,9 @@ namespace DDPM.UI.Common
             ResetRadialMenu();
         }
 
-    public void ResetRadialMenu() {
-      RadialLabels = new() {
+        public void ResetRadialMenu()
+        {
+            RadialLabels = new() {
         { 1, Strings.VolumeUp },
         { 2, Strings.PlayPause },
         { 3, Strings.VolumeDown },
@@ -53,17 +54,17 @@ namespace DDPM.UI.Common
         { 7, Strings.WebBrowser },
         { 8, Strings.NextTrack },
       };
-      RadialActions.Clear();
-      RadialActions.Add(1, new SelectedAction(84, new AssignedAction(84)));
-      RadialActions.Add(2, new SelectedAction(81, new AssignedAction(81)));
-      RadialActions.Add(3, new SelectedAction(85, new AssignedAction(85)));
-      RadialActions.Add(4, new SelectedAction(83, new AssignedAction(83)));
-      RadialActions.Add(5, new SelectedAction(80, new AssignedAction(80)));
-      RadialActions.Add(6, new SelectedAction(86, new AssignedAction(86)));
-      RadialActions.Add(7, new SelectedAction(79, new AssignedAction(79)));
-      RadialActions.Add(8, new SelectedAction(82, new AssignedAction(82)));
-      IsUseCenter = true;
-    }
+            RadialActions.Clear();
+            RadialActions.Add(1, new SelectedAction(84, new AssignedAction(84)));
+            RadialActions.Add(2, new SelectedAction(81, new AssignedAction(81)));
+            RadialActions.Add(3, new SelectedAction(85, new AssignedAction(85)));
+            RadialActions.Add(4, new SelectedAction(83, new AssignedAction(83)));
+            RadialActions.Add(5, new SelectedAction(80, new AssignedAction(80)));
+            RadialActions.Add(6, new SelectedAction(86, new AssignedAction(86)));
+            RadialActions.Add(7, new SelectedAction(79, new AssignedAction(79)));
+            RadialActions.Add(8, new SelectedAction(82, new AssignedAction(82)));
+            IsUseCenter = true;
+        }
 
         public class RadialLabel
         {
@@ -265,7 +266,7 @@ namespace DDPM.UI.Common
             try
             {
                 string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions");
+                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
 
                 string info = string.Empty;
                 DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security

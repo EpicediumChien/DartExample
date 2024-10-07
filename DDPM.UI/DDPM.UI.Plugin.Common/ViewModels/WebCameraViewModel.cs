@@ -19,6 +19,7 @@ using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 
 namespace DDPM.UI.Plugin.ViewModels
@@ -28,7 +29,6 @@ namespace DDPM.UI.Plugin.ViewModels
         #region Variables
         private readonly ILog _log;
         private ObservableCollection<ProfileItem> _profileItems = new();
-        private readonly Dictionary<string, WebcamProfile> Profiles = new();
         private List<string> _resolutions = new();
 
         // Query all properties [resolution and frame rate] of the webcam device
@@ -168,52 +168,30 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
             { return false; }
 
-            //_profileItems.Clear();
+            InitializeWebcam();
             Application.Current.Dispatcher.Invoke(() =>
             {
                 _profileItems.Clear();
-                _profileItems.Add(new ProfileItem
+                foreach (var pofile in WebcamSettings.CustomProfiles.Values)
                 {
-                    ID = "Custom Profile: Profile 1",
-                    Caption = Utility.CheckTextLength("Custom Profile: Profile 1", 120, 14),
-                    Tooltip = "",
-                    TooltipVisibility = Visibility.Collapsed,
-                    ButtonVisibility = Visibility.Visible
-                });
-                _profileItems.Add(new ProfileItem
-                {
-                    ID = "Custom Profile: Profile 2",
-                    Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 120, 14),
-                    Tooltip = "",
-                    TooltipVisibility = Visibility.Collapsed,
-                    ButtonVisibility = Visibility.Visible
-                });
-                _profileItems.Add(new ProfileItem
-                {
-                    ID = "Custom Profile: Profile 3",
-                    Caption = Utility.CheckTextLength("Custom Profile: Profile 3", 120, 14),
-                    Tooltip = "",
-                    TooltipVisibility = Visibility.Collapsed,
-                    ButtonVisibility = Visibility.Visible
-                });
-                _profileItems.Add(new ProfileItem
-                {
-                    ID = "Custom Profile: Profile 4",
-                    Caption = Utility.CheckTextLength("Custom Profile: Profile 4", 120, 14),
-                    Tooltip = "",
-                    TooltipVisibility = Visibility.Collapsed,
-                    ButtonVisibility = Visibility.Visible
-                });
-                Profiles.Clear();
-                foreach (var profile in CurrentDeviceInfo!.CustomProfiles.ToObject<List<WebcamProfile>>()!)
-                {
-                    Profiles.Add(profile.Name, profile);
+                    _profileItems.Add(new ProfileItem
+                    {
+                        ID = pofile.Name,
+                        Caption = Utility.CheckTextLength(pofile.Name, 120, 14),
+                        Tooltip = "",
+                        TooltipVisibility = Visibility.Collapsed,
+                        ButtonVisibility = Visibility.Visible
+                    });
                 }
+                //_profileItems.Add(new ProfileItem
+                //{
+                //    ID = "Custom Profile: Profile 2",
+                //    Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 120, 14),
+                //    Tooltip = "",
+                //    TooltipVisibility = Visibility.Collapsed,
+                //    ButtonVisibility = Visibility.Visible
+                //});
 
-                foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
-                {
-                    Profiles.Add(profile.Name, profile);
-                }
                 _profileItems.Add(new ProfileItem
                 {
                     ID = LangHelper.Instance["Default"],
@@ -254,7 +232,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             FPSs.Clear();
 
-            InitializeWebcam();
+            //InitializeWebcam();
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
             IsMicEnumerationOnEnabled = true;
@@ -283,9 +261,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
                 WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
 
+                var customProfiles = CurrentDeviceInfo.CustomProfiles.ToObject<List<WebcamProfile>>()!.ToList();
+                for (var l = customProfiles.Count - 1; l >= 0; l--)
+                {
+                    WebcamSettings.CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
+                }
                 foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
                 {
-                    profile.Focus = CurrentDeviceInfo.FocusMin;
+                    //profile.Focus = CurrentDeviceInfo.FocusMin;
                     WebcamSettings.PresetProfiles.Add(profile.Name, profile);
                 }
                 WebcamSettings.SelectedProfileName = WebcamSettings.PresetProfiles.Values.ToList()[0].Name;
@@ -298,7 +281,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
             }
 
-            SetProfile();
+            //SetProfile();
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
             var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
