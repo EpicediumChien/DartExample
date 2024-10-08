@@ -488,8 +488,8 @@ namespace DDPM.UI.Module.Color
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             Log?.Info("RunWorkerCompleted_RefreshData start...");
-            IsBusy = true;
             bw.RunWorkerAsync();
+            IsBusy = true;
         }
 
         public void Invoke_DownloadICCData()
