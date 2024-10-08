@@ -1,4 +1,4 @@
-#define REMOVE_EA
+//#define REMOVE_EA
 //Define this flag will remove EA functions
 
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -86,6 +86,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Constructor
 
+        private bool isDebug20241008()
+        {
+            string iniFile = @"C:\temp\DDPMDebug.txt";
+            if (System.IO.File.Exists(iniFile))
+            {
+                return (Win32Lib.Win32.IniReadInt("DDPMDebug", "DDPM.SA.EAPlugin.Debug.20241008", 0, iniFile) == 1);
+            }
+            return false;
+        }
+
         #region Log/Debug messages
 
         private void LogInfo(string msg)
@@ -144,8 +154,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Monitoring plugins state
             //2024-8-13 Robert_Lin, EAPlugin has fixed .NET 8 issues, so uncomment below statements.
             // 2024-08-06 Elie, Mask InitializeDeviceManagerPlugin() function to skip .NET 8 for more than two monitor cause exception issue. ==> System.IO.IOException: 'Cannot locate resource 'eaworkwindow.baml'.'
-            InitializeDeviceManagerPlugin();
-            InitializeDisplayManagerPlugin();
+            if (isDebug20241008()) 
+            {
+                InitializeDeviceManagerPlugin();
+                InitializeDisplayManagerPlugin();
+            }
 #endif
         }
 
@@ -927,9 +940,32 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _displayManagerPlugin.Displaychanged += _displayManagerPlugin_Displaychanged;
                    
                 }
-                
-                //Debug
-                _vmArrange.EzSettings.IsOnlyAllowWhenShiftKeyPressed = true;
+
+                //Robert_Lin: Debug - Need to remove in release build
+                if (isDebug20241008())
+                {
+                    _vmArrange.EzSettings = new EzSettings()
+                    {
+                        IsOnlyAllowWhenShiftKeyPressed = true,
+                        IsAwsEnabled = true
+                    };
+                }
+
+                //Robert's Debug, need to remove in release build
+                //List<MonitorInfo> monitors = _deviceManagerPlugin.GetMonitors().Result;
+                //foreach (MonitorInfo monitor in monitors)
+                //{
+                //    SplitJson spJson = new SplitJson()
+                //    {
+                //        CellCount = 4,
+                //        SplitKey = 'A',
+                //        CustomId = 0
+                //    };
+                //    SetEASelectedLayout(monitor, spJson);
+                //    break;
+                //}
+
+
 
                 //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
                 _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
@@ -1216,30 +1252,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             _log?.Info($"@ OnDisplaychanged");
 
-            //[Standalone Solution]
-            //InitWorkWindows();
-
-            //[InfoWin solution]
-            //if (_infoWindow != null)
-            //    _infoWindow.InitWorkWindows();
             if (_vmArrange != null)
             {
                 _vmArrange.RefreshWorkWindows2();
 
 
-                //Robert's Debug, need to remove in release build
-                //List<MonitorInfo> monitors = _deviceManagerPlugin.GetMonitors().Result;
-                //foreach (MonitorInfo monitor in monitors)
-                //{
-                //    SplitJson spJson = new SplitJson()
-                //    {
-                //        CellCount = 4,
-                //        SplitKey = 'A',
-                //        CustomId = 0
-                //    };
-                //    SetEASelectedLayout(monitor, spJson);
-                //    break;
-                //}
             }
         }
 
