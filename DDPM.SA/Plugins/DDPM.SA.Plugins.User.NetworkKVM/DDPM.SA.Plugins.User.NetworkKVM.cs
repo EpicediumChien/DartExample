@@ -133,6 +133,8 @@ namespace NetworkKVM.Plugins
                     //ResponseSupportedMonitor();
                     MonitorPlug();
                 }
+                Disconnect();
+                CreateNamedPipe_init();
                 _AllInfoMonitors.Clear();
             }
             else
@@ -146,14 +148,21 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("[NetworkKVM] NKVMState:" + NKVMState);
                     //if (NKVMState)
                     //{
-                        if (pipeServer != null)
+                    if (pipeServer != null)
+                    {
+                        if (pipeServer.IsConnected)
                         {
-                            if (pipeServer.IsConnected)
-                            {
-                                ResponseSupportedMonitor();
-                                MonitorPlug();
-                            }
+                            ResponseSupportedMonitor();
+                            MonitorPlug();
                         }
+                        else
+                        { 
+                            Disconnect();
+                            CreateNamedPipe_init();
+                            ResponseSupportedMonitor();
+                            MonitorPlug();
+                        }
+                    }
                     //}
                     _AllInfoMonitors.AddRange(monitorInfos);
                 }
@@ -1049,7 +1058,7 @@ namespace NetworkKVM.Plugins
                 else
                 {
                     Disconnect();
-                    CreateNamedPipe();
+                    CreateNamedPipe_init();
                 }
             }
             _agent.StopAgent();
