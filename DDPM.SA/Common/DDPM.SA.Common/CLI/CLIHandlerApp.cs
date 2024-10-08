@@ -1192,6 +1192,41 @@ namespace DDPM.SA.Common.CLI
             return CLI_Response_CompleteWithSuccess(commandLineInput, result);
         }
 
+
+
+        // add @ stephen
+        public static CLIEventResult CLI_FW_Update(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        {
+            //Expected format:
+            // IT > /configure -app=InAppUpdate -value=lock / unlock
+            // IT > /get -app=InAppUpdate
+
+            Console.WriteLine($"@@Stephen CLI_FW_Update called ");
+            CLIEventResult result = new CLIEventResult();
+            result.ticket = DateTime.Now;
+            result.command_guid_string = action_guid;
+
+            CLI_RESPONSE response = new CLI_RESPONSE();
+            response.Command = commandLineInput.Command;
+            response.TargetFeature = commandLineInput.TargetFeature;
+
+            if (!commandLineInput.Command.Equals("SET"))
+            {
+                WriteLog(Log, $"CLI_FW_Update: the command should be configure or get, fail");
+                return CLI_Response_CommandNotSupport(commandLineInput, result);
+            }
+
+            Type type = inputData.GetType();
+            Type type2 = settingsPlugin.GetType();
+            DDPMSettings data_user = type == typeof(DDPMSettings) ? (DDPMSettings)inputData : null;
+            DDPMITConfig data_IT = type == typeof(DDPMITConfig) ? (DDPMITConfig)inputData : null;
+            WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
+            ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
+            IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
+
+            return CLI_Response_CompleteWithSuccess(commandLineInput, result);
+        }
+
         private static void ApplyValueToBoolObject(ref bool config, bool value)
         {
             if (config != null && value != null)
