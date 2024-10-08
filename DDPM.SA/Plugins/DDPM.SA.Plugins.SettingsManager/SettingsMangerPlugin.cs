@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Windows.Media.AppBroadcasting;
 using Windows.Storage;
 
 namespace DDPM.SA.Plugins.SettingsManager
@@ -282,6 +283,12 @@ namespace DDPM.SA.Plugins.SettingsManager
         private DDPMITConfig InitDDPMITConfigFile()
         {
             string folder = path_programdata + "\\" + folder_product;
+            return (DDPMITConfig)InitSysSubagentData("ITConfig", )
+        }
+
+        private object InitSysSubagentData(string type, string filePath)
+        { 
+            string folder = path_programdata + "\\" + folder_product;
             WriteLog($"IT admin data folder path: {folder}");
             try
             {
@@ -295,18 +302,6 @@ namespace DDPM.SA.Plugins.SettingsManager
                 return null;
             }
 
-            //Dean: below code has creation procedure, no need file path check at here
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFolderPathValid(folder, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(InitDDPMITConfigFile)} {FileInfo}");
-            //    return null;
-            //}
-
-            //check if setting file contain illegal privilege
-            //if yes, delete file and then apply right ACL
-            //Apply symlink check here as well [Dean 0912]
             if (Directory.Exists(folder))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(folder);
@@ -468,5 +463,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         #endregion
+    }
+
+    public class InfoObject
+    {
+        //string: info value, bool: isActived
+        public Dictionary<string, bool> Info { get; set; } = new Dictionary<string, bool>();
     }
 }
