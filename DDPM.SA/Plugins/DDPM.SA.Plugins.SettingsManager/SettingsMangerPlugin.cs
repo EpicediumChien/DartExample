@@ -33,6 +33,9 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Windows.Media.AppBroadcasting;
 using Windows.Storage;
+using DDPM.SA.Obfuscation;
+using System.Net.NetworkInformation;
+using System.Windows.Interop;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -297,22 +300,87 @@ namespace DDPM.SA.Plugins.SettingsManager
         {
             string folder = Path.Combine(path_programdata, folder_product);
             string filePath = Path.Combine(folder, filename_appsettings_Info);
-            return (InfoObject)InitSysSettingsData("InfoConfig", filePath);
+            InitSysSettingsData("InfoConfig", filePath);
+
+            AddInfo(InfoHash.Info_Hash.Trim());
+            return _infos;
+        }
+
+        private List<string> GetInfos(bool force_reload)
+        {
+            if(_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
+            {
+                _infos = new InfoObject();
+                if(_infos.Infos == null)
+                {
+                    _infos.Infos = new List<string>();
+                    _infos.Infos.Add(InfoHash.Info_Hash.Trim());
+                    string msg = string.Empty;
+                    if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                    {
+                        WriteLog($"[GetInfos] recover data failed: {msg}");
+                    }
+                    return _infos.Infos;
+                }
+            }
+            if(force_reload)
+            {
+                string msg2 = string.Empty;
+                string read = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _info_path, out msg2);
+                try
+                {
+                    InfoObject obj = JsonConvert.DeserializeObject<InfoObject>(read);
+                    if ( obj != null)
+                    {
+                        _infos = obj;
+                        WriteLog($"[GetInfos] read info config ok");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteLog($"[GetInfos] read info config failed: ({ex.Message})");
+                }
+            }
+            return _infos.Infos;
+        }
+
+        private void AddInfo(string info)
+        {
+            int idx = -1;
+            if (_infos != null && _infos.Infos != null && _infos.Infos.Count > 0)
+            {
+                WriteLog($"[AddInfo] info count is ({_infos.Infos.Count})");
+                idx = _infos.Infos.FindIndex(x => x.Trim().Equals(info));
+            }
+            if (idx < 0)//means new
+            {
+                _infos.Infos.Add(info);
+                string msg = string.Empty;
+                if(!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                {
+                    WriteLog($"[AddInfo] update data failed: {msg}");
+                }
+            }
+            else
+            {
+                //exist, bypass
+                WriteLog($"[AddInfo] Info exist in list");
+            }
         }
 
         private object InitSysSettingsData(string type, string filePath)
         { 
             FileInfo fInfo = new FileInfo(filePath);
             string folder = fInfo.DirectoryName;// path_programdata + "\\" + folder_product;
-            WriteLog($"[InitSysSubagentData] data folder path: {folder}");
+            WriteLog($"[InitSysSubagentData][{type}] data folder path: {folder}");
             try
             {
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder);
-                WriteLog($"create folder {folder} success");
+                WriteLog($"[{type}]create folder {folder} success");
             }
             catch
             {
-                WriteLog($"CreateDirectory with {folder} failed.");
+                WriteLog($"[{type}]CreateDirectory with {folder} failed.");
                 //_settings = null;
                 return null;
             }
@@ -322,19 +390,22 @@ namespace DDPM.SA.Plugins.SettingsManager
                 DirectoryInfo directoryInfo = new DirectoryInfo(folder);
                 if (directoryInfo == null)
                 {
-                    WriteLog("System config: retrieve Directory got null return");
+                    WriteLog($"[{type}]System config: retrieve Directory got null return");
                     Directory.Delete(folder, true);
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"re-create system settings folder success");
+                    WriteLog($"[{type}]re-create system settings folder success");
                 }
-                AclChecker aclChecker = new AclChecker();
-                if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                //AclChecker aclChecker = new AclChecker();
+                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                string info2 = string.Empty;
+                if(DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 {
-                    WriteLog("Directory ACLs for system setting contained unprivileged write access for one or more identity");
+                    //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
+                    WriteLog($"[{type}]Directory symbolic check got symlink ({info2})");
                     Directory.Delete(folder, true);
-                    WriteLog("Exist folder deleted.");
+                    WriteLog($"[{type}]Exist folder deleted.");
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"re-create system settings folder success");
+                    WriteLog($"[{type}]re-create system settings folder success");
                 }
             }
             string info = string.Empty;
@@ -345,7 +416,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             catch (Exception ex)
             {
-                WriteLog($"[InitSysSettingsData]Apply ACL to folder failed ({ex.Message})");
+                WriteLog($"[InitSysSettingsData][{type}]Apply ACL to folder failed ({ex.Message})");
                 return null;
             }
             switch(type)
@@ -367,18 +438,18 @@ namespace DDPM.SA.Plugins.SettingsManager
                 FileInfo fileInfo = new FileInfo(filePath);
                 if (fileInfo == null)
                 {
-                    WriteLog("System config: retrieve FileInfo got null return");
+                    WriteLog($"[{type}]System config: retrieve FileInfo got null return");
                     File.Delete(filePath);
-                    WriteLog("Exist file deleted.");
+                    WriteLog($"[{type}]Exist file deleted.");
                 }
                 else
                 {
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
                     {
-                        WriteLog("File ACLs for system setting contained unprivileged write access for one or more identity");
+                        WriteLog($"[{type}]File ACLs for system setting contained unprivileged write access for one or more identity");
                         File.Delete(filePath);
-                        WriteLog("Exist file deleted.");
+                        WriteLog($"[{type}]Exist file deleted.");
                     }                    
                 }
             }
@@ -406,35 +477,39 @@ namespace DDPM.SA.Plugins.SettingsManager
                 }
                 else
                 {
-                    WriteLog("[InitSysSettingsData] GetSerializedJsonString: " + info);                    
+                    WriteLog($"[InitSysSettingsData][{type}] GetSerializedJsonString: " + info);                    
                 }
             }
+            object result = null;
             if(need_reWrite)
             {
                 bool write = false;
-                WriteLog("[InitSysSettingsData] *** Init cache from file fail, re-create default settings to file");
+                WriteLog($"[InitSysSettingsData][{type}] *** Init cache from file fail, re-create default settings to file");
                 switch (type)
                 {
                     case "ITConfig":
-                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), filePath, out info);
+                        result = _settings;
+                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_settings).ToString(), filePath, out info);
                         break;
                     case "InfoConfig":
-                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_infos).ToString(), filePath, out info);
+                        result = _infos;
+                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), filePath, out info);
                         break;
                     default:
                         WriteLog($"[InitSysSettingsData] type({type}) is not defined to support.3");
                         return null;
                 }
                 if (!write)
-                    WriteLog("[InitSysSettingsData] save to file failed, please check file access right!!");
+                    WriteLog($"[InitSysSettingsData][{type}] save to file failed: {info}");
                 else
-                    WriteLog("[InitSysSettingsData] re-create file content OK");
+                    WriteLog($"[InitSysSettingsData][{type}] re-create file content OK");
             }
             //ACL apply
             if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(filePath, out info))
-                WriteLog($"[InitSysSettingsData] {info}");
+                WriteLog($"[InitSysSettingsData][{type}] {info}");
 
-            return _settings;
+            WriteLog($"[InitSysSettingsData][{type}] finish");
+            return result;
         }
 
         public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)

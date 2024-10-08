@@ -189,7 +189,15 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             //4. Write to target file
-            File.WriteAllText(target_file, write_string);
+            try
+            {
+                File.WriteAllText(target_file, write_string);
+            }
+            catch (Exception ex2)
+            {
+                info = $"Write serialized string to file failed. ({ex2.Message})";
+                return false;
+            }
             return true;
         }
 
