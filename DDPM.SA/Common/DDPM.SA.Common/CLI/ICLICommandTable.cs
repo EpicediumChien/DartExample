@@ -75,7 +75,7 @@ namespace DDPM.SA.Common
         {
             "GET",
             "SET",
-            "HELP",
+            "HELP"
         };
 
         //a part of input Type: target feature, ex: -Display=BrightnessLevel
