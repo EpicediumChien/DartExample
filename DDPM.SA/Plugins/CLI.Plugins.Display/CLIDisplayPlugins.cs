@@ -1953,8 +1953,8 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.Value = $"{rc.value}";
                                 //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
                                 G_Luminus_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                             }
                         }
                     }
@@ -2010,8 +2010,8 @@ namespace DDPM.CLI.Plugins.Display
                                     G_Luminus_RESPONSE.Value = $"{rc.value}";
                                     //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Luminus_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                                 }
                             }
                         }
@@ -7926,6 +7926,7 @@ namespace DDPM.CLI.Plugins.Display
                 index++;
                 cli_Response2.Index = index.ToString();
                 cli_Response2.Model = g.Name;
+                cli_Response2.ID = g.ID;
                 cli_Response2.FirmwareVersion = g.FirmwareVersion;
                 cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                 cli_Response2.BatteryStatus = g.BatteryStatus;
