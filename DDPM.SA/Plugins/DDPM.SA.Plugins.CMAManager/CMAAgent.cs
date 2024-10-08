@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DDPM.SA.Obfuscation;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugins.CMAManager
