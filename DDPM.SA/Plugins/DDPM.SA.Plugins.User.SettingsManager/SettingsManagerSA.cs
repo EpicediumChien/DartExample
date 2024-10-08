@@ -2424,7 +2424,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             FileInfo fileInfo = new FileInfo(filePath);
             string result = null;
             string info = string.Empty;
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 WriteLog($"[ReadSerializedContentFromFile][File.Exists] File:{fileInfo.Name}, failed with(file is not exist)");
                 return Task.FromResult(result);
