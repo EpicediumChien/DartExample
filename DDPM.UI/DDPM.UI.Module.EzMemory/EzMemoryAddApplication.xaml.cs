@@ -24,6 +24,8 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
+using Microsoft;
+using DDPM.UI.Common.UserControls;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -39,6 +41,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
@@ -48,15 +51,16 @@ namespace DDPM.UI.Module.EzMemory
 
         public ObservableCollection<ApplicationItem> InstalledApplications { get; set; } = new ObservableCollection<ApplicationItem>();
         //public ObservableCollection<ApplicationItem> InstalledApplications { get; set; }
-        public EzMemoryAddApplication(DisplayViewModel vmDisplay)
+        public EzMemoryAddApplication(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _log = vmDisplay.Console.CreateLog("EzMemoryAddApplication");
             _log.Info($"{nameof(EzMemoryAddApplication)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
 
             if (_homeDevice.vmEzArrange == null)
@@ -64,9 +68,10 @@ namespace DDPM.UI.Module.EzMemory
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
             _vm = _homeDevice.vmEzArrange;
+
             DataContext = _homeDevice.vmEzArrange;
 
-            InitializeComponent();
+            //InitializeComponent();
         }
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -220,8 +225,7 @@ namespace DDPM.UI.Module.EzMemory
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            //_ezMemoryAssignProgram.DataContext = _vmDisplay;
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -253,7 +257,7 @@ namespace DDPM.UI.Module.EzMemory
 
             _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
 
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -309,7 +313,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     _vm.UpdateTextBlockAppName(_vm.ButtonName, fileName);
 
-                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
                     DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
                 }
             }

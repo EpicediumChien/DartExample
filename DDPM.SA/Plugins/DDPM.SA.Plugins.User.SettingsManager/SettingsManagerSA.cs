@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using DdmLibrary;
 using DdmLibrary.Utility;
 using System.Linq.Expressions;
+using Windows.Devices.Bluetooth.Background;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -70,7 +71,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
-        private static string folder_localappdata_Migration = "Migration\\UserFolder";
+        private static string folder_localappdata_Migration = "Migration";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -379,8 +380,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
                 //create display folder if not exist
                 _display_path = folder_appdatapath_display;
+                string folderInfo = string.Empty, info = string.Empty;
                 try
                 {
+                    DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info);
                     if (!Directory.Exists(_display_path))
                     {
                         DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
@@ -1014,12 +1017,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
-            vcps = new List<VCPCode>();
+            ImpExpSettings = ReadImportSettingsFile(path);
+            //List<VCPCode> vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -1042,9 +1045,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                     settings.KVM = monitorSettings.KVM;
                                     settings.VCPs = monitorSettings.VCPs;
                                     settings.EA = monitorSettings.EA;
+                                    settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
+                                    settings.scheduleInfo = monitorSettings.scheduleInfo;
                                     if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                                     {
-                                        vcps = monitorSettings.VCPs;
+                                        //vcps = monitorSettings.VCPs;
                                         if (!isSameModel)
                                         {
                                             return Task.FromResult<bool>(true);
@@ -1172,7 +1177,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             folder_appdatapath_migration = folder + "\\" + folder_product + "\\" + folder_localappdata_Migration;
-            if (Directory.Exists(folder_appdatapath_migration))
+            string folder_path = folder_appdatapath_migration + "\\UserFoler";
+            if (Directory.Exists(folder_path))
             {
                 return Task<bool>.FromResult(true);
             }
@@ -1787,8 +1793,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             string folder_appdatapath_ddpm = folder + "\\" + folder_product;
             WriteLog($"folder_appdatapath_ddpm: {folder_appdatapath_ddpm}");
+            string folderInfo = string.Empty, info = string.Empty;
             try
             {
+                DDPMFileSecurity.CheckFold(folder_appdatapath_ddpm, out folderInfo, out info);
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_appdatapath_ddpm);
                 WriteLog($"create folder {folder_appdatapath_ddpm} success");
             }
@@ -1804,7 +1812,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             DDPMAppSettings ddpm_app = new DDPMAppSettings();
             DDPMUserSettings ddpm_user = new DDPMUserSettings();
-            string info;
+
             if (File.Exists(file_appdatapath_userconfig))
             {
                 // DDPMSettings.getSettingsforImport(file_appdatapath_userconfig, ref ddpm_app, ref ddpm_user);

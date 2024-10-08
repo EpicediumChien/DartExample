@@ -44,11 +44,12 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
@@ -57,7 +58,6 @@ namespace DDPM.UI.Module.EzMemory
             _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
-            //DataContext = vm;
             if (_homeDevice.vmEzArrange == null)
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
@@ -97,8 +97,6 @@ namespace DDPM.UI.Module.EzMemory
 
             splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
-
-
             //InitRecentListView();
             InitListViewItems();
 
@@ -110,25 +108,6 @@ namespace DDPM.UI.Module.EzMemory
 
         public void InitializePage()
         {
-            //Read other settings
-
-            //List<EAProfileDDPM> eaProfile = DdpmCommonHelper.DeviceManagerSA.ReadEzProfiles().Result;
-            //List<EAAppInfoDDPM> lea = new List<EAAppInfoDDPM>();
-            //EAAppInfoDDPM ea = new EAAppInfoDDPM();
-            //ea.IsUWP = false;
-            //ea.Name = "11";
-            //lea.Add( ea );
-
-            //EAAppInfoDDPM ea2 = new EAAppInfoDDPM();
-            //ea2.IsUWP = false;
-            //ea2.Name = "22";
-            //lea.Add(ea2);
-
-
-            //EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, true, 111, true, "TEST", "TEST", lea);
-            //EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, true, 111, true, "TEST1", "TEST1", lea);
-            //DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test);
-            //DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test2);
             _vm._currentTotalPage = 0;
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
@@ -202,7 +181,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -817,5 +796,36 @@ namespace DDPM.UI.Module.EzMemory
             return listOut;
         }
         #endregion
+
+        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                // Handle "@"
+            }
+            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
+                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
+                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
+                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
+                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
+                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
+                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
+                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
+            {
+                // Handle 0-9, a-z, A-Z, " ", "-" 
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
     }
 }

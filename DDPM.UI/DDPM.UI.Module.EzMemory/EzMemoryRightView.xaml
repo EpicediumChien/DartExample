@@ -1,13 +1,14 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.EzMemory.EzMemoryRightView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DDPM.UI.Module.EzMemory"
-             xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
-             xmlns:ezCommon="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
+             xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common" 
+             xmlns:ezCommon="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common"
+             xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
              d:DesignHeight="1000" d:DesignWidth="800">
 
@@ -50,62 +51,58 @@
     </UserControl.Resources>
 
     <Grid>
-        <UXControls:UXScrollViewer>
-            <Grid>
-                <StackPanel>
-                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0">
-                        <StackPanel Margin="0">
-                            <Grid>
+        <Border Style="{StaticResource RightGroupBorderStyle}" VerticalAlignment="Top" Height="auto" Margin="0">
+            <StackPanel Margin="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <UXControls:UXTextBlock x:Name="ProfileTitleTextBlock" Grid.Row="0" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8" Text="{Binding ProfileTitleTextBlockValue}"/>
+
+                    <StackPanel Grid.Row="1" Margin="0,10,0,10">
+                        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid Margin="10,0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock x:Name="ProfileTitleTextBlock" Grid.Row="0" Text="Profile" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="170,0,10,10"/>
+                                <UXControls:UXTextBlock x:Name="AutomaticStartupValueTextBlock" Grid.Row="0" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AutomaticStartupValue}" />
 
-                                <StackPanel Grid.Row="1" Margin="0,10,0,10">
-                                    <Grid Margin="10,0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="190,0,10,10"/>
+                                <UXControls:UXTextBlock x:Name="LaunchByTimeValueTextBlock" Grid.Row="1" Grid.Column="1" Margin="16,0,10,10" Text="{Binding LaunchByTimeValue}" />
 
-                                        <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="170,0,10,10"/>
-                                        <UXControls:UXTextBlock x:Name="AutomaticStartupValueTextBlock" Grid.Row="0" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AutomaticStartupValue}" />
-
-                                        <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="190,0,10,10"/>
-                                        <UXControls:UXTextBlock x:Name="LaunchByTimeValueTextBlock" Grid.Row="1" Grid.Column="1" Margin="16,0,10,10" Text="{Binding LaunchByTimeValue}" />
-
-                                        <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="190,0,10,10"/>
-                                        <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AppDocumentValue}" />
-                                    </Grid>
-                                </StackPanel>
-                                <StackPanel Grid.Row="2" Margin="0,10,0,10">
-                                    <Grid Margin="10,0">
-                                        <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-
-
-                                        <commonCtrl:SplitListView Name="splitListView_Recent" Grid.Row="0" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
-                                        <UXControls:UXButton x:Name="AddNewButton" Grid.Row="0" Style="{StaticResource TransparentButtonStyle}" HorizontalAlignment="Left" Margin="60,8,16,0" Click="AddNewButton_Click"/>
-                                        <UXControls:UXButton x:Name="applybtn" Grid.Row="2" Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
-                                    </Grid>
-                                </StackPanel>
+                                <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="190,0,10,10"/>
+                                <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Width="135" TextWrapping="Wrap" Text="{Binding AppDocumentValue}" />
                             </Grid>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </UXControls:UXScrollViewer>
+                        </UXControls:UXScrollViewer >
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Margin="0,10,0,10">
+                        <Grid Margin="10,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+
+
+                            <commonCtrl:SplitListView Name="splitListView_RecentForEzM" Grid.Row="0" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                            <UXControls:UXButton x:Name="AddNewButton" Grid.Row="0" Style="{StaticResource TransparentButtonStyle}" HorizontalAlignment="Left" Margin="60,8,16,0" Click="AddNewButton_Click"/>
+                            <UXControls:UXButton x:Name="applybtn" Grid.Row="2" Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

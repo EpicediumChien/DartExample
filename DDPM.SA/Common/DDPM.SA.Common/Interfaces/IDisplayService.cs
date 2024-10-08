@@ -169,6 +169,7 @@ namespace DDPM.SA.Common
         Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
         #endregion
         #region Display FWU Metadata
+    
         Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA);
         #endregion
     }

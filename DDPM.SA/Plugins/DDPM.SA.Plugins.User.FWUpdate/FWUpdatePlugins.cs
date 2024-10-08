@@ -360,12 +360,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay)
         {
             _isDefer = isDefer;
             _isForce = isForce;
             _DeviceTypeList = deviceTypeList;
-            _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper).Result;
+            _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay).Result;
             return Task.FromResult(_fWUpdateInfoPackage);
         }
 
@@ -375,7 +375,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        public Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper)
+        public Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay)
         {
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
@@ -415,7 +415,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         };
                         _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                     }
-                    else if (deviceTypeList != null)
+                    else if (deviceTypeList != null && !isOnlyDisplay)
                     {
                         if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)))
                         {
@@ -444,7 +444,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
             }
-            if (displayUpdateHelper != null && displayUpdateHelper.Firmwares.Count > 0)
+            if (displayUpdateHelper != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
             {
                 for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                 {

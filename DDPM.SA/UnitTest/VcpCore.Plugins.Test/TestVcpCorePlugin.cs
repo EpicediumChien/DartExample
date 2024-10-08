@@ -223,6 +223,7 @@ namespace VcpCore.Plugins.Test
             _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            privatevcp.SetFieldOrProperty("_Isinitializing", false);
             var getMonitors = vcpCorePlugin.GetMonitors().Result;
             Assert.Greater(getMonitors.Count, 0);
             Assert.That(displayName, Is.EqualTo(getMonitors[0].DisplayName));

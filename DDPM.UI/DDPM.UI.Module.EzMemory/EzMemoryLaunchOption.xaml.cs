@@ -26,6 +26,8 @@ using Microsoft.VisualBasic.Logging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Windows.ApplicationModel;
 using VcpCore.Common;
+using DDPM.UI.Common.UserControls;
+using DDPM.Easy.Common;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -41,10 +43,12 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
-        public EzMemoryLaunchOption(DisplayViewModel vmDisplay)
+        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
@@ -59,8 +63,6 @@ namespace DDPM.UI.Module.EzMemory
             }
             _vm = _homeDevice.vmEzArrange;
             DataContext = _homeDevice.vmEzArrange;
-
-            InitializeComponent();
 
             InitializePage();
 
@@ -87,7 +89,7 @@ namespace DDPM.UI.Module.EzMemory
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 2;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -103,9 +105,8 @@ namespace DDPM.UI.Module.EzMemory
                     // 讀取 User 的 EasyArrangement Profile
                     int profileID = 0;
                     string profileName = _vm.InputText;
-                    int layout = 0;
+                    int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
                     int _number = 0;
-
                     // 取得現有的 EAProfile
                     List<EAProfileDDPM> newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
                     if (newEAProfileDDPM != null)
@@ -140,12 +141,25 @@ namespace DDPM.UI.Module.EzMemory
                     // 將新的 EAProfile 寫入 User Settings
                     if (DdpmCommonHelper.DeviceManagerSA.WriteUserEAProfileDDPM(_eAProfileDDPM).Result)
                     {
+                        ISplitCtrl? sp0A = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+                        SplitItem item0A;
+                        sp0A.FriendlyName = "Off"; //Need Multilogual support
+                        sp0A.SplitMode = eSplitModes.Icon;
+                        item0A = _splitListView.AddItemToList(sp0A.UC);
+                        item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                        item0A.CustomId = _eAProfileDDPM.ID;
+                        item0A.IsHoverable = true;
+                        item0A.IsDeleteEnabled = true;
+                        item0A.IsEditEnabled = true;
+                        item0A.LayoutID = _eAProfileDDPM.ID;
+
                         _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings PASS");
                     }
                     else
                     {
                         _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings FAIL");
                     }
+
                     #endregion
 
                     #region Monitor Settings
@@ -200,7 +214,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     #endregion
                     //LaunchAndArrangeApps(_vm._sortApps);
-                    _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
+                    //_deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
                 }
 
                 // 清除TextBlock

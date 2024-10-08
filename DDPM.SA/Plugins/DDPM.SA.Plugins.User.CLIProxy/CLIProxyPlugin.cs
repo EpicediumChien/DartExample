@@ -389,6 +389,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     "KEYBOARD",
                     "AUDIO",
                     "PEN",
+                    "DOCK",
                     "WEBCAM",
                 };
                 List<string> Display_Lock_WithoutAction = new List<string>()
@@ -487,6 +488,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "SCREENNOTIFICATION":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
+                        case "FIRMWAREUPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
                             break;
 
                         default:

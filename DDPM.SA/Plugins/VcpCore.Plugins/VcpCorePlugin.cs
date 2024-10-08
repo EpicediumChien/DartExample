@@ -1416,14 +1416,12 @@ namespace VcpCore.Plugins
                                     }
                                     else if (((uint)object_0x52).ToString("X").ToUpper().Equals("60"))
                                     {
-                                        uint val = (Convert.ToUInt32(tmp) & 0XFFFF);
-                                        string valstring = val.ToString("X2");
-                                        int pos = valstring.Length - 2;
-                                        string rc_str = valstring.Substring(pos);
+                                        uint val = (Convert.ToUInt32(tmp) >> 8) & 0xFF;
+                                        string rc_str = val.ToString("X2");
 
                                         if (!string.IsNullOrWhiteSpace(rc_str))
                                         {
-                                            SetToCacheTable(monitorInfoX, Convert.ToByte(object_0x52), val);
+                                            SetToCacheTable(monitorInfoX, 0x60, val);
 
                                             foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                                             {
@@ -1435,6 +1433,13 @@ namespace VcpCore.Plugins
                                                         r.AddRange(R as List<InputSourceObject>);
 
                                                     var n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+                                                    if (n == null)
+                                                    {
+                                                        val = Convert.ToUInt32(tmp) & 0xFF;
+                                                        rc_str = val.ToString("X2");
+                                                        n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+                                                    }
+
                                                     bool rv = false;
                                                     if (r.Count > 0)
                                                     {
@@ -2445,10 +2450,8 @@ namespace VcpCore.Plugins
                 var value = Get_VCPCapability(monitorInfo_, 0x60, 0, true);
                 if (value != null)
                 {
-                    uint val = (Convert.ToUInt32(value) & 0XFFFF);
-                    string valstring = val.ToString("X2");
-                    int pos = valstring.Length - 2;
-                    rc = valstring.Substring(pos);
+                    uint val = (Convert.ToUInt32(value) >> 8) & 0XFF;
+                    rc = val.ToString("X2");
 
                     if (!string.IsNullOrWhiteSpace(rc))
                     {
@@ -2460,6 +2463,13 @@ namespace VcpCore.Plugins
                             r.AddRange(R as List<InputSourceObject>);
 
                         var n = NodeFormatter.FormatVCP_60(rc.ToLower());
+                        if (n == null)
+                        {
+                            val = (Convert.ToUInt32(value) & 0XFF);
+                            rc = val.ToString("X2");
+                            n = NodeFormatter.FormatVCP_60(rc.ToLower());
+                        }
+
                         bool rv = false;
                         if (r.Count > 0)
                         {
