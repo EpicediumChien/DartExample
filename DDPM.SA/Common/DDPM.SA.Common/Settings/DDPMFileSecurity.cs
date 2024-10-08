@@ -259,6 +259,7 @@ namespace DDPM.SA.Common.Settings
             string modifiedJson = string.Empty;
             string signature = string.Empty;
             JObject jObject;
+            //3. retrieve signature for comparison
             try
             {
                 //jObject = JObject.Parse(serialized);
@@ -309,17 +310,6 @@ namespace DDPM.SA.Common.Settings
 #endif
                     return string.Empty;
                 }
-                //jObject = (JObject)JsonConvert.SerializeObject(serialized, Formatting.Indented);
-                //3. retrieve signature for comparison
-                //signature = (string)jObject["Signature"];
-
-                // Remove the "signature" property for hash generating
-                //if (!jObject.Remove("Signature"))
-                //{
-                //    info = "Remove signature field of json failed";
-                //    Console.WriteLine(info);
-                //    return string.Empty;
-                //}
             }
             catch (Exception ex)
             {
@@ -339,13 +329,6 @@ namespace DDPM.SA.Common.Settings
             string cal_sign;
             try
             {
-                //0905 apply DDPM private key rule
-            //    modifiedJson = jObject.ToString();
-                //byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
-                //byte[] sign = GetSHA512(body_array, 0, body_array.Length);
-                //cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
-
-                //cal_sign = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
@@ -706,6 +689,87 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+        public static bool LoadFileToVerifyJson_2(string jsonfilepath, List<string> InfoPkey, out string strJson)
+        {
+            //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
+            //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
+            string json_file = jsonfilepath;
+            string info = string.Empty;
+            strJson = string.Empty;
+
+            if (!DDPMFileSecurity.CheckFileACL(json_file, out info, true))
+            {
+#if DEBUG
+                Console.WriteLine($"File: {json_file}\nFail with [{info}]");
+#endif
+                return false;
+            }
+            if (InfoPkey.Count <= 0)
+            {
+#if DEBUG
+                Console.WriteLine($"Please check if Info keys exists");
+#endif
+                return false;
+            }
+            //Read json content
+            string json_content = File.ReadAllText(json_file);
+
+            // Parse the JSON string into a JObject
+            JObject jObject = JObject.Parse(json_content);
+            string modifiedJson;
+            string signature;
+            try
+            {
+                signature = (string)jObject["Signature"];
+                // Remove the "age" property
+                jObject.Remove("Signature");
+                // Convert the modified JObject back to a JSON string
+                modifiedJson = jObject.ToString();
+                strJson = modifiedJson;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+#endif
+                return false;
+            }
+
+            bool bRet = false;
+            if (signature == null)
+            {
+                bRet = false;
+#if DEBUG
+                Console.WriteLine("No signature found. we should return fail here." + json_file);
+                bRet = true;    // (1/2) Temp for develop mode.  Currently NO json file with signature from server.
+#endif
+                if (bRet == false)
+                    return true;// (2/2) Temp for Normal Mode. Currently NO json file with signature from server.
+            }
+
+            for (int i = 0; i < InfoPkey.Count; i++)
+            {
+                //use signature to verify json
+                if (!DDPMFileSecurity.IsJsonContentValid_2(modifiedJson, signature, InfoPkey[i], HashAlgorithmName.SHA512, out info))
+                {
+#if DEBUG
+                    Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
+#endif
+                    return false;
+                }
+                else
+                {
+                    i = InfoPkey.Count + 1;
+                }
+            }
+#if DEBUG
+            Console.WriteLine("Operation completed");
+#endif
+            return true;
+
+        }
+
+
         public static uint GetCheckSum(byte[] content, int count)
         {
             uint num = 0u;
@@ -849,9 +913,9 @@ namespace DDPM.SA.Common.Settings
             if (result != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"IsPathSymboliced: {nameof(result)}";
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -1574,6 +1638,44 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        //Using public key and pre-generated signature to validate json file
+        public static bool IsJsonContentValid_2(string json_content, string base64_signature, string PInfoKey, HashAlgorithmName algorithm, out string info)
+        {
+            info = "unknow error";
+
+            // Convert the base64 string to bytes
+            byte[] publicKeyBytes = Convert.FromBase64String(PInfoKey);
+
+            try
+            {
+                // Create an RSACryptoServiceProvider from the public key
+                using (var rsa = new RSACryptoServiceProvider())
+                {
+                    rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
+
+                    // Now you can use 'rsa' for verification
+                    // For example, verify a JSON file's content
+                    byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(json_content);
+
+                    // Assume you have the signature (base64-encoded) in 'signatureBase64'
+                    byte[] signature = Convert.FromBase64String(base64_signature);
+
+                    //algorithm could be SHA256 or SHA512
+                    bool isSignatureValid = rsa.VerifyData(dataBytes, signature, algorithm, RSASignaturePadding.Pkcs1);
+#if DEBUG
+                    Console.WriteLine($"Signature is valid: {isSignatureValid}");
+#endif
+                    info = $"The signature validated result: {isSignatureValid}";
+                    return isSignatureValid;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+        }
+
         //for test purpose to generate public and private key pair, method 1
         /*public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
         {
@@ -1927,7 +2029,7 @@ namespace DDPM.SA.Common.Settings
 	public static bool SRemoveSymbolicFile(string filePath, out string info)
         {
             info = "pass";
-            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            if (!DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
             {
                 return true;
             }
@@ -1957,7 +2059,7 @@ namespace DDPM.SA.Common.Settings
         public static bool SRemoveSymbolicFolder(string filePath, out string info)
         {
             info = "pass";
-            if (IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            if (!IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
             {
                 return true;
             }

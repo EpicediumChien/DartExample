@@ -27,6 +27,7 @@ namespace DDPM.UI.Module.Color
             vm.MyModule = this;
 
             vm.Invoke_RefreshData();
+            vm.Invoke_DownloadICCData();
         }
 
         public string ModuleName { get => "ColorModule"; }
@@ -65,6 +66,7 @@ namespace DDPM.UI.Module.Color
                 InitNewViewModel();
             }
             vm.Invoke_RefreshData();
+            vm.Invoke_DownloadICCData();
         }
 
         //Handle new device coming

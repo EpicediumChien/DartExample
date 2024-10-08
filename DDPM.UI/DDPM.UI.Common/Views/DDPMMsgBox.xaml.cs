@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
+using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DDPM.UI.Common.Views
 {
@@ -58,6 +60,30 @@ namespace DDPM.UI.Common.Views
                 }
             }
 
+            private Thickness _headerMargin = new Thickness(24, 10, 45, 24);
+
+            public Thickness HeaderMargin
+            {
+                get { return _headerMargin; }
+                set
+                {
+                    _headerMargin = value;
+                    NotifyPropertyChanged("HeaderMargin");
+                }
+            }
+
+            private Thickness _subHeaderMargin = new Thickness(24, 0, 24, 8);
+
+            public Thickness SubHeaderMargin
+            {
+                get { return _subHeaderMargin; }
+                set
+                {
+                    _subHeaderMargin = value;
+                    NotifyPropertyChanged("SubHeaderMargin");
+                }
+            }
+
             public void DisableBottomButtons()
             {
                 isButtonsShown = Visibility.Collapsed;
@@ -105,6 +131,22 @@ namespace DDPM.UI.Common.Views
             SetStartPosition(owner);
 
             DDPMMsgBoxViewModel vm = new DDPMMsgBoxViewModel(strTitle, strContent, IsCloseButton);
+            this.DataContext = vm;
+        }
+
+        public DDPMMsgBox(string strTitle, string strContent, bool IsCloseButton, Window owner, double width, double height, Thickness titlemargin, Thickness submargin)
+        {
+            InitializeComponent();
+            this.Owner = owner;
+            this.Width = width;
+            this.Height = height;
+            SetStartPosition(owner);
+
+            DDPMMsgBoxViewModel vm = new DDPMMsgBoxViewModel(strTitle, strContent, IsCloseButton)
+            {
+                HeaderMargin = titlemargin,
+                SubHeaderMargin = submargin
+            };
             this.DataContext = vm;
         }
 

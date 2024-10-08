@@ -120,12 +120,18 @@ namespace DDPM.SA.Common
         public string SoftwareVersion { get; set; }
         [JsonPropertyName("server_path")]
         public string ServerPath { get; set; }
+        public string SHA256 { get; set; }
+        public string SHA512 { get; set; }
+        public string Thumbprint { get; set; }
+        public string MiniInstallerServer_path { get; set; }
+        [JsonPropertyName("minimumSoftware")]
+        public string MiniInstaller_SHA256 { get; set; }
+        public string MiniInstaller_SHA512 { get; set; }
+        public string MiniInstaller_Thumbprint { get; set; }
         [JsonPropertyName("install_path")]
         public string InstallPath { get; set; }
-        public string MiniInstallerServer_path { get; set; }
         [JsonPropertyName("supportedOS")]
         public List<string> SupportedOS { get; set; }
-        [JsonPropertyName("minimumSoftware")]
         public string MinimumSoftware { get; set; }
     }
     /// <summary>

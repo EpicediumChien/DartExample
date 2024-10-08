@@ -88,7 +88,7 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
 
-        Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings);
 
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
@@ -108,5 +108,9 @@ namespace DDPM.SA.Common
         Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
         Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings);
         Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
     }
 }

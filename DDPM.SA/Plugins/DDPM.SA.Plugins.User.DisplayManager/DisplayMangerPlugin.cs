@@ -2639,6 +2639,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.SetEASelectedLayout(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region OutReport
@@ -3319,7 +3331,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Display FWU Metadata
-        public Task<DisplayUpdateHelper> GetDisplayFWUpdate()
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA)
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
             SetDisplayFWUServer();

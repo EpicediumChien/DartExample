@@ -9,7 +9,7 @@
 //
 
 #endregion
-
+using System.IO;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Agent;
 using Dell.UnifiedAgent.Common;
@@ -119,7 +119,9 @@ namespace DDPM.Subagent
                  * Agent implementation will check this value and throw an exception if agent behavior is not the expected one
                  * More info: https://confluence.cpg.dell.com/display/DCF/DCF+%7C+Support+User-Mode%2C+Multi-Session+and+Dual-Execution+Agents
                  */
-                MultiSessionAgent = false
+                MultiSessionAgent = false,
+
+                LogDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.Subagent")
 #if RELEASE
                 ,
                 ValidCertificateHashes = ThumbprintHash.certificateHash

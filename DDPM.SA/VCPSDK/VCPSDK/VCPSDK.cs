@@ -25,11 +25,8 @@ namespace VCPSDK
         public event VCPEventHandler DDPMEvent;
         public NamedPipeClient(string NamedpipeName)
         {
-//#if DEBUG
             //pipeClient = new NamedPipeClientStream(".", "VCPNamedPipe", PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-//#else
             pipeClient = new NamedPipeClientStream(".", NamedpipeName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-//#endif
             //cancellationTokenSource = new CancellationTokenSource();
         }
         public async Task ConnectAsync(int timeout)
@@ -37,10 +34,12 @@ namespace VCPSDK
             if (!pipeClient.IsConnected)
             {
                 await pipeClient.ConnectAsync(timeout/*cancellationTokenSource.Token*/).ConfigureAwait(false);
+#if RELEASE
                 if (!NamedPipeServerSecurity(pipeClient))
                 {
                     Disconnect();
                 }
+#endif
             }
             //Task.Run(() => ReadAsync(), cancellationTokenSource.Token);
         }
