@@ -143,6 +143,7 @@ namespace DDPM.SA.Common
 
         //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
         public Task<bool> ReloadEzSettings();
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion EasyArange
 
         #region Gaming
@@ -169,6 +170,7 @@ namespace DDPM.SA.Common
         Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
         #endregion
         #region Display FWU Metadata
+    
         Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA);
         #endregion
     }

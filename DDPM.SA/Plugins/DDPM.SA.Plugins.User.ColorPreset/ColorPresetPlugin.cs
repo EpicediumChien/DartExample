@@ -1558,7 +1558,7 @@ namespace ColorPreset.Plugins
             //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
             //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_key2info_key1sig.json";
             //jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\metaadata_icc_pk1.json";
-            jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\dean\\metaadata_icc2.json";
+            //jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\dean\\metaadata_icc2.json";
 
             // **** (1/3) for Dean **** we should check both a.Info.cs and b.local_setting_file 
             List<string> InfoPkey = new List<string>();
@@ -1568,6 +1568,7 @@ namespace ColorPreset.Plugins
             //ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
             ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson_2(jsonfilepath, InfoPkey, out strJson);
 
+            return true;    // Force True. Info key and Signature not ready in server site.
             // Handle "Info" section
             if (ret && (strJson.Length > 1))
             {

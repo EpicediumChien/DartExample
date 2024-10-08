@@ -19,6 +19,31 @@ namespace DDPM.SA.Common.Display
 
         #endregion Native Properties
 
+        #region ctor and create new instance
+        /// <summary>
+        /// Default ctor, construct a default instances, that is, SplitCtrl0A (Off)
+        /// </summary>
+        public SplitJson()
+        {
+                
+        }
+
+        /// <summary>
+        /// Clone an instance. all native propeties will be copied.
+        /// </summary>
+        /// <returns></returns>
+        public SplitJson Clone()
+        {
+            return new SplitJson()
+            {
+                CellCount = this.CellCount,
+                SplitKey = this.SplitKey,
+                Settings = new List<double>(this.Settings),
+                CustomName = this.CustomName,
+                CustomId = this.CustomId
+            };
+        }
+        #endregion ctor and create new instance
 
         public string ToString()
         {

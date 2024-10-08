@@ -31,6 +31,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
         //string msgboxTitle = "Error";
@@ -143,7 +144,7 @@ namespace DDPM.UI.Module.EzMemory
 
                 }
             }
-            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, splitListView_RecentForEzM);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
