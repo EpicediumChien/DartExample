@@ -43,12 +43,10 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly SplitListView _splitListView;
         #endregion Private Members
 
-        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
+        public EzMemoryLaunchOption(DisplayViewModel vmDisplay)
         {
-            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
@@ -69,12 +67,15 @@ namespace DDPM.UI.Module.EzMemory
             _vm.ProgressValue = 3;
         }
 
+        /// <summary>
+        /// Initialize Page
+        /// </summary>
         public void InitializePage()
         {
-            TitleTB.Text = _vm.TitleTBForLaunchOptionPage;
-            StartupCB.Content = _vm.StartupCBContentForLaunchOptionPage;
-            ManulRB.Content = _vm.ManulRBContentForLaunchOptionPage;
-            AutoRB.Content = _vm.AutoRBContentForLaunchOptionPage;
+            TitleTB.Text = Strings.TitleTBForLaunchOptionPage;
+            StartupCB.Content = Strings.StartupCBContentForLaunchOptionPage;
+            ManulRB.Content = Strings.ManulRBContentForLaunchOptionPage;
+            AutoRB.Content = Strings.AutoRBContentForLaunchOptionPage;
             _vm.ezPages = _vm.GetEzPages();
 
             if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
@@ -86,13 +87,23 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// Back
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 2;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
+        /// <summary>
+        /// Finish Btn, add profile to spilt item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FinishBtn_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -105,6 +116,7 @@ namespace DDPM.UI.Module.EzMemory
                     // 讀取 User 的 EasyArrangement Profile
                     int profileID = 0;
                     string profileName = _vm.InputText;
+                    // 重要!!!把分割數量與SplitKey代號轉換成layout
                     int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
                     int _number = 0;
                     // 取得現有的 EAProfile
@@ -145,7 +157,7 @@ namespace DDPM.UI.Module.EzMemory
                         SplitItem item0A;
                         sp0A.FriendlyName = "Off"; //Need Multilogual support
                         sp0A.SplitMode = eSplitModes.Icon;
-                        item0A = _splitListView.AddItemToList(sp0A.UC);
+                        item0A = _vm.splitListRightView.AddItemToList(sp0A.UC);
                         item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
                         item0A.CustomId = _eAProfileDDPM.ID;
                         item0A.IsHoverable = true;
@@ -228,14 +240,24 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 
+        /// <summary>
+        /// When 'Launch during PC startup' is checked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartupCB_Checked(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.DDPMMesssageBox(_vm.ezMemoryStartupErrorTitleStringForLaunchOptionPage, _vm.ezMemoryStartupErrorStringForLaunchOptionPage);
+            DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage);
         }
     }
 }
