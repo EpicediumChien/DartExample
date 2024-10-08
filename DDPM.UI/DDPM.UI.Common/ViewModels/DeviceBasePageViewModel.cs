@@ -630,6 +630,17 @@ namespace DDPM.UI.Common.ViewModels
             if (SelectedHomeDeviceChanged != null)
                 SelectedHomeDeviceChanged(this, EventArgs.Empty);
 
+            //handle the last select monitor
+            if(DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                if( DdpmCommonHelper.ModuleOwner != null && 
+                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
+                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+            }
+
             foreach (ModuleGroup group in ModuleGroups)
             {
                 foreach (RightViewHeader header in group.Headers)
