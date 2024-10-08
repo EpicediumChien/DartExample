@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Shell;
+﻿using DDPM.SA.Common.Settings;
+using Microsoft.WindowsAPICodePack.Shell;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -197,7 +198,8 @@ namespace DDPM.SA.Common
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             //logger.WriteLog($"[ColorApp][FindAppsbyShell] App Icon folder: {IconFolder}");
-
+            string folderInfo = string.Empty, info = string.Empty;
+            DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info);
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
 
@@ -416,7 +418,8 @@ namespace DDPM.SA.Common
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             //logger.WriteLog($"[ColorApp][FindAppsbyShell] App Icon folder: {IconFolder}");
-
+            string folderInfo = string.Empty, info = string.Empty;
+            DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info);
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
 

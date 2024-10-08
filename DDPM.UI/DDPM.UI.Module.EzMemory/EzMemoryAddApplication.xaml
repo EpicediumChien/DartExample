@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DDPM.UI.Module.EzMemory"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
-             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common" d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" 
+             xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" Background="#0D121A" Loaded="UserControl_Loaded"
              d:DesignHeight="735" d:DesignWidth="1378">
     <Grid>
@@ -79,7 +81,7 @@
             <!-- 底部按鈕 -->
             <Grid Grid.Row="3" Margin="0,0,0,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <UXControls:UXButton x:Name="btnSelect" Content="Select from folder" Width="177" Height="40" Margin="150,20,0,0" CornerRadius="2" Foreground="White" Background="#0672CB" Click="btnAdd_Click" />
+                    <UXControls:UXButton x:Name="btnSelect" Content="Select from folder" Width="177" Height="40" Margin="150,20,0,0" CornerRadius="2" Foreground="White" Background="#0672CB" Click="btnSelect_Click" />
                 </StackPanel>
 
                 <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center">

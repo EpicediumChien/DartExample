@@ -44,19 +44,20 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            _log = vmDisplay.Console.CreateLog("EzMemoryFirst");
+            _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
-            //DataContext = vm;
             if (_homeDevice.vmEzArrange == null)
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
@@ -96,37 +97,17 @@ namespace DDPM.UI.Module.EzMemory
 
             splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
-
-
             //InitRecentListView();
             InitListViewItems();
 
-            customListTooltipText.Text = CustomListTooltipText;
+            customListTooltipText.Text = _vm.CustomListTooltipText;
 
             InitializePage();
+            CheckInputText();
         }
 
         public void InitializePage()
         {
-            //Read other settings
-
-            List<EAProfileDDPM> eaProfile = DdpmCommonHelper.DeviceManagerSA.ReadEzProfiles().Result;
-            List<EAAppInfoDDPM> lea = new List<EAAppInfoDDPM>();
-            EAAppInfoDDPM ea = new EAAppInfoDDPM();
-            ea.IsUWP = false;
-            ea.Name = "11";
-            lea.Add( ea );
-
-            EAAppInfoDDPM ea2 = new EAAppInfoDDPM();
-            ea2.IsUWP = false;
-            ea2.Name = "22";
-            lea.Add(ea2);
-
-
-            EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, true, 111, true, "TEST", "TEST", lea);
-            EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, true, 111, true, "TEST1", "TEST1", lea);
-            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test);
-            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test2);
             _vm._currentTotalPage = 0;
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
@@ -141,13 +122,66 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        public void CheckInputText()
+        {
+            try
+            {
+                List<EAProfileDDPM> newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (newEAProfileDDPM != null)
+                {
+                    int profileNumber = 1;
+                    bool isDuplicate = false;
+
+                    // 檢查並自動跳號
+                    do
+                    {
+                        string profileNameToCheck = $"Profile {profileNumber}";
+                        isDuplicate = newEAProfileDDPM.Any(p => p.Name.Equals(profileNameToCheck, StringComparison.OrdinalIgnoreCase));
+
+                        if (isDuplicate)
+                        {
+                            profileNumber++;
+                        }
+
+                        // 超過 Profile 9設為string.Empty
+                        if (profileNumber > 9)
+                        {
+                            _vm.InputText = string.Empty;
+                            _log.Error($"{nameof(EzMemoryFirst)} Exceeded Profile 9. InputText set to string.Empty.");
+                            break;
+                        }
+                        else
+                        {
+                            _vm.InputText = profileNameToCheck;
+                        }
+                    }
+                    while (isDuplicate);
+
+                    if (!isDuplicate)
+                    {
+                        _log.Info($"{nameof(EzMemoryFirst)} Unique profile name found: {_vm.InputText}");
+                    }
+                }
+                else
+                {
+                    _log.Info($"{nameof(EzMemoryFirst)} No EAProfileDDPM found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"{nameof(EzMemoryFirst)} Error in CheckInputText: {ex.Message}");
+                _vm.InputText = string.Empty; 
+            }
+        }
+
         /// <summary>
         /// Next Page
         /// </summary>
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -188,6 +222,23 @@ namespace DDPM.UI.Module.EzMemory
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm.SelectedSplitItem.CellCount < 2)
+            {
+                return;
+            }
+            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+            if (checkEAProfileDDPM != null)
+            {
+                if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    return;
+                }
+            }
+
             NextPage();
             DoProgressAnimation(true);
         }
@@ -745,5 +796,36 @@ namespace DDPM.UI.Module.EzMemory
             return listOut;
         }
         #endregion
+
+        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                // Handle "@"
+            }
+            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
+                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
+                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
+                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
+                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
+                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
+                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
+                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
+            {
+                // Handle 0-9, a-z, A-Z, " ", "-" 
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
     }
 }

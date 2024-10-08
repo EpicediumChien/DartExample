@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -35,6 +36,7 @@ namespace DDPM.ColorApp
         private AppStatusQuery? appStatus = null;//Dean 0626 fix SAST issue, remove static as recommend
         private List<ColorPresetSettings>? appconfigs = null;
         //private List<ColorPresetSettings>? appconfigs = new List<ColorPresetSettings>();
+        private List<string> _supported_preset = new List<string>();
 
         private ILog Log { get; set; }
 
@@ -66,10 +68,11 @@ namespace DDPM.ColorApp
         }
 
         // jim add 20240605
-        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON)
+        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
         {
             b_AUTO_ColorPresetConfig = blAUTO;
             b_SmartHDR_ON = blSmartHDR_ON;
+            _supported_preset = ColorPresetSupportList;
 
             if (b_AUTO_ColorPresetConfig)
             {
@@ -457,7 +460,7 @@ namespace DDPM.ColorApp
                                 //
                                 //Set request key to update color preset and draw OSD
                                 string outmsg = string.Empty;
-                                set_monitor_preset_by_request_key(actived_mi, reqKey, out outmsg);
+                                set_monitor_preset_by_request_key(actived_mi, reqKey, out outmsg, b_SmartHDR_ON);
                                 //tmp = actived_mi.AliasDeviceName + ":" + reqKey;
                                 break;
                             }
@@ -487,7 +490,7 @@ namespace DDPM.ColorApp
         }
 
         //public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, string reqKey, out string outmsg, bool isDrawOSD = true)
-        public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, int reqKey, out string outmsg, bool isDrawOSD = true)
+        public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, int reqKey, out string outmsg, bool b_SmartHDR_ON, bool isDrawOSD = true)
         {
             //if (string.IsNullOrEmpty(reqKey))
             if (reqKey == -1)
@@ -505,9 +508,130 @@ namespace DDPM.ColorApp
 
             var strColorPresetName = ddmLib.GetColorPresetName(reqKey).Result;
 
-            bool bi = ddmLib.WriteColorPreset(actived_mi, strColorPresetName, 1).Result;
+            string strSync_CurrentColorPreset = string.Empty;
+
+            if (!b_SmartHDR_ON)
+            {
+                strSync_CurrentColorPreset = Sync_CurrentColorPreset(strColorPresetName);
+            }
+            else
+                strSync_CurrentColorPreset = strColorPresetName;    
+
+            bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1).Result;
 
             return true;
+        }
+
+        public string Sync_CurrentColorPreset(string curcolorPreset)
+        {
+            string strSync_CurrentColorPreset = string.Empty;
+
+            int index = -1;
+
+            // check Color Preset Strings Standard or Native
+
+            if (Mi.modelName.StartsWith("UP"))
+            {
+                if (curcolorPreset == "Standard/Native")
+                    strSync_CurrentColorPreset = "Native";
+            }
+            else
+            {
+                if (curcolorPreset == "Standard/Native")
+                    strSync_CurrentColorPreset = "Standard";
+            }
+
+            // check Color Preset Strings Custom 1/2/3 or User 1/2/3
+
+            if (Mi.modelName.StartsWith("UP3221Q"))
+            {
+                if (curcolorPreset == "Custom 1 / User 1")
+                    strSync_CurrentColorPreset = "User 1";
+                else if (curcolorPreset == "Custom 2 / User 2")
+                    strSync_CurrentColorPreset = "User 2";
+                else if (curcolorPreset == "Custom 3 / User 3")
+                    strSync_CurrentColorPreset = "User 3";
+            }
+            else
+            {
+                if (curcolorPreset == "Custom 1 / User 1")
+                    strSync_CurrentColorPreset = "Custom 1";
+                else if (curcolorPreset == "Custom 2 / User 2")
+                    strSync_CurrentColorPreset = "Custom 2";
+                else if (curcolorPreset == "Custom 3 / User 3")
+                    strSync_CurrentColorPreset = "Custom 3";
+            }
+
+            // check Color Preset Strings Game or Game1
+
+            if (_supported_preset!= null)
+            {
+                if (_supported_preset.Count >= 0)
+                {
+                    index = _supported_preset.FindIndex(x => x == "Game2");
+
+                    if (index >= 0)
+                    {
+                        if (curcolorPreset == "Game/Game1")
+                            strSync_CurrentColorPreset = "Game1";
+                    }
+                    else
+                    {
+                        if (curcolorPreset == "Game/Game1")
+                            strSync_CurrentColorPreset = "Game";
+                    }
+
+                }              
+            }          
+
+            // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
+
+            string strFY = string.Empty;
+
+            for (int i = 0; i < Mi.modelName.Length; i++) // loop over the complete modelName
+            {
+                if (Char.IsDigit(Mi.modelName[i])) //check if the current char is digit
+                {
+                    strFY = Mi.modelName.Substring(i + 2, 2);
+                    break;
+                }
+
+            }
+
+            // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
+            int numFY = 0;
+            try
+            {
+                numFY = Int32.Parse(strFY);
+
+                if (numFY <= 23)
+                {
+                    if (curcolorPreset == "Rec.709 / BT.709")
+                        strSync_CurrentColorPreset = "Rec.709";
+
+                    if (curcolorPreset == "Rec.2020 / BT.2020")
+                        strSync_CurrentColorPreset = "Rec.2020";
+
+                }
+                else if (numFY >= 25)
+                {
+                    if (curcolorPreset == "Rec.709 / BT.709")
+                        strSync_CurrentColorPreset = "BT.709";
+
+                    if (curcolorPreset == "Rec.2020 / BT.2020")
+                        strSync_CurrentColorPreset = "BT.2020";
+                }
+
+            }
+            catch (FormatException e)
+            {
+                Log?.Error("check Color Preset Strings Rec.709 or BT.709 / Rec.2020 or BT.2020..." + e.Message);
+            }
+
+            if (System.String.IsNullOrEmpty(strSync_CurrentColorPreset))
+                strSync_CurrentColorPreset = curcolorPreset;
+
+            return strSync_CurrentColorPreset;
         }
     }
 }

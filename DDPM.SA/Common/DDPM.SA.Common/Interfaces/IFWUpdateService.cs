@@ -23,16 +23,20 @@ namespace DDPM.SA.Common
         event EventHandler<PopupContentPackage> CallPopup;
 
         /// <summary>
-        /// 供CLI使用
+        /// for CLI use
         /// </summary>
         event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
         void StartCheckUpdateScheduleTimer();
 
-        //0612 Bruce 將傳入值FWUpdateInfoPackage移除因已不需使用，不會影響UI和CLI
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
+        //Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
 
-        Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
+        //Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
+
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay);
+
+        Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay);
+
 
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath);
         Task<FWUErrorCode> Install(string installPath);
@@ -46,5 +50,6 @@ namespace DDPM.SA.Common
         void DelayEvent(object e);
 
         void UpdateEvent(object e);
+        void SetSkipCA(bool isSkipCA);
     }
 }

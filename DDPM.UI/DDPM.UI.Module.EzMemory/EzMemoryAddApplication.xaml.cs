@@ -21,6 +21,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using System.Diagnostics;
+using System.IO;
+using Microsoft;
+using DDPM.UI.Common.UserControls;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -36,6 +41,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
@@ -45,13 +51,16 @@ namespace DDPM.UI.Module.EzMemory
 
         public ObservableCollection<ApplicationItem> InstalledApplications { get; set; } = new ObservableCollection<ApplicationItem>();
         //public ObservableCollection<ApplicationItem> InstalledApplications { get; set; }
-        public EzMemoryAddApplication(DisplayViewModel vmDisplay)
+        public EzMemoryAddApplication(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
+            _log = vmDisplay.Console.CreateLog("EzMemoryAddApplication");
+            _log.Info($"{nameof(EzMemoryAddApplication)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
 
             if (_homeDevice.vmEzArrange == null)
@@ -59,9 +68,10 @@ namespace DDPM.UI.Module.EzMemory
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
             _vm = _homeDevice.vmEzArrange;
+
             DataContext = _homeDevice.vmEzArrange;
 
-            InitializeComponent();
+            //InitializeComponent();
         }
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -215,8 +225,7 @@ namespace DDPM.UI.Module.EzMemory
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            //_ezMemoryAssignProgram.DataContext = _vmDisplay;
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -226,19 +235,92 @@ namespace DDPM.UI.Module.EzMemory
                 return;
             var app = lb_Installed_App.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
 
-            if(_vm._sortApps.ContainsKey(_vm.ButtonName))
+            // 如果有重複的應用程式，直接返回
+            if (_vm._sortApps.Values.Any(a =>
+                a.AppName.Equals(app[0].AppName, StringComparison.OrdinalIgnoreCase) ||
+                a.AppUserModelID.Equals(app[0].AppUserModelID, StringComparison.OrdinalIgnoreCase) ||
+                a.AppPath.Equals(app[0].AppPath, StringComparison.OrdinalIgnoreCase)))
+            {
+                Thickness headMargin = new Thickness(24, 30, 45, 24);
+                Thickness subMargin = new Thickness(24, -16, 24, 8);
+                DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                return;
+            }
+
+            // 同樣的button重選
+            if (_vm._sortApps.ContainsKey(_vm.ButtonName))
             {
                 _vm._sortApps.Remove(_vm.ButtonName);
             }
-
+            
             _vm._sortApps.Add(_vm.ButtonName, app[0]);
-
-            //_vm._seletcApps.Add(app[0]);
 
             _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
 
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
+        }
+
+        private void btnSelect_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // OpenFileDialog
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "",
+                    Filter = "All (*.*)|*.*",
+                    InitialDirectory = @"C:\",
+                    //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                    Multiselect = false // only choose one
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string selectedFilePath = openFileDialog.FileName;
+                    string appName = System.IO.Path.GetFileNameWithoutExtension(selectedFilePath);
+
+                    // 檢查是否有重複
+                    if (_vm._sortApps.Values.Any(a =>
+                        a.AppName.Equals(appName, StringComparison.OrdinalIgnoreCase) ||
+                        a.AppPath.Equals(selectedFilePath, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Thickness headMargin = new Thickness(24, 30, 45, 24);
+                        Thickness subMargin = new Thickness(24, -16, 24, 8);
+                        DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                        return;
+                    }
+
+                    // new Bind_AddFullPage_AppCollectionData
+                    string fileName = System.IO.Path.GetFileName(selectedFilePath);
+                    Bind_AddFullPage_AppCollectionData newApp = new Bind_AddFullPage_AppCollectionData
+                    {
+                        AppName = fileName,
+                        AppPath = selectedFilePath,
+                        AppUserModelID = string.Empty, // UserModelID
+                        AppType = "True", // "True" = Desktop 
+                        InstalledDate = DateTime.Now, // 使用目前時間
+                        AppIcon = "Assets/palette.png" // 預設圖示
+                    };
+
+                    // 同樣的button重選
+                    if (_vm._sortApps.ContainsKey(_vm.ButtonName))
+                    {
+                        _vm._sortApps.Remove(_vm.ButtonName);
+                    }
+
+                    _vm._sortApps.Add(_vm.ButtonName, newApp);
+
+                    _vm.UpdateTextBlockAppName(_vm.ButtonName, fileName);
+
+                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+                    DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"{nameof(EzMemoryAddApplication)} btnSelect_Click: Error - {ex.Message}");
+            }
         }
     }
 }

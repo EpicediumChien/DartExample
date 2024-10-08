@@ -4,6 +4,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
@@ -29,7 +30,28 @@ namespace DDPM.UI.Common.ViewModels
         public string _currentDeviceModel = "EzMemory";
         public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
-        
+        public SplitItem currenySelectspItem;
+        public readonly String ProfileTitleTextBlockForRightViewUI = "Profile";
+        public readonly String AutomaticStartupTextBlockForRightViewUI = "Automatic Startup:";
+        public readonly String LaunchByTimeTextBlockForRightViewUI = "Launch by Time:";
+        public readonly String AppDocumentTextBlockForRightViewUI = "App/Document:";
+        public readonly String applybtnForRightViewUI = "Apply";
+        public readonly String NATextForRightViewUI = "N/A";
+
+        public readonly String msgboxTitle = "Error";
+        public readonly String subTitle = "You can only save up to 9 profiles. Delete an existing profile or edit it in the main menu.";
+
+        public readonly String msgboxTitleForFirstPage = "Warning";
+        public readonly String subTitleForFirstPage = "Duplicate entries. Enter different documentation or applications for Easy Memory profile.";
+        public readonly String CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+
+        public readonly String ezMemoryStartupErrorTitleStringForLaunchOptionPage = "Error";
+        public readonly String ezMemoryStartupErrorStringForLaunchOptionPage = "Another profile is set to launch during PC startup. Do you want to replace it with this profile?";
+        public readonly String TitleTBForLaunchOptionPage = "Select a launch option";
+        public readonly String StartupCBContentForLaunchOptionPage = "Launch during PC startup";
+        public readonly String ManulRBContentForLaunchOptionPage = "Manually select the profiles created";
+        public readonly String AutoRBContentForLaunchOptionPage = "Automatically launch by time";
+
         #endregion
 
         public EzArrangeViewModel(HomeDevice homeDev)
@@ -250,9 +272,76 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion
 
-        //EzMemoryViewModel
+        //////////////////////////////////EzMemoryViewModel////////////////////////////////////////////
 
         #region EzMemoryViewModel
+
+        public EzProfileSettingDDPM? FindProfileSettingById(EasyArrangementDDPM easyArrangementDDPM, int profileID)
+        {
+            if (easyArrangementDDPM.Desktops != null && easyArrangementDDPM.Desktops.Count > 0)
+            {
+                // 從 Desktops[0].ProfileSettings 中找 ID
+                EzProfileSettingDDPM matchingProfileSetting = easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profileID);
+
+                if (matchingProfileSetting != null)
+                {
+                    return matchingProfileSetting;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string ConvertAutoLaunchtimeToTime(long? autoLaunchtime)
+        {
+            if (!autoLaunchtime.HasValue)
+            {
+                return String.Empty;
+            }
+
+            double totalSeconds = (double)autoLaunchtime.Value;
+
+            TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
+
+            DateTime launchTime = DateTime.Today.Add(time);
+
+            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+
+            return formattedTime;
+        }
+
+        public int ConvertToLayout(int cellCount, char splitKey)
+        {
+            if (cellCount < 0 || cellCount > 12)
+            {
+                return 0;
+            }
+
+            if (splitKey < 'A' || splitKey > 'Z')
+            {
+                return 0;
+            }
+
+            // CellCount 左移 5 位，SplitKey 轉換為 0 到 25 之間的值
+            return (cellCount << 5) | (splitKey - 'A');
+        }
+
+        public (int cellCount, char splitKey) ParseFromLayout(int layout)
+        {
+            // 取高 5 位
+            int cellCount = (layout >> 5) & 0xF; // 0xF 代表只取前 4 個位元
+
+            // 取低 5 位，並加回 'A' 得到字母
+            char splitKey = (char)('A' + (layout & 0x1F)); // 0x1F 代表只取低 5 位元
+
+            return (cellCount, splitKey);
+        }
 
         private void Init_EzMemory()
         {
@@ -324,25 +413,48 @@ namespace DDPM.UI.Common.ViewModels
 
         #region RightView page
 
-        private string _automaticStartupValue = "N/A";
+        private string _profileTitleTextBlockValue;
+        public string ProfileTitleTextBlockValue
+        {
+            get => _profileTitleTextBlockValue;
+            set
+            {
+                SetProperty(ref _profileTitleTextBlockValue, value);
+                OnPropertyChanged("ProfileTitleTextBlockValue");
+            }
+        }
+
+        private string _automaticStartupValue;
         public string AutomaticStartupValue
         {
             get => _automaticStartupValue;
-            set => SetProperty(ref _automaticStartupValue, value);
+            set
+            {
+                SetProperty(ref _automaticStartupValue, value);
+                OnPropertyChanged("AutomaticStartupValue");
+            }
         }
 
-        private string _launchByTimeValue = "N/A";
+        private string _launchByTimeValue;
         public string LaunchByTimeValue
         {
             get => _launchByTimeValue;
-            set => SetProperty(ref _launchByTimeValue, value);
+            set
+            {
+                SetProperty(ref _launchByTimeValue, value);
+                OnPropertyChanged("LaunchByTimeValue");
+            }
         }
 
-        private string _appDocumentValue = "N/A";
+        private string _appDocumentValue;
         public string AppDocumentValue
         {
             get => _appDocumentValue;
-            set => SetProperty(ref _appDocumentValue, value);
+            set
+            {
+                SetProperty(ref _appDocumentValue, value);
+                OnPropertyChanged("AppDocumentValue");
+            }
         }
 
         #endregion RightView page
