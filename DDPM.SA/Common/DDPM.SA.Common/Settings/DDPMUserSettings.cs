@@ -45,7 +45,7 @@ namespace DDPM.SA.Common.Settings
 
         //private static DDPMUserSettings userSettings;
 
-        public double Version { get; set; }
+        public double Version { get; set; } = 1.0; //consider how to control the setting's version in the feature
         public int Language { get; set; }
         public bool IsSynchronizemonitor { get; set; } = false;
         public string Schedule { get; set; } = string.Empty;
@@ -62,7 +62,6 @@ namespace DDPM.SA.Common.Settings
         //public string strUSBKVMPCsList { get; set; }
         public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
 
-        //public bool isTelemetryConsentAllow { get; set; } = true; //global setting -> Analytics page -> checkbox enable/disable
         //FW Update
         public bool LockFWU_UI { get; set; }
 

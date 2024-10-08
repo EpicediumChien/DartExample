@@ -143,6 +143,7 @@ namespace DDPM.SA.Common
 
         //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
         public Task<bool> ReloadEzSettings();
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion EasyArange
 
         #region Gaming

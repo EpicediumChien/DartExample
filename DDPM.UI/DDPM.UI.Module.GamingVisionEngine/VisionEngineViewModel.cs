@@ -147,7 +147,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
         }
         private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             string swHortcutText = string.Empty;
 
             if (curHotkey.HotkeyInfo.Count > 0)

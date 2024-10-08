@@ -259,6 +259,7 @@ namespace DDPM.SA.Common.Settings
             string modifiedJson = string.Empty;
             string signature = string.Empty;
             JObject jObject;
+            //3. retrieve signature for comparison
             try
             {
                 //jObject = JObject.Parse(serialized);
@@ -309,17 +310,6 @@ namespace DDPM.SA.Common.Settings
 #endif
                     return string.Empty;
                 }
-                //jObject = (JObject)JsonConvert.SerializeObject(serialized, Formatting.Indented);
-                //3. retrieve signature for comparison
-                //signature = (string)jObject["Signature"];
-
-                // Remove the "signature" property for hash generating
-                //if (!jObject.Remove("Signature"))
-                //{
-                //    info = "Remove signature field of json failed";
-                //    Console.WriteLine(info);
-                //    return string.Empty;
-                //}
             }
             catch (Exception ex)
             {
@@ -339,13 +329,6 @@ namespace DDPM.SA.Common.Settings
             string cal_sign;
             try
             {
-                //0905 apply DDPM private key rule
-            //    modifiedJson = jObject.ToString();
-                //byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
-                //byte[] sign = GetSHA512(body_array, 0, body_array.Length);
-                //cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
-
-                //cal_sign = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
@@ -752,16 +735,9 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
-            bool bRet = false;
-            if (signature == null)
+            if (string.IsNullOrEmpty(signature ))
             {
-                bRet = false;
-#if DEBUG
-                Console.WriteLine("No signature found. we should return fail here." + json_file);
-                bRet = true;    // (1/2) Temp for develop mode.  Currently NO json file with signature from server.
-#endif
-                if (bRet == false)
-                    return true;// (2/2) Temp for Normal Mode. Currently NO json file with signature from server.
+                return false;// No signature so fail
             }
 
             for (int i = 0; i < InfoPkey.Count; i++)
@@ -930,9 +906,9 @@ namespace DDPM.SA.Common.Settings
             if (result != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"IsPathSymboliced: {nameof(result)}";
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -2046,7 +2022,7 @@ namespace DDPM.SA.Common.Settings
 	public static bool SRemoveSymbolicFile(string filePath, out string info)
         {
             info = "pass";
-            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            if (!DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
             {
                 return true;
             }
@@ -2076,7 +2052,7 @@ namespace DDPM.SA.Common.Settings
         public static bool SRemoveSymbolicFolder(string filePath, out string info)
         {
             info = "pass";
-            if (IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            if (!IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
             {
                 return true;
             }

@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Common;
+﻿using DDPM.SA.Common.Display;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,5 +29,6 @@ namespace DDPM.SA.Common.Interfaces
         public event EventHandler<EAArgs> EditReturn;
         //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
         public Task<bool> ReloadEzSettings();
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
      }
 }
