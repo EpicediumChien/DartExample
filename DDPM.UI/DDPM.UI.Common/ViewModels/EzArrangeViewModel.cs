@@ -31,26 +31,6 @@ namespace DDPM.UI.Common.ViewModels
         public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
         public SplitItem currenySelectspItem;
-        public readonly String ProfileTitleTextBlockForRightViewUI = "Profile";
-        public readonly String AutomaticStartupTextBlockForRightViewUI = "Automatic Startup:";
-        public readonly String LaunchByTimeTextBlockForRightViewUI = "Launch by Time:";
-        public readonly String AppDocumentTextBlockForRightViewUI = "App/Document:";
-        public readonly String applybtnForRightViewUI = "Apply";
-        public readonly String NATextForRightViewUI = "N/A";
-
-        public readonly String msgboxTitle = "Error";
-        public readonly String subTitle = "You can only save up to 9 profiles. Delete an existing profile or edit it in the main menu.";
-
-        public readonly String msgboxTitleForFirstPage = "Warning";
-        public readonly String subTitleForFirstPage = "Duplicate entries. Enter different documentation or applications for Easy Memory profile.";
-        public readonly String CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
-
-        public readonly String ezMemoryStartupErrorTitleStringForLaunchOptionPage = "Error";
-        public readonly String ezMemoryStartupErrorStringForLaunchOptionPage = "Another profile is set to launch during PC startup. Do you want to replace it with this profile?";
-        public readonly String TitleTBForLaunchOptionPage = "Select a launch option";
-        public readonly String StartupCBContentForLaunchOptionPage = "Launch during PC startup";
-        public readonly String ManulRBContentForLaunchOptionPage = "Manually select the profiles created";
-        public readonly String AutoRBContentForLaunchOptionPage = "Automatically launch by time";
 
         #endregion
 
@@ -275,6 +255,14 @@ namespace DDPM.UI.Common.ViewModels
         //////////////////////////////////EzMemoryViewModel////////////////////////////////////////////
 
         #region EzMemoryViewModel
+
+
+        public SplitListView _splitListRightView;
+        public SplitListView splitListRightView
+        {
+            get => _splitListRightView;
+            set => _splitListRightView = value;
+        }
 
         public EzProfileSettingDDPM? FindProfileSettingById(EasyArrangementDDPM easyArrangementDDPM, int profileID)
         {
