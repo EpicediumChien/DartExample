@@ -43,14 +43,16 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryLaunchOption(DisplayViewModel vmDisplay)
+        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            _selecthomeDevice = _homeDeviceSelect;
             _log = vmDisplay.Console.CreateLog("EzMemoryLaunchOption");
             _log.Info($"{nameof(EzMemoryLaunchOption)} - Constructed");
             InitializeComponent();
@@ -95,7 +97,7 @@ namespace DDPM.UI.Module.EzMemory
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 2;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -185,7 +187,7 @@ namespace DDPM.UI.Module.EzMemory
                         autoLaunchtime = (long)(hour * 3600 + minute * 60); // 將小時和分鐘轉換為秒數
                     }
 
-                    EasyArrangementDDPM _easyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
+                    EasyArrangementDDPM _easyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
 
                     // 檢查 _easyArrangementDDPM 是否為 null，如果是，則new
                     if (_easyArrangementDDPM == null)
@@ -215,7 +217,7 @@ namespace DDPM.UI.Module.EzMemory
                     }
 
                     // 將更新寫回
-                    if (DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(_homeDevice.MonitorInfo, _easyArrangementDDPM).Result)
+                    if (DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(_selecthomeDevice.MonitorInfo, _easyArrangementDDPM).Result)
                     {
                         _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings PASS");
                     }
