@@ -8903,7 +8903,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_DeviceType is OSDType_Device.Headset)
                                             {
                                                 if (HeadsetBatteryLowIWinx != null)
-                                                    HeadsetBatteryLowIWinx.Close();
+                                                    HeadsetBatteryLowIWinx.CloseWindow();
 
                                                 HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
 
@@ -8911,13 +8911,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    HeadsetBatteryLowIWinx.Show();
+                                                    HeadsetBatteryLowIWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
                                                     HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    HeadsetBatteryLowIWinx.Show();
+                                                    HeadsetBatteryLowIWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -8927,7 +8927,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else if (_DeviceType is OSDType_Device.Keyboard)
                                             {
                                                 if (KeybordBatteryLowIWinx != null)
-                                                    KeybordBatteryLowIWinx.Close();
+                                                    KeybordBatteryLowIWinx.CloseWindow();
 
                                                 KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
 
@@ -8935,13 +8935,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    KeybordBatteryLowIWinx.Show();
+                                                    KeybordBatteryLowIWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
                                                     KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    KeybordBatteryLowIWinx.Show();
+                                                    KeybordBatteryLowIWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -8951,7 +8951,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else if (_DeviceType is OSDType_Device.Mouse)
                                             {
                                                 if (MouseBatteryLowIWinx != null)
-                                                    MouseBatteryLowIWinx.Close();
+                                                    MouseBatteryLowIWinx.CloseWindow();
 
                                                 MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
 
@@ -8959,13 +8959,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MouseBatteryLowIWinx.Show();
+                                                    MouseBatteryLowIWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
                                                     MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    MouseBatteryLowIWinx.Show();
+                                                    MouseBatteryLowIWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -8978,7 +8978,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     case OSDType.StartRecording:
                                         {
                                             if (StartRecordingWinx != null)
-                                                StartRecordingWinx.Close();
+                                                StartRecordingWinx.CloseWindow();
 
                                             StartRecordingWinx = new StartRecordingWin(Content);
 
@@ -8986,13 +8986,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                 StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                StartRecordingWinx.Show();
+                                                StartRecordingWinx.ShowWindow();
                                             }
                                             catch (Exception)
                                             {
                                                 StartRecordingWinx.Top = sreen.WorkingArea.Top;
                                                 StartRecordingWinx.Left = sreen.WorkingArea.Left;
-                                                StartRecordingWinx.Show();
+                                                StartRecordingWinx.ShowWindow();
                                             }
                                             finally
                                             {
@@ -9004,7 +9004,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     case OSDType.DisplayChanged:
                                         {
                                             if (DisplayChangedWinx != null)
-                                                DisplayChangedWinx.Close();
+                                                DisplayChangedWinx.CloseWindow();
 
                                             DisplayChangedWinx = new DisplayChangedWin(Content);
 
@@ -9012,13 +9012,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                 DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                DisplayChangedWinx.Show();
+                                                DisplayChangedWinx.ShowWindow();
                                             }
                                             catch (Exception)
                                             {
                                                 DisplayChangedWinx.Top = sreen.WorkingArea.Top;
                                                 DisplayChangedWinx.Left = sreen.WorkingArea.Left;
-                                                DisplayChangedWinx.Show();
+                                                DisplayChangedWinx.ShowWindow();
                                             }
                                             finally
                                             {
@@ -9030,7 +9030,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     case OSDType.WalkAwayLock:
                                         {
                                             if (WalkAwayLockWinx != null)
-                                                WalkAwayLockWinx.Close();
+                                                WalkAwayLockWinx.CloseWindow();
 
                                             WalkAwayLockWinx = new WalkAwayLockWin(Content);
 
@@ -9038,13 +9038,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                 WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                WalkAwayLockWinx.Show();
+                                                WalkAwayLockWinx.ShowWindow();
                                             }
                                             catch (Exception)
                                             {
                                                 WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
                                                 WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
-                                                WalkAwayLockWinx.Show();
+                                                WalkAwayLockWinx.ShowWindow();
                                             }
                                             finally
                                             {
@@ -9215,7 +9215,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     case OSDType.Fingerprint:
                                         {
                                             if (FingerprintWinx != null)
-                                                FingerprintWinx.Close();
+                                                FingerprintWinx.CloseWindow();
 
                                             FingerprintWinx = new FingerprintWin();
 
@@ -9223,13 +9223,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                 FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                FingerprintWinx.Show();
+                                                FingerprintWinx.ShowWindow();
                                             }
                                             catch (Exception)
                                             {
                                                 FingerprintWinx.Top = sreen.WorkingArea.Top;
                                                 FingerprintWinx.Left = sreen.WorkingArea.Left;
-                                                FingerprintWinx.Show();
+                                                FingerprintWinx.ShowWindow();
                                             }
                                             finally
                                             {
