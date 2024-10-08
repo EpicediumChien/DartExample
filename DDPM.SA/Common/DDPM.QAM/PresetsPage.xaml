@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="DDPM.QAM.PresetsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.QAM"
+             mc:Ignorable="d"
+             Height="216"
+             Width="288">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ScrollBar">
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Setter Property="Width"
+                        Value="12" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid Background="{TemplateBinding Background}">
+                                <Track Name="PART_Track"
+                                       IsDirectionReversed="false">
+                                    <Track.Thumb>
+                                        <Thumb Name="Thumb"
+                                               Background="Gray"
+                                               Height="30"
+                                               Width="12">
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Ellipse Fill="Gray"
+                                                             Width="12"
+                                                             Height="30" />
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#141D28"
+            Height="216"
+            CornerRadius="0,0,10,10">
+            <ScrollViewer >
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding UI_ProfileList}"
+                              Name="listTopics"
+                              Background="Transparent"
+                              BorderThickness="0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Border Style="{StaticResource BorderUnpair}"
+                                        Background="Transparent"
+                                        Width="256"
+                                        Height="40"
+                                        MouseLeftButtonDown="SetProfile_Click"
+                                        Cursor="Hand"
+                                        Margin="8,15,8,5"
+                                        Visibility="Visible">
+                                    <Grid>
+                                        <UXControls:UXTextBlock Foreground="#F5F6F7"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Center"
+                                                                FontFamily="Roboto"
+                                                                FontSize="14"
+                                                                Text="{Binding Profile_Name}" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

@@ -55,7 +55,9 @@ using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
 using DdmLibrary.Utility;
-using static VcpCore.Common.User32;
+using DDPM.QAM;
+using System.Drawing;
+using Point = System.Windows.Point;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -183,6 +185,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isInitMonitorSettings = false;
         private static bool _IsSkipCA = false;
 
+        private QAMPage _QAM;
+        private Point QAM_Position;
+
         #endregion
 
         #region Constructor
@@ -227,6 +232,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+
         }
 
         #endregion
@@ -3789,7 +3795,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     vcps = ImpExpSettings.MonitorSettings.VCPs;
                     if (_ColorPresetPlugin != null)
                     {
-                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset , _SettingsPlugin).Result;
+                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                     }
                     if (vcps != null)
                     {
@@ -5005,6 +5011,56 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
         #endregion
 
+        #region WebCamera
+        private void QAMCloseEvent(object o, EventArgs e)
+        {
+            if (_QAM != null)
+            {
+                QAM_Position = new Point(_QAM.Left, _QAM.Top);
+                _QAM.Closed -= QAMCloseEvent;
+                _QAM = null;
+            }
+        }
+        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        {
+            if (_QAM == null)
+            {
+                List<DeviceInfo> deviceInfos = GetDevices().Result.deviceInfo;
+                if (deviceInfos.Any(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam))))
+                {
+                    Thread thread1 = new Thread(() =>
+                    {
+                        _QAM = new QAMPage(deviceMangerPlugin);
+                        _QAM.Closed += QAMCloseEvent;
+                        if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                        {
+                            _QAM.Top = QAM_Position.Y;
+                            _QAM.Left = QAM_Position.X;
+                        }
+                        else
+                        {
+                            float scaleFactorX = 1;
+                            float scaleFactorY = 1;
+                            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                            {
+                                float dpiX = graphics.DpiX;
+                                float dpiY = graphics.DpiY;
+                                float logicalDpi = 96.0f;
+                                scaleFactorX = dpiX / logicalDpi;
+                                scaleFactorY = dpiY / logicalDpi;
+                            }
+                            _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                            _QAM.Left = 0;
+                        }
+                        _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                        Dispatcher.Run();
+                    });
+                    thread1.SetApartmentState(ApartmentState.STA);
+                    thread1.Start();
+                }
+            }
+        }
+        #endregion
         #endregion
 
         #region Private Methods
@@ -6691,6 +6747,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
+            if (_altPressed && strKey.Equals("Z"))
+            {
+                CallQAM_UI(this);
+                return;
+            }
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
@@ -6993,7 +7054,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if ( eaSettings.RecentList == null)
+            if (eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
@@ -8641,7 +8702,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ;
             }
@@ -8709,7 +8770,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                
+
                 if (DirectoryContainsFiles(copyPath))
                 {
                     // 取得資料夾名稱
@@ -8719,7 +8780,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
-                
+
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
@@ -9483,7 +9544,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> ReadSerializedContentFromFile(string filePath)
         {
             string result = null;
-            if(_SettingsPlugin != null)
+            if (_SettingsPlugin != null)
             {
                 return Task.FromResult(_SettingsPlugin.ReadSerializedContentFromFile(filePath).Result);
             }
