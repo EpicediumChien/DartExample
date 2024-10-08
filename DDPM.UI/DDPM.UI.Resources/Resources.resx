@@ -1644,4 +1644,382 @@
   <data name="WebCameraSettings.27" xml:space="preserve">
     <value>Adjusts the frame size</value>
   </data>
+  <data name="EazyMemory.0" xml:space="preserve">
+    <value>Automatic Startup:</value>
+  </data>
+  <data name="EazyMemory.1" xml:space="preserve">
+    <value>Launch by Time:</value>
+  </data>
+  <data name="EazyMemory.2" xml:space="preserve">
+    <value>App/Document:</value>
+  </data>
+  <data name="EazyMemory.3" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="EazyMemory.4" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="EazyMemory.5" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="EazyMemory.6" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="EazyMemory.7" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="EazyMemory.8" xml:space="preserve">
+    <value>You can only save up to 9 profiles. Delete an existing profile or edit it in the main menu.</value>
+  </data>
+  <data name="EazyMemory.9" xml:space="preserve">
+    <value>Duplicate entries. Enter different documentation or applications for Easy Memory profile.</value>
+  </data>
+  <data name="EazyMemory.10" xml:space="preserve">
+    <value>You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.</value>
+  </data>
+  <data name="EazyMemory.11" xml:space="preserve">
+    <value>Another profile is set to launch during PC startup. Do you want to replace it with this profile?</value>
+  </data>
+  <data name="EazyMemory.12" xml:space="preserve">
+    <value>Select a launch option</value>
+  </data>
+  <data name="EazyMemory.13" xml:space="preserve">
+    <value>Launch during PC startup</value>
+  </data>
+  <data name="EazyMemory.14" xml:space="preserve">
+    <value>Manually select the profiles created</value>
+  </data>
+  <data name="EazyMemory.15" xml:space="preserve">
+    <value>Automatically launch by time</value>
+  </data>
+  <data name="EazyMemory.16" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="EazyMemory.17" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="EazyMemory.18" xml:space="preserve">
+    <value>Name the profile</value>
+  </data>
+  <data name="EazyMemory.19" xml:space="preserve">
+    <value>Select a layout</value>
+  </data>
+  <data name="EazyMemory.20" xml:space="preserve">
+    <value>Window 0</value>
+  </data>
+  <data name="EazyMemory.21" xml:space="preserve">
+    <value>Window 1</value>
+  </data>
+  <data name="EazyMemory.22" xml:space="preserve">
+    <value>Window 2</value>
+  </data>
+  <data name="EazyMemory.23" xml:space="preserve">
+    <value>Window 3</value>
+  </data>
+  <data name="EazyMemory.24" xml:space="preserve">
+    <value>Window 4</value>
+  </data>
+  <data name="EazyMemory.25" xml:space="preserve">
+    <value>Window 5</value>
+  </data>
+  <data name="EazyMemory.26" xml:space="preserve">
+    <value>Window 6</value>
+  </data>
+  <data name="EazyMemory.27" xml:space="preserve">
+    <value>Window 7</value>
+  </data>
+  <data name="EazyMemory.28" xml:space="preserve">
+    <value>Window 8</value>
+  </data>
+  <data name="EazyMemory.29" xml:space="preserve">
+    <value>Window 9</value>
+  </data>
+  <data name="EazyMemory.30" xml:space="preserve">
+    <value>Window 10</value>
+  </data>
+  <data name="EazyMemory.31" xml:space="preserve">
+    <value>Window 11</value>
+  </data>
+  <data name="EazyMemory.32" xml:space="preserve">
+    <value>Window 12</value>
+  </data>
+  <data name="EazyMemory.33" xml:space="preserve">
+    <value>Select from folder</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>Customize your View</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>Easy Arrange</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>Manage your Inputs</value>
+  </data>
+  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>Touch Scroll Speed</value>
+  </data>
+  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>Primary button</value>
+  </data>
+  <data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>Customizable Keys</value>
+  </data>
+  <data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>Convenient Meeting Controls</value>
+  </data>
+  <data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>Illumination Settings</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>Mute/unmute using boom mic</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>Mute/unmute using boom mic</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>Convenient buttons</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>Active Noise Cancellation</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Quick Settings in Zoom</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>Easy Presets</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>AI Auto-Framing</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>High Dynamic Range</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>Security Features</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>Welcome to\r\nDell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>See your device, how it’s connected, and its battery level (if wireless)</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>Hover on the connection tile of a wireless device to learn more details</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>Click on your device to adjust its settings</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>Click the gear icon to access app settings and software and firmware updates</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>Add a Device</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>View your Device</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>Connection Tile</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>Device Settings</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>App Settings</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>See all your supported Dell Displays and Peripherals in one place, personalize your settings, and keep your firmware updated</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>Click the + icon to find instructions on how to connect a supported Dell device</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>Easily use your monitor with multiple PCs through Input Source or USB/Network KVM settings. Additionally, connect your mouse, keyboard, and accessories to your monitor via USB to use them with your multiple PCs</value>
+  </data>
+  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>You can customize the keys on your keyboard by assigning actions.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>Streamline your meetings with shortcuts in Zoom and Teams.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>Set your keyboard’s illumination level by adjusting it manually or setting it to adapt based on surrounding light.</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>Convenient Meeting Controls</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>Customizable Keys</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>Streamline your meetings with shortcuts in Zoom and Teams.</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>You can customize the keys on your keyboard by assigning actions.</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>Change the touch scroll speed of the highlighted areas  in the app</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>Choose whether you would like your primary button to be the left or right button in the app</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>Polling Rate</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>Customize Scroll Wheel Click</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>App-specific actions</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>Enhance the speed and precision of your mouse by increasing its polling rate in the app</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>Assign your favorite actions for when you click the scroll button</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>Assign custom actions for Scroll Wheel Click when using certain applications</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>Customize Buttons</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>App-specific actions</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>Assign your favorite actions to the outlined buttons in the app</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>Assign custom actions for your mouse buttons when using certain applications</value>
+  </data>
+  <data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>Find your pen with Tile</value>
+  </data>
+  <data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>Charging your pen's battery</value>
+  </data>
+  <data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>Customize your pen's behavior</value>
+  </data>
+  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>To pair your pen with Tile:\n1. Enable Bluetooth on your mobile device.\n2. Scan the QR Code to download Tile on to your mobile device.\n3. Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>In the app, you can customize the actions of  your pen’s buttons and set the tip and tilt sensitivity\r\n</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>With our new Quick Settings widget, easily manage your camera’s key settings during a Zoom call</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>Select a preset that reflects how you want to appear on camera or  create your own</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>Enable AI Auto-Framing to keep your face in the center of the frame as you move</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>Enable High Dynamic Range to enhance image quality, particularly in extreme lighting conditions</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>Turn on Presence Sensing to have your camera wake up the screen as you approach and lock it when you walk away</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Quick Settings in Zoom</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>Easy Presets</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>High Dynamic Range</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>With our new Quick Settings widget, easily manage your camera’s key settings during a Zoom call</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>Select a preset that reflects how you want to appear on camera or  create your own</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>Convenient buttons</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>Manage Microsoft Teams and your mute status with a single press of a button for each. Adjust your audio volume and more features with other convenient buttons.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>Convenient buttons</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>Mute/unmute using boom mic</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>Manage your calls, mute status, and audio volume with the convenient buttons on your headset’s inline control</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>Manage Microsoft Teams and your mute status with a single press of a button for each. Adjust your audio volume and more features with other convenient buttons.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>Press the ANC button on your headset or choose from the options in the app to manage how much outside noise you hear.\r\n\r\nIf you select Transparency, use the slider in the app to customize the level of noise.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>Convenient buttons</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>Mute/unmute using boom mic</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>Active Noise Cancellation</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>Manage your calls, mute status, and audio volume with the convenient buttons on your headset’s inline control. Adjust how much outside noise you hear with the ANC button on the side. </value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>Fold the mic up to mute and unfold it to unmute.\r\n\r\nIf desired, turn on a feature in the app to answer incoming calls when unfolding the boom mic.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>Press the ANC button on your headset or choose from the options in the app to manage how much outside noise you hear.\r\n\r\nIf you select Transparency, use the slider in the app to customize the level of noise.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>Swipe up and down to manage your volume; double tap to answer and end calls; and more.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>Manage your mute status, active noise cancellation (ANC), and Microsoft Teams with the convenient buttons on your headset</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>Press the ANC button on your headset or choose from the options in the app to manage how much outside noise you hear.\r\n\r\nIf you select Transparency, use the slider in the app to customize the level of noise.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>Charge your headset by placing it on the charging dock or connecting it to your PC using the provided USB cable</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>Swipe and tap to control features</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>Convenient buttons</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>Active Noise Cancellation</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>Simple charging</value>
+  </data>
 </root>

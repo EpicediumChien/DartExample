@@ -1,0 +1,2116 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dell.Client.Framework.Security.Interfaces</name>
+    </assembly>
+    <members>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.AclSecurityException">
+            <summary>
+            ACL exception class.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AclSecurityException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AclSecurityException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AclSecurityException.#ctor(System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AclSecurityException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AclSecurityException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AclSecurityException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IAclChecker">
+            <summary>
+            ACL Checker Interface to see if a directory or file contains unprivileged write access.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IAclChecker.ContainsUnprivilegedWriteAccess(System.IO.DirectoryInfo)">
+            <summary>
+            Checks if a directory contains unprivileged write access.
+            </summary>
+            <param name="directoryInfo">Directory info object to validate ACLs</param>
+            <returns>Returns true if the supplied directory contains unprivileged write access, otherwise false</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if we fail to retrieve the members of the administrators group</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IAclChecker.ContainsUnprivilegedWriteAccess(System.IO.FileInfo)">
+            <summary>
+            Checks if a file contains unprivileged write access.
+            </summary>
+            <param name="fileInfo">File info object to validate ACLs</param>
+            <returns>Returns true if the supplied file contains unprivileged write access, otherwise false</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if we fail to retrieve the members of the administrators group</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IAclChecker.ContainsUnprivilegedWriteAccess(Dell.Client.Framework.Security.Interfaces.IFileLock)">
+            <summary>
+            Checks if a file contains unprivileged write access.
+            </summary>
+            <param name="fileLock">File lock object to validate ACLs</param>
+            <returns>Returns true if the supplied file contains unprivileged write access, otherwise false</returns>
+            <remarks>
+            FileLock object passed into this method will be checked to see if the file is locked.
+            If the file is not locked then this method will lock the file before validating ACLs.
+            It is up to the caller of this method to unlock the file and dispose of this object.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">Thrown if we fail to retrieve the members of the administrators group</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IFileSystemAcls">
+            <summary>
+            Defines methods for ACL manipulation.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IFileSystemAcls.SetRestrictedAclsForFile(System.String)">
+            <summary>
+            Set ACLs for file.
+            </summary>
+            <param name="file">Path to file to apply restricted ACLs to</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when file argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when file argument is invalid (whitespace or empty)</exception>
+            <exception cref="T:System.IO.FileNotFoundException">Thrown when file is not found to apply ACLs</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.AclSecurityException">Thrown when ACLs fail to be applied</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IFileSystemAcls.SetRestrictedAclsForDirectory(System.String)">
+            <summary>
+            Set ACLs for directory. Document exception this will throw, (not directory)
+            </summary>
+            <param name="directory">Directory to apply restricted ACLs to</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when directory argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when directory argument is invalid (whitespace or empty)</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">Thrown when directory is not found to apply ACLs</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.AclSecurityException">Thrown when ACLs fail to be applied</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ICertConstraints">
+            <summary>
+            Certificate constraints interface.
+            This defines the implementation required to enforce specific restriction requirements for what certificates are considered "trusted".
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IValidationInfo">
+            <summary>
+            Validation info interface.
+            This contains the data the constraints will use to enforce specific restriction requiremenets.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IValidationInfo.Certs">
+            <summary>
+            This is a list of certificates that were validated.
+            Each certificate contains its certificate chain, see <see cref="T:Dell.Client.Framework.Security.Interfaces.IValidationCert"/>
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IValidationCert">
+            <summary>
+            Validation certificate interface.
+            This information will be used by the constraints to implement restrictions based on a previously validated certificate.
+            For example, we can look at the validation cert chain to see if the leaf matches a specific common name in the subject section
+            or we can require a specific root certificate by pinning to a certain root's subject public key info hash.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IValidationCert.Chain">
+            <summary>
+            This is the chain of the validated certificate.
+            It is assumed the first certificate in this container is the leaf certificate ([0]), then the intermediate ([1]), then root ([2]), etc.
+            Intermediate and root are not required if the certificate is perhaps a self-signed certificate.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IConstraints">
+            <summary>
+            Constraints interface.
+            This defines the implementation required to enforce specific restriction requirements for what certificates are considered "trusted".
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IConstraints.Verify(Dell.Client.Framework.Security.Interfaces.IValidationInfo)">
+            <summary>
+            Verifies the validation infromation passed in meets the restriction requirements defined by this constraint.
+            </summary>
+            <param name="info">Information to validate against</param>
+            <returns>Returns true if the validation information passed in contains certificates considered to be trusted, otherwise false</returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ITrustedCertConstraint">
+            <summary>
+            Trusted certificate constraint interface.
+            This defines the implementation required to enforce specific restriction requirements for what certificates are considered "trusted".
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ITrustedCertConstraint.TrustedCerts">
+            <summary>
+            List of trusted certificates.
+            Trusted certificate store used when validating the info passed to <see cref="T:Dell.Client.Framework.Security.Interfaces.IValidationInfo"/>.
+            that are considered "trusted".
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ITrustedStoreConstraint">
+            <summary>
+            Trusted store constraint interface.
+            This defines the implementation required to enforce specific restriction requirements for what certificates are considered "trusted"
+            by checking if a certificate is found in a trusted certificate store.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ITrustedStoreConstraint.TrustedStore">
+            <summary>
+            Trusted certificate store used when validating the info passed to TrustedStoreConstraint.Verify(IValidationInfo).
+            </summary>
+            <remarks>
+            IReadOnlyCertificateStore is disposable and should be disposed of by the initializer of this property instance.
+            </remarks>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequest">
+            <summary>
+            Certificate signing request class.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequest.PublicPem">
+            <summary>
+            Public PEM is string format of the CSR.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequestFactory">
+            <summary>
+            Certificate signing request factory for creating a CSR.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequestFactory.CreateCsr(Dell.Client.Framework.Security.Interfaces.CertProperties)">
+            <summary>
+            Creates a CSR using an ephemeral key and therefore the key cannot be accessed later.
+            </summary>
+            <param name="properties">Certificate properties to use when creating the CSR</param>
+            <returns>Returns a certificate signing request</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when properties argument is null</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on failure of creating a CSR</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequestFactory.CreateCsr(Dell.Client.Framework.Security.Interfaces.CertProperties,Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType)">
+            <summary>
+            Creates a CSR using an ephemeral key and therefore the key cannot be accessed later.
+            </summary>
+            <param name="properties">Certificate properties to use when creating the CSR</param>
+            <param name="signingAlgorithmType">Hash type to use when generating the CSR</param>
+            <returns>Returns a certificate signing request</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when signingAlgorithmType argument is not a valid type</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when properties argument is null</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on failure of creating a CSR</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequestFactory.CreateCsr(Dell.Client.Framework.Security.Interfaces.CertProperties,System.Security.Cryptography.RSA,System.Boolean)">
+            <summary>
+            Creates a CSR using an ephemeral key and therefore the key cannot be accessed later.
+            </summary>
+            <param name="properties">Certificate properties to use when creating the CSR</param>
+            <param name="rsa">Asymmertric algorithm to use when creating the CSR if already generated</param>
+            <param name="disposeRsa">Whether or not to dispose of the passed in RSA object</param>
+            <returns>Returns a certificate signing request</returns>
+            <remarks>
+            Creates a CSR using the specified RSA information. If you don't want to specify
+            the RSA information then use the constructor that does not take a RSA argument.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">Thrown when properties or rsa argument is null</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on failure of creating a CSR</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateSigningRequestFactory.CreateCsr(Dell.Client.Framework.Security.Interfaces.CertProperties,System.Security.Cryptography.RSA,Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType,System.Boolean)">
+            <summary>
+            Creates a CSR using an ephemeral key and therefore the key cannot be accessed later.
+            </summary>
+            <param name="properties">Certificate properties to use when creating the CSR</param>
+            <param name="rsa">Asymmertric algorithm to use when creating the CSR if already generated</param>
+            <param name="signingAlgorithmType">Hash type to use when generating the CSR</param>
+            <param name="disposeRsa">Whether or not to dispose of the passed in RSA object</param>
+            <returns>Returns a certificate signing request</returns>
+            <remarks>
+            Creates a CSR using the specified RSA information. If you don't want to specify
+            the RSA information then use the constructor that does not take a RSA argument.
+            </remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when signingAlgorithmType argument is not a valid type</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when properties or rsa argument is null</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on failure of creating a CSR</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.CertException">
+            <inheritdoc />
+            <summary>
+            Certificate Exception.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertException.DefaultWin32ErrorCode">
+            <summary>
+            Default win32 error used by this class if one is not provided.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertException.Win32ErrorCode">
+            <summary>
+            Win32 error code that caused this exception.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.#ctor(System.String,System.Int32)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="win32ErrorCode">Win32 error code</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.#ctor(System.String,System.Int32,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="win32ErrorCode">Win32 error code</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data from for win32 error code value</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertException.CommonConstruction(System.Int32)">
+            <summary>
+            Common construction handling.
+            </summary>
+            <param name="win32ErrorCode">Win32 error code</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.CertificateStoreException">
+            <summary>
+            Certificate store exception class.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertificateStoreException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertificateStoreException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertificateStoreException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertificateStoreException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertificateStoreException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ISelfSignedCertificate">
+            <summary>
+            Helper for creating self signed certificates. When the user calls one of its constructors,
+            a self signed certificate gets created and can be accessed as an X509Certificate2 object through the
+            GetCertificate() method.
+            NOTE: Make sure you dispose of this object after using it. Since this class uses the X509Certificate2 object,
+            after creating the self signed cert a brand new file will be created on the users disk. This is handled by 
+            Microsoft and is unavoidable. By disposing of the SelfSignedCert object, the user deletes the file that 
+            Microsoft created and stored on the users machine.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISelfSignedCertificate.GetCertificate">
+            <summary>
+            This method retrives a copy of the self signed certificate as an X509Certificate2 object.
+            NOTE: Make sure to dispose of the X509Certificate2 object after using it. 
+            </summary>
+            <returns> 
+            self signed certificate as an X509Certificate2 object 
+            </returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ICertificateStore">
+            <summary>
+            Certificate store.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateStore.Add(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Stores an <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2"/> in the certificate store.
+            </summary>
+            <param name="certificate">The certificate to store</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateStore.AddRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+            <summary>
+            Adds a <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection"/> to the certificate store.
+            </summary>
+            <param name="certificates">The collection of certificates to store</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateStore.Remove(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Removes an <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2"/> from the certificate store.
+            </summary>
+            <param name="certificate">The certificate to store</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateStore.RemoveRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+            <summary>
+            Removes a <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection"/> from the certificate store.
+            </summary>
+            <param name="certificates">The collection of certificates to remove</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICertificateStore.Delete">
+            <summary>
+            Deletes the certificate store completely.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.StoreType">
+            <summary>
+            Specifies the location of the X509 certificate store.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.StoreType.CurrentUser">
+            <summary>
+            The X509 certificate store used by the current user.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.StoreType.LocalMachine">
+            <summary>
+            The X509 certificate store assigned to the local machine.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.CertificateMatchHandler">
+            <summary>
+            Delegate used for custom matching when looking for a certificate in the store.
+            </summary>
+            <param name="certificate">Certificate to match against</param>
+            <returns>Returns true if the certificate matches the certificate being searched for, otherwise false</returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore">
+            <summary>
+            Read-only certificate store.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.StoreName">
+            <summary>
+            Certificate store name of this store.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.StoreType">
+            <summary>
+            The location of the certificate store.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.Certificates">
+            <summary>
+            Returns a copy of the list of certificates in the store.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.Contains(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Checks to see if the provided certificate is found in the store.
+            </summary>
+            <param name="certificate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.Contains(Dell.Client.Framework.Security.Interfaces.CertificateMatchHandler)">
+            <summary>
+            Checks to see if a certificate in the store matches given a delegate that checks whether a certificate is a match.
+            </summary>
+            <param name="match">Delegate that performs the check for a match</param>
+            <returns>Returns true if the provided delegate finds a matching certificate in the store, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.ContainsSubjectPublicKeyInfoHash(System.String,Dell.Client.Framework.Security.Interfaces.HashType)">
+            <summary>
+            Checks to see if a certificate in the store matches the provided subject public key info hash.
+            </summary>
+            <param name="hash">The hash of the certificate's subject public key info to compare against when searching the store</param>
+            <param name="hashType">The hashing algorithm used to generate the subject public key info hash</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.ContainsThumbprint(System.String,Dell.Client.Framework.Security.Interfaces.HashType)">
+            <summary>
+            Checks to see if a certificate in the store matches the provided thumbprint.
+            </summary>
+            <param name="thumbprint">The thumbprint of the certificate to compare against when searching the store</param>
+            <param name="hashType">The hashing algorithm used to generate the thumbprint</param>
+            <returns>Returns true if a certificate matching the thumbprint is found, otherwise false</returns>
+            <remarks>
+            The default hashing algorithm used by Windows for generating the <see cref="P:System.Security.Cryptography.X509Certificates.X509Certificate2.Thumbprint"/> is SHA1.
+            This method provides an optional field to change the hashing algorithm to use when searching the store.
+            The provided thumbprint should have been derived using this same algorithm.
+            </remarks>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.TryGet(Dell.Client.Framework.Security.Interfaces.CertificateMatchHandler,System.Security.Cryptography.X509Certificates.X509Certificate2@)">
+            <summary>
+            Attempts to retrieve a certificate from the store given a delegate that checks whether a certificate is a match.
+            </summary>
+            <param name="match">Delegate that performs the check for a match</param>
+            <param name="certificate">This will contain the certificate from the store if a match is found</param>
+            <returns>Returns true if the delegate finds a matching certificate found in the store, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.TryGetBySubjectPublicKeyInfoHash(System.String,Dell.Client.Framework.Security.Interfaces.HashType,System.Security.Cryptography.X509Certificates.X509Certificate2@)">
+            <summary>
+            Attempts to retrieve a certificate from the store that matches the provided subject public key info hash.
+            </summary>
+            <param name="hash">The hash of the certificate's subject public key info to compare against when searching the store</param>
+            <param name="hashType">The hashing algorithm used to generate the subject public key info hash</param>
+            <param name="certificate">This will contain the certificate from the store if a match is found</param>
+            <returns>Returns true if a certificate matching the provided subject public key info hash is found in the store, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.TryGetByThumbprint(System.String,Dell.Client.Framework.Security.Interfaces.HashType,System.Security.Cryptography.X509Certificates.X509Certificate2@)">
+            <summary>
+            Attempts to retrieve a certificate from the store that matches the provided thumbprint.
+            </summary>
+            <param name="thumbprint">Thumbprint of the certificate to compare against when searching the store</param>
+            <param name="certificate">This will contain the certificate from the store if a match is found</param>
+            <param name="hashType">The hashing algorithm used to generate the thumbprint</param>
+            <returns>Returns true if a certificate matching the provided thumbprint is found in the store, otherwise false</returns>
+            <remarks>
+            The default hashing algorithm used by Windows for generating the <see cref="P:System.Security.Cryptography.X509Certificates.X509Certificate2.Thumbprint"/> is SHA1.
+            This method provides an optional field to change the hashing algorithm to use when searching the store.
+            The provided thumbprint should have been derived using this same algorithm.
+            </remarks>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.Search(Dell.Client.Framework.Security.Interfaces.CertificateMatchHandler)">
+            <summary>
+            This method is used to find a collection of certificates that match a given set of criteria using a delegate that performs custom matching.
+            </summary>
+            <param name="match">Delegate that performs the check for a match</param>
+            <returns>Returns a collection of certificates that match the criteria of a provided delegate</returns>
+            <remarks>
+            To find a specific certificate, see <see cref="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.TryGet(Dell.Client.Framework.Security.Interfaces.CertificateMatchHandler,System.Security.Cryptography.X509Certificates.X509Certificate2@)"/>.
+            </remarks>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IReadOnlyCertificateStore.IsEmpty">
+            <summary>
+            Checks whether the store is empty.
+            </summary>
+            <returns>Returns true if the store is empty, otherwise false</returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IBaseSet">
+            <summary>
+            Collection interface. Defines common collection methods.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IBaseSet.Count">
+            <summary>
+            Gets the size of the container.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IBaseSet.Clear">
+            <summary>
+            Removes all items from the collection.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IBaseSet.IsEmpty">
+            <summary>
+            Checks to see if the collection is empty.
+            </summary>
+            <returns>Returns true if the collection is empty, otherwise false</returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ICertHashes">
+            <inheritdoc />
+            <summary>
+            Certificate hash collection interface. Defines common methods for a certificate hash collection.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ICertHashes.HashType">
+            <summary>
+            Hash algorithm to use when hashing the certificates.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ICerts">
+            <inheritdoc />
+            <summary>
+            Certificate collection interface. Defines common methods for a certificate collection.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Add(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Adds a certificate to the collection.
+            </summary>
+            <param name="cert">Certificate to add to the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when cert argument is null</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Add(System.Collections.Generic.IEnumerable{System.Security.Cryptography.X509Certificates.X509Certificate2})">
+            <summary>
+            Adds a list of certificates to the collection.
+            </summary>
+            <param name="certs">Certificates to add to the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when certs argument is null or when a certificate inside certs is null</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Add(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+            <summary>
+            Adds a list of certificates to the collection.
+            </summary>
+            <param name="certs">Certificates to add to the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when certs argument is null or when a certificate inside certs is null</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Remove(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Removes a certificate from the collection.
+            </summary>
+            <param name="cert">Certificate to remove from the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when cert argument is null</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Remove(System.Collections.Generic.IEnumerable{System.Security.Cryptography.X509Certificates.X509Certificate2})">
+            <summary>
+            Removes a list of certificates from the collection.
+            </summary>
+            <param name="certs">Certificates to remove from the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when certs argument is null or when a certificate inside certs is null</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Remove(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+            <summary>
+            Removes a list of certificates from the collection.
+            </summary>
+            <param name="certs">Certificates to remove from the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when certs argument is null or when a certificate inside certs is null</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ICerts.Contains(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Checks to see if a certificate exists in the collection.
+            </summary>
+            <param name="cert">Certificate to search for in the collection</param>
+            <returns>Returns true if found, otherwise false</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when cert argument is null</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IStringSet">
+            <inheritdoc />
+            <summary>
+            String collection interface. Defines common methods for a string collection.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IStringSet.Add(System.String)">
+            <summary>
+            Adds a value to the collection.
+            </summary>
+            <param name="data">Value to add to the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when data argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data argument is whitespace only</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IStringSet.Add(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Adds a list of values to the collection.
+            </summary>
+            <param name="dataCollection">Values to add to the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when dataCollection argument is null or any data in the collection is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when any data in the dataCollection argument is whitespace only</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IStringSet.Remove(System.String)">
+            <summary>
+            Removes a value from the collection.
+            </summary>
+            <param name="data">Value to remove from the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when data argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data argument is whitespace only</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IStringSet.Remove(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Removes a list of values from the collection.
+            </summary>
+            <param name="dataCollection">Values to remove from the collection</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when dataCollection argument is null or any data in the collection is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when any data in the dataCollection argument is whitespace only</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IStringSet.Contains(System.String)">
+            <summary>
+            Checks to see if a value exists in the collection.
+            </summary>
+            <param name="data">Value to search for in the collection</param>
+            <returns>Returns true if found, otherwise false</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when data argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when data argument is whitespace only</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.VerifierOption">
+            <summary>
+            Options for configuring the SSL certificate verifier
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.None">
+            <summary>
+            No options.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreCertNotAvailable">
+            <summary>
+            Ignore if certificate information is not available.
+            Note, this will bypass all certificate validation steps, including chain validation.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreCertNameMismatch">
+            <summary>
+            Ignores RemoteCertificateNameMismatch SSL policy error (used for SSL certificate verification).
+            This will bypass all DNS name mismatches so the preferred method would be to add the mismatched DNS name to our trusted list.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreCertChainErrors">
+            <summary>
+            Ignores certificate chain errors.
+            This will bypass the certificate chain validation, ignoring all chain statuses and therefore ignore any potential issues with the chain.
+            Note, this class offers some options to ignore certain chain status errors so provide the individual options when possible.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreRevocationStatusUnknown">
+            <summary>
+            Ignores RevocationStatusUnknown when received in the chain status.
+            Note, revocation status should not be unknown since we're online (and should be able to retrieve the status) but set this option if needed.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreOfflineRevocation">
+            <summary>
+            Ignores OfflineRevocation when received in the chain status.
+            Note, revocation should not be offline since we're online but set this option if needed.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreUntrustedRoot">
+            <summary>
+            Ignores UntrustedRoot when received in the chain status.
+            This will ignore all untrusted roots so the preferred method would be to pin to a specific root certificate.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreExpiredCerts">
+            <summary>
+            By default, if we receive an expired certificate flag (NotTimeValid) in the chain status we will treat as an error.
+            If you would like to allow expired certificates then set this option.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnoreRevoked">
+            <summary>
+            Ignores if certificate in the chain has been revoked.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.UseOfflineRevocationCheck">
+            <summary>
+            Tells chain validation to use offline revocation checking.
+            If we fail online check and we should ignore the failure then set IgnoreOfflineRevocation/IgnoreRevocationStatusUnknown as well.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.FailOnNoErrorsAndSelfSignedCert">
+            <summary>
+            Enable this option that even on successful validation we will still fail if the remote certificate is self-signed.
+            (i.e., we require a remote certificate that is signed by a different certificate that is trusted)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.VerifierOption.IgnorePartialChainError">
+            <summary>
+            Enable this option to ignore if X509 chain could not be built up to the root certificate
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IVerifierOptions">
+            <summary>
+            Verifier options interface for maintaing current enabled options.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Value">
+            <summary>
+            Gets Verification options to use when validating the remote certificate.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Get">
+            <summary>
+            Gets the current options that are set.
+            </summary>
+            <returns>Returns the options that are currently set</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Set(Dell.Client.Framework.Security.Interfaces.VerifierOption)">
+            <summary>
+            Overwrites the current options that are set.
+            </summary>
+            <param name="value">Option to set</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Add(Dell.Client.Framework.Security.Interfaces.VerifierOption)">
+            <summary>
+            Adds an option, maintaining the other options that are currently set.
+            </summary>
+            <param name="value">Option to add</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Remove(Dell.Client.Framework.Security.Interfaces.VerifierOption)">
+            <summary>
+            Removes an option, maintaining the other options that are currently set.
+            </summary>
+            <param name="value">Option to remove</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Contains(Dell.Client.Framework.Security.Interfaces.VerifierOption)">
+            <summary>
+            Checks if an option is enabled.
+            </summary>
+            <param name="value">Option to check</param>
+            <returns>Returns true if option is enabled, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IVerifierOptions.Reset">
+            <summary>
+            Resets the options currently set back to VerifierOption.None.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IFileSigningVerifier">
+            <inheritdoc />
+            <summary>
+            FIle signing verifier interface.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IFileSigningVerifier.Verify(Dell.Client.Framework.Security.Interfaces.IFileLock,System.Boolean)">
+            <summary>
+            Validates the signature of a file that implemented a format for signing.
+            </summary>
+            <param name="fileLock">Locked file object</param>
+            <param name="throwExceptions">Whether or not to throw exceptions on error - default is false</param>
+            <returns>Returns the win32 error code or ERROR_SUCCESS on success.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when fileLock argument is null</exception>
+            <remarks>
+            If passed in fileLock is not already locked then this method will attempt to lock the file.
+            Additionally, the calling method is in charge of unlocking the file as well once the handling of the file is complete.
+            For best practice this method should be called with a locked file, after signing validation is performed the caller
+            should then perform the necessary actions on the file before unlocking or disposing the file lock. This way the handling
+            is performed in the same lock scope as the validation of the signing.
+            </remarks>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IJsonSigningVerifier">
+            <inheritdoc />
+            <summary>
+            Json signing verifier interface.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IJsonSigningVerifier.Verify(System.String,System.String@,System.Boolean)">
+            <summary>
+            Validates the signature of a text-based representation of json that implemented a format for signing.
+            </summary>
+            <param name="text">Json text to validate</param>
+            <param name="validatedText">The value of this argument is set to the plaintext json whose signature was validated successful (on failure this value will be set to null).</param>
+            <param name="throwExceptions">Whether or not to throw exceptions on error - default is false</param>
+            <returns>Returns the win32 error code or ERROR_SUCCESS on success.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when text argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when text argument is whitespace or empty</exception>
+            <remarks>
+            The json string passed in for the text argument should contain all the information necessary to validate the signing.
+            </remarks>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IJsonSigningVerifier.Verify(Dell.Client.Framework.Security.Interfaces.IFileLock,System.String@,System.Boolean)">
+            <summary>
+            Validates the signature of a file containing json that implemented a format for signing.
+            </summary>
+            <param name="fileLock">Locked file object</param>
+            <param name="validatedText">The value of this argument is set to the plaintext json whose signature was validated successful (on failure this value will be set to null)</param>
+            <param name="throwExceptions">Whether or not to throw exceptions on error - default is false</param>
+            <returns>Returns the win32 error code or ERROR_SUCCESS on success.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when fileLock argument is null</exception>
+            <remarks>
+            If passed in fileLock is not already locked then this method will attempt to lock the file.
+            Additionally, the calling method is in charge of unlocking the file as well once the handling of the file is complete.
+            For best practice this method should be called with a locked file, after signing validation is performed the caller
+            should then perform the necessary actions on the file before unlocking or disposing the file lock. This way the handling
+            is performed in the same lock scope as the validation of the signing.
+            </remarks>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ISigningVerifier">
+            <summary>
+            Signing verifier interface.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISigningVerifier.Options">
+            <summary>
+            This property contains the options that will be used by the verifier. It contains options to ignore
+            or require certain behaviors performed by the verifier. For a list of options see <see cref="T:Dell.Client.Framework.Security.Interfaces.VerifierOption"/> .
+            This property only provides a getter but you're able to modify the options via <see cref="T:Dell.Client.Framework.Security.Interfaces.IVerifierOptions"/>.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISigningVerifier.TrustedRootCerts">
+            <summary>
+            This property contains the list of trusted root certificates. If we're able to build a certificate chain,
+            however the root certificate is considered untrusted because it does not exist in the local system's
+            trusted root certificate store then the verifier will check with this object to see if the root is trusted.
+            If the root is trusted then we will not error on untrusted root.
+            This property is optional and only required if building the chain results in untrusted root.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISigningVerifier.Constraints">
+            <summary>
+            This property offers the ability to require specific information within the signing certificate. Once
+            both the signing and signing certificate chain are validated the constraints object is called, passing
+            all the signing certificates for further validation. For example, even if signing validation was successful,
+            the application may want to check the signing (leaf) certificate to ensure the common name in the certificate
+            is for "dell.com". This can be done by implementing an <see cref="T:Dell.Client.Framework.Security.Interfaces.IConstraints"/> that checks the common
+            name in the certificate.
+            This property is option and only required if the application would like to restrict what certificate is used
+            for signing.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ISslCertVerifier">
+            <summary>
+            SSL cert verifier interface.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISslCertVerifier.Options">
+            <summary>
+            Gets Verification options to use when validating the SSL certificate.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISslCertVerifier.TrustedRootCerts">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISslCertVerifier.Constraints">
+            <summary>
+            Optional certificate check object to check for specific information within the SSL certificate.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISslCertVerifier.Verify(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Perform certificate validation.
+            This is the ServerCertificateValidationCallback.
+            </summary>
+            <param name="sender">Sender provided from callback (either host string name or HttpWebRequest depending on CertificatePolicy property)</param>
+            <param name="cert">Certificate to validate</param>
+            <param name="chain">Certificate chain to validate.</param>
+            <param name="sslPolicyErrors">SSL policy errors</param>
+            <returns>Returns true if verification is successful, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISslCertVerifier.Verify(System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors,System.Boolean)">
+            <summary>
+            Perform certificate validation.
+            </summary>
+            <param name="cert">Certificate to validate</param>
+            <param name="chain">Certificate chain to validate.</param>
+            <param name="sslPolicyErrors">SSL policy errors</param>
+            <param name="throwExceptions">Whether or not to throw exceptions on error - default is false</param>
+            <returns>Returns the win32 error code or ERROR_SUCCESS on success.</returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ITextSigningVerifier">
+            <inheritdoc />
+            <summary>
+            Text signing verifier interface.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ITextSigningVerifier.Verify(System.String,System.Boolean)">
+            <summary>
+            Validates the signature of text data that implemented a format for signing.
+            </summary>
+            <param name="text">Text to validate</param>
+            <param name="throwExceptions">Whether or not to throw exceptions on error - default is false</param>
+            <returns>Returns the win32 error code or ERROR_SUCCESS on success.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when text argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when text argument is whitespace or empty</exception>
+            <remarks>
+            The json string passed in for the text argument should contain all the information necessary to validate the signing.
+            </remarks>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes">
+            <summary>
+            Win32 Error Codes
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.ERROR_SUCCESS">
+            <summary>
+            Code for Error_Success. 
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.ERROR_UNHANDLED_EXCEPTION">
+            <summary>
+            Application Error occurs at app location.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.ERROR_NO_CERTIFICATE">
+            <summary>
+            Debugger handled exception
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.ERROR_INVALID_DOMAINNAME">
+            <summary>
+            The format of the specified domain name is invalid.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.DNS_ERROR_NAME_DOES_NOT_EXIST">
+            <summary>
+            DNS name does not exist.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_TRUST_CTL_IS_NOT_TIME_VALID">
+            <summary>
+            A certificate trust list (CTL) used to create this chain was not time valid.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.E_NOT_SET">
+            <summary>
+            Element not Found.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CRYPT_E_SELF_SIGNED">
+            <summary>
+            The specified certificate is self signed.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CRYPT_E_NO_REVOCATION_CHECK">
+            <summary>
+            The revocation function was unable to check revocation for the certificate.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CRYPT_E_REVOCATION_OFFLINE">
+            <summary>
+            The revocation function was unable to check revocation because the revocation server was offline.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CRYPT_E_SECURITY_SETTINGS">
+            <summary>
+            (The cryptographic operation failed due to a local security option setting.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_BAD_DIGEST">
+            <summary>
+            File was probably corrupt. (The digital signature of the object did not verify.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_PROVIDER_UNKNOWN">
+            <summary>
+            Trust provider is not recognized on this system. (Unknown trust provider.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_ACTION_UNKNOWN">
+            <summary>
+            Trust provider does not support the specified action. (The trust verification action specified is not supported by the specified trust provider.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_SUBJECT_FORM_UNKNOWN">
+            <summary>
+            Trust provider does not support the form specified for the subject. (The form specified for the subject is not one supported or known by the specified trust provider.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_SUBJECT_NOT_TRUSTED">
+            <summary>
+            // Subject failed the specified verification action. (The subject is not trusted for the specified action.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_NOSIGNATURE">
+            <summary>
+            File was not signed. (No signature was present in the subject.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_EXPIRED">
+            <summary>
+            Signer's certificate was expired (A required certificate is not within its validity period when verifying against the current system clock or the timestamp in the signed file.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_ISSUERCHAINING">
+            <summary>
+            A parent of a given certificate in fact did not issue that child certificate.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_MALFORMED">
+            <summary>
+            A certificate is missing or has an empty value for an important field, such as a subject or issuer name.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_UNTRUSTEDROOT">
+            <summary>
+            A certification chain processed correctly but terminated in a root certificate that is not trusted by the trust provider. (A certificate chain processed, but terminated in a root certificate which is not trusted by the trust provider.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_CHAINING">
+            <summary>
+            A certificate chain could not be built to a trusted root authority.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_FAIL">
+            <summary>
+            Generic trust failure.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_REVOKED">
+            <summary>
+            Subject's certificate was revoked. (A certificate was explicitly revoked by its issuer.)
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_REVOCATION_FAILURE">
+            <summary>
+            The revocation process could not continue - the certificate(s) could not be checked.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.CERT_E_UNTRUSTEDCA">
+            <summary>
+            A certification chain processed correctly, but one of the CA certificates is not trusted by the policy provider.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.Win32ErrorCodes.TRUST_E_EXPLICIT_DISTRUST">
+            <summary>
+            Signer's certificate is in the Untrusted Publishers store. (The certificate was explicitly marked as untrusted by the user.)
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.InvalidFileHandleException">
+            <summary>
+            Invalid file handle exception class.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.InvalidFileHandleException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.InvalidFileHandleException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.InvalidFileHandleException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.InvalidFileHandleException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.InvalidFileHandleException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.PathCheckRedirectionException">
+            <summary>
+            Path check redirection exception class.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.PathCheckRedirectionException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.PathCheckRedirectionException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.PathCheckRedirectionException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.PathCheckRedirectionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.PathCheckRedirectionException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IntegrityLevel">
+            <summary>
+            Enum for defining each integrity level defined by Windows. See below table for definition of each level.
+            
+            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            |  SID Value   |  Last SID Sub Authority Value  |  Integrity Level  |                 Example Application(s)                 |
+            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            | S-1-16-0     |               0                |     Untrusted     |  Sandbox Apps, Restricted Web Browsers                 |
+            | S-1-16-4096  |             4096               |        Low        |  Standard User-Mode Apps                               |
+            | S-1-16-8192  |             8192               |       Medium      |  Most User-Mode Apps, User-Mode Services               |
+            | S-1-16-8448  |             8448               |    Medium Plus    |  Medium Integrity w/ Added Privileges (i.e. UI Access) |
+            | S-1-16-12288 |            12288               |        High       |  Administrative Tools, Elevated Command Prompt         |
+            | S-1-16-16384 |            16384               |       System      |  Windows Core System Services, Kernel-Mode Drivers     |
+            | S-1-16-20480 |            20480               | Protected Process |  Windows Defender Antivirus                            |
+            | S-1-16-28672 |            28672               |   Secure Process  |  Trusted Components with Elevated Privileges (Win10)   |
+            | S-1-16-32768 |            32768               |    AppContainer   |  Apps in AppContainers, Microsoft Store Apps (Win10)   |
+            ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            
+            As defined here: https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/81d92bba-d22b-4a8c-908a-554ab29148ab
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.Untrusted">
+            <summary>
+            Integrity level reserved for sandbox apps and restricted web browsers 
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.Low">
+            <summary>
+            Integrity level reserved for standard user-mode apps 
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.Medium">
+            <summary>
+            Integrity level reserved for most user-mode apps, user-mode services  
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.MediumPlus">
+            <summary>
+            Integrity level reserved for medium integrity w/ added privileges (i.e. UI Access) 
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.High">
+            <summary>
+            Integrity level reserved for administrative tools, elevated command prompt
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.System">
+            <summary>
+            Integrity level reserved for windows core system services, kernel-mode drivers 
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.ProtectedProcess">
+            <summary>
+            Integrity level reserved for apps like windows defender antivirus 
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.SecureProcess">
+            <summary>
+            Integrity level reserved for trusted components with elevated privileges (introduced in Win10)  
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.IntegrityLevel.AppContainer">
+            <summary>
+            Integrity level reserved for apps in AppContainers and microsoft store apps (introduced in Win10).
+            NOTE: while this integrity level has the highest numerical value, it is considered the lowest privileged
+            integrity level, even lower than "Untrusted". 
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption">
+            <summary>
+            Flags for defining which integrity levels should be considered "valid". Each flag is coupled to a specific integrity level, 
+            defined in the order from "most secure + least privileged" -> "least secure + highest privileged". These flags should be 
+            used when defining the set of integrity levels a user wants to consider as valid, expected, or elevated. By default, the 
+            valid integrity list will include the levels that are considered "elevated" by Windows: High, System, ProtectedProcess, 
+            SecureProcess. These are considered the integrity levels that have the highest level of privileges, according to Windows. 
+            When defining the default flag options, it should look like:
+            
+            var defaultElevatedIntegrityLevelOptions = ValidIntegrityLevelOption.AllowHigh | ValidIntegrityLevelOption.AllowSystem |
+                    ValidIntegrityLevelOption.AllowProtectedProcess | ValidIntegrityLevelOption.AllowSecureProcess;
+            
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowAppContainer">
+            <summary>
+            All processes running with the "AppContainer" integrity level will be considered valid.
+            
+            NOTE: The "AppContainer" integrity level is used for apps in containers and microsoft store apps (introduced in Win10).
+            This level is typically reserved for sandboxed apps that require very few access rights and should be considered 
+            the "most secure but least privileged" out of all integrity levels.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowUntrusted">
+            <summary>
+            All processes running with the "Untrusted" integrity level will be considered valid.
+            
+            NOTE: The "Untrusted" integrity level is reserved for sandbox apps and restricted web browsers.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowLow">
+            <summary>
+            All processes running with the "Low" integrity level will be considered valid.
+            
+            NOTE: The "Low" integrity level is reserved for standard user-mode apps.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowMedium">
+            <summary>
+            All processes running with the "Medium" integrity level will be considered valid.
+            
+            NOTE: The "Medium" integrity level is reserved for most user-mode apps, user-mode services.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowMediumPlus">
+            <summary>
+            All processes running with the "MediumPlus" integrity level will be considered valid.
+            
+            NOTE: The "MediumPlus" integrity level is reserved for medium integrity w/ added privileges (i.e. UI Access).
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowHigh">
+            <summary>
+            All processes running with the "High" integrity level will be considered valid.
+            
+            NOTE: The "High" integrity level is reserved for administrative tools, elevated command prompt.
+            This is the lowest integrity level that Windows considers elevated.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowSystem">
+            <summary>
+            All processes running with the "System" integrity level will be considered valid.
+            
+            
+            NOTE: The "System" integrity level is reserved for windows core system services, kernel-mode drivers.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowProtectedProcess">
+            <summary>
+            All processes running with the "ProtectedProcess" integrity level will be considered valid.
+            
+            NOTE: The "ProtectedProcess" integrity level is reserved for apps like windows defender antivirus.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption.AllowSecureProcess">
+            <summary>
+            All processes running with the "SecureProcess" integrity level will be considered valid.
+            
+            NOTE: The "SecureProcess" integrity level is reserved for trusted components with elevated privileges 
+            (introduced in Win10). This level is typically reserved for processes that require the highest access 
+            rights. This level is considered the "least secure + highest privileged" out of all integrity levels.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions">
+            <summary>
+            Path validation check options interface for maintaining current enabled options.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Value">
+            <summary>
+            Gets path check options to use when validating a path.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Get">
+            <summary>
+            Gets the current options that are set.
+            </summary>
+            <returns>Returns the options that are currently set</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Set(Dell.Client.Framework.Security.Interfaces.PathCheckOption)">
+            <summary>
+            Overwrites the current options that are set.
+            </summary>
+            <param name="value">Option to set</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Add(Dell.Client.Framework.Security.Interfaces.PathCheckOption)">
+            <summary>
+            Adds an option, maintaining the other options that are currently set.
+            </summary>
+            <param name="value">Option to add</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Remove(Dell.Client.Framework.Security.Interfaces.PathCheckOption)">
+            <summary>
+            Removes an option, maintaining the other options that are currently set.
+            </summary>
+            <param name="value">Option to remove</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Contains(Dell.Client.Framework.Security.Interfaces.PathCheckOption)">
+            <summary>
+            Checks if an option is enabled.
+            </summary>
+            <param name="value">Option to check</param>
+            <returns>Returns true if option is enabled, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IPathCheckOptions.Reset">
+            <summary>
+            Resets the options currently set back to PathCheckOption.None.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IProcessManager">
+            <summary>
+            Helper class for retrieving information from a process.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IProcessManager.IsCurrentProcessElevated">
+            <summary>
+            This method determines whether the current running process is running "elevated". An "elevated" process is defined as a process
+            with an integrity level of High, System, ProtectedProcess or SecureProcess.
+            </summary>
+            <returns> true if process integrity level is High, System, ProtectedProcess or SecureProcess. Otherwise false </returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IProcessManager.IsProcessElevated(System.Diagnostics.Process)">
+            <summary>
+            This method determines whether a process is running "elevated". An "elevated" process is defined as a process
+            with an integrity level within the range of High to SecureProcess.
+            </summary>
+            <param name="process"> 
+                process that user would like to investigate 
+            </param>
+            <returns> true if process integrity level is High, System, ProtectedProcess or SecureProcess. Otherwise false </returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IProcessManager.IsProcessIntegrityValid(System.Diagnostics.Process,Dell.Client.Framework.Security.Interfaces.ValidIntegrityLevelOption)">
+            <summary>
+            This method determines whether a process is running with a "valid" integrity level. A "valid" integrity level will be defined 
+            by the user through the ValidIntegrityLevelOption flags that they pass in. This allows for customization if the user, for example,
+            has a different set of integriy levels they want to consider "elevated" that differs from Windows definition of "elevated".
+            </summary>
+            <param name="process"> 
+                process that user would like to investigate 
+            </param>
+            <param name="validIntegrityLevelOptions"> a set of flags that defines which integrity levels should be considered "valid" </param>
+            <returns> true if process integrity level matches a corresponding "valid" integrity level option that the user provided, 
+            otherwise false </returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IProcessManager.GetProcessIntegrityLevel(System.Diagnostics.Process)">
+            <summary>
+            The purpose of this method is to determine the integrity level of a process.
+            </summary>
+            <param name="process"> 
+                process that user would like to investigate 
+            </param>
+            <returns> IntegrityLevel enum value associated with the integrity level of the process </returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IProcessManager.GetWindowsIdentityFromProcessId(System.Nullable{System.Int32})">
+            <summary>
+            The method returns the Windows Identity of the process to be used for impersonation.
+            </summary>
+            <param name="processId"></param>
+            <returns></returns>
+            <exception cref="T:System.ComponentModel.Win32Exception">If cannot open the process token.</exception>
+            <exception cref="T:System.InvalidOperationException">If it cannot duplicate the process token.</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions">
+            <summary>
+            Redirection check options interface for maintaining current enabled options.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Value">
+            <summary>
+            Gets redirection check options to use when validating a path.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Get">
+            <summary>
+            Gets the current options that are set.
+            </summary>
+            <returns>Returns the options that are currently set</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Set(Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption)">
+            <summary>
+            Overwrites the current options that are set.
+            </summary>
+            <param name="value">Option to set</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Add(Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption)">
+            <summary>
+            Adds an option, maintaining the other options that are currently set.
+            </summary>
+            <param name="value">Option to add</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Remove(Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption)">
+            <summary>
+            Removes an option, maintaining the other options that are currently set.
+            </summary>
+            <param name="value">Option to remove</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Contains(Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption)">
+            <summary>
+            Checks if an option is enabled.
+            </summary>
+            <param name="value">Option to check</param>
+            <returns>Returns true if option is enabled, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IRedirectionCheckOptions.Reset">
+            <summary>
+            Resets the options currently set back to RedirectionCheckOption.None.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.PathCheckOption">
+            <summary>
+            Flags for indicating which validation checks should be skipped when validating a path to a file or directory.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.None">
+            <summary>
+            All path validation checks will be validated.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreAll">
+            <summary>
+            All path validation checks will be ignored.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreFileExists">
+            <summary>
+            Ignore file existence validation check.
+            NOTE: Should only be used if validating a path that points to a file.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreDirectoryExists">
+            <summary>
+            Ignore directory existence validation check.
+            NOTE: Should only be used if validating a path that points to a directory.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreRelativePath">
+            <summary>
+            Ignore relative path validation check.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreUnrootedPath">
+            <summary>
+            Ignore unrooted path validation check.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.PathCheckOption.IgnoreInvalidCharacters">
+            <summary>
+            Ignore invalid characters in path string validation check.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption">
+            <summary>
+            Flags for indicating which redirection checks should be skipped when validating a path to a file or directory.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption.None">
+            <summary>
+            All path redirection checks will be validated.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption.IgnoreAll">
+            <summary>
+            All path redirection checks will be ignored.
+            
+            NOTE: This should NEVER be used in a release environment. Redirection is a
+            security risk and should only be allowed in either DEBUG mode or with the 
+            blessing of a security advisor.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption.IgnoreSymbolicLink">
+            <summary>
+            Ignore checking if a path points to a symbolic link or if its parent(s) point to a symbolic link.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption.IgnoreHardlink">
+            <summary>
+            Ignore checking if a path points to a hard link.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption.IgnoreJunctionMountpoint">
+            <summary>
+            Ignore checking if a path points to a junction/mountpoint or if its parent(s) point to a junction/mountpoint.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.RedirectionCheckOption.IgnorePathDoesNotExist">
+            <summary>
+            Ignore checking if the path and its parent(s) path exists.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.AesAlgorithm">
+            <summary>
+            Symmetric Algorithms available at System.Security.Cryptography.Algorithms.
+            https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes.create?view=net-6.0
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.AesAlgorithm.AES">
+            <summary>
+            AES Algorithm.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.AesAlgorithm.AesCryptoServiceProvider">
+            <summary>
+            CryptoserviceProvider Algorithm.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.AesAlgorithm.AesManaged">
+            <summary>
+            AesManaged Algorithm.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.AesAlgorithmExtensions">
+            <summary>
+            To get corresponding hash algorithm name. 
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.AesAlgorithmExtensions.Name(Dell.Client.Framework.Security.Interfaces.AesAlgorithm)">
+            <summary>
+            Get Corresponding Algorithm String while creating AES Instance.
+            </summary>
+            <param name="aesAlgorithm">AesAlgorithm</param>
+            <returns>Full name of algorithm</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">The AES algorithm requested isn't supported.</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.CertProperties">
+            <summary>
+                Generic properties about an certificate
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.DefaultKeySizeBits">
+            <summary>
+                Default RSA key size.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertProperties.#ctor">
+            <summary>
+                Default constructor
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.FriendlyName">
+            <summary>
+                Friendly Name makes it easier to identify certificate
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.Title">
+            <summary>
+                Title of cert requestor
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.Description">
+            <summary>
+                Description too makes it easier to identify certificate
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.IssueTo">
+            <summary>
+                Identity to be secured by certificate
+                Prefix: cn
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.Organization">
+            <summary>
+                Organization name - Organization’s legal business name
+                Prefix: o
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.OrganizationalUnit">
+            <summary>
+                Organization Unit - Department in the organization
+                Prefix: ou
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.City">
+            <summary>
+                Business location - city
+                Prefix: l
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.State">
+            <summary>
+                Business location – state/province
+                Prefix: st
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.Country">
+            <summary>
+                Business location - country
+                Prefix: c
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.KeySizeBits">
+            <summary>
+                Key Size
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.CertProperties.Email">
+            <summary>
+                Email address
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertProperties.DistinguishName">
+            <summary>
+            Determines the distinguished name translation from the provided cert properties (i.e. IssueTo, Organization, Organizational Unit, etc.)
+            </summary>
+            <remarks>
+            This method assumes the IssueTo property contains a name formatted in either the UPN or SAM account name format.
+            If the IssueTo property is not in either format or is malformed, the CN property of the Distinguished Name
+            will simply show the IssueTo property as is.
+            
+            If the IssueTo property is empty/null, the CN attribute will not be generated.
+            
+            If an exception occurs, the CN property will be empty
+            </remarks>
+            <returns> the properly formatted distinguished name </returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertProperties.CreateDistinguishName(System.String)">
+            <summary>
+            This method translates a name from either the UPN format (John_Doe@MyCompany.com) or SAM account name format (DOMAIN\John_Doe) 
+            to the FQDN, or "Distinguished Name", format (CN=John_Doe,DC=MYCOMPANY,DC=COM).
+            </summary>
+            <param name="name"> name provided by the IssueTo property </param>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertProperties.IsValidUpnFormat(System.String)">
+            <summary>
+            Determines whether a name is in the UPN format. 
+            Follows the Windows guidlelines defined here: https://learn.microsoft.com/en-us/microsoft-365/enterprise/prepare-for-directory-synchronization?view=o365-worldwide
+            
+            Example: John_Doe@MyCompany.com
+            </summary>
+            <param name="name"> name to verify </param>
+            <returns> true if name is in UPN format, otherwise false</returns>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CertProperties.IsValidSamFormat(System.String)">
+            <summary>
+            This method checks whether a given string is in the proper SAM Account Name format (also known as the Down-Level Logon Name)
+            
+            Example SAM Account Name: "MYDOMAIN\John_Doe"
+            </summary>
+            <param name="name"> name to verify </param>
+            <returns> true if name is in SAM format, otherwise false </returns>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameUnknown">
+            <summary>
+            Indicates that a name is unknown
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameFullyQualifiedDn">
+            <summary>
+            Indicates that a name is in the fully qualified distinguished name (DN) format
+            
+            Example: "CN=John Doe,OU=Users,DC=CREDANT,DC=COM"
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameSamCompatible">
+            <summary>
+            Indicates that a name is the Security AccountManager (SAM) compatible format
+            
+            Example: CREDANT\John_Doe
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameDisplay">
+            <summary>
+            Indicates that a name is in the display name format
+            
+            Example: John Doe
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameUniqueId">
+            <summary>
+            Indicates that a name is in the unique identifier format
+            
+            Example: 3e324d45-5a32-4567-a890-123456789abc
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameCanonical">
+            <summary>
+            Indicates that a name is in the canonical format
+            
+            Example: /o=CREDANT/ou=Users/cn=John_Doe
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameUserPrincipal">
+            <summary>
+            Indicates that a name in the User Principal Name (UPN) format
+            
+            Example: John_Doe@Dell.com
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameCanonicalEx">
+            <summary>
+            Indicates that a name is in the extended verio of the canonical format
+            
+            Example: John_Doe/OU=Users/DC=DELL/DC=COM
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameServicePrincipal">
+            <summary>
+            Indicates that a name is in the Service Principal Name (SPN) format
+            
+            Format: serviceclass "/" hostname [":"port | ":"instancename] ["/" servicename]
+            
+            Example 1: ldap/dc-01.fabrikam.com/fabrikam.com
+            
+            Example 2: http/testserver.dell.com
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.CertProperties.ExtendedNameFormat.NameDnsDomain">
+            <summary>
+            Indicates that a name is in the Domain Name Service format
+            
+            Example: Dell.com
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.CertProperties.NativeMethods">
+            <summary>
+                This is a wrapper around the DllImport to hide it from Unix.
+                If this is not done mono will attempt to load secure32.dll and fail
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.HashFactory">
+            <summary>
+            Certificate hash algorithm types.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.HashFactory.CreateHash(Dell.Client.Framework.Security.Interfaces.HashType)">
+            <summary>
+            Returns the Corresponding Algorithm for the hash type. 
+            </summary>
+            <param name="hashType">HashType</param>
+            <returns>Corresponding hash algorithm</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown If any of the HashTypes that is other than SHA1,SHA256,SHA384 and SHA512</exception>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IHashFactory">
+            <summary>
+            Interface to create the hash.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IHashFactory.CreateHash(Dell.Client.Framework.Security.Interfaces.HashType)">
+            <summary>
+            Creates the hash algorithms based on HashTypes.
+            </summary>
+            <param name="hashType">HashType</param>
+            <returns>Corresponding hash algorithm</returns>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.HashType">
+            <summary>
+            Certificate hash algorithm types.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.HashType.Sha1">
+            <summary>
+            160 Bit Hash.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.HashType.Sha256">
+            <summary>
+            256 Bit Hash
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.HashType.Sha384">
+            <summary>
+            384 Bit Hash
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.HashType.Sha512">
+            <summary>
+            512 Bit Hash.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.HashTypeExtensions">
+            <summary>
+            To get corresponding hash algorithm name. 
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.HashTypeExtensions.Name(Dell.Client.Framework.Security.Interfaces.HashType)">
+            <summary>
+            Returns corresponding hash algorithm. 
+            </summary>
+            <param name="hashType">Hash Type</param>
+            <returns>String of hash algorithm</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown If any of the HashTypes that is other than SHA1,SHA256,SHA384 and SHA512</exception>
+            https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.hashalgorithm.create?view=net-6.0#system-security-cryptography-hashalgorithm-create(system-string)
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IFileLockOptions">
+            <summary>
+            Specifies the file locking options used by <see cref="T:Dell.Client.Framework.Security.Interfaces.IFileLock"/>.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IFileLockOptions.FileAccess">
+            <summary>
+            Defines constraints for accessing the file within the current process.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IFileLockOptions.FileShare">
+            <summary>
+            Defines constraints for accessing the file within other processes.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.IFileLock">
+             <inheritdoc />
+             <summary>
+             File lock interface. Use this to lock/unlock a file.
+             </summary>
+             <example>
+             This is an example of locking an assembly and performing authenticode validation on the dll.
+             This will allow you to lock a file while performing authenticode signing and loading an assembly.
+             This is best practice so the file is not tampered with between these processes of validation and loading.
+             Note, use the default FileLockOptions unless you know the behavior you want specifically. Specifying
+             FileShare.None can cause WinVerifyTrust to error.
+             </example>
+             <code>
+             PeAuthenticodeVerifier signingVerifier = new PeAuthenticodeVerifier();
+             using (IFileLock fileLock = new FileLock(filename, true /*Lock Now*/))
+             {
+                 if (signingVerifier.Verify(fileLock) != Win32ErrorCodes.ERROR_SUCCESS)
+                     throw new Exception("Failed to validate authenticode signing");
+            
+                 Assembly.LoadFrom(fileLock.Filepath);
+             }
+             </code>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IFileLock.Filepath">
+            <summary>
+            File path of the file to lock.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IFileLock.FileHandle">
+            <summary>
+            Returns the file handle to the locked file.
+            Note, if the file is not locked then the handle will be null.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.IFileLock.Locked">
+            <summary>
+            Checks to see if a file is locked.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IFileLock.Lock">
+            <summary>
+            Lock the file.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IFileLock.Lock(Dell.Client.Framework.Security.Interfaces.IFileLockOptions)">
+            <summary>
+            Lock the file, specifying the file access permissions for the file.
+            </summary>
+            <param name="lockOptions">Defines constraints used when locking the file</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.IFileLock.Unlock">
+            <summary>
+            Unlock the file.
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType">
+            <summary>
+            Signing algorithm types.
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.HS256">
+            <summary>
+            HMAC using SHA256
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.HS384">
+            <summary>
+            HMAC using SHA384
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.HS512">
+            <summary>
+            HMAC using SHA512
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.RS256">
+            <summary>
+            RSASSA-PKCS1-v1_5 using SHA256
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.RS384">
+            <summary>
+            RSASSA-PKCS1-v1_5 using SHA384
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.RS512">
+            <summary>
+            RSASSA-PKCS1-v1_5 using SHA512
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.PS256">
+            <summary>
+            RSASSA-PSS using SHA256 and MGF1 with SHA256
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.PS384">
+            <summary>
+            RSASSA-PSS using SHA384 and MGF1 with SHA384
+            </summary>
+        </member>
+        <member name="F:Dell.Client.Framework.Security.Interfaces.SigningAlgorithmType.PS512">
+            <summary>
+            RSASSA-PSS using SHA512 and MGF1 with SHA512
+            </summary>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.CryptoException">
+            <summary>
+            Crypto exception class.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CryptoException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CryptoException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CryptoException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CryptoException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.CryptoException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.SigningException">
+            <summary>
+            Signing exception class.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.SigningException.#ctor">
+            <inheritdoc />
+            <summary>
+            Default Constructor.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.SigningException.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.SigningException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+            <summary>
+            Constructor.
+            </summary>
+            <param name="message">Message of the exception</param>
+            <param name="innerException">Inner exception</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.SigningException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to retrieve the data</param>
+            <param name="context">The source (see System.Runtime.Serialization.StreamingContext) of this serialization</param>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.SigningException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates a System.Runtime.Serialization.SerializationInfo with the data needed to serialize the target object.
+            </summary>
+            <param name="info">The System.Runtime.Serialization.SerializationInfo to populate with data</param>
+            <param name="context">The destination (see System.Runtime.Serialization.StreamingContext) for this serialization</param>
+        </member>
+        <member name="T:Dell.Client.Framework.Security.Interfaces.ISigner">
+            <inheritdoc />
+            <summary>
+            Signer interface.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISigner.SigningAlgorithm">
+            <summary>
+            Signing algorithm type of the signer.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISigner.SigningAlgorithmName">
+            <summary>
+            Signing algorithm name of the signer.
+            </summary>
+        </member>
+        <member name="P:Dell.Client.Framework.Security.Interfaces.ISigner.HashingAlgorithm">
+            <summary>
+            Hashing algorithm used by this signer.
+            </summary>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISigner.Sign(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Byte[])">
+            <summary>
+            Method to sign bytes given a signing certificate.
+            The signing certificate provided to this method shall contain the private key information.
+            </summary>
+            <param name="signingCert">Signing certificate to use to perform signing</param>
+            <param name="bytesToSign">Bytes to sign</param>
+            <returns>Returns the signed bytes generated by this signer</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when signingCert or bytesToSign argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when signingCert argument does not contain a private key or when the provided signingCert private key is not the correct asymmetric algorithm</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on internal failure when signing</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISigner.Sign(System.Security.Cryptography.X509Certificates.X509Certificate2,System.IO.Stream)">
+            <summary>
+            Method to sign bytes given a signing certificate.
+            The signing certificate provided to this method shall contain the private key information.
+            </summary>
+            <param name="signingCert">Signing certificate to use to perform signing</param>
+            <param name="stream">Stream data to sign</param>
+            <returns>Returns the signed bytes generated by this signer</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when signingCert or stream argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when signingCert argument does not contain a private key or when the provided signingCert private key is not the correct asymmetric algorithm</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on internal failure when signing</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISigner.Verify(System.Security.Cryptography.X509Certificates.X509Certificate2,System.Byte[],System.Byte[])">
+            <summary>
+            Method to verify bytes previously signed by a signing certificate.
+            The signing certificate provided to this method shall contain the public key information.
+            </summary>
+            <param name="signingCert">Signing certificate so use to perform verification</param>
+            <param name="bytesToVerify">Bytes to verify</param>
+            <param name="signatureBytes">Signature bytes</param>
+            <returns>Returns true if signature validation was successful, otherwise false</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when signingCert, bytesToVerify, or signatureBytes argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the provided signingCert public key is not the correct asymmetric algorithm</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on internal failure to validate signing</exception>
+        </member>
+        <member name="M:Dell.Client.Framework.Security.Interfaces.ISigner.Verify(System.Security.Cryptography.X509Certificates.X509Certificate2,System.IO.Stream,System.Byte[])">
+            <summary>
+            Method to verify bytes previously signed by a signing certificate.
+            The signing certificate provided to this method shall contain the public key information.
+            </summary>
+            <param name="signingCert">Signing certificate so use to perform verification</param>
+            <param name="stream">Stream data to verify</param>
+            <param name="signatureBytes">Signature bytes</param>
+            <returns>Returns true if signature validation was successful, otherwise false</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when signingCert, stream, or signatureBytes argument is null</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the provided signingCert public key is not the correct asymmetric algorithm</exception>
+            <exception cref="T:Dell.Client.Framework.Security.Interfaces.SigningException">Thrown on internal failure to validate signing</exception>
+        </member>
+    </members>
+</doc>
