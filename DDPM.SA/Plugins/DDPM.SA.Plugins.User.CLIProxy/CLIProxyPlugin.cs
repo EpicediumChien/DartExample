@@ -489,6 +489,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;
+                        case "FIRMWAREUPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
 
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));

@@ -69,7 +69,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.CLI_Manager_Plugin, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.DDPM_EMPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
-    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
+    //[DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
+    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
     public class DeviceMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDeviceManagerSA
     {
         #region Private Members
@@ -2233,13 +2234,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update implementation
 
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false)
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2357,7 +2358,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
-            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper).Result;
+            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
             bool b = true;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
             {
@@ -3103,6 +3104,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
+            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList);
 
             if (_SettingsPlugin == null)
             {
@@ -3131,10 +3133,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
+            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList);
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
 
+        private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
+        {
+            Trace.WriteLine($"Monitor: {mi.AliasDeviceName}");
+            int idx = 0;
+            foreach (SplitJson splitJson in splitJsonList)
+            {
+                Trace.WriteLine($"[{idx}] {splitJson.ToString()}");
+                idx++;
+            }
+        }
         //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo)
         //{
         //    if (_DisplayManagerPlugin != null)
@@ -3324,6 +3337,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Fail to read, will return false
             return Task.FromResult(false);
         }
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
         #endregion EasyArrage
 
         #region EasyMemory
@@ -3421,6 +3443,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"@ ReadMonitorEasyArrangement: Error occurred - {ex.Message}");
                 return defaultOutput;
+            }
+        }
+
+        public async Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ WriteUserListEAProfileDDPM: _SettingsPlugin is null.");
+                return false;
+            }
+
+            try
+            {
+                DDPMSettings ddpmSettings = await _SettingsPlugin.ReloadAppConfigData();
+                if (ddpmSettings == null)
+                {
+                    writelog($"@ WriteUserListEAProfileDDPM: ReloadAppConfigData return null.");
+                    return false;
+                }
+
+                if (ddpmSettings.UserSettings.EAProfile != null)
+                {
+
+                    ddpmSettings.UserSettings.EAProfile = eaProfileList;
+                    writelog($"@ WriteUserListEAProfileDDPM Update OK.");
+                }
+                else
+                {
+                    ddpmSettings.UserSettings = new DDPMUserSettings
+                    {
+                        EAProfile = new List<EAProfileDDPM>()
+                    };
+                    writelog($"@ WriteUserListEAProfileDDPM new List<EAProfileDDPM>() OK.");
+                }
+
+                if (await _SettingsPlugin.SetAppConfigData(ddpmSettings))
+                {
+                    writelog($"@ WriteUserListEAProfileDDPM OK.");
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ WriteUserEAProfileDDPM: Error occurred - {ex.Message}");
+                return false;
             }
         }
 
@@ -4615,7 +4684,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     FolderInfo = string.Empty;
                     PathSymbolicLinInfo = string.Empty;
                     folderValid = false;
-                    folderValid = DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
+                    folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
                     if (!folderValid)
                     {
                         writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
@@ -6742,7 +6811,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
+            //Validation
             //todo Toggle_EzRecentSetting
+            //Read the EAMonitorSettings
+            EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
+            //Change selected layout to the latest item of RecentList
+            int idxRecent = 0;
+            if ( eaSettings.RecentList == null)
+            {
+                writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
+                return;
+            }
+            if (eaSettings.RecentList.Count == 0)
+            {
+                writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
+                return;
+            }
+            else
+            {
+                //Should be always EAEMConstants.MaxRecentItems(=5)-1 = 4
+                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Count}");
+            }
+            idxRecent = eaSettings.RecentList.Count - 1;
+
+            //Force await to avoid reenter this method (it will update to MonitorSettings file)
+            bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
+
+            //TO DO: invoke an event to UI to reload settings
+            // TO be implement in EASettingsChanged event
+
+            writelog($"@ Toggle_EzRecentSetting(), result is {isOKSetSelected}");
         }
         private bool IsHotkeyFuncLock(HotkeyType type)
         {
@@ -9189,5 +9287,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return null;
         }
         #endregion EzM
+
+        #region Common Json read/write interfaces
+        //For common json file read/write
+        public Task<string> ReadSerializedContentFromFile(string filePath)
+        {
+            string result = null;
+            if(_SettingsPlugin != null)
+            {
+                return Task.FromResult(_SettingsPlugin.ReadSerializedContentFromFile(filePath).Result);
+            }
+
+            return Task.FromResult(result);
+        }
+        public Task<bool> WriteSerializedContentToFile(string filePath, string content)
+        {
+            bool result = false;
+            if (_SettingsPlugin != null)
+            {
+                return Task.FromResult(_SettingsPlugin.WriteSerializedContentToFile(filePath, content).Result);
+            }
+
+            return Task.FromResult(result);
+        }
+        #endregion
     }
 }
