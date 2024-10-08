@@ -77,7 +77,7 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
 
-            if (!Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
+            if (Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
             {
 #if DEBUG
                 Console.WriteLine(info);

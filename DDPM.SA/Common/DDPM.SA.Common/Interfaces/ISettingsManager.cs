@@ -108,5 +108,9 @@ namespace DDPM.SA.Common
         Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
         Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings);
         Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
     }
 }
