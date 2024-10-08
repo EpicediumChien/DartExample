@@ -221,7 +221,9 @@ namespace DDPM.SA.Common.Settings
             if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
+#if DEBUG 
                 Console.WriteLine(info);
+#endif 
                 return string.Empty;
             }
             string serialized;
@@ -248,7 +250,9 @@ namespace DDPM.SA.Common.Settings
             if (string.IsNullOrEmpty(serialized))
             {
                 info = "Retrieve content of json file failed";
+#if DEBUG 
                 Console.WriteLine(info);
+#endif
                 return string.Empty;
             }
             // Parse the JSON string into a JObject
@@ -269,7 +273,9 @@ namespace DDPM.SA.Common.Settings
                     if (!obj.Remove("Signature"))
                     {
                         info = "Remove signature field of json failed";
+#if DEBUG 
                         Console.WriteLine(info);
+#endif
                         return string.Empty;
                     }
                     modifiedJson = obj.ToString();
@@ -298,7 +304,9 @@ namespace DDPM.SA.Common.Settings
                 if (string.IsNullOrEmpty(signature))
                 {
                     info = "No signature in json file";
+#if DEBUG 
                     Console.WriteLine(info);
+#endif
                     return string.Empty;
                 }
                 //jObject = (JObject)JsonConvert.SerializeObject(serialized, Formatting.Indented);
@@ -316,7 +324,9 @@ namespace DDPM.SA.Common.Settings
             catch (Exception ex)
             {
                 info = "Get Signature from json fail.\nReason: " + ex.ToString();
+#if DEBUG 
                 Console.WriteLine(info);
+#endif
                 return string.Empty;
             }
             //if (jObject == null)// || jObject.Count == 0)
@@ -646,12 +656,16 @@ namespace DDPM.SA.Common.Settings
 
             if (!DDPMFileSecurity.CheckFileACL(json_file, out info, true))
             {
+#if DEBUG 
                 Console.WriteLine($"File: {json_file}\nFail with [{info}]");
+#endif
                 return false;
             }
             if (!File.Exists(public_key))
             {
+#if DEBUG 
                 Console.WriteLine($"Please check if public keys exists");
+#endif
                 return false;
             }
             //Read json content
@@ -672,21 +686,106 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
+#if DEBUG 
                 Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+#endif
                 return false;
             }
 
             //use signature to verify json
             if (!DDPMFileSecurity.IsJsonContentValid(modifiedJson, signature, public_key, HashAlgorithmName.SHA512, out info))
             {
-                 Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
-                 return false;
+#if DEBUG
+                Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
+#endif
+                return false;
             }
-           
+#if DEBUG
             Console.WriteLine("Operation completed");
-
+#endif
             return true;
         }
+
+        public static bool LoadFileToVerifyJson_2(string jsonfilepath, List<string> InfoPkey, out string strJson)
+        {
+            //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
+            //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
+            string json_file = jsonfilepath;
+            string info = string.Empty;
+            strJson = string.Empty;
+
+            if (!DDPMFileSecurity.CheckFileACL(json_file, out info, true))
+            {
+#if DEBUG
+                Console.WriteLine($"File: {json_file}\nFail with [{info}]");
+#endif
+                return false;
+            }
+            if (InfoPkey.Count <= 0)
+            {
+#if DEBUG
+                Console.WriteLine($"Please check if Info keys exists");
+#endif
+                return false;
+            }
+            //Read json content
+            string json_content = File.ReadAllText(json_file);
+
+            // Parse the JSON string into a JObject
+            JObject jObject = JObject.Parse(json_content);
+            string modifiedJson;
+            string signature;
+            try
+            {
+                signature = (string)jObject["Signature"];
+                // Remove the "age" property
+                jObject.Remove("Signature");
+                // Convert the modified JObject back to a JSON string
+                modifiedJson = jObject.ToString();
+                strJson = modifiedJson;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+#endif
+                return false;
+            }
+
+            bool bRet = false;
+            if (signature == null)
+            {
+                bRet = false;
+#if DEBUG
+                Console.WriteLine("No signature found. we should return fail here." + json_file);
+                bRet = true;    // (1/2) Temp for develop mode.  Currently NO json file with signature from server.
+#endif
+                if (bRet == false)
+                    return true;// (2/2) Temp for Normal Mode. Currently NO json file with signature from server.
+            }
+
+            for (int i = 0; i < InfoPkey.Count; i++)
+            {
+                //use signature to verify json
+                if (!DDPMFileSecurity.IsJsonContentValid_2(modifiedJson, signature, InfoPkey[i], HashAlgorithmName.SHA512, out info))
+                {
+#if DEBUG
+                    Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
+#endif
+                    return false;
+                }
+                else
+                {
+                    i = InfoPkey.Count + 1;
+                }
+            }
+#if DEBUG
+            Console.WriteLine("Operation completed");
+#endif
+            return true;
+
+        }
+
 
         public static uint GetCheckSum(byte[] content, int count)
         {
@@ -1542,7 +1641,47 @@ namespace DDPM.SA.Common.Settings
 
                     //algorithm could be SHA256 or SHA512
                     bool isSignatureValid = rsa.VerifyData(dataBytes, signature, algorithm, RSASignaturePadding.Pkcs1);
+#if DEBUG
                     Console.WriteLine($"Signature is valid: {isSignatureValid}");
+#endif
+                    info = $"The signature validated result: {isSignatureValid}";
+                    return isSignatureValid;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+        }
+
+        //Using public key and pre-generated signature to validate json file
+        public static bool IsJsonContentValid_2(string json_content, string base64_signature, string PInfoKey, HashAlgorithmName algorithm, out string info)
+        {
+            info = "unknow error";
+
+            // Convert the base64 string to bytes
+            byte[] publicKeyBytes = Convert.FromBase64String(PInfoKey);
+
+            try
+            {
+                // Create an RSACryptoServiceProvider from the public key
+                using (var rsa = new RSACryptoServiceProvider())
+                {
+                    rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
+
+                    // Now you can use 'rsa' for verification
+                    // For example, verify a JSON file's content
+                    byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(json_content);
+
+                    // Assume you have the signature (base64-encoded) in 'signatureBase64'
+                    byte[] signature = Convert.FromBase64String(base64_signature);
+
+                    //algorithm could be SHA256 or SHA512
+                    bool isSignatureValid = rsa.VerifyData(dataBytes, signature, algorithm, RSASignaturePadding.Pkcs1);
+#if DEBUG
+                    Console.WriteLine($"Signature is valid: {isSignatureValid}");
+#endif
                     info = $"The signature validated result: {isSignatureValid}";
                     return isSignatureValid;
                 }
@@ -1689,7 +1828,9 @@ namespace DDPM.SA.Common.Settings
             info = "success";
             if (!IsFilePathValid(filePath, out info))
             {
+#if DEBUG
                 Console.WriteLine(info);
+#endif
                 return false;
             }
             try
@@ -1725,7 +1866,9 @@ namespace DDPM.SA.Common.Settings
             info = "success";
             if (!IsFilePathValid(filePath, out info))
             {
+#if DEBUG
                 Console.WriteLine(info);
+#endif
                 return false;
             }
             if (string.IsNullOrEmpty(targetThumbprint))
@@ -1801,13 +1944,16 @@ namespace DDPM.SA.Common.Settings
             IntPtr buffer;
             int bytesReturned = 0;
             int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
+#if DEBUG
             Console.WriteLine($"WTSGetActiveConsoleSessionId: {sessionId}");
-
+#endif
             if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
             {
                 string userName = Marshal.PtrToStringAnsi(buffer);
                 WTSFreeMemory_Public(buffer);
+#if DEBUG
                 Console.WriteLine($"WTSQuerySessionInformation: user name ({userName})");
+#endif
 
                 if (!string.IsNullOrEmpty(userName))
                 {
@@ -1824,12 +1970,16 @@ namespace DDPM.SA.Common.Settings
                 }
                 else
                 {
+#if DEBUG
                     Console.WriteLine("Got null user name");
+#endif
                 }
             }
             else
             {
+#if DEBUG
                 Console.WriteLine("WTSQuerySessionInformation: return false");
+#endif
             }
             return null;
         }
@@ -1839,11 +1989,15 @@ namespace DDPM.SA.Common.Settings
             NTAccount f_normal, f_domain = null;
             string accountName = $"{Environment.MachineName}\\{userName}";
             f_normal = new NTAccount(accountName);
+#if DEBUG
             Console.WriteLine($"GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
+#endif
             if (!string.IsNullOrEmpty(Environment.UserDomainName))
             {
                 accountName = $"{Environment.UserDomainName}\\{userName}";
+#if DEBUG 
                 Console.WriteLine($"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
+#endif
                 f_domain = new NTAccount(Environment.UserDomainName, userName);
             }
             //NTAccount f = new NTAccount(accountName);
@@ -1853,12 +2007,16 @@ namespace DDPM.SA.Common.Settings
             {
                 SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
                 sidString = s.ToString();
+#if DEBUG
                 Console.WriteLine($"GetUserSid(normal user): SID: {sidString}");
+#endif
             }
             catch (Exception ex)
             {
                 sidString = null;
+#if DEBUG
                 Console.WriteLine($"GetUserSid(normal user): try translate fail: {ex.Message}");
+#endif
 
                 //0724 add code that translate normal user and do translate domain user if fail.
                 if (f_domain != null)
@@ -1867,12 +2025,16 @@ namespace DDPM.SA.Common.Settings
                     {
                         SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
                         sidString = s.ToString();
+#if DEBUG
                         Console.WriteLine($"GetUserSid(domain user): SID: {sidString}");
+#endif
                     }
                     catch (Exception e)
                     {
                         sidString = null;
+#if DEBUG
                         Console.WriteLine($"GetUserSid(domain user): try translate fail: {e.Message}");
+#endif
                     }
                 }
             }
@@ -1896,7 +2058,9 @@ namespace DDPM.SA.Common.Settings
                 {
                     if (!SymlinkHelper.RemoveFileSymlink2(filePath, out info))
                     {
+#if DEBUG
                         Console.WriteLine($"Delete File failed. ({info})");
+#endif
                         return false;
                     }
                 }
@@ -1924,7 +2088,9 @@ namespace DDPM.SA.Common.Settings
                 {
                     if (!SymlinkHelper.RemoveFolderSymlink2(filePath, out info)) // Remove current symbolic folder
                     {
+#if DEBUG
                         Console.WriteLine($"Delete Folder failed. ({info})");
+#endif
                         return false;
                     }
                     else // check parent folder for symbolic
@@ -1940,20 +2106,48 @@ namespace DDPM.SA.Common.Settings
                 }
                 else
                 {
-                    info = "The Folder is not a Symbolic";
+                    //info = "The Folder is not a Symbolic";
                     string tmpParentPath = string.Empty;
                     tmpParentPath = Path.GetDirectoryName(filePath); // to check parent 
                     if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
                     {
+                        Directory.CreateDirectory(filePath);
                         return true;
                     }
                     else
                     {
+                        Directory.CreateDirectory(filePath);
                         return false;
                     }
                 }
             }
             return true;
         }
+        public static bool CheckFold(string folderPath, out string folderInfo, out string pathSymbolicLinInfo)    // Move from Bruce code
+        {
+            folderInfo = "Error";
+            pathSymbolicLinInfo = "Error";
+            int count = 0;
+            bool folderValid = false;
+            do
+            {
+                folderInfo = string.Empty;
+                pathSymbolicLinInfo = string.Empty;
+                folderValid = false;
+                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(folderPath, out pathSymbolicLinInfo);  //0924 Bruce Add Security
+                if (!folderValid)
+                {
+                    count++;
+                }
+                folderValid = DDPMFileSecurity.IsFolderPathValid(folderPath, out folderInfo) && folderValid;
+                if (!folderValid)
+                {
+                    Directory.CreateDirectory(folderPath);
+                    count++;
+                }
+            } while (!folderValid && count < 2);
+            return folderValid;
+        }
+
     }
 }

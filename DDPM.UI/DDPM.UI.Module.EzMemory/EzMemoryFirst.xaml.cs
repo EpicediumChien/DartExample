@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
+
 namespace DDPM.UI.Module.EzMemory
 {
     /// <summary>
@@ -39,71 +40,70 @@ namespace DDPM.UI.Module.EzMemory
         #region Private Members
         private HomeDevice _homeDevice;
         private IDeviceManagerSA _deviceManagerSA;
-        private DDPM.UI.Common.ViewModels.EzMemoryViewModel _vm;
-        //private EzMemoryViewModel _vm;      
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;    
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+        private readonly SplitListView _splitListView;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
         {
+            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            _log = vmDisplay.Console.CreateLog("EzMemoryFirst");
+            _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
-            //DataContext = vm;
-            if (_homeDevice.vmEzMemory == null)
+            if (_homeDevice.vmEzArrange == null)
             {
-                _homeDevice.vmEzMemory = new DDPM.UI.Common.ViewModels.EzMemoryViewModel(_homeDevice);
+                _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzMemory;
-            DataContext = _homeDevice.vmEzMemory;
+            _vm = _homeDevice.vmEzArrange;
+            DataContext = _homeDevice.vmEzArrange;
 
             Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
 
-            //splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-            //splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-            //splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+            splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+            splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
 
-            //splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
 
-            //splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
 
-            //splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
-
-
+            splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
             //InitRecentListView();
             InitListViewItems();
 
-            customListTooltipText.Text = CustomListTooltipText;
+            customListTooltipText.Text = _vm.CustomListTooltipText;
 
             InitializePage();
+            CheckInputText();
         }
 
         public void InitializePage()
@@ -112,7 +112,6 @@ namespace DDPM.UI.Module.EzMemory
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
             _vm.ezPages = _vm.GetEzPages();
-            RightGridPage2.Visibility = Visibility.Collapsed;
 
             if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
             {
@@ -123,16 +122,67 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        public void CheckInputText()
+        {
+            try
+            {
+                List<EAProfileDDPM> newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (newEAProfileDDPM != null)
+                {
+                    int profileNumber = 1;
+                    bool isDuplicate = false;
+
+                    // 檢查並自動跳號
+                    do
+                    {
+                        string profileNameToCheck = $"Profile {profileNumber}";
+                        isDuplicate = newEAProfileDDPM.Any(p => p.Name.Equals(profileNameToCheck, StringComparison.OrdinalIgnoreCase));
+
+                        if (isDuplicate)
+                        {
+                            profileNumber++;
+                        }
+
+                        // 超過 Profile 9設為string.Empty
+                        if (profileNumber > 9)
+                        {
+                            _vm.InputText = string.Empty;
+                            _log.Error($"{nameof(EzMemoryFirst)} Exceeded Profile 9. InputText set to string.Empty.");
+                            break;
+                        }
+                        else
+                        {
+                            _vm.InputText = profileNameToCheck;
+                        }
+                    }
+                    while (isDuplicate);
+
+                    if (!isDuplicate)
+                    {
+                        _log.Info($"{nameof(EzMemoryFirst)} Unique profile name found: {_vm.InputText}");
+                    }
+                }
+                else
+                {
+                    _log.Info($"{nameof(EzMemoryFirst)} No EAProfileDDPM found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"{nameof(EzMemoryFirst)} Error in CheckInputText: {ex.Message}");
+                _vm.InputText = string.Empty; 
+            }
+        }
+
         /// <summary>
         /// Next Page
         /// </summary>
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            _ezMemoryAssignProgram.DataContext = _vmDisplay;
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
-            //UpdatePageContent();
         }
 
         /// <summary>
@@ -158,21 +208,8 @@ namespace DDPM.UI.Module.EzMemory
             var pageData = _vm.ezPages["EzMemory"][_vm._currentPageIndex];
             MainText.Text = pageData.MainText!;
             SubText.Text = pageData.SubText!;
-            ControlPageGrid(_vm._currentPageIndex);
         }
-        public void ControlPageGrid(int _currentPageIndex)
-        {
-            //if (_vm._currentPageIndex == 0)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Visible;
-            //    RightGridPage2.Visibility = Visibility.Collapsed;
-            //}
-            //if (_vm._currentPageIndex == 1)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Collapsed;
-            //    RightGridPage2.Visibility = Visibility.Visible;
-            //}
-        }
+
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             if (_vm._currentPageIndex == 0)
@@ -185,6 +222,23 @@ namespace DDPM.UI.Module.EzMemory
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm.SelectedSplitItem.CellCount < 2)
+            {
+                return;
+            }
+            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+            if (checkEAProfileDDPM != null)
+            {
+                if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    return;
+                }
+            }
+
             NextPage();
             DoProgressAnimation(true);
         }
@@ -580,7 +634,7 @@ namespace DDPM.UI.Module.EzMemory
         private static DisplayOrientation GetDisplayOrientation(string deviceName)
         {
             int ENUM_CURRENT_SETTINGS = -1;
-            DEVMODE devMode = new DEVMODE();
+            Common.User32.DEVMODE devMode = new Common.User32.DEVMODE();
             if (User32._EnumDisplaySettings(deviceName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 return (DisplayOrientation)devMode.dmDisplayOrientation;
@@ -742,5 +796,36 @@ namespace DDPM.UI.Module.EzMemory
             return listOut;
         }
         #endregion
+
+        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                // Handle "@"
+            }
+            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
+                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
+                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
+                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
+                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
+                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
+                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
+                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
+            {
+                // Handle 0-9, a-z, A-Z, " ", "-" 
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
     }
 }

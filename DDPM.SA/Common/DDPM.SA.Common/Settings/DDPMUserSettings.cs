@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DdmLibrary.Utility;
+using System;
 using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
@@ -82,6 +83,12 @@ namespace DDPM.SA.Common.Settings
         public EzSettings EzSettings { get; set; } = new EzSettings();
 
         #endregion EzSettings
+
+        #region EasyMemory
+
+        public List<EAProfileDDPM> EAProfile { get; set; }// = new EAProfile();
+
+        #endregion EasyMemory
 
     }
 }

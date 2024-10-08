@@ -8,7 +8,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common"
-             d:DataContext="{d:DesignInstance Type=viewmodels:EzMemoryViewModel}"
+             d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" 
              Background="#FF0D121A"
              d:DesignHeight="671" 
@@ -152,7 +152,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel HorizontalAlignment="Left">
                         <UXControls:UXTextBlock x:Name="NameProfileText" Grid.Row="0" Margin="0, 48, 0, 0" Text="Name the profile" Foreground="#DAF5FD" FontSize="16" />
-                        <UXControls:UXTextBox x:Name="InputText" Grid.Row="1" Margin="0, 8, 0, 0" Width="260" Height="40" Text="Profile 1" Foreground="#F5F6F7" FontSize="14"/>
+                        <UXControls:UXTextBox x:Name="InputText" Grid.Row="1" Margin="0, 8, 0, 0" Width="260" Height="40" Text="{Binding InputText}" Foreground="#F5F6F7" FontSize="14" MaxLength="30" KeyDown="KeyDown_KeyDown"/>
                         <UXControls:UXTextBlock x:Name="SelectText" Grid.Row="2" Margin="0, 24, 0, 0" Text="Select a layout" Foreground="#F5F6F7" FontSize="16" />
                     </StackPanel>
 
@@ -226,60 +226,6 @@
                         </Grid>
                     </UXControls:UXScrollViewer>
                 </Grid>
-
-
-                <Grid x:Name="RightGridPage2" Visibility="{Binding RightGridPage2Visibility}" Grid.Column="1" Width="657" Margin="64, 72, 96, 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <!-- Monitor Outline Image -->
-                    <Image x:Name="MainAppImage1" Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Monitor_Outline.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="361.86" Height="280" />
-
-                    <!-- Bottom Control Panel -->
-                    <Border Grid.Row="1" Background="#1B385F" CornerRadius="10" Margin="0,16,0,0" Padding="16" Width="415" Height="128" HorizontalAlignment="Center">
-                        <StackPanel>
-                            <!-- Window 1 Control -->
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <UXControls:UXTextBlock Text="Window 1" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
-
-                                <UXControls:UXComboBox x:Name="Window1ComboBox" Grid.Column="1" Margin="8,0" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" Foreground="White" Background="#141D2B"  BorderThickness="1"/>
-
-                                <StackPanel Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center">
-                                    <UXControls:UXButton x:Name="AddButton1" Content="+" Width="24" Height="24" Background="#3B82F6" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Grid>
-
-                            <!-- Window 2 Control -->
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <UXControls:UXTextBlock Text="Window 2" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
-
-                                <UXControls:UXComboBox x:Name="Window2ComboBox" Grid.Column="1" Margin="8,0" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" Foreground="White" Background="#141D2B" BorderThickness="1"/>
-
-                                <StackPanel Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center">
-                                    <UXControls:UXButton x:Name="AddButton2" Content="+" Width="24" Height="24" Background="#3B82F6" Foreground="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-
-
             </Grid>
         </StackPanel>
     </Grid>

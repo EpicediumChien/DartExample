@@ -1167,7 +1167,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string DisplayImportSettings_path = "TestDDPMImpExpSettings.json";
             string DisplayImportSettings_path2 = "TestU2724DD.json";
             bool isSameModel = false;
-            List<VCPCode> Testvcps = new List<VCPCode>();
+            DDPMImpExpSettings TestImpExpSettings = new DDPMImpExpSettings();
             bool DisplayImportSettings1 = false;
             bool DisplayImportSettings2 = true;
             string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestU2724DD\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
@@ -1178,7 +1178,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", string.Empty);
             if (monitorSettings_path == string.Empty)
             {
-                var DisplayImportSettings_result = SettingsManagerSAPlugin.DisplayImportSettings(DisplayImportSettings_path, isSameModel, out Testvcps).Result; //file no exist monitorSettings_path
+                var DisplayImportSettings_result = SettingsManagerSAPlugin.DisplayImportSettings(DisplayImportSettings_path, isSameModel, out TestImpExpSettings).Result; //file no exist monitorSettings_path
                 Assert.That(DisplayImportSettings1, Is.EqualTo(DisplayImportSettings_result));
             }
             string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path2;
@@ -1202,7 +1202,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
             if (monitorSettings_path2 != null)
             {
-                var DisplayImportSettings_result2 = SettingsManagerSAPlugin.DisplayImportSettings(DisplayImportSettings_path, isSameModel, out Testvcps).Result; //file exist monitorSettings_path
+                var DisplayImportSettings_result2 = SettingsManagerSAPlugin.DisplayImportSettings(DisplayImportSettings_path, isSameModel, out TestImpExpSettings).Result; //file exist monitorSettings_path
                 Assert.That(DisplayImportSettings2, Is.EqualTo(DisplayImportSettings_result2));
             }
             File.Delete(DisplayImportSettings_path);
@@ -1289,9 +1289,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
-
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, path).Result;
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.False);
             File.Delete(settings_path_target_file);
             File.Delete(DisplayImportSettings_path2);
         }

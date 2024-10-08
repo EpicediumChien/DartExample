@@ -15,12 +15,12 @@ namespace VcpCore.Common
         public EDID edid { get; set; }
         public string FwVersion { get; set; }
         public string inputSource { get; set; }
-
         public Dictionary<string, List<string>> CapabilityDic;
         public string modelName { get; set; }
         public string series { get; set; }
         public string MarketingName { get; set; }
         public string ImageFileName { get; set; }
+        public string Display_DeviceName { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -60,6 +60,7 @@ namespace VcpCore.Common
                    (series == other.series) &&
                    (MarketingName == other.MarketingName) &&
                    (ImageFileName == other.ImageFileName) &&
+                   (Display_DeviceName == other.Display_DeviceName) &&
                    (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
         }
 

@@ -38,6 +38,12 @@ namespace DDPM.SA.Common
 
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
+        #region EaM
+        Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
+
+        Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
+        #endregion
+
         #region public for SchedulerManger
 
         Task StartSchedulerManger(int millisecond);
@@ -250,6 +256,22 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
         #endregion EasyArrange
 
+        #region EasyMemory
+
+        public Task<bool> WriteMonitorEasyArrangement(MonitorInfo monitorInfo, EasyArrangementDDPM easyArrangementDDPM);
+
+        public Task<EasyArrangementDDPM> ReadMonitorEasyArrangement(MonitorInfo monitorInfo);
+
+        public Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList);
+
+        public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile);
+
+        public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM();
+
+        public Task<bool> CleanUserEzProfiles();
+
+        #endregion EasyMemory
+
         #endregion public for Displays
 
         #region public for Peripherals
@@ -434,7 +456,10 @@ namespace DDPM.SA.Common
         /// </summary>
         event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
+        //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
+
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false);
+
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
@@ -444,6 +469,8 @@ namespace DDPM.SA.Common
         void SetUILockStatus(bool isLockFWU_UI);
 
         Task<bool> GetUILockStatus();
+        Task<bool> SetSkipCA(bool isSkipCA);
+        Task<bool> GetSkipCA();
 
         #endregion public for FW Update by Bruce
 
@@ -514,6 +541,10 @@ namespace DDPM.SA.Common
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
         Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
+
+        Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
+
+        Task<bool> GetSameModel(MonitorInfo monitorInfo);
 
         #endregion public for ImpExpSettings
 
@@ -620,6 +651,20 @@ namespace DDPM.SA.Common
         Task SetIsHDROn(string Guid, bool newValue);
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
         Task SetAutoWhiteBalance(string Guid, int newValue);
+        Task SetBrightness(string Guid, int newValue);
+        Task SetSharpness(string Guid, int newValue);
+        Task SetContrast(string Guid, int newValue);
+        Task SetSaturation(string Guid, int newValue);
+        Task SetAntiFlicker(string Guid, int newValue);
+        Task SetTilt(string Guid, int newValue);
+        Task SetPan(string Guid, int newValue);
+
+        Task SetWALTime(string Guid, int newValue);
+        Task SetSnooze(string Guid, int newValue);
+        Task SetSnoozeLength(string Guid, int newValue);
+        Task SetIsProximitySensorEnable(string Guid, bool newValue);
+        Task SetIsWakeonApproachEnable(string Guid, bool newValue);
+        Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
 
         #endregion
 

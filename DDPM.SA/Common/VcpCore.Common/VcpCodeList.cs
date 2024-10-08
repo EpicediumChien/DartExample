@@ -239,6 +239,8 @@ namespace VcpCore.Common
         {
             { "Text", 1 },
             { "AdobeRGB", 2 },
+            { "AdobeRGB1 (D65G2.2L250)", 33 },
+            { "AdobeRGB2 (D50G2.2L250)", 34 },
             { "AdobeRGB1", 33 },
             { "AdobeRGB2", 34 },
             { "Adobe RGB D65 G2.2 L160", 33 },
@@ -260,6 +262,7 @@ namespace VcpCore.Common
             { "CAL2", 6 },
             { "Metro", 7 },
             { "Paper", 8 },
+            { "Rec.709 / BT.709", 9 }, //20241004 jim add
             { "Rec. 709 / BT.709", 9 },
             { "Rec. 709/BT.709", 9 },  // 20240731 jim remove
             { "Rec.709/BT.709", 9 }, // 20240808 jim remove
@@ -271,7 +274,8 @@ namespace VcpCore.Common
             { "BT.709 D65 BT1886 L100", 9 },
             { "DCI-P3", 10 },
             { "DCI P3 D65 G2.4 L100", 10 },
-            { "Rec2020", 11 },
+            { "Rec.2020 / BT.2020", 11 },
+            { "Rec.2020", 11 },
             { "BT.2020", 11 },
             { "BT.2020 D65 BT1886 L100", 11 },
             { "ComfortView", 12 },
@@ -350,12 +354,13 @@ namespace VcpCore.Common
             { 21, "CAL2" },
             { 24, "Metro" },
             { 25, "Paper" },
-            { 26, "Rec. 709 / BT.709" }, // 20240731 jim remove
+            { 26, "Rec.709 / BT.709" }, // 20241004 jim add
             //{ 26, "Rec. 709/BT.709" }, // 20240731 jim remove
             //{ 26, "Rec. 709" }, // 20240731 jim remove
             //{ 26, "Rec.709" }, // 20240731 jim add
             { 27, "DCI-P3" },
-            { 28, "Rec2020" },
+            //{ 28, "Rec2020" },
+            { 28, "Rec.2020 / BT.2020" },
             { 29, "ComfortView" },
             { 30, "Game2" },
             { 31, "Game3" },
@@ -374,8 +379,10 @@ namespace VcpCore.Common
             { 60, "HLG" },
             { 127, "Presets Disabled" },
             { 61, "Display P3" },
-            { 42, "AdobeRGB1" },
-            { 43, "AdobeRGB2" },
+            { 42, "AdobeRGB1 (D65G2.2L250)" },
+            { 43, "AdobeRGB2 (D50G2.2L250)" },
+            //{ 42, "AdobeRGB1" },
+            //{ 43, "AdobeRGB2" },
             { 44, "Custom 1 / User 1" },
             { 45, "Custom 2 / User 2" },
             { 46, "Custom 3 / User 3" },
@@ -401,6 +408,7 @@ namespace VcpCore.Common
             { "Adobe RGB D50 G2.2 L250", 43 },
             { "sRGB D65 sRGB L250", 11 },
             { "DCI P3 D65 G2.4 L100", 27 },
+            { "Rec.709 / BT.709", 26 }, // 20241004 jim add
             { "Rec. 709 / BT.709", 26 }, // 20240731 jim remove
             { "Rec. 709/BT.709", 26 }, // 20240731 jim remove
             { "Rec.709/BT.709", 26 }, // 20240731 jim add
@@ -455,10 +463,10 @@ namespace VcpCore.Common
             {"Sport", 5},
             {"Text", 6},
             {"AdobeRGB", 7},
-            {"AdobeRGB1", 42},
-            {"AdobeRGB2", 43},
             {"AdobeRGB1 (D65G2.2L250)", 42},
             {"AdobeRGB2 (D50G2.2L250)", 43},
+            {"AdobeRGB1", 42},
+            {"AdobeRGB2", 43},           
             {"xvMode", 8},
             {"DICOM", 9},
             {"CAL1", 10},
@@ -484,6 +492,7 @@ namespace VcpCore.Common
             {"CAL2", 21},
             {"Metro", 24},
             {"Paper", 25},
+            {"Rec.709 / BT.709", 26}, // 20241004 jim add
             {"Rec. 709 / BT.709", 26}, // 20240731 jim add
             {"Rec. 709/BT.709", 26}, // 20240731 jim add
             {"Rec.709/BT.709", 26}, // 20240731 jim add
@@ -493,6 +502,7 @@ namespace VcpCore.Common
             {"BT.709", 26},
             {"DCI-P3", 27},
             {"Display P3", 61},
+            {"Rec.2020 / BT.2020", 28}, // add 10/14
             {"Rec2020", 28},
             {"BT.2020", 28},
             {"ComfortView", 29},

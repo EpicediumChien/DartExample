@@ -59,6 +59,18 @@ namespace DDPM.SA.Common
             }
         }
 
+        private string apppath;
+
+        public string AppPath
+        {
+            get { return apppath; }
+            set
+            {
+                apppath = value;
+                OnPropertyChanged("AppPath");
+            }
+        }
+
         private Visibility isdeleteable;
 
         public Visibility IsDeleteAble

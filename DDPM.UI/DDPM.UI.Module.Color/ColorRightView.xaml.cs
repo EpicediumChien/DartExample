@@ -191,12 +191,46 @@ namespace DDPM.UI.Module.Color
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
+                // chech if ModelName and SerialNumber is null
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                    {
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                            return -1;
+
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                            return -1;
+                    }
                 }
+
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                if (index == -1)
+                {
+                    // chech if ModelName and ServiceTag is null
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                    {
+                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                                return -1;
+
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+                                return -1;
+                        }
+                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                }
+
+                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
             }
             return index;
         }
@@ -527,6 +561,8 @@ namespace DDPM.UI.Module.Color
                         string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
                         strFolder += "\\";
 
+                        string info = string.Empty;
+                        DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
                         if (!System.IO.Directory.Exists(strFolder))
                             System.IO.Directory.CreateDirectory(strFolder);
 

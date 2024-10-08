@@ -285,7 +285,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         (devType.ToString().ToUpper().Contains("23")))
                     {
                         dev.DeviceCategory = eDeviceCategory.Dock;
-                        //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/WD22TB4.png");
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
                         idxDock++;
                     }

@@ -13,5 +13,6 @@ namespace DDPM.SA.Common.Display
     {
         public const int MaxCustomItems = 5; //DDPMW-843
         public const int MaxCustomNameLenth = 30; //DDPMW-843
+        public const int MaxRecentItems = 5; //DDPMW-840, 1 static item (Off) + 4 per-monitor MRU items.
     }
 }

@@ -19,52 +19,61 @@ namespace DDPM.SA.Common.Security
         public bool CheckFile_SHA512(string CertificateFilePath, string Stande_SHA512, out string Info)
         {
             bool ret = false;
-            Info = "";
-            try
+            Info = "SHA512 Is Null Or Empty";
+            if (!string.IsNullOrEmpty(Stande_SHA512))
             {
-                ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
-                if (Info.Equals("Complete"))
+                try
                 {
-                    Info = ret ? "Check ok" : "Check faile";
+                    ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
+                    if (Info.Equals("Complete"))
+                    {
+                        Info = ret ? "Check ok" : "Check faile";
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Info = "No signature Ex:" + ex.ToString();
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
             }
             return ret;
         }
         public bool CheckFile_SHA256(string CertificateFilePath, string Stande_SHA256, out string Info)
         {
             bool ret = false;
-            Info = "";
-            try
+            Info = "SHA256 Is Null Or Empty";
+            if (!string.IsNullOrEmpty(Stande_SHA256))
             {
-                ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
-                if (Info.Equals("Complete"))
+                try
                 {
-                    Info = ret ? "Check ok" : "Check faile";
+                    ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
+                    if (Info.Equals("Complete"))
+                    {
+                        Info = ret ? "Check ok" : "Check faile";
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Info = "No signature Ex:" + ex.ToString();
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
             }
             return ret;
         }
         public bool CheckFile_Thumbprint(string CertificateFilePath, string Stande_Thumbprint, out string Info)
         {
             bool ret = false;
-            Info = "";
-            try
+            Info = "Thumbprint Is Null Or Empty";
+            if (!string.IsNullOrEmpty(Stande_Thumbprint))
             {
-                // 讀取憑證檔案並創建 X509Certificate2 物件
-                X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
-                ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
-            }
-            catch (Exception ex)
-            {
-                Info = "No signature Ex:" + ex.ToString();
+                try
+                {
+                    // 讀取憑證檔案並創建 X509Certificate2 物件
+                    X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+                    ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
+                }
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
             }
             return ret;
         }

@@ -3319,7 +3319,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Display FWU Metadata
-        public Task<DisplayUpdateHelper> GetDisplayFWUpdate()
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA)
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
             SetDisplayFWUServer();
