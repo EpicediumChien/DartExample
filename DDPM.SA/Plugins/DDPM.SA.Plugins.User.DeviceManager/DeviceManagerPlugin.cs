@@ -3104,6 +3104,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
+            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList);
 
             if (_SettingsPlugin == null)
             {
@@ -3132,10 +3133,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
+            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList);
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
 
+        private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
+        {
+            Trace.WriteLine($"Monitor: {mi.AliasDeviceName}");
+            int idx = 0;
+            foreach (SplitJson splitJson in splitJsonList)
+            {
+                Trace.WriteLine($"[{idx}] {splitJson.ToString()}");
+                idx++;
+            }
+        }
         //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo)
         //{
         //    if (_DisplayManagerPlugin != null)
@@ -3323,6 +3335,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             //Read DDPMSettings
             //Fail to read, will return false
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
             return Task.FromResult(false);
         }
         #endregion EasyArrage
@@ -6790,7 +6811,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
+            //Validation
             //todo Toggle_EzRecentSetting
+            //Read the EAMonitorSettings
+            EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
+            //Change selected layout to the latest item of RecentList
+            int idxRecent = 0;
+            if ( eaSettings.RecentList == null)
+            {
+                writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
+                return;
+            }
+            if (eaSettings.RecentList.Count == 0)
+            {
+                writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
+                return;
+            }
+            else
+            {
+                //Should be always EAEMConstants.MaxRecentItems(=5)-1 = 4
+                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Count}");
+            }
+            idxRecent = eaSettings.RecentList.Count - 1;
+
+            //Force await to avoid reenter this method (it will update to MonitorSettings file)
+            bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
+
+            //TO DO: invoke an event to UI to reload settings
+            // TO be implement in EASettingsChanged event
+
+            writelog($"@ Toggle_EzRecentSetting(), result is {isOKSetSelected}");
         }
         private bool IsHotkeyFuncLock(HotkeyType type)
         {

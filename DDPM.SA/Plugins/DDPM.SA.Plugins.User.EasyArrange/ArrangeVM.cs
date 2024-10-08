@@ -1145,6 +1145,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return DeviceManager?.ReadEAMonitorSettings(mi).Result;
         }
 
+        public bool WriteEAMonitorSettings(MonitorInfo mi, EAMonitorSettings eaSettings)
+        {
+            if (_deviceManagerPlugin == null) return false;
+            return _deviceManagerPlugin.WriteEAMonitorSettings(mi, eaSettings).Result;
+        }
         public List<MonitorInfo>? GetMonitors()
         {
             if (_displayManagerPlugin == null)
@@ -1277,6 +1282,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => SetProperty(ref _awsIcon4, value);
         }
 
+        public void RefreshAwsWindowIcons()
+        {
+
+        }
         #endregion AWS Icons
 
         public void DetermineWorkWindowVisibility()
