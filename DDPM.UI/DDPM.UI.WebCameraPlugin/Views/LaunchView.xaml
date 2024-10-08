@@ -276,7 +276,7 @@
                   </DockPanel>
                 </Border>
                 <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
-                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
                 </Border>
               </StackPanel>
               <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click">
