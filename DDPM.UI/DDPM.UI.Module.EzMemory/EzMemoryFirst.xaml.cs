@@ -44,14 +44,16 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            _selecthomeDevice = _homeDeviceSelect;
             _log = vmDisplay.Console.CreateLog("EzMemoryFirst");
             _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
@@ -63,7 +65,7 @@ namespace DDPM.UI.Module.EzMemory
             _vm = _homeDevice.vmEzArrange;
             DataContext = _homeDevice.vmEzArrange;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
 
@@ -185,7 +187,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -311,12 +313,12 @@ namespace DDPM.UI.Module.EzMemory
             //
             if (_deviceManagerSA == null) return;
 
-            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_selecthomeDevice.MonitorInfo).Result;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
+            DisplayOrientation orient = GetDisplayOrientation(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
 
             //Update IsVertical to listViews
