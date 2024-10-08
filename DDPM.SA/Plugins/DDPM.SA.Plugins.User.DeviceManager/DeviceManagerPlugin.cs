@@ -6339,13 +6339,90 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info)
+        private List<HotkeyData> GetInputSourceHotKeyData(MonitorInfo mo)
         {
+            string model = mo.modelName;
+            string serviceTag = mo.edid.ServiceTag;
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ GetInputSourceHotKeyData: ReloadMonitorSettings(model={model}) return null.");
+                return null;
+            }
+
+            //Find the previous saved device settings
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
+            //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
+            if (monitorSettings == null)
+            {
+                writelog($"@ GetInputSourceHotKeyData: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return null;
+            }
+
+            return monitorSettings.hotkeyData;
+        }
+
+        private bool GetInputSourceHotKeyDataAndSaveNewBack(MonitorInfo mo, HotkeyType hotkeyType, List<InputSourceObj> hotkeyDataInputSource)
+        {
+            string model = mo.modelName;
+            string serviceTag = mo.edid.ServiceTag;
+
+            if (hotkeyDataInputSource == null || hotkeyDataInputSource.Count == 0)
+            {
+                writelog($"@ GetInputSourceHotKeyDataAndSaveBack: ReloadMonitorSettings(model={model}) return null.");
+                //means clear the setting
+                hotkeyDataInputSource = new List<InputSourceObj>();
+            }
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ GetInputSourceHotKeyDataAndSaveBack: ReloadMonitorSettings(model={model}) return null.");
+                return false;
+            }
+            Debug.WriteLine($"GetInputSourceHotKeyDataAndSaveNewBack:{mo.edid.ServiceTag}");
+            //Find the previous saved device settings
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
+            //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
+            if (monitorSettings == null)
+            {
+                writelog($"@ GetInputSourceHotKeyDataAndSaveBack: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return false;
+            }
+
+            //monitorSettings.hotkeyData = hotkeyData;
+            //update hotkey data
+            HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
+            List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+            foreach (var item in removeHotkeyDatas)
+            {
+                monitorSettings.hotkeyData.Remove(item);
+            }
+            monitorSettings.hotkeyData.Add(hotkeyData);
+
+            if (!_SettingsPlugin.WriteMonitorSettings(mo.modelName, settings).Result)
+            {
+                writelog($"@ GetInputSourceHotKeyDataAndSaveBack(model={model}, serviceTage={serviceTag}) failed.");
+                return false;
+            }
+            writelog($"@ GetInputSourceHotKeyDataAndSaveBack(model={model}, serviceTage={serviceTag}) OK.");
+            return true;
+        }
+
+        //public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info)
+        public Task<bool> SaveHotkeySetting(MonitorInfo mo, HotkeyInfo info)
+        {
+            EDID monitorEdid = null;
+            if (mo != null)
+                monitorEdid = mo.edid;
             var hotkeys = info.Hotkey;
             List<HotkeySettings> saveList = new List<HotkeySettings>();
             List<InputSourceObj> inputSourceList = new List<InputSourceObj>();
             List<HotkeyInfo> hotkeyInfoList = new List<HotkeyInfo>();
-            HotkeySettings curHotkey = ReadCurrentHotkey(monitorEdid).Result;
+            //HotkeySettings curHotkey = ReadCurrentHotkey(mo).Result;// monitorEdid).Result;
+            var temp = ReadCurrentHotkey(mo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             List<HotkeySettings> allSettings = ReadHotkeySettings().Result;
             //if (curHotkey.DeviceInfo == null)
             if (curHotkey.ModelName == null || curHotkey.ServiceTag == null || curHotkey.SerialNumber == null)
@@ -6358,6 +6435,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 hotkeySettings.ServiceTag = "DDPM";// monitorEdid.ServiceTag;     //Reason: change per monitor as per user
                 hotkeySettings.ModelName = "DDPM";// monitorEdid.ModelName;
                 saveList.Add(hotkeySettings);
+                //set default inputsource value of other monitor due to the hotkey is global
+                List<MonitorInfo> defaultMoList = _AllInfoMonitors.Where(x => !x.edid.ServiceTag.Equals(mo.edid.ServiceTag)).ToList();
+                foreach (var m in defaultMoList)
+                {
+                    List<InputSourceObj> defaultList = new List<InputSourceObj>();
+                    Debug.WriteLine($"set default value on mo: {m.edid.ServiceTag}");
+                    Debug.WriteLine($"set default value on mo: {m.inputSource}");
+                    switch (info.Job)
+                    {
+                        case HotkeyType.FavoriteInputSource:
+                            defaultList.Add(new InputSourceObj(m.inputSource));
+                            break;
+                        case HotkeyType.SwitchInputSource:
+                            defaultList.Add(new InputSourceObj(m.inputSource));
+                            Dictionary<string, InputInfo> result = GetInputSourcelist(m).Result;
+                            if (result != null)
+                            {
+
+                                string sencondInput = result.Keys.FirstOrDefault(x => !x.Equals(m.inputSource));
+                                defaultList.Add(new InputSourceObj(sencondInput));
+                            }
+                            break;
+
+                    }
+                    GetInputSourceHotKeyDataAndSaveNewBack(m, info.Job, defaultList);
+                    foreach (var s in defaultList)
+                    {
+                        Debug.WriteLine($"defaultList {s?.Name}");
+                        Debug.WriteLine($"defaultList {s?.Code}");
+                    }
+                }
             }
             else
             {
@@ -6425,6 +6533,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         hotkeySettings.ServiceTag = "DDPM";// monitorEdid.ServiceTag;
                         saveList.Add(hotkeySettings);
                     }
+                    //set default inputsource value of other monitor due to the hotkey is global
+                    List<MonitorInfo> defaultMoList = _AllInfoMonitors.Where(x => !x.edid.ServiceTag.Equals(mo.edid.ServiceTag)).ToList();
+                    foreach (var m in defaultMoList)
+                    {
+                        List<InputSourceObj> defaultList = new List<InputSourceObj>();
+                        Debug.WriteLine($"set default value on mo: {m.edid.ServiceTag}");
+                        Debug.WriteLine($"set default value on mo: {m.inputSource}");
+                        switch (info.Job)
+                        {
+                            case HotkeyType.FavoriteInputSource:
+                                defaultList.Add(new InputSourceObj(m.inputSource));
+                                break;
+                            case HotkeyType.SwitchInputSource:
+                                defaultList.Add(new InputSourceObj(m.inputSource));
+                                Dictionary<string, InputInfo> result = GetInputSourcelist(m).Result;
+                                if (result != null)
+                                {
+
+                                    string sencondInput = result.Keys.FirstOrDefault(x => !x.Equals(m.inputSource));
+                                    defaultList.Add(new InputSourceObj(sencondInput));
+                                }
+                                break;
+
+                        }
+                        GetInputSourceHotKeyDataAndSaveNewBack(m, info.Job, defaultList);
+                    }
                 }
             }
 
@@ -6433,6 +6567,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (saveList.Any(x => x.SerialNumber.Equals("DDPM")))//setting.SerialNumber)))
                     continue;
                 saveList.Add(setting);
+            }
+            Debug.WriteLine($"SaveHotkeySetting -> saveList -> count: {saveList.Count}");
+            if (saveList.Count > 0)
+            {
+                //1006 1007
+                if (mo != null)
+                {
+                    Debug.WriteLine($"{mo.edid.ServiceTag}: SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack,InputSource count:[{info.InputSource.Count}] ");
+                    GetInputSourceHotKeyDataAndSaveNewBack(mo, info.Job, info.InputSource);
+                }
+                else
+                {
+                    Debug.WriteLine($"SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack mo is null ");
+                }
             }
             if (WriteHotkeySettings(saveList).Result)
             {
@@ -6634,6 +6782,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
                         var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
+                        foreach (var h in hotkeyInfo.Hotkey)
+                        {
+                            Debug.WriteLine($"Hotkey : {h}= {(int)h}");
+                        }
+                        Debug.WriteLine($"pressed : {e.KeyValue}={e.KeyCode}");
+                        Debug.WriteLine($"key b1 : {b1}");
+                        Debug.WriteLine($"key _ctrlPressed : {_ctrlPressed}");
+                        Debug.WriteLine($"key _altPressed : {_altPressed}");
+                        Debug.WriteLine($"key _shiftPressed : {_shiftPressed}");
                         if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
                         && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
                         && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
@@ -6675,6 +6832,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Here should change to be (1)last UI selected monitor or (2)dell monitor with mouse placed in [Dean 1001]
             //check (2)
             MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+            Debug.WriteLine($"cursor mo ={monitorInfo?.edid.ServiceTag}");
             bool getTargetMo = false;
             if (monitorInfo == null)
             {
@@ -6697,6 +6855,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 getTargetMo = true;
             }
+            Debug.WriteLine($"getTargetMo: {getTargetMo}");
+            Debug.WriteLine($"job: {job}");
             writelog($"job: {job}");
             switch (job)
             {
@@ -6762,17 +6922,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 case HotkeyType.FavoriteInputSource:
                     HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.FavoriteInputSource)).SingleOrDefault();
-                    if (hotkeyInfoIs != null && hotkeyInfoIs.InputSource != null)
+                    List<HotkeyData> list = GetInputSourceHotKeyData(monitorInfo);
+                    HotkeyData hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
+                    Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
+                    if (hotkeyInfoIs != null && hotkeyData != null)// hotkeyInfoIs.InputSource != null)
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { hotkeyInfoIs }, Favorite_InputSource));
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { hotkeyInfoIs, hotkeyData.inputSource }, Favorite_InputSource));
                     }
                     break;
 
                 case HotkeyType.SwitchInputSource:
                     HotkeyInfo hotkeyInfo = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.SwitchInputSource)).SingleOrDefault();
-                    if (hotkeyInfo != null && hotkeyInfo.InputSource != null)
+                    List<HotkeyData> list2 = GetInputSourceHotKeyData(monitorInfo);
+                    HotkeyData hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
+                    if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { hotkeyInfo }, Switch_InputSource));
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { hotkeyInfo, hotkeyData2.inputSource }, Switch_InputSource));
                     }
                     break;
 
@@ -6786,9 +6951,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 case HotkeyType.KvmSwitchInputSource:
                     HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource)).SingleOrDefault();
-                    if (kvmhotkeyInfo != null && kvmhotkeyInfo.InputSource != null)
+                    List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
+                    HotkeyData hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
+                    if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { kvmhotkeyInfo }, Kvm_SwitchInputSource));
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
                     }
                     break;
 
@@ -7059,7 +7226,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
              {
                  hotkey.InputSource.Add(new InputSourceObj(inputInfo.Value.InputName));
              }*/
-            if (hotkey.InputSource.Count == 0)
+            List<InputSourceObj> list = (List<InputSourceObj>)param[1];// GetInputSourceHotKeyData(monitorInfo);
+            if (list == null | list.Count == 0)//hotkey.InputSource.Count == 0)
             {
                 //hotkey.InputSource Count must not 0
                 return;
@@ -7067,7 +7235,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string crtInput = monitorInfo.inputSource;
             // InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
             string nextInput = string.Empty;
-            List<string> inputsList = hotkey.InputSource.OrderBy(x => x.Name).Select(input => input.Name).ToList();
+            //List<string> inputsList = hotkey.InputSource.OrderBy(x => x.Name).Select(input => input.Name).ToList();
+            List<string> inputsList = list.OrderBy(x => x.Name).Select(input => input.Name).ToList();
             for (int i = 0; i < inputsList.Count; i++)
             {
                 if (inputsList[i].Equals(crtInput))
@@ -7199,13 +7368,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 HotkeyInfo hotkey = (HotkeyInfo)param[0];
-                if (hotkey.InputSource.Count == 0)
+                List<InputSourceObj> list = (List<InputSourceObj>)param[1];// GetInputSourceHotKeyData(monitorInfo);
+                Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}]");
+                if (list == null || list.Count == 0)//hotkey.InputSource.Count == 0)
                 {
                     //hotkey.InputSource Count must not 0
+                    Debug.WriteLine($"Switch_InputSource InputSource count is 0");
                     return;
                 }
                 string crtInput = monitorInfo.inputSource;
-                InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
+                Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}] crtInput is [{crtInput}]");
+                //InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
+                InputSourceObj switchTo = list.FirstOrDefault(x => !x.Name.Equals(crtInput));
+                Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}] switch to [{switchTo?.Name}]");
                 if (switchTo != null)
                 {
                     bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
@@ -7219,8 +7394,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 HotkeyInfo hotkey = (HotkeyInfo)param[0];
-                InputSourceObj changeInput = hotkey.InputSource[0];
+                List<InputSourceObj> list = (List<InputSourceObj>)param[1];
+                InputSourceObj changeInput = list[0];// hotkey.InputSource[0];
+                Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput.Name}");
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
+                Debug.WriteLine($"Favorite_InputSource => {setNextInput}");
                 writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
             }
         }
@@ -7937,17 +8115,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(r);
         }
 
-        public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid)
+        public Task<(HotkeySettings, List<HotkeyData>)> ReadCurrentHotkey(MonitorInfo mo)//EDID monitorEdid)
         {
             List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
             //HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
             HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM")).SingleOrDefault();
 
+            //1006 read hotkey data per monitor
+            List<HotkeyData> list = GetInputSourceHotKeyData(mo);
+
             if (hotkeySettings != null && hotkeySettings.HotkeyInfo.Count > 0)
             {
-                return Task.FromResult(hotkeySettings);
+                return Task.FromResult((hotkeySettings, list));
             }
-            return Task.FromResult(new HotkeySettings());
+            return Task.FromResult((new HotkeySettings(), list));
         }
 
         public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)

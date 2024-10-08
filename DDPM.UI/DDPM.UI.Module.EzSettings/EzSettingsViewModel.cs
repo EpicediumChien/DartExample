@@ -47,7 +47,8 @@ namespace DDPM.UI.Module.EzSettings
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     //Read Recent Hotkey settings (TO be implemented by Gavin)
-                    HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(_homeDevice.MonitorInfo.edid).Result;
+                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(_homeDevice.MonitorInfo).Result;
+                    HotkeySettings curHotkey = temp.Item1;
                     if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                     {
                         HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.ToggleEzRecentSetting));
