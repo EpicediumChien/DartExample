@@ -492,6 +492,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "FIRMWAREUPDATE":
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
                             break;
+                        case "DISABLECA":
+                            cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
 
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));

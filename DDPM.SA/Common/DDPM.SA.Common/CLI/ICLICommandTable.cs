@@ -75,7 +75,8 @@ namespace DDPM.SA.Common
         {
             "GET",
             "SET",
-            "HELP"
+            "HELP",
+            "DISABLECA",
         };
 
         //a part of input Type: target feature, ex: -Display=BrightnessLevel
@@ -92,6 +93,7 @@ namespace DDPM.SA.Common
             "VALUE",
             "PEN",
             "WEBCAM",
+            "DISABLECA",
         };
 
         private ILog _Log;
