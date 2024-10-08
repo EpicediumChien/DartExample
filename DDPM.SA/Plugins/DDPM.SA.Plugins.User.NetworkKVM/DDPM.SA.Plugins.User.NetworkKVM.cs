@@ -159,8 +159,11 @@ namespace NetworkKVM.Plugins
                         { 
                             Disconnect();
                             CreateNamedPipe_init();
-                            ResponseSupportedMonitor();
-                            MonitorPlug();
+                            if (pipeServer.IsConnected)
+                            {
+                                ResponseSupportedMonitor();
+                                MonitorPlug();
+                            }
                         }
                     }
                     //}
@@ -182,6 +185,16 @@ namespace NetworkKVM.Plugins
                             ResponseSupportedMonitor();
                             MonitorPlug();
                         }
+                        else 
+                        {
+                            Disconnect();
+                            CreateNamedPipe_init();
+                            if (pipeServer.IsConnected)
+                            {
+                                ResponseSupportedMonitor();
+                                MonitorPlug();
+                            }
+                        }
                     }
                     List<MonitorInfo> plugin = monitorInfos
                         .Where(x => !_AllInfoMonitors.Any(y => y.edid.ModelName == x.edid.ModelName &&
@@ -196,6 +209,16 @@ namespace NetworkKVM.Plugins
                         {
                             ResponseSupportedMonitor();
                             MonitorPlug();
+                        }
+                        else
+                        {
+                            Disconnect();
+                            CreateNamedPipe_init();
+                            if (pipeServer.IsConnected)
+                            {
+                                ResponseSupportedMonitor();
+                                MonitorPlug();
+                            }
                         }
                     }
 
@@ -1066,62 +1089,78 @@ namespace NetworkKVM.Plugins
 
         private void CreateNamedPipe_init()
         {
-            //#if Debug_NKVM
-            //            namedpipeName = "VCPNamedPipe";
-            //#else
-            //            namedpipeName = Guid.NewGuid().ToString("D");
-            //#endif
-            namedpipeName = "VCPNamedPipe";
-            _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
-            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
-
-            pipeServer = NamedPipeServerStreamAcl.Create(namedpipeName,
-                                                        PipeDirection.InOut,
-                                                        1,
-                                                        PipeTransmissionMode.Byte,
-                                                        PipeOptions.Asynchronous | PipeOptions.WriteThrough,
-                                                        0,
-                                                        0,
-                                                        pipeSecurity);
-            cancellationTokenSource = new CancellationTokenSource();
-            var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
-            _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
-            if (HaveSuppertMonitor().Result)
+            try
             {
-                CallNKVMConnent().Wait();
+#if DEBUG
+                namedpipeName = "VCPNamedPipe";
+#else
+            namedpipeName = Guid.NewGuid().ToString("D");
+#endif
+                _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
+                PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
+
+                pipeServer = NamedPipeServerStreamAcl.Create(namedpipeName,
+                                                            PipeDirection.InOut,
+                                                            1,
+                                                            PipeTransmissionMode.Byte,
+                                                            PipeOptions.Asynchronous | PipeOptions.WriteThrough,
+                                                            0,
+                                                            0,
+                                                            pipeSecurity);
+                cancellationTokenSource = new CancellationTokenSource();
+                var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
+                _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
+                if (HaveSuppertMonitor().Result)
+                {
+                    CallNKVMConnent().Wait();
+                }
+                StartAsync().Wait();
             }
-            StartAsync().Wait();
+            catch
+            {
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
+            }
+
         }
 
         private void CreateNamedPipe()
         {
+            try
+            {
 #if DEBUG
-            namedpipeName = "VCPNamedPipe";
+                namedpipeName = "VCPNamedPipe";
 #else
             namedpipeName = Guid.NewGuid().ToString("D");
 #endif
-            _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
-            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
+                _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
+                PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
-            pipeServer = NamedPipeServerStreamAcl.Create(namedpipeName,
-                                                        PipeDirection.InOut,
-                                                        1,
-                                                        PipeTransmissionMode.Byte,
-                                                        PipeOptions.Asynchronous | PipeOptions.WriteThrough,
-                                                        0,
-                                                        0,
-                                                        pipeSecurity);
-            cancellationTokenSource = new CancellationTokenSource();
-            var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
-            _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
-            CallNKVMConnent().Wait();
-            StartAsync().Wait();
+                pipeServer = NamedPipeServerStreamAcl.Create(namedpipeName,
+                                                            PipeDirection.InOut,
+                                                            1,
+                                                            PipeTransmissionMode.Byte,
+                                                            PipeOptions.Asynchronous | PipeOptions.WriteThrough,
+                                                            0,
+                                                            0,
+                                                            pipeSecurity);
+                cancellationTokenSource = new CancellationTokenSource();
+                var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
+                _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
+                CallNKVMConnent().Wait();
+                StartAsync().Wait();
+            }
+            catch
+            {
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
+            }
         }
 
         private async Task StartAsync()
         {
-            await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
-            _logs.DebugMsg("[NetworkKVM] Client Connect....");
+            try
+            {
+                await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
+                _logs.DebugMsg("[NetworkKVM] Client Connect....");
 #if RELEASE
             string info;
             if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
@@ -1139,6 +1178,11 @@ namespace NetworkKVM.Plugins
                 CreateNamedPipe();
             }
 #endif
+            }
+            catch (Exception ex) 
+            {
+                _logs.DebugMsg("[NetworkKVM] StartAsync is error");
+            }
         }
 
         private void Stop()
