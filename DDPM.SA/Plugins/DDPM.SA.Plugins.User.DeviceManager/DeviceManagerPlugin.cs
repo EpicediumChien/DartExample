@@ -4605,7 +4605,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     FolderInfo = string.Empty;
                     PathSymbolicLinInfo = string.Empty;
                     folderValid = false;
-                    folderValid = DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
+                    folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
                     if (!folderValid)
                     {
                         writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
@@ -9082,5 +9082,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return null;
         }
         #endregion EzM
+
+        #region Common Json read/write interfaces
+        //For common json file read/write
+        public Task<string> ReadSerializedContentFromFile(string filePath)
+        {
+            string result = null;
+            if(_SettingsPlugin != null)
+            {
+                return Task.FromResult(_SettingsPlugin.ReadSerializedContentFromFile(filePath).Result);
+            }
+
+            return Task.FromResult(result);
+        }
+        public Task<bool> WriteSerializedContentToFile(string filePath, string content)
+        {
+            bool result = false;
+            if (_SettingsPlugin != null)
+            {
+                return Task.FromResult(_SettingsPlugin.WriteSerializedContentToFile(filePath, content).Result);
+            }
+
+            return Task.FromResult(result);
+        }
+        #endregion
     }
 }

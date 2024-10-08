@@ -21,6 +21,7 @@ using DdmLibrary;
 using DdmLibrary.Utility;
 using System.Linq.Expressions;
 using Windows.Devices.Bluetooth.Background;
+using Windows.Web.Http;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -2411,6 +2412,56 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[User setting plugin] WARNING: write registry cause exception ({e.Message})");
                 return Task.FromResult(false);
             }
+        }
+        #endregion
+
+        #region common read/write json file interface
+        public Task<string> ReadSerializedContentFromFile(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            string result = null;
+            string info = string.Empty;
+            if (File.Exists(filePath))
+            {
+                WriteLog($"[ReadSerializedContentFromFile][File.Exists] File:{fileInfo.Name}, failed with(file is not exist)");
+                return Task.FromResult(result);
+            }
+            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            {
+                WriteLog($"[ReadSerializedContentFromFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                return Task.FromResult(result);
+            }
+            //Already inluded in function DDPMFileSecurity.GetSerializedJsonString
+            //if (DDPMFileSecurity.IsFilePathValid(filePath, out info))
+            //{
+            //    WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
+            //    return Task.FromResult(result);
+            //}
+            result = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, filePath, out info);
+            if(string.IsNullOrEmpty(result))
+            {
+                WriteLog($"[ReadSerializedContentFromFile] Result is empty, failed with ({info})");
+            }
+            return Task.FromResult(result);
+        }
+
+        public Task<bool> WriteSerializedContentToFile(string filePath, string content)
+        {
+            bool result = false;
+            string info = string.Empty;
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            {
+                WriteLog($"[WriteSerializedContentToFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                File.Delete(filePath);
+                return Task.FromResult(result);
+            }
+            result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, content, filePath, out info);
+            if(!result)
+            {
+                WriteLog($"[WriteSerializedContentToFile] failed with ({info})");
+            }
+            return Task.FromResult(result);
         }
         #endregion
     }

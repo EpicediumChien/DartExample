@@ -693,6 +693,11 @@ namespace DDPM.SA.Common
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
         Task<bool> SaveLogFile(string saveFolderPath);
         #endregion
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
+
         #endregion
     }
 }
