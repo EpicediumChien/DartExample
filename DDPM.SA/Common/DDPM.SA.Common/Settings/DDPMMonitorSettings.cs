@@ -109,8 +109,14 @@ namespace DDPM.SA.Common.Settings
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
         public HotkeySettings hotkeySettings { get; set; }
-        public List<InputSourceObj> HotkeyData { get; set; } = new List<InputSourceObj>();//1006 add for input source hotkey settings per monitor
+        public List<HotkeyData> hotkeyData { get; set; } = new List<HotkeyData>();//1006 add for input source hotkey settings per monitor
         public scheduleInfo scheduleInfo { get; set; }
         public ImpExpSettings ImpExpSettings { get; set; }
+    }
+
+    public class HotkeyData
+    {
+        public HotkeyType hotkeyType = HotkeyType.None;
+        public List<InputSourceObj> inputSource { get; set; } = new List<InputSourceObj>();
     }
 }

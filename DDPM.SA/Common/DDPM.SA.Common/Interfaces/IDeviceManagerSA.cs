@@ -86,7 +86,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
-        
+
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
@@ -412,7 +412,7 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
 
-        public Task<(HotkeySettings, List<InputSourceObj>)> ReadCurrentHotkey(MonitorInfo mo);// EDID monitorEdid);
+        public Task<(HotkeySettings, List<HotkeyData>)> ReadCurrentHotkey(MonitorInfo mo);// EDID monitorEdid);
 
         public Task<bool> ReloadHotkeyConfigData();
 
