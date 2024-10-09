@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common.Security;
+using DDPM.UI.Common;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,6 +30,7 @@ namespace DDPM.UI.Plugin.Common
 
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
+        private AdvancedAction _deviceCat;
 
         public string Parameter { get; private set; } = "";
 
@@ -39,6 +41,8 @@ namespace DDPM.UI.Plugin.Common
             this.Height = height;
 
             txtCaption.Text = Caption;
+            _deviceCat = deviceCat;
+
             switch (deviceCat)
             {
                 case AdvancedAction.AssignKeystroke:
@@ -102,6 +106,14 @@ namespace DDPM.UI.Plugin.Common
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
+            if (_deviceCat == AdvancedAction.OpenWebPage)
+            {
+                if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
+                {
+                    MessageBox.Show("Invalid URL");
+                    return;
+                }
+            }
             DialogResult = true;
             Close();
         }
@@ -129,7 +141,8 @@ namespace DDPM.UI.Plugin.Common
         private void Keystroke_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : e.Key);
-            if (key == Key.LWin) { e.Handled = true; return; }
+            if (key == Key.LWin)
+            { e.Handled = true; return; }
             string status = "";
 
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
