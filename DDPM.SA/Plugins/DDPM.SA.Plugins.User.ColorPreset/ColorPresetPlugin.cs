@@ -1560,7 +1560,7 @@ namespace ColorPreset.Plugins
                 InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             }
             string szInfo = string.Empty;
-            ret = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(filePath, InfoPkey, out szInfo, out strJson);
+            ret = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, filePath, InfoPkey, out szInfo, out strJson);
 
             if (!string.IsNullOrEmpty(szInfo) && _SettingsPlugin != null)
             {
