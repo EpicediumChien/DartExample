@@ -44,6 +44,7 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+        Task<string> PairingPen();
 
         // webcam
         Task<JArray> GetPresetProfiles(string Guid);

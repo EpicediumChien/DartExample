@@ -1090,6 +1090,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Pen
+
+        public async Task<string> PairingPen()
+        {
+            _itemID = new ItemId("DellPeripheral.Pen");
+            if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_penInterfaceType, commodity, "Pair");
+                Debug.WriteLine($"Pen Pair value: {value}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                return "";
+            }
+        }
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
@@ -1608,8 +1625,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             payloadBytes.CopyTo(byteArray, 4);
             try
             {
-                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
-                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
+                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
+                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
             }
             catch (Exception ex)
             {

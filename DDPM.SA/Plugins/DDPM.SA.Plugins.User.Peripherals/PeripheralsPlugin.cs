@@ -422,6 +422,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void StartPairingPen()
+        {
+            if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
+            {
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    if (device is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.StartPairing();
+                    }
+                }
+            }
+        }
+
         public void StopPairing(Guid physicalDeviceId)
         {
             if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
@@ -434,6 +448,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 else if (physicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
                 {
                     _physicalAudioDeviceDongle.StopPairing();
+                }
+            }
+        }
+
+        public void StopPairingPen()
+        {
+            if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
+            {
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    if (device is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.StopPairing();
+                    }
                 }
             }
         }
@@ -453,6 +481,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     else if (logicalDevice.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _logicalAudioDeviceDongle)
                     {
                         _logicalAudioDeviceDongle.UnPair(logicalDeviceId.ToString());
+                        break;
+                    }
+                    else if (logicalDevice.ParentPhysicalDevice is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.UnPair(logicalDeviceId.ToString());
                         break;
                     }
                 }

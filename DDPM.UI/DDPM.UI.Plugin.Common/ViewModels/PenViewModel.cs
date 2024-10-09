@@ -17,7 +17,6 @@ namespace DDPM.UI.Plugin.ViewModels
         #region Variables
 
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
 
         private int _tipSensitivity = 0;
         private int _tiltSensitivity = 0;
@@ -32,13 +31,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public PenViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public PenViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
-            _deviceManager = deviceManager;
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -74,6 +72,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues));
             JsonElement jsonObject2 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideTopSwitchSinglePressSetting));
+            JsonElement jsonObject3 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideBottomSwitchSinglePressSetting));
             foreach (var jo in jsonObject.EnumerateArray())
             {
 
@@ -267,7 +266,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTipSensitivity()
         {
             if (_tipSensitivity != CurrentDeviceInfo!.TipSensitivity)
-                _deviceManager.SetTipSensitivity(itemID, _tipSensitivity);
+                DdpmCommonHelper.DeviceManagerSA!.SetTipSensitivity(itemID, _tipSensitivity);
         }
 
 
@@ -290,7 +289,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTiltSensitivity()
         {
             if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
-                _deviceManager.SetTiltSensitivity(itemID, _tiltSensitivity);
+                DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity);
         }
 
         public string SelectedButton
@@ -574,33 +573,33 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
                             byte[] newValue = Encoding.UTF8.GetBytes(value);
-                            _deviceManager.SetEraserSinglePressSetting(itemID, newValue);
+                            DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
                         }
                         else if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                         {
                             var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
                             byte[] newValue = Encoding.UTF8.GetBytes(value);
-                            _deviceManager.SetEraserDoublePressSetting(itemID, newValue);
+                            DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(itemID, newValue);
                         }
                         else
                         {
                             var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
                             byte[] newValue = Encoding.UTF8.GetBytes(value);
-                            _deviceManager.SetEraserLongPressSetting(itemID, newValue);
+                            DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(itemID, newValue);
                         }
                         break;
                     case "TopBarrelButton":
                         //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\",\"IsHoverEnabled\":true}}";
-                        var value4 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
+                        var value4 = $"{{\"actionId\":79,\"actionName\":\"Web Browser\",\"IsHoverEnabled\":true}}";
                         byte[] newValue4 = Encoding.UTF8.GetBytes(value4);
-                        _deviceManager.SetSideTopSwitchSinglePressSetting1(itemID, newValue4);
+                        DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting1(itemID, newValue4);
                         //_deviceManager.SetSideTopSwitchSinglePressSetting2(itemID, value4);
                         //_deviceManager.SetSideTopSwitchSinglePressSetting3(newValue4, CurrentDeviceInfo!.ID);
                         break;
                     case "BottomBarrelButton":
                         var value5 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
                         byte[] newValue5 = Encoding.UTF8.GetBytes(value5);
-                        _deviceManager.SetSideBottomSwitchSinglePressSetting(itemID, newValue5);
+                        DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(itemID, newValue5);
                         break;
                 }
                 ActionList.ExportActionList(PenAction, "PEN");
@@ -621,13 +620,13 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
                 {
-                    _deviceManager.SetIsSideTopButtonHoverClick(itemID, value);
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsSideTopButtonHoverClick(itemID, value);
                     PenAction.IsTopBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
                 if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
                 {
-                    _deviceManager.SetIsSideBottomButtonHoverClick(itemID, value);
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsSideBottomButtonHoverClick(itemID, value);
                     PenAction.IsBottomBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
@@ -647,11 +646,11 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             var value = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"menuIndex\":{index}}}";
             byte[] newValue = Encoding.UTF8.GetBytes(value);
-            _deviceManager.SetMenuSinglePressSetting(itemID, newValue);
+            DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
         }
         public void UpdateRadialMenuRightClick(bool value)
         {
-            _deviceManager.SetMenuCenterRightClickSetting(itemID, value);
+            DdpmCommonHelper.DeviceManagerSA!.SetMenuCenterRightClickSetting(itemID, value);
         }
     }
 }

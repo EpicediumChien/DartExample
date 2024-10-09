@@ -307,8 +307,10 @@ namespace DDPM.SA.Common
         Task UnPair(Guid deviceId);
 
         Task StartPairing(Guid deviceId);
+        Task StartPairingPen();
 
         Task StopPairing(Guid deviceId);
+        Task StopPairingPen();
 
         Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
 
@@ -571,6 +573,8 @@ namespace DDPM.SA.Common
 
         Task SetDPIValueByDTP(string itemID, int newValue);
 
+        #region Pen
+        Task<string> PairingPen();
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -594,6 +598,7 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+        #endregion
 
         #region Webcam
         Task<JArray> GetPresetProfiles(string Guid);
