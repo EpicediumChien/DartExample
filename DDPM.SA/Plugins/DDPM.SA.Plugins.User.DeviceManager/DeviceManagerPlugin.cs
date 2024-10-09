@@ -279,6 +279,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         ///
         public event EventHandler<EAArgs> EAEditReturn;
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+        //End of EasyArrange
+        ///////////////////////
+
         /// <summary>
         /// HDR status change event，return HDR status
         /// </summary>
@@ -3026,7 +3030,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (EAEditStarted != null)
             {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
                 Task.Run(() => EAEditStarted.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
             }
         }
 
@@ -3043,6 +3052,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
             }
+            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
             return Task.FromResult(false);
         }
 
@@ -3057,7 +3067,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (EAEditReturn != null)
             {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
                 Task.Run(() => EAEditReturn.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
             }
         }
 
@@ -3346,6 +3361,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
             return Task.FromResult(false);
         }
+
+        //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
+        //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
+        private void _DisplayManagerPlugin_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), Call to next handler.");
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
+            }
+        }
+
         #endregion EasyArrage
 
         #region EasyMemory
@@ -5740,6 +5771,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
                         //Bruce, 2024-0820 add new event
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
+                        //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
+                        _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -5763,6 +5796,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
                         //Bruce, 2024-0820 add new event
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
+                        //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
+                        _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }

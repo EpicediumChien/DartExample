@@ -222,6 +222,8 @@ namespace DDPM.SA.Common
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
