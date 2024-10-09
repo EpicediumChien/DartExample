@@ -92,7 +92,7 @@ namespace DDPM.SA.Common.Security
             }
 
             string filename = System.IO.Path.GetFileNameWithoutExtension(filePathFileName);
-            if (filename == null || string.IsNullOrEmpty(filename))
+            if ( string.IsNullOrEmpty(filename))
             {
                 info = "File name - Invalid.";
                 return false;
