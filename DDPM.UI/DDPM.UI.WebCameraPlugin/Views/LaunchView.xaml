@@ -201,7 +201,7 @@
         </StackPanel>
       </Grid>
       <!--Battery-->
-      <Grid VerticalAlignment="Bottom">
+      <Grid VerticalAlignment="Bottom" Visibility="Hidden">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
           <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
@@ -307,6 +307,20 @@
       <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
         <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
                                 VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,118" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
+      </Grid>
+      <!--Add Profile-->
+      <Grid VerticalAlignment="Bottom">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,70">
+          <UXControls:UXTextBlock Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
+          <StackPanel Orientation="Vertical">
+            <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,11" FontWeight="Medium" FontFamily="Roboto" MaxLength="50" FontSize="14"
+                                HorizontalAlignment="Center" Margin="18,0,0,0" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" 
+                                TextChanged="NameTextChanged" TextWrapping="NoWrap"/>
+            <UXControls:UXTextBlock Name="txtMsg" Text="AAAA" Margin="18,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" />
+
+
+          </StackPanel>
+        </StackPanel>
       </Grid>
     </Grid>
   </Grid>

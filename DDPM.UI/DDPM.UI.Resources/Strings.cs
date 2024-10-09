@@ -420,6 +420,8 @@ namespace DDPM.UI.Common
         public static readonly string Smooth = "Smooth";
         public static readonly string Vibrant = "Vibrant";
         public static readonly string Warm = "Warm";
+        public static readonly string Name = "Name";
+        public static readonly string NameIsTaken = "This name is taken";
         public static readonly string DefaultProfileTooltip = "Default Profile Tooltip";
         public static readonly string SmoothProfileTooltip = "Smooth Profile Tooltip";
         public static readonly string VibrantProfileTooltip = "Vibrant Profile Tooltip";

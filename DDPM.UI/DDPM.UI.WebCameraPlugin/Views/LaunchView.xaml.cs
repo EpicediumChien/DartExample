@@ -90,6 +90,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 ProfileItems.ItemsSource = _vm.ProfileItems;
                 Mouse.OverrideCursor = null;
             }
+            txtName.Text = Strings.Name;
+            txtMsg.Text = Strings.NameIsTaken;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -929,6 +931,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.PrepareProfileItems();
             ProfileItems.ItemsSource = null;
             ProfileItems.ItemsSource = _vm.ProfileItems;
+        }
+
+        private void NameTextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
