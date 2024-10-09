@@ -134,9 +134,18 @@ namespace DDPM.SA.Common.Security
             if (!Uri.TryCreate(strURL, UriKind.Absolute, out absUri))
             {
                 info = $"Only Absolute URL allowed.";
+                return false;
 #if DEBUG
                 Console.WriteLine("fail " + absUri);
 #endif
+            }
+            else
+            {
+                if(!((absUri.Scheme == Uri.UriSchemeHttp) || (absUri.Scheme == Uri.UriSchemeHttps )) )
+                {
+                    info = $"Only HTTP HTTPs URL allowed.";
+                    return false;
+                }
             }
 
             for (int idx = 0; idx < len; idx++)
