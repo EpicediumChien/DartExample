@@ -935,7 +935,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void NameTextChanged(object sender, TextChangedEventArgs e)
         {
-
+            if (_vm!.ProfileIDs.ContainsKey(txbName.Text.Trim()))
+            {
+                txtMsg.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                txtMsg.Visibility = Visibility.Hidden;
+            }
         }
     }
 }
