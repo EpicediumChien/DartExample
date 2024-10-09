@@ -3768,7 +3768,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     vcps = ImpExpSettings.MonitorSettings.VCPs;
                     if (_ColorPresetPlugin != null)
                     {
-                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset , _SettingsPlugin).Result;
+                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                     }
                     if (vcps != null)
                     {
@@ -7274,7 +7274,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     allInputs.Add(new InputSourceObj(input.Value.InputName));
                 }
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
+                //debug
+                foreach (var s in subInputs)
+                {
+                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                }
+                foreach (var s in allInputs)
+                {
+                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                }
+                //debug end
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;
@@ -8582,7 +8592,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ;
             }
@@ -8650,7 +8660,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                
+
                 if (DirectoryContainsFiles(copyPath))
                 {
                     // 取得資料夾名稱
@@ -8660,7 +8670,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
-                
+
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
@@ -9424,7 +9434,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> ReadSerializedContentFromFile(string filePath)
         {
             string result = null;
-            if(_SettingsPlugin != null)
+            if (_SettingsPlugin != null)
             {
                 return Task.FromResult(_SettingsPlugin.ReadSerializedContentFromFile(filePath).Result);
             }

@@ -42,6 +42,38 @@ namespace DDPM.UI.Module.EzSettings
 
         private void tbRecentHotkey_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleEzRecentSetting);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    _viewModel.RecentHotkey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = _viewModel.RecentHotkey;
+                    texBox.Select(_viewModel.RecentHotkey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(_viewModel._homeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        _viewModel.RecentHotkey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -62,26 +94,6 @@ namespace DDPM.UI.Module.EzSettings
 
         private void tbRecentHotkey_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                //vm.ToggleInputSourceKey = _strTbToggleInputSourcePreviousKey;
-                _viewModel.RecentHotkey = _strPreviousKey;
-                BundleNewKeys.Clear();
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-
-                //save hotkey
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.ToggleEzRecentSetting;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "ToggleEzRecentSetting";
-                doLostFocus(hotkeyInfo, _strPreviousKey, _viewModel.RecentHotkey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
@@ -89,26 +101,6 @@ namespace DDPM.UI.Module.EzSettings
         private void tbRecentHotkey_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             e.Handled = true;
-        }
-        private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
-        {
-            if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
-            {
-                //save hotkey
-                // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(_viewModel._homeDevice.MonitorInfo, hotkeyInfo).Result;
-                _viewModel.RefreshSettings();
-            }
-            else
-            {
-                switch (hotkeyInfo.Job)
-                {
-                    case HotkeyType.ToggleInputSource:
-                        _viewModel.RecentHotkey = prStr;
-                        break;
-                }
-            }
-            keys.Clear();
         }
         #endregion Recent Hotkey
 
