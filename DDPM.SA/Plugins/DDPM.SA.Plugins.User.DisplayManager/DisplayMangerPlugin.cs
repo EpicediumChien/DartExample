@@ -3377,8 +3377,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
                     string jsonString = response.Content.ReadAsStringAsync().Result;
-                    var data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
-
+                    Dictionary<string, Display_Firmwares_item> data = new Dictionary<string, Display_Firmwares_item>();
+                    string Info = string.Empty;
+                    using (JsonDocument doc = JsonDocument.Parse(jsonString))
+                    {
+                        var root = doc.RootElement;
+                        if (jsonString.Contains("Info"))
+                        {
+                            Info = root.GetProperty("Info").GetString();
+                        }
+                        foreach (var property in root.EnumerateObject())
+                        {
+                            if (property.Name != "Info")
+                            {
+                                var firmwareItem = JsonSerializer.Deserialize<Display_Firmwares_item>(property.Value.GetRawText());
+                                data[property.Name] = firmwareItem;
+                            }
+                        }
+                    }
                     foreach (MonitorInfo monitorInfo in monitorInfos)
                     {
                         string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
@@ -3390,6 +3406,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 url = data[model].url,
                                 TheLastVersion = data[model].TheLastVersion,
                                 SHA256 = data[model].SHA256,
+                                SHA512 = data[model].SHA512,
+                                Thumbprint = data[model].Thumbprint,
                                 SupportedPlatform = data[model].SupportedPlatform,
                                 fileName = data[model].fileName,
                                 date = data[model].date,
@@ -3404,6 +3422,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 {
                                     string currentPlatform = GetSystemArchitecture();
                                     string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
+                                    Debug.WriteLine(currentPlatform);
                                     if (!supportedPlatform.ToList().Contains(currentPlatform))
                                     {
                                         continue;
@@ -3448,11 +3467,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
             {
-                return "Intel_x64";
+                return "Intel";//"Intel_x64";
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
             {
-                return "Intel_x86";
+                return "Intel";//"Intel_x86";
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm)
             {
@@ -3460,7 +3479,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
             {
-                return "ARM_64";
+                return "ARM";//"ARM_64";
             }
             else
             {
