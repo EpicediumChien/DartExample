@@ -819,7 +819,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(true);*/
             bool result = WriteSettings_Common(powerNapSettings, "powernap");
 
-            return Task.FromResult(false);
+            return Task.FromResult(result);
         }
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
