@@ -3422,7 +3422,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 {
                                     string currentPlatform = GetSystemArchitecture();
                                     string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
-                                    Debug.WriteLine(currentPlatform);
                                     if (!supportedPlatform.ToList().Contains(currentPlatform))
                                     {
                                         _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
