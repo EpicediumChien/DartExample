@@ -151,9 +151,9 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="NameProfileText" Grid.Row="0" Margin="0, 48, 0, 0" Text="Name the profile" Foreground="#DAF5FD" FontSize="16" />
-                        <UXControls:UXTextBox x:Name="InputText" Grid.Row="1" Margin="0, 8, 0, 0" Width="260" Height="40" Text="{Binding InputText}" Foreground="#F5F6F7" FontSize="14"/>
-                        <UXControls:UXTextBlock x:Name="SelectText" Grid.Row="2" Margin="0, 24, 0, 0" Text="Select a layout" Foreground="#F5F6F7" FontSize="16" />
+                        <UXControls:UXTextBlock x:Name="NameProfileText" Grid.Row="0" Margin="0, 48, 0, 0" Text="{Binding [EazyMemory.18], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#DAF5FD" FontSize="16" />
+                        <UXControls:UXTextBox x:Name="InputText" Grid.Row="1" Margin="0, 8, 0, 0" Width="260" Height="40" Text="{Binding InputText}" Foreground="#F5F6F7" FontSize="14" MaxLength="30" KeyDown="KeyDown_KeyDown"/>
+                        <UXControls:UXTextBlock x:Name="SelectText" Grid.Row="2" Margin="0, 24, 0, 0" Text="{Binding [EazyMemory.19], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#F5F6F7" FontSize="16" />
                     </StackPanel>
 
                     <UXControls:UXScrollViewer Grid.Row="3" Margin="0,16,0,0" Height="400">

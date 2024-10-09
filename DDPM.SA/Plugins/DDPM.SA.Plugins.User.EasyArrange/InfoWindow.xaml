@@ -43,6 +43,15 @@
             <TextBlock Text=", hWndForeground=" />
             <TextBlock Text="{Binding hWndForeground}" />
 
+
+            <TextBlock Text=", IsAwsVisible=" />
+            <TextBlock Text="{Binding IsAwsWindowVisible}" />
+            <TextBlock Text=", AwsPos(" />
+            <TextBlock Text="{Binding xAws}" />
+            <TextBlock Text="," />
+            <TextBlock Text="{Binding yAws}" />
+            <TextBlock Text="), " />
+
             <TextBlock Text=", PathName=" />
             <TextBlock Text="{Binding PathNameForeground}" />
 

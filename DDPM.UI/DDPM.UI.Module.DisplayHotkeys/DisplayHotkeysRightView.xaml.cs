@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -212,7 +213,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             {
                 //save hotkey
                 // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid, hotkeyInfo).Result;
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                 vm.Invoke_RefreshData();
             }
             else
@@ -287,10 +288,21 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.FavoriteInputSource;
                 hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
-                hotkeyInfo.Description = "FavoriteInputSource";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.FavoriteInputSourceKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
+
+                if (vm.FavoriteInput_Selected == null)
+                {
+                    if (vm.InputsList != null && vm.InputsList.Count > 0)
+                    {
+                        vm.FavoriteInput_Selected = vm.InputsList[0];
+                    }
+                }
+                if (vm.FavoriteInput_Selected != null)
+                {
+                    hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
+                    hotkeyInfo.Description = "FavoriteInputSource";
+                    doLostFocus(hotkeyInfo, _strPreviousKey, vm.FavoriteInputSourceKey, ref BundleNewKeys);
+                    BundleNewKeys.Clear();
+                }
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -370,5 +382,65 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cb = sender as ComboBox;
+            if (cb != null && cb.IsDropDownOpen)
+            {
+                //update
+                Debug.WriteLine("user changes the selected");
+                InputSourceList? inputSourceList = cb.SelectedItem as InputSourceList;
+                if (inputSourceList != null)
+                {
+                    vm.SaveHotkeySettings(new InputSourceObj(inputSourceList.inputDisplayText), "0");
+                    vm.FavoriteInput_Selected = inputSourceList;
+                }
+            }
+            else
+            {
+                Debug.WriteLine("internel changes the selected");
+            }
+
+        }
+
+        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            var cb = sender as ComboBox;
+            if (cb != null && cb.IsDropDownOpen)
+            {
+                //update
+                //Debug.WriteLine("user changes the selected");
+                InputSourceList? inputSourceList = cb.SelectedItem as InputSourceList;
+                if (inputSourceList != null)
+                {
+                    vm.SaveHotkeySettings(new InputSourceObj(inputSourceList.inputDisplayText), "1");
+                    vm.SwitchInput1_Selected = inputSourceList;
+                }
+            }
+            else
+            {
+                //Debug.WriteLine("internal changes the selected");
+            }
+        }
+
+        private void ComboBox_SelectionChanged_2(object sender, SelectionChangedEventArgs e)
+        {
+            var cb = sender as ComboBox;
+            if (cb != null && cb.IsDropDownOpen)
+            {
+                //update
+                //Debug.WriteLine("user changes the selected");
+                InputSourceList? inputSourceList = cb.SelectedItem as InputSourceList;
+                if (inputSourceList != null)
+                {
+                    vm.SaveHotkeySettings(new InputSourceObj(inputSourceList.inputDisplayText), "2");
+                    vm.SwitchInput2_Selected = inputSourceList;
+                }
+            }
+            else
+            {
+                //Debug.WriteLine("internal changes the selected");
+            }
+        }
     }
 }

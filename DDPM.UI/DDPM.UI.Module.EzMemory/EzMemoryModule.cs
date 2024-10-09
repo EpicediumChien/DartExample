@@ -1,4 +1,5 @@
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.ViewModels;
@@ -13,7 +14,7 @@ namespace DDPM.UI.Module.EzMemory
     {
         private UserControl? _leftView = null;
         private UserControl _rightView;// = new EzArrangeRightVierw();
-
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
         //private EzArrangeViewModel vm = new EzArrangeViewModel();
         private readonly DisplayViewModel _vmDisplay;
 
@@ -87,11 +88,29 @@ namespace DDPM.UI.Module.EzMemory
         //Handle new device coming
         private void InitNewViewModel()
         {
+            //Update SelectedHomeDevice
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                ModuleOwner = DdpmCommonHelper.ModuleOwner;
+                _selHomeDevice = ModuleOwner.SelectedHomeDevice;
+                if (_selHomeDevice != null)
+                {
+                    if (_selHomeDevice.vmEzArrange == null)
+                    {
+                        _selHomeDevice.vmEzArrange = new Common.ViewModels.EzArrangeViewModel(_selHomeDevice);
+                    }
+                }
+            }
+            if (_rightView != null)
+            {
+                EzMemoryRightView ezRightView = _rightView as EzMemoryRightView;
+                ezRightView.HandleSelectedHomeDeviceChanged();
+            }
+
         }
 
         public void OnActivated()
         {
-            Trace.WriteLine("EzMemoryModule.OnActivated");
             if (isSelectChanged)
             {
                 isSelectChanged = false;

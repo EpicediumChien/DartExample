@@ -12,7 +12,7 @@ namespace DDPM.SA.Common.Method
         private Logs? _logs;
         public long? DownloadFileSize = null;
         public FileStream? DownloadFileStream = null;
-        
+
         public Download(Logs logs)
         {
             _logs = logs;
@@ -24,18 +24,26 @@ namespace DDPM.SA.Common.Method
         {
         }
 
-        public bool DownloadFile(string URLPath, string SavePath, out string FailInfo)
+        public bool DownloadFile(string URLPath, string SavePath, out string FailInfo, bool isSkipCA = false)
         {
             try
             {
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " start");
                 CertificateCheck caCheck = new CertificateCheck();
                 {
-                    if (!caCheck.CheckURLCACertificate(URLPath))//0815 Bruce Add Security
+                    if (!isSkipCA)
                     {
-                        FailInfo = "CA check fail";
+                        if (!caCheck.CheckURLCACertificate(URLPath))//0815 Bruce Add Security
+                        {
+                            FailInfo = "CA check fail";
+                            _logs?.DebugMsg_1(FailInfo);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        FailInfo = "CA check skip";
                         _logs?.DebugMsg_1(FailInfo);
-                        return false;
                     }
                     string url = URLPath;
                     string savePath = SavePath;
@@ -75,7 +83,7 @@ namespace DDPM.SA.Common.Method
                 _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " start");
                 using (FileStream sourceStream = new FileStream(URLPath, FileMode.Open, FileAccess.Read))
                 {
-                    DownloadFileSize= sourceStream.Length;
+                    DownloadFileSize = sourceStream.Length;
                     DownloadFileStream = new FileStream(SavePath, FileMode.Create, FileAccess.Write);
                 }
                 FailInfo = "Pass";

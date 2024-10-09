@@ -31,7 +31,11 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Windows.Media.AppBroadcasting;
 using Windows.Storage;
+using DDPM.SA.Obfuscation;
+using System.Net.NetworkInformation;
+using System.Windows.Interop;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -69,9 +73,12 @@ namespace DDPM.SA.Plugins.SettingsManager
         private static string path_programdata = Path.Combine( Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
         private static string folder_product = "Dell Display and Peripheral Manager";
         private static string filename_appsettings_IT = "DDPM.Configs.json";
+        private static string filename_appsettings_Info = "DDPM.Infos.json";
 
-        private DDPMITConfig _settings;
-        private string _settings_path;
+        private DDPMITConfig _settings = new DDPMITConfig();
+        private InfoObject _infos = new InfoObject();
+        private string _settings_path = string.Empty;
+        private string _info_path = string.Empty;
 
         #endregion
 
@@ -206,6 +213,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             WriteLog("SettingsManager plugin report started");
 
             InitDDPMITConfigFile();
+            InitInfoConfigFile();
         }
 
         #endregion
@@ -272,7 +280,9 @@ namespace DDPM.SA.Plugins.SettingsManager
         private void WriteLog(string text, log_type log_type = log_type.info)
         {
             text = "[SettingsManager] " + text;
+#if DEBUG
             Console.WriteLine(text);
+#endif
             if (log_type == log_type.info)
                 Log.Info(text);
             else
@@ -281,50 +291,121 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         private DDPMITConfig InitDDPMITConfigFile()
         {
-            string folder = path_programdata + "\\" + folder_product;
-            WriteLog($"IT admin data folder path: {folder}");
+            string folder = Path.Combine(path_programdata, folder_product);
+            string filePath = Path.Combine(folder, filename_appsettings_IT);
+            return (DDPMITConfig)InitSysSettingsData("ITConfig", filePath);
+        }
+
+        private InfoObject InitInfoConfigFile()
+        {
+            string folder = Path.Combine(path_programdata, folder_product);
+            string filePath = Path.Combine(folder, filename_appsettings_Info);
+            InitSysSettingsData("InfoConfig", filePath);
+
+            AddInfo(InfoHash.Info_Hash.Trim());
+            return _infos;
+        }
+
+        private List<string> GetInfos(bool force_reload)
+        {
+            if(_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
+            {
+                _infos = new InfoObject();
+                if(_infos.Infos == null)
+                {
+                    _infos.Infos = new List<string>();
+                    _infos.Infos.Add(InfoHash.Info_Hash.Trim());
+                    string msg = string.Empty;
+                    if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                    {
+                        WriteLog($"[GetInfos] recover data failed: {msg}");
+                    }
+                    return _infos.Infos;
+                }
+            }
+            if(force_reload)
+            {
+                string msg2 = string.Empty;
+                string read = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _info_path, out msg2);
+                try
+                {
+                    InfoObject obj = JsonConvert.DeserializeObject<InfoObject>(read);
+                    if ( obj != null)
+                    {
+                        _infos = obj;
+                        WriteLog($"[GetInfos] read info config ok");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteLog($"[GetInfos] read info config failed: ({ex.Message})");
+                }
+            }
+            return _infos.Infos;
+        }
+
+        private void AddInfo(string info)
+        {
+            int idx = -1;
+            if (_infos != null && _infos.Infos != null && _infos.Infos.Count > 0)
+            {
+                WriteLog($"[AddInfo] info count is ({_infos.Infos.Count})");
+                idx = _infos.Infos.FindIndex(x => x.Trim().Equals(info));
+            }
+            if (idx < 0)//means new
+            {
+                _infos.Infos.Add(info);
+                string msg = string.Empty;
+                if(!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                {
+                    WriteLog($"[AddInfo] update data failed: {msg}");
+                }
+            }
+            else
+            {
+                //exist, bypass
+                WriteLog($"[AddInfo] Info exist in list");
+            }
+        }
+
+        private object InitSysSettingsData(string type, string filePath)
+        { 
+            FileInfo fInfo = new FileInfo(filePath);
+            string folder = fInfo.DirectoryName;// path_programdata + "\\" + folder_product;
+            WriteLog($"[InitSysSubagentData][{type}] data folder path: {folder}");
             try
             {
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder);
-                WriteLog($"create folder {folder} success");
+                WriteLog($"[{type}]create folder {folder} success");
             }
             catch
             {
-                WriteLog($"CreateDirectory with {folder} failed.");
-                _settings = null;
+                WriteLog($"[{type}]CreateDirectory with {folder} failed.");
+                //_settings = null;
                 return null;
             }
 
-            //Dean: below code has creation procedure, no need file path check at here
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFolderPathValid(folder, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(InitDDPMITConfigFile)} {FileInfo}");
-            //    return null;
-            //}
-
-            //check if setting file contain illegal privilege
-            //if yes, delete file and then apply right ACL
-            //Apply symlink check here as well [Dean 0912]
             if (Directory.Exists(folder))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(folder);
                 if (directoryInfo == null)
                 {
-                    WriteLog("System config: retrieve Directory got null return");
+                    WriteLog($"[{type}]System config: retrieve Directory got null return");
                     Directory.Delete(folder, true);
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"re-create system settings folder success");
+                    WriteLog($"[{type}]re-create system settings folder success");
                 }
-                AclChecker aclChecker = new AclChecker();
-                if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                //AclChecker aclChecker = new AclChecker();
+                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                string info2 = string.Empty;
+                if(DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 {
-                    WriteLog("Directory ACLs for system setting contained unprivileged write access for one or more identity");
+                    //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
+                    WriteLog($"[{type}]Directory symbolic check got symlink ({info2})");
                     Directory.Delete(folder, true);
-                    WriteLog("Exist folder deleted.");
+                    WriteLog($"[{type}]Exist folder deleted.");
                     directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"re-create system settings folder success");
+                    WriteLog($"[{type}]re-create system settings folder success");
                 }
             }
             string info = string.Empty;
@@ -335,83 +416,100 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             catch (Exception ex)
             {
-                WriteLog($"Apply ACL to folder failed ({ex.Message})");
+                WriteLog($"[InitSysSettingsData][{type}]Apply ACL to folder failed ({ex.Message})");
                 return null;
             }
-            //if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
-            //{
-            //    WriteLog($"Apply ACL to folder failed. ({info})");
-            //    return null;
-            //}
-            _settings_path = folder + "\\" + filename_appsettings_IT;
-            //WriteLog($"_settings_path is {_settings_path}."); //SDL to remove (not allow path in log)
-
+            switch(type)
+            {
+                case "ITConfig":
+                    _settings_path = filePath;
+                    break;
+                case "InfoConfig":
+                    _info_path = filePath;
+                    break;
+                default:
+                    WriteLog($"[InitSysSettingsData] type({type}) is not defined to support");
+                    return null;
+            }
             //check if setting file contain illegal privilege
             //if yes, delete file and then apply right ACL
-            if (File.Exists(_settings_path))
+            if (File.Exists(filePath))
             {
-                FileInfo fileInfo = new FileInfo(_settings_path);
+                FileInfo fileInfo = new FileInfo(filePath);
                 if (fileInfo == null)
                 {
-                    WriteLog("System config: retrieve FileInfo got null return");
-                    File.Delete(_settings_path);
-                    WriteLog("Exist file deleted.");
+                    WriteLog($"[{type}]System config: retrieve FileInfo got null return");
+                    File.Delete(filePath);
+                    WriteLog($"[{type}]Exist file deleted.");
                 }
                 else
                 {
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
                     {
-                        WriteLog("File ACLs for system setting contained unprivileged write access for one or more identity");
-                        File.Delete(_settings_path);
-                        WriteLog("Exist file deleted.");
+                        WriteLog($"[{type}]File ACLs for system setting contained unprivileged write access for one or more identity");
+                        File.Delete(filePath);
+                        WriteLog($"[{type}]Exist file deleted.");
                     }                    
                 }
             }
 
-            DDPMITConfig ddpm_it = new DDPMITConfig();
             info = string.Empty;
-            if (File.Exists(_settings_path))
+            bool need_reWrite = true;
+            if (File.Exists(filePath))
             {
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _settings_path, out info);
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, filePath, out info);
                 if (!string.IsNullOrEmpty(serialized_string))
-                    _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+                {
+                    switch (type)
+                    {
+                        case "ITConfig":
+                            _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+                            break;
+                        case "InfoConfig":
+                            _infos = JsonConvert.DeserializeObject<InfoObject>(serialized_string);
+                            break;
+                        default:
+                            WriteLog($"[InitSysSettingsData] type({type}) is not defined to support.2");
+                            return null;
+                    }
+                    need_reWrite = false;
+                }
                 else
                 {
-                    WriteLog("[InitDDPMITConfigFile] GetSerializedJsonString: " + info);
-                    _settings = ddpm_it;
-                    if (_settings != null)
-                    {
-                        WriteLog("[InitDDPMITConfigFile] *** Init cache from file fail, re-create default settings to file");
-                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), _settings_path, out info))
-                            WriteLog("[InitDDPMITConfigFile] re-create file content OK");
-                        else
-                            WriteLog("[InitDDPMITConfigFile] save to file failed, please check file access right!!");
-                    }
+                    WriteLog($"[InitSysSettingsData][{type}] GetSerializedJsonString: " + info);                    
                 }
             }
-            else
+            object result = null;
+            if(need_reWrite)
             {
-                FileInfo fileInfo = new FileInfo(_settings_path);
-
-                WriteLog("[InitDDPMITConfigFile] settings file not exist, new an object");
-                _settings = new DDPMITConfig();
-                //init data to file
-                if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), _settings_path, out info))
+                bool write = false;
+                WriteLog($"[InitSysSettingsData][{type}] *** Init cache from file fail, re-create default settings to file");
+                switch (type)
                 {
-                    WriteLog("[InitDDPMITConfigFile] settings file create and write success");
+                    case "ITConfig":
+                        result = _settings;
+                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_settings).ToString(), filePath, out info);
+                        break;
+                    case "InfoConfig":
+                        result = _infos;
+                        write = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), filePath, out info);
+                        break;
+                    default:
+                        WriteLog($"[InitSysSettingsData] type({type}) is not defined to support.3");
+                        return null;
                 }
+                if (!write)
+                    WriteLog($"[InitSysSettingsData][{type}] save to file failed: {info}");
                 else
-                {
-                    WriteLog("[InitDDPMITConfigFile] settings file create and write failed");
-                }
+                    WriteLog($"[InitSysSettingsData][{type}] re-create file content OK");
             }
             //ACL apply
-            //string info;
-            if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(_settings_path, out info))
-                WriteLog($"[InitDDPMUserConfigFile] {info}");
+            if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(filePath, out info))
+                WriteLog($"[InitSysSettingsData][{type}] {info}");
 
-            return _settings;
+            WriteLog($"[InitSysSettingsData][{type}] finish");
+            return result;
         }
 
         public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)
@@ -468,5 +566,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         #endregion
+    }
+
+    public class InfoObject
+    {
+        //string: info value, bool: isActived
+        public List<string>Infos { get; set; } = new List<string>();
     }
 }

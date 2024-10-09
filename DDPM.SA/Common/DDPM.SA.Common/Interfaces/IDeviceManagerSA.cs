@@ -254,15 +254,23 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue);
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion EasyArrange
 
         #region EasyMemory
 
-        public Task<List<EAProfileDDPM>> ReadEzProfiles();
+        public Task<bool> WriteMonitorEasyArrangement(MonitorInfo monitorInfo, EasyArrangementDDPM easyArrangementDDPM);
 
-        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
+        public Task<EasyArrangementDDPM> ReadMonitorEasyArrangement(MonitorInfo monitorInfo);
 
-        public Task<bool> CleanEzProfiles();
+        public Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList);
+
+        public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile);
+
+        public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM();
+
+        public Task<bool> CleanUserEzProfiles();
+
         #endregion EasyMemory
 
         #endregion public for Displays
@@ -414,7 +422,7 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
 
-        public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid);
+        public Task<(HotkeySettings, List<HotkeyData>)> ReadCurrentHotkey(MonitorInfo mo);// EDID monitorEdid);
 
         public Task<bool> ReloadHotkeyConfigData();
 
@@ -424,7 +432,8 @@ namespace DDPM.SA.Common
 
         public Task<bool> Hook();
 
-        public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        //public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        public Task<bool> SaveHotkeySetting(MonitorInfo mo, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
 
@@ -451,7 +460,10 @@ namespace DDPM.SA.Common
         /// </summary>
         event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
+        //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
+
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false);
+
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
@@ -461,6 +473,8 @@ namespace DDPM.SA.Common
         void SetUILockStatus(bool isLockFWU_UI);
 
         Task<bool> GetUILockStatus();
+        Task<bool> SetSkipCA(bool isSkipCA);
+        Task<bool> GetSkipCA();
 
         #endregion public for FW Update by Bruce
 
@@ -696,6 +710,11 @@ namespace DDPM.SA.Common
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
         Task<bool> SaveLogFile(string saveFolderPath);
         #endregion
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
+
         #endregion
     }
 }

@@ -27,7 +27,7 @@ namespace DDPM.SA.Common
         fail_FWUpdate = 17,
         fail_SetAlsFeatureFail = 18,
         fail_GetAlsFeatureFail = 19,
-        fail_GetInputListFail = 20,        
+        fail_GetInputListFail = 20,
         fail_Unpair = 101,
         fail_FormantError = 102,
         fail_NotSupport = 103,
@@ -68,7 +68,8 @@ namespace DDPM.SA.Common
         input_monitor_index_abnormal,
         input_monitor_over_count,
         invalid_servicetag,
-        IT_Command_Not_Support
+        IT_Command_Not_Support,
+        NoUpdate
     }
 
     public class CLIEventArgs : EventArgs //definition for ICliManagerIT

@@ -261,7 +261,7 @@ namespace DDPM.UI.Module.Brightness
             if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
             {
                 //save hotkey
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo.edid, hotkeyInfo).Result;
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                 vm.Invoke_RefreshHotkeySettings();
             }
             else

@@ -27,6 +27,7 @@ namespace DDPM.UI.Module.Color
             vm.MyModule = this;
 
             vm.Invoke_RefreshData();
+            vm.Invoke_DownloadICCData();
         }
 
         public string ModuleName { get => "ColorModule"; }
@@ -64,7 +65,8 @@ namespace DDPM.UI.Module.Color
                 isSelectChanged = false;
                 InitNewViewModel();
             }
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
+            //vm.Invoke_DownloadICCData();
         }
 
         //Handle new device coming
@@ -74,6 +76,8 @@ namespace DDPM.UI.Module.Color
             vm = new ColorViewModel();
             _rightView.DataContext = vm;
             vm.MyModule = this;
+            vm.Invoke_RefreshData();
+            vm.Invoke_DownloadICCData();
         }
 
         public void OnActivated()

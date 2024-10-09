@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Plugins.CMAManager;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
@@ -15,6 +16,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using Windows.Foundation.Collections;
@@ -269,6 +271,17 @@ namespace DDPM.CLI.Plugins.Display
                 case "FWVERSION":
                     {
                         var ret = FWVersionX(commandLineInput, devMgr);
+                        result.serialize_Json_response = ret.result;
+                        result.ExitCode = ret.code;
+                        if (ret.code != 0)
+                            return result;
+                    }
+                    break;
+
+                // ADD @ Stephen for fwupdate
+                case "FIRMWAREUPDATE":
+                    {
+                        var ret = FWUpdateX(commandLineInput, devMgr);
                         result.serialize_Json_response = ret.result;
                         result.ExitCode = ret.code;
                         if (ret.code != 0)
@@ -1952,8 +1965,8 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.Value = $"{rc.value}";
                                 //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
                                 G_Luminus_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                             }
                         }
                     }
@@ -2009,8 +2022,8 @@ namespace DDPM.CLI.Plugins.Display
                                     G_Luminus_RESPONSE.Value = $"{rc.value}";
                                     //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Luminus_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                                 }
                             }
                         }
@@ -6689,7 +6702,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
-            List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+            List<PowerNapSetting> read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
             if (type == "SET")
@@ -7925,6 +7938,7 @@ namespace DDPM.CLI.Plugins.Display
                 index++;
                 cli_Response2.Index = index.ToString();
                 cli_Response2.Model = g.Name;
+                cli_Response2.ID = g.ID;
                 cli_Response2.FirmwareVersion = g.FirmwareVersion;
                 cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                 cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -8967,10 +8981,13 @@ namespace DDPM.CLI.Plugins.Display
             string filepath = commandLineInput.Options[0].Option_Value;
             string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
             string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            string folderinfo = string.Empty;
+            string symblinkinfo = string.Empty;
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMFileSecurity.CheckFold(filepath, out folderinfo, out symblinkinfo);
             if (!Directory.Exists(filepath))
             {
                 Directory.CreateDirectory(filepath);
@@ -9168,11 +9185,15 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
+                //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
                 string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                string info = string.Empty;
+                string filename = ss_1[1];
                 if (commandLineInput.Options.Count == 1)
                 {
-                    string filename = ss_1[1];
-                    if (!File.Exists(filename))
+
+                    //if (!File.Exists(filename))
+                    if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                     {
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
@@ -9572,11 +9593,21 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerVolume_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0xFF) == 0xFF) ? "OSDDISABLE," : "";
-            output += ((value & 0xFE) == 0xFE) ? "OSDENABLE," : "";
-            if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
-                output += $"Volume:{value & 0xFF}";
 
+            int value_tmp = value;
+            if (value_tmp == 0xFF)
+            {
+                output += "OSDDISABLE";
+            }
+            else if (value_tmp == 0xFE)
+            {
+                output += "OSDENABLE";
+            }
+
+            if (value_tmp < 0x65)
+            {
+                output = $"Volume:{value & 0xFF}";
+            }
             return output;
         }
 
@@ -10793,7 +10824,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         elable_ea = true;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
-                    } 
+                    }
                     else
                     {
                         elable_ea = false;
@@ -11327,7 +11358,7 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    
+
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -11996,5 +12027,503 @@ namespace DDPM.CLI.Plugins.Display
 
         }
         #endregion Malik
+
+        #region FW Update
+        public event EventHandler<(List<FWUpdateInfo>, string)> FWResultReceived;
+        private (int code, string json) FWUpdate(CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            List<List<string>> report = new List<List<string>>();
+            List<string> tmpReport = new List<string>();
+            CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE();
+            cLI_RESPONSE.Command = commandLineInput.Command;
+            cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+
+            if (!commandLineInput.isCliRunAdmin)
+            {
+                cLI_RESPONSE.Result = "FAIL";
+                cLI_RESPONSE.Message = "Not Admin";
+                System.Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+                return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+            }
+            bool? ret = null;
+            bool isShowInfo = true;
+            string installPath = "";
+            bool somethingError = false;
+            CLI_FWU_RESPONSE cLI_FWU_RESPONSE = null;
+            switch (commandLineInput.TargetFeature)
+            {
+                case "FWUPDATE":
+                    cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
+                    if (commandLineInput.Options.Count > 3)
+                    {
+                        cLI_FWU_RESPONSE.Result = "FAIL";
+                        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                        }
+                        break;
+                    }
+                    if (commandLineInput.Options.Count > 0)
+                    {
+                        cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                        for (int i = 1; i < commandLineInput.Options.Count; i++)
+                        {
+                            if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
+                            {
+                                isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
+                            }
+                            else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
+                            {
+                                installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
+                            }
+                            else
+                            {
+                                somethingError = true;
+                            }
+                        }
+                        if (somethingError)
+                        {
+                            cLI_FWU_RESPONSE.Result = "FAIL";
+                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                            for (int i = 0; i < commandLineInput.Options.Count; i++)
+                            {
+                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                            }
+                            break;
+                        }
+                        if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("DEFER"))
+                        {
+                            if (commandLineInput.Options.Count > 2)
+                            {
+                                cLI_FWU_RESPONSE.Result = "FAIL";
+                                cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                                for (int i = 0; i < commandLineInput.Options.Count; i++)
+                                {
+                                    cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                                }
+                                break;
+                            }
+                            ret = GetFWUpdateList(commandLineInput, cLI_FWU_RESPONSE, isShowInfo, true);
+                        }
+                        else if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("FORCE"))
+                        {
+                            if (commandLineInput.Options.Count > 3)
+                            {
+                                cLI_FWU_RESPONSE.Result = "FAIL";
+                                cLI_FWU_RESPONSE.Message = "Input FAIL.\n";
+                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[1].Option_Name}={commandLineInput.Options[1].Option_Value}\n";
+                                break;
+                            }
+                            ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true);
+                        }
+                        else
+                        {
+                            cLI_FWU_RESPONSE.Message = "Input FAIL";
+                            cLI_FWU_RESPONSE.Message = "Input FAIL. should get: Value=FORCE/DEFER\n";
+                            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Name}={commandLineInput.Options[0].Option_Value}\n";
+                            ret = false;
+                        }
+                    }
+                    else
+                    {
+                        cLI_FWU_RESPONSE.Message = "Input FAIL";
+                        ret = false;
+                    }
+                    cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+                    break;
+
+                case "UODFWUPDATE":
+                    cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
+                    if (commandLineInput.Options.Count > 2)
+                    {
+                        cLI_FWU_RESPONSE.Result = "FAIL";
+                        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                        }
+                        break;
+                    }
+                    for (int i = 1; i < commandLineInput.Options.Count; i++)
+                    {
+                        if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
+                        {
+                            isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
+                        }
+                        else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
+                        {
+                            installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
+                        }
+                        else
+                        {
+                            somethingError = true;
+                        }
+                    }
+                    if (somethingError)
+                    {
+                        cLI_FWU_RESPONSE.Result = "FAIL";
+                        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                        }
+                        break;
+                    }
+                    ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true);
+                    cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+                    break;
+
+                case "LOCKUIUPDATE":
+                    if (commandLineInput.Options.Count > 0)
+                    {
+                        cLI_FWU_RESPONSE.Result = "FAIL";
+                        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                        }
+                        break;
+                    }
+                    _devMgr.SetUILockStatus(true);
+                    ret = true;
+                    break;
+
+                case "UNLOCKUIUPDATE":
+                    if (commandLineInput.Options.Count > 0)
+                    {
+                        cLI_FWU_RESPONSE.Result = "FAIL";
+                        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
+                        }
+                        break;
+                    }
+                    _devMgr.SetUILockStatus(false);
+                    ret = true;
+                    break;
+
+                default:
+                    cLI_FWU_RESPONSE.Message = "Input FAIL";
+                    ret = false;
+                    break;
+            }
+            cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+            if (cLI_FWU_RESPONSE != null)
+            {
+                output = cLI_FWU_RESPONSE.OutputLog(cLI_FWU_RESPONSE, commandLineInput);
+            }
+            else
+            {
+                output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+            }
+            if (ret == true)
+            {
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else
+            {
+                return ((int)CLI_ExitCode.fail_FWUpdate, output);
+            }
+        }
+
+        private bool? GetFWUpdateList(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isShowInfo = true, bool isDefer = false)
+        {
+            List<string> tmpReport = new List<string>();
+            FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, false, isDefer, null, false, true).Result;
+            if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0)
+            {
+                int index = 1;
+                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                {
+                    cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
+                    //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{index++} Firmware update {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}");
+                }
+                return true;
+            }
+            else
+            {
+                cli_FWU_RESPONSE.Message = "No updates available";
+                return null;
+            }
+        }
+
+        //0531 Bruce 因應IL的現有安裝包修改判斷，CLIPeripheralsPlugins.cs中Auto_FWUpdate方法修改回傳值型態和新增判斷
+        private List<FWUpdateInfo> retFWUpdateInfos;
+        private bool? Auto_FWUpdate(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, string installPath, bool isShowInfo = true, bool isForce = false)
+        {
+            try
+            {
+                _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
+                _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
+                FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false, true).Result;
+                if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
+                {
+                    cli_FWU_RESPONSE.Message = "No updates available";
+                    return null;
+                }
+                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                {
+                    cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
+                    //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
+                }
+                cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);
+                cli_FWU_RESPONSE.FWUpdateRESPONSE.Clear();
+                do
+                {
+                    Thread.Sleep(100);
+                } while (retFWUpdateInfos == null);
+                bool b = true;
+                foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                {
+                    cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
+                    if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
+                    {
+                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                    }
+                    else
+                    {
+                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                        b = false;
+                    }
+                }
+                _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                return b;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        private (int code, string result) Auto_FWUpdate_(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, string installPath, bool isShowInfo = true, bool isForce = false)
+        {
+            try
+            {
+                _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
+                _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
+                FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false, true).Result;
+                if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
+                {
+                    cli_FWU_RESPONSE.Message = "No updates available";
+                    return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
+                }
+                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                {
+                    cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
+                    //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
+                }
+                cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);
+                System.Threading.Tasks.Task.Run(new Action(() =>
+                {
+                    do
+                    {
+                        Thread.Sleep(100);
+                    } while (retFWUpdateInfos == null);
+                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                    {
+                        cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
+                        if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
+                        {
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                        }
+                        else
+                        {
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                        }
+                    }
+                    FWResultReceived?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
+                    _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                    _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                }));
+                return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
+
+            }
+            catch
+            {
+                return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
+            }
+        }
+        private void Download_Event(object o, List<FWUpdateInfo> e)
+        {
+            retFWUpdateInfos = e;
+        }
+
+        private bool isDownload, isInstalling;
+
+        private void _FWUpdatePlugin_ProgressUpdate(object sender, UpdateProgressInfo e)
+        {
+            if (e.ProcessName.Equals("Installing"))
+            {
+                if (!isInstalling)
+                {
+                    Console.WriteLine($"DeviceName:{e.DeviceName} to Version:{e.TheLatestVersion}, {e.ProcessName}");
+                    isInstalling = true;
+                }
+            }
+            else if (e.ProcessName.Equals("Downloading"))
+            {
+                if (!isDownload)
+                {
+                    Console.WriteLine($"DeviceName:{e.DeviceName} to Version:{e.TheLatestVersion}, {e.ProcessName}");
+                    isDownload = true;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"DeviceName:{e.DeviceName} to Version:{e.TheLatestVersion}, {e.ProcessName}");
+            }
+        }
+
+        #endregion FW Update
+
+        // add @ stephen for fwupdate
+        private (int code, string result) FWUpdateX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
+        {
+            if (commandLineInput.Command.Equals("SET"))
+            {
+                if (commandLineInput.Options.Count > 1)
+                {
+                    CLI_Get_FW_RESPONSE G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
+                    G_FW_RESPONSE.Result = "FAIL";
+                    G_FW_RESPONSE.Message = "UNKNOWN COMMAND FWUpdateX";
+                    System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                }
+
+                List<DeviceType> deviceTypeList = new List<DeviceType>();
+                //deviceTypeList.Add(DeviceType.LogicalKeyboard);
+                foreach (var option in commandLineInput.Options)
+                {
+                    switch (option.Option_Value)
+                    {
+                        case Params.DeviceType.WEBCAM:
+                            deviceTypeList.Add(DeviceType.LogicalWebcam);
+                            deviceTypeList.Add(DeviceType.PhysicalWebcam);
+                            break;
+
+                        case Params.DeviceType.AUDIO:
+                            deviceTypeList.Add(DeviceType.LogicalWiredAudio);
+                            deviceTypeList.Add(DeviceType.PhysicalAudioDongle);
+                            deviceTypeList.Add(DeviceType.PhysicalBluetoothAudio);
+                            deviceTypeList.Add(DeviceType.PhysicalWiredAudio);
+                            break;
+
+                        case Params.DeviceType.KEYBOARD:
+                            deviceTypeList.Add(DeviceType.LogicalKeyboard);
+                            deviceTypeList.Add(DeviceType.PhysicalDongle);
+                            break;
+
+                        case Params.DeviceType.MOUSE:
+                            deviceTypeList.Add(DeviceType.LogicalMouse);
+                            deviceTypeList.Add(DeviceType.PhysicalDongle);
+                            break;
+
+                        case Params.DeviceType.PEN:
+                            deviceTypeList.Add(DeviceType.LogicalPen);
+                            deviceTypeList.Add(DeviceType.PhysicalPen);
+                            break;
+
+                        case Params.DeviceType.DOCK:
+                            deviceTypeList.Add(DeviceType.LogicalDock);
+                            deviceTypeList.Add(DeviceType.PhysicalWiredDock);
+                            break;
+
+                        default:
+                            deviceTypeList.Clear();
+                            break;
+                    }
+                }
+
+                return FWUpdate(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, deviceTypeList).Result;
+
+
+            }
+            else
+            {
+                CLI_Get_FW_RESPONSE G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
+                G_FW_RESPONSE.Result = "FAIL";
+                G_FW_RESPONSE.Message = "UNKNOWN COMMAND";
+                G_FW_RESPONSE.Command = commandLineInput.Command;
+                G_FW_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+            }
+        }
+
+        // add @ stephen
+        private async Task<(int code, string result)> FWUpdate(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<DeviceType> deviceTypeList, string value = "")
+        {
+
+            CLI_RESPONSE S_FWUpdate_RESPONSE = new CLI_RESPONSE();
+
+            //if (devMgr == null)
+            //{
+            //    writelog("Brightness: Null IDeviceManagerSA");
+            //    return (int)CLI_ExitCode.null_device_manager;
+            //}
+
+            /*    if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = await devMgr.GetMonitors();*/
+
+            string output = string.Empty;
+
+            Console.WriteLine($"@@Stephen FWUpdate(IDeviceManagerSA devMgr...)");
+
+            if (type == "SET")
+            {
+
+                FWUpdateInfoPackage fwUpdateInfoPackage;
+
+                if (deviceTypeList.Count > 0)
+                {
+                    fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(true, false, false, deviceTypeList, false, false).Result;
+                }
+                else
+                {
+                    fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(true, false, false, null, false, true).Result;
+                }
+
+
+                foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
+                {
+
+                    Console.WriteLine($"info.DeviceName = " + info.DeviceName);
+                    Console.WriteLine($"info.DevicePath = " + info.DevicePath);
+                    Console.WriteLine($"info.DeviceVersion = " + info.DeviceVersion);
+                    Console.WriteLine($"info.FileSavepath = " + info.FileSavepath);
+                }
+
+                List<FWUpdateInfo> result = devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, "").Result;
+
+                foreach (FWUpdateInfo info in result)
+                {
+                    Console.WriteLine($"@@Stephen result info.DeviceName = " + info.DeviceName);
+                    Console.WriteLine($"@@Stephen result info.DevicePath = " + info.DevicePath);
+                    Console.WriteLine($"@@Stephen result info.DeviceVersion = " + info.DeviceVersion);
+                    Console.WriteLine($"@@Stephen result info.FileSavepath = " + info.FileSavepath);
+                    Console.WriteLine($"@@Stephen result info.DeviceType = " + info.DeviceType);
+                }
+
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else
+            {
+                S_FWUpdate_RESPONSE.Command = type;
+                S_FWUpdate_RESPONSE.TargetFeature = "FIRMWAREUPDATE";
+                S_FWUpdate_RESPONSE.Result = "Format Error";
+                S_FWUpdate_RESPONSE.Message = "Format Error";
+                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_FWUpdate_RESPONSE, Formatting.Indented));
+            }
+        }
     }
 }

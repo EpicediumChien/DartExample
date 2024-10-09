@@ -64,7 +64,7 @@ namespace DDPM.SA.Common.Settings
         /// The Recent list, the first item should be the SelectedSplit.
         /// So the SelectedSplit could be removed.
         /// </summary>
-        public List<SplitJson> RecentList { get; set; }
+        public List<SplitJson> RecentList { get; set; } = SplitJson.DefaultRecentList;
 
         //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
         /*
@@ -107,9 +107,18 @@ namespace DDPM.SA.Common.Settings
         public KVMSettings KVM { get; set; } = new KVMSettings();
         public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
+        public ColorPresetSettings ColorPreset { get; set; } = new ColorPresetSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
         public HotkeySettings hotkeySettings { get; set; }
+        public List<HotkeyData> hotkeyData { get; set; } = new List<HotkeyData>();//1006 add for input source hotkey settings per monitor
         public scheduleInfo scheduleInfo { get; set; }
         public ImpExpSettings ImpExpSettings { get; set; }
+        public EasyArrangementDDPM easyArrangementDDPM { get; set; }
+    }
+
+    public class HotkeyData
+    {
+        public HotkeyType hotkeyType = HotkeyType.None;
+        public List<InputSourceObj> inputSource { get; set; } = new List<InputSourceObj>();
     }
 }

@@ -96,7 +96,7 @@ namespace DDPM.UI.Module.EzSettings
             {
                 //save hotkey
                 // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(_viewModel._homeDevice.MonitorInfo.edid, hotkeyInfo).Result;
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(_viewModel._homeDevice.MonitorInfo, hotkeyInfo).Result;
                 _viewModel.RefreshSettings();
             }
             else

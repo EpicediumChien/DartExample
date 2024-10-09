@@ -272,15 +272,19 @@ namespace DDPM.UI.Common
                 DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
-
-                //File.WriteAllText(Path.Combine(fileFolder, $"{model}_{instanceID}.json"), json);
-                File.WriteAllText(Path.Combine(fileFolder, $"{model}.json"), json);
-                return true;
+                string strPath = Path.Combine(fileFolder, $"{model}.json");
+                //File.WriteAllText(strPath, json);
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                }
+                //return true;
             }
             catch (Exception)
             {
-                return false;
+                //return false;
             }
+            return false;
         }
 
         public static object ImportActionList(eDeviceCategory type, string model, int instanceID = 0)
@@ -289,45 +293,54 @@ namespace DDPM.UI.Common
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
             string info = string.Empty;
-
+            string jsonString = string.Empty;
             switch (type)
             {
                 case eDeviceCategory.KB:
                     if (hasFile)
-                    {
+                    {                       
                         DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                        return JsonConvert.DeserializeObject<KeyboardActions>(File.ReadAllText(filePath))!;
+                        if(DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        }
+                        if(!string.IsNullOrEmpty(jsonString))
+                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString);// File.ReadAllText(filePath))!;
                     }
-                    else
-                    {
-                        var ka = new KeyboardActions(model);
-                        ExportActionList(ka, model);
-                        return ka;
-                    }
+                    var ka = new KeyboardActions(model);
+                    ExportActionList(ka, model);
+                    return ka;
+
                 case eDeviceCategory.Mouse:
                     if (hasFile)
                     {
                         DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                        return JsonConvert.DeserializeObject<MouseActions>(File.ReadAllText(filePath))!;
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        }
+                        if (!string.IsNullOrEmpty(jsonString))
+                            return JsonConvert.DeserializeObject<MouseActions>(jsonString); //File.ReadAllText(filePath))!;
                     }
-                    else
-                    {
-                        var ma = new MouseActions(model);
-                        ExportActionList(ma, model);
-                        return ma;
-                    }
+                    var ma = new MouseActions(model);
+                    ExportActionList(ma, model);
+                    return ma;
+                    
                 case eDeviceCategory.Pen:
                     if (hasFile)
                     {
                         DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                        return JsonConvert.DeserializeObject<PenActions>(File.ReadAllText(filePath))!;
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        }
+                        if (!string.IsNullOrEmpty(jsonString)) 
+                            return JsonConvert.DeserializeObject<PenActions>(jsonString); //File.ReadAllText(filePath))!;
                     }
-                    else
-                    {
-                        var ma = new PenActions(model);
-                        ExportActionList(ma, model);
-                        return ma;
-                    }
+                    var pen = new PenActions(model);
+                    ExportActionList(pen, model);
+                    return pen;
+
                 default:
                     break;
             }

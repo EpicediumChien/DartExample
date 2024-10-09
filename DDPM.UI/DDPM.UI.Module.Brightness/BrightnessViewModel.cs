@@ -309,7 +309,8 @@ namespace DDPM.UI.Module.Brightness
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             string swHortcutText = string.Empty;
 
             if (curHotkey.HotkeyInfo.Count > 0)
@@ -2863,6 +2864,45 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion ALS functions
+
+        public void ResetClick()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Reset_Click;
+            bw.RunWorkerCompleted += Reset_Click_finish;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
+        }
+
+        private void Reset_Click(object sender, DoWorkEventArgs e)
+        {
+            bool r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
+            if (r)
+            {
+                ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+                if (rb_10.result)
+                {
+                    Brightness_Value = (uint)((long)rb_10.value);
+                    Luminance_Value = BrightnessValue;
+                }
+                ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
+                if (rb_12.result)
+                    Contrast_Value = (uint)((long)rb_12.value);
+            }
+        }
+        private void Reset_Click_finish(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("LuminanceValue");
+            NotifyPropertyChanged("ContrastValue");
+            NotifyPropertyChanged("IsBusy");
+        }
 
         public Visibility isShowSynchronize { get; set; } = Visibility.Visible;
 

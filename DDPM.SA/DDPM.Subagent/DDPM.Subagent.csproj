@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.41</Version>
+		<Version>2.0.0.42</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
@@ -20,6 +20,7 @@
 		<ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugin.CLIManager\DDPM.SA.Plugins.CLIManager.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugin.PlatinumSDK\DDPM.SA.Plugins.PlatinumSDK.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.CMAManager\DDPM.SA.Plugins.CMAManager.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SettingsManager\DDPM.SA.Plugins.SettingsManager.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SWUpdate\DDPM.SA.Plugins.SWUpdate.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.FWUpdate\DDPM.SA.Plugins.FWUpdate.csproj" />

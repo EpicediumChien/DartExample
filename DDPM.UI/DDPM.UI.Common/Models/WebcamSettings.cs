@@ -36,8 +36,12 @@ namespace DDPM.UI.Common
                 DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
-
-                File.WriteAllText(Path.Combine(fileFolder, $"{model}.json"), json);
+                string strPath = Path.Combine(fileFolder, $"{model}.json");
+                //File.WriteAllText(strPath, json);
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                }                
                 return true;
             }
             catch (Exception)
@@ -50,18 +54,21 @@ namespace DDPM.UI.Common
         {
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
             var hasFile = File.Exists(filePath);
+            string jsonString = string.Empty;
             if (hasFile)
             {
-                string info = string.Empty;
+                string info = string.Empty;                
                 DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                }
+                if (!string.IsNullOrEmpty(jsonString))
+                    return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
             }
-            else
-            {
-                var ka = new WebcamSettings();
-                ExportWebcamSettings(ka, model);
-                return ka;
-            }
+            var ka = new WebcamSettings();
+            ExportWebcamSettings(ka, model);
+            return ka;
         }
     }
 

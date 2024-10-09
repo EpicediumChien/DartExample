@@ -35,9 +35,8 @@ namespace DDPM.UI.Module.Gaming
             {
                 SetProperty(ref _selectedResolution, value);
                 MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(currentMonitorInfo,
-                    _selectedResolution.Properties,
-                    DisplayOrientation.Unknow
+                DdpmCommonHelper.DeviceManagerSA.SetResolutions(currentMonitorInfo,
+                    _selectedResolution.Properties
                     ).Wait();
             }
         }
@@ -194,7 +193,8 @@ namespace DDPM.UI.Module.Gaming
         }
         private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             string swHortcutText = string.Empty;
 
             if (curHotkey.HotkeyInfo.Count > 0)

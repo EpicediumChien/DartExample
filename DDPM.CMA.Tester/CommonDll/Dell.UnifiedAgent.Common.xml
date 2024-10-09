@@ -1,0 +1,759 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dell.UnifiedAgent.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Dell.UnifiedAgent.Common.Extensions.AgentExtensions">
+            <summary>
+            Agent Extensions
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.Extensions.AgentExtensions.ValidateAgent(Dell.Client.Framework.Interfaces.IAgent)">
+            <summary>
+            Validates Agent
+            </summary>
+            <param name="agent"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.ProcessExtensions">
+            <summary>
+            Extensions class for the .Net Process class.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessExtensions.GetProcessName(Dell.UnifiedAgent.Common.IProcessWrapper,System.Threading.CancellationToken,Dell.Client.Framework.Common.ILog)">
+            <summary>
+                A method that attempts to get the process name
+            </summary>
+            <param name="process">Process to get the name for</param>
+            <param name="cancellationToken">Allow for cancellation</param>
+            <param name="log">Optional DCF Log object</param>
+            <exception cref="T:System.NullReferenceException"><paramref name="process" /> or <paramref name="cancellationToken" /> is null.</exception>
+            <returns>Returns Process Name with full path</returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.TypeExtensions">
+            <summary>
+            Extensions class for the .Net Type class.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.GetAttribute``1(System.Reflection.PropertyInfo)">
+            <summary>
+                Gets attribute for specified PropertyInfo
+            </summary>
+            <typeparam name="T">The type of attribute to be retrieved.</typeparam>
+            <param name="propertyInfo">PropertyInfo that is extended.</param>
+            <returns>Attribute of type T if found, otherwise default(T) which mostly will be NULL</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <example>
+                var attribute = propertyInfo.GetAttribute&lt;EventPropertyAttribute&gt;()
+            </example>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.GetPropertyAttribute``1(System.Type,System.String)">
+            <summary>
+                Gets attribute for specified type and property name
+            </summary>
+            <typeparam name="T">T is type for which attribute is retrieved</typeparam>
+            <param name="type"></param>
+            <param name="propertyName"></param>
+            <returns>Returns the Type of the Attribute retrieved</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.GetTypeFromAssemblies(System.String,Dell.Client.Framework.Common.ILog)">
+            <summary>
+                Searches for a type by FullName through all loaded assemblies. If none
+                found it returns null.
+            </summary>
+            <param name="fullyQualifiedName"></param>
+            <param name="log"></param>
+            <returns>The type that matches the FullName or null.</returns>
+            <exception cref="T:System.ArgumentException"></exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="fullyQualifiedName" /> is null or empty.</exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.GetAllTypes(System.Type)">
+            <summary>
+            Searches for all the interfaces implemented or inherited by the <paramref name="interfaceType"/>
+            </summary>
+            <param name="interfaceType"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="interfaceType" /> is null.</exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.RemoveTypesThatAreInherited(System.Collections.Generic.List{System.Type})">
+            <summary>
+                Given a list of types that contains parent and child interfaces. This method will remove child interfaces from the
+                list since they are carried by the parent.
+            </summary>
+            <param name="originalList">The original list of types</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="originalList" /> is null</exception>
+            <returns>A list without the child types</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="originalList" /> is null.</exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.TryGetBaseType(System.Type,System.Type,System.Type@)">
+            <summary>
+            Gets the base type from the type with multiple inheritance
+            </summary>
+            <param name="type"></param>
+            <param name="baseType"></param>
+            <param name="outBasetype"></param>
+            <returns>true if type is a subclass of baseType, else false</returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.GetCustomAttributesConstructorValues``1(System.Type)">
+            <summary>
+            Retrieves a list of all values passed to the constructor of an type of attribute that is
+            annotating a <paramref name="type"/> declaration. This is done using ReflectionOnly methods.
+            This list will include named and unnamed parameters passed to the constructor.
+            </summary>
+            <param name="type">Type being analyzed.</param>
+            <returns>A list of all values passed to the constructor of the custom attribute annotating <paramref name="type"/>.
+            Empty list if some error happens during analysis.</returns>
+            <exception cref="T:System.ArgumentNullException">If <paramref name="type"/> is null.</exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.TypeExtensions.isPublishable(System.Type,Dell.Client.Framework.Common.ILog)">
+            <summary>
+                Return true if the type meets all the requirements for being published.
+            </summary>
+            <remarks>
+                A type can only be published if it meets these requirements:
+            <list type="bullet">
+                <item/>Is public
+                <item/>No properties
+                <item/>No generic methods
+                <item/>All methods return void, Task, Task&lt;T&gt;, ValueTask, ValueTask&lt;T&gt;, or IAsyncEnumerable&lt;T&gt;.
+                <item/>All events are typed with EventHandler or EventHandler&lt;T&gt;.The JSON-RPC contract for raising such events is that the request contain exactly one argument, which supplies the value for the T in EventHandler&lt;T&gt;.
+                <item/>Methods may accept a CancellationToken as the last parameter.
+            </list>
+            For More info see <see href="https://github.com/microsoft/vs-streamjsonrpc/blob/main/doc/dynamicproxy.md#dynamically-generated-proxies"/>
+            </remarks>
+            
+            <param name="type"></param>
+            <returns>false if the Type is not truly async</returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.IUnifiedAgentConfig">
+            <summary>
+            Defines the configuration values to customize it for a particular application specific to Unified Agent.   
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentConfig.PluginsToPublish">
+            <summary>
+            Returns the list of guids that specify or override the plugins that needs 
+            to be published.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentConfig.WaitTimeForDynamicPluginStart">
+            <summary>
+                Defines the number of seconds to wait for a dynamic plugins to finish their OnPluginStart functionality. This will hold DCF while the dynamic plugin finishes setting up. The default value is 5 seconds.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentConfig.ConnectionTimeout">
+            <summary>
+            Connection timeout value for client -> server connections (in milliseconds)
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentConfig.ForceUnelevatedConnection">
+            <summary>
+            Setting this boolean to true will allow an agent that is running elevated might still want to only connect to the unelevated ecosystem.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentConfig.TriggerEcosystemOnStart">
+            <summary>
+            Setting this boolean to true will allow an agent that is running unelevated trigger start the ecosystem.
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.IUnifiedAgentConfigWindows">
+            <summary>
+            Extension of <see cref="T:Dell.UnifiedAgent.Common.IUnifiedAgentConfig"/> specific to windows.   
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.IUnifiedAgentSettings">
+             <summary>
+                 Defines the plugin implementation that provides all Unified Agents with their settings
+             </summary>
+             <example>
+             This is a sample of what a plugin implementation could look like
+             <code>
+                [Plugin(pluginId, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
+                [Descriptor(Description = pluginDescription)]
+                [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
+                public class SettingsPlugin : IUnifiedAgentSettings, IAgentPlugin
+                {
+                    private const string pluginName = "Unified Agent Test Settings";
+                    private const string pluginVersion = "1.0.0";
+                    private const string pluginId = "{2B2C48F7-308F-4DC1-8898-FCF04F8B5A2F}";
+                    private const string pluginDescription = "Unified Agent Test Settings";
+                    private const string publisherCompany = "Dell Inc";
+                    private const string publisherWebsite = "https://dell.com";
+                    private const string publisherSupport = "In case of emergency, call Captain Ricardo!!";
+                    private const string LogId = "Settings";
+            
+                    public SettingsPlugin(IAgent agent)
+                    {
+                        var log = agent.CreateLogger(LogId);
+                        log.Info($"{nameof(SettingsPlugin)} - Constructed");
+                        log.Info($"{nameof(SettingsPlugin)} - {nameof(PipeName)} {PipeName}");
+                        log.Info($"{nameof(SettingsPlugin)} - {nameof(CertificateStoreName)} {CertificateStoreName}");
+                    }
+            
+                    public AgentPluginInfo GetAgentPluginInfo()
+                    {
+                        var pluginInfo = new AgentPluginInfo
+                        {
+                            PluginName = pluginName,
+                            PluginGuid = new Guid(pluginId),
+                            PluginVersion = pluginVersion,
+                            PluginApiVersion = pluginVersion,
+                            PluginDescription = pluginDescription,
+                            PluginEnabled = true,
+                            PoliciesEnforced = true
+                        };
+                        return pluginInfo;
+                    }
+            
+                    public void OnStartPlugin()
+                    {
+                    }
+            
+                    public void OnStopPlugin()
+                    {
+                    }
+            
+                    public Guid PipeName
+                    {
+                        get
+                        {
+            #if DEBUG
+                            return Guid.Parse("{ECB894B9-8352-4C66-B2BD-CA2D9BB48382}");
+            #else
+                            return Guid.Parse("{52844DB7-7972-4204-8132-B1D664D11F1B}");
+            #endif
+                        }
+                    }
+            
+                    public string CertificateStoreName => "Dell Trust";
+                    
+                    public string CompanyName => "Dell Inc.";
+                    
+                    public string ProductName => "UA Test Settings";
+                    
+                    public string ServiceName => "UATestSettings";
+                }
+             </code>
+             </example>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.ElevatedPipeName">
+            <summary>
+                The pipe name to use between the Unifying Agent and "elevated" SubAgents
+            </summary>
+            <remarks>
+                This value should change between debug and release builds since one pipe may have security turned on and
+                another pipe may not.
+            </remarks>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.UnelevatedPipeName">
+            <summary>
+                The pipe name to use between the Unifying Agent and the "unelevated" SubAgents. Note that a technically
+                elevated SubAgent could choose to connect to this pipe anyway. This would be the case for a UI SubAgent
+                which wants to act as unelevated even if the user "runs as admin".
+            </summary>
+            <remarks>
+                This value should change between debug and release builds since one pipe may have security turned on and
+                another pipe may not.
+            </remarks>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.CertificateStoreName">
+            <summary>
+                The certificate store that should be used to validate the signing of the Unifying Agent and the sub agents
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.DTHRegistryPath">
+            <summary>
+                The registry location of DTH.
+                @$"SOFTWARE\{CompanyName}\{ProductName}"
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.CompanyName">
+            <summary>
+                Gets a string that defines the name of the company, e.g. "Dell Inc.".
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.ProductName">
+            <summary>
+                Gets string indicating the name of the product, e.g. "Dell TechHub".
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IUnifiedAgentSettings.ServiceName">
+            <summary>
+                Gets a string that indicates the name of the service, e.g. "DellTechHub".
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.SessionDeets">
+            <summary>
+            Session Details
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.SessionDeets.SessionId">
+            <summary>
+            Session Id
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.SessionDeets.LogOnTimeUTC">
+            <summary>
+            Log on time of the session in UTC
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.SessionInfoHelper">
+            <summary>
+            Session Helper that provides an Instance object to request the session information based on session Id.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.SessionInfoHelper.OnSessionChange(System.ServiceProcess.SessionChangeDescription)">
+            <summary>
+            SHOULD ONLY BE CALLED BY DTH OR ANY UNIFYING AGENT
+            </summary>
+            <param name="changeDescription"></param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.SessionInfoHelper.GetSessionDeets(System.Int32)">
+            <summary>
+            Returns a valid <see cref="T:Dell.UnifiedAgent.Common.SessionDeets"/> or null
+            </summary>
+            <param name="sessionId"></param>
+            <returns><see cref="T:Dell.UnifiedAgent.Common.SessionDeets"/> or null</returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.UnifiedAgentPluginLoadBehavior">
+            <summary>
+            Used to specify the load behavior for <see cref="T:Dell.UnifiedAgent.Common.UnifiedAgentConfig"/> and <see cref="T:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows"/>
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.UnifiedAgentConfig">
+            <inheritdoc cref="T:Dell.UnifiedAgent.Common.IUnifiedAgentConfig"/>
+        </member>
+        <member name="F:Dell.UnifiedAgent.Common.UnifiedAgentConfig.DefaultWaitForDynamicPluginStart">
+            <summary>
+                The default number of seconds to wait for DCF to start a dynamic plugin
+            </summary>
+        </member>
+        <member name="F:Dell.UnifiedAgent.Common.UnifiedAgentConfig.DefaultConnectionTimeout">
+            <summary>
+            Default connection timeout value for client -> server connections (in milliseconds)
+            </summary>
+        </member>
+        <member name="F:Dell.UnifiedAgent.Common.UnifiedAgentConfig.DefaultForceUnelevatedConnection">
+            <summary>
+            Default ForceUnelevatedConnection -> false
+            </summary>
+        </member>
+        <member name="F:Dell.UnifiedAgent.Common.UnifiedAgentConfig.DefaultTriggerEcosystemOnStart">
+            <summary>
+            Default TriggerEcosystemOnStart -> false
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfig.#ctor(System.String,System.Guid,System.Guid)">
+            <summary>
+            Constructs the object and requires the company name and the agentUniqueGuid to be specified
+            </summary>
+            <param name="companyName">Name of the Company</param>
+            <param name="agentUniqueGuid">Unique ID for the agent</param>
+            <param name="userProcessMutexGuid">Unique ID for the user process</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="agentUniqueGuid"/> or <paramref name="userProcessMutexGuid"/> are <see cref="F:System.Guid.Empty"/></exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfig.#ctor(System.Guid,System.Guid)">
+            <summary>
+            Constructs the object and requires the agentUniqueGuid to be specified
+            </summary>
+            <param name="agentUniqueGuid">Unique ID for the agent</param>
+            <param name="userProcessMutexGuid">Unique ID for the user process</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="agentUniqueGuid"/> or <paramref name="userProcessMutexGuid"/> are <see cref="F:System.Guid.Empty"/></exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfig.#ctor">
+            <summary>
+            For XML serializer.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfig.PluginsToPublish">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfig.WaitTimeForDynamicPluginStart">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfig.ConnectionTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfig.ForceUnelevatedConnection">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfig.TriggerEcosystemOnStart">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfig.CustomPluginSources">
+            <summary>
+            We override the CustomPluginSources property to ensure that UA-specific plugins are always loaded in
+            a Unifying Agent and SubAgents rather than depend on implementors to remember to do this.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfig.CompletePluginSources(System.Collections.Generic.List{Dell.Client.Framework.Common.IPluginSource},Dell.UnifiedAgent.Common.UnifiedAgentPluginLoadBehavior)">
+            <summary>
+            Given an array of plugin wildcards, make sure the UA-specific
+            wildcard is in the list.
+            </summary>
+            <param name="pluginSources">An initial list of plugin wildcards. Can be empty or null.</param>
+            <returns>A list of wildcards based on the array and possibly appended.</returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows">
+            <inheritdoc cref="T:Dell.UnifiedAgent.Common.IUnifiedAgentConfigWindows"/>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.#ctor">
+            <summary>
+            Constructs the object  
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.#ctor(System.String,System.Guid,System.Guid)">
+            <summary>
+            Constructs the object and requires the company name and the agentUniqueGuid to be specified
+            </summary>
+            <param name="companyName">Name of the Company</param>
+            <param name="agentUniqueGuid">Unique ID for the agent</param>
+            <param name="userProcessMutexGuid">Unique ID for the user process</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="agentUniqueGuid"/> or <paramref name="userProcessMutexGuid"/> are <see cref="F:System.Guid.Empty"/></exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.#ctor(System.String,System.Guid,System.Guid,Dell.UnifiedAgent.Common.UnifiedAgentPluginLoadBehavior)">
+            <summary>
+            Constructs the object and requires the company name and the agentUniqueGuid to be specified
+            </summary>
+            <param name="companyName">Name of the Company</param>
+            <param name="agentUniqueGuid">Unique ID for the agent</param>
+            <param name="userProcessMutexGuid">Unique ID for the user process</param>
+            <param name="loadBehavior">Should this load a client or manager plugin?</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="agentUniqueGuid"/> or <paramref name="userProcessMutexGuid"/> are <see cref="F:System.Guid.Empty"/></exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.#ctor(System.Guid,System.Guid)">
+            <summary>
+            Constructs the object and requires the agentUniqueGuid to be specified
+            </summary>
+            <param name="agentUniqueGuid"></param>
+            <param name="userProcessMutexGuid">Unique ID for the user process</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="agentUniqueGuid"/> or <paramref name="userProcessMutexGuid"/> are <see cref="F:System.Guid.Empty"/></exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.#ctor(System.Guid,System.Guid,Dell.UnifiedAgent.Common.UnifiedAgentPluginLoadBehavior)">
+            <summary>
+            Constructs the object and requires the agentUniqueGuid to be specified
+            </summary>
+            <param name="agentUniqueGuid"></param>
+            <param name="userProcessMutexGuid">Unique ID for the user process</param>
+            <param name="loadBehavior">Should this load a client or manager plugin?</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="agentUniqueGuid"/> or <paramref name="userProcessMutexGuid"/> are <see cref="F:System.Guid.Empty"/></exception>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.PluginsToPublish">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.WaitTimeForDynamicPluginStart">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.ConnectionTimeout">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.ForceUnelevatedConnection">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.TriggerEcosystemOnStart">
+            <inheritdoc/>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentConfigWindows.CustomPluginSources">
+            <summary>
+            We override the CustomPluginSources property to ensure that UA-specific plugins are always loaded in
+            a Unifying Agent and SubAgents rather than depend on implementors to remember to do this.
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.UnifiedAgentJsonSettings">
+            <summary>
+            JSON Settings for related to Unified Agent.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentJsonSettings.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.UnifiedAgentJsonSettings.PublishingAllowList">
+            <summary>
+            List of GUID's that are allowed to be published by the agent.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.UnifiedAgentJsonSettings.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            This happens when you De-serialize
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.IProcessModuleWrapper">
+            <summary>
+                Wrapper around the process module
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.ModuleName">
+            <summary>Gets the name of the process module.</summary>
+            <returns>The name of the module.</returns>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.FileName">
+            <summary>Gets the full path to the module.</summary>
+            <returns>The fully qualified path that defines the location of the module.</returns>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.BaseAddress">
+            <summary>Gets the memory address where the module was loaded.</summary>
+            <returns>The load address of the module.</returns>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.ModuleMemorySize">
+            <summary>Gets the amount of memory that is required to load the module.</summary>
+            <returns>The size, in bytes, of the memory that the module occupies.</returns>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.EntryPointAddress">
+            <summary>Gets the memory address for the function that runs when the system loads and runs the module.</summary>
+            <returns>The entry point of the module.</returns>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.FileVersionInfo">
+            <summary>Gets version information about the module.</summary>
+            <returns>A <see cref="P:Dell.UnifiedAgent.Common.IProcessModuleWrapper.FileVersionInfo" /> that contains the module's version information.</returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.IProcessWrapper">
+            <summary>
+                Interface for wrapping the <see cref="T:System.Diagnostics.Process" /> object
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.RealProcess">
+            <summary>
+                The real process, try not to use this because it defeats the purpose of the mock
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.Id">
+            <summary>
+                The process Id
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.SessionId">
+            <summary>
+            Terminal Services session identifier for the associated process
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.HasExited">
+            <summary>
+                True if the process has exited
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.ExitCode">
+            <summary>
+                Exit code
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.MainModule">
+            <summary>
+                Main Module information
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.IProcessWrapper.Handle">
+            <summary>Gets the native handle of the associated process.</summary>
+            <returns>
+                The handle that the operating system assigned to the associated process when the process was started. The
+                system uses this handle to keep track of process attributes.
+            </returns>
+        </member>
+        <member name="E:Dell.UnifiedAgent.Common.IProcessWrapper.Exited">
+            <summary>
+                Event raised if SubAgent process exits.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.IProcessWrapper.Start">
+            <summary>
+                Starts the process
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.IProcessWrapper.Kill">
+            <summary>
+                Kills the process
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.IProcessWrapper.WaitForExit(System.Int32)">
+            <summary>
+                Waits for exit
+            </summary>
+            <param name="millisecond"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.IProcessWrapper.Refresh">
+            <summary>
+                Refreshes the process
+            </summary>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.ProcessModuleWrapper">
+            <summary>
+                Wrapper around the <see cref="T:System.Diagnostics.ProcessModule" /> object
+            </summary>
+        </member>
+        <member name="F:Dell.UnifiedAgent.Common.ProcessModuleWrapper._processModule">
+            <summary>
+                Holds the real process module object
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessModuleWrapper.#ctor(System.Diagnostics.ProcessModule)">
+            <summary>
+                Constructor for ProcessModuleWrapper
+            </summary>
+            <param name="processModule"></param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="processModule" /> is null.</exception>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessModuleWrapper.ModuleName">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessModuleWrapper.FileName">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessModuleWrapper.BaseAddress">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessModuleWrapper.ModuleMemorySize">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessModuleWrapper.EntryPointAddress">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessModuleWrapper.FileVersionInfo">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessModuleWrapper.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.ProcessModuleWrapperFactory">
+            <summary>
+                Wrapper around the ProcessModule object
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessModuleWrapperFactory.CreateMainModule(Dell.UnifiedAgent.Common.IProcessWrapper)">
+            <summary>
+                Creates a MainModule from a process
+            </summary>
+            <param name="processWrapper">ProcessWrapper object</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="processWrapper" /> is null.</exception>
+            <exception cref="T:System.NotSupportedException">
+                You are trying to access the
+                <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.
+                This property is available only for processes that are running on the local computer.
+            </exception>
+            <exception cref="T:System.ComponentModel.Win32Exception">
+                A 32-bit process is trying to access the modules of a 64-bit
+                process.
+            </exception>
+            <exception cref="T:System.PlatformNotSupportedException">
+                The platform is Windows 98 or Windows Millennium Edition (Windows Me);
+                set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to <see langword="false" /> to access this
+                property on Windows 98 and Windows Me.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                The process <see cref="P:System.Diagnostics.Process.Id" /> is not
+                available.-or- The process has exited.
+            </exception>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.ProcessWrapper">
+            <summary>
+                Wrapper around the <see cref="T:System.Diagnostics.Process" /> class
+            </summary>
+        </member>
+        <member name="F:Dell.UnifiedAgent.Common.ProcessWrapper._process">
+            <summary>
+                Holds the real process object
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapper.#ctor(System.Diagnostics.Process,Dell.UnifiedAgent.Common.ProcessModuleWrapperFactory,System.Boolean,Dell.Client.Framework.Common.ILog)">
+             <summary>
+                 Constructor for ProcessWrapper
+             </summary>
+             <param name="process"></param>
+             <param name="processModuleWrapperFactory"></param>
+             <param name="startAsCurrentUser">If true, lunches the process in the current active session. Defaults to false</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="process"/> or <paramref name="processModuleWrapperFactory"/> are null.</exception>
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.RealProcess">
+            <inheritdoc />
+        </member>
+        <member name="E:Dell.UnifiedAgent.Common.ProcessWrapper.Exited">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.Id">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.SessionId">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.HasExited">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.ExitCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapper.Start">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapper.Kill">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapper.WaitForExit(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapper.Refresh">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.Handle">
+            <inheritdoc />
+        </member>
+        <member name="P:Dell.UnifiedAgent.Common.ProcessWrapper.MainModule">
+            <inheritdoc />
+            <remarks>
+                Create a new <see cref="T:Dell.UnifiedAgent.Common.IProcessModuleWrapper" /> each time since this is what .Net does. If the calling
+                process is 32bit and the callee is 64bit an exception will be thrown.
+            </remarks>
+            <exception cref="T:System.NotSupportedException">
+                You are trying to access the
+                <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.
+                This property is available only for processes that are running on the local computer.
+            </exception>
+            <exception cref="T:System.ComponentModel.Win32Exception">
+                A 32-bit process is trying to access the modules of a 64-bit
+                process.
+            </exception>
+            <exception cref="T:System.PlatformNotSupportedException">
+                The platform is Windows 98 or Windows Millennium Edition (Windows Me);
+                set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to <see langword="false" /> to access this
+                property on Windows 98 and Windows Me.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+                The process <see cref="P:System.Diagnostics.Process.Id" /> is not
+                available.-or- The process has exited.
+            </exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapper.ProcessOnExited(System.Object,System.EventArgs)">
+            <summary>
+                Called when the process is exited
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.Common.ProcessWrapperFactory">
+            <summary>
+                Wrapper around the process
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapperFactory.#ctor(Dell.UnifiedAgent.Common.ProcessModuleWrapperFactory)">
+            <summary>
+                Constructor for ProcessWrapperFactory
+            </summary>
+            <param name="processModuleWrapperFactory">The process module wrapper factory to use</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="processModuleWrapperFactory" /> is null.</exception>
+        </member>
+        <member name="M:Dell.UnifiedAgent.Common.ProcessWrapperFactory.GetProcessById(System.Int32)">
+            <summary>
+                Gets a process by Id
+            </summary>
+            <param name="processId"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

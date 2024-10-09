@@ -296,7 +296,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     _isNoKVM = false;
                     _isNKVM = true;
-                    isOnNKVM(true);
+                    //isOnNKVM(true);
                 }
             }
         }
@@ -495,7 +495,8 @@ namespace DDPM.UI.Module.Kvm
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 //load hotkey setting
-                HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                HotkeySettings curHotkey = temp.Item1;
                 //0708 error handling for non-EE support monitor
                 string swHortcutText = string.Empty;
                 if (curHotkey.HotkeyInfo.Count > 0)
@@ -608,10 +609,25 @@ namespace DDPM.UI.Module.Kvm
                     //myArgType arg = (myArgType)e.Argument;
                     inputList = new Dictionary<string, InputInfo>();
                     subInputs = new List<InputSourceObj>();
+                    List<UInt16> subInputList = new List<UInt16>();
                     usbsList = new List<string>();
                     //Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                    subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    foreach (UInt16 subinput in subInputList)
+                    {
+                        InputSourceObj inputSourceObj = new InputSourceObj();
+                        foreach (var input in inputList)
+                        {
+                            if (input.Value.Code == (uint)subinput)
+                            {
+                                inputSourceObj.Code = subinput;
+                                inputSourceObj.Name = input.Key;
+                                break;
+                            }
+                        }
+                        subInputs.Add(inputSourceObj);
+                    }
                     string currentinput = KvmModule.SelectedHomeDevice.MonitorInfo.inputSource;
                     pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                     usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;

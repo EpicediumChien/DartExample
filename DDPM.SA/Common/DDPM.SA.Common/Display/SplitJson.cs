@@ -19,6 +19,31 @@ namespace DDPM.SA.Common.Display
 
         #endregion Native Properties
 
+        #region ctor and create new instance
+        /// <summary>
+        /// Default ctor, construct a default instances, that is, SplitCtrl0A (Off)
+        /// </summary>
+        public SplitJson()
+        {
+                
+        }
+
+        /// <summary>
+        /// Clone an instance. all native propeties will be copied.
+        /// </summary>
+        /// <returns></returns>
+        public SplitJson Clone()
+        {
+            return new SplitJson()
+            {
+                CellCount = this.CellCount,
+                SplitKey = this.SplitKey,
+                Settings = new List<double>(this.Settings),
+                CustomName = this.CustomName,
+                CustomId = this.CustomId
+            };
+        }
+        #endregion ctor and create new instance
 
         public string ToString()
         {
@@ -63,18 +88,17 @@ namespace DDPM.SA.Common.Display
         #region Defaul Recent List
         /// <summary>
         /// Need to copy the DefaultSettings from DDPM.Easy.Common/SplitCtrlXX.xaml.cs
+        /// Never add SplitCtrl0A (Off) into the RecentList
         /// </summary>
         public static List<SplitJson> DefaultRecentList = new List<SplitJson>()
         {
-            //[0] SplitCtrl0A (Off)
-            new  SplitJson() { CellCount = 0, SplitKey='A' },
-            //[1] SplitCtrl2A
+            //[0] SplitCtrl2A
             new  SplitJson() { CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
-            //[2] SplitCtrl2C
+            //[1] SplitCtrl2C
             new  SplitJson() { CellCount = 2, SplitKey='C', Settings=new List<double>() { 7, 3 } },
-            //[3] SplitCtrl3E
+            //[2] SplitCtrl3E
             new  SplitJson() { CellCount = 3, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1 } },
-            //[4] SplitCtrl4A
+            //[3] SplitCtrl4A
             new  SplitJson() { CellCount = 4, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1 } }
 
         };

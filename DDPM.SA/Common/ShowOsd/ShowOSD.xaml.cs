@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace DDPM.ShowOSD
@@ -46,14 +47,16 @@ namespace DDPM.ShowOSD
             this.Width = showString.Length * tempW;
             this.Height = tempH;
             this.Topmost = false;
-            this.Topmost = true;
+            this.Topmost = true;         
 
+            
             //time = TimeSpan.FromMilliseconds(1800);
             time = TimeSpan.FromMilliseconds(1200);
             animationTimer = new DispatcherTimer();
             animationTimer.Interval = TimeSpan.FromMilliseconds(100);//.FromSeconds(1);
             animationTimer.Tick += RunTimerTick;
             animationTimer.Start();
+            
         }
 
         public void SetOstTextFontSize(double dbSize)
@@ -75,15 +78,15 @@ namespace DDPM.ShowOSD
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-100));
 
-                //if (time.TotalMilliseconds < 800)
-                if (time.TotalMilliseconds < 500)
+                if (time.TotalMilliseconds < 800)
+                //if (time.TotalMilliseconds < 500)
                 {
                     this.Dispatcher.Invoke(() =>
                     {
                         System.Windows.Media.Brush b = this.tbShowText.Foreground;
 
                         System.Windows.Media.Color MyColor = ((SolidColorBrush)b).Color;
-                        int a = (int)MyColor.A - (int)60;
+                        int a = (int)MyColor.A - (int)25;
 
                         if (a < 0)
                             a = 0;
@@ -96,5 +99,6 @@ namespace DDPM.ShowOSD
                 }
             }
         }
+    
     } // public partial class MainWindow : Window
 }
