@@ -201,7 +201,7 @@
         </StackPanel>
       </Grid>
       <!--Battery-->
-      <Grid VerticalAlignment="Bottom">
+      <Grid VerticalAlignment="Bottom" Visibility="Hidden">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
           <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
@@ -256,7 +256,7 @@
                             <Grid Height="30" Margin="0,5,0,0">
                               <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
                                 <UXControls:UXTextBlock Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
-                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset">
+                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}">
                                   <Image.ToolTip>
                                     <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                                       <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
@@ -276,7 +276,7 @@
                   </DockPanel>
                 </Border>
                 <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
-                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
                 </Border>
               </StackPanel>
               <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click">
@@ -307,6 +307,20 @@
       <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
         <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
                                 VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,118" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
+      </Grid>
+      <!--Add Profile-->
+      <Grid VerticalAlignment="Bottom">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,70">
+          <UXControls:UXTextBlock Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
+          <StackPanel Orientation="Vertical">
+            <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,11" FontWeight="Medium" FontFamily="Roboto" MaxLength="50" FontSize="14"
+                                HorizontalAlignment="Center" Margin="18,0,0,0" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" 
+                                TextChanged="NameTextChanged" TextWrapping="NoWrap"/>
+            <UXControls:UXTextBlock Name="txtMsg" Text="AAAA" Margin="18,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" Visibility="Collapsed" />
+
+
+          </StackPanel>
+        </StackPanel>
       </Grid>
     </Grid>
   </Grid>

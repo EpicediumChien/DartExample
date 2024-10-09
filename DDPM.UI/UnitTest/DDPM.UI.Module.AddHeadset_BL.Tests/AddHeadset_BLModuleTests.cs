@@ -43,7 +43,7 @@ namespace DDPM.UI.Module.AddHeadset_BL.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log, peripheralPlugin);
+            vm = new AddDeviceViewModel(showPluginManager, console, log);
             addHeadset_BLModule = new AddHeadset_BLModule(vm);
             privateObject = new PrivateObject(addHeadset_BLModule);
 
