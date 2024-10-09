@@ -25,7 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
 using Newtonsoft.Json.Linq;
-using static Dell.TechHub.Common.PluginInformation;
+using System.Text;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -1623,10 +1623,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             var byteArray = new byte[payloadSize + 4];
             BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
             payloadBytes.CopyTo(byteArray, 4);
+
+            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
             try
             {
-                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
-                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
+                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
                 //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
             }
             catch (Exception ex)
