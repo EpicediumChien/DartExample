@@ -712,7 +712,7 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        public static bool LoadFileToVerifyJson_2(string json_content, List<string> InfoPkey, out string strJson)
+        public static bool LoadFileToVerifyJson_2(ILog log, string json_content, List<string> InfoPkey, out string strJson)
         {
             //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
             //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
@@ -722,9 +722,7 @@ namespace DDPM.SA.Common.Settings
 
             if (InfoPkey.Count <= 0)
             {
-#if DEBUG
-                Console.WriteLine($"Please check if Info keys exists");
-#endif
+                WriteLog(log, $"Please check if Info keys exists", true);
                 return false;
             }
             //Read json content
@@ -732,7 +730,6 @@ namespace DDPM.SA.Common.Settings
 
             // Parse the JSON string into a JObject
             JObject jObject = JObject.Parse(json_content);
-            string modifiedJson;
             string signature;
             try
             {
@@ -740,45 +737,35 @@ namespace DDPM.SA.Common.Settings
                 // Remove the "age" property
                 jObject.Remove("Signature");
                 // Convert the modified JObject back to a JSON string
-                modifiedJson = jObject.ToString();
-                strJson = modifiedJson;
+                strJson = jObject.ToString();
             }
             catch (Exception ex)
             {
-#if DEBUG
-                Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
-#endif
+                WriteLog(log, "Try to get Signature from json fail.\nReason: " + ex.ToString(), true);
+                strJson = string.Empty;
                 return false;
             }
 
-            if (string.IsNullOrEmpty(signature ))
+            if (string.IsNullOrEmpty(signature))
             {
+                WriteLog(log, "Null signature in json content", true);
+                strJson = string.Empty;
                 return false;// No signature so fail
             }
 
-            for (int i = 0; i < InfoPkey.Count; i++)
+            foreach(string key in InfoPkey)
             {
                 //use signature to verify json
-                if (!DDPMFileSecurity.IsJsonContentValid_2(modifiedJson, signature, InfoPkey[i], HashAlgorithmName.SHA512, out info))
+                if (DDPMFileSecurity.IsJsonContentValid_2(strJson, signature, key, HashAlgorithmName.SHA512, out info))
                 {
-#if DEBUG
-                    Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
-#endif
-                    return false;
-                }
-                else
-                {
-                    i = InfoPkey.Count + 1;
-                    break;
+                    WriteLog(log, "operation complete");
+                    return true;
                 }
             }
-#if DEBUG
-            Console.WriteLine("Operation completed");
-#endif
-            return true;
-
+            WriteLog(log, "Json content got no info matched to signature", true);
+            strJson = string.Empty;
+            return false;
         }
-
 
         public static uint GetCheckSum(byte[] content, int count)
         {
@@ -2127,7 +2114,7 @@ namespace DDPM.SA.Common.Settings
             string strJson = string.Empty; 
             //Pass json metadata to security check and try to output serialized json string
             // the output json string will remove signature
-            ret = LoadFileToVerifyJson_2(fileContent, InfoPkey, out strJson);
+            ret = LoadFileToVerifyJson_2(log, fileContent, InfoPkey, out strJson);
 
             //
             //if the content has no info and signature, return data directly here
