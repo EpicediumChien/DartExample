@@ -412,6 +412,7 @@ namespace DDPM.SA.Common
     public class CLI_RESPONSE2
     {
         public string Index { get; set; }
+        public Guid ID { get; set; }
         public string FirmwareVersion { get; set; }
         public string Model { get; set; }
         public string Connectiontype { get; set; }

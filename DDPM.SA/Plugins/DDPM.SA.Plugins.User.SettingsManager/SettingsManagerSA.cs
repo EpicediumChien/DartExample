@@ -819,7 +819,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(true);*/
             bool result = WriteSettings_Common(powerNapSettings, "powernap");
 
-            return Task.FromResult(false);
+            return Task.FromResult(result);
         }
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
@@ -2424,7 +2424,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             FileInfo fileInfo = new FileInfo(filePath);
             string result = null;
             string info = string.Empty;
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 WriteLog($"[ReadSerializedContentFromFile][File.Exists] File:{fileInfo.Name}, failed with(file is not exist)");
                 return Task.FromResult(result);

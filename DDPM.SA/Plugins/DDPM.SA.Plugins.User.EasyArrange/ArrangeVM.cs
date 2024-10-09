@@ -1145,6 +1145,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return DeviceManager?.ReadEAMonitorSettings(mi).Result;
         }
 
+        public bool WriteEAMonitorSettings(MonitorInfo mi, EAMonitorSettings eaSettings)
+        {
+            if (_deviceManagerPlugin == null) return false;
+            return _deviceManagerPlugin.WriteEAMonitorSettings(mi, eaSettings).Result;
+        }
         public List<MonitorInfo>? GetMonitors()
         {
             if (_displayManagerPlugin == null)
@@ -1176,7 +1181,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion WorkWindow FadeOut
 
         #region AWS Window
-        private bool _isAwsEnabled = true;
+        //private bool _isAwsEnabled = EzSettings.IsAwsEnabled;
+
         //AWS Window width x height
         //public const double cxAws = 788.000;
         //public const double cyAws = 134.000;
@@ -1189,12 +1195,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public bool IsAwsEnabled
         {
-            get => _isAwsEnabled;
-            set
+            get
             {
-                SetProperty(ref _isAwsEnabled, value);
-                OnPropertyChanged("IsAwsWindowVisible");
+                if (EzSettings != null)
+                    return EzSettings.IsAwsEnabled;
+                return false;
             }
+            //set
+            //{
+            //    SetProperty(ref _isAwsEnabled, value);
+            //    OnPropertyChanged("IsAwsWindowVisible");
+            //}
         }
         public bool IsAwsWindowVisible
         {
@@ -1277,6 +1288,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => SetProperty(ref _awsIcon4, value);
         }
 
+        public void RefreshAwsWindowIcons()
+        {
+
+        }
         #endregion AWS Icons
 
         public void DetermineWorkWindowVisibility()
@@ -1291,7 +1306,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #region EzSettings
-        private EzSettings _ezSettings = new EzSettings() { IsOnlyAllowWhenShiftKeyPressed = true };
+        private EzSettings _ezSettings = new EzSettings() { /*IsOnlyAllowWhenShiftKeyPressed = false*/ };
         public EzSettings EzSettings 
         {
             get => _ezSettings;
@@ -1299,6 +1314,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 SetProperty(ref _ezSettings, value);
                 OnPropertyChanged("IsOnlyShift");
+                OnPropertyChanged("IsAwsEnabled");
+                OnPropertyChanged("IsAwsWindowVisible");
             }
         }
 

@@ -488,8 +488,8 @@ namespace DDPM.UI.Module.Color
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             Log?.Info("RunWorkerCompleted_RefreshData start...");
-            IsBusy = true;
             bw.RunWorkerAsync();
+            IsBusy = true;
         }
 
         public void Invoke_DownloadICCData()
@@ -643,10 +643,46 @@ namespace DDPM.UI.Module.Color
             }
         }
 
+        //If caller is not the same as UI main thread, please using Dispatcher to execute it
+        private void PerformLockUnlockUIAction(bool isColorLocked, bool isAutoBriTempLocked)
+        {
+            ALSConfig cfg = DdpmCommonHelper.DeviceManagerSA?.GetALSFeatureValue(
+                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                ALSFeatureQueryType.All, 0).Result;
+            //Lock functionality:
+            //Locking InAppAutoBriTemp' with "Auto Color Temperature" as "on" should lock 
+            // 1) "Auto Color Temperature", 
+            // 2) Manual color controls, Auto color controls, Color management found under the "Color" Tab,
+            // 3) the conditions listed in the first 3 bullet points
+            if (cfg != null && cfg.isAutoColorTemp && isAutoBriTempLocked)
+            {
+                isColorLocked = true;
+            }
+
+            ShowLockMask = isColorLocked;
+            isTabStoppable = !isColorLocked;
+
+            if (ShowLockMask)
+                TabNavigation = "None";
+            else
+                TabNavigation = "Cycle";
+
+            LockMaskVisible = isColorLocked ? Visibility.Visible : Visibility.Collapsed;
+
+        }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data == null)
+                    return;
+                if (data.LockSettings == null)
+                    return;
+
+                PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
+
                 UpdateHDRStatus();
 
                 if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
@@ -891,7 +927,7 @@ namespace DDPM.UI.Module.Color
                 */
                
                 //Lock/unlock mask and tabstop init here
-                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
+                //DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
                                                                         //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
 
                 LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
@@ -909,7 +945,7 @@ namespace DDPM.UI.Module.Color
         private void DoWork_DownloadICCData(object sender, DoWorkEventArgs e)
         {
             try
-            {
+            {  
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
 
                 _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
@@ -1007,7 +1043,7 @@ namespace DDPM.UI.Module.Color
 
                 RefreshUI();
             }));
-        }
+        }       
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1086,6 +1122,10 @@ namespace DDPM.UI.Module.Color
                     //Result is failed.
                 }
             }
+
+            WatchForProcessStart();
+            WatchForProcessEnd();
+
             //UpdateHDRStatus();
         }
 

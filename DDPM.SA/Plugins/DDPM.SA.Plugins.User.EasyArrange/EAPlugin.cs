@@ -1,9 +1,10 @@
-#define REMOVE_EA
+//#define REMOVE_EA
 //Define this flag will remove EA functions
 
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.Easy.Common;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
@@ -17,6 +18,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls.Ribbon;
+using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using VcpCore.Common;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -83,6 +86,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Constructor
 
+        private bool isDebug20241008()
+        {
+            string iniFile = @"C:\temp\DDPMDebug.txt";
+            if (System.IO.File.Exists(iniFile))
+            {
+                return (Win32Lib.Win32.IniReadInt("DDPMDebug", "DDPM.SA.EAPlugin.Debug.20241008", 0, iniFile) == 1);
+            }
+            return false;
+        }
+
         #region Log/Debug messages
 
         private void LogInfo(string msg)
@@ -141,8 +154,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Monitoring plugins state
             //2024-8-13 Robert_Lin, EAPlugin has fixed .NET 8 issues, so uncomment below statements.
             // 2024-08-06 Elie, Mask InitializeDeviceManagerPlugin() function to skip .NET 8 for more than two monitor cause exception issue. ==> System.IO.IOException: 'Cannot locate resource 'eaworkwindow.baml'.'
-            InitializeDeviceManagerPlugin();
-            InitializeDisplayManagerPlugin();
+            if (isDebug20241008()) 
+            {
+                InitializeDeviceManagerPlugin();
+                InitializeDisplayManagerPlugin();
+            }
 #endif
         }
 
@@ -345,6 +361,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => _vmArrange.IsFunctionEnabled = value;
         }
 
+        /// <summary>
+        /// Called from DDPM.UI, when user's selection changed.
+        /// Robert_Lin, 2024-10-6: This method may be deprecated after confirm that can be replaced with SetEASelectedLayout()
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="cellCount"></param>
+        /// <param name="splitKey"></param>
+        /// <param name="settings"></param>
+        /// <returns></returns>
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
         {
             EAWorkWindow? workWin = _vmArrange.FindWorkWindowByDisplayName2(monitorInfo.DisplayName);
@@ -723,6 +748,140 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Called from DDPM.SA DeviceManager, it may triggered by HotkeyManager or CLI.
+        /// EAPlugin will make the specified layout (spJson) as current selected Layout,
+        /// update to EAMonitorSettings (save to file), then update to EAPlugin.WorkWindows
+        /// and AwsWindow. Notify DDPM.UI to reaload settings is the responsiblity of caller
+        /// (DeviceManager or CLI)
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            //Validation
+            LogInfo($"@ SetEASelectedLayout(monitor:{monitorInfo.modelName}_{monitorInfo.edid.ServiceTag}, Split:{spJson.CellCount}{spJson.SplitKey}[{spJson.CustomName}]");
+            if (_deviceManagerPlugin == null)
+            {
+                LogInfo(" SetEASelectedLayout() return false: DeviceManager is null.");
+                return Task.FromResult(false);
+            }
+
+            //Launch the major function in UI Thread
+            Thread thread = new Thread(() =>
+            {
+                STA_SetEASelectedLayout(monitorInfo, spJson);
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            return Task.FromResult(true);
+        }
+
+        private bool STA_SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            //Step I. Check if spJson is an existing layout (either in CustomList or WinLists)
+            //
+            //Read EAMonitorSettings
+            EAMonitorSettings? eaSettings = _vmArrange.ReadEAMonitorSettings(monitorInfo);
+            if (eaSettings == null)
+            {
+                LogInfo(" SetEASelectedLayout() return false: ReadEAMonitorSettings return null.");
+                return false;
+            }
+            _dump_SplitJsonList(eaSettings.RecentList);
+            //If the spJson is a custom layout
+            if (spJson.CustomId != 0)
+            {
+                //Check if it's exist in CustomList
+                SplitJson? cusSplit = eaSettings.CustomList.Find(x => x.IsEquals(spJson));
+                if (cusSplit == null)
+                {
+                    LogInfo(" SetEASelectedLayout() return false: Specified layout is not found in custom list.");
+                    return false;
+                }
+            }
+            else
+            {
+                //Check if it's a valid WinList item
+                if (!ISplitCtrl.IsExisted(spJson.CellCount, spJson.SplitKey))
+                {
+                    LogInfo(" SetEASelectedLayout() return false: Specified layout is not a valid predefined layout.");
+                    return false;
+                }
+            }
+
+            //Step II. Find the index of spJson in RecentList
+            int idxRecent = eaSettings.RecentList.FindIndex(x => x.IsEquals(spJson));
+            //If found in RecentList
+            if (idxRecent >= 0)
+            {
+                //Step III. Move the recentSplit to RecentList[0]
+                //If it's not at [0]
+                if (idxRecent > 0)
+                {
+                    eaSettings.RecentList.RemoveAt(idxRecent);
+                    eaSettings.RecentList.Insert(0, spJson.Clone());
+                }
+            }
+            else //Not found in RecentList, need to clone then add into RecentList
+            {
+                //Step IV.
+                //If the RecentList.Count < 5-1, then Insert new (clone) item to RecentList[0]
+                if (eaSettings.RecentList.Count < EAEMConstants.MaxRecentItems - 1)
+                {
+                    //Insert to RecentList[0]
+                    eaSettings.RecentList.Insert(0, spJson.Clone());
+                }
+                else //RecentList.Count >= 5-1, need to remove the latest item, then insert new (clone) item to RecentList[0]
+                {
+                    eaSettings.RecentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
+                    eaSettings.RecentList.Insert(0, spJson.Clone());
+                }
+            }
+            //Step V. Save Settings
+            _dump_SplitJsonList(eaSettings.RecentList);
+            //Update the selected layout
+            eaSettings.SelectedSplit = spJson;
+            //Save the settings to MonitorSettings file
+            bool isOKSaveSettings = _vmArrange.WriteEAMonitorSettings(monitorInfo, eaSettings);
+            if (!isOKSaveSettings)
+            {
+                LogInfo(" SetEASelectedLayout() return false: Fail to write to MonitorSettings file.");
+                return false;
+            }
+
+            //Step VI. Notify to Windows in EAPlugin
+            //1 Notify WorkWins to refresh WorkSplit and show fadeout animation
+            //2 Notify AwsWindow to release RecentList from settings file
+
+            EAWorkWindow? workWin = _vmArrange.FindWorkWindowByDisplayName2(monitorInfo.DisplayName);
+            if (workWin != null)
+            {
+                bool isOKRefreshWorkWin = workWin.SetWorkingSplit(spJson.CellCount, spJson.SplitKey, spJson.Settings);
+                LogInfo(" SetEASelectedLayout() return true but it fails to refresh settings to WorkWindow.");
+            }
+            else
+            {
+                LogInfo(" SetEASelectedLayout() return true but it fails to get WorkWindow of curent Screen.");
+            }
+
+            _vmArrange.RefreshAwsWindowIcons();
+            return true;
+        }
+
+        private void _dump_SplitJsonList(List<SplitJson> splitJsonList)
+        {
+            int idx  = 0;
+            foreach (SplitJson splitJson in splitJsonList)
+            {
+                Trace.WriteLine($"[{idx}] {splitJson.ToString()}");
+                idx++;
+            }
+        }
         #endregion IEasyArrangeService Implementation
 
         #region EA Broker
@@ -781,9 +940,32 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _displayManagerPlugin.Displaychanged += _displayManagerPlugin_Displaychanged;
                    
                 }
-                
-                //Debug
-                _vmArrange.EzSettings.IsOnlyAllowWhenShiftKeyPressed = true;
+
+                //Robert_Lin: Debug - Need to remove in release build
+                if (isDebug20241008())
+                {
+                    _vmArrange.EzSettings = new EzSettings()
+                    {
+                        IsOnlyAllowWhenShiftKeyPressed = true,
+                        IsAwsEnabled = true
+                    };
+                }
+
+                //Robert's Debug, need to remove in release build
+                //List<MonitorInfo> monitors = _deviceManagerPlugin.GetMonitors().Result;
+                //foreach (MonitorInfo monitor in monitors)
+                //{
+                //    SplitJson spJson = new SplitJson()
+                //    {
+                //        CellCount = 4,
+                //        SplitKey = 'A',
+                //        CustomId = 0
+                //    };
+                //    SetEASelectedLayout(monitor, spJson);
+                //    break;
+                //}
+
+
 
                 //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
                 _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
@@ -1070,15 +1252,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             _log?.Info($"@ OnDisplaychanged");
 
-            //[Standalone Solution]
-            //InitWorkWindows();
-
-            //[InfoWin solution]
-            //if (_infoWindow != null)
-            //    _infoWindow.InitWorkWindows();
             if (_vmArrange != null)
             {
                 _vmArrange.RefreshWorkWindows2();
+
+
             }
         }
 

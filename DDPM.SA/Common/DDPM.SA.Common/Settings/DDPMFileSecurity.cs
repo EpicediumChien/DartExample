@@ -189,7 +189,15 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             //4. Write to target file
-            File.WriteAllText(target_file, write_string);
+            try
+            {
+                File.WriteAllText(target_file, write_string);
+            }
+            catch (Exception ex2)
+            {
+                info = $"Write serialized string to file failed. ({ex2.Message})";
+                return false;
+            }
             return true;
         }
 
@@ -735,16 +743,9 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
-            bool bRet = false;
-            if (signature == null)
+            if (string.IsNullOrEmpty(signature ))
             {
-                bRet = false;
-#if DEBUG
-                Console.WriteLine("No signature found. we should return fail here." + json_file);
-                bRet = true;    // (1/2) Temp for develop mode.  Currently NO json file with signature from server.
-#endif
-                if (bRet == false)
-                    return true;// (2/2) Temp for Normal Mode. Currently NO json file with signature from server.
+                return false;// No signature so fail
             }
 
             for (int i = 0; i < InfoPkey.Count; i++)

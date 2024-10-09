@@ -44,16 +44,16 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly SplitListView _splitListView;
+        private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
         {
-            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            _selecthomeDevice = _homeDeviceSelect;
             _log = vmDisplay.Console.CreateLog("EzMemoryFirst");
             _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
@@ -65,7 +65,7 @@ namespace DDPM.UI.Module.EzMemory
             _vm = _homeDevice.vmEzArrange;
             DataContext = _homeDevice.vmEzArrange;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
 
@@ -100,12 +100,15 @@ namespace DDPM.UI.Module.EzMemory
             //InitRecentListView();
             InitListViewItems();
 
-            customListTooltipText.Text = _vm.CustomListTooltipText;
+            customListTooltipText.Text = Strings.CustomListTooltipText;
 
             InitializePage();
             CheckInputText();
         }
 
+        /// <summary>
+        /// Initialize Page
+        /// </summary>
         public void InitializePage()
         {
             _vm._currentTotalPage = 0;
@@ -122,6 +125,9 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// Check Input Text, the default is set to "Profile", automatically numbered from 1 to 9, and cannot exceed 9 entries.
+        /// </summary>
         public void CheckInputText()
         {
             try
@@ -181,7 +187,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -196,6 +202,7 @@ namespace DDPM.UI.Module.EzMemory
                 UpdatePageContent();
             }
         }
+
         /// <summary>
         /// Update Page Content
         /// </summary>
@@ -210,6 +217,11 @@ namespace DDPM.UI.Module.EzMemory
             SubText.Text = pageData.SubText!;
         }
 
+        /// <summary>
+        /// Back
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             if (_vm._currentPageIndex == 0)
@@ -220,6 +232,12 @@ namespace DDPM.UI.Module.EzMemory
             PreviousPage();
             DoProgressAnimation(false);
         }
+
+        /// <summary>
+        /// Next
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             if (_vm.SelectedSplitItem.CellCount < 2)
@@ -234,7 +252,7 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     Thickness headMargin = new Thickness(24, 30, 45, 24);
                     Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
                     return;
                 }
             }
@@ -243,6 +261,11 @@ namespace DDPM.UI.Module.EzMemory
             DoProgressAnimation(true);
         }
 
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
@@ -250,7 +273,10 @@ namespace DDPM.UI.Module.EzMemory
             return;
         }
 
-
+        /// <summary>
+        /// Do Progressbar Animation
+        /// </summary>
+        /// <param name="isForward"></param>
         private void DoProgressAnimation(bool isForward)
         {
             double newProgressValue;
@@ -279,6 +305,7 @@ namespace DDPM.UI.Module.EzMemory
             _vm.ProgressValue = newProgressValue;
         }
 
+
         #region Init SplitListView and SplitItems
         private void InitListViewItems()
         {
@@ -286,12 +313,12 @@ namespace DDPM.UI.Module.EzMemory
             //
             if (_deviceManagerSA == null) return;
 
-            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_selecthomeDevice.MonitorInfo).Result;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
+            DisplayOrientation orient = GetDisplayOrientation(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
 
             //Update IsVertical to listViews
@@ -797,6 +824,7 @@ namespace DDPM.UI.Module.EzMemory
         }
         #endregion
 
+        #region For security
         private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
@@ -827,5 +855,6 @@ namespace DDPM.UI.Module.EzMemory
                 e.Handled = true;
             }
         }
+        #endregion
     }
 }

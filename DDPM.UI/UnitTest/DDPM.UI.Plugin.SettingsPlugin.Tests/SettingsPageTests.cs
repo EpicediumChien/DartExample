@@ -21,7 +21,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
-            //deviceManagerMock.Setup(x => x.GetFWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<List<DeviceType>>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUpdateInfoPackage()));
+            deviceManagerMock.Setup(x => x.GetFWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<List<DeviceType>>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUpdateInfoPackage()));
             deviceManagerMock.Setup(x => x.SW_GetSWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(new SWUpdateInfoPackage()));
             deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(appSettings, userSettings, lockSettings)));
             settingsPage = new SettingsPage();

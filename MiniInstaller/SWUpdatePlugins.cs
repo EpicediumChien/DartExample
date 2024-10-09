@@ -314,7 +314,7 @@ namespace MiniInstaller
         private bool GetCheckCAStatus()
         {
             bool isSkipCA = false;
-            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell Display and Peripheral Manager", "SkipCA");
+            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipCA");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
                 isSkipCA = o.ToString().Equals("1") ? true : false;
