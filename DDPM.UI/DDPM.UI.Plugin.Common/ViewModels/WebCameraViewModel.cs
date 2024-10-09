@@ -109,45 +109,6 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _isChecked_ProximitySensor = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);               
-                OnPropertyChanged("IsChecked_ProximitySensor");            
-            }
-        }
-
-        private bool _isChecked_WakeOnApproach = false;
-        public bool IsChecked_WakeOnApproach
-        {
-            get { return _isChecked_WakeOnApproach; }
-            set
-            {
-                _isChecked_WakeOnApproach = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
-                OnPropertyChanged("IsChecked_WakeOnApproach");
-            }
-        }
-
-        private bool _isChecked_WalkAwayLock = false;
-        public bool IsChecked_WalkAwayLock
-        {
-            get { return _isChecked_WalkAwayLock; }
-            set
-            {
-                _isChecked_WalkAwayLock = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
-                //DdpmCommonHelper.DeviceManagerSA!.SetWALTime(CurrentDeviceInfo!.ID.ToString(), 30);
-                OnPropertyChanged("IsChecked_WalkAwayLock");
-            }
-        }
-
-
-
-        private bool _isChecked_ProximitySensor = false;
-        public bool IsChecked_ProximitySensor
-        {
-            get { return _isChecked_ProximitySensor; }
-            set
-            {
-                _isChecked_ProximitySensor = value;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                 OnPropertyChanged("IsChecked_ProximitySensor");
             }
@@ -177,7 +138,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged("IsChecked_WalkAwayLock");
             }
         }
-
 
 
         public event EventHandler<EventArgs> WebcamSettingChanged;
@@ -1381,7 +1341,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             return string.Empty;
         }
-    }  
+    }
 
     public class ProfileItem
     {
