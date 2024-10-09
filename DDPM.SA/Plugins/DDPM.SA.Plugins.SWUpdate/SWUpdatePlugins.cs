@@ -340,7 +340,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
                 string saveFolderName = Guid.NewGuid().ToString();
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck();
+                CertificateCheck caCheck = new CertificateCheck(_logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 if (string.IsNullOrEmpty(installPath))
                 {
@@ -696,7 +696,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         }
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
@@ -729,9 +729,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                         if (!string.IsNullOrEmpty(exeFilePath))
                         {
                             _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck();
+                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
                             if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                             {
+                                ret = true;
                                 _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check done.");
                             }
                             else
@@ -759,7 +760,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 if (CheckSHA(filePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                    CertificateCheck certificateCheck = new CertificateCheck();
+                    CertificateCheck certificateCheck = new CertificateCheck(_logs);
                     if (certificateCheck.CheckFile_Thumbprint(filePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                     {
                         ret = true;

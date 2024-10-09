@@ -3362,7 +3362,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private DisplayUpdateHelper GetDisplayFWMetadata()
         {
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(_logs);
             if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
             {
                 return ret;
