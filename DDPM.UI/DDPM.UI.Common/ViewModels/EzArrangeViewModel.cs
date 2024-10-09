@@ -30,7 +30,8 @@ namespace DDPM.UI.Common.ViewModels
         public string _currentDeviceModel = "EzMemory";
         public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
-        public SplitItem currenySelectspItem;
+        public EAProfileDDPM currentEditprofile;
+        public EzProfileSettingDDPM currentEditprofileSetting;
 
         #endregion
 
@@ -378,9 +379,9 @@ namespace DDPM.UI.Common.ViewModels
             {
                 { "EzMemory", new List<EzMemoryPageData>
                     {
-                        new EzMemoryPageData { MainText = "Easy Memory", SubText = "Save different profiles and restore them manually, by scheduled time or at system start-up.\r\n\r\nBegin by assigning a name to your Easy Memory Profile and selecting a layout."},
-                        new EzMemoryPageData { MainText = "Assign programs", SubText = "Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior."},
-                        new EzMemoryPageData { MainText = "Launch options", SubText = "Select a launch type"}
+                        new EzMemoryPageData { MainText = Strings.FirstPageMainText, SubText = Strings.FirstPageSubText},
+                        new EzMemoryPageData { MainText = Strings.AssignPageMainText, SubText = Strings.AssignPageSubText},
+                        new EzMemoryPageData { MainText = Strings.LaunchOptionPageMainText, SubText = Strings.LaunchOptionPageSubText}
                     }
                 },
 
@@ -390,6 +391,20 @@ namespace DDPM.UI.Common.ViewModels
         #endregion
 
         #region First page
+
+        private SplitItem _currenySelectspItem;
+        public SplitItem CurrenySelectspItem
+        {
+            get => _currenySelectspItem;
+            set => SetProperty(ref _currenySelectspItem, value);
+        }
+
+        private bool _iseditProfile = false;
+        public bool IsEditProfile
+        {
+            get => _iseditProfile;
+            set => SetProperty(ref _iseditProfile, value);
+        }
 
         private string _inputText = "Profile 1";
         public string InputText

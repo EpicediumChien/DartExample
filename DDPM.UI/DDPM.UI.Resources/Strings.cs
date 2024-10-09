@@ -443,6 +443,12 @@ namespace DDPM.UI.Common
         public static readonly string StartupCBContentForLaunchOptionPage = GetString("EazyMemory.13");
         public static readonly string ManulRBContentForLaunchOptionPage = GetString("EazyMemory.14");
         public static readonly string AutoRBContentForLaunchOptionPage = GetString("EazyMemory.15");
+        public static readonly string FirstPageMainText = GetString("EasyMemory");
+        public static readonly string FirstPageSubText = GetString("EazyMemory.36");
+        public static readonly string AssignPageMainText = GetString("EazyMemory.34");
+        public static readonly string AssignPageSubText = GetString("EazyMemory.37");
+        public static readonly string LaunchOptionPageMainText = GetString("EazyMemory.35");
+        public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
 
         //WalkThrough
         public static readonly string WalkThroughDDPM_Main0 = GetString("WalkThroughDDPM_Main.0");

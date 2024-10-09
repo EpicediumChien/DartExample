@@ -65,8 +65,14 @@ namespace DDPM.UI.Module.EzMemory
             //Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             //_vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            InitializePage();
-
+            if(!_vm.IsEditProfile)
+            {
+                InitializePage();
+            }
+            else
+            {
+                SyncEditStatusForAssignPage();
+            }
         }
 
         /// <summary>
@@ -94,6 +100,15 @@ namespace DDPM.UI.Module.EzMemory
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
             }
+        }
+
+        /// <summary>
+        /// Sync Edit Status
+        /// </summary>
+        public void SyncEditStatusForAssignPage()
+        {
+            _vm.InputText = _vm.currentEditprofile.Name;
+            //Need to auto select
         }
 
         /// <summary>

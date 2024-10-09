@@ -103,7 +103,16 @@ namespace DDPM.UI.Module.EzMemory
             customListTooltipText.Text = Strings.CustomListTooltipText;
 
             InitializePage();
-            CheckInputText();
+
+            if(!_vm.IsEditProfile)
+            {
+                CheckInputText();
+            }
+            else
+            {
+                SyncEditStatusForFirstPage();
+            }
+            
         }
 
         /// <summary>
@@ -123,6 +132,15 @@ namespace DDPM.UI.Module.EzMemory
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
             }
+        }
+
+        /// <summary>
+        /// Sync Edit Status
+        /// </summary>
+        public void SyncEditStatusForFirstPage()
+        {
+            _vm.InputText = _vm.currentEditprofile.Name;
+            //Need to auto select
         }
 
         /// <summary>
@@ -224,6 +242,8 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
+            // Need to Re-set Edit Profile status
+            _vm.IsEditProfile = false;
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -244,16 +264,20 @@ namespace DDPM.UI.Module.EzMemory
             {
                 return;
             }
-            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
-            if (checkEAProfileDDPM != null)
+            if (!_vm.IsEditProfile)
             {
-                if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (checkEAProfileDDPM != null)
                 {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    return;
+                    if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Thickness headMargin = new Thickness(24, 30, 45, 24);
+                        Thickness subMargin = new Thickness(24, -16, 24, 8);
+                        DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                        return;
+                    }
                 }
             }
 
