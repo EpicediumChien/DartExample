@@ -362,7 +362,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "AUTOBRIGHTNESS":
                 case "AUTOBRIGHTNESSRANGELEVEL"://Mark 0723
-                case "AUTOTEMP":
+                case "AUTOCOLORTEMP":
                 case "PRIMARYMONITORSYNC":
                 case "MULTIMONITORSYNC":
                     var tmp = ProcessAlsFunction(devMgr, commandLineInput);
@@ -672,7 +672,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
-                case "DIAGNOSTICREPORT":
+                case "DIAGNOSTICSREPORT":
                     {
                         var ret = GetDiagnosticReport(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
@@ -6406,7 +6406,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOTEMP":
+                case "AUTOCOLORTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6455,7 +6455,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOTEMP":
+                case "AUTOCOLORTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6618,7 +6618,7 @@ namespace DDPM.CLI.Plugins.Display
                             ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel[0].level_name.ToUpper();
                             break;
 
-                        case "AUTOTEMP":
+                        case "AUTOCOLORTEMP":
                             ALS_RESPONSE.Value = param.isAutoColorTemp ? "ON" : "OFF";
                             break;
 
@@ -7690,6 +7690,7 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
             string output = string.Empty;
+            string output_2 = string.Empty;
             bool recode_dis = false;
             bool recode_per = false;
 
@@ -7961,8 +7962,9 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Invalid command line syntax.";
             }
-            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            return ((int)CLI_ExitCode.success, output);
+            output_2 += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            output_2 += output;
+            return ((int)CLI_ExitCode.success, output_2);
         }
 
         private static string get_headsetconnection_type(HeadsetConnectionType ConnectionType)
@@ -9252,7 +9254,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
                                 jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}\r\n", "");
+                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
                             }
                             break;
                         }
@@ -9272,7 +9274,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
                                 jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}\r\n", "");
+                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
                             }
                             break;
                         }
@@ -9291,7 +9293,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
                                 jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}\r\n", "");
+                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
                             }
                             break;
                         }
