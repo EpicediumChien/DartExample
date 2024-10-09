@@ -3425,6 +3425,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     Debug.WriteLine(currentPlatform);
                                     if (!supportedPlatform.ToList().Contains(currentPlatform))
                                     {
+                                        _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
                                         continue;
                                     }
                                 }
@@ -3458,7 +3459,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} error {ex.Message}");
                 }
             }
             return ret;
