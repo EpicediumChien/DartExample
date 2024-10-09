@@ -3689,7 +3689,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeleteMiniInstallerFolder], o_String={o.ToString()}.");
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 string path = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                if (Directory.Exists(path))
+                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                 {
                     writelog($"[DeleteMiniInstallerFolder], Exists.");
                     Directory.Delete(path, true);
@@ -3789,7 +3789,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     vcps = ImpExpSettings.MonitorSettings.VCPs;
                     if (_ColorPresetPlugin != null)
                     {
-                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset , _SettingsPlugin).Result;
+                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                     }
                     if (vcps != null)
                     {
@@ -6993,7 +6993,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if ( eaSettings.RecentList == null)
+            if (eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
@@ -8641,7 +8641,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ;
             }
@@ -8709,7 +8709,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                
+
                 if (DirectoryContainsFiles(copyPath))
                 {
                     // 取得資料夾名稱
@@ -8719,7 +8719,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
-                
+
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
@@ -9483,7 +9483,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> ReadSerializedContentFromFile(string filePath)
         {
             string result = null;
-            if(_SettingsPlugin != null)
+            if (_SettingsPlugin != null)
             {
                 return Task.FromResult(_SettingsPlugin.ReadSerializedContentFromFile(filePath).Result);
             }
