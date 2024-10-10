@@ -65,14 +65,7 @@ namespace DDPM.UI.Module.EzMemory
             //Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             //_vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            if(!_vm.IsEditProfile)
-            {
-                InitializePage();
-            }
-            else
-            {
-                SyncEditStatusForAssignPage();
-            }
+            InitializePage();
         }
 
         /// <summary>
@@ -84,7 +77,7 @@ namespace DDPM.UI.Module.EzMemory
             if (_vm.SelectedSplitItem.CellCount == 2)
             {
                 _vm.IsRightGridPage2Visible = true;
-                _vm.SelectedValue = 3;
+                _vm.SelectedValue = 2;
             }
             else
             {
@@ -100,15 +93,47 @@ namespace DDPM.UI.Module.EzMemory
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
             }
+
+            //編輯模式但不是由AddPage返回才執行
+            if (_vm.IsEditProfile && !_vm.IsAddPageBack)
+            {
+                SyncEditStatusForAssignPage();
+            }
         }
 
         /// <summary>
-        /// Sync Edit Status
+        /// Sync Edit Status 回填App Name
         /// </summary>
         public void SyncEditStatusForAssignPage()
         {
-            _vm.InputText = _vm.currentEditprofile.Name;
-            //Need to auto select
+            _vm._sortApps.Clear();
+
+            int loopCount = Math.Min(_vm.SelectedValue, _vm.currentEditprofile.AppInfos.Count);
+
+            for (int i = 0; i < loopCount; i++)
+            {
+                var appInfo = _vm.currentEditprofile.AppInfos[i];
+
+                Bind_AddFullPage_AppCollectionData newApp = new Bind_AddFullPage_AppCollectionData
+                {
+                    AppName = appInfo.Name,
+                    AppPath = appInfo.Path,
+                    AppUserModelID = appInfo.AppUserModelID,
+                    AppType = appInfo.IsUWP ? "True" : "False",
+                    InstalledDate = DateTime.Now,
+                    AppIcon = "Assets/palette.png"
+                };
+
+                string buttonName = "AddButton" + (i + 1).ToString();
+
+                if (_vm.SelectedValue <= 2)
+                {
+                    buttonName = "AddButton2_" + (i + 1).ToString();
+                }
+
+                _vm.UpdateTextBlockAppName(buttonName, appInfo.Name);
+                _vm._sortApps.Add(buttonName, newApp);
+            }
         }
 
         /// <summary>
@@ -116,6 +141,8 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         public void NextPage()
         {
+            //前進 AddPage 前設False
+            _vm.IsAddPageBack = false;
             _vm._currentPageIndex++;
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);

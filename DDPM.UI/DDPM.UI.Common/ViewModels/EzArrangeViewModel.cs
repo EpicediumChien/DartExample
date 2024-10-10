@@ -257,7 +257,7 @@ namespace DDPM.UI.Common.ViewModels
 
         #region EzMemoryViewModel
 
-
+        //存取 RightView 的 SplitListView
         public SplitListView _splitListRightView;
         public SplitListView splitListRightView
         {
@@ -391,19 +391,35 @@ namespace DDPM.UI.Common.ViewModels
         #endregion
 
         #region First page
-
-        private SplitItem _currenySelectspItem;
-        public SplitItem CurrenySelectspItem
+       
+        private SplitItem _currentSelectspItem;
+        public SplitItem CurrentSelectspItem
         {
-            get => _currenySelectspItem;
-            set => SetProperty(ref _currenySelectspItem, value);
+            get => _currentSelectspItem;
+            set => SetProperty(ref _currentSelectspItem, value);
         }
 
+        private SplitItem _currentEditSelectspItem;
+        public SplitItem CurrentEditSelectspItem
+        {
+            get => _currentEditSelectspItem;
+            set => SetProperty(ref _currentEditSelectspItem, value);
+        }
+
+        //記錄進入 Edit status
         private bool _iseditProfile = false;
         public bool IsEditProfile
         {
             get => _iseditProfile;
             set => SetProperty(ref _iseditProfile, value);
+        }
+
+        //記錄 Edit status 由 AddPage 返回
+        private bool _isAddPageBack = false;
+        public bool IsAddPageBack
+        {
+            get => _isAddPageBack;
+            set => SetProperty(ref _isAddPageBack, value);
         }
 
         private string _inputText = "Profile 1";
@@ -705,6 +721,9 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool IsRightGridPageTotalVisible => !IsRightGridPage2Visible;
 
+        /// <summary>
+        /// Control Window 1 ~ 12 
+        /// </summary>
         private int _selectedValue;
 
         public int SelectedValue
@@ -717,6 +736,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
+        //AssignPage trigger 的 buttonName
         private string _buttonName;
         public string ButtonName
         {

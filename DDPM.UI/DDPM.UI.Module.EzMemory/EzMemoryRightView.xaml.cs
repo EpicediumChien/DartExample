@@ -33,7 +33,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private HomeDevice _homeDeviceSelect;
+        private HomeDevice _homeDeviceSelect;//紀錄RightView切換CB的螢幕
         #endregion Private Members
 
         public EzMemoryRightView(DisplayViewModel vmDisplay)
@@ -75,7 +75,7 @@ namespace DDPM.UI.Module.EzMemory
             if (startEAProfileDDPM != null)
             {
                 // 找相同 ID 的 Profile ID
-                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrenySelectspItem.LayoutID);
+                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrentSelectspItem.LayoutID);
 
                 if (profileTostart != null)
                 {
@@ -91,11 +91,11 @@ namespace DDPM.UI.Module.EzMemory
                     }
 
                     _deviceManagerSA.LaunchAndArrangeApps(launchApp);
-                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrenySelectspItem.LayoutID} removed from UserSettings.");
+                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} removed from UserSettings.");
                 }
                 else
                 {
-                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrenySelectspItem.LayoutID} not found in UserSettings.");
+                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} not found in UserSettings.");
                 }
             }          
         }
@@ -220,7 +220,7 @@ namespace DDPM.UI.Module.EzMemory
 
             try
             {
-                // Monitor Setting Delete
+                // Monitor Setting Edit keep data
                 EasyArrangementDDPM _easyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
 
                 if (_easyArrangementDDPM != null && _easyArrangementDDPM.Desktops.Count > 0)
@@ -249,7 +249,7 @@ namespace DDPM.UI.Module.EzMemory
             }
 
             _vm.IsEditProfile = true;
-            _vm.CurrenySelectspItem = spItem;
+            _vm.CurrentEditSelectspItem = spItem;
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
@@ -266,7 +266,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
-                _vm.CurrenySelectspItem = spItem;
+                _vm.CurrentSelectspItem = spItem;
 
                 // User Setting
                 List<EAProfileDDPM> clickedEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
@@ -349,7 +349,7 @@ namespace DDPM.UI.Module.EzMemory
             ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
 
             //Set as current Selected item
-            _vm.SelectedSplitItem = spItem;
+            _vm.CurrentSelectspItem = spItem;
             _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
 
             //Need to set it's buddy as IsSelected

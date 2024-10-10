@@ -226,7 +226,7 @@ namespace VcpCore.Plugins
                     if (!_Isinitializing) break;
                     SpinWait.SpinUntil(() => false, 250);
                     count++;
-                } while ((_Isinitializing) || (count < 40));
+                } while ((_Isinitializing) && (count < 40));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
                 if (_AllInfoMonitors_Mix.Count > 0)

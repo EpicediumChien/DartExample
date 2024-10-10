@@ -139,8 +139,11 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         public void SyncEditStatusForFirstPage()
         {
-            _vm.InputText = _vm.currentEditprofile.Name;
             //Need to auto select
+            _vm.InputText = _vm.currentEditprofile.Name;
+            SplitItem profilwSplitItem = splitListView_Recent.FindSplitItem(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+            profilwSplitItem.IsSelected = true;
+            OnListViewItemClicked(profilwSplitItem);
         }
 
         /// <summary>
@@ -244,6 +247,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             // Need to Re-set Edit Profile status
             _vm.IsEditProfile = false;
+            _vm.ClearTextBlockAppName();
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -715,6 +719,9 @@ namespace DDPM.UI.Module.EzMemory
                 //SaveEaSettings();
                 //_deviceManagerSA.WriteEasyArrangeSettings()
             }
+
+            //If Edit，need to recoerd
+            _vm.CurrentSelectspItem = spItem;
         }
         #endregion SplitItem Selection
         #region Edit Layout
