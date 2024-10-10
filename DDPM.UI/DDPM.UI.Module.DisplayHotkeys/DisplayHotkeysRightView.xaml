@@ -51,7 +51,9 @@
                                                       GotFocus="tbToggleInputSource_GotFocus"
                                                       LostFocus="tbToggleInputSource_LostFocus"
                                                       ContextMenuOpening="tbToggleInputSource_ContextMenuOpening"
-                                                      ContextMenu="{x:Null}" />
+                                                      ContextMenu="{x:Null}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -94,7 +96,9 @@
                                                           GotFocus="tbFavoriteInputSource_GotFocus"
                                                           LostFocus="tbFavoriteInputSource_LostFocus"
                                                           ContextMenuOpening="tbFavoriteInputSource_ContextMenuOpening"
-                                                          ContextMenu="{x:Null}" />
+                                                          ContextMenu="{x:Null}" 
+                                                          InputLanguageManager.InputLanguage="en-US"
+                                                          InputLanguageManager.RestoreInputLanguage="True"/>
                                     <ComboBox Grid.Row="1" HorizontalAlignment="Right" Style="{StaticResource DdpmComboBoxStyle}"
                                               Width="140" Margin="0,8,8,8" DisplayMemberPath="inputDisplayText"
                                               ItemsSource="{Binding InputsList}"                                                                         
@@ -113,7 +117,9 @@
                                                           GotFocus="tbSwitchInputSource_GotFocus"
                                                           LostFocus="tbSwitchInputSource_LostFocus"
                                                           ContextMenuOpening="tbSwitchInputSource_ContextMenuOpening"
-                                                          ContextMenu="{x:Null}" />
+                                                          ContextMenu="{x:Null}" 
+                                                          InputLanguageManager.InputLanguage="en-US"
+                                                          InputLanguageManager.RestoreInputLanguage="True"/>
                                     <ComboBox Grid.Row="3" HorizontalAlignment="Right" Style="{StaticResource DdpmComboBoxStyle}"
                                               Width="140" Margin="0,8,5,8" DisplayMemberPath="inputDisplayText"
                                               ItemsSource="{Binding InputsList}"
@@ -166,7 +172,9 @@
                                                       GotFocus="tbSwapPIPPBPInputSource_GotFocus"
                                                       LostFocus="tbSwapPIPPBPInputSource_LostFocus"
                                                       ContextMenuOpening="tbSwapPIPPBPInputSource_ContextMenuOpening"
-                                                      ContextMenu="{x:Null}" />
+                                                      ContextMenu="{x:Null}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="1" />
                                 <UXControls:UXTextBox Grid.Column="2" Grid.Row="1" Margin="2" Height="20"
                                                       Text="{Binding ChangePIPPositionKey,Mode=TwoWay}"
@@ -180,7 +188,9 @@
                                                       GotFocus="tbChangePIPPosition_GotFocus"
                                                       LostFocus="tbChangePIPPosition_LostFocus"
                                                       ContextMenuOpening="tbChangePIPPosition_ContextMenuOpening"
-                                                      ContextMenu="{x:Null}" />
+                                                      ContextMenu="{x:Null}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                             <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
                         </StackPanel>

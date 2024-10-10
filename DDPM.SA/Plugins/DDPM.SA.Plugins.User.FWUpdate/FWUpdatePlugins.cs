@@ -393,6 +393,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     if (deviceTypeList == null)
                     {
+                        string thumbprint = "";
+                        if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
+                        {
+                            foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
+                            {
+                                if (s.Length >= 10)
+                                {
+                                    thumbprint = s;
+                                    break;
+                                }
+                            }
+                        }
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
                             TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
@@ -407,7 +419,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceId = updateHelper.UpdateItems[i].DeviceId,
                             DevicePath = updateHelper.UpdateItems[i].DevicePath,
                             SHA512 = updateHelper.UpdateItems[i].SHA512,
-                            Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
+                            Thumbprint = thumbprint,
                             IsUOD = (isUODMode &&
                             (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                             updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
@@ -417,8 +429,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     else if (deviceTypeList != null && !isOnlyDisplay)
                     {
-                        if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)))
+                        if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
                         {
+                            string thumbprint = "";
+                            if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint))
+                            {
+                                foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
+                                {
+                                    if (s.Length >= 10)
+                                    {
+                                        thumbprint = s;
+                                        break;
+                                    }
+                                }
+                            }
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                             {
                                 TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
@@ -433,7 +457,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
                                 SHA512 = updateHelper.UpdateItems[i].SHA512,
-                                Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
+                                Thumbprint = thumbprint,
                                 IsUOD = (isUODMode &&
                                 (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                 updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
@@ -1032,7 +1056,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}  {nameof(Install)}  start");
-                CertificateCheck certificateCheck = new CertificateCheck();
+                CertificateCheck certificateCheck = new CertificateCheck(_logs);
                 if (!fwUpdateInfo.IsDisplay)
                 {
                     string FileCAInfo = string.Empty;
@@ -1603,7 +1627,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_fWUpdateInfo.SHA512))
@@ -1618,7 +1642,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
         private bool CheckThumbprint(string filePath, out string fileThumbprintInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool ishumbprint = false;
             fileThumbprintInfo = "Error";
             if (!certificateCheck.CheckFile_Thumbprint(filePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
@@ -1640,7 +1664,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                if (CheckSHA(filePath, out FileCAInfo))
+                //if (CheckSHA(filePath, out FileCAInfo)) Wait IL R14
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
@@ -1648,9 +1672,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (!string.IsNullOrEmpty(exeFilePath))
                         {
                             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck();
+                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
                             if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
                             {
+                                ret = true;
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
                             }
                             else
@@ -1665,12 +1690,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
                     }
                 }
-                else
+                /*else Wait IL R14
                 {
                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
-                }
-
+                }*/
             }
             else
             {
@@ -1680,7 +1704,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (CheckSHA(exeFilePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
-                    CertificateCheck certificateCheck = new CertificateCheck();
+                    CertificateCheck certificateCheck = new CertificateCheck(_logs);
                     if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
                     {
                         ret = true;

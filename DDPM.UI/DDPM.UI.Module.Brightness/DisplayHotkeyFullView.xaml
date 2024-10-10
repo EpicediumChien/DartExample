@@ -97,7 +97,9 @@
                         GotFocus="tbBrightnessMins_GotFocus"
                         LostFocus="tbBrightnessMins_LostFocus"
                         ContextMenuOpening="tbBrightnessMins_ContextMenuOpening"
-                        ContextMenu="{x:Null}" />
+                        ContextMenu="{x:Null}" 
+                        InputLanguageManager.InputLanguage="en-US"
+                        InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
@@ -115,7 +117,9 @@
                         GotFocus="tbBrightnessAdd_GotFocus"
                         LostFocus="tbBrightnessAdd_LostFocus"
                         ContextMenuOpening="tbBrightnessAdd_ContextMenuOpening"
-                        ContextMenu="{x:Null}" />
+                        ContextMenu="{x:Null}" 
+                        InputLanguageManager.InputLanguage="en-US"
+                        InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
@@ -133,7 +137,9 @@
                         GotFocus="tbContrastMins_GotFocus"
                         LostFocus="tbContrastMins_LostFocus"
                         ContextMenuOpening="tbContrastMins_ContextMenuOpening"
-                        ContextMenu="{x:Null}" />
+                        ContextMenu="{x:Null}" 
+                        InputLanguageManager.InputLanguage="en-US"
+                        InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
@@ -151,7 +157,9 @@
                         GotFocus="tbContrastAdd_GotFocus"
                         LostFocus="tbContrastAdd_LostFocus"
                         ContextMenuOpening="tbContrastAdd_ContextMenuOpening"
-                        ContextMenu="{x:Null}" />
+                        ContextMenu="{x:Null}" 
+                        InputLanguageManager.InputLanguage="en-US"
+                        InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
@@ -169,7 +177,9 @@
                         GotFocus="tbLuminanceMins_GotFocus"
                         LostFocus="tbLuminanceMins_LostFocus"
                         ContextMenuOpening="tbLuminanceMins_ContextMenuOpening"
-                        ContextMenu="{x:Null}" />
+                        ContextMenu="{x:Null}" 
+                        InputLanguageManager.InputLanguage="en-US"
+                        InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
@@ -187,7 +197,9 @@
                         GotFocus="tbLuminanceAdd_GotFocus"
                         LostFocus="tbLuminanceAdd_LostFocus"
                         ContextMenuOpening="tbLuminanceAdd_ContextMenuOpening"
-                        ContextMenu="{x:Null}" />
+                        ContextMenu="{x:Null}" 
+                        InputLanguageManager.InputLanguage="en-US"
+                        InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="954" Margin="0,30,0,0">

@@ -16,14 +16,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         public void Setup()
         {
             var appSettings = new DDPMAppSettings();
-            var userSettings=new DDPMUserSettings();
+            var userSettings = new DDPMUserSettings();
             var lockSettings = new DDPMITConfig();
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             deviceManagerMock.Setup(x => x.GetFWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<List<DeviceType>>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUpdateInfoPackage()));
             deviceManagerMock.Setup(x => x.SW_GetSWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(new SWUpdateInfoPackage()));
-            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings( appSettings, userSettings, lockSettings)));
+            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(appSettings, userSettings, lockSettings)));
             settingsPage = new SettingsPage();
         }
 

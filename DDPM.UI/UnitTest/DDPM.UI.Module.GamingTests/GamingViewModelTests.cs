@@ -26,12 +26,16 @@ namespace DDPM.UI.Module.Gaming.Tests
         public void Setup()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
+            moduleOwnerMock.Setup(m => m.SelectedHomeDevice).Returns(new HomeDevice() { MonitorInfo=new MonitorInfo()});
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
 
+
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
+            deviceManagerMock.Setup(x => x.GetGamingProperties_SupportedList(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new GamingDisplayPropertiesInfo()));
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+
             myModule = new GamingModule();
             selectedHomeDevice = new HomeDevice();
             gamingViewModel = new GamingViewModel();

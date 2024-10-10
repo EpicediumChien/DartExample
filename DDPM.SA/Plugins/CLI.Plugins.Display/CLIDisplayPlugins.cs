@@ -7948,7 +7948,7 @@ namespace DDPM.CLI.Plugins.Display
                 output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
             }
             CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3();
-            if (recode_per && recode_dis)
+            if (recode_per || recode_dis)
             {
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;

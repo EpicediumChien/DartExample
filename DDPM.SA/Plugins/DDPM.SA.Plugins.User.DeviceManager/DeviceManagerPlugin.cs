@@ -7431,7 +7431,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     allInputs.Add(new InputSourceObj(input.Value.InputName));
                 }
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
+                //debug
+                foreach (var s in subInputs)
+                {
+                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                }
+                foreach (var s in allInputs)
+                {
+                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                }
+                //debug end
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;
