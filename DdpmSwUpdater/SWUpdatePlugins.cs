@@ -31,7 +31,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using RegistryHive = DDPM.SA.Common.Settings.RegistryHive;
 using Timer = System.Timers.Timer;
 
-namespace MiniInstaller
+namespace DdpmSwUpdater
 {
     public class SWUpdatePlugins
     {
