@@ -2436,9 +2436,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null && _FWUpdatePlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (config != null)
+                if (config != null && config.UserSettings != null)
                 {
                     _FWUpdatePlugin.SetDelayFWUpdateInfoPackage(config.UserSettings.DelayFWUpdateInfoPackage);
+                }
+                else
+                {
+                    writelog("[SetDelayFWUpdateInfoPackage], ReloadAppConfigData is null.");
                 }
             }
         }
@@ -3713,7 +3717,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
 
-                if (config != null) // 2024-08-16 Elie, check if null before using.
+                if (config != null && config.UserSettings != null) // 2024-08-16 Elie, check if null before using.
                     _SWUpdatePlugin.SetDelaySWUpdateInfoPackage(config.UserSettings.DelaySWUpdateInfoPackage);
                 else
                 {
