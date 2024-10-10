@@ -31,7 +31,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using RegistryHive = DDPM.SA.Common.Settings.RegistryHive;
 using Timer = System.Timers.Timer;
 
-namespace MiniInstaller
+namespace DdpmSwUpdater
 {
     public class SWUpdatePlugins
     {
@@ -111,6 +111,15 @@ namespace MiniInstaller
                     };
                     swUpdateInfos.Add(SWUpdateInfo);
                 }
+            }
+            else
+            {
+                swUpdateInfos.Add(new SWUpdateInfo()
+                {
+                    SoftwareName = "DDPM",
+                    SWUErrorCode = SWUErrorCode.FileCheckFail
+                });
+                return Task.FromResult(swUpdateInfos);
             }
             LogManage.LogMessage($"swUpdateInfos ok");
             try

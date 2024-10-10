@@ -27,6 +27,8 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var inputSourceList = new InputSourceList();
             var displayHotkeysModule = new DisplayHotkeysModule();
             inputSourceList.displayHotkeysModule = displayHotkeysModule;
@@ -56,6 +58,8 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
@@ -136,9 +140,12 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
         [Test]
         public void TestSwitchInput1_Selected()
         {
-            var moduleOwnerMock = new Mock<IModuleOwner>();
-            DdpmCommonHelper.ModuleOwner = moduleOwnerMock.Object;
+            var moduleOwnerMock=new Mock<IModuleOwner>();
+            DdpmCommonHelper.ModuleOwner=moduleOwnerMock.Object;
+            moduleOwnerMock.Setup(x=>x.SelectedHomeDevice).Returns(new HomeDevice());
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
@@ -157,6 +164,9 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var moduleOwnerMock = new Mock<IModuleOwner>();
             DdpmCommonHelper.ModuleOwner = moduleOwnerMock.Object;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
@@ -175,6 +185,11 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var moduleOwnerMock = new Mock<IModuleOwner>();
             DdpmCommonHelper.ModuleOwner = moduleOwnerMock.Object;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
