@@ -14,7 +14,7 @@ namespace DDPM.UI.Module.EzMemory
     {
         private UserControl? _leftView = null;
         private UserControl _rightView;// = new EzArrangeRightVierw();
-
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
         //private EzArrangeViewModel vm = new EzArrangeViewModel();
         private readonly DisplayViewModel _vmDisplay;
 

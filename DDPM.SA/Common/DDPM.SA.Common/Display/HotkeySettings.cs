@@ -38,6 +38,7 @@ namespace DDPM.SA.Common.Display
 
         public HotkeyType Job = HotkeyType.None;
 
+        //[1006 Dean] since currently we using this field to be per user, so the real input source object should be recorded as monitor setting as well
         public List<InputSourceObj> InputSource { get; set; } = new List<InputSourceObj>();
     }
 

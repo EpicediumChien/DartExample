@@ -62,16 +62,11 @@ namespace DDPM.OSDs
             }
         }
 
-        private void close_Click(object sender, RoutedEventArgs e)
+        private void close_Click(object sender, MouseButtonEventArgs e)
         {
             this.Close();
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
-        }
         public void ShowWindow()
         {
             if (!Dispatcher.CheckAccess())
@@ -81,6 +76,7 @@ namespace DDPM.OSDs
             }
             Show();
         }
+
         public void CloseWindow()
         {
             if (!Dispatcher.CheckAccess())

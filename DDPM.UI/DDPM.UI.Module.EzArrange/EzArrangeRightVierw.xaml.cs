@@ -15,6 +15,7 @@ using Microsoft;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using Windows.Media.AppRecording;
 using static DDPM.UI.Common.User32;
 using UserControl = System.Windows.Controls.UserControl;
@@ -439,6 +440,9 @@ namespace DDPM.UI.Module.EzArrange
                     _vm.SelectedSplitItem = splitListView_Recent.GetAt(0);
                 }
             }
+
+            //Workaround, if RecentList[0] is not selected layout, then let ite move to 2nd position 
+            splitListView_Recent.MoveSelectedItemToSecondPosition();
         }
 
         private void InitSplitListViews_Unused()
@@ -958,19 +962,22 @@ namespace DDPM.UI.Module.EzArrange
         #region Refresh Data
         public void HandleSelectedHomeDeviceChanged()
         {
-            if (DdpmCommonHelper.ModuleOwner != null)
+            this.Dispatcher.Invoke(() =>
             {
-                _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-                if (_homeDevice.vmEzArrange == null)
+                if (DdpmCommonHelper.ModuleOwner != null)
                 {
-                    _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
-                }
-                _vm = _homeDevice.vmEzArrange;
-                DataContext = _homeDevice.vmEzArrange;
+                    _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                    if (_homeDevice.vmEzArrange == null)
+                    {
+                        _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
+                    }
+                    _vm = _homeDevice.vmEzArrange;
+                    DataContext = _homeDevice.vmEzArrange;
 
-            }
-            CleanUpListViewItems();
-            InitListViewItems();
+                }
+                CleanUpListViewItems();
+                InitListViewItems();
+            });
         }
         #endregion Refresh Data
 

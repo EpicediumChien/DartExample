@@ -35,6 +35,7 @@ namespace DDPM.OSDs
             //animationTimer.Tick += RunTimerTick;
             //animationTimer.Start();
         }
+
         public void ShowWindow()
         {
             if (!Dispatcher.CheckAccess())
@@ -44,6 +45,7 @@ namespace DDPM.OSDs
             }
             Show();
         }
+
         public void CloseWindow()
         {
             if (!Dispatcher.CheckAccess())

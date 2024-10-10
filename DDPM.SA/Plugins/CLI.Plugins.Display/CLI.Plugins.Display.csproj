@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+	  <ProjectReference Include="..\DDPM.SA.Plugins.CMAManager\DDPM.SA.Plugins.CMAManager.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

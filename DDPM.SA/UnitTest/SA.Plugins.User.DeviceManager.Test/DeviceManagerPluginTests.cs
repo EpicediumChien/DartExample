@@ -1004,7 +1004,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
             DeviceHelper deviceHelper = new DeviceHelper() { deviceInfo = new List<DeviceInfo>() { new DeviceInfo() { DeviceName = "Mouse" } } };
-            _PeripheralsPluginMock.Setup(x => x.GetDevices()).Returns(Task.FromResult(deviceHelper));
+            _PeripheralsPluginMock.Setup(x => x.GetDevices(false)).Returns(Task.FromResult(deviceHelper));
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify

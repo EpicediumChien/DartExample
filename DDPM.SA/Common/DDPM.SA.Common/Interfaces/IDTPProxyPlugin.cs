@@ -44,9 +44,12 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+        Task<string> PairingPen();
 
         // webcam
         Task<JArray> GetPresetProfiles(string Guid);
+        Task<JArray> GetCustomProfiles(string Guid);
+        Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
@@ -77,6 +80,9 @@ namespace DDPM.SA.Common
         Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
+        Task SetProfileName(string Guid, string newValue);
+        Task CreateCustomProfile(string Guid, string newValue);
+        Task DeleteProfile(string Guid, string newValue);
         Task SetZoom(string Guid, int newValue);
         Task SetIsAutoFramingOn(string Guid, bool newValue);
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
