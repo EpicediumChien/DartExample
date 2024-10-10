@@ -8692,11 +8692,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
             }
             //EM
-            DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
+            //DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
-            DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
+            //DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
         }
 
         private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings, DDMMonitorSettings ddmMonitorSettings)
