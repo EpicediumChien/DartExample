@@ -279,6 +279,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         ///
         public event EventHandler<EAArgs> EAEditReturn;
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+        //End of EasyArrange
+        ///////////////////////
+
         /// <summary>
         /// HDR status change event，return HDR status
         /// </summary>
@@ -1472,9 +1476,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Peripherals implementation
 
-        public async Task<DeviceHelper> GetDevices()
+        public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
-            return await Task.Run(() => _PeripheralsPlugin.GetDevices());
+            return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
 
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
@@ -1627,12 +1631,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PeripheralsPlugin.StartPairing(deviceId);
             return Task.FromResult(true);
         }
+        public Task StartPairingPen()
+        {
+            writelog("DeviceMangerPlugin received StartPairingPen requested ...");
+            _PeripheralsPlugin.StartPairingPen();
+            return Task.FromResult(true);
+        }
 
         public Task StopPairing(Guid deviceId)
         {
             writelog("DeviceMangerPlugin received StopPairing requested ...");
             writelog($"Target DeviceID is {deviceId}");
             _PeripheralsPlugin.StopPairing(deviceId);
+            return Task.FromResult(true);
+        }
+        public Task StopPairingPen()
+        {
+            writelog("DeviceMangerPlugin received StopPairingPen requested ...");
+            _PeripheralsPlugin.StopPairingPen();
             return Task.FromResult(true);
         }
 
@@ -3026,7 +3042,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (EAEditStarted != null)
             {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
                 Task.Run(() => EAEditStarted.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
             }
         }
 
@@ -3043,6 +3064,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
             }
+            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
             return Task.FromResult(false);
         }
 
@@ -3057,7 +3079,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (EAEditReturn != null)
             {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
                 Task.Run(() => EAEditReturn.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
             }
         }
 
@@ -3346,6 +3373,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
             return Task.FromResult(false);
         }
+
+        //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
+        //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
+        private void _DisplayManagerPlugin_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), Call to next handler.");
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
+            }
+        }
+
         #endregion EasyArrage
 
         #region EasyMemory
@@ -4069,15 +4112,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
-        public async Task<JArray> GetPresetProfiles(string Guid)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.GetPresetProfiles(Guid));
-        }
-
-        public async Task<string> GetProfileName(string Guid)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
-        }
 
         public async Task<int> GetDpiValueByDTP(string itemID)
         {
@@ -4091,6 +4125,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target DPI Value is {newValue}");
             _DTPProxyPlugin.SetDPIValue(itemID, newValue);
             return Task.FromResult(true);
+        }
+
+        #region Pen
+
+        public Task<string> PairingPen()
+        {
+            writelog("DeviceMangerPlugin received PairingPen requested ...");
+            return _DTPProxyPlugin.PairingPen();
         }
 
         public Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
@@ -4201,7 +4243,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        #endregion
+
         #region Webcam
+
+        public async Task<JArray> GetPresetProfiles(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetPresetProfiles(Guid));
+        }
+        public async Task<JArray> GetCustomProfiles(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetCustomProfiles(Guid));
+        }
+
+        public async Task<string> GetProfile(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfile(Guid));
+        }
+        public async Task<string> GetProfileName(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
+        }
         public async Task<int> GetBrightness(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
@@ -4303,6 +4365,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetProfile(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetProfileName(string guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetProfileName requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetProfileName(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task CreateCustomProfile(string guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received CreateCustomProfile requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.CreateCustomProfile(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task DeleteProfile(string guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received DeleteProfile requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.DeleteProfile(guid, newValue);
             return Task.FromResult(true);
         }
         public Task SetZoom(string guid, int newValue)
@@ -5740,6 +5826,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
                         //Bruce, 2024-0820 add new event
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
+                        //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
+                        _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -5763,6 +5851,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
                         //Bruce, 2024-0820 add new event
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
+                        //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
+                        _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }

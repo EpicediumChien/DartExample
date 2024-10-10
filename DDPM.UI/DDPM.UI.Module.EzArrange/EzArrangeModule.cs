@@ -1,6 +1,7 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.Common.ViewModels;
@@ -25,7 +26,7 @@ namespace DDPM.UI.Module.EzArrange
 
         public EzArrangeModule(IModuleOwner? moduleOwner = null)
         {
-            if (moduleOwner != null)
+            if (moduleOwner != null) //DisplayViewModel
             {
                 ModuleOwner = moduleOwner;
                 _vmDisplay = moduleOwner as DisplayViewModel;
@@ -41,8 +42,13 @@ namespace DDPM.UI.Module.EzArrange
 
                 _selHomeDevice.vmEzArrange.CreateLog(_vmDisplay.Console, "EAMod");
             }
-            //_rightView.DataContext = vm;
+
+            if (_deviceManagerSA != null)
+            {
+                _deviceManagerSA.EASettingsChanged += _deviceManagerSA_EASettingsChanged;
+            }
         }
+
 
         public string ModuleName { get => "EzArrangeModule"; }
 
@@ -61,6 +67,23 @@ namespace DDPM.UI.Module.EzArrange
         }
 
         public HomeDevice? SelectedHomeDevice { get; set; }
+
+        public List<HomeDevice>? HomeDevices
+        {
+            get
+            {
+                if (ModuleOwner != null)
+                {
+                    return ModuleOwner.HomeDevices;
+                }
+                else
+                {
+                    if (DdpmCommonHelper.ModuleOwner != null)
+                        return DdpmCommonHelper.ModuleOwner.HomeDevices;
+                }
+                return null;
+            }
+        }
 
         #region ModuleOwner
 
@@ -122,6 +145,48 @@ namespace DDPM.UI.Module.EzArrange
         {
         }
 
+        //To be called (from Subagent IDeviceManagerSA, when EAMonitorSettings is changed from Subagent side.
+        private void _deviceManagerSA_EASettingsChanged(object? sender, EAArgs e)
+        {
+            //The quick and easy way: use the SelectedDeviceChange event
+            OnSelectedHomeDeviceChanged();
+
+            //If the OnSelectedHomeDeviceChanged() take too long time, then
+            //we need to consider below method:
+
+            //EAArgs spec.
+            //Check DDPM.SA.Plugins.User.EasyArrange project, EAPlugin.cs
+            // Method: STA_SetEASelectedLayout( )
+            //
+            // Message: "{MonitorModel}|{MonitorServiceTag}"
+            //string[] tokens = e.Message.Split('|', StringSplitOptions.RemoveEmptyEntries);
+            //string model = "", serviceTag = "";
+            //if (tokens.Length >= 2)
+            //{
+            //    model = tokens[0];
+            //    serviceTag = tokens[1];
+            //}
+            //if (HomeDevices != null)
+            //{
+            //    foreach (HomeDevice homeDevice in HomeDevices)
+            //    {
+            //        if (homeDevice.DeviceCategory != eDeviceCategory.Display)
+            //            continue;
+            //        if (homeDevice.MonitorInfo == null)
+            //            continue;
+
+            //        if ((homeDevice.MonitorInfo.modelName.Equals(model, StringComparison.OrdinalIgnoreCase)) &&
+            //            (homeDevice.MonitorInfo.edid.ServiceTag.Equals(serviceTag, StringComparison.OrdinalIgnoreCase)))
+            //        {
+            //            if (homeDevice.vmEzArrange != null)
+            //            {
+            //                //TO DO: refresh EA Settings
+            //            }
+            //        }
+            //    }
+            //}
+
+        }
         #endregion Event Handlers
     }
 }

@@ -2472,6 +2472,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public event EventHandler<EAArgs> EAEditReturn;
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         private void InitializeEAPlugin()
         {
             if (_eaService != null)
@@ -2510,6 +2512,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                     else if (pluginCondition is PluginRunningCondition)
@@ -2525,10 +2529,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                 }
             });
+        }
+
+        private void _eaService_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
         }
 
         private void _eaService_EditStarted(object sender, string e)
