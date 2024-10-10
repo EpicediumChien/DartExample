@@ -1,4 +1,6 @@
 ﻿using DDPM.SA.Common.Security;
+using Dell.Client.Framework.Common;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -59,7 +61,16 @@ namespace DDPM.SA.Common.Settings
                         client.Timeout = TimeSpan.FromSeconds(5);
                         HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
-                        string jsonString = response.Content.ReadAsStringAsync().Result;
+                        string fileContent = response.Content.ReadAsStringAsync().Result;
+                        List<string> InfoPkey = new List<string>();
+                        if (InfoPkey == null || InfoPkey.Count == 0)
+                        {
+                            //if read info failed, load default key as well
+                            InfoPkey = new List<string>();
+                            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                        }
+                        string szInfo = string.Empty;
+                        string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
                         if (!string.IsNullOrEmpty(jsonString))
                         {
                             jsonString = jsonString.Replace("%1/", URL);
@@ -82,17 +93,19 @@ namespace DDPM.SA.Common.Settings
                         }
                         else
                         {
-                            info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty";
+                            info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty.";
                         }
                     }
                     catch (JsonException ex)
                     {
+                        data = new SWUpdateHelper();
                         info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
                     }
                 }
             }
             catch (Exception ex)
             {
+                data = new SWUpdateHelper();
                 info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
             }
             return data;

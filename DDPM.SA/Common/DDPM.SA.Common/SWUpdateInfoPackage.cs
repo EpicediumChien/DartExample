@@ -140,7 +140,7 @@ namespace DDPM.SA.Common
     public class SWUpdateHelper
     {
         [JsonPropertyName("version")]
-        public int Version { get; set; }
+        public string Version { get; set; }
         public ChangeLog ChangeLog { get; set; }
         public List<Software> Softwares { get; set; }
     }
