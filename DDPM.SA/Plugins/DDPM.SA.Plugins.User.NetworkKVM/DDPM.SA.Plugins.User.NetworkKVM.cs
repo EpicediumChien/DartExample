@@ -61,6 +61,7 @@ namespace NetworkKVM.Plugins
         private string command;
         private bool NKVMState = false;
         private string namedpipeName;
+        private bool isMonintorChange = false;
 
         #endregion Private Members
 
@@ -133,11 +134,11 @@ namespace NetworkKVM.Plugins
                     _SupportedMonitors = GetSupportedNKVM().Result;
                     if (pipeServer.IsConnected)
                     {
-                        //ResponseSupportedMonitor();
                         MonitorPlug();
                     }
                     Disconnect();
-                    CreateNamedPipe_init();
+                    //_ = Task.Run(async () => await NamedPipeServer());
+                    //CreateNamedPipe_init();
                     _AllInfoMonitors.Clear();
                 }
                 else
@@ -161,12 +162,14 @@ namespace NetworkKVM.Plugins
                             else
                             {
                                 Disconnect();
-                                CreateNamedPipe_init();
-                                if (pipeServer.IsConnected)
-                                {
-                                    ResponseSupportedMonitor();
-                                    MonitorPlug();
-                                }
+                                isMonintorChange = true;
+                                //_runloop = true;
+                                _ = Task.Run(async () => await NamedPipeServer());
+                                //CreateNamedPipe_init();
+                                //if (pipeServer.IsConnected)
+                                //{
+                                //    MonitorPlug();
+                                //}
                             }
                         }
                         //}
@@ -185,18 +188,19 @@ namespace NetworkKVM.Plugins
                             _SupportedMonitors = GetSupportedNKVM().Result;
                             if (pipeServer.IsConnected)
                             {
-                                ResponseSupportedMonitor();
                                 MonitorPlug();
                             }
                             else
                             {
                                 Disconnect();
-                                CreateNamedPipe_init();
-                                if (pipeServer.IsConnected)
-                                {
-                                    ResponseSupportedMonitor();
-                                    MonitorPlug();
-                                }
+                                //CreateNamedPipe_init();
+                                isMonintorChange = true;
+                                //_runloop = true;
+                                _ = Task.Run(async () => await NamedPipeServer());
+                                //if (pipeServer.IsConnected)
+                                //{
+                                //    MonitorPlug();
+                                //}
                             }
                         }
                         List<MonitorInfo> plugin = monitorInfos
@@ -216,12 +220,14 @@ namespace NetworkKVM.Plugins
                             else
                             {
                                 Disconnect();
-                                CreateNamedPipe_init();
-                                if (pipeServer.IsConnected)
-                                {
-                                    ResponseSupportedMonitor();
-                                    MonitorPlug();
-                                }
+                                //CreateNamedPipe_init();
+                                isMonintorChange = true;
+                                //_runloop = true;
+                                _ = Task.Run(async () => await NamedPipeServer());
+                                //if (pipeServer.IsConnected)
+                                //{
+                                //    MonitorPlug();
+                                //}
                             }
                         }
 
@@ -1083,11 +1089,11 @@ namespace NetworkKVM.Plugins
                         //throw;
                     }
                 }
-                else
-                {
-                    Disconnect();
-                    CreateNamedPipe_init();
-                }
+                //else
+                //{
+                //    Disconnect();
+                //    CreateNamedPipe_init();
+                //}
             }
             _agent.StopAgent();
         }
@@ -1128,8 +1134,6 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
                 }
             }
-
-
         }
 
         private void CreateNamedPipe()
@@ -1176,6 +1180,11 @@ namespace NetworkKVM.Plugins
             {
 #endif
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
+                if (isMonintorChange)
+                {
+                    MonitorPlug().Wait();
+                    isMonintorChange = false;
+                }
                 ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
 #if RELEASE
@@ -1184,7 +1193,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
                 Disconnect();
-                CreateNamedPipe();
+                //CreateNamedPipe();
             }
 #endif
             }
@@ -1208,6 +1217,7 @@ namespace NetworkKVM.Plugins
                 //WriteAsync(DisconnectNamedPipe().Result).Wait();
                 pipeServer.Disconnect();
             }
+            //_runloop = false;
             pipeServer.Close();
             pipeServer.Dispose();
         }
