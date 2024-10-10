@@ -1127,6 +1127,15 @@ namespace DDPM.SA.Common
         public int ZoomMax { get; set; }
         public int ZoomMin { get; set; }
         public int ZoomSteppingDelta { get; set; }
+
+        // webcam presence detection
+        public int Snooze { get; set; }
+        public int SnoozeLength { get; set; }
+        public bool IsProximitySensorEnable { get; set; }
+        public bool IsWakeonApproachEnable { get; set; }
+        public bool IsWalkAwayLockEnable { get; set; }
+        public int WALTime { get; set; }
+
         public string DeviceSymbolicLink
         {
             get => _deviceSymbolicLink;

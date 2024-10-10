@@ -812,6 +812,174 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetWALTime(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.WALTime = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.WALTime = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSnooze(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.Snooze = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.Snooze = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSnoozeLength(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.SnoozeLength = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.SnoozeLength = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsProximitySensorEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsProximitySensorEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsWakeonApproachEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsWakeonApproachEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsWakeonApproachEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsWalkAwayLockEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsWalkAwayLockEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsWalkAwayLockEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public int GetSnooze(Guid deviceId)
+        {
+            int nRes = -1;
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    //Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
+                    nRes = _iLogicalDeviceWebcam.Snooze;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        //_deviceInfo.WALTime = newValue;
+                        nRes = _deviceInfo.Snooze;
+                        break;
+                    }
+                }
+            }
+            return nRes;    
+        }
+
+        public int GetSnoozeLength(Guid deviceId)
+        {
+            int nRes = -1;
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    //Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
+                    nRes = _iLogicalDeviceWebcam.SnoozeLength;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        //_deviceInfo.WALTime = newValue;
+                        nRes = _deviceInfo.SnoozeLength;
+                        break;
+                    }
+                }
+            }
+            return nRes;
+        }
+
         #endregion
 
         #region Overriding methods
@@ -1087,6 +1255,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.ZoomMin = _iLogicalDeviceWebcam.ZoomMin;
                         info.ZoomSteppingDelta = _iLogicalDeviceWebcam.ZoomSteppingDelta;
                         _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
+
+                        // webcam presence detection
+                        info.Snooze = _iLogicalDeviceWebcam.Snooze;
+                        info.SnoozeLength = _iLogicalDeviceWebcam.SnoozeLength;
+                        info.IsProximitySensorEnable = _iLogicalDeviceWebcam.IsProximitySensorEnable;
+                        info.IsWakeonApproachEnable = _iLogicalDeviceWebcam.IsWakeonApproachEnable;
+                        info.IsWalkAwayLockEnable = _iLogicalDeviceWebcam.IsWalkAwayLockEnable;
+                        info.WALTime = _iLogicalDeviceWebcam.WALTime;                        
+
                     }
 
                     if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
