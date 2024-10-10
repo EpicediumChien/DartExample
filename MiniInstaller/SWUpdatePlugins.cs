@@ -385,7 +385,6 @@ namespace MiniInstaller
                             CertificateCheck certificateCheck = new CertificateCheck();
                             if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                             {
-                                ret = true;
                                 LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check done.");
                             }
                             else
@@ -416,6 +415,7 @@ namespace MiniInstaller
                     CertificateCheck certificateCheck = new CertificateCheck();
                     if (certificateCheck.CheckFile_Thumbprint(filePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                     {
+                        ret = true;
                         LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check done.");
                     }
                     else
