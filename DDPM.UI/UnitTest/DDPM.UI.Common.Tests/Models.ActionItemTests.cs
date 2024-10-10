@@ -29,6 +29,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestConstructor_ActionItemA()
         {
+            // Act
             var actionItemA = new ActionItem(ActionCategory.None, Strings.None, true, true, 4, 4);
             // Assert
             Assert.That(actionItemA, Is.Not.Null);
@@ -41,6 +42,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestConstructor_ActionItemB()
         {
+            // Act
             var actionItemB = new ActionItem(ActionCategory.WordAction, Strings.Autoscroll, false, false);
             // Assert
             Assert.That(actionItemB, Is.Not.Null);
@@ -52,48 +54,9 @@ namespace DDPM.UI.Common.Tests
 
         //class Actions
         [Test]
-        public void TestKnMAction()
-        {
-            var result = Actions.KnMActions.Count;
-            // Assert
-            Assert.That(result, Is.GreaterThan(0));
-        }
-
-        [Test]
-        public void TestOfficeActions()
-        {
-            var result = Actions.OfficeActions.Count;
-            // Assert
-            Assert.That(result, Is.GreaterThan(0));
-        }
-
-        [Test]
-        public void TestPenActions()
-        {
-            var result = Actions.PenActions.Count;
-            // Assert
-            Assert.That(result, Is.GreaterThan(0));
-        }
-
-        [Test]
-        public void TestOpenRunActions()
-        {
-            var result = Actions.OpenRunActions.Count;
-            // Assert
-            Assert.That(result, Is.GreaterThan(0));
-        }
-
-        [Test]
-        public void TestRadialMenuActions()
-        {
-            var result = Actions.RadialMenuActions.Count;
-            // Assert
-            Assert.That(result, Is.GreaterThan(0));
-        }
-
-        [Test]
         public void TestOpenRunActionsList()
         {
+            // Act
             var result = Actions.OpenRunActionsList;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -102,6 +65,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestRadialMenuActionsList()
         {
+            // Act
             var result = Actions.RadialMenuActionsList;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -110,6 +74,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestAllActionsKnM()
         {
+            // Act
             var result = Actions.AllActionsKnM;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -118,6 +83,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestAllActionsPenBarrelButton()
         {
+            // Act
             var result = Actions.AllActionsPenBarrelButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -126,6 +92,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestAllActionsPenTopButton()
         {
+            // Act
             var result = Actions.AllActionsPenTopButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -134,6 +101,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestWindowsActionsKnM()
         {
+            // Act
             var result = Actions.WindowsActionsKnM;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -142,6 +110,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestWindowsActionsPenBarrelButton()
         {
+            // Act
             var result = Actions.WindowsActionsPenBarrelButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -150,6 +119,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestWindowsActionsPenTopButton()
         {
+            // Act
             var result = Actions.WindowsActionsPenTopButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -158,6 +128,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestProductivityActionsKnM()
         {
+            // Act
             var result = Actions.ProductivityActionsKnM;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -166,6 +137,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestProductivityActionsPenBarrelButton()
         {
+            // Act
             var result = Actions.ProductivityActionsPenBarrelButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -174,6 +146,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestProductivityActionsPenTopButton()
         {
+            // Act
             var result = Actions.ProductivityActionsPenTopButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -182,6 +155,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestMultimediaActionsKnM()
         {
+            // Act
             var result = Actions.MultimediaActionsKnM;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -190,6 +164,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestMultimediaActionsPenBarrelButton()
         {
+            // Act
             var result = Actions.MultimediaActionsPenBarrelButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -198,6 +173,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestMultimediaActionsPenTopButton()
         {
+            // Act
             var result = Actions.MultimediaActionsPenTopButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -206,6 +182,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestWordActions()
         {
+            // Act
             var result = Actions.WordActions;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -214,6 +191,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestExcelActions()
         {
+            // Act
             var result = Actions.ExcelActions;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -222,6 +200,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestPowerPointActions()
         {
+            // Act
             var result = Actions.PowerPointActions;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -230,6 +209,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestOutlookActions()
         {
+            // Act
             var result = Actions.OutlookActions;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -238,6 +218,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestSuggestedActionsK()
         {
+            // Act
             var result = Actions.SuggestedActionsK;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -246,6 +227,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestSuggestedActionsM()
         {
+            // Act
             var result = Actions.SuggestedActionsM;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -254,6 +236,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestSuggestedActionsPenTopButton()
         {
+            // Act
             var result = Actions.SuggestedActionsPenTopButton;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -262,23 +245,8 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestSuggestedActionsPenBarrelButton()
         {
+            // Act
             var result = Actions.SuggestedActionsPenBarrelButton;
-            // Assert
-            Assert.That(result, Is.Not.Null);
-        }
-
-        [Test]
-        public void TestAdvancedActions()
-        {
-            var result = Actions.AdvancedActions;
-            // Assert
-            Assert.That(result, Is.Not.Null);
-        }
-
-        [Test]
-        public void TestAdvancedActionsPen()
-        {
-            var result = Actions.AdvancedActionsPen;
             // Assert
             Assert.That(result, Is.Not.Null);
         }

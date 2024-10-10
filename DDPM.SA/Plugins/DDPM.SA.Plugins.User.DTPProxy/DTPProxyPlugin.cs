@@ -25,7 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
 using Newtonsoft.Json.Linq;
-using static Dell.TechHub.Common.PluginInformation;
+using System.Text;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -172,6 +172,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return (JArray)"";
             }
         }
+        public async Task<JArray> GetCustomProfiles(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return (JArray)""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "CustomProfiles");
+                Debug.WriteLine($"{value}");
+                return (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return (JArray)"";
+            }
+        }
 
         public async Task<string> GetProfileName(string Guid)
         {
@@ -181,6 +199,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "ProfileName");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return "";
+            }
+        }
+        public async Task<string> GetProfile(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Profile");
                 return (string)value;
             }
             else
@@ -556,6 +591,51 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_webcamInterfaceType, commodity, "Profile", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task SetProfileName(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "ProfileName", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task CreateCustomProfile(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "CreateCustomProfile", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task DeleteProfile(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "DeleteProfile", newValue);
             }
             else
             {
@@ -1217,6 +1297,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Pen
+
+        public async Task<string> PairingPen()
+        {
+            _itemID = new ItemId("DellPeripheral.Pen");
+            if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_penInterfaceType, commodity, "Pair");
+                Debug.WriteLine($"Pen Pair value: {value}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                return "";
+            }
+        }
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
@@ -1733,10 +1830,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             var byteArray = new byte[payloadSize + 4];
             BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
             payloadBytes.CopyTo(byteArray, 4);
+
+            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
             try
             {
                 //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
-                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
+                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
             }
             catch (Exception ex)
             {

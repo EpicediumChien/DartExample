@@ -35,7 +35,7 @@ namespace DDPM.UI.Module.WebCameraColorImage.Tests
             log = logMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
-            vm = new WebCameraViewModel(console, log);
+            vm = new WebCameraViewModel(console, log) { CurrentDeviceInfo = new DeviceInfo() };
             webCameraColorImageModule = new WebCameraColorImageModule(vm);
             privateObject = new PrivateObject(webCameraColorImageModule);
         }

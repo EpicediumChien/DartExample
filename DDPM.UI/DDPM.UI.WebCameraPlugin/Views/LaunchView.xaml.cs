@@ -11,6 +11,7 @@ using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.IO;
@@ -36,6 +37,7 @@ using Windows.UI.Popups;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
+using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -88,6 +90,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 ProfileItems.ItemsSource = _vm.ProfileItems;
                 Mouse.OverrideCursor = null;
             }
+            txtName.Text = Strings.Name;
+            txtMsg.Text = Strings.NameIsTaken;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -126,8 +130,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             RecordingTimer.Tick += RecordingTimer_Tick;
 
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
+            _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
             Preview();
+        }
+
+        private void ProfilePropertyChanged(object? sender, EventArgs e)
+        {
+            txtPreset.Text = $"{Strings.Preset}: {LangHelper.Instance["None"]}";
         }
 
         private void WebcamSettingChanged(object? sender, EventArgs e)
@@ -286,6 +296,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
             _vm!.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+            _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
+            _vm.WebcamSettingChanged -= WebcamSettingChanged;
             await CleanupMediaCaptureAsync();
             //await _vm.CleanupMediaCapture();
         }
@@ -719,8 +731,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var profileName = ((UXTextBlock)sender).Tag.ToString()!;
-            if (profileName != _vm!.CurrentProfileName)
+            if (profileName != _vm!.CurrentProfileName || txtPreset.Text == $"{Strings.Preset}: {LangHelper.Instance["None"]}")
             {
+                //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                 _vm!.CurrentProfileName = profileName;
                 _vm.SetProfile();
             }
@@ -779,6 +792,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var profileName = ((Image)sender).Tag.ToString()!;
+            //DdpmCommonHelper.DeviceManagerSA!.DeleteProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), _vm.WebcamSettings.CustomProfiles[profileName].Id);
+            if (_vm!.WebcamSettings.CustomProfiles.ContainsKey(profileName))
+            {
+                _vm!.WebcamSettings.CustomProfiles.Remove(profileName);
+                WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
+                _vm.PrepareProfileItems();
+                ProfileItems.ItemsSource = null;
+                ProfileItems.ItemsSource = _vm.ProfileItems;
+            }
+
             if (profileName == _vm!.CurrentProfileName)
             {
                 _vm!.CurrentProfileName = "Default";
@@ -895,6 +918,30 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.SetTilt(value);
                         break;
                 }
+            }
+        }
+
+        private void AddPreset(object sender, MouseButtonEventArgs e)
+        {
+            //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
+            _vm!.CurrentProfile.Name = $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}";
+            var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
+            _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
+            WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
+            _vm.PrepareProfileItems();
+            ProfileItems.ItemsSource = null;
+            ProfileItems.ItemsSource = _vm.ProfileItems;
+        }
+
+        private void NameTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_vm!.ProfileIDs.ContainsKey(txbName.Text.Trim()))
+            {
+                txtMsg.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                txtMsg.Visibility = Visibility.Hidden;
             }
         }
     }

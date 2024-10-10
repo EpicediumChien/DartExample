@@ -279,6 +279,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         ///
         public event EventHandler<EAArgs> EAEditReturn;
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+        //End of EasyArrange
+        ///////////////////////
+
         /// <summary>
         /// HDR status change event，return HDR status
         /// </summary>
@@ -1472,9 +1476,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Peripherals implementation
 
-        public async Task<DeviceHelper> GetDevices()
+        public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
-            return await Task.Run(() => _PeripheralsPlugin.GetDevices());
+            return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
 
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
@@ -1627,12 +1631,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PeripheralsPlugin.StartPairing(deviceId);
             return Task.FromResult(true);
         }
+        public Task StartPairingPen()
+        {
+            writelog("DeviceMangerPlugin received StartPairingPen requested ...");
+            _PeripheralsPlugin.StartPairingPen();
+            return Task.FromResult(true);
+        }
 
         public Task StopPairing(Guid deviceId)
         {
             writelog("DeviceMangerPlugin received StopPairing requested ...");
             writelog($"Target DeviceID is {deviceId}");
             _PeripheralsPlugin.StopPairing(deviceId);
+            return Task.FromResult(true);
+        }
+        public Task StopPairingPen()
+        {
+            writelog("DeviceMangerPlugin received StopPairingPen requested ...");
+            _PeripheralsPlugin.StopPairingPen();
             return Task.FromResult(true);
         }
 
@@ -3092,7 +3108,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (EAEditStarted != null)
             {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
                 Task.Run(() => EAEditStarted.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
             }
         }
 
@@ -3109,6 +3130,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
             }
+            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
             return Task.FromResult(false);
         }
 
@@ -3123,7 +3145,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (EAEditReturn != null)
             {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
                 Task.Run(() => EAEditReturn.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
             }
         }
 
@@ -3412,6 +3439,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
             return Task.FromResult(false);
         }
+
+        //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
+        //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
+        private void _DisplayManagerPlugin_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), Call to next handler.");
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
+            }
+        }
+
         #endregion EasyArrage
 
         #region EasyMemory
@@ -3744,27 +3787,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
-        private void DeleteMiniInstallerFolder()
+        private void DeleteDdpmSwUpdaterFolder()
         {
-            writelog("[DeleteMiniInstallerFolder], start.");
+            writelog("[DeleteDdpmSwUpdaterFolder], start.");
             string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
-            object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller").Result;
-            writelog($"[DeleteMiniInstallerFolder], o={o}.");
+            object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater").Result;
+            writelog($"[DeleteDdpmSwUpdaterFolder], o={o}.");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
-                writelog($"[DeleteMiniInstallerFolder], o_String={o.ToString()}.");
+                writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                string path = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                if (Directory.Exists(path))
+                string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                if (!string.IsNullOrEmpty(AppDataPath))
                 {
-                    writelog($"[DeleteMiniInstallerFolder], Exists.");
-                    Directory.Delete(path, true);
-                    writelog($"[DeleteMiniInstallerFolder], Delete.");
+                    string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                    if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                    {
+                        writelog($"[DeleteDdpmSwUpdaterFolder], Exists.");
+                        Directory.Delete(path, true);
+                        writelog($"[DeleteDdpmSwUpdaterFolder], Delete.");
+                    }
+                    WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
+                    writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
                 }
-                WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
-                writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
+                else
+                {
+                    writelog("[DeleteDdpmSwUpdaterFolder], AppDataPath get null.");
+                }
             }
-            writelog("[DeleteMiniInstallerFolder], done.");
+            writelog("[DeleteDdpmSwUpdaterFolder], done.");
         }
         #endregion
 
@@ -3855,7 +3906,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     vcps = ImpExpSettings.MonitorSettings.VCPs;
                     if (_ColorPresetPlugin != null)
                     {
-                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset , _SettingsPlugin).Result;
+                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                     }
                     if (vcps != null)
                     {
@@ -4135,15 +4186,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
-        public async Task<JArray> GetPresetProfiles(string Guid)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.GetPresetProfiles(Guid));
-        }
-
-        public async Task<string> GetProfileName(string Guid)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
-        }
 
         public async Task<int> GetDpiValueByDTP(string itemID)
         {
@@ -4157,6 +4199,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target DPI Value is {newValue}");
             _DTPProxyPlugin.SetDPIValue(itemID, newValue);
             return Task.FromResult(true);
+        }
+
+        #region Pen
+
+        public Task<string> PairingPen()
+        {
+            writelog("DeviceMangerPlugin received PairingPen requested ...");
+            return _DTPProxyPlugin.PairingPen();
         }
 
         public Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
@@ -4267,7 +4317,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        #endregion
+
         #region Webcam
+
+        public async Task<JArray> GetPresetProfiles(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetPresetProfiles(Guid));
+        }
+        public async Task<JArray> GetCustomProfiles(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetCustomProfiles(Guid));
+        }
+
+        public async Task<string> GetProfile(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfile(Guid));
+        }
+        public async Task<string> GetProfileName(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
+        }
         public async Task<int> GetBrightness(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
@@ -4369,6 +4439,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetProfile(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetProfileName(string guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetProfileName requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetProfileName(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task CreateCustomProfile(string guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received CreateCustomProfile requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.CreateCustomProfile(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task DeleteProfile(string guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received DeleteProfile requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.DeleteProfile(guid, newValue);
             return Task.FromResult(true);
         }
         public Task SetZoom(string guid, int newValue)
@@ -4736,7 +4830,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DDMMigration();
             ReloadHotkeyConfigData();
             ToNKVM_initHotKeys();
-            DeleteMiniInstallerFolder();
+            DeleteDdpmSwUpdaterFolder();
             GetSkipCA().Wait();
             //hook keyboard
             //if (_HotkeyPlugin != null)
@@ -5838,6 +5932,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
                         //Bruce, 2024-0820 add new event
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
+                        //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
+                        _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -5861,6 +5957,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
                         //Bruce, 2024-0820 add new event
                         _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
+                        //Robert_Lin, 2024-10-8, for EasyArrange when EA Settings changed
+                        _DisplayManagerPlugin.EASettingsChanged += _DisplayManagerPlugin_EASettingsChanged;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
@@ -7091,7 +7189,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if ( eaSettings.RecentList == null)
+            if (eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
@@ -7431,7 +7529,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     allInputs.Add(new InputSourceObj(input.Value.InputName));
                 }
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
+                //debug
+                foreach (var s in subInputs)
+                {
+                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                }
+                foreach (var s in allInputs)
+                {
+                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                }
+                //debug end
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;
@@ -8739,7 +8847,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ;
             }
@@ -8807,7 +8915,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                
+
                 if (DirectoryContainsFiles(copyPath))
                 {
                     // 取得資料夾名稱
@@ -8817,7 +8925,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
-                
+
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
@@ -9581,7 +9689,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> ReadSerializedContentFromFile(string filePath)
         {
             string result = null;
-            if(_SettingsPlugin != null)
+            if (_SettingsPlugin != null)
             {
                 return Task.FromResult(_SettingsPlugin.ReadSerializedContentFromFile(filePath).Result);
             }

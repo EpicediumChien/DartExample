@@ -18,7 +18,7 @@ namespace DDPM.SA.Common.Method
             _logs = logs;
         }
         /// <summary>
-        /// Only for MiniInstaller use.
+        /// Only for DdpmSwUpdater use.
         /// </summary>
         public Download()
         {
@@ -29,7 +29,7 @@ namespace DDPM.SA.Common.Method
             try
             {
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " start");
-                CertificateCheck caCheck = new CertificateCheck();
+                CertificateCheck caCheck = new CertificateCheck(_logs);
                 {
                     if (!isSkipCA)
                     {

@@ -38,7 +38,7 @@ namespace DDPM.SA.Common
 
         void NotifyNow();
 
-        Task<DeviceHelper> GetDevices();
+        Task<DeviceHelper> GetDevices(bool Rescan = false);
 
         Task<CTKMessageHelper> GetCTKMessageHelper();
 
@@ -81,8 +81,10 @@ namespace DDPM.SA.Common
         void CheckForUpdate();
 
         void StartPairing(Guid physicalDeviceId);
+        void StartPairingPen();
 
         void StopPairing(Guid physicalDeviceId);
+        void StopPairingPen();
 
         void UnPair(Guid logicalDeviceId);
 

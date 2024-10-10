@@ -131,6 +131,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="WalkThrough\DDPM\DDPM1-1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
