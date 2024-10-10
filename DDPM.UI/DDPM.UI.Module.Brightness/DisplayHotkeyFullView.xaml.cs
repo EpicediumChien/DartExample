@@ -16,19 +16,6 @@ namespace DDPM.UI.Module.Brightness
     public partial class DisplayHotkeyFullView : UserControl
     {
         private ILog? _log;
-        /*        string _strTbBrightnessMinsPreviousKey = string.Empty;
-                string _strTbBrightnessAddPreviousKey = string.Empty;
-                string _strTbContrastMinsPreviousKey = string.Empty;
-                string _strTbContrastAddPreviousKey = string.Empty;
-                string _strTbLuminanceMinsPreviousKey = string.Empty;
-                string _strTbLuminanceAddPreviousKey = string.Empty;
-                List<VirtualKey> BrightnessMinsNewKeys = new List<VirtualKey>();
-                List<VirtualKey> BrightnessAddNewKeys = new List<VirtualKey>();
-                List<VirtualKey> ContrastMinsNewKeys = new List<VirtualKey>();
-                List<VirtualKey> ContrastAddNewKeys = new List<VirtualKey>();
-                List<VirtualKey> LuminanceMinsNewKeys = new List<VirtualKey>();
-                List<VirtualKey> LuminanceAddNewKeys = new List<VirtualKey>();*/
-
         private bool alphabetKey = false;
         private string _strPreviousKey = string.Empty;
         private List<VirtualKey> newKeys = new List<VirtualKey>();
@@ -66,6 +53,38 @@ namespace DDPM.UI.Module.Brightness
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref BrightnessMinsNewKeys);
             vm.BrightnessMinsKey = swHortcutText;*/
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.BrightnessReduce);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.BrightnessMinsKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.BrightnessMinsKey;
+                    texBox.Select(vm.BrightnessMinsKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        vm.BrightnessMinsKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -92,6 +111,38 @@ namespace DDPM.UI.Module.Brightness
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref BrightnessAddNewKeys);
             vm.BrightnessAddKey = swHortcutText;*/
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.BrightnessIncrease);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.BrightnessAddKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.BrightnessAddKey;
+                    texBox.Select(vm.BrightnessAddKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        vm.BrightnessAddKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -193,6 +244,38 @@ namespace DDPM.UI.Module.Brightness
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref ContrastMinsNewKeys);
             vm.ContrastMinsKey = swHortcutText;*/
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ContrastReduce);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.ContrastMinsKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.ContrastMinsKey;
+                    texBox.Select(vm.ContrastMinsKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        vm.ContrastMinsKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -211,6 +294,38 @@ namespace DDPM.UI.Module.Brightness
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref ContrastAddNewKeys);
             vm.ContrastAddKey = swHortcutText;*/
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ContrastIncrease);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.ContrastAddKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.ContrastAddKey;
+                    texBox.Select(vm.ContrastAddKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        vm.ContrastAddKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -229,6 +344,38 @@ namespace DDPM.UI.Module.Brightness
             /* string swHortcutText = string.Empty;
              KeysHelper.ReSetHotKeyText(ref swHortcutText, ref LuminanceMinsNewKeys);
              vm.LuminanceMinsKey = swHortcutText;*/
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.LuminanceReduce);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.LuminanceMinsKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.LuminanceMinsKey;
+                    texBox.Select(vm.LuminanceMinsKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        vm.LuminanceMinsKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -247,6 +394,38 @@ namespace DDPM.UI.Module.Brightness
             /* string swHortcutText = string.Empty;
              KeysHelper.ReSetHotKeyText(ref swHortcutText, ref LuminanceAddNewKeys);
              vm.LuminanceAddKey = swHortcutText;*/
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.LuminanceIncrease);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.LuminanceAddKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.LuminanceAddKey;
+                    texBox.Select(vm.LuminanceAddKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        //vm.Invoke_RefreshData();
+                    }
+                    else
+                    {
+                        vm.LuminanceAddKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
             e.Handled = true;
         }
 
@@ -256,185 +435,38 @@ namespace DDPM.UI.Module.Brightness
         }
 
 
-        private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
-        {
-            if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
-            {
-                //save hotkey
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                vm.Invoke_RefreshHotkeySettings();
-            }
-            else
-            {
-                switch (hotkeyInfo.Job)
-                {
-                    case HotkeyType.BrightnessReduce:
-                        vm.BrightnessMinsKey = prStr;
-                        break;
-
-                    case HotkeyType.BrightnessIncrease:
-                        vm.BrightnessAddKey = prStr;
-                        break;
-
-                    case HotkeyType.ContrastReduce:
-                        vm.ContrastMinsKey = prStr;
-                        break;
-
-                    case HotkeyType.ContrastIncrease:
-                        vm.ContrastAddKey = prStr;
-                        break;
-
-                    case HotkeyType.LuminanceReduce:
-                        vm.LuminanceMinsKey = prStr;
-                        break;
-
-                    case HotkeyType.LuminanceIncrease:
-                        vm.LuminanceAddKey = prStr;
-                        break;
-                }
-            }
-            keys.Clear();
-        }
         private void tbBrightnessMins_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.BrightnessMinsKey = _strPreviousKey;
-                BundleNewKeys.Clear();
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.BrightnessReduce;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "Brightness-";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.BrightnessMinsKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbBrightnessAdd_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.BrightnessAddKey = _strPreviousKey;
-                BundleNewKeys.Clear();
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-
-                //save hotkey
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.BrightnessIncrease;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "BrightnessReduce+";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.BrightnessAddKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbContrastMins_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.ContrastMinsKey = _strPreviousKey;
-                BundleNewKeys.Clear();
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-                //save hotkey
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.ContrastReduce;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "Contrast-";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.ContrastMinsKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbContrastAdd_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.ContrastAddKey = _strPreviousKey;
-                BundleNewKeys.Clear();
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-                //save hotkey
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.ContrastIncrease;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "Contrast+";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.ContrastAddKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbLuminanceMins_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.LuminanceMinsKey = _strPreviousKey;
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-                //save hotkey
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.LuminanceReduce;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "Luminance-";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.LuminanceMinsKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbLuminanceAdd_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.LuminanceAddKey = _strPreviousKey;
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-                //save hotkey
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.LuminanceIncrease;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "Luminance+";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.LuminanceAddKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }

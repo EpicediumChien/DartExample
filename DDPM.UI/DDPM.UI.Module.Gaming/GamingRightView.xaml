@@ -43,7 +43,9 @@
                                                       LostFocus="tbDarkStabilizerToggle_LostFocus"
                                                       ContextMenuOpening="tbDarkStabilizerToggle_ContextMenuOpening"
                                                       ContextMenu="{x:Null}"
-                                                      Text="{Binding DarkStabilizerToggleKey,Mode=TwoWay}" />
+                                                      Text="{Binding DarkStabilizerToggleKey,Mode=TwoWay}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DualResolution}">
                                 <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Dual Resolution" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
@@ -60,7 +62,9 @@
                                                       LostFocus="tbDualResolutionToggle_LostFocus"
                                                       ContextMenuOpening="tbDualResolutionToggle_ContextMenuOpening"
                                                       ContextMenu="{x:Null}"
-                                                      Text="{Binding DualResolutionToggleKey,Mode=TwoWay}" />
+                                                      Text="{Binding DualResolutionToggleKey,Mode=TwoWay}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                             <Grid Height="40" Margin="0,8" IsEnabled="{Binding HDRType_IsEnable}" Opacity="{Binding HDRType_Opacity}" Visibility="{Binding IsGameSeries}">
                                 <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Smart HDR" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
