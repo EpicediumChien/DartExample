@@ -97,7 +97,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private IDTPProxyPlugin _DTPProxyPlugin;
         private IEzMemoryPlugin _IEzMemoryPlugin;
 
+
+        private readonly object _FwUpdateLock = new object();
+        private readonly object _DisplayChangedLock = new object();
         private readonly object _PluginConditionLock = new object();
+
         private readonly object _PluginConditionLock_Display = new object();
         private readonly object _PluginConditionLock_Peripherals = new object();
         private readonly object _PluginConditionLock_Settings = new object();
@@ -3731,15 +3735,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"[DeleteMiniInstallerFolder], o_String={o.ToString()}.");
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                string path = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                if (!string.IsNullOrEmpty(AppDataPath))
                 {
-                    writelog($"[DeleteMiniInstallerFolder], Exists.");
-                    Directory.Delete(path, true);
-                    writelog($"[DeleteMiniInstallerFolder], Delete.");
+                    string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                    if (Directory.Exists(path))
+                    {
+                        writelog($"[DeleteMiniInstallerFolder], Exists.");
+                        Directory.Delete(path, true);
+                        writelog($"[DeleteMiniInstallerFolder], Delete.");
+                    }
+                    WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
+                    writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
                 }
-                WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
-                writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
             }
             writelog("[DeleteMiniInstallerFolder], done.");
         }
@@ -5116,7 +5124,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 Task.Run(() =>
                 {
-                    lock (_PluginConditionLock)
+                    lock (_DisplayChangedLock)
                     {
                         //Call VCP to catch updated monitor info
                         _AllInfoMonitors = _DisplayManagerPlugin.GetMonitors(true).Result;
@@ -6198,7 +6206,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var pluginCondition = await (_FWUpdatePlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
                 //PluginCondition _FWUpdatePluginCondition;
-                lock (_PluginConditionLock)
+                lock (_FwUpdateLock)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
@@ -7423,7 +7431,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     allInputs.Add(new InputSourceObj(input.Value.InputName));
                 }
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
+                //debug
+                foreach (var s in subInputs)
+                {
+                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                }
+                foreach (var s in allInputs)
+                {
+                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                }
+                //debug end
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;

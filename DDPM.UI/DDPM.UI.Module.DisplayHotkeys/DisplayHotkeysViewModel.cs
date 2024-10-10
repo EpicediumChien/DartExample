@@ -197,13 +197,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         if (FavoriteHotkeyInfo != null)//FavoriteHotkeyInfo.InputSource.Count > 0)
                         {
                             HotkeyData? hotkeyData1 = list?.SingleOrDefault(x => x.hotkeyType.Equals(HotkeyType.FavoriteInputSource));
-                            InputSourceList? inputSourceList = _inputsList.FirstOrDefault(x => x.inputDisplayText.Equals(hotkeyData1?.inputSource[0].Name));//FavoriteHotkeyInfo.InputSource[0].Name));
-                            if (!inputSourceObj.Name.Equals(inputSourceList?.inputDisplayText))
+                            if (hotkeyData1?.inputSource.Count == 0)
                             {
                                 updateInputSourceList.Add(inputSourceObj);
                                 FavoriteHotkeyInfo.InputSource = updateInputSourceList;
                                 bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, FavoriteHotkeyInfo).Result;
                             }
+                            else
+                            {
+                                InputSourceList? inputSourceList = _inputsList.FirstOrDefault(x => x.inputDisplayText.Equals(hotkeyData1?.inputSource[0].Name));//FavoriteHotkeyInfo.InputSource[0].Name));
+                                if (!inputSourceObj.Name.Equals(inputSourceList?.inputDisplayText))
+                                {
+                                    updateInputSourceList.Add(inputSourceObj);
+                                    FavoriteHotkeyInfo.InputSource = updateInputSourceList;
+                                    bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, FavoriteHotkeyInfo).Result;
+                                }
+                            }
+
                         }
                         break;
                     case "1":
@@ -310,7 +320,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                             HotkeyData? hotkeyData = list.SingleOrDefault(x => x.hotkeyType.Equals(HotkeyType.FavoriteInputSource));
                             if (hotkeyData != null)
                                 _FavoriteInputSelect = InputsList.SingleOrDefault(x => x.inputDisplayText.Equals(hotkeyData?.inputSource[0].Name));// hotkeyInfo.InputSource[0].Name));
-                            Debug.WriteLine($"FavoriteInput_Selected: {FavoriteInput_Selected.inputDisplayText}");
+                            Debug.WriteLine($"FavoriteInput_Selected: {FavoriteInput_Selected?.inputDisplayText}");
                             //_FavoriteInput_Selected_Index = 2;
                         }
                         else
@@ -357,6 +367,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                     }
                 }
+                else
+                    return;//temp solution 0708
                 OnPropertyChanged("InputsList");
                 OnPropertyChanged("FavoriteInput_Selected");
                 OnPropertyChanged("SwitchInput1_Selected");
