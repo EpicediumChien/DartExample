@@ -245,10 +245,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                         TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
                         SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
                         NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
-                        ServerPath = swUpdateHelper.Softwares[i].MiniInstallerServer_path,
-                        SHA256 = swUpdateHelper.Softwares[i].MiniInstaller_SHA256,
-                        SHA512 = swUpdateHelper.Softwares[i].MiniInstaller_SHA512,
-                        Thumbprint = swUpdateHelper.Softwares[i].MiniInstaller_Thumbprint,
+                        ServerPath = swUpdateHelper.Softwares[i].DdpmSwUpdaterServer_path,
+                        SHA256 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA256,
+                        SHA512 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA512,
+                        Thumbprint = swUpdateHelper.Softwares[i].DdpmSwUpdater_Thumbprint,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
