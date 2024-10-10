@@ -19,6 +19,19 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+    <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DPeMPublic.Common">
+      <HintPath>..\..\CommonDll\DPeMPublic.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VcpCore.Common">
+      <HintPath>..\..\CommonDll\VcpCore.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
