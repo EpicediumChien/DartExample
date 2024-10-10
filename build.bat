@@ -120,13 +120,13 @@ echo *************************************
 
 
 
-echo Clean Mini installer
-dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\MiniInstaller\MiniInstaller.sln"
+echo Clean DdpmSwUpdater
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DdpmSwUpdater\DdpmSwUpdater.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln  /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorUI
 :: pause
 echo Build UI
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\MiniInstaller\MiniInstaller.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DdpmSwUpdater\DdpmSwUpdater.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorUI
 echo *************************************

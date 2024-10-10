@@ -33,6 +33,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private HomeDevice _homeDeviceSelect;
         #endregion Private Members
 
         public EzMemoryRightView(DisplayViewModel vmDisplay)
@@ -41,6 +42,7 @@ namespace DDPM.UI.Module.EzMemory
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            _homeDeviceSelect = _homeDevice;
             _log = vmDisplay.Console.CreateLog("EzMemoryRightView");
             _log.Info($"{nameof(EzMemoryRightView)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
@@ -109,29 +111,6 @@ namespace DDPM.UI.Module.EzMemory
                     _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.currenySelectspItem.LayoutID} not found in UserSettings.");
                 }
             }          
-        }
-
-        /// <summary>
-        /// Add Profile Button
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddNewButton_Click(object sender, RoutedEventArgs e)
-        {
-            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
-            if (checkEAProfileDDPM != null)
-            {
-                if (checkEAProfileDDPM.Count >= 9)
-                {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitle, Strings.subTitle, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    return;
-
-                }
-            }
-            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
         #region SplitItem Delete
@@ -250,7 +229,14 @@ namespace DDPM.UI.Module.EzMemory
                     if (matchingProfile != null)
                     {
                         _vm.ProfileTitleTextBlockValue = matchingProfile.Name;
-                        _vm.AppDocumentValue = matchingProfile.AppInfos[0].Name;
+                        _vm.AppDocumentValue = string.Empty;
+                        int no = 1;
+                        foreach (EAAppInfoDDPM profile in matchingProfile.AppInfos)
+                        {
+                            _vm.AppDocumentValue += no + ". " + profile.Name + "\r\n";
+                            no++;
+                        }
+                        //_vm.AppDocumentValue = matchingProfile.AppInfos[0].Name;
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, Profile ID {matchingProfile.ID} found and updated in UserSettings.");
                     }
                     else
@@ -282,15 +268,15 @@ namespace DDPM.UI.Module.EzMemory
 
                     if (profileSetting != null)
                     {
-                        _vm.AutomaticStartupValue = profileSetting.Auto.ToString();
-
                         if (profileSetting.Auto)
                         {
+                            _vm.AutomaticStartupValue = "Yes";
                             _vm.LaunchByTimeValue = _vm.ConvertAutoLaunchtimeToTime(profileSetting.AutoStartTime);
                         }
                         else
                         {
-                            _vm.LaunchByTimeValue = string.Empty;
+                            _vm.AutomaticStartupValue = "No";
+                            _vm.LaunchByTimeValue = "_";
                         }
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, MonitorSettings updated for Profile ID {matchingProfile.ID}.");
                     }
@@ -436,7 +422,7 @@ namespace DDPM.UI.Module.EzMemory
 
                 }
             }
-            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
         #endregion
@@ -453,7 +439,7 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 _vm = _homeDevice.vmEzArrange;
                 DataContext = _homeDevice.vmEzArrange;
-
+                _homeDeviceSelect = _homeDevice;
             }
             CleanUpListViewItems();
             InitListViewItems();

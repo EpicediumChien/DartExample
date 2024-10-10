@@ -160,7 +160,7 @@ namespace DDPM.UI.Plugin.PenPlugin
             }
             _log.Debug($"GetPeripherals is invoked");
             //_deviceHelper = await peripheralsPlugin.GetDevices();
-            Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
+            Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);

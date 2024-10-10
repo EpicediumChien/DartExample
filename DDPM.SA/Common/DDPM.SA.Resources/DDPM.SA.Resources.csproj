@@ -22,8 +22,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)DDPM.SA.Common.*&quot; &quot;$(SolutionDir)..\MiniInstaller\CommonDll\&quot; /Y /S /Q" />
-  </Target>
-
 </Project>
