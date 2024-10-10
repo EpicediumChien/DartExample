@@ -22,6 +22,7 @@ using DdmLibrary.Utility;
 using System.Linq.Expressions;
 using Windows.Devices.Bluetooth.Background;
 using Windows.Web.Http;
+using DDPM.SA.Obfuscation;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -2465,6 +2466,32 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[WriteSerializedContentToFile] failed with ({info})");
             }
             return Task.FromResult(result);
+        }
+        #endregion
+
+        #region Info Key
+        public Task AddInfo(string info)
+        {
+            if(_SysSettingsPlugin != null)
+            {
+                _SysSettingsPlugin.AddInfo(info);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<List<string>> GetInfos(bool force_reload = false)
+        {
+            List<string> infos = new List<string>();
+            if (_SysSettingsPlugin != null)
+            {
+                infos = _SysSettingsPlugin.GetInfos(force_reload).Result;
+            }
+            if(infos == null || infos.Count == 0)
+            {
+                infos = new List<string>();
+                infos.Add(InfoHash.Info_Hash);
+            }
+            return Task.FromResult(infos);
         }
         #endregion
     }

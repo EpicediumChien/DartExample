@@ -42,6 +42,7 @@ using VcpCore.Common;
 //using WinCopies.Util;
 using DdmLibrary;
 using DdmLibrary.Utility;
+//using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
 {
@@ -1541,95 +1542,30 @@ namespace ColorPreset.Plugins
             }
         }
 
-        bool CheckICC_JSON_Security(string filepath, out string strJson)
+        bool CheckICC_JSON_Security(string filePath, out string strJson)
         {
-            string jsonfilepath = string.Empty;
-            string publickeyfilepath = string.Empty;
             strJson = string.Empty;
-            bool ret = true;
-
-            jsonfilepath = filepath;    // .json: current no_signature from server
-            Console.WriteLine("[CheckICC_JSON_Security] :" + jsonfilepath);
-            writelog("[CheckICC_JSON_Security] :" + jsonfilepath);
-            // Currently the server can not provide json file with signature.  DDPMFileSecurity.LoadFileToVerifyJson_2 will return if signature is null.
-            // (for debugging) Public_Key from Info.cs.
-
-            // (for debugging) .json: with signature 
-            //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
-            //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_key2info_key1sig.json";
-            //jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\metaadata_icc_pk1.json";
-            //jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\dean\\metaadata_icc2.json";
-
-            // **** (1/3) for Dean **** we should check both a.Info.cs and b.local_setting_file 
+            bool ret = false;
+            writelog("[CheckICC_JSON_Security] :" + filePath);
+           
             List<string> InfoPkey = new List<string>();
-            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-            // **** for Dean end ****
-
-            //ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
-            ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson_2(jsonfilepath, InfoPkey, out strJson);
-
-            return true;    // Force True. Info key and Signature not ready in server site.
-            // Handle "Info" section
-            if (ret && (strJson.Length > 1))
+            if(_SettingsPlugin != null)
             {
-                JObject jObject = JObject.Parse(strJson);
-                string modifiedJson;
-                string szInfo;
-                try
-                {
-                    szInfo = (string)jObject["Info"];
-
-                    if (string.IsNullOrEmpty(szInfo))
-                    {
-#if DEBUG
-                        Console.WriteLine("*** No Info Key.");
-#endif
-                        return true;
-                    }
-                    jObject.Remove("Info");
-                    // Convert the modified JObject back to a JSON string
-                    modifiedJson = jObject.ToString();
-                    strJson = modifiedJson;
-
-                    List<string> Pub_Key_List_From_DBase = new List<string>();
-
-                    // Load the base64-encoded public key from a text file
-                    // **** (2/3) fake data start - for Dean **** load Info_Key from  b.local_setting_file 
-                    string publicKeyBase64 = File.ReadAllText(publickeyfilepath);
-                    Pub_Key_List_From_DBase.Add(publicKeyBase64);
-                    // **** fake data end - for Dean end ****
-
-                    int nIndexFound = -1;
-                    Console.WriteLine("*** (Remote) Public Key 1: " + Pub_Key_List_From_DBase.Count.ToString() + " " + szInfo);
-
-                    for (int i = 0; i < Pub_Key_List_From_DBase.Count; i++)
-                    {   // Need to replace Public Key here
-                        string current = Pub_Key_List_From_DBase[i];
-                        Console.WriteLine("*** (Local) Public Key 2: " + current);
-
-                        if (szInfo == current)
-                        {
-                            nIndexFound = i;
-                            break;
-                        }
-                    }
-                    if (nIndexFound >= 0)
-                    {   // Key found. 
-                    }
-                    else
-                    {   // Key Not found. Current Key != Remote Key
-                        Pub_Key_List_From_DBase.Insert(0, publicKeyBase64);
-                        // *** ToDo: (3/3) We should append Info_Key to b.local_setting_file ***
-                    }
-
-                    ret = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
-                    return false;
-                }
+                InfoPkey = _SettingsPlugin.GetInfos().Result;
             }
+            if(InfoPkey == null || InfoPkey.Count == 0)
+            {
+                //if read info failed, load default key as well
+                InfoPkey = new List<string>();
+                InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+            }
+            string szInfo = string.Empty;
+            ret = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, filePath, InfoPkey, out szInfo, out strJson);
+
+            if (!string.IsNullOrEmpty(szInfo) && _SettingsPlugin != null)
+            {
+                _SettingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+            }                       
 
             return ret;
         }
@@ -1644,6 +1580,9 @@ namespace ColorPreset.Plugins
         {
             try
             {
+                string strFilePath = string.Empty;
+                string strReadJson = string.Empty;
+               
                 // ICC profiles mapping schema
                 FileStream fileStream;
                 FileStream fileStream_ICM;
@@ -1668,7 +1607,7 @@ namespace ColorPreset.Plugins
                 _ICC_Metadata.strICC_Folder = String.Format($"{strICC_Folder}");
 
                 string url = string.Empty;
-                string strFilePath = string.Empty;
+                //string strFilePath = string.Empty;
                 download = new Download(_logs);
                 string downloadInfo = string.Empty;
                 // 20240627 jim add
@@ -1732,7 +1671,7 @@ namespace ColorPreset.Plugins
                                 return Task.FromResult(_ICC_Metadata);
                             }
 
-                            string strReadJson = string.Empty;
+                            strReadJson = string.Empty;
                             if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
                             {
                                 writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
