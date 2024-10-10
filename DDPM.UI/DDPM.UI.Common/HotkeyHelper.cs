@@ -326,6 +326,12 @@ namespace DDPM.UI.Common
             //string swHortcutText = string.Empty;
             if (newKeys.Count == 0) return;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
+            Debug.WriteLine($"shotcutText:{swHortcutText}: length: {swHortcutText.Length}");
+            if (swHortcutText.Length > 30)
+            {
+                //if lenght gt 30,reset to default
+                return;
+            }
             texBox.Text = swHortcutText;
             texBox.Select(swHortcutText.Length, 1);
             BundleNewKeys.AddRange(newKeys);
