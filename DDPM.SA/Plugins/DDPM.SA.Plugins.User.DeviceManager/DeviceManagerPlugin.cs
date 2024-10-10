@@ -97,7 +97,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private IDTPProxyPlugin _DTPProxyPlugin;
         private IEzMemoryPlugin _IEzMemoryPlugin;
 
+
+        private readonly object _FwUpdateLock = new object();
+        private readonly object _DisplayChangedLock = new object();
         private readonly object _PluginConditionLock = new object();
+
         private readonly object _PluginConditionLock_Display = new object();
         private readonly object _PluginConditionLock_Peripherals = new object();
         private readonly object _PluginConditionLock_Settings = new object();
@@ -5128,7 +5132,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 Task.Run(() =>
                 {
-                    lock (_PluginConditionLock)
+                    lock (_DisplayChangedLock)
                     {
                         //Call VCP to catch updated monitor info
                         _AllInfoMonitors = _DisplayManagerPlugin.GetMonitors(true).Result;
@@ -5398,8 +5402,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
-                    SupportedNKVMMonitors();
+                    //_NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
+                    //SupportedNKVMMonitors();
                 }
             }
         }
@@ -6210,7 +6214,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var pluginCondition = await (_FWUpdatePlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
                 //PluginCondition _FWUpdatePluginCondition;
-                lock (_PluginConditionLock)
+                lock (_FwUpdateLock)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
