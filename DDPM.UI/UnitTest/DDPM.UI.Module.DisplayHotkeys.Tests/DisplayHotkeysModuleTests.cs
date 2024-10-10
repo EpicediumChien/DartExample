@@ -4,7 +4,9 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
+using System.Windows;
 using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.DisplayHotkeys.Tests
 {
@@ -15,18 +17,23 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private Mock<IDeviceManagerSA>? deviceManagerMock;
+        private DisplayHotkeysViewModel vm;
 
         [SetUp]
         public void Setup()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo=new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
         }
 
         [Test]
         public void TestConstructor_DisplayHotkeysModule()
         {
+            DisplayHotkeysViewModel vm = new DisplayHotkeysViewModel();
             displayHotkeysModule = new DisplayHotkeysModule();
             // Assert
             Assert.That(displayHotkeysModule.ModuleOwner, Is.Not.Null);
@@ -60,17 +67,14 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
         [Test]//Test method
         public void TestSelectedHomeDevice()
         {
-            var displayHotkeysModule = new DisplayHotkeysModule();
-            var slectedHomeDevice = new HomeDevice();
-            displayHotkeysModule.SelectedHomeDevice = slectedHomeDevice;
-            Assert.That(displayHotkeysModule!.SelectedHomeDevice, Is.EqualTo(null));
-
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             displayHotkeysModule = new DisplayHotkeysModule();
-            slectedHomeDevice = new HomeDevice();
+            var slectedHomeDevice = new HomeDevice();
             displayHotkeysModule.SelectedHomeDevice = slectedHomeDevice;
             Assert.That(displayHotkeysModule!.SelectedHomeDevice, Is.EqualTo(moduleOwner.SelectedHomeDevice));
         }
@@ -99,6 +103,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
         }
 
         [Test]
+        [Apartment(ApartmentState.STA)]
         public void TestModuleOwner()
         {
             //var deviceManagerMock = new Mock<IDeviceManagerSA>();
@@ -108,8 +113,11 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var displayHotkeysModule = new DisplayHotkeysModule();
+            displayHotkeysModule.ModuleOwner= moduleOwnerMock!.Object;
             Assert.That(displayHotkeysModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
