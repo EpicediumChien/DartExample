@@ -3375,10 +3375,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
         private DisplayUpdateHelper GetDisplayFWMetadata()
         {
+            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} start");
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
             if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
             {
+                _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA fail");
                 return ret;
             }
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
@@ -3387,6 +3389,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 try
                 {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} get jsonContent");
                     client.Timeout = TimeSpan.FromSeconds(5);
                     HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
@@ -3400,10 +3403,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     string szInfo = string.Empty;
                     string jsonString = string.Empty;
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
                     jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
                     if (!string.IsNullOrEmpty(jsonString))
                     {
-                        Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(property.Value.GetRawText());
+                        Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
                             string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
@@ -3476,6 +3480,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} error {ex.Message}");
                 }
             }
+            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} done");
             return ret;
         }
         public string GetSystemArchitecture()
