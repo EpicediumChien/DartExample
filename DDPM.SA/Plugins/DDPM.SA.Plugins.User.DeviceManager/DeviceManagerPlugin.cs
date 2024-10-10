@@ -5394,8 +5394,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
-                    SupportedNKVMMonitors();
+                    //_NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
+                    //SupportedNKVMMonitors();
                 }
             }
         }
