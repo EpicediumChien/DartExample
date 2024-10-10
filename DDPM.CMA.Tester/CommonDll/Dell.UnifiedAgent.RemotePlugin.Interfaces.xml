@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dell.UnifiedAgent.RemotePlugin.Interfaces</name>
+    </assembly>
+    <members>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets">
+            <summary>
+            Carries agent's data
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.Id">
+            <summary>
+            ID
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.Name">
+            <summary>
+            Name
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.RPMVersion">
+            <summary>
+            RPM version
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.Elevated">
+            <summary>
+            Specifies if the agent is running elevated
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.SessionId">
+            <summary>
+            Agent's session Id
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.ProcessId">
+            <summary>
+            Agent's process Id
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.PeerPipeName">
+            <summary>
+            Name for elevated named pipe
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.TriggerEcosystemOnStart">
+            <summary>
+            Specifies if the agent represented by the <see cref="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets"/> can trigger start the ecosystem on start.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.PeerPipeNameUnelevated">
+            <summary>
+            Name for unelevated named pipe
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.ToString">
+            <summary>
+            Overriding ToString.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets.Clone">
+            <summary>
+            Warning: this is a shallow clone.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException">
+            <summary>
+            Exception thrown when DTH is denying the incoming subagent registration with incompatible RPM version.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException.AgentId">
+            <summary>
+            Agent Id of the subagent that is being denied.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException.ClientRPMVersion">
+            <summary>
+            DTH's file version.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException.DTHVersion">
+            <summary>
+            DTH's file version.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException.DTHRPMVersion">
+            <summary>
+            DTH's RPM plugin version.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException.#ctor(System.Guid,System.String,System.String,System.String)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="agentId"></param>
+            <param name="clientRPMVersion"></param>
+            <param name="dthVersion"></param>
+            <param name="rpmVersion"></param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IncompatibleSubagentRegistrationException.#ctor(System.Guid,System.String,System.String,System.String,System.String)">
+            <summary>
+            Constructor with message
+            </summary>
+            <param name="agentId"></param>
+            <param name="clientRPMVersion"></param>
+            <param name="dthVersion"></param>
+            <param name="rpmVersion"></param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException">
+            <summary>
+            Exception to be thrown when redirection is detected along a given path
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException" /> class with a specified error
+                message.
+            </summary>
+            <param name="message">The message that describes the error. </param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException.#ctor(System.String,System.Exception)">
+            <summary>
+                Initializes a new instance of the <see cref="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException" /> class with a specified error
+                message and
+                a
+                reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception. </param>
+            <param name="innerException">
+                The exception that is the cause of the current exception, or a null reference (
+                <see langword="Nothing" /> in Visual Basic) if no inner exception is specified.
+            </param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException" /> class.</summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>Initializes a new instance of the <see cref="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.RedirectionDetectionException" /> class with serialized data.</summary>
+            <param name="info">
+                The <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being
+                thrown.
+            </param>
+            <param name="context">
+                The <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or
+                destination.
+            </param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null" />. </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+                The class name is <see langword="null" /> or
+                <see cref="T:System.Exception.HResult" /> is zero (0).
+            </exception>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.SimultaneousConnectionException">
+            <summary>
+            This exception is thrown when two peers are connecting to each other simultaneously. There is a fairly
+            complex but deterministic method to decide which of the two connections if forfeit. The agent receiving
+            this exception will kill the connection.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.SimultaneousConnectionException.ThrowingPeer">
+            <summary>
+            This is the peer that detected the condition and was responsible for deciding which 
+            connection is abandoned.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.SimultaneousConnectionException.RegisteringPeer">
+            <summary>
+            This is the peer that receives the exception and should kill the connection.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.SimultaneousConnectionException.#ctor(Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets,Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets)">
+            <summary>
+            Custom exception constructor.
+            </summary>
+            <param name="throwingPeer"></param>
+            <param name="registeringPeer"></param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.SimultaneousConnectionException.#ctor(Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets,Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets,System.String)">
+            <summary>
+            Custom exception constructor.
+            </summary>
+            <param name="throwingPeer"></param>
+            <param name="registeringPeer"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.SimultaneousConnectionException.#ctor(Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets,Dell.UnifiedAgent.RemotePlugin.Interfaces.AgentDeets,System.String,System.Exception)">
+            <summary>
+            Custom exception constructor.
+            </summary>
+            <param name="throwingPeer"></param>
+            <param name="registeringPeer"></param>
+            <param name="message"></param>
+            <param name="innerException"></param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.SubAgentRegistrationDeniedException">
+            <summary>
+            Exception thrown when DTH is denying the incoming subagent registration.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.SubAgentRegistrationDeniedException.AgentId">
+            <summary>
+            Agent Id of the subagent that is being denied.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.SubAgentRegistrationDeniedException.#ctor(System.Guid)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="agentId"></param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotFoundException">
+            <summary>
+            Types not found exception.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotFoundException.TypesNotFound">
+            <summary>
+            List of types that were not found 
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotFoundException.#ctor(System.Collections.Generic.List{System.String})">
+            <summary>
+            TypesNotFoundException constructor
+            </summary>
+            <param name="typesNotFound">List of types that were not found</param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotFoundException.#ctor(System.Collections.Generic.List{System.String},System.String)">
+            <summary>
+            TypesNotFoundException constructor
+            </summary>
+            <param name="typesNotFound">List of types that were not found</param>
+            <param name="message">Custom exception message</param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotFoundException.#ctor(System.Collections.Generic.List{System.String},System.String,System.Exception)">
+            <summary>
+            TypesNotFoundException constructor
+            </summary>
+            <param name="typesNotFound">List of types that were not found</param>
+            <param name="message">Custom exception message</param>
+            <param name="inner">Reference to inner exception</param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotImplementedException">
+            <summary>
+            Exception that should be thrown when a plugin exposed types are not interfaces or are not implemented by the object provided 
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotImplementedException.TypesNotImplemented">
+            <summary>
+            List of not implemented types
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotImplementedException.PluginTypeName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotImplementedException.#ctor(System.Collections.Generic.List{System.String},System.String)">
+            <summary>
+            Constructor for TypesNotImplementedException
+            </summary>
+            <param name="typesNotImplemented">List of types not implemented</param>
+            <param name="pluginTypeName">Plugin class name</param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotImplementedException.#ctor(System.Collections.Generic.List{System.String},System.String,System.String)">
+            <summary>
+            Constructor for TypesNotImplementedException
+            </summary>
+            <param name="typesNotImplemented">List of types not implemented</param>
+            <param name="pluginTypeName">Plugin class name</param>
+            <param name="message">Exception message</param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.TypesNotImplementedException.#ctor(System.Collections.Generic.List{System.String},System.String,System.String,System.Exception)">
+            <summary>
+            Constructor for TypesNotImplementedException
+            </summary>
+            <param name="typesNotImplemented">List of types not implemented</param>
+            <param name="pluginTypeName">Plugin class name</param>
+            <param name="message">Exception message</param>
+            <param name="inner">Reference to inner exception</param>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo">
+            <summary>
+            Consolidated Exposed Type Info 
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.ExposedTypeFQN">
+            <summary>
+            List of fully Qualified Assembly names of the published types by the plugin.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.ExposedType">
+            <summary>
+            List of full type names published by the plugin.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.ParentTypes">
+            <summary>
+            List of full type names of all types implemented or extended by the exposed types including the exposed types.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.AllowUnelevated">
+            <summary>
+            Elevated or Un elevated agents
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.Equals(Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo)">
+            <inheritdoc />
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.op_Equality(Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo,Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo)">
+            <summary>
+            Overloading operator ==
+            </summary>
+            <param name="obj1"></param>
+            <param name="obj2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.op_Inequality(Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo,Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo)">
+            <summary>
+            Overloading operator !=
+            </summary>
+            <param name="obj1"></param>
+            <param name="obj2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.ExposedTypeInfo.Clone">
+            <summary>
+            Warning: this is a shallow clone.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="E:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.RpcSystemAvailableEvent">
+            <summary>
+            Event will be raised to indicate that the Rpc system is available and 
+            remote plugins should be available as they get published.
+            </summary>
+        </member>
+        <member name="E:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.RpcSystemUnavailableEvent">
+            <summary>
+            Event will be raised to indicate that the Rpc system has become unavailable.
+            All dynamic proxy interfaces are now disconnected.
+            </summary>
+        </member>
+        <member name="E:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.RemotePluginPublishedEvent">
+            <summary>
+            Event will be raised to notify that a plugin has been published in the system.
+            </summary>
+        </member>
+        <member name="E:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.RemotePluginLostEvent">
+            <summary>
+            Event will be raised to notify that a plugin has been lost in the system. It could be 
+            temporary or for an extended period of time.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.RpcSystemAvailable">
+            <summary>
+            Query the current state of the RPC
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.IsPluginAvailableAsync(System.Guid)">
+            <summary>
+            Has any plugin been published in the system with an 
+            exposed type matching the provided <paramref name="pluginId"/>? 
+            </summary>
+            <param name="pluginId"></param>
+            <returns>Returns true if a published plugin matches the supplied <paramref name="pluginId"/>.</returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.IsPluginAvailableAsync(System.Type)">
+            <summary>
+            Has any plugin been published in the system with 
+            an exposed type matching the provided <paramref name="interfaceType"/>?
+            </summary>
+            <param name="interfaceType"></param>
+            <returns>Returns true if any published plugin matches the supplied <paramref name="interfaceType"/>.</returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.GetPluginInfoAsync(System.Guid)">
+            <summary>
+            Retrieves information about a published plugin.
+            </summary>
+            <param name="pluginId"></param>
+            <returns>The plugin info or 'null' if not available.</returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.GetPluginInfoAsync(System.Type)">
+            <summary>
+            Retrieves list of plugin information that expose <paramref name="interfaceType"/>.
+            </summary>
+            <param name="interfaceType"></param>
+            <exception cref="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.PluginTypeNotFoundException">Thrown if <paramref name="interfaceType"/> was not found in published plugins</exception>
+            <returns>The list of plugin information or throws an exception.</returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.IRemotePluginManager.GetInterfaceAsync(System.Type,Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo)">
+            <summary>
+            Retrieve a dynamically generated RPC proxy for a particular interface Type. The 
+            PublishedPluginInfo must match. 
+            </summary>
+            <param name="interfaceType">Interface requested.</param>
+            <param name="pluginInfo"></param>
+            <returns>Dynamic proxy of requested interface.</returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PluginId">
+            <summary>
+                Id of the published plugin, comes from the attribute.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PublishingAgentInformation">
+            <summary>
+            Publishing Agent's information.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.FileVersion">
+            <summary>
+                Binary version of the exposed plugin.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.APIVersion">
+            <summary>
+                API version of the exposed plugin, comes from the plugin attribute.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.ExposedTypes">
+            <summary>
+                List of full type names published by the plugin.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.AllImplementedTypes">
+            <summary>
+                List of full type names of all types implemented or extended by the exposed types including the exposed types. 
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.ExposedTypesFQN">
+            <summary>
+                List of fully Qualified Assembly names of the published types by the plugin.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.ExposedTypesInfo">
+            <summary>
+            List of 
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.AssemblyName">
+            <summary>
+                The plugin assembly name. This assist with the dynamically generated plugin creation
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.ClassName">
+            <summary>
+                The class name of the published plugin. This assist with the dynamically generated plugin creation
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PluginName">
+            <summary>
+                The name of the plugin
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.Description">
+            <summary>
+                Gets or sets the description of the plugin. This value is optional.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PluginCategory">
+            <summary>
+                A string representation of plugin Category />
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PublisherName">
+            <summary>
+                Defines the name of the publisher
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PublisherWebsite">
+            <summary>
+                Website defines the plugin reference website for detailed information about plugin.
+            </summary>
+        </member>
+        <member name="P:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.PublisherSupport">
+            <summary>
+                Defines publisher's contact information where it can be reached for support.. may contain email, phone number etc.
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            This happens when you De-serialize
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.ToString">
+            <summary>
+            Overriding ToString.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.PublishedPluginInfo.Clone">
+            <summary>
+            Warning: this is a shallow clone.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Dell.UnifiedAgent.RemotePlugin.Interfaces.SerializationInfoExtensions">
+            <summary>
+            <see cref="T:System.Runtime.Serialization.SerializationInfo"/> extension to try catch an exception
+            </summary>
+        </member>
+        <member name="M:Dell.UnifiedAgent.RemotePlugin.Interfaces.SerializationInfoExtensions.TryGetValue(System.Runtime.Serialization.SerializationInfo,System.String,System.Type)">
+            <summary>
+            An extension to <see cref="M:System.Runtime.Serialization.SerializationInfo.GetValue(System.String,System.Type)"/>.
+            We catch <see cref="T:System.Runtime.Serialization.SerializationException"/> when the member with <paramref name="valueName"/> was not found
+            and return a default or null object instead of throwing an exception in the De-serialization process.
+            </summary>
+            <param name="sInfo"></param>
+            <param name="valueName"></param>
+            <param name="valueType"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

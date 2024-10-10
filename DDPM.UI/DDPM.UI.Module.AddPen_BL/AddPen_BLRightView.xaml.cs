@@ -24,7 +24,8 @@ namespace DDPM.UI.Module.AddPen_BL
             _vm = vm;
 
             //txtCaption.Text = Caption;
-            txtStep1.Text = string.Format(Step1, Dns.GetHostName());
+            //txtStep1.Text = string.Format(Step1, Dns.GetHostName());
+            txtStep1.Text = Step1;
             //txtStep2.Text = Step2;
             //txtStep3.Text = Step3;
             //txtStep3_1.Text = Step3_1;

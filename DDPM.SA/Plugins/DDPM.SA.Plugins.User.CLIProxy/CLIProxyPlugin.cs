@@ -486,11 +486,19 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "DEVICECONFIGURATION":
                         case "CONNECTEDDEVICES":
                         case "SCREENNOTIFICATION":
+                        case "DIAGNOSTICSREPORT":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;
                         case "FIRMWAREUPDATE":
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+
+                            // add @ stephen
+                            DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "DISABLECA":
+                            cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
 
                         default:

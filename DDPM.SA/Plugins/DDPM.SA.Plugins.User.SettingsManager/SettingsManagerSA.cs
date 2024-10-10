@@ -21,6 +21,8 @@ using DdmLibrary;
 using DdmLibrary.Utility;
 using System.Linq.Expressions;
 using Windows.Devices.Bluetooth.Background;
+using Windows.Web.Http;
+using DDPM.SA.Obfuscation;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -818,7 +820,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(true);*/
             bool result = WriteSettings_Common(powerNapSettings, "powernap");
 
-            return Task.FromResult(false);
+            return Task.FromResult(result);
         }
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
@@ -2414,6 +2416,82 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[User setting plugin] WARNING: write registry cause exception ({e.Message})");
                 return Task.FromResult(false);
             }
+        }
+        #endregion
+
+        #region common read/write json file interface
+        public Task<string> ReadSerializedContentFromFile(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            string result = null;
+            string info = string.Empty;
+            if (!File.Exists(filePath))
+            {
+                WriteLog($"[ReadSerializedContentFromFile][File.Exists] File:{fileInfo.Name}, failed with(file is not exist)");
+                return Task.FromResult(result);
+            }
+            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            {
+                WriteLog($"[ReadSerializedContentFromFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                return Task.FromResult(result);
+            }
+            //Already inluded in function DDPMFileSecurity.GetSerializedJsonString
+            //if (DDPMFileSecurity.IsFilePathValid(filePath, out info))
+            //{
+            //    WriteLog($"[ReadSerializedContentFromFile][IsFilePathValid] File:{fileInfo.Name}, failed with({info})");
+            //    return Task.FromResult(result);
+            //}
+            result = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, filePath, out info);
+            if(string.IsNullOrEmpty(result))
+            {
+                WriteLog($"[ReadSerializedContentFromFile] Result is empty, failed with ({info})");
+            }
+            return Task.FromResult(result);
+        }
+
+        public Task<bool> WriteSerializedContentToFile(string filePath, string content)
+        {
+            bool result = false;
+            string info = string.Empty;
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))
+            {
+                WriteLog($"[WriteSerializedContentToFile][IsPathSymbolicLinked] File:{fileInfo.Name}, failed with({info})");
+                File.Delete(filePath);
+                return Task.FromResult(result);
+            }
+            result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, content, filePath, out info);
+            if(!result)
+            {
+                WriteLog($"[WriteSerializedContentToFile] failed with ({info})");
+            }
+            return Task.FromResult(result);
+        }
+        #endregion
+
+        #region Info Key
+        public Task AddInfo(string info)
+        {
+            if(_SysSettingsPlugin != null)
+            {
+                _SysSettingsPlugin.AddInfo(info);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<List<string>> GetInfos(bool force_reload = false)
+        {
+            List<string> infos = new List<string>();
+            if (_SysSettingsPlugin != null)
+            {
+                infos = _SysSettingsPlugin.GetInfos(force_reload).Result;
+            }
+            if(infos == null || infos.Count == 0)
+            {
+                infos = new List<string>();
+                infos.Add(InfoHash.Info_Hash);
+            }
+            return Task.FromResult(infos);
         }
         #endregion
     }

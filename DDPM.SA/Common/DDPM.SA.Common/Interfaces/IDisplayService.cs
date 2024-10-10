@@ -126,6 +126,8 @@ namespace DDPM.SA.Common
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -143,6 +145,7 @@ namespace DDPM.SA.Common
 
         //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
         public Task<bool> ReloadEzSettings();
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion EasyArange
 
         #region Gaming

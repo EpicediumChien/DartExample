@@ -1,10 +1,13 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Moq;
+using System.Collections.ObjectModel;
 using VcpCore.Common;
+using static DDPM.UI.Module.DisplayHotkeys.DisplayHotkeysViewModel;
 using EDID = VcpCore.Common.EDID;
 
 namespace DDPM.UI.Module.DisplayHotkeys.Tests
@@ -61,7 +64,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             deviceManagerMock.Setup(x => x.GetInputSourcelist(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new Dictionary<string, InputInfo>()));
-            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<EDID>())).Returns(Task.FromResult(new HotkeySettings()));
+            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult((new HotkeySettings(), new List<HotkeyData>())));
             //deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new HotkeySettings()));
             var monitorInfo = new MonitorInfo();
             var displayHotkeysModule = new DisplayHotkeysModule();
@@ -129,7 +132,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
         public void TestInputsList()
         {
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
-            var inputsList = new List<InputSourceList>();
+            var inputsList = new ObservableCollection<InputSourceList>();
             displayHotkeysViewModel.InputsList = inputsList;
             Assert.That(displayHotkeysViewModel.InputsList, Is.EqualTo(inputsList));
         }
@@ -144,12 +147,12 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
-            var deviceManagerSAMock=new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             displayHotkeysViewModel.DisplayHotkeysModule = new DisplayHotkeysModule();
-            displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice=new HomeDevice();
-            displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo=new MonitorInfo();
-            deviceManagerSAMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<EDID>())).Returns(Task.FromResult(new HotkeySettings()));
+            displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice = new HomeDevice();
+            displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            deviceManagerSAMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult((new HotkeySettings(), new List<HotkeyData>())));
             var SwitchInput1_Selected = new InputSourceList();
             displayHotkeysViewModel.SwitchInput1_Selected = SwitchInput1_Selected;
             Assert.That(displayHotkeysViewModel.SwitchInput1_Selected, Is.EqualTo(SwitchInput1_Selected));
@@ -170,7 +173,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             displayHotkeysViewModel.DisplayHotkeysModule = new DisplayHotkeysModule();
             displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice = new HomeDevice();
             displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
-            deviceManagerSAMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<EDID>())).Returns(Task.FromResult(new HotkeySettings()));
+            deviceManagerSAMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult((new HotkeySettings(), new List<HotkeyData>())));
             var switchInput2_Selected = new InputSourceList();
             displayHotkeysViewModel.SwitchInput2_Selected = switchInput2_Selected;
             Assert.That(displayHotkeysViewModel.SwitchInput2_Selected, Is.EqualTo(switchInput2_Selected));
@@ -193,7 +196,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             displayHotkeysViewModel.DisplayHotkeysModule = new DisplayHotkeysModule();
             displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice = new HomeDevice();
             displayHotkeysViewModel.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
-            deviceManagerSAMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<EDID>())).Returns(Task.FromResult(new HotkeySettings()));
+            deviceManagerSAMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult((new HotkeySettings(), new List<HotkeyData>())));
             var favoriteInput_Selected = new InputSourceList();
             displayHotkeysViewModel.FavoriteInput_Selected = favoriteInput_Selected;
             Assert.That(displayHotkeysViewModel.FavoriteInput_Selected, Is.EqualTo(favoriteInput_Selected));

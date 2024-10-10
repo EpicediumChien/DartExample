@@ -127,7 +127,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.SA.Plugins.User.EzMemo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.SA.Plugins.PlatinumSDK", "Plugins\DDPM.SA.Plugin.PlatinumSDK\DDPM.SA.Plugins.PlatinumSDK.csproj", "{205EA209-341D-4241-9125-0F45A40CF4A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.SA.Resources", "DDPM.SA.Resources\DDPM.SA.Resources.csproj", "{11EDE081-E7E8-4390-BA5D-07C51F74A541}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.SA.Resources", "Common\DDPM.SA.Resources\DDPM.SA.Resources.csproj", "{11EDE081-E7E8-4390-BA5D-07C51F74A541}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

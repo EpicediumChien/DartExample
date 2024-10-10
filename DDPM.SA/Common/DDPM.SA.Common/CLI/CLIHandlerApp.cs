@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace DDPM.SA.Common.CLI
             rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
             return rst;
         }
-        
+
         public static CLIEventResult CLI_Response_OptionValueNotSupport(CommandLineInput commandLineInput, CLIEventResult rst, CommandType_Option op)
         {
             CLI_RESPONSE response = new CLI_RESPONSE();
@@ -123,7 +124,7 @@ namespace DDPM.SA.Common.CLI
             {
                 WriteLog(Log, $"FW/SW update: the command should be configure or get, fail");
                 return CLI_Response_CommandNotSupport(commandLineInput, result);
-            }            
+            }
 
             Type type = inputData.GetType();
             Type type2 = settingsPlugin.GetType();
@@ -136,7 +137,7 @@ namespace DDPM.SA.Common.CLI
             if (commandLineInput.Command.Equals("GET"))
             {
                 if (data_user != null)
-                { 
+                {
                     data_IT = data_user != null ? data_user.LockSettings : null;
                 }
                 if (data_IT != null)
@@ -213,7 +214,7 @@ namespace DDPM.SA.Common.CLI
             }
 
             if (!status)
-            {             
+            {
                 response.Message = "Failed to update config";
                 response.Result = "FAIL";
                 response.Value = op.Option_Value;
@@ -377,7 +378,7 @@ namespace DDPM.SA.Common.CLI
                                     data_IT.Lock_Pen_RestoreFactoryDefaults = true;
                                     break;
                                 case "WEBCAM":
-                                     data_IT.Lock_Webcam_RestoreFactoryDefaults = true;
+                                    data_IT.Lock_Webcam_RestoreFactoryDefaults = true;
                                     break;
                                 case "KEYBOARD":
                                     data_IT.Lock_Keyboard_RestoreFactoryDefaults = true;
@@ -406,7 +407,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_IT.Lock_Display_ColorPreset = true;
                             break;
-                        //case "POWERNAP":
+                            //case "POWERNAP":
                             //data_IT.Lock_Display_PowerNap = true;
                             //break;
                     }
@@ -460,7 +461,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_user.LockSettings.Lock_Display_ColorPreset = true;
                             break;
-                        //case "POWERNAP":
+                            //case "POWERNAP":
                             //data_user.LockSettings.Lock_Display_PowerNap = true;
                             //break;
                     }
@@ -517,10 +518,10 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_IT.Lock_Display_ColorPreset = false;
                             break;
-                        //case "POWERNAP":
+                            //case "POWERNAP":
                             //data_IT.Lock_Display_PowerNap = false;
                             //break;
-                    }                
+                    }
                 }
                 if (data_user != null)
                 {
@@ -571,7 +572,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_user.LockSettings.Lock_Display_ColorPreset = false;
                             break;
-                        //case "POWERNAP":
+                            //case "POWERNAP":
                             //data_user.LockSettings.Lock_Display_PowerNap = false;
                             //break;
                     }
@@ -623,7 +624,7 @@ namespace DDPM.SA.Common.CLI
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Setting_RestoreDefaults" }).Result;
                             break;
                         case "INAPPBRICONT":
-                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_BriCont" }).Result; 
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_BriCont" }).Result;
                             break;
                         case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
@@ -635,7 +636,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ColorPreset" }).Result;
                             break;
-                        //case "POWERNAP":
+                            //case "POWERNAP":
                             //status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_PowerNap" }).Result;
                             //break;
                     }
@@ -659,7 +660,7 @@ namespace DDPM.SA.Common.CLI
             }
 
             return CLI_Response_CompleteWithSuccess(commandLineInput, result);
-        }             
+        }
 
         public static CLIEventResult CLI_Common_LockUlockWithUserAction(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
         {
@@ -721,8 +722,8 @@ namespace DDPM.SA.Common.CLI
                     result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
                     return result;
                 }
-                
-                switch(commandLineInput.TargetFeature)
+
+                switch (commandLineInput.TargetFeature)
                 {
                     case "TELEMETRYCONSENT":
                         DDPMITConfig tmp;
@@ -763,11 +764,11 @@ namespace DDPM.SA.Common.CLI
                         break;
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
-                }                
+                }
                 response.Result = "Completed";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.success;
-                
+
                 return result;
             }
             //ex: cli.exe /set -app=TelemetryConsent -value=true / false <= for user
@@ -787,13 +788,13 @@ namespace DDPM.SA.Common.CLI
                 List<string> values = op.Option_Value.Split(",").ToList();
                 List<string> inputSourceList = new List<string>()
                 {
-                    "HDMI",                    
-                    "DP",                    
-                    "DISPLAYPORT",                    
-                    "USBC",                    
-                    "USB-C",                    
-                    "TBT",                    
-                    "THUNDERBOLT",                    
+                    "HDMI",
+                    "DP",
+                    "DISPLAYPORT",
+                    "USBC",
+                    "USB-C",
+                    "TBT",
+                    "THUNDERBOLT",
                 };
 
                 foreach (string value in values)
@@ -803,7 +804,7 @@ namespace DDPM.SA.Common.CLI
                         if (data_user != null)
                         {
                             if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
-                                 data_user.UserSettings.isTelemetryConsentOn = true;
+                                data_user.UserSettings.isTelemetryConsentOn = true;
                             else
                                 return CLI_Response_TypeNotSupport(commandLineInput, result);
                         }
@@ -823,7 +824,7 @@ namespace DDPM.SA.Common.CLI
                         bool target = false;
                         if (value.ToUpper().Equals("LOCK"))
                             target = true;
-                        if(value.ToUpper().Equals("UNLOCK"))
+                        if (value.ToUpper().Equals("UNLOCK"))
                             target = false;
 
                         if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
@@ -1125,6 +1126,105 @@ namespace DDPM.SA.Common.CLI
                 result.ExitCode = (int)CLI_ExitCode.command_not_support;
                 return result;
             }
+        }
+
+        public static CLIEventResult CLI_Common_DisableCA(ILog Log, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        {
+            //Expected format:
+            // IT > /set -app=DisableCA -value=1 / 0
+            CLIEventResult result = new CLIEventResult();
+            result.ticket = DateTime.Now;
+            result.command_guid_string = action_guid;
+
+            CLI_RESPONSE response = new CLI_RESPONSE();
+            response.Command = commandLineInput.Command;
+            response.TargetFeature = commandLineInput.TargetFeature;
+
+
+            Type type2 = settingsPlugin.GetType();
+            WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
+            IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
+
+            if (commandLineInput.Options == null || commandLineInput.Options.Count == 0)
+            {
+                WriteLog(Log, "Disable CA: command SET without option, fail");
+                return CLI_Response_OptionMissing(commandLineInput, result);
+            }
+
+            CommandType_Option op = commandLineInput.Options[0];
+            if (!op.Option_Name.ToUpper().Equals("VALUE"))
+            {
+                WriteLog(Log, $"Disable CA: option name [{op.Option_Name}] not support");
+                return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
+            }
+            string value = op.Option_Value;
+            bool isSkipCA = false;
+            if (value.ToUpper().Equals("0"))
+            {
+                isSkipCA = false;
+            }
+            else if (value.ToUpper().Equals("1"))
+            {
+                isSkipCA = true;
+            }
+            else
+            {
+                WriteLog(Log, $"Disable CA: option value [{value}] not support");
+                return CLI_Response_OptionValueNotSupport(commandLineInput, result, op);
+            }
+
+            bool status = false;
+            if (_DeviceManagerPlugin != null)
+            {
+                status = _DeviceManagerPlugin.SetSkipCA(isSkipCA).Result;
+            }
+
+            if (!status)
+            {
+                response.Message = "Failed to update config";
+                response.Result = "FAIL";
+                response.Value = op.Option_Value;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
+                return result;
+            }
+
+            return CLI_Response_CompleteWithSuccess(commandLineInput, result);
+        }
+
+
+
+        // add @ stephen
+        public static CLIEventResult CLI_FW_Update(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        {
+            //Expected format:
+            // IT > /configure -app=InAppUpdate -value=lock / unlock
+            // IT > /get -app=InAppUpdate
+
+            Console.WriteLine($"@@Stephen CLI_FW_Update called ");
+            CLIEventResult result = new CLIEventResult();
+            result.ticket = DateTime.Now;
+            result.command_guid_string = action_guid;
+
+            CLI_RESPONSE response = new CLI_RESPONSE();
+            response.Command = commandLineInput.Command;
+            response.TargetFeature = commandLineInput.TargetFeature;
+
+            if (!commandLineInput.Command.Equals("SET"))
+            {
+                WriteLog(Log, $"CLI_FW_Update: the command should be configure or get, fail");
+                return CLI_Response_CommandNotSupport(commandLineInput, result);
+            }
+
+            Type type = inputData.GetType();
+            Type type2 = settingsPlugin.GetType();
+            DDPMSettings data_user = type == typeof(DDPMSettings) ? (DDPMSettings)inputData : null;
+            DDPMITConfig data_IT = type == typeof(DDPMITConfig) ? (DDPMITConfig)inputData : null;
+            WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
+            ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
+            IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
+
+            return CLI_Response_CompleteWithSuccess(commandLineInput, result);
         }
 
         private static void ApplyValueToBoolObject(ref bool config, bool value)

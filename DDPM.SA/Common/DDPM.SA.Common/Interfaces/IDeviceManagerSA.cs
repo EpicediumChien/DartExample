@@ -86,7 +86,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
-        
+
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
@@ -222,6 +222,8 @@ namespace DDPM.SA.Common
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -254,6 +256,7 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue);
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion EasyArrange
 
         #region EasyMemory
@@ -276,7 +279,7 @@ namespace DDPM.SA.Common
 
         #region public for Peripherals
 
-        Task<DeviceHelper> GetDevices();
+        Task<DeviceHelper> GetDevices(bool Rescan = false);
 
         Task<CTKMessageHelper> GetCTKMessageHelper();
 
@@ -314,8 +317,10 @@ namespace DDPM.SA.Common
         Task UnPair(Guid deviceId);
 
         Task StartPairing(Guid deviceId);
+        Task StartPairingPen();
 
         Task StopPairing(Guid deviceId);
+        Task StopPairingPen();
 
         Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
 
@@ -419,7 +424,7 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
 
-        public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid);
+        public Task<(HotkeySettings, List<HotkeyData>)> ReadCurrentHotkey(MonitorInfo mo);// EDID monitorEdid);
 
         public Task<bool> ReloadHotkeyConfigData();
 
@@ -429,7 +434,8 @@ namespace DDPM.SA.Common
 
         public Task<bool> Hook();
 
-        public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        //public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        public Task<bool> SaveHotkeySetting(MonitorInfo mo, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
 
@@ -583,6 +589,8 @@ namespace DDPM.SA.Common
 
         Task SetDPIValueByDTP(string itemID, int newValue);
 
+        #region Pen
+        Task<string> PairingPen();
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -606,9 +614,12 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+        #endregion
 
         #region Webcam
         Task<JArray> GetPresetProfiles(string Guid);
+        Task<JArray> GetCustomProfiles(string Guid);
+        Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
@@ -639,6 +650,9 @@ namespace DDPM.SA.Common
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
+        Task SetProfileName(string Guid, string newValue);
+        Task CreateCustomProfile(string Guid, string newValue);
+        Task DeleteProfile(string Guid, string newValue);
         Task SetZoom(string Guid, int newValue);
         Task SetIsAutoFramingOn(string Guid, bool newValue);
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
@@ -698,6 +712,11 @@ namespace DDPM.SA.Common
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
         Task<bool> SaveLogFile(string saveFolderPath);
         #endregion
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
+
         #endregion
     }
 }

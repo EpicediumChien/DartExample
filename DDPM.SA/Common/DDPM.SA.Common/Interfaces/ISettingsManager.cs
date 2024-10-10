@@ -43,6 +43,8 @@ namespace DDPM.SA.Common
         Task<string> QueryAccessInfo();
         Task<string> QueryAccessInfoVer();
         Task<string> QueryAccessInfoAddr();
+        Task AddInfo(string info);
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 
     /// <summary>
@@ -108,5 +110,13 @@ namespace DDPM.SA.Common
         Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
         Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings);
         Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
+
+        //Info Key
+        Task AddInfo(string info);
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 }

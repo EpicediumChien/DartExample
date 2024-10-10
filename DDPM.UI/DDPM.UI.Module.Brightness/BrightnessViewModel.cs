@@ -309,7 +309,8 @@ namespace DDPM.UI.Module.Brightness
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             string swHortcutText = string.Empty;
 
             if (curHotkey.HotkeyInfo.Count > 0)

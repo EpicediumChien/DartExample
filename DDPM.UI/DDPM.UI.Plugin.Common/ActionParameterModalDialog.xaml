@@ -9,99 +9,99 @@
         Title="ActionParameterModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
         WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontWeight" Value="Medium" />
-                <Setter Property="LineHeight" Value="24" />
-                <Setter Property="Foreground" Value="#A4B8CD" />
-            </Style>
-            <Style x:Key="DescriptionTextStyle" TargetType="UXControls:UXTextBlock">
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="LineHeight" Value="20" />
-                <Setter Property="Foreground" Value="#A4B8CD" />
-            </Style>
-            <Style x:Key="CancelButtonStyle" TargetType="common:ActionButton">
-                <Setter Property="Height" Value="40" />
-                <Setter Property="Background" Value="#0D121A" />
-                <Setter Property="Foreground" Value="#FFFFFF" />
-                <Setter Property="CornerRadius" Value="2" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="BorderBrush" Value="#F5F6F7" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontWeight" Value="Medium" />
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="BorderBrush" Value="#A3A3A3" />
-                        <Setter Property="Foreground" Value="#6E6E6E" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="SaveButtonStyle" TargetType="common:ActionButton">
-                <Setter Property="Height" Value="40" />
-                <Setter Property="Background" Value="#0672CB" />
-                <Setter Property="Foreground" Value="#F5F6F7" />
-                <Setter Property="CornerRadius" Value="2" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontWeight" Value="Medium" />
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Background" Value="#333941" />
-                        <Setter Property="Foreground" Value="#818488" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </ResourceDictionary>
-    </Window.Resources>
-    <Grid>
-        <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
-                    <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Uniform"
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="LineHeight" Value="24" />
+        <Setter Property="Foreground" Value="#A4B8CD" />
+      </Style>
+      <Style x:Key="DescriptionTextStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="LineHeight" Value="20" />
+        <Setter Property="Foreground" Value="#A4B8CD" />
+      </Style>
+      <Style x:Key="CancelButtonStyle" TargetType="common:ActionButton">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Background" Value="#0D121A" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#F5F6F7" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="BorderBrush" Value="#A3A3A3" />
+            <Setter Property="Foreground" Value="#6E6E6E" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+      <Style x:Key="SaveButtonStyle" TargetType="common:ActionButton">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Background" Value="#0672CB" />
+        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="Background" Value="#333941" />
+            <Setter Property="Foreground" Value="#818488" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid>
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+      <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
+          <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Uniform"
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="CancelClick">
-                    </Image>
-                    <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"
+          </Image>
+          <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"
                                             Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-        <Grid VerticalAlignment="Center" Width="482" Height="324">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="72,0" VerticalAlignment="Center">
-                <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left" />
-                <UXControls:UXTextBlock Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,10,0,17" />
-                <StackPanel Name="spKeystroke" Visibility="Collapsed">
-                    <UXControls:UXTextBox Name="txtKeystroke" Width="338" Height="40" Padding="8,11" FontWeight="Medium" FontFamily="Roboto"
-                                          HorizontalAlignment="Left" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" IsEnabled="False"
-                                          TextChanged="KeystrokeTextChanged" />
-                </StackPanel>
-                <StackPanel Name="spOpen" Orientation="Horizontal" Visibility="Collapsed">
-                    <UXControls:UXTextBox Name="txtOpen" Width="194" Height="40" Padding="8,11,30,0" FontWeight="Medium" FontFamily="Roboto" IsEnabled="False"
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+    <Grid VerticalAlignment="Center" Width="482" Height="324">
+      <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="72,0" VerticalAlignment="Center">
+        <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left" />
+        <UXControls:UXTextBlock Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,10,0,17" />
+        <StackPanel Name="spKeystroke" Visibility="Collapsed">
+          <UXControls:UXTextBox Name="txtKeystroke" Width="338" Height="40" Padding="8,11" FontWeight="Medium" FontFamily="Roboto" MaxLength="8000"
+                                HorizontalAlignment="Left" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" IsEnabled="False"
+                                TextChanged="KeystrokeTextChanged" TextWrapping="NoWrap"/>
+        </StackPanel>
+        <StackPanel Name="spOpen" Orientation="Horizontal" Visibility="Collapsed">
+          <UXControls:UXTextBox Name="txtOpen" Width="194" Height="40" Padding="8,11,30,0" FontWeight="Medium" FontFamily="Roboto" IsEnabled="False" MaxLength="8000"
                                           HorizontalAlignment="Left" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E"
                                           TextChanged="OpenTextChanged" TextWrapping="NoWrap" />
-                    <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Uniform" Margin="-35,0,0,0"
+          <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Uniform" Margin="-35,0,0,0"
                            VerticalAlignment="Center" Width="15" Height="15" MouseLeftButtonDown="Clear_txtOpen" Cursor="Hand" />
-                    <common:ActionButton Name="btnBrowse" Style="{StaticResource SaveButtonStyle}" MouseDown="BrowseClick" Width="111" Margin="8,0,0,0" />
-                    <UXControls:UXTextBlock Name="txtWaterMark" Style="{StaticResource DescriptionTextStyle}" Foreground="#7E7E7E" Margin="-482,12,0,0" Width="120" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,33,0,0">
-                    <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="0,0,7,0" MouseDown="CancelClick"
+          <common:ActionButton Name="btnBrowse" Style="{StaticResource SaveButtonStyle}" MouseDown="BrowseClick" Width="111" Margin="8,0,0,0" />
+          <UXControls:UXTextBlock Name="txtWaterMark" Style="{StaticResource DescriptionTextStyle}" Foreground="#7E7E7E" Margin="-482,12,0,0" Width="120" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,33,0,0">
+          <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="0,0,7,0" MouseDown="CancelClick"
                                          Width="103" />
-                    <common:ActionButton Name="btnClear" Style="{StaticResource CancelButtonStyle}" Margin="0,0,7,0" IsEnabled="False" MouseDown="ClearClick"
+          <common:ActionButton Name="btnClear" Style="{StaticResource CancelButtonStyle}" Margin="0,0,7,0" IsEnabled="False" MouseDown="ClearClick"
                                          Width="93" />
-                    <common:ActionButton Name="btnSave" Style="{StaticResource SaveButtonStyle}" MouseDown="SaveClick" IsEnabled="False"
+          <common:ActionButton Name="btnSave" Style="{StaticResource SaveButtonStyle}" MouseDown="SaveClick" IsEnabled="False"
                                          Width="94" />
-                </StackPanel>
-            </StackPanel>
-        </Grid>
+        </StackPanel>
+      </StackPanel>
     </Grid>
+  </Grid>
 </Window>

@@ -2472,6 +2472,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public event EventHandler<EAArgs> EAEditReturn;
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         private void InitializeEAPlugin()
         {
             if (_eaService != null)
@@ -2510,6 +2512,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                     else if (pluginCondition is PluginRunningCondition)
@@ -2525,10 +2529,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                 }
             });
+        }
+
+        private void _eaService_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
         }
 
         private void _eaService_EditStarted(object sender, string e)
@@ -2636,6 +2650,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             else
             {
                 _logs.DebugMsg($"@ DisplayManager.ReloadEzSettings(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.SetEASelectedLayout(): _eaService is in null");
             }
             return Task.FromResult(false);
         }
@@ -3365,8 +3391,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
                     string jsonString = response.Content.ReadAsStringAsync().Result;
-                    var data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
-
+                    Dictionary<string, Display_Firmwares_item> data = new Dictionary<string, Display_Firmwares_item>();
+                    string Info = string.Empty;
+                    using (JsonDocument doc = JsonDocument.Parse(jsonString))
+                    {
+                        var root = doc.RootElement;
+                        if (jsonString.Contains("Info"))
+                        {
+                            Info = root.GetProperty("Info").GetString();
+                        }
+                        foreach (var property in root.EnumerateObject())
+                        {
+                            if (property.Name != "Info")
+                            {
+                                var firmwareItem = JsonSerializer.Deserialize<Display_Firmwares_item>(property.Value.GetRawText());
+                                data[property.Name] = firmwareItem;
+                            }
+                        }
+                    }
                     foreach (MonitorInfo monitorInfo in monitorInfos)
                     {
                         string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
@@ -3378,6 +3420,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 url = data[model].url,
                                 TheLastVersion = data[model].TheLastVersion,
                                 SHA256 = data[model].SHA256,
+                                SHA512 = data[model].SHA512,
+                                Thumbprint = data[model].Thumbprint,
                                 SupportedPlatform = data[model].SupportedPlatform,
                                 fileName = data[model].fileName,
                                 date = data[model].date,
@@ -3394,6 +3438,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
                                     if (!supportedPlatform.ToList().Contains(currentPlatform))
                                     {
+                                        _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
                                         continue;
                                     }
                                 }
@@ -3427,7 +3472,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} error {ex.Message}");
                 }
             }
             return ret;
@@ -3436,11 +3481,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
             {
-                return "Intel_x64";
+                return "Intel";//"Intel_x64";
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
             {
-                return "Intel_x86";
+                return "Intel";//"Intel_x86";
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm)
             {
@@ -3448,7 +3493,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
             {
-                return "ARM_64";
+                return "ARM";//"ARM_64";
             }
             else
             {

@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Plugins.CMAManager;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
@@ -277,6 +278,17 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
+                // ADD @ Stephen for fwupdate
+                case "FIRMWAREUPDATE":
+                    {
+                        var ret = FWUpdateX(commandLineInput, devMgr);
+                        result.serialize_Json_response = ret.result;
+                        result.ExitCode = ret.code;
+                        if (ret.code != 0)
+                            return result;
+                    }
+                    break;
+
                 case "ACTIVEINPUTSOURCE":
                     {
                         var ret = InputSource(devMgr, commandLineInput).Result;
@@ -350,7 +362,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "AUTOBRIGHTNESS":
                 case "AUTOBRIGHTNESSRANGELEVEL"://Mark 0723
-                case "AUTOTEMP":
+                case "AUTOCOLORTEMP":
                 case "PRIMARYMONITORSYNC":
                 case "MULTIMONITORSYNC":
                     var tmp = ProcessAlsFunction(devMgr, commandLineInput);
@@ -660,7 +672,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
-                case "DIAGNOSTICREPORT":
+                case "DIAGNOSTICSREPORT":
                     {
                         var ret = GetDiagnosticReport(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
@@ -1953,8 +1965,8 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.Value = $"{rc.value}";
                                 //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
                                 G_Luminus_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                             }
                         }
                     }
@@ -2010,8 +2022,8 @@ namespace DDPM.CLI.Plugins.Display
                                     G_Luminus_RESPONSE.Value = $"{rc.value}";
                                     //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Luminus_RESPONSE.Result = "PASS";
-                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                    output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                                 }
                             }
                         }
@@ -6394,7 +6406,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOTEMP":
+                case "AUTOCOLORTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6443,7 +6455,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOTEMP":
+                case "AUTOCOLORTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6606,7 +6618,7 @@ namespace DDPM.CLI.Plugins.Display
                             ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel[0].level_name.ToUpper();
                             break;
 
-                        case "AUTOTEMP":
+                        case "AUTOCOLORTEMP":
                             ALS_RESPONSE.Value = param.isAutoColorTemp ? "ON" : "OFF";
                             break;
 
@@ -7678,6 +7690,7 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
             string output = string.Empty;
+            string output_2 = string.Empty;
             bool recode_dis = false;
             bool recode_per = false;
 
@@ -7926,6 +7939,7 @@ namespace DDPM.CLI.Plugins.Display
                 index++;
                 cli_Response2.Index = index.ToString();
                 cli_Response2.Model = g.Name;
+                cli_Response2.ID = g.ID;
                 cli_Response2.FirmwareVersion = g.FirmwareVersion;
                 cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                 cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -7948,8 +7962,9 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Invalid command line syntax.";
             }
-            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            return ((int)CLI_ExitCode.success, output);
+            output_2 += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            output_2 += output;
+            return ((int)CLI_ExitCode.success, output_2);
         }
 
         private static string get_headsetconnection_type(HeadsetConnectionType ConnectionType)
@@ -8968,7 +8983,7 @@ namespace DDPM.CLI.Plugins.Display
             string filepath = commandLineInput.Options[0].Option_Value;
             string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
             string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
-            string folderinfo =string.Empty;
+            string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
 
             if (_AllInfoMonitors == null)
@@ -9176,9 +9191,9 @@ namespace DDPM.CLI.Plugins.Display
                 string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
                 string info = string.Empty;
                 string filename = ss_1[1];
-                if (commandLineInput.Options.Count == 1)   
+                if (commandLineInput.Options.Count == 1)
                 {
-                    
+
                     //if (!File.Exists(filename))
                     if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                     {
@@ -9239,7 +9254,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
                                 jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}\r\n", "");
+                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
                             }
                             break;
                         }
@@ -9259,7 +9274,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
                                 jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}\r\n", "");
+                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
                             }
                             break;
                         }
@@ -9278,7 +9293,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
                                 jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}\r\n", "");
+                                jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
                             }
                             break;
                         }
@@ -10811,7 +10826,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         elable_ea = true;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
-                    } 
+                    }
                     else
                     {
                         elable_ea = false;
@@ -11345,7 +11360,7 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    
+
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -12372,5 +12387,145 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         #endregion FW Update
+
+        // add @ stephen for fwupdate
+        private (int code, string result) FWUpdateX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
+        {
+            if (commandLineInput.Command.Equals("SET"))
+            {
+                if (commandLineInput.Options.Count > 1)
+                {
+                    CLI_Get_FW_RESPONSE G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
+                    G_FW_RESPONSE.Result = "FAIL";
+                    G_FW_RESPONSE.Message = "UNKNOWN COMMAND FWUpdateX";
+                    System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                }
+
+                List<DeviceType> deviceTypeList = new List<DeviceType>();
+                //deviceTypeList.Add(DeviceType.LogicalKeyboard);
+                foreach (var option in commandLineInput.Options)
+                {
+                    switch (option.Option_Value)
+                    {
+                        case Params.DeviceType.WEBCAM:
+                            deviceTypeList.Add(DeviceType.LogicalWebcam);
+                            deviceTypeList.Add(DeviceType.PhysicalWebcam);
+                            break;
+
+                        case Params.DeviceType.AUDIO:
+                            deviceTypeList.Add(DeviceType.LogicalWiredAudio);
+                            deviceTypeList.Add(DeviceType.PhysicalAudioDongle);
+                            deviceTypeList.Add(DeviceType.PhysicalBluetoothAudio);
+                            deviceTypeList.Add(DeviceType.PhysicalWiredAudio);
+                            break;
+
+                        case Params.DeviceType.KEYBOARD:
+                            deviceTypeList.Add(DeviceType.LogicalKeyboard);
+                            deviceTypeList.Add(DeviceType.PhysicalDongle);
+                            break;
+
+                        case Params.DeviceType.MOUSE:
+                            deviceTypeList.Add(DeviceType.LogicalMouse);
+                            deviceTypeList.Add(DeviceType.PhysicalDongle);
+                            break;
+
+                        case Params.DeviceType.PEN:
+                            deviceTypeList.Add(DeviceType.LogicalPen);
+                            deviceTypeList.Add(DeviceType.PhysicalPen);
+                            break;
+
+                        case Params.DeviceType.DOCK:
+                            deviceTypeList.Add(DeviceType.LogicalDock);
+                            deviceTypeList.Add(DeviceType.PhysicalWiredDock);
+                            break;
+
+                        default:
+                            deviceTypeList.Clear();
+                            break;
+                    }
+                }
+
+                return FWUpdate(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, deviceTypeList).Result;
+
+
+            }
+            else
+            {
+                CLI_Get_FW_RESPONSE G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
+                G_FW_RESPONSE.Result = "FAIL";
+                G_FW_RESPONSE.Message = "UNKNOWN COMMAND";
+                G_FW_RESPONSE.Command = commandLineInput.Command;
+                G_FW_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+            }
+        }
+
+        // add @ stephen
+        private async Task<(int code, string result)> FWUpdate(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<DeviceType> deviceTypeList, string value = "")
+        {
+
+            CLI_RESPONSE S_FWUpdate_RESPONSE = new CLI_RESPONSE();
+
+            //if (devMgr == null)
+            //{
+            //    writelog("Brightness: Null IDeviceManagerSA");
+            //    return (int)CLI_ExitCode.null_device_manager;
+            //}
+
+            /*    if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = await devMgr.GetMonitors();*/
+
+            string output = string.Empty;
+
+            Console.WriteLine($"@@Stephen FWUpdate(IDeviceManagerSA devMgr...)");
+
+            if (type == "SET")
+            {
+
+                FWUpdateInfoPackage fwUpdateInfoPackage;
+
+                if (deviceTypeList.Count > 0)
+                {
+                    fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(true, false, false, deviceTypeList, false, false).Result;
+                }
+                else
+                {
+                    fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(true, false, false, null, false, true).Result;
+                }
+
+
+                foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
+                {
+
+                    Console.WriteLine($"info.DeviceName = " + info.DeviceName);
+                    Console.WriteLine($"info.DevicePath = " + info.DevicePath);
+                    Console.WriteLine($"info.DeviceVersion = " + info.DeviceVersion);
+                    Console.WriteLine($"info.FileSavepath = " + info.FileSavepath);
+                }
+
+                List<FWUpdateInfo> result = devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, "").Result;
+
+                foreach (FWUpdateInfo info in result)
+                {
+                    Console.WriteLine($"@@Stephen result info.DeviceName = " + info.DeviceName);
+                    Console.WriteLine($"@@Stephen result info.DevicePath = " + info.DevicePath);
+                    Console.WriteLine($"@@Stephen result info.DeviceVersion = " + info.DeviceVersion);
+                    Console.WriteLine($"@@Stephen result info.FileSavepath = " + info.FileSavepath);
+                    Console.WriteLine($"@@Stephen result info.DeviceType = " + info.DeviceType);
+                }
+
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else
+            {
+                S_FWUpdate_RESPONSE.Command = type;
+                S_FWUpdate_RESPONSE.TargetFeature = "FIRMWAREUPDATE";
+                S_FWUpdate_RESPONSE.Result = "Format Error";
+                S_FWUpdate_RESPONSE.Message = "Format Error";
+                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_FWUpdate_RESPONSE, Formatting.Indented));
+            }
+        }
     }
 }
