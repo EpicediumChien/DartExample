@@ -13,7 +13,7 @@ using PInvoke;
 using System.Diagnostics;
 using System.Security;
 
-namespace MiniInstaller
+namespace DdpmSwUpdater
 {
 
     internal class LaunchInstaller

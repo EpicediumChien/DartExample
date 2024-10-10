@@ -7,4 +7,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)DDPM.SA.Obfuscation.*&quot; &quot;$(SolutionDir)..\DdpmSwUpdater\CommonDll\&quot; /Y /S /Q" />
+	</Target>
+
 </Project>

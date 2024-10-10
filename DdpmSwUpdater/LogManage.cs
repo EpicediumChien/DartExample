@@ -10,21 +10,26 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniInstaller
+namespace DdpmSwUpdater
 {
     public class LogManage
     {
-        static string logFilePath = "log.txt"; // 日誌檔案路徑
+        static string logFilePath = "DdpmSwUpdater.log";
         public static void SetPath()
         {
             DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-            logFilePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall\\DDPM-Setup-MiniInstall.log";
-            if (!Directory.Exists(DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall"))
+            string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+            if (!string.IsNullOrEmpty(AppDataPath))
             {
-                Directory.CreateDirectory(DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall");
+                string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                logFilePath = path + "\\" + logFilePath;
             }
             var version = Assembly.GetExecutingAssembly().GetName().Version;
-            LogMessage($"MiniInstaller Ver:{version}");
+            LogMessage($"DdpmSwUpdater Ver:{version}");
         }
 
         public static void LogMessage(string message)
