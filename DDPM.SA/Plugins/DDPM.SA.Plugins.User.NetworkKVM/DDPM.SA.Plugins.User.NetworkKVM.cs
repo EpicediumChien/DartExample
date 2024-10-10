@@ -1157,10 +1157,10 @@ namespace NetworkKVM.Plugins
 
         private async Task StartAsync()
         {
+            await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
+            _logs.DebugMsg("[NetworkKVM] Client Connect....");
             try
             {
-                await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
-                _logs.DebugMsg("[NetworkKVM] Client Connect....");
 #if RELEASE
             string info;
             if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
