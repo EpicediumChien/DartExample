@@ -3390,85 +3390,86 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     client.Timeout = TimeSpan.FromSeconds(5);
                     HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
-                    string jsonString = response.Content.ReadAsStringAsync().Result;
-                    Dictionary<string, Display_Firmwares_item> data = new Dictionary<string, Display_Firmwares_item>();
-                    string Info = string.Empty;
-                    using (JsonDocument doc = JsonDocument.Parse(jsonString))
+                    string jsonContent = response.Content.ReadAsStringAsync().Result;
+                    List<string> InfoPkey = new List<string>();
+                    if (InfoPkey == null || InfoPkey.Count == 0)
                     {
-                        var root = doc.RootElement;
-                        if (jsonString.Contains("Info"))
-                        {
-                            Info = root.GetProperty("Info").GetString();
-                        }
-                        foreach (var property in root.EnumerateObject())
-                        {
-                            if (property.Name != "Info")
-                            {
-                                var firmwareItem = JsonSerializer.Deserialize<Display_Firmwares_item>(property.Value.GetRawText());
-                                data[property.Name] = firmwareItem;
-                            }
-                        }
+                        //if read info failed, load default key as well
+                        InfoPkey = new List<string>();
+                        InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                     }
-                    foreach (MonitorInfo monitorInfo in monitorInfos)
+                    string szInfo = string.Empty;
+                    string jsonString = string.Empty;
+                    jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
+                    if (!string.IsNullOrEmpty(jsonString))
                     {
-                        string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
-                        if (!string.IsNullOrEmpty(model) && data.ContainsKey(model))
+                        Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(property.Value.GetRawText());
+                        foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
-                            Display_Firmwares_item firmwares_item = new Display_Firmwares_item()
+                            string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
+                            if (!string.IsNullOrEmpty(model) && data.ContainsKey(model))
                             {
-                                id = data[model].id,
-                                url = data[model].url,
-                                TheLastVersion = data[model].TheLastVersion,
-                                SHA256 = data[model].SHA256,
-                                SHA512 = data[model].SHA512,
-                                Thumbprint = data[model].Thumbprint,
-                                SupportedPlatform = data[model].SupportedPlatform,
-                                fileName = data[model].fileName,
-                                date = data[model].date,
-                            };
-                            if (firmwares_item != null)
-                            {
-                                firmwares_item.id = model;
-                                firmwares_item.url = Display_FWU_URL + firmwares_item.url;
-                                firmwares_item.CurrentVersion = monitorInfo.FwVersion;
-                                firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
-                                if (firmwares_item.SupportedPlatform != null)
+                                Display_Firmwares_item firmwares_item = new Display_Firmwares_item()
                                 {
-                                    string currentPlatform = GetSystemArchitecture();
-                                    string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
-                                    if (!supportedPlatform.ToList().Contains(currentPlatform))
+                                    id = data[model].id,
+                                    url = data[model].url,
+                                    TheLastVersion = data[model].TheLastVersion,
+                                    SHA256 = data[model].SHA256,
+                                    SHA512 = data[model].SHA512,
+                                    Thumbprint = data[model].Thumbprint,
+                                    SupportedPlatform = data[model].SupportedPlatform,
+                                    fileName = data[model].fileName,
+                                    date = data[model].date,
+                                };
+                                if (firmwares_item != null)
+                                {
+                                    firmwares_item.id = model;
+                                    firmwares_item.url = Display_FWU_URL + firmwares_item.url;
+                                    firmwares_item.CurrentVersion = monitorInfo.FwVersion;
+                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    if (firmwares_item.SupportedPlatform != null)
                                     {
-                                        _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
-                                        continue;
+                                        string currentPlatform = GetSystemArchitecture();
+                                        string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
+                                        if (!supportedPlatform.ToList().Contains(currentPlatform))
+                                        {
+                                            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
+                                            continue;
+                                        }
                                     }
-                                }
-                                int newVersion = -1;
-                                int oldVersion = -1;
-                                for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
-                                {
-                                    if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                    int newVersion = -1;
+                                    int oldVersion = -1;
+                                    for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
                                     {
-                                        int index = j + 1;
-                                        int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
-                                        break;
+                                        if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                        {
+                                            int index = j + 1;
+                                            int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
+                                            break;
+                                        }
                                     }
-                                }
-                                for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
-                                {
-                                    if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                    for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
                                     {
-                                        int index = j + 1;
-                                        int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
-                                        break;
+                                        if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                        {
+                                            int index = j + 1;
+                                            int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
+                                            break;
+                                        }
                                     }
-                                }
-                                if (newVersion > oldVersion)
-                                {
-                                    ret.Firmwares.Add(firmwares_item);
+                                    if (newVersion > oldVersion)
+                                    {
+                                        ret.Firmwares.Add(firmwares_item);
+                                    }
                                 }
                             }
                         }
                     }
+                    else
+                    {
+                        _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check fail");
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
