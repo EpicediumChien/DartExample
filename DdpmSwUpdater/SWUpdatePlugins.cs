@@ -112,6 +112,15 @@ namespace MiniInstaller
                     swUpdateInfos.Add(SWUpdateInfo);
                 }
             }
+            else
+            {
+                swUpdateInfos.Add(new SWUpdateInfo()
+                {
+                    SoftwareName = "DDPM",
+                    SWUErrorCode = SWUErrorCode.FileCheckFail
+                });
+                return Task.FromResult(swUpdateInfos);
+            }
             LogManage.LogMessage($"swUpdateInfos ok");
             try
             {
