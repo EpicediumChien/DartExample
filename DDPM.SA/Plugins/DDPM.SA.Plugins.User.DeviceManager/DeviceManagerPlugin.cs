@@ -8679,14 +8679,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (_SettingsPlugin != null)
                 {
+                    List<HotkeySettings> hotkeySettingList = _SettingsPlugin.ReadHotkeySettings().Result;
                     if (ddmUserSettings != null)
                     {
-                        List<HotkeySettings> hotkeySettingList = _SettingsPlugin.ReadHotkeySettings().Result;
-                        HotkeySettings hotkeySettings = new HotkeySettings();
-                        HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                        hotkeySettings.ServiceTag = "DDPM";
-                        hotkeySettings.SerialNumber = "DDPM";
-                        hotkeySettings.ModelName = "DDPM";
                         foreach (var Hotkey in ddmUserSettings.Hotkeys)
                         {
                             if (Hotkey.Keys != null)
@@ -8697,6 +8692,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
                                     {
                                         writelog($"[DDMtoDDPM_Hotkey] Fun is {Hotkey.Function}");
+                                        HotkeySettings hotkeySettings = new HotkeySettings();
+                                        HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                                        hotkeySettings.ServiceTag = "DDPM";
+                                        hotkeySettings.SerialNumber = "DDPM";
+                                        hotkeySettings.ModelName = "DDPM";
                                         hotkeyInfo = new HotkeyInfo();
                                         hotkeyInfo.Job = hotkeyType;
                                         hotkeyInfo.Hotkey = new List<VirtualKey>();
@@ -8732,17 +8732,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
                                             }
                                         }
+                                        hotkeySettingList.Add(hotkeySettings);
                                     }
                                 }
                             }
                         }
-                        hotkeySettingList.Add(hotkeySettings);
-                        bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                     }
                     if (ddmMonitorSettings != null)
                     {
-
+                        List<DDPMMonitorSettings> monitorSettingList = new List<DDPMMonitorSettings>();
+                        monitorSettingList = _SettingsPlugin.ReloadMonitorSettings(ddmMonitorSettings.Model).Result;
+                        if (monitorSettingList != null)
+                        {
+                            DDPMMonitorSettings monitorSettings = monitorSettingList.Find(x => (x.ServiceTag == ddmMonitorSettings.ServiceTag));
+                            if (monitorSettings != null)
+                            {
+                                List<HotkeyData> hotkeyDataList = new List<HotkeyData>();
+                                hotkeyDataList = monitorSettings.hotkeyData;
+                                if (hotkeyDataList != null)
+                                {
+                                    if (ddmMonitorSettings.Input.FavoriteHotkeyInput != 0)
+                                    {
+                                        HotkeyData hotkeyData = new HotkeyData();
+                                        hotkeyData.hotkeyType = HotkeyType.FavoriteInputSource;
+                                        List<InputSourceObj> inputSourceObjs = new List<InputSourceObj>();
+                                        InputSourceObj inputSourceObj = new InputSourceObj();
+                                        inputSourceObj.Name = string.Empty;
+                                        inputSourceObj.Code = (UInt16)ddmMonitorSettings.Input.FavoriteHotkeyInput;
+                                        inputSourceObjs.Add(inputSourceObj);
+                                        hotkeyData.inputSource = inputSourceObjs;
+                                        monitorSettings.hotkeyData.Add(hotkeyData);
+                                    }
+                                    if (ddmMonitorSettings.Input.Toogle2InputHotkeysInfo.Count != 0)
+                                    {
+                                        HotkeyData hotkeyData = new HotkeyData();
+                                        hotkeyData.hotkeyType = HotkeyType.SwitchInputSource;
+                                        List<InputSourceObj> inputSourceObjs = new List<InputSourceObj>();
+                                        foreach(int input in ddmMonitorSettings.Input.Toogle2InputHotkeysInfo)
+                                        {
+                                            InputSourceObj inputSourceObj = new InputSourceObj();
+                                            inputSourceObj.Name = string.Empty;
+                                            inputSourceObj.Code = (UInt16)input;
+                                            inputSourceObjs.Add(inputSourceObj);
+                                        }
+                                        hotkeyData.inputSource = inputSourceObjs;
+                                        monitorSettings.hotkeyData.Add(hotkeyData);
+                                    }
+                                }
+                            }
+                        }
                     }
+                    bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                 }
             }
             catch (Exception ex)
