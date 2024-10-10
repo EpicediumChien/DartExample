@@ -84,6 +84,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //private string currentInput;
 
         private readonly object _PluginConditionLock = new object();
+        private readonly object _GetMonitorsLock = new object();
+
 
         //0607 Bruce 是否鎖定畫面自動旋轉
         private bool isLockOrientation;
@@ -196,7 +198,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<MonitorInfo>> GetMonitors(bool renew = false)
         {
-            lock (_PluginConditionLock)
+            lock (_GetMonitorsLock)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
@@ -214,7 +216,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
-            lock (_PluginConditionLock)
+            lock (_GetMonitorsLock)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
