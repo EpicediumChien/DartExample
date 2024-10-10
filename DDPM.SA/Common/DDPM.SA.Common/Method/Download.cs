@@ -18,7 +18,7 @@ namespace DDPM.SA.Common.Method
             _logs = logs;
         }
         /// <summary>
-        /// Only for MiniInstaller use.
+        /// Only for DdpmSwUpdater use.
         /// </summary>
         public Download()
         {

@@ -2440,9 +2440,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null && _FWUpdatePlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (config != null)
+                if (config != null && config.UserSettings != null)
                 {
                     _FWUpdatePlugin.SetDelayFWUpdateInfoPackage(config.UserSettings.DelayFWUpdateInfoPackage);
+                }
+                else
+                {
+                    writelog("[SetDelayFWUpdateInfoPackage], ReloadAppConfigData is null.");
                 }
             }
         }
@@ -3717,7 +3721,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
 
-                if (config != null) // 2024-08-16 Elie, check if null before using.
+                if (config != null && config.UserSettings != null) // 2024-08-16 Elie, check if null before using.
                     _SWUpdatePlugin.SetDelaySWUpdateInfoPackage(config.UserSettings.DelaySWUpdateInfoPackage);
                 else
                 {
@@ -3725,31 +3729,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
-        private void DeleteMiniInstallerFolder()
+        private void DeleteDdpmSwUpdaterFolder()
         {
-            writelog("[DeleteMiniInstallerFolder], start.");
+            writelog("[DeleteDdpmSwUpdaterFolder], start.");
             string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
-            object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller").Result;
-            writelog($"[DeleteMiniInstallerFolder], o={o}.");
+            object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater").Result;
+            writelog($"[DeleteDdpmSwUpdaterFolder], o={o}.");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
-                writelog($"[DeleteMiniInstallerFolder], o_String={o.ToString()}.");
+                writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
                 if (!string.IsNullOrEmpty(AppDataPath))
                 {
                     string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                    if (Directory.Exists(path))
+                    if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                     {
-                        writelog($"[DeleteMiniInstallerFolder], Exists.");
+                        writelog($"[DeleteDdpmSwUpdaterFolder], Exists.");
                         Directory.Delete(path, true);
-                        writelog($"[DeleteMiniInstallerFolder], Delete.");
+                        writelog($"[DeleteDdpmSwUpdaterFolder], Delete.");
                     }
-                    WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
-                    writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
+                    WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
+                    writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
+                }
+                else
+                {
+                    writelog("[DeleteDdpmSwUpdaterFolder], AppDataPath get null.");
                 }
             }
-            writelog("[DeleteMiniInstallerFolder], done.");
+            writelog("[DeleteDdpmSwUpdaterFolder], done.");
         }
         #endregion
 
@@ -4732,7 +4740,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DDMMigration();
             ReloadHotkeyConfigData();
             ToNKVM_initHotKeys();
-            DeleteMiniInstallerFolder();
+            DeleteDdpmSwUpdaterFolder();
             GetSkipCA().Wait();
             //hook keyboard
             //if (_HotkeyPlugin != null)
@@ -5394,8 +5402,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
-                    SupportedNKVMMonitors();
+                    //_NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
+                    //SupportedNKVMMonitors();
                 }
             }
         }
