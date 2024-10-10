@@ -3731,15 +3731,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"[DeleteMiniInstallerFolder], o_String={o.ToString()}.");
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                string path = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                if (!string.IsNullOrEmpty(AppDataPath))
                 {
-                    writelog($"[DeleteMiniInstallerFolder], Exists.");
-                    Directory.Delete(path, true);
-                    writelog($"[DeleteMiniInstallerFolder], Delete.");
+                    string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                    if (Directory.Exists(path))
+                    {
+                        writelog($"[DeleteMiniInstallerFolder], Exists.");
+                        Directory.Delete(path, true);
+                        writelog($"[DeleteMiniInstallerFolder], Delete.");
+                    }
+                    WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
+                    writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
                 }
-                WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
-                writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
             }
             writelog("[DeleteMiniInstallerFolder], done.");
         }
