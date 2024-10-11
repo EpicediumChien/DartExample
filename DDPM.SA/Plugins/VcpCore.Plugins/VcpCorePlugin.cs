@@ -1688,6 +1688,7 @@ namespace VcpCore.Plugins
 
                         if (monitors.Count < 1)
                         {
+                            _Isinitializing = false;
                             var T = Task.Run(() =>
                             {
                                 _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier start ...");
@@ -3020,7 +3021,7 @@ namespace VcpCore.Plugins
             VCPE2.Add("AdobeRGB1 (D65G2.2L250)", "2A");
             VCPE2.Add("AdobeRGB2 (D50G2.2L250)", "2B");
             VCPE2.Add("AdobeRGB1", "2A");
-            VCPE2.Add("AdobeRGB2", "2B");           
+            VCPE2.Add("AdobeRGB2", "2B");
             VCPE2.Add("xvMode", "08");
             VCPE2.Add("DICOM", "09");
             VCPE2.Add("CAL1", "0A");

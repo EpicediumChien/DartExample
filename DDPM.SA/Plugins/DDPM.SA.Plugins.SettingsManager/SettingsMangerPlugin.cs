@@ -306,7 +306,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             return _infos;
         }
 
-        private List<string> GetInfos(bool force_reload)
+        public Task<List<string>> GetInfos(bool force_reload = false)
         {
             if(_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
             {
@@ -320,7 +320,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     {
                         WriteLog($"[GetInfos] recover data failed: {msg}");
                     }
-                    return _infos.Infos;
+                    return Task.FromResult(_infos.Infos);
                 }
             }
             if(force_reload)
@@ -341,10 +341,10 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"[GetInfos] read info config failed: ({ex.Message})");
                 }
             }
-            return _infos.Infos;
+            return Task.FromResult(_infos.Infos);
         }
 
-        private void AddInfo(string info)
+        public Task AddInfo(string info)
         {
             int idx = -1;
             if (_infos != null && _infos.Infos != null && _infos.Infos.Count > 0)
@@ -366,6 +366,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 //exist, bypass
                 WriteLog($"[AddInfo] Info exist in list");
             }
+            return Task.CompletedTask;
         }
 
         private object InitSysSettingsData(string type, string filePath)

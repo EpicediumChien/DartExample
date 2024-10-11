@@ -222,6 +222,8 @@ namespace DDPM.SA.Common
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -281,7 +283,7 @@ namespace DDPM.SA.Common
 
         #region public for Peripherals
 
-        Task<DeviceHelper> GetDevices();
+        Task<DeviceHelper> GetDevices(bool Rescan = false);
 
         Task<CTKMessageHelper> GetCTKMessageHelper();
 
@@ -319,8 +321,10 @@ namespace DDPM.SA.Common
         Task UnPair(Guid deviceId);
 
         Task StartPairing(Guid deviceId);
+        Task StartPairingPen();
 
         Task StopPairing(Guid deviceId);
+        Task StopPairingPen();
 
         Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
 
@@ -354,6 +358,17 @@ namespace DDPM.SA.Common
 
         //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
         Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+
+        // webcam presence detection
+        Task SetWALTime(int newValue, Guid deviceId);
+        Task SetSnooze(int newValue, Guid deviceId);
+        Task SetSnoozeLength(int newValue, Guid deviceId);
+        Task SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+        Task SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
+        Task SetIsWalkAwayLockEnable(bool newValue, Guid deviceId);
+
+        Task<int> GetSnooze(Guid deviceId);
+        Task<int> GetSnoozeLength(Guid deviceId);
 
         #endregion public for Peripherals
 
@@ -589,6 +604,8 @@ namespace DDPM.SA.Common
 
         Task SetDPIValueByDTP(string itemID, int newValue);
 
+        #region Pen
+        Task<string> PairingPen();
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -612,9 +629,12 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+        #endregion
 
         #region Webcam
         Task<JArray> GetPresetProfiles(string Guid);
+        Task<JArray> GetCustomProfiles(string Guid);
+        Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
@@ -645,6 +665,9 @@ namespace DDPM.SA.Common
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
+        Task SetProfileName(string Guid, string newValue);
+        Task CreateCustomProfile(string Guid, string newValue);
+        Task DeleteProfile(string Guid, string newValue);
         Task SetZoom(string Guid, int newValue);
         Task SetIsAutoFramingOn(string Guid, bool newValue);
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
@@ -665,12 +688,20 @@ namespace DDPM.SA.Common
         Task SetTilt(string Guid, int newValue);
         Task SetPan(string Guid, int newValue);
 
+        // webcam presence detection
         Task SetWALTime(string Guid, int newValue);
         Task SetSnooze(string Guid, int newValue);
         Task SetSnoozeLength(string Guid, int newValue);
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+
+        Task<int> GetWALTime(string Guid);
+        Task<int> GetSnooze(string Guid);
+        Task<int> GetSnoozeLength(string Guid);
+        Task<bool> GetIsProximitySensorEnable(string Guid);
+        Task<bool> GetIsWakeonApproachEnable(string Guid);
+        Task<bool> GetIsWalkAwayLockEnable(string Guid);      
 
         #endregion
 

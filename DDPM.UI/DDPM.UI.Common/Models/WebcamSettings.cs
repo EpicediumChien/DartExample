@@ -18,6 +18,7 @@ namespace DDPM.UI.Common
         public Dictionary<string, string> SelectedFPSs = new();
         public Dictionary<string, string> Resolutions = new();
 
+        public string SelectedProfile = "";
         public string SelectedProfileName = "";
         public Dictionary<string, WebcamProfile> PresetProfiles = new();
         public Dictionary<string, WebcamProfile> CustomProfiles = new();

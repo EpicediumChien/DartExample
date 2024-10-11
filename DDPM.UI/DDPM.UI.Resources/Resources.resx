@@ -250,7 +250,7 @@
     <value>Wired</value>
   </data>
   <data name="AddDevice.Type.Other" xml:space="preserve">
-    <value>Active Electrostatic</value>
+    <value>Other</value>
   </data>
   <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
     <value>Cancel</value>
@@ -313,7 +313,7 @@
     <value>Connecting your Pen</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Touch your pen tip to the {0} screen</value>
+    <value>Touch your pen tip to your Dell Display and Peripheral Manager screen</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.</value>
