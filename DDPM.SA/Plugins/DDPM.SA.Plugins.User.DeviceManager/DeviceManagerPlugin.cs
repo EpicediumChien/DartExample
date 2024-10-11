@@ -50,7 +50,7 @@ using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
-using Microsoft.WindowsAPICodePack.Win32Native;
+//using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
@@ -322,7 +322,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);

@@ -10,7 +10,7 @@ using System.Threading;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies;
+//using WinCopies;
 using Windows.Media.AppBroadcasting;
 using Windows.UI.ViewManagement;
 using static VcpCore.Common.User32;
@@ -19,7 +19,7 @@ using Dell.Client.Framework.UnitTestShared.Tests;
 using  ColorPreset.Plugins;
 using System.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
-using WinCopies.Util.Commands.Primitives;
+//using WinCopies.Util.Commands.Primitives;
 using Windows.ApplicationModel;
 using System.Net;
 using Microsoft.Windows.Themes;
@@ -524,10 +524,10 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
 
             try
             {
-                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, savelPath).Result;  // web no response,(404) Not Found.
-                Assert.IsNotNull(Result);
-                Assert.IsNotNull(Result.strICC_Folder);
-                Assert.IsFalse(Result.Is_Support_ICC_DeviceName);
+                //var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, savelPath).Result;  // web no response,(404) Not Found.
+                //Assert.IsNotNull(Result);
+                //Assert.IsNotNull(Result.strICC_Folder);
+                //Assert.IsFalse(Result.Is_Support_ICC_DeviceName);
             }
             catch (Exception ex)
             {

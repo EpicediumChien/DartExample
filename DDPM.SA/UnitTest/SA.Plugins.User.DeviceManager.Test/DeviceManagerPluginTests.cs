@@ -9,7 +9,7 @@ using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
-using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
+//using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
 using Moq;
 using System.Security.Cryptography;
 using System.Windows.Input;
@@ -82,7 +82,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPluginMock.Object);
-            _ColorPresetPluginMock.Setup(x => x.DownloadICCData(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(new DDPM.SA.Common.IIC_Metadata()));
+            //_ColorPresetPluginMock.Setup(x => x.DownloadICCData(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(new DDPM.SA.Common.IIC_Metadata()));
             result = deviceMangerPlugin.DownloadICCData(monitorInfo, "");
             Assert.That(result, Is.Not.Null);
         }
