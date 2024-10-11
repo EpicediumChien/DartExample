@@ -353,14 +353,14 @@
           <UXControls:UXTextBlock Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
           <StackPanel Orientation="Vertical">
             <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
-             <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="50" FontSize="14"
+              <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="50" FontSize="14"
                                 HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" 
                                 TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
-             
+
             </Border>
             <UXControls:UXTextBlock Name="txtMsg" Margin="16,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" Visibility="Collapsed" />
           </StackPanel>
-            <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="16,0,7,0" MouseDown="CancelClick" Width="107" />
+          <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="16,0,7,0" MouseDown="CancelClick" Width="107" />
           <common:ActionButton Name="btnSave" Style="{StaticResource SaveButtonStyle}" MouseDown="SaveClick" IsEnabled="False" Width="94" />
         </StackPanel>
       </Grid>

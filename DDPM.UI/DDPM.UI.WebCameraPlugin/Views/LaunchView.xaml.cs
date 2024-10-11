@@ -978,18 +978,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.PrepareProfileItems();
             ProfileItems.ItemsSource = null;
             ProfileItems.ItemsSource = _vm.ProfileItems;
-        }
-
-        private void NameTextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_vm!.ProfileIDs.ContainsKey(txbName.Text.Trim()))
-            {
-                txtMsg.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                txtMsg.Visibility = Visibility.Hidden;
-            }
             _vm.CurrentProfileName = txt;
             btnPreset_Click(this, null);
         }
