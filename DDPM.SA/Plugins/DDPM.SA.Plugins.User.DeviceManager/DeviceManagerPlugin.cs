@@ -55,7 +55,9 @@ using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
 using DdmLibrary.Utility;
-using static VcpCore.Common.User32;
+using DDPM.QAM;
+using System.Drawing;
+using Point = System.Windows.Point;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -187,6 +189,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isInitMonitorSettings = false;
         private static bool _IsSkipCA = false;
 
+        private QAMPage _QAM;
+        private Point QAM_Position;
+
         #endregion
 
         #region Constructor
@@ -231,6 +236,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+
         }
 
         #endregion
@@ -1483,6 +1489,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+        public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
+        {
+            return _PeripheralsPlugin.GetDevices_WithoutAwait(Rescan).Result;
         }
 
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
@@ -5205,6 +5215,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
         #endregion
 
+        #region WebCamera
+        private void QAMCloseEvent(object o, EventArgs e)
+        {
+            if (_QAM != null)
+            {
+                QAM_Position = new Point(_QAM.Left, _QAM.Top);
+                _QAM.Closed -= QAMCloseEvent;
+                _QAM = null;
+            }
+        }
+        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        {
+            writelog($"CallQAM_UI: Start");
+            if (_QAM == null)
+            {
+                writelog($"CallQAM_UI: Go");
+                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo;
+                if (deviceInfos != null)
+                {
+                    writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    if (deviceInfos.Any(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam))))
+                    {
+                        writelog($"CallQAM_UI: have Webcam show QAM");
+                        Thread thread1 = new Thread(() =>
+                        {
+                            _QAM = new QAMPage(deviceMangerPlugin);
+                            _QAM.Closed += QAMCloseEvent;
+                            if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            {
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
+                            }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
+                        thread1.SetApartmentState(ApartmentState.STA);
+                        thread1.Start();
+                    }
+                }
+            }
+            writelog($"CallQAM_UI: done");
+        }
+        #endregion
         #endregion
 
         #region Private Methods
@@ -6895,6 +6963,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
+            if (_altPressed && strKey.Equals("Z"))
+            {
+                CallQAM_UI(this);
+                return;
+            }
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
