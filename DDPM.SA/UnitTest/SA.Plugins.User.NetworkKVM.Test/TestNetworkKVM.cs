@@ -12,7 +12,7 @@ using Moq;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies.Util;
+//using WinCopies.Util;
 using System.IO.Pipes;
 using static VcpCore.Common.User32;
 using System.Windows.Media.Animation;
