@@ -1237,10 +1237,21 @@ namespace DDPM.UI.Plugin.ViewModels
                     WCOperations.RemoveAt(0);
                     OPIndex -= 1;
                 }
+                CurrentProfileName = string.Empty;
                 ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
             }
             propertyInfo.SetValue(CurrentProfile, convertedValue);
             //WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(UndoVisibility));
+            OnPropertyChanged(nameof(Undo2Visibility));
+            OnPropertyChanged(nameof(RedoVisibility));
+            OnPropertyChanged(nameof(Redo2Visibility));
+        }
+
+        public void ClearUndo()
+        {
+            WCOperations.Clear();
+            OPIndex = -1;
             OnPropertyChanged(nameof(UndoVisibility));
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));

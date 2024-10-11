@@ -34,7 +34,9 @@ using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.UI.Popups;
+using static System.Net.Mime.MediaTypeNames;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
+using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
@@ -83,7 +85,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
-                txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                if (PresetNames.Contains(_vm!.CurrentProfileName))
+                {
+                    txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                }
+                else
+                {
+                    txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                }
                 txtAddPreset.Text = LangHelper.Instance["Camera.5"];
 
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
@@ -92,6 +101,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             txtName.Text = Strings.Name;
             txtMsg.Text = Strings.NameIsTaken;
+            btnCancel.Caption = Strings.Cancel;
+            btnSave.Caption = Strings.Save;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -731,11 +742,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var profileName = ((UXTextBlock)sender).Tag.ToString()!;
-            if (profileName != _vm!.CurrentProfileName || txtPreset.Text == $"{Strings.Preset}: {LangHelper.Instance["None"]}")
+            if (profileName != _vm!.CurrentProfileName)
             {
                 //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                 _vm!.CurrentProfileName = profileName;
                 _vm.SetProfile();
+                _vm.ClearUndo();
             }
             btnPreset_Click(this, null);
         }
@@ -832,10 +844,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
 
-        private async void LaunchView_Loaded(object sender, RoutedEventArgs e)
-        {
-            //await InitializeCameraAsync();
-        }
         private async Task InitializeCameraAsync()
         {
             try
@@ -923,8 +931,47 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
+            gdBattery.Visibility = Visibility.Collapsed;
+            gdAddProfile.Visibility = Visibility.Visible;
+            txbName.Focus();
+        }
+
+        private void NameTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var txt = txbName.Text.Trim();
+            if(string.IsNullOrEmpty(txt))
+            {
+                btnSave.IsEnabled = false;
+                return;
+
+            }
+
+            if (_vm!.ProfileIDs.ContainsKey(txt))
+            {
+                txtMsg.Visibility = Visibility.Visible;
+                bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x3E, 0x3B));
+                btnSave.IsEnabled = false;
+            }
+            else
+            {
+                txtMsg.Visibility = Visibility.Hidden;
+                bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x7E, 0x7E, 0x7E));
+                btnSave.IsEnabled = true;
+            }
+        }
+
+        private void CancelClick(object sender, MouseButtonEventArgs e)
+        {
+            gdBattery.Visibility = Visibility.Visible;
+            gdAddProfile.Visibility = Visibility.Collapsed;
+            btnPreset_Click(this, null);
+        }
+
+        private void SaveClick(object sender, MouseButtonEventArgs e)
+        {
+            var txt = txbName.Text.Trim();
             //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
-            _vm!.CurrentProfile.Name = $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}";
+            _vm!.CurrentProfile.Name = txt;
             var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
             _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
             WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
@@ -943,6 +990,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 txtMsg.Visibility = Visibility.Hidden;
             }
+            _vm.CurrentProfileName = txt;
+            btnPreset_Click(this, null);
         }
     }
 }
