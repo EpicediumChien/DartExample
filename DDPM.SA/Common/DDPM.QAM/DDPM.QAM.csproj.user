@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="AutoFramingPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CameraSetting.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="FOVPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PresetsPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="QAMPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="ZoomPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="AutoFramingPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="CameraSetting.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="FOVPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PluginStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PresetsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="QAMPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ZoomPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

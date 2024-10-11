@@ -63,7 +63,7 @@
 
                     <!-- Feature Highlight Title -->
                     <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="196" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock Text="FEATURE HIGHLIGHT" Foreground="#DAF5FD" FontSize="20" LineHeight="28" />
+                        <UXControls:UXTextBlock Text="{Binding [WalkThrough.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#DAF5FD" FontSize="20" LineHeight="28" />
                     </Grid>
 
                     <!-- Customizable Keys Title -->
@@ -166,12 +166,12 @@
 
                     <!-- Customizable Keys Title -->
                     <Grid Grid.Row="0" Margin="0, 8, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
-                        <UXControls:UXTextBlock x:Name="AppMainText" Text="Welcome to &#13; Dell Display and Peripheral Manager" Foreground="#F5F6F7" FontSize="64" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        <UXControls:UXTextBlock x:Name="AppMainText" Text="{Binding [WalkThroughDDPM_Main.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#F5F6F7" FontSize="64" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
                     </Grid>
 
                     <!-- Description Text -->
                     <Grid Grid.Row="1" Margin="0, 16, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
-                        <UXControls:UXTextBlock x:Name="AppSubText" Text="See all your supported Dell Displays and Peripherals in one place, personalize your settings, and keep your firmware updated" Foreground="#F5F6F7" FontSize="18" TextWrapping="Wrap" />
+                        <UXControls:UXTextBlock x:Name="AppSubText" Text="{Binding [WalkThroughDDPM_Sub.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#F5F6F7" FontSize="18" TextWrapping="Wrap" />
                     </Grid>
 
 

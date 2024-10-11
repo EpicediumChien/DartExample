@@ -55,7 +55,9 @@ using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
 using DdmLibrary.Utility;
-using static VcpCore.Common.User32;
+using DDPM.QAM;
+using System.Drawing;
+using Point = System.Windows.Point;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -187,6 +189,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isInitMonitorSettings = false;
         private static bool _IsSkipCA = false;
 
+        private QAMPage _QAM;
+        private Point QAM_Position;
+
         #endregion
 
         #region Constructor
@@ -231,6 +236,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+
         }
 
         #endregion
@@ -1483,6 +1489,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+        public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
+        {
+            return _PeripheralsPlugin.GetDevices_WithoutAwait(Rescan).Result;
         }
 
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
@@ -3523,6 +3533,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> UpdateMonitorEzProfileSettingDDPM(MonitorInfo monitorInfo, EzProfileSettingDDPM profileSettingDDPM)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ UpdateMonitorEzProfileSettingDDPM: _SettingsPlugin is null.");
+                return false;
+            }
+
+            try
+            {
+                string model = monitorInfo.modelName;
+                string serviceTag = monitorInfo.edid.ServiceTag;
+
+                // Reload Monitor
+                List<DDPMMonitorSettings> settings = await _SettingsPlugin.ReloadMonitorSettings(model);
+                if (settings == null)
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: ReloadMonitorSettings(model={model}) return null.");
+                    return false;
+                }
+
+                // 找到對應的 Monitor
+                DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(serviceTag));
+                if (monitorSettings == null)
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: Reloaded settings not contains (model={model}, serviceTag={serviceTag}).");
+                    return false;
+                }
+
+                // 檢查 EasyArrangement
+                if (monitorSettings.easyArrangementDDPM == null || monitorSettings.easyArrangementDDPM.Desktops.Count == 0)
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: No EasyArrangement or Desktops found.");
+                    return false;
+                }
+
+                // 在 DesktopDDPM[0] 中尋找相同 ID 的 ProfileSetting
+                EzProfileSettingDDPM? existingProfileSetting = monitorSettings.easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profileSettingDDPM.ID);
+
+                if (existingProfileSetting != null)
+                {
+                    // 更新 ProfileSetting 資料
+                    existingProfileSetting.Auto = profileSettingDDPM.Auto;
+                    existingProfileSetting.AutoStartTime = profileSettingDDPM.AutoStartTime;
+                    existingProfileSetting.StartUpLaunch = profileSettingDDPM.StartUpLaunch;
+
+                    // 寫回 Monitor 設定
+                    bool writeResult = await _SettingsPlugin.WriteMonitorSettings(model, settings);
+                    if (writeResult)
+                    {
+                        writelog($"@ UpdateMonitorEzProfileSettingDDPM(model={model}, serviceTag={serviceTag}, ID={profileSettingDDPM.ID}) updated successfully.");
+                        return true;
+                    }
+
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: Failed to write MonitorSettings(model={model}, serviceTag={serviceTag}).");
+                    return false;
+                }
+                else
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: ProfileSetting with ID={profileSettingDDPM.ID} not found.");
+                    return false; // 未找到
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ UpdateMonitorEzProfileSettingDDPM: Error occurred - {ex.Message}");
+                return false;
+            }
+        }
+
         /// <summary>
         /// Read Monitorsettings EasyArrangement
         /// </summary>
@@ -3675,6 +3755,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
+        public async Task<bool> UpdateUserEAProfileDDPM(EAProfileDDPM eaProfile)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ UpdateUserEAProfileDDPM: _SettingsPlugin is null.");
+                return false;
+            }
+
+            try
+            {
+                DDPMSettings ddpmSettings = await _SettingsPlugin.ReloadAppConfigData();
+                if (ddpmSettings == null)
+                {
+                    writelog("@ UpdateUserEAProfileDDPM: ReloadAppConfigData returned null.");
+                    return false;
+                }
+
+                if (ddpmSettings.UserSettings?.EAProfile != null)
+                {
+                    EAProfileDDPM existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.ID == eaProfile.ID);
+
+                    if (existingProfile != null)
+                    {
+                        existingProfile.AppInfos = eaProfile.AppInfos;
+                        existingProfile.Layout = eaProfile.Layout;
+                        existingProfile.Name = eaProfile.Name;
+
+                        if (await _SettingsPlugin.SetAppConfigData(ddpmSettings))
+                        {
+                            writelog($"@ UpdateUserEAProfileDDPM: Profile with ID {eaProfile.ID} updated successfully.");
+                            return true;
+                        }
+                        else
+                        {
+                            writelog($"@ UpdateUserEAProfileDDPM: Failed to update profile with ID {eaProfile.ID}.");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        writelog($"@ UpdateUserEAProfileDDPM: No profile found with ID {eaProfile.ID}. No update performed.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
+                    return false; 
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ UpdateUserEAProfileDDPM: Error occurred - {ex.Message}");
+                return false;
+            }
+        }
+
 
         public async Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM()
         {
@@ -5209,6 +5347,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
         #endregion
 
+        #region WebCamera
+        private void QAMCloseEvent(object o, EventArgs e)
+        {
+            if (_QAM != null)
+            {
+                QAM_Position = new Point(_QAM.Left, _QAM.Top);
+                _QAM.Closed -= QAMCloseEvent;
+                _QAM = null;
+            }
+        }
+        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        {
+            writelog($"CallQAM_UI: Start");
+            if (_QAM == null)
+            {
+                writelog($"CallQAM_UI: Go");
+                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo;
+                if (deviceInfos != null)
+                {
+                    writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    if (deviceInfos.Any(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam))))
+                    {
+                        writelog($"CallQAM_UI: have Webcam show QAM");
+                        Thread thread1 = new Thread(() =>
+                        {
+                            _QAM = new QAMPage(deviceMangerPlugin);
+                            _QAM.Closed += QAMCloseEvent;
+                            if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            {
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
+                            }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
+                        thread1.SetApartmentState(ApartmentState.STA);
+                        thread1.Start();
+                    }
+                }
+            }
+            writelog($"CallQAM_UI: done");
+        }
+        #endregion
         #endregion
 
         #region Private Methods
@@ -6899,6 +7095,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
+            if (_altPressed && strKey.Equals("Z"))
+            {
+                CallQAM_UI(this);
+                return;
+            }
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
@@ -9140,17 +9341,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (Device is OSDType_Device.Headset)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                if(!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+								else
+									writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -9164,7 +9374,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State=false)
         {
             if (monitorInfo != null)
             {
@@ -9172,7 +9382,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case OSDType.Mute:
                         {
-                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                             return Task.CompletedTask;
                         }
                     default:
@@ -9262,7 +9475,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         var vr = IsValidJson(monitorInfo.ToString());
 
                         MonitorInfo typeCheck_MonitorInfo = new MonitorInfo();
-                        string Validstr = string.Empty;
                         if (vr)
                             typeCheck_MonitorInfo = JsonConvert.DeserializeObject<MonitorInfo>(monitorInfo.ToString());
 
@@ -9293,15 +9505,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if (string.IsNullOrWhiteSpace(Content))
                                 {
-                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' '));
+                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' ')) ?? string.Empty.Split(' ');
                                     if (strings.Length > 1)
-                                    {
                                         Content = strings[1];
-                                    }
                                     else
-                                    {
                                         Content = strings[0];
-                                    }
                                 }
 
 
