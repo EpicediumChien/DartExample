@@ -24,6 +24,10 @@ namespace DDPM.QAM
         public ZoomPage()
         {
             InitializeComponent();
+            if (DdpmCommonHelper.QAMPageViewModel != null)
+            {
+                DataContext = DdpmCommonHelper.QAMPageViewModel;
+            }
         }
         private void ZoomSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {

@@ -23,6 +23,10 @@ namespace DDPM.QAM
         public FOVPage()
         {
             InitializeComponent();
+            if (DdpmCommonHelper.QAMPageViewModel != null)
+            {
+                DataContext = DdpmCommonHelper.QAMPageViewModel;
+            }
             InitializeFOV();
         }
         private void InitializeFOV()
@@ -42,6 +46,7 @@ namespace DDPM.QAM
                         txtFOV1.Text = $"{FOV[1]}°";
                         btnFOV0.Visibility = Visibility.Visible;
                         btnFOV1.Visibility = Visibility.Visible;
+                        this.Height = this.Height - 51;
                         break;
                     case 3:
                         vm.FullView_Height = "216";
