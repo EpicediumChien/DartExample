@@ -28,6 +28,7 @@ using Windows.ApplicationModel;
 using VcpCore.Common;
 using DDPM.UI.Common.UserControls;
 using DDPM.Easy.Common;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -46,7 +47,7 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
+        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
@@ -61,8 +62,8 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;// _homeDevice.vmEzArrange;
+            DataContext = vm;// _homeDevice.vmEzArrange;
 
             InitializePage();
 
@@ -97,7 +98,7 @@ namespace DDPM.UI.Module.EzMemory
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 2;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 

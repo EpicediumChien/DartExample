@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -47,7 +48,7 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
@@ -62,8 +63,8 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;// _homeDevice.vmEzArrange;
+            DataContext = vm;// _homeDevice.vmEzArrange;
 
             Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
@@ -208,7 +209,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 

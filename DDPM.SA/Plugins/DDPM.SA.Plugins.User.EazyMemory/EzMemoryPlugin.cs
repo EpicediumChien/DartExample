@@ -23,6 +23,7 @@ using System.Text;
 using Microsoft.VisualBasic.Logging;
 using System.Diagnostics;
 using DPeMPublic.Common;
+using System.Threading;
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
@@ -173,6 +174,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         #endregion
 
+        private Timer _timer;
+
         #region Constructor
 
         public EzMemoryPlugin(IAgent agent) : base(agent, PluginLogId)
@@ -187,6 +190,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
             //_SchedulerCheckTimer.Elapsed += OnSchedulerTimedRaise;
             //_SchedulerCheckTimer.AutoReset = true;
             //_SchedulerCheckTimer.Enabled = true;
+
+            //_timer = new Timer(CheckMonitorsAndLaunchApps, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            //CheckMonitorsAndLaunchApps();
             _logs.DebugMsg_1("EzMemoryManagerPlugin constructor ...");
         }
 
@@ -446,6 +452,105 @@ namespace DDPM.SA.Plugins.User.EzMemory
         }
 
         #endregion
+
+        private void CheckMonitorsAndLaunchApps(object state)//object state
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _logs.DebugMsg_1("EzMemoryPlugin CheckMonitorsAndLaunchApps ...");
+                Trace.WriteLine("EzMemoryPlugin CheckMonitorsAndLaunchApps ");
+
+                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
+                else _AllInfoMonitors = new List<MonitorInfo>();
+
+                _AllInfoMonitors.AddRange(_DisplayManagerPlugin.GetMonitors().Result);
+
+                // 對每一個螢幕進行檢查
+                foreach (var monitor in _AllInfoMonitors)
+                {
+                    Trace.WriteLine("CheckAndLaunchForMonitor " + monitor.modelName);
+                    CheckAndLaunchForMonitor(monitor);
+                }
+
+                _logs.DebugMsg_1("_AllInfoMonitors count : " + _AllInfoMonitors.Count);
+            }
+
+        }
+
+        private void CheckAndLaunchForMonitor(MonitorInfo monitorInfo)
+        {
+            List<DDPMMonitorSettings> monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+           
+            if (monitorSettingsList != null)
+            {
+                var monitorSettings = monitorSettingsList.FirstOrDefault(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+
+                if (monitorSettings != null && monitorSettings.easyArrangementDDPM != null)
+                {
+                    var easyArrangement = monitorSettings.easyArrangementDDPM;
+                    foreach(var ps in easyArrangement.Desktops[0].ProfileSettings)
+                    {
+                        //LaunchAndArrangeApps(ps.ID); // for test
+                        TimeSpan autoStartTime = TimeSpan.FromSeconds(ps.AutoStartTime.Value);
+                        if (ps.Auto && IsTimeToLaunch(autoStartTime))
+                        {
+                            LaunchAndArrangeApps(ps.ID);
+                            Trace.WriteLine("ID = " + ps.ID);
+                            Trace.WriteLine("Auto = " + ps.Auto);
+                            Trace.WriteLine("AutoStartTime = " + ps.AutoStartTime);
+                            Trace.WriteLine("StartUpLaunch = " + ps.StartUpLaunch);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        private bool IsTimeToLaunch(TimeSpan autoStartTime)
+        {
+            var currentTime = DateTime.Now.TimeOfDay;
+            Trace.WriteLine("CurrentTime = " + currentTime.Hours + " : " + currentTime.Minutes);
+            Trace.WriteLine("StartUpLaunch = " + autoStartTime.Hours + " : " + autoStartTime.Minutes);
+            return currentTime.Hours == autoStartTime.Hours && currentTime.Minutes == autoStartTime.Minutes;
+        }
+
+        private void LaunchAndArrangeApps(int profileId)
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            Trace.WriteLine("LaunchAndArrangeApps");
+            if (ddpmSettings != null && ddpmSettings.UserSettings.EAProfile != null)
+            {
+                foreach(var ea in ddpmSettings.UserSettings.EAProfile)
+                {
+                    if (profileId == ea.ID)
+                    {
+                        Trace.WriteLine("EAProfile");
+                        Trace.WriteLine("ID = " + ea.ID);
+                        Trace.WriteLine("Name = " + ea.Name);
+                        Trace.WriteLine("Layout = " + ea.Layout);
+                        Dictionary<string, Bind_AddFullPage_AppCollectionData> launchApp = new Dictionary<string, Bind_AddFullPage_AppCollectionData>();
+                        foreach (var item in ea.AppInfos)
+                        {
+                            Bind_AddFullPage_AppCollectionData app = new Bind_AddFullPage_AppCollectionData();
+                            app.AppPath = item.Path;
+                            app.AppName = item.Name;
+                            app.AppUserModelID = item.AppUserModelID;
+                            app.AppType = item.IsUWP == false ? "False" : "True";
+                            launchApp.Add(app.AppName, app);
+
+                            Trace.WriteLine("AppInfos");
+                            Trace.WriteLine("Name = " + item.Name);
+                            Trace.WriteLine("Param = " + item.Param);
+                            Trace.WriteLine("IsUWP = " + item.IsUWP.ToString());
+                            Trace.WriteLine("AppUserModelID = " + item.AppUserModelID);
+                            Trace.WriteLine("Path = " + item.Path);
+                        }
+                        bool result = LaunchAndArrangeApps(launchApp).Result;
+                    }
+                }
+                //var easyArrangement = ddpmSettings.UserSettings.EAProfile;
+            }
+        }
 
         public Task<Dictionary<string, InstalledAppInfo>> GetAllAppList()
         {
