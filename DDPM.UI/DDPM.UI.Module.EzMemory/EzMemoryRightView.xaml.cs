@@ -320,12 +320,12 @@ namespace DDPM.UI.Module.EzMemory
                     {
                         if (profileSetting.Auto)
                         {
-                            _vm.AutomaticStartupValue = "Yes";
+                            _vm.AutomaticStartupValue = Strings.Yes;
                             _vm.LaunchByTimeValue = _vm.ConvertAutoLaunchtimeToTime(profileSetting.AutoStartTime);
                         }
                         else
                         {
-                            _vm.AutomaticStartupValue = "No";
+                            _vm.AutomaticStartupValue = Strings.No;
                             _vm.LaunchByTimeValue = "_";
                         }
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, MonitorSettings updated for Profile ID {matchingProfile.ID}.");
