@@ -47,7 +47,6 @@ namespace DDPM.UI.Module.EzMemory
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
         private ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps { get; set; } = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
         private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
-        public ObservableCollection<ApplicationItem> InstalledApplications { get; set; } = new ObservableCollection<ApplicationItem>();
         public EzMemoryAddApplication(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
@@ -236,11 +235,6 @@ namespace DDPM.UI.Module.EzMemory
                 _bind_apps.Add(new_Appdata);
                 _apps_all.Add(new_Appdata);
 
-                ApplicationItem newAdd = new ApplicationItem();
-                newAdd.AppName = new_Appdata.AppName;
-                newAdd.AppIcon = new_Appdata.AppIcon;
-                newAdd.AppPath = new_Appdata.AppPath;
-                InstalledApplications.Add(newAdd);
             }
             lb_Installed_App.ItemsSource = _bind_apps;
         }
@@ -288,6 +282,11 @@ namespace DDPM.UI.Module.EzMemory
             _vm._sortApps.Add(_vm.ButtonName, app[0]);
 
             _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
+
+            if (_vm.IsEditProfile)
+            {
+                _vm.IsAddPageBack = true;
+            }
 
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);

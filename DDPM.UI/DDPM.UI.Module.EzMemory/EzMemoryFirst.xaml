@@ -76,7 +76,7 @@
 
                     <!-- Feature Highlight Title -->
                     <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="auto" Height="28" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="TitleText" Text="EASY MEMORY SETUP" Foreground="#DAF5FD" FontSize="20" LineHeight="28" />
+                        <UXControls:UXTextBlock x:Name="TitleText" Text="{Binding [EazyMemory.39], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="#DAF5FD" FontSize="20" LineHeight="28" />
                     </Grid>
 
                     <!-- Customizable Keys Title -->

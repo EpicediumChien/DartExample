@@ -332,6 +332,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
                 DeviceInfo.Append(Environment.NewLine);
+                DeviceInfo.Append($"IsReady : {CurrentDeviceInfo!.IsReady}");
+                DeviceInfo.Append(Environment.NewLine);
                 DeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
                 DeviceInfo.Append(Environment.NewLine);
                 DeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");

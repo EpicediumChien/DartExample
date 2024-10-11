@@ -3529,6 +3529,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> UpdateMonitorEzProfileSettingDDPM(MonitorInfo monitorInfo, EzProfileSettingDDPM profileSettingDDPM)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ UpdateMonitorEzProfileSettingDDPM: _SettingsPlugin is null.");
+                return false;
+            }
+
+            try
+            {
+                string model = monitorInfo.modelName;
+                string serviceTag = monitorInfo.edid.ServiceTag;
+
+                // Reload Monitor
+                List<DDPMMonitorSettings> settings = await _SettingsPlugin.ReloadMonitorSettings(model);
+                if (settings == null)
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: ReloadMonitorSettings(model={model}) return null.");
+                    return false;
+                }
+
+                // 找到對應的 Monitor
+                DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(serviceTag));
+                if (monitorSettings == null)
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: Reloaded settings not contains (model={model}, serviceTag={serviceTag}).");
+                    return false;
+                }
+
+                // 檢查 EasyArrangement
+                if (monitorSettings.easyArrangementDDPM == null || monitorSettings.easyArrangementDDPM.Desktops.Count == 0)
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: No EasyArrangement or Desktops found.");
+                    return false;
+                }
+
+                // 在 DesktopDDPM[0] 中尋找相同 ID 的 ProfileSetting
+                EzProfileSettingDDPM? existingProfileSetting = monitorSettings.easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profileSettingDDPM.ID);
+
+                if (existingProfileSetting != null)
+                {
+                    // 更新 ProfileSetting 資料
+                    existingProfileSetting.Auto = profileSettingDDPM.Auto;
+                    existingProfileSetting.AutoStartTime = profileSettingDDPM.AutoStartTime;
+                    existingProfileSetting.StartUpLaunch = profileSettingDDPM.StartUpLaunch;
+
+                    // 寫回 Monitor 設定
+                    bool writeResult = await _SettingsPlugin.WriteMonitorSettings(model, settings);
+                    if (writeResult)
+                    {
+                        writelog($"@ UpdateMonitorEzProfileSettingDDPM(model={model}, serviceTag={serviceTag}, ID={profileSettingDDPM.ID}) updated successfully.");
+                        return true;
+                    }
+
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: Failed to write MonitorSettings(model={model}, serviceTag={serviceTag}).");
+                    return false;
+                }
+                else
+                {
+                    writelog($"@ UpdateMonitorEzProfileSettingDDPM: ProfileSetting with ID={profileSettingDDPM.ID} not found.");
+                    return false; // 未找到
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ UpdateMonitorEzProfileSettingDDPM: Error occurred - {ex.Message}");
+                return false;
+            }
+        }
+
         /// <summary>
         /// Read Monitorsettings EasyArrangement
         /// </summary>
@@ -3681,6 +3751,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
+        public async Task<bool> UpdateUserEAProfileDDPM(EAProfileDDPM eaProfile)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ UpdateUserEAProfileDDPM: _SettingsPlugin is null.");
+                return false;
+            }
+
+            try
+            {
+                DDPMSettings ddpmSettings = await _SettingsPlugin.ReloadAppConfigData();
+                if (ddpmSettings == null)
+                {
+                    writelog("@ UpdateUserEAProfileDDPM: ReloadAppConfigData returned null.");
+                    return false;
+                }
+
+                if (ddpmSettings.UserSettings?.EAProfile != null)
+                {
+                    EAProfileDDPM existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.ID == eaProfile.ID);
+
+                    if (existingProfile != null)
+                    {
+                        existingProfile.AppInfos = eaProfile.AppInfos;
+                        existingProfile.Layout = eaProfile.Layout;
+                        existingProfile.Name = eaProfile.Name;
+
+                        if (await _SettingsPlugin.SetAppConfigData(ddpmSettings))
+                        {
+                            writelog($"@ UpdateUserEAProfileDDPM: Profile with ID {eaProfile.ID} updated successfully.");
+                            return true;
+                        }
+                        else
+                        {
+                            writelog($"@ UpdateUserEAProfileDDPM: Failed to update profile with ID {eaProfile.ID}.");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        writelog($"@ UpdateUserEAProfileDDPM: No profile found with ID {eaProfile.ID}. No update performed.");
+                        return false;
+                    }
+                }
+                else
+                {
+                    writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
+                    return false; 
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ UpdateUserEAProfileDDPM: Error occurred - {ex.Message}");
+                return false;
+            }
+        }
+
 
         public async Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM()
         {
@@ -9209,17 +9337,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (Device is OSDType_Device.Headset)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                if(!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+								else
+									writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -9233,7 +9370,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State=false)
         {
             if (monitorInfo != null)
             {
@@ -9241,7 +9378,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case OSDType.Mute:
                         {
-                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                             return Task.CompletedTask;
                         }
                     default:
@@ -9331,7 +9471,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         var vr = IsValidJson(monitorInfo.ToString());
 
                         MonitorInfo typeCheck_MonitorInfo = new MonitorInfo();
-                        string Validstr = string.Empty;
                         if (vr)
                             typeCheck_MonitorInfo = JsonConvert.DeserializeObject<MonitorInfo>(monitorInfo.ToString());
 
@@ -9362,15 +9501,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if (string.IsNullOrWhiteSpace(Content))
                                 {
-                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' '));
+                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' ')) ?? string.Empty.Split(' ');
                                     if (strings.Length > 1)
-                                    {
                                         Content = strings[1];
-                                    }
                                     else
-                                    {
                                         Content = strings[0];
-                                    }
                                 }
 
 
