@@ -14,8 +14,8 @@ using System.Windows.Input;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies;
-using WinCopies.Util;
+//using WinCopies;
+//using WinCopies.Util;
 
 
 namespace SA.Plugins.User.USBKVM.Test
