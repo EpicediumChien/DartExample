@@ -2144,7 +2144,7 @@ namespace DDPM.SA.Common.Settings
             }
             else
             {
-                WriteLog(log, $"[Metadata check] metadata is invalid", true);
+                WriteLog(log, "[Metadata check] metadata is invalid", true);
             }
 
             return strJson;
