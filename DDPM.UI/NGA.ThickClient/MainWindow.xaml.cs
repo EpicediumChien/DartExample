@@ -89,7 +89,25 @@ namespace NGA.ThickClient
             };
 
             HeightWidthRatio = WindowHeight / WindowWidth;
-
+            //
+            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
+            foreach (ResourceDictionary dictionary in System.Windows.Application.Current.Resources.MergedDictionaries)
+            {
+                dictionaryList.Add(dictionary);
+            }
+            //string requestedCulture = string.Format(@"pack://application:,,,/DDPM.UI.Common;component/{0}.xaml", "ModuleStyle");
+            string requestedCulture = string.Format(@"pack://application:,,,/DDPM.UI.Common;component/{0}.xaml", "ModuleStyle");
+            ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString.Equals(requestedCulture));
+            if (resourceDictionary == null)
+            {
+                requestedCulture = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
+                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString.Equals(requestedCulture));
+            }
+            if (resourceDictionary != null)
+            {
+                System.Windows.Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+                System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            }
             //2024-6-19 Robert_Lin, to show Maximize button on main window titlebar
             IWindowLayout? windowLayout = formBuilder.GetSubsystem<IWindowLayout>();
             if (windowLayout != null)

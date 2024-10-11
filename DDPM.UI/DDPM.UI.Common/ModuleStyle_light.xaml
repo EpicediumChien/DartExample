@@ -17,9 +17,9 @@
     </UserControl.Resources>
 
     -->
-    <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
-    <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="White" />
+    <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background_Light.png" Stretch="UniformToFill" />
+    <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="#FF0E0E0E" />
     <!-- Common -->
     <!-- FakeTransparent: When you need a transparent color and need can response mouse click -->
     <Color x:Key="Color_FakeTransparent">#02000000</Color>

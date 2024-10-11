@@ -16,7 +16,7 @@
 
     <Border Background="#99193457" CornerRadius="2" Width="111" Height="40">
     -->
-    <Border Background="#99193457" CornerRadius="2" Height="40" HorizontalAlignment="Center">
+    <Border Background="{DynamicResource BatteryIndicator_BkColor}" CornerRadius="2" Height="40" HorizontalAlignment="Center">
         <!-- Robert_Lin, 2024-6-23 to meet reqtirements of Dell UI team, both left and right side margin should be 12. -->
         <Grid Margin="12,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -41,9 +41,9 @@
 
                     <Image x:Name="BatteryImage" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Battery12.png"
                            VerticalAlignment="Center" Stretch="UniformToFill" Height="20" />
-                    <UXControls:UXTextBlock x:Name="BatteryLevelText" Text="100%" Margin="7,2.5,0,0" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" FontSize="14" />
+                    <UXControls:UXTextBlock x:Name="BatteryLevelText" Text="100%" Margin="7,2.5,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontFamily="Roboto" FontSize="14" />
                 </StackPanel>
-                <UXControls:UXTextBlock x:Name="txt1" Text="" Margin="8,0,2,0" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" FontSize="14" />
+                <UXControls:UXTextBlock x:Name="txt1" Text="" Margin="8,0,2,0" VerticalAlignment="Center" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontFamily="Roboto" FontSize="14" />
             </StackPanel>
         </Grid>
     </Border>
