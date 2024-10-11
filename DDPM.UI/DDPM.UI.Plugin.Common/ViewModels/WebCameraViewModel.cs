@@ -26,6 +26,32 @@ using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
+    public class UI_Delay_WalkAwayLock
+    {
+        public int Delay { get; set; }
+
+        public string DisplayText
+        {
+            get
+            {
+                return $"{Delay} seconds";
+            }
+        }
+    }
+
+    public class UI_SnoozeLength
+    {
+        public int SnoozeLength { get; set; }
+
+        public string DisplayText
+        {
+            get
+            {
+                return $"{SnoozeLength} minutes";
+            }
+        }
+    }
+
     public class WebCameraViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
@@ -40,6 +66,11 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
         public bool[] FOV_IsSelected { get; set; } = new bool[3];
         public Dictionary<string, string> ProfileIDs = new();
+
+        
+        public List<UI_Delay_WalkAwayLock> Delay_ItemsCollection { get; set; }
+
+        public List<UI_SnoozeLength> SnoozeLength_ItemsCollection { get; set; }
 
         #endregion Variables
 
@@ -110,7 +141,18 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isChecked_ProximitySensor = value;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                OnPropertyChanged("IsChecked_ProximitySensor");
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                OnPropertyChanged("IsChecked_ProximitySensor"); 
+                OnPropertyChanged("ProximitySensorStatus_String");             
+
+            }
+        }
+
+        public string ProximitySensorStatus_String
+        {
+            get
+            {
+                return IsChecked_ProximitySensor ? "ON" : "OFF";
             }
         }
 
@@ -122,9 +164,20 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isChecked_WakeOnApproach = value;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("IsChecked_WakeOnApproach");
+                OnPropertyChanged("WakeOnApproachStatus_String");
             }
         }
+
+        public string WakeOnApproachStatus_String
+        {
+            get
+            {
+                return IsChecked_WakeOnApproach ? "ON" : "OFF";
+            }
+        }
+
 
         private bool _isChecked_WalkAwayLock = false;
         public bool IsChecked_WalkAwayLock
@@ -133,12 +186,71 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _isChecked_WalkAwayLock = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
-                //DdpmCommonHelper.DeviceManagerSA!.SetWALTime(CurrentDeviceInfo!.ID.ToString(), 30);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
                 OnPropertyChanged("IsChecked_WalkAwayLock");
+                OnPropertyChanged("WalkAwayLockStatus_String");
             }
         }
 
+        public string WalkAwayLockStatus_String
+        {
+            get
+            {
+                return IsChecked_WalkAwayLock ? "ON" : "OFF";
+            }
+        }
+
+        private bool _isChecked_Snooze = false;
+        public bool IsChecked_Snooze
+        {
+            get { return _isChecked_Snooze; }
+            set
+            {
+                _isChecked_Snooze = value;
+                if (_isChecked_Snooze)
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                else
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                OnPropertyChanged("IsChecked_Snooze");
+                OnPropertyChanged("SnoozeStatus_String");
+            }
+        }
+
+        public string SnoozeStatus_String
+        {
+            get
+            {
+                return IsChecked_Snooze ? "ON" : "OFF";
+            }
+        }
+
+        private UI_Delay_WalkAwayLock? _SelectedDelay;
+        public UI_Delay_WalkAwayLock SelectedDelay
+        {
+            get => _SelectedDelay;
+            set
+            {
+                SetProperty(ref _SelectedDelay, value);
+                DdpmCommonHelper.DeviceManagerSA!.SetWALTime(CurrentDeviceInfo!.ID.ToString(), _SelectedDelay.Delay);
+                //DdpmCommonHelper.DeviceManagerSA!.SetWALTime(30, CurrentDeviceInfo!.ID);
+                OnPropertyChanged("SelectedDelay");
+            }
+        }
+
+        private UI_SnoozeLength? _SelectedSnoozeLength;
+        public UI_SnoozeLength SelectedSnoozeLength
+        {
+            get => _SelectedSnoozeLength;
+            set
+            {
+                SetProperty(ref _SelectedSnoozeLength, value);
+                //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength);
+                DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
+                OnPropertyChanged("SelectedSnoozeLength");
+            }
+        }        
 
         public event EventHandler<EventArgs> WebcamSettingChanged;
         public event EventHandler<EventArgs> ProfilePropertyChanged;

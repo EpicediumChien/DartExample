@@ -124,6 +124,17 @@ namespace DDPM.SA.Common
         void SetCurrentSelectedProfile(string newValue, Guid deviceId);
 
         void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId);
+
+        // webcam presence detection
+        void SetWALTime(int newValue, Guid deviceId);
+        void SetSnooze(int newValue, Guid deviceId);
+        void SetSnoozeLength(int newValue, Guid deviceId);
+        void SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+        void SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
+        void SetIsWalkAwayLockEnable(bool newValue, Guid deviceId);
+
+        int GetSnooze(Guid deviceId);
+        int GetSnoozeLength(Guid deviceId);
     }
 
     public interface IDPeMServiceRegPlugin : IFrameworkPlugin
