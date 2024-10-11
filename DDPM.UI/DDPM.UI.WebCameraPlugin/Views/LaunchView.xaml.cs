@@ -35,6 +35,7 @@ using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.UI.Popups;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
 using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
@@ -71,6 +72,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
+        private string EditMode = string.Empty;
+        private string EditingProfileName = string.Empty;
 
         public LaunchView()
         {
@@ -747,7 +750,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                 _vm!.CurrentProfileName = profileName;
                 _vm.SetProfile();
-                _vm.ClearUndo();
             }
             btnPreset_Click(this, null);
         }
@@ -798,7 +800,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
+            var profileName = ((Image)sender).Tag.ToString()!;
+            EditMode = "EDIT";
+            EditingProfileName = profileName;
+            if (profileName != _vm.CurrentProfileName)
+            {
+                _vm.CurrentProfileName = profileName;
+                _vm.SetProfile();
+            }
+            txbName.Text = profileName;
+            gdBattery.Visibility = Visibility.Collapsed;
+            gdAddProfile.Visibility = Visibility.Visible;
+            txtCaption.Text = Strings.EditPreset;
         }
 
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -933,6 +946,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             gdBattery.Visibility = Visibility.Collapsed;
             gdAddProfile.Visibility = Visibility.Visible;
+            txbName.Text = string.Empty;
             txbName.Focus();
         }
 
@@ -946,7 +960,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
 
-            if (_vm!.ProfileIDs.ContainsKey(txt))
+            if (_vm!.ProfileIDs.ContainsKey(txt) && txt != EditingProfileName)
             {
                 txtMsg.Visibility = Visibility.Visible;
                 bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x3E, 0x3B));
@@ -965,6 +979,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             gdBattery.Visibility = Visibility.Visible;
             gdAddProfile.Visibility = Visibility.Collapsed;
             btnPreset_Click(this, null);
+            if (EditMode == "EDIT")
+            {
+                _vm!.CurrentProfileName = EditingProfileName;
+                _vm.SetProfile();
+            }
+            txtCaption.Text = _vm.Name;
         }
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
@@ -972,14 +992,46 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             var txt = txbName.Text.Trim();
             //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
             _vm!.CurrentProfile.Name = txt;
-            var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
-            _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
+            Dictionary<string, WebcamProfile> NewProfiles = new();
+            if (EditMode == "EDIT")
+            {
+                if (txt == EditingProfileName)
+                {
+                    _vm.WebcamSettings.CustomProfiles[txt] = _vm.CurrentProfile;
+                }
+                else
+                {
+                    foreach (var profile in _vm.WebcamSettings.CustomProfiles)
+                    {
+                        if (profile.Key == EditingProfileName)
+                        {
+                            NewProfiles.Add(txt, JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!);
+                        }
+                        else
+                        {
+                            NewProfiles.Add(profile.Key, profile.Value);
+                        }
+                    }
+                    _vm.WebcamSettings.CustomProfiles = NewProfiles;
+                }
+            }
+            else
+            {
+                var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
+                NewProfiles.Add(txt, profile);
+                //_vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
+                _vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            }
+            _vm.CurrentProfileName = txt;
             WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
             _vm.PrepareProfileItems();
             ProfileItems.ItemsSource = null;
             ProfileItems.ItemsSource = _vm.ProfileItems;
-            _vm.CurrentProfileName = txt;
             btnPreset_Click(this, null);
+            gdBattery.Visibility = Visibility.Visible;
+            gdAddProfile.Visibility = Visibility.Collapsed;
+            txtCaption.Text = _vm.Name;
+            _vm.ClearUndo();
         }
     }
 }

@@ -219,7 +219,7 @@
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
               </Image.InputBindings>
             </Image>
-            <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
+            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
                                                 Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
           </StackPanel>
           <StackPanel Orientation="Horizontal">

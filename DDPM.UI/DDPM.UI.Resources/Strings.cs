@@ -417,6 +417,7 @@ namespace DDPM.UI.Common
 
         //Camera
         public static readonly string Preset = "Preset";
+        public static readonly string EditPreset = "Edit preset";
         public static readonly string Smooth = "Smooth";
         public static readonly string Vibrant = "Vibrant";
         public static readonly string Warm = "Warm";

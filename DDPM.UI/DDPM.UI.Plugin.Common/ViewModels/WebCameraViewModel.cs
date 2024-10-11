@@ -406,8 +406,6 @@ namespace DDPM.UI.Plugin.ViewModels
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
 
-            WCOperations.Clear();
-            OPIndex = -1;
         }
 
         public void RefreshProfiles()
@@ -546,6 +544,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AntiFlicker);
                 OnPropertyChanged(nameof(AntiFlicker));
             }
+            ClearUndo();
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -1237,7 +1236,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     WCOperations.RemoveAt(0);
                     OPIndex -= 1;
                 }
-                CurrentProfileName = string.Empty;
+                //CurrentProfileName = string.Empty;
                 ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
             }
             propertyInfo.SetValue(CurrentProfile, convertedValue);
