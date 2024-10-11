@@ -426,5 +426,14 @@ namespace DDPM.UI.Common
         public static readonly string SmoothProfileTooltip = "Smooth Profile Tooltip";
         public static readonly string VibrantProfileTooltip = "Vibrant Profile Tooltip";
         public static readonly string WarmProfileTooltip = "Warm Profile Tooltip";
+
+        //OpenAction
+        public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
+        public static readonly string OpenFileDesc = "Click the browse button to select a file";
+        public static readonly string OpenFolderDesc = "Click the browse button to select a folder";
+        public static readonly string OpenWebPageDesc = "Type the URL to the web page in the box below";
+        public static readonly string OpenFileWaterMark = "File Name";
+        public static readonly string OpenFolderWaterMark = "Folder Name";
+
     }
 }
