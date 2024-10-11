@@ -140,7 +140,6 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
 
-
         public event EventHandler<EventArgs> WebcamSettingChanged;
         public event EventHandler<EventArgs> ProfilePropertyChanged;
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -254,12 +253,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
                 WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
 
-                ProfileIDs.Clear();
                 var customProfiles = CurrentDeviceInfo.CustomProfiles.ToObject<List<WebcamProfile>>()!.ToList();
                 for (var l = customProfiles.Count - 1; l >= 0; l--)
                 {
                     WebcamSettings.CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
-                    ProfileIDs.Add(customProfiles[l].Name, customProfiles[l].Id);
                 }
                 foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
                 {
@@ -273,7 +270,6 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             //var id = CurrentDeviceID.ToString();
-            //ProfileIDs.Clear();
             //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(id);
             //var jArray = JArray.FromObject(task2.Result);
             //List<WebcamProfile> Profiles = jArray.ToObject<List<WebcamProfile>>()!;
@@ -1023,6 +1019,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             //RefreshProfiles();
 
+            ProfileIDs.Clear();
             _profileItems.Clear();
             foreach (var pofile in WebcamSettings.CustomProfiles.Values)
             {
@@ -1034,6 +1031,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     TooltipVisibility = Visibility.Collapsed,
                     ButtonVisibility = Visibility.Visible
                 });
+                ProfileIDs.Add(pofile.Name, pofile.Id);
+            }
+            foreach (var pofile in WebcamSettings.PresetProfiles.Values)
+            {
+                ProfileIDs.Add(pofile.Name, pofile.Id);
             }
 
             _profileItems.Add(new ProfileItem
@@ -1123,10 +1125,21 @@ namespace DDPM.UI.Plugin.ViewModels
                     WCOperations.RemoveAt(0);
                     OPIndex -= 1;
                 }
+                CurrentProfileName = string.Empty;
                 ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
             }
             propertyInfo.SetValue(CurrentProfile, convertedValue);
             //WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(UndoVisibility));
+            OnPropertyChanged(nameof(Undo2Visibility));
+            OnPropertyChanged(nameof(RedoVisibility));
+            OnPropertyChanged(nameof(Redo2Visibility));
+        }
+
+        public void ClearUndo()
+        {
+            WCOperations.Clear();
+            OPIndex = -1;
             OnPropertyChanged(nameof(UndoVisibility));
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));
