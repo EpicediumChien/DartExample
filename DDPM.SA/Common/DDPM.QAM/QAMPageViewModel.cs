@@ -45,17 +45,20 @@ namespace DDPM.QAM
             if (deviceInfos != null && deviceInfos.Count > 0)
             {
                 CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                DeviceModel = CurrentDeviceInfo.Name;
-                ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
-                ZoomMax = CurrentDeviceInfo.ZoomMax;
-                ZoomMin = CurrentDeviceInfo.ZoomMin;
-                if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                if (CurrentDeviceInfo != null)
                 {
-                    Settings_IsVisibility[1] = Visibility.Collapsed;
-                }
-                for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
-                {
-                    _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+                    DeviceModel = CurrentDeviceInfo.Name;
+                    ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
+                    ZoomMax = CurrentDeviceInfo.ZoomMax;
+                    ZoomMin = CurrentDeviceInfo.ZoomMin;
+                    if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                    {
+                        Settings_IsVisibility[1] = Visibility.Collapsed;
+                    }
+                    for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
+                    {
+                        _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+                    }
                 }
             }
         }
@@ -91,7 +94,7 @@ namespace DDPM.QAM
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
-                    Dictionary<string, WebcamProfile> customProfiles = new();
+                    //Dictionary<string, WebcamProfile> customProfiles = new();
                     string json = File.ReadAllText(filePath);
                     var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
                     string presetProfilesString = jsonObject["PresetProfiles"].ToString();
@@ -106,18 +109,18 @@ namespace DDPM.QAM
                             }
                         }
                     }
-                    string customProfilesString = jsonObject["CustomProfiles"].ToString();
-                    if (!string.IsNullOrEmpty(customProfilesString))
-                    {
-                        customProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(customProfilesString);
-                        if (customProfiles != null)
-                        {
-                            foreach (var profile in customProfiles)
-                            {
-                                Profiles.Add(profile.Key, profile.Value);
-                            }
-                        }
-                    }
+                    //string customProfilesString = jsonObject["CustomProfiles"].ToString();
+                    //if (!string.IsNullOrEmpty(customProfilesString))
+                    //{
+                    //    customProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(customProfilesString);
+                    //    if (customProfiles != null)
+                    //    {
+                    //        foreach (var profile in customProfiles)
+                    //        {
+                    //            Profiles.Add(profile.Key, profile.Value);
+                    //        }
+                    //    }
+                    //}
                     UI_ProfileList = new ObservableCollection<UI_Profile>();
                     foreach (var profile in Profiles)
                     {

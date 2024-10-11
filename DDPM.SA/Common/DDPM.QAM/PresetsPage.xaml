@@ -49,7 +49,7 @@
     <Border Background="#141D28"
             Height="216"
             CornerRadius="0,0,10,10">
-            <ScrollViewer >
+            <!--<ScrollViewer >-->
             <StackPanel>
                 <ItemsControl ItemsSource="{Binding UI_ProfileList}"
                               Name="listTopics"
@@ -64,7 +64,7 @@
                                         Height="40"
                                         MouseLeftButtonDown="SetProfile_Click"
                                         Cursor="Hand"
-                                        Margin="8,15,8,5"
+                                        Margin="8,10,8,5"
                                         Visibility="Visible">
                                     <Grid>
                                         <UXControls:UXTextBlock Foreground="#F5F6F7"
@@ -80,6 +80,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
-        </ScrollViewer>
+        <!--</ScrollViewer>-->
     </Border>
 </UserControl>

@@ -138,7 +138,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             return new DeviceHelper();
         }
+        public Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
+        {
+            if (Rescan)
+                ScanDevices();
 
+            if (_deviceHelper != null)
+            {
+                return Task.FromResult(_deviceHelper);
+            }
+            return Task.FromResult(new DeviceHelper());
+        }
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
         {
             var CTKMessageHelper = new CTKMessageHelper();
