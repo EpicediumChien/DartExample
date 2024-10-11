@@ -19,16 +19,10 @@ namespace DDPM.QAM
     /// </summary>
     public partial class CameraSetting : Window
     {
-        private QAMPageViewModel vm
-        {
-            get { return (QAMPageViewModel)DataContext; }
-        }
         public CameraSetting()
         {
             InitializeComponent();
-            DataContext = DdpmCommonHelper.QAMPageViewModel;
             InitializeSettings();
-            vm.RefreshUI();
         }
         private void InitializeSettings()
         {
@@ -53,6 +47,7 @@ namespace DDPM.QAM
         }
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
             if (vm != null)
             {
                 PresetsPage presetsPage = new PresetsPage();
@@ -68,6 +63,7 @@ namespace DDPM.QAM
 
         private void AutoFraming_Click(object sender, MouseButtonEventArgs e)
         {
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
             if (vm != null)
             {
                 AutoFramingPage autoFramingPage = new AutoFramingPage();
@@ -83,6 +79,7 @@ namespace DDPM.QAM
 
         private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
             if (vm != null)
             {
                 FOVPage fOVPage = new FOVPage();
@@ -98,6 +95,7 @@ namespace DDPM.QAM
 
         private void Zoom_Click(object sender, MouseButtonEventArgs e)
         {
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
             if (vm != null)
             {
                 ZoomPage zoomPage = new ZoomPage();

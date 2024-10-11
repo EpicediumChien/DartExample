@@ -23,10 +23,6 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting CameraSetting;
-        private QAMPageViewModel vm
-        {
-            get { return (QAMPageViewModel)DataContext; }
-        }
         public QAMPage(IDeviceManagerSA deviceMangerPlugin)
         {
             InitializeComponent();

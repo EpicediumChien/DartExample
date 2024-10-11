@@ -24,7 +24,6 @@ namespace DDPM.QAM
         public ZoomPage()
         {
             InitializeComponent();
-            DataContext = DdpmCommonHelper.QAMPageViewModel;
         }
         private void ZoomSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
@@ -33,7 +32,6 @@ namespace DDPM.QAM
             {
                 vm.IsSliderDragging = true;
             }
-
         }
 
         private void ZoomSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
@@ -52,8 +50,10 @@ namespace DDPM.QAM
         {
             if (value is double sliderValue)
             {
-
-                return (DdpmCommonHelper.QAMPageViewModel.ZoomMin - sliderValue) / (DdpmCommonHelper.QAMPageViewModel.ZoomMin - DdpmCommonHelper.QAMPageViewModel.ZoomMax) * 200;
+                if (DdpmCommonHelper.QAMPageViewModel != null)
+                {
+                    return (DdpmCommonHelper.QAMPageViewModel.ZoomMin - sliderValue) / (DdpmCommonHelper.QAMPageViewModel.ZoomMin - DdpmCommonHelper.QAMPageViewModel.ZoomMax) * 200;
+                }
             }
             return 0;
         }
@@ -63,5 +63,4 @@ namespace DDPM.QAM
             throw new NotImplementedException();
         }
     }
-
 }

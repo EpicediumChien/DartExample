@@ -23,7 +23,6 @@ namespace DDPM.QAM
         public FOVPage()
         {
             InitializeComponent();
-            DataContext = DdpmCommonHelper.QAMPageViewModel;
             InitializeFOV();
         }
         private void InitializeFOV()
@@ -61,12 +60,15 @@ namespace DDPM.QAM
             if (sender is Border bdr)
             {
                 QAMPageViewModel vm = DataContext as QAMPageViewModel;
-                var index = int.Parse(bdr.Tag.ToString()!);
-                var val = vm.FOVs[index];
-                if (val == vm.FieldOfView)
-                { return; }
-                vm.FOV_Selected(index);
-                vm.FieldOfView = val;
+                if (vm != null)
+                {
+                    var index = int.Parse(bdr.Tag.ToString()!);
+                    var val = vm.FOVs[index];
+                    if (val == vm.FieldOfView)
+                    { return; }
+                    vm.FOV_Selected(index);
+                    vm.FieldOfView = val;
+                }
             }
         }
     }
