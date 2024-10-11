@@ -8450,26 +8450,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitMonitorSettings()
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            foreach (MonitorInfo m in _AllInfoMonitors)
+            if (_AllInfoMonitors != null)
             {
-                monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
-                if (isInitMonitorSettings)
+                foreach (MonitorInfo m in _AllInfoMonitors)
                 {
-                    if (monitorSettingsList == null)
+                    monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
+                    if (isInitMonitorSettings)
                     {
-                        monitorSettingsList = new List<DDPMMonitorSettings>();
-                    }
-                    if (monitorSettingsList.Count == 0 || !monitorSettingsList.Exists(x => x.ServiceTag == m.edid.ServiceTag))
-                    {
-                        DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                        settings.Model = m.modelName;
-                        settings.ServiceTag = m.edid.ServiceTag;
-                        settings.VCPs = GetAllVCPcode(m);
-                        settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
-                        settings.EA = new EAMonitorSettings();
-                        settings.ImpExpSettings = new ImpExpSettings();
-                        monitorSettingsList.Add(settings);
-                        bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+                        if (monitorSettingsList == null)
+                        {
+                            monitorSettingsList = new List<DDPMMonitorSettings>();
+                        }
+                        if (monitorSettingsList.Count == 0 || !monitorSettingsList.Exists(x => x.ServiceTag == m.edid.ServiceTag))
+                        {
+                            DDPMMonitorSettings settings = new DDPMMonitorSettings();
+                            settings.Model = m.modelName;
+                            settings.ServiceTag = m.edid.ServiceTag;
+                            settings.VCPs = GetAllVCPcode(m);
+                            settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
+                            settings.EA = new EAMonitorSettings();
+                            settings.ImpExpSettings = new ImpExpSettings();
+                            monitorSettingsList.Add(settings);
+                            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+                        }
                     }
                 }
             }
@@ -8598,7 +8601,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_SettingsPlugin.ReadDDMUserSettings(migrationPath + "\\UserSettings", ref ddmUserSettings).Result)
                     {
                         //Hotkey
-                        DDMtoDDPM_Hotkey(ddmUserSettings);
+                        //DDMtoDDPM_Hotkey(ddmUserSettings);
                         foreach (var file in di.GetFiles("*_*"))
                         {
                             DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
@@ -8649,7 +8652,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         //DDM settings -> DDPM settings
-                                        ImportDDMMonitorSettings(DDMmonitorsettings);
+                                        ImportDDMMonitorSettings(DDMmonitorsettings, ddmUserSettings);
                                     }
                                     else
                                     {
@@ -8679,7 +8682,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings)
+        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings, DDMUserSettings DDMusersettings)
         {
             //Input
             DDMtoDDPM_Input(DDMmonitorsettings);
@@ -8688,72 +8691,123 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
             }
+            //EM
+            //DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
+            //Hotkey
+            //DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
         }
 
-        private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings)
+        private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings, DDMMonitorSettings ddmMonitorSettings)
         {
             try
             {
-                if (ddmUserSettings != null && _SettingsPlugin != null)
+                if (_SettingsPlugin != null)
                 {
                     List<HotkeySettings> hotkeySettingList = _SettingsPlugin.ReadHotkeySettings().Result;
-                    HotkeySettings hotkeySettings = new HotkeySettings();
-                    HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                    hotkeySettings.ServiceTag = "DDPM";
-                    hotkeySettings.SerialNumber = "DDPM";
-                    hotkeySettings.ModelName = "DDPM";
-                    foreach (var Hotkey in ddmUserSettings.Hotkeys)
+                    if (ddmUserSettings != null)
                     {
-                        if (Hotkey.Keys != null)
+                        foreach (var Hotkey in ddmUserSettings.Hotkeys)
                         {
-                            if (Hotkey.Keys.Count != 0)
+                            if (Hotkey.Keys != null)
                             {
-                                DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
-                                if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
+                                if (Hotkey.Keys.Count != 0)
                                 {
-                                    writelog($"[DDMtoDDPM_Hotkey] Fun is {Hotkey.Function}");
-                                    hotkeyInfo = new HotkeyInfo();
-                                    hotkeyInfo.Job = hotkeyType;
-                                    hotkeyInfo.Hotkey = new List<VirtualKey>();
-                                    if (hotkeyInfo.Hotkey != null)
+                                    DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
+                                    if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
                                     {
-                                        foreach (int key in Hotkey.Keys)
+                                        writelog($"[DDMtoDDPM_Hotkey] Fun is {Hotkey.Function}");
+                                        HotkeySettings hotkeySettings = new HotkeySettings();
+                                        HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                                        hotkeySettings.ServiceTag = "DDPM";
+                                        hotkeySettings.SerialNumber = "DDPM";
+                                        hotkeySettings.ModelName = "DDPM";
+                                        hotkeyInfo = new HotkeyInfo();
+                                        hotkeyInfo.Job = hotkeyType;
+                                        hotkeyInfo.Hotkey = new List<VirtualKey>();
+                                        if (hotkeyInfo.Hotkey != null)
                                         {
-                                            writelog($"[DDMtoDDPM_Hotkey] Key is {key}");
-                                            if (key == -1)
+                                            foreach (int key in Hotkey.Keys)
                                             {
-                                                continue;
+                                                writelog($"[DDMtoDDPM_Hotkey] Key is {key}");
+                                                if (key == -1)
+                                                {
+                                                    continue;
+                                                }
+                                                else if (key == 262144)
+                                                {
+                                                    hotkeyInfo.Hotkey.Add(VirtualKey.Menu);
+                                                }
+                                                else if (key == 131072)
+                                                {
+                                                    hotkeyInfo.Hotkey.Add(VirtualKey.Control);
+                                                }
+                                                else if (key == 65536)
+                                                {
+                                                    hotkeyInfo.Hotkey.Add(VirtualKey.Shift);
+                                                }
+                                                else
+                                                {
+                                                    VirtualKey Vkey = (VirtualKey)key;
+                                                    hotkeyInfo.Hotkey.Add(Vkey);
+                                                }
                                             }
-                                            else if (key == 262144)
+                                            if (hotkeyInfo.Hotkey.Count != 0)
                                             {
-                                                hotkeyInfo.Hotkey.Add(VirtualKey.Menu);
-                                            }
-                                            else if (key == 131072)
-                                            {
-                                                hotkeyInfo.Hotkey.Add(VirtualKey.Control);
-                                            }
-                                            else if (key == 65536)
-                                            {
-                                                hotkeyInfo.Hotkey.Add(VirtualKey.Shift);
-                                            }
-                                            else
-                                            {
-                                                VirtualKey Vkey = (VirtualKey)key;
-                                                hotkeyInfo.Hotkey.Add(Vkey);
+                                                hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
                                             }
                                         }
-                                        if (hotkeyInfo.Hotkey.Count != 0)
-                                        {
-                                            hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
-                                        }
+                                        hotkeySettingList.Add(hotkeySettings);
                                     }
                                 }
                             }
                         }
                     }
-                    hotkeySettingList.Add(hotkeySettings);
+                    if (ddmMonitorSettings != null)
+                    {
+                        List<DDPMMonitorSettings> monitorSettingList = new List<DDPMMonitorSettings>();
+                        monitorSettingList = _SettingsPlugin.ReloadMonitorSettings(ddmMonitorSettings.Model).Result;
+                        if (monitorSettingList != null)
+                        {
+                            DDPMMonitorSettings monitorSettings = monitorSettingList.Find(x => (x.ServiceTag == ddmMonitorSettings.ServiceTag));
+                            if (monitorSettings != null)
+                            {
+                                List<HotkeyData> hotkeyDataList = new List<HotkeyData>();
+                                hotkeyDataList = monitorSettings.hotkeyData;
+                                if (hotkeyDataList != null)
+                                {
+                                    if (ddmMonitorSettings.Input.FavoriteHotkeyInput != 0)
+                                    {
+                                        HotkeyData hotkeyData = new HotkeyData();
+                                        hotkeyData.hotkeyType = HotkeyType.FavoriteInputSource;
+                                        List<InputSourceObj> inputSourceObjs = new List<InputSourceObj>();
+                                        InputSourceObj inputSourceObj = new InputSourceObj();
+                                        inputSourceObj.Name = string.Empty;
+                                        inputSourceObj.Code = (UInt16)ddmMonitorSettings.Input.FavoriteHotkeyInput;
+                                        inputSourceObjs.Add(inputSourceObj);
+                                        hotkeyData.inputSource = inputSourceObjs;
+                                        monitorSettings.hotkeyData.Add(hotkeyData);
+                                    }
+                                    if (ddmMonitorSettings.Input.Toogle2InputHotkeysInfo.Count != 0)
+                                    {
+                                        HotkeyData hotkeyData = new HotkeyData();
+                                        hotkeyData.hotkeyType = HotkeyType.SwitchInputSource;
+                                        List<InputSourceObj> inputSourceObjs = new List<InputSourceObj>();
+                                        foreach(int input in ddmMonitorSettings.Input.Toogle2InputHotkeysInfo)
+                                        {
+                                            InputSourceObj inputSourceObj = new InputSourceObj();
+                                            inputSourceObj.Name = string.Empty;
+                                            inputSourceObj.Code = (UInt16)input;
+                                            inputSourceObjs.Add(inputSourceObj);
+                                        }
+                                        hotkeyData.inputSource = inputSourceObjs;
+                                        monitorSettings.hotkeyData.Add(hotkeyData);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                 }
             }
