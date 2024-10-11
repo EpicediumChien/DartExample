@@ -88,7 +88,7 @@
                         </Image.ToolTip>
                       </Image>
                     </StackPanel>
-                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
+                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" />
                   </Grid>
                   <StackPanel Orientation="Vertical" Margin="18,20,18,0">
                     <Grid>
@@ -102,27 +102,29 @@
                           </Image.ToolTip>
                         </Image>
                       </StackPanel>
-                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
+                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
                   </StackPanel>
                   <StackPanel Orientation="Vertical" Margin="28,20,18,0">
                     <Grid>
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                       <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding Delay_ItemsCollection}"
-                                                          SelectedItem="{Binding SelectedDelay, Mode=TwoWay}"
-                                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
+                                        SelectedItem="{Binding SelectedDelay, Mode=TwoWay}"
+                                        IsEnabled="{Binding Path= IsChecked_ProximitySensor}"
+                                        TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
                     <Grid Margin="0,20,0,0">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
+                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
                     <Grid Margin="0,20,0,15">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                      <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
-                                                          SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
-                                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
+                        <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
+                                  SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
+                                  IsEnabled="{Binding Path= IsChecked_ProximitySensor}"
+                                  TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
-                  </StackPanel>
+                </StackPanel>
                 </StackPanel>
               </Border>
             </StackPanel>

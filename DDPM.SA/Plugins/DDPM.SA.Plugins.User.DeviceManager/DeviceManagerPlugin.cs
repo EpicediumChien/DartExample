@@ -1799,6 +1799,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetWALTime(int newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetWALTime requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetWALTime(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSnooze(int newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetSnooze requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetSnooze(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSnoozeLength(int newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetSnoozeLength requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetSnoozeLength(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsProximitySensorEnable(bool newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetIsProximitySensorEnable(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsWakeonApproachEnable(bool newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetIsWakeonApproachEnable requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetIsWakeonApproachEnable(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsWalkAwayLockEnable(bool newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetIsWalkAwayLockEnable requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            _PeripheralsPlugin.SetIsWalkAwayLockEnable(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
+        public Task<int> GetSnooze(Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received GetSnooze requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            int nRes;
+            nRes = _PeripheralsPlugin.GetSnooze(deviceId);
+            return Task.FromResult(nRes);
+        }
+
+        public Task<int> GetSnoozeLength(Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received GetSnoozeLength requested ...");
+            writelog($"Target DeviceID is {deviceId}");
+            int nRes;
+            nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
+            return Task.FromResult(nRes);
+        }
+
         #endregion
 
         #region CMA/CLI Function area
@@ -4614,6 +4680,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetPan(guid, newValue);
             return Task.FromResult(true);
         }
+
+        public async Task<int> GetWALTime(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWALTime(guid));
+        }
+
+        public async Task<int> GetSnooze(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSnooze(guid));
+        }
+
+        public async Task<int> GetSnoozeLength(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSnoozeLength(guid));
+        }
+
+        public async Task<bool> GetIsProximitySensorEnable(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsProximitySensorEnable(guid));
+        }
+
+        public async Task<bool> GetIsWakeonApproachEnable(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWakeonApproachEnable(guid));
+        }
+
+        public async Task<bool> GetIsWalkAwayLockEnable(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
+        }
+
+
         #endregion
 
 

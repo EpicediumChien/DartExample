@@ -111,6 +111,12 @@ namespace DDPM.SA.Common
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
 
+        Task<int> GetWALTime(string Guid);
+        Task<int> GetSnooze(string Guid);
+        Task<int> GetSnoozeLength(string Guid);
+        Task<bool> GetIsProximitySensorEnable(string Guid);
+        Task<bool> GetIsWakeonApproachEnable(string Guid);
+        Task<bool> GetIsWalkAwayLockEnable(string Guid);
 
     }
 }
