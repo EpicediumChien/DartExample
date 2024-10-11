@@ -109,7 +109,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return IsWindowVisible(hWnd);
         }
         //  DPI 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr MonitorFromWindow(IntPtr hwhWndnd, uint dwFlags);
         private IntPtr EzMemoryMonitorFromWindow(IntPtr hWnd, uint dwFlags)
@@ -117,7 +117,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return MonitorFromWindow(hWnd, dwFlags);
         }
 
-        [DllImport("shcore.dll")]
+        [DllImport("shcore.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetDpiForMonitor(IntPtr hmonitor, MONITOR_DPI_TYPE dpiType, out uint dpiX, out uint dpiY);
         private IntPtr EzMemoryGetDpiForMonitor(IntPtr hmonitor, MONITOR_DPI_TYPE dpiType, out uint dpiX, out uint dpiY)
@@ -988,11 +988,11 @@ namespace DDPM.SA.Plugins.User.EzMemory
             float dpiScale = 1.0f; // Default DPI scaling is 1.0 (100%)
             try
             {
-                IntPtr monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+                IntPtr monitor = EzMemoryMonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
                 if (monitor != IntPtr.Zero)
                 {
                     uint dpiX, dpiY;
-                    if (GetDpiForMonitor(monitor, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out dpiX, out dpiY) == 0)
+                    if (EzMemoryGetDpiForMonitor(monitor, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out dpiX, out dpiY) == 0)
                     {
                         dpiScale = dpiX / 96.0f; // 96 DPI is the default 100% scaling
                         _logs.Info($"[EzMemoryLaunchOption] GetDpiScaleForWindow, DPI scaling for window: {dpiScale}");

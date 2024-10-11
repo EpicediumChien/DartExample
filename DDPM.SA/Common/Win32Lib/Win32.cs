@@ -701,7 +701,7 @@ namespace DDPM.Win32Lib
         public static string _GetWindowText(IntPtr hWnd)
         {
             // Allocate correct string length first
-            int length = GetWindowTextLength(hWnd);
+            int length = _GetWindowTextLength(hWnd);
             StringBuilder sb = new StringBuilder(length + 1);
             GetWindowText(hWnd, sb, sb.Capacity);
             return sb.ToString();
@@ -711,6 +711,10 @@ namespace DDPM.Win32Lib
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
+        private static int _GetWindowTextLength(IntPtr hWnd)
+        {
+            return GetWindowTextLength(hWnd);
+        }
 
         #endregion
     }
