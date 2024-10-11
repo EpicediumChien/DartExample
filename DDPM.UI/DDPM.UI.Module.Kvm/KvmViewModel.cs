@@ -614,19 +614,22 @@ namespace DDPM.UI.Module.Kvm
                     //Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                    foreach (UInt16 subinput in subInputList)
+                    if (subInputList != null)
                     {
-                        InputSourceObj inputSourceObj = new InputSourceObj();
-                        foreach (var input in inputList)
+                        foreach (UInt16 subinput in subInputList)
                         {
-                            if (input.Value.Code == (uint)subinput)
+                            InputSourceObj inputSourceObj = new InputSourceObj();
+                            foreach (var input in inputList)
                             {
-                                inputSourceObj.Code = subinput;
-                                inputSourceObj.Name = input.Key;
-                                break;
+                                if (input.Value.Code == (uint)subinput)
+                                {
+                                    inputSourceObj.Code = subinput;
+                                    inputSourceObj.Name = input.Key;
+                                    break;
+                                }
                             }
+                            subInputs.Add(inputSourceObj);
                         }
-                        subInputs.Add(inputSourceObj);
                     }
                     string currentinput = KvmModule.SelectedHomeDevice.MonitorInfo.inputSource;
                     pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;

@@ -355,6 +355,17 @@ namespace DDPM.SA.Common
         //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
         Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
 
+        // webcam presence detection
+        Task SetWALTime(int newValue, Guid deviceId);
+        Task SetSnooze(int newValue, Guid deviceId);
+        Task SetSnoozeLength(int newValue, Guid deviceId);
+        Task SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+        Task SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
+        Task SetIsWalkAwayLockEnable(bool newValue, Guid deviceId);
+
+        Task<int> GetSnooze(Guid deviceId);
+        Task<int> GetSnoozeLength(Guid deviceId);
+
         #endregion public for Peripherals
 
         #region public for CMA/CLI
@@ -673,12 +684,20 @@ namespace DDPM.SA.Common
         Task SetTilt(string Guid, int newValue);
         Task SetPan(string Guid, int newValue);
 
+        // webcam presence detection
         Task SetWALTime(string Guid, int newValue);
         Task SetSnooze(string Guid, int newValue);
         Task SetSnoozeLength(string Guid, int newValue);
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+
+        Task<int> GetWALTime(string Guid);
+        Task<int> GetSnooze(string Guid);
+        Task<int> GetSnoozeLength(string Guid);
+        Task<bool> GetIsProximitySensorEnable(string Guid);
+        Task<bool> GetIsWakeonApproachEnable(string Guid);
+        Task<bool> GetIsWalkAwayLockEnable(string Guid);      
 
         #endregion
 
