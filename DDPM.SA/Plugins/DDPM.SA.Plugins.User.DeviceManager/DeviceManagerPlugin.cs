@@ -5402,8 +5402,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    //_NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
-                    //SupportedNKVMMonitors();
+                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
+                    SupportedNKVMMonitors();
                 }
             }
         }
@@ -8794,7 +8794,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         HotkeyData hotkeyData = new HotkeyData();
                                         hotkeyData.hotkeyType = HotkeyType.SwitchInputSource;
                                         List<InputSourceObj> inputSourceObjs = new List<InputSourceObj>();
-                                        foreach(int input in ddmMonitorSettings.Input.Toogle2InputHotkeysInfo)
+                                        foreach (int input in ddmMonitorSettings.Input.Toogle2InputHotkeysInfo)
                                         {
                                             InputSourceObj inputSourceObj = new InputSourceObj();
                                             inputSourceObj.Name = string.Empty;
@@ -9146,9 +9146,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void _showosd(object monitorInfo, OSDType _types, OSDType_Device _DeviceType, string Content, bool State = false)
         {
+            //writelog($"For debugging - Skip _showosd().");
+            //return;
             //=====================================================================================
             try
             {
+                //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                //{
                 Thread thread = new Thread(() =>
                 {
                     if (monitorInfo != null)
@@ -9220,11 +9224,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     MuteWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    MuteWinx.Top = sreen.WorkingArea.Top;
-                                                    MuteWinx.Left = sreen.WorkingArea.Left;
-                                                    MuteWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                    //MuteWinx.Top = sreen.WorkingArea.Top;
+                                                    //MuteWinx.Left = sreen.WorkingArea.Left;
+                                                    //MuteWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -9244,11 +9249,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     UnMuteWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    UnMuteWinx.Top = sreen.WorkingArea.Top;
-                                                    UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                    UnMuteWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                    //UnMuteWinx.Top = sreen.WorkingArea.Top;
+                                                    //UnMuteWinx.Left = sreen.WorkingArea.Left;
+                                                    //UnMuteWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -9273,11 +9279,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     HeadsetBatteryLowIWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    HeadsetBatteryLowIWinx.ShowWindow();
+                                                    //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                    //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                    //HeadsetBatteryLowIWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
                                                 }
                                                 finally
                                                 {
@@ -9297,11 +9304,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     KeybordBatteryLowIWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    KeybordBatteryLowIWinx.ShowWindow();
+                                                    //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                    //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                    //KeybordBatteryLowIWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
                                                 }
                                                 finally
                                                 {
@@ -9321,11 +9329,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     MouseBatteryLowIWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    MouseBatteryLowIWinx.ShowWindow();
+                                                    //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                    //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                    //MouseBatteryLowIWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
                                                 }
                                                 finally
                                                 {
@@ -9348,11 +9357,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                 StartRecordingWinx.ShowWindow();
                                             }
-                                            catch (Exception)
+                                            catch (Exception ex)
                                             {
-                                                StartRecordingWinx.Top = sreen.WorkingArea.Top;
-                                                StartRecordingWinx.Left = sreen.WorkingArea.Left;
-                                                StartRecordingWinx.ShowWindow();
+                                                //StartRecordingWinx.Top = sreen.WorkingArea.Top;
+                                                //StartRecordingWinx.Left = sreen.WorkingArea.Left;
+                                                //StartRecordingWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
                                             }
                                             finally
                                             {
@@ -9374,11 +9384,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                 DisplayChangedWinx.ShowWindow();
                                             }
-                                            catch (Exception)
+                                            catch (Exception ex)
                                             {
-                                                DisplayChangedWinx.Top = sreen.WorkingArea.Top;
-                                                DisplayChangedWinx.Left = sreen.WorkingArea.Left;
-                                                DisplayChangedWinx.ShowWindow();
+                                                //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
+                                                //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
+                                                //DisplayChangedWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
                                             }
                                             finally
                                             {
@@ -9400,11 +9411,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                 WalkAwayLockWinx.ShowWindow();
                                             }
-                                            catch (Exception)
+                                            catch (Exception ex)
                                             {
-                                                WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
-                                                WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
-                                                WalkAwayLockWinx.ShowWindow();
+                                                //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
+                                                //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
+                                                //WalkAwayLockWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
                                             }
                                             finally
                                             {
@@ -9428,11 +9440,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     ScrollLockOnWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    ScrollLockOnWinx.ShowWindow();
+                                                    //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //ScrollLockOnWinx.ShowWindow();
+
+                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
                                                 }
                                                 finally
                                                 {
@@ -9452,11 +9466,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     ScrollLockOffWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    ScrollLockOffWinx.ShowWindow();
+                                                    //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //ScrollLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
                                                 }
                                                 finally
                                                 {
@@ -9481,11 +9496,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     NumLockOnWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    NumLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    NumLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    NumLockOnWinx.ShowWindow();
+                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOnWinx.ShowWindow();
+
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
                                                 }
                                                 finally
                                                 {
@@ -9505,11 +9522,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     NumLockOffWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    NumLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    NumLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    NumLockOffWinx.ShowWindow();
+                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+
                                                 }
                                                 finally
                                                 {
@@ -9534,11 +9553,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     CapsLockOnWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    CapsLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    CapsLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    CapsLockOnWinx.ShowWindow();
+                                                    //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //CapsLockOnWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+
                                                 }
                                                 finally
                                                 {
@@ -9558,11 +9579,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                     CapsLockOffWinx.ShowWindow();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception ex)
                                                 {
-                                                    CapsLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    CapsLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    CapsLockOffWinx.ShowWindow();
+                                                    //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //CapsLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
                                                 }
                                                 finally
                                                 {
@@ -9585,11 +9607,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
                                                 FingerprintWinx.ShowWindow();
                                             }
-                                            catch (Exception)
+                                            catch (Exception ex)
                                             {
-                                                FingerprintWinx.Top = sreen.WorkingArea.Top;
-                                                FingerprintWinx.Left = sreen.WorkingArea.Left;
-                                                FingerprintWinx.ShowWindow();
+                                                //FingerprintWinx.Top = sreen.WorkingArea.Top;
+                                                //FingerprintWinx.Left = sreen.WorkingArea.Left;
+                                                //FingerprintWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
                                             }
                                             finally
                                             {
@@ -9608,6 +9631,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 });
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
+                //});
+
+
                 //=====================================================================================
             }
             catch (Exception ex)
