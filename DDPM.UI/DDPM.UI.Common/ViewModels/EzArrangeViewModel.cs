@@ -30,7 +30,8 @@ namespace DDPM.UI.Common.ViewModels
         public string _currentDeviceModel = "EzMemory";
         public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
-        public SplitItem currenySelectspItem;
+        public EAProfileDDPM currentEditprofile;
+        public EzProfileSettingDDPM currentEditprofileSetting;
 
         #endregion
 
@@ -256,7 +257,7 @@ namespace DDPM.UI.Common.ViewModels
 
         #region EzMemoryViewModel
 
-
+        //存取 RightView 的 SplitListView
         public SplitListView _splitListRightView;
         public SplitListView splitListRightView
         {
@@ -378,9 +379,9 @@ namespace DDPM.UI.Common.ViewModels
             {
                 { "EzMemory", new List<EzMemoryPageData>
                     {
-                        new EzMemoryPageData { MainText = "Easy Memory", SubText = "Save different profiles and restore them manually, by scheduled time or at system start-up.\r\n\r\nBegin by assigning a name to your Easy Memory Profile and selecting a layout."},
-                        new EzMemoryPageData { MainText = "Assign programs", SubText = "Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior."},
-                        new EzMemoryPageData { MainText = "Launch options", SubText = "Select a launch type"}
+                        new EzMemoryPageData { MainText = Strings.FirstPageMainText, SubText = Strings.FirstPageSubText},
+                        new EzMemoryPageData { MainText = Strings.AssignPageMainText, SubText = Strings.AssignPageSubText},
+                        new EzMemoryPageData { MainText = Strings.LaunchOptionPageMainText, SubText = Strings.LaunchOptionPageSubText}
                     }
                 },
 
@@ -390,6 +391,36 @@ namespace DDPM.UI.Common.ViewModels
         #endregion
 
         #region First page
+       
+        private SplitItem _currentSelectspItem;
+        public SplitItem CurrentSelectspItem
+        {
+            get => _currentSelectspItem;
+            set => SetProperty(ref _currentSelectspItem, value);
+        }
+
+        private SplitItem _currentEditSelectspItem;
+        public SplitItem CurrentEditSelectspItem
+        {
+            get => _currentEditSelectspItem;
+            set => SetProperty(ref _currentEditSelectspItem, value);
+        }
+
+        //記錄進入 Edit status
+        private bool _iseditProfile = false;
+        public bool IsEditProfile
+        {
+            get => _iseditProfile;
+            set => SetProperty(ref _iseditProfile, value);
+        }
+
+        //記錄 Edit status 由 AddPage 返回
+        private bool _isAddPageBack = false;
+        public bool IsAddPageBack
+        {
+            get => _isAddPageBack;
+            set => SetProperty(ref _isAddPageBack, value);
+        }
 
         private string _inputText = "Profile 1";
         public string InputText
@@ -690,6 +721,9 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool IsRightGridPageTotalVisible => !IsRightGridPage2Visible;
 
+        /// <summary>
+        /// Control Window 1 ~ 12 
+        /// </summary>
         private int _selectedValue;
 
         public int SelectedValue
@@ -702,6 +736,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
+        //AssignPage trigger 的 buttonName
         private string _buttonName;
         public string ButtonName
         {
