@@ -9136,17 +9136,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (Device is OSDType_Device.Headset)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                if(!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
                                 return Task.CompletedTask;
                             }
                             else
@@ -9160,7 +9163,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State=false)
         {
             if (monitorInfo != null)
             {
@@ -9168,7 +9171,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case OSDType.Mute:
                         {
-                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
                             return Task.CompletedTask;
                         }
                     default:
@@ -9258,7 +9262,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         var vr = IsValidJson(monitorInfo.ToString());
 
                         MonitorInfo typeCheck_MonitorInfo = new MonitorInfo();
-                        string Validstr = string.Empty;
                         if (vr)
                             typeCheck_MonitorInfo = JsonConvert.DeserializeObject<MonitorInfo>(monitorInfo.ToString());
 
@@ -9289,15 +9292,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if (string.IsNullOrWhiteSpace(Content))
                                 {
-                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' '));
+                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' ')) ?? string.Empty.Split(' ');
                                     if (strings.Length > 1)
-                                    {
                                         Content = strings[1];
-                                    }
                                     else
-                                    {
                                         Content = strings[0];
-                                    }
                                 }
 
 

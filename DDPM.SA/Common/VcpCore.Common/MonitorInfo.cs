@@ -15,6 +15,7 @@ namespace VcpCore.Common
         public EDID edid { get; set; }
         public string FwVersion { get; set; }
         public string inputSource { get; set; }
+        public string inputCable { get; set; }
         public Dictionary<string, List<string>> CapabilityDic;
         public string modelName { get; set; }
         public string series { get; set; }
@@ -56,6 +57,7 @@ namespace VcpCore.Common
                    (DDCisON == other.DDCisON) &&
                    (FwVersion == other.FwVersion) &&
                    (inputSource == other.inputSource) &&
+                   (inputCable == other.inputCable) &&
                    (modelName == other.modelName) &&
                    (series == other.series) &&
                    (MarketingName == other.MarketingName) &&
