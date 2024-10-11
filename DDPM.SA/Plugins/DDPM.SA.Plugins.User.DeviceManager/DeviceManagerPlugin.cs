@@ -9211,18 +9211,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if(!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+								else
+									writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
                             {
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
                             {
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -9246,6 +9252,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (!string.IsNullOrWhiteSpace(Content))
                                 _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                             return Task.CompletedTask;
                         }
                     default:
