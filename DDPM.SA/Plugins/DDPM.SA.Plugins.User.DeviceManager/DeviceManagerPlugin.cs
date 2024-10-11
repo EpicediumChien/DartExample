@@ -2332,11 +2332,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false)
         {
-            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null)
+            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result, isOnlyDisplay).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2450,7 +2450,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
             if (_DisplayManagerPlugin == null)
                 return Task.FromResult(false);
-            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result;
+            if (_SettingsPlugin == null)
+            {
+                return Task.FromResult(false);
+            }
+            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
