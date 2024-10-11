@@ -19,9 +19,9 @@ namespace DDPM.SA.Common
 
         void StartCheckUpdateScheduleTimer();
 
-        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, ISettingsManagerDev settingsPlugin);
+        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion);
 
-        Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion, ISettingsManagerDev settingsPlugin);
+        Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion);
 
         Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, string installPath);
 

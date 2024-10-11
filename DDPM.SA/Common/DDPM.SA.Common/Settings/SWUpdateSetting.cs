@@ -39,7 +39,7 @@ namespace DDPM.SA.Common.Settings
                 }
             }
         }
-        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerDev settingsPlugin, List<string> InserInfoPkey)
+        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey)
         {
             SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();

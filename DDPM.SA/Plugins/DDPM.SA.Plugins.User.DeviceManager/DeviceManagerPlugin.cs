@@ -3745,9 +3745,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false)
         {
-            if (_SWUpdatePlugin != null && _SettingsPlugin != null)
+            if (_SWUpdatePlugin != null)
             {
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion, _SettingsPlugin).Result);
+                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
@@ -3770,10 +3770,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Task<bool> SW_CheckSWUpdate()
         {
-            if (_SWUpdatePlugin == null || _SettingsPlugin == null)
+            if (_SWUpdatePlugin == null)
                 return Task.FromResult(false);
             SW_SetDelaySWUpdateInfoPackage();
-            List<SWUpdateInfo> swUpdateInfos = _SWUpdatePlugin.CheckUpdate(true, _GlobalSettingParam.GlobalSetting_About.SWVersion, _SettingsPlugin).Result;
+            List<SWUpdateInfo> swUpdateInfos = _SWUpdatePlugin.CheckUpdate(true, _GlobalSettingParam.GlobalSetting_About.SWVersion).Result;
             bool b = true;
             foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
             {
