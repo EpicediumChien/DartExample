@@ -3347,11 +3347,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Display FWU Metadata
-        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA)
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
             SetDisplayFWUServer();
-            displayUpdateHelper = GetDisplayFWMetadata();
+            displayUpdateHelper = GetDisplayFWMetadata(isSkipCA, settingsPlugin);
             return Task.FromResult(displayUpdateHelper);
         }
         private void SetDisplayFWUServer()
@@ -3375,15 +3375,22 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
         }
-        private DisplayUpdateHelper GetDisplayFWMetadata()
+        private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} start");
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
-            CertificateCheck certificateCheck = new CertificateCheck(_logs);
-            if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+            if (!isSkipCA)
             {
-                _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA fail");
-                return ret;
+                CertificateCheck certificateCheck = new CertificateCheck(_logs);
+                if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+                {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA fail");
+                    return ret;
+                }
+            }
+            else
+            {
+                _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA is skip");
             }
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
             monitorInfos = GetMonitors().Result;
@@ -3397,6 +3404,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     response.EnsureSuccessStatusCode();
                     string jsonContent = response.Content.ReadAsStringAsync().Result;
                     List<string> InfoPkey = new List<string>();
+                    if (settingsPlugin != null)
+                    {
+                        InfoPkey = settingsPlugin.GetInfos().Result;
+                    }
                     if (InfoPkey == null || InfoPkey.Count == 0)
                     {
                         //if read info failed, load default key as well
@@ -3407,6 +3418,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     string jsonString = string.Empty;
                     _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
                     jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
+                    if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
+                    {
+                        settingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+                    }
                     if (!string.IsNullOrEmpty(jsonString))
                     {
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);

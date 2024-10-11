@@ -206,11 +206,11 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion)
+        public Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, ISettingsManagerDev settingsPlugin)
         {
             _isDefer = isDefer;
             _isForce = isForce;
-            _ = CheckUpdate(isShowNotify, currentVersion).Result;
+            _ = CheckUpdate(isShowNotify, currentVersion, settingsPlugin).Result;
             return Task.FromResult(_SWUpdateInfoPackage);
         }
 
@@ -220,7 +220,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion)
+        public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion, ISettingsManagerDev settingsPlugin)
         {
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
@@ -234,7 +234,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             {
                 currentVersion = currentVersion.Replace(".", "");
             }
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo);
+            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo, settingsPlugin, null);
             _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
@@ -597,7 +597,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
             if (sWUpdateInfoPackage != null)
             {
-                List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo; 
+                List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
                 if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
                 {
                     DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
