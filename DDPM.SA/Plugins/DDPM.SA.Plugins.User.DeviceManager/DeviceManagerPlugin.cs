@@ -3215,7 +3215,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
-            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList);
+            //Robert_Lin, 2024-10-10 to fix defaule list will return double items when deserialize json
+            defaultOutput.RecentList = SplitJson.DefaultRecentList.ToArray();
+            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
 
             if (_SettingsPlugin == null)
             {
@@ -3244,7 +3246,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
-            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList);
+            //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
+            if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
+                monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+
+            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
@@ -7398,12 +7404,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if (eaSettings.RecentList == null)
+            if ( eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
             }
-            if (eaSettings.RecentList.Count == 0)
+            if (eaSettings.RecentList.Length == 0)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
                 return;
@@ -7411,9 +7417,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 //Should be always EAEMConstants.MaxRecentItems(=5)-1 = 4
-                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Count}");
+                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Length}");
             }
-            idxRecent = eaSettings.RecentList.Count - 1;
+            idxRecent = eaSettings.RecentList.Length - 1;
 
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
             bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;

@@ -598,36 +598,41 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }
 
-        [Test]
-        public void TestReadEasyArrangeSettings()
-        {
-            string monitorModel = "TestU2724";
-            string serialNumber = "123456789";
-            EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
-            eAMonitorSettings = null;
-            var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
-            Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
-        }
+        //Robert_Lin, 2024-10-10, SettingsManagerSAPlugin.ReadEasyArrangeSettings() has been removed,
+        //please use DeviceManagerPlugin.ReadEAMonitorSettings() instead.
+        //[Test]
+        //public void TestReadEasyArrangeSettings()
+        //{
+        //    string monitorModel = "TestU2724";
+        //    string serialNumber = "123456789";
+        //    EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
+        //    eAMonitorSettings = null;
+        //    var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
+        //    Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
+        //}
 
-        [Test]
-        public void TestWriteEasyArrangeSettings()
-        {
-            EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
-            {
-                CustomList = new List<SplitJson>(),
-                //Robert_Lin, 2024-9-24 below 3 properties has been moved to EzSettings class
-                // Which is one member of DDPMUserSetting (original in DDPMMonitorSettings)
-                //
-                //IsOnlyAllowWhenShiftKeyPressed = false,
-                //IsSpanAcrossMultiMonitors = false,
-                //IsWidthoutGap = true,
-                RecentList = new List<SplitJson>(),
-                SelectedSplit = new SplitJson()
-            };
-            string WriteEasyArrangeSettings_Success = "OK";
-            var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
-            Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
-        }
+
+        //Robert_Lin, 2024-10-10, SettingsManagerSAPlugin.ReadEasyArrangeSettings() has been removed,
+        //please use DeviceManagerPlugin.WriteEAMonitorSettings() instead.
+        //[Test]
+        //public void TestWriteEasyArrangeSettings()
+        //{
+        //    EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
+        //    {
+        //        CustomList = new List<SplitJson>(),
+        //        //Robert_Lin, 2024-9-24 below 3 properties has been moved to EzSettings class
+        //        // Which is one member of DDPMUserSetting (original in DDPMMonitorSettings)
+        //        //
+        //        //IsOnlyAllowWhenShiftKeyPressed = false,
+        //        //IsSpanAcrossMultiMonitors = false,
+        //        //IsWidthoutGap = true,
+        //        RecentList = new List<SplitJson>(),
+        //        SelectedSplit = new SplitJson()
+        //    };
+        //    string WriteEasyArrangeSettings_Success = "OK";
+        //    var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
+        //    Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
+        //}
 
         [Test]
         public void TestInitializeSysSettingsPlugin()
@@ -1114,69 +1119,70 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(ServiceTag, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.MonitorSettings.ServiceTag));
         }
 
-        [Test]
-        public void TestWriteImpExpSettings()
-        {
-            bool WriteImpExpSettingsF = false;
-            string WriteImpExpSet_path2 = "WriteImpExpSet.json";
-            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
-            File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
-            DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings()
-            {
-                AppSettings = new DDPMAppSettings() { Version = 1.0 },
-                MonitorSettings = new DDPMMonitorSettings()
-                {
-                    Version = 2.0,
-                    Model = "TestMode",
-                    ServiceTag = "123456",
-                    EA = new EAMonitorSettings()
-                    {
-                        SelectedSplit = new SplitJson(),
-                        CustomList = new List<SplitJson>(),
-                        RecentList = new List<SplitJson>(),
-                    },
-                    Input = new InputSource()
-                    {
-                        strInputSourceList = "HDMI=1"
-                    },
-                    KVM = new KVMSettings()
-                    {
-                        strUSBKVMPCsList = "TestUSBKVM",
-                        isOnNKVM = false,
-                        isOnUSBKVM = true,
-                    },
-                    VCPs = new List<VCPCode>()
-            {
-                new VCPCode()
-                {
-                    Code=0X12,
-                    Value=new List<int>() { 1,2}
-                }
-            },
-                }
-            };
-            DDPMImpExpSettings dDPMImpExpSettingsNull = new DDPMImpExpSettings();
-            dDPMImpExpSettingsNull = null;
-            bool WriteImpExpSettingsT = true;
-            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
-            string WriteImpExpSet_path22 = Environment.CurrentDirectory + "\\" + WriteImpExpSet_path2;
-            // privatesettingsManagerObj.SetFieldOrProperty("_GlobalSetting_path", WriteImpExpSet_path22);
-            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-            privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
-            if (dDPMImpExpSettingsNull == null)
-            {
-                var WriteImpExpSettings_Result = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettingsNull); //dDPMImpExpSettingsNull null
-                Assert.IsNotNull(WriteImpExpSettings_Result);
-                Assert.That(WriteImpExpSettingsF, Is.EqualTo(WriteImpExpSettings_Result));
-            }
-            if (dDPMImpExpSettings != null)
-            {
-                var WriteImpExpSettings_Result2 = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettings); //dDPMImpExpSettings not null
-                Assert.IsNotNull(WriteImpExpSettings_Result2);
-                Assert.That(WriteImpExpSettingsT, Is.EqualTo(WriteImpExpSettings_Result2));
-                File.Delete(WriteImpExpSet_path2);
-            }
-        }
+        //Robert_Lin, 2024-10-11, EAMonitorSettings property changed
+        //[Test]
+        //public void TestWriteImpExpSettings()
+        //{
+        //    bool WriteImpExpSettingsF = false;
+        //    string WriteImpExpSet_path2 = "WriteImpExpSet.json";
+        //    string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+        //    File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
+        //    DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings()
+        //    {
+        //        AppSettings = new DDPMAppSettings() { Version = 1.0 },
+        //        MonitorSettings = new DDPMMonitorSettings()
+        //        {
+        //            Version = 2.0,
+        //            Model = "TestMode",
+        //            ServiceTag = "123456",
+        //            EA = new EAMonitorSettings()
+        //            {
+        //                SelectedSplit = new SplitJson(),
+        //                CustomList = new List<SplitJson>(),
+        //                RecentList = new List<SplitJson>(),
+        //            },
+        //            Input = new InputSource()
+        //            {
+        //                strInputSourceList = "HDMI=1"
+        //            },
+        //            KVM = new KVMSettings()
+        //            {
+        //                strUSBKVMPCsList = "TestUSBKVM",
+        //                isOnNKVM = false,
+        //                isOnUSBKVM = true,
+        //            },
+        //            VCPs = new List<VCPCode>()
+        //    {
+        //        new VCPCode()
+        //        {
+        //            Code=0X12,
+        //            Value=new List<int>() { 1,2}
+        //        }
+        //    },
+        //        }
+        //    };
+        //    DDPMImpExpSettings dDPMImpExpSettingsNull = new DDPMImpExpSettings();
+        //    dDPMImpExpSettingsNull = null;
+        //    bool WriteImpExpSettingsT = true;
+        //    PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+        //    string WriteImpExpSet_path22 = Environment.CurrentDirectory + "\\" + WriteImpExpSet_path2;
+        //    // privatesettingsManagerObj.SetFieldOrProperty("_GlobalSetting_path", WriteImpExpSet_path22);
+        //    string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+        //    privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+        //    if (dDPMImpExpSettingsNull == null)
+        //    {
+        //        var WriteImpExpSettings_Result = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettingsNull); //dDPMImpExpSettingsNull null
+        //        Assert.IsNotNull(WriteImpExpSettings_Result);
+        //        Assert.That(WriteImpExpSettingsF, Is.EqualTo(WriteImpExpSettings_Result));
+        //    }
+        //    if (dDPMImpExpSettings != null)
+        //    {
+        //        var WriteImpExpSettings_Result2 = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettings); //dDPMImpExpSettings not null
+        //        Assert.IsNotNull(WriteImpExpSettings_Result2);
+        //        Assert.That(WriteImpExpSettingsT, Is.EqualTo(WriteImpExpSettings_Result2));
+        //        File.Delete(WriteImpExpSet_path2);
+        //    }
+        //}
 
         [Test]
         public void TestDisplayImportSettings()
