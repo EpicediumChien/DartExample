@@ -19,5 +19,6 @@
         Keyboard,
         Mouse,
         Headset,
+        Pen,
     }
 }

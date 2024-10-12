@@ -134,6 +134,7 @@ namespace nsWinEventHook
 
         private const short VK_ESCAPE = 0x1b;
         private const short VK_LBUTTON = 0x01;
+        private const short VK_SHIFT = 0x10;
 
         //Check if user cancel the window moving by pressing [Esc] key
         //Assumption:
@@ -155,6 +156,16 @@ namespace nsWinEventHook
         }
 
         #endregion Detect if user cancel the window moving by pressing [Esc] key
+
+        #region Detect [Shift] pressed
+        public static bool IsShiftPressed()
+        {
+            short sShift = _GetAsyncKeyState(VK_SHIFT);
+            //Check the hightest bit: 1=Down; 0=Up
+            bool isShiftDown = ((sShift & 0x8000) == 0x8000);
+            return isShiftDown;
+        }
+        #endregion
 
         #region GetProcessFromWindowHandle
 

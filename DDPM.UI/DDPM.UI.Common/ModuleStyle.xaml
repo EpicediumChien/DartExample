@@ -71,8 +71,11 @@
     </Style>
 
     <Style x:Key="Tooltip_TextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Roboto"/>
         <Setter Property="Foreground" Value="{StaticResource Tooltip_TextColor}" />
         <Setter Property="FontSize" Value="{StaticResource Tooltip_FontSize}" />
+        <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
+        <Setter Property="LineHeight" Value="20"/>
         <Setter Property="Margin" Value="0,4" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
@@ -347,7 +350,7 @@
         <Grid x:Name="templateRoot">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="7" />
+                <RowDefinition Height="0" />
                 <!--  [1]  -->
             </Grid.RowDefinitions>
 
@@ -356,11 +359,11 @@
                 Name="PART_Popup"
                 Grid.Row="1"
                 MinWidth="{Binding ActualWidth, ElementName=templateRoot}"
-                Margin="0,30,0,0"
+                Margin="0,0,0,0"
                 AllowsTransparency="True"
                 Focusable="False"
                 IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                Placement="Bottom"
+                Placement="Bottom" VerticalOffset="8"
                 PopupAnimation="Slide">
 
                 <Border
@@ -475,6 +478,31 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
+    </Style>
+
+    <DataTemplate x:Key="ComboBoxItemTemplate">
+        <StackPanel Orientation="Vertical" Margin="8">
+            <!-- Text binding -->
+            <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
+            <!-- Path Data binding -->
+            <Path Data="{Binding PathData}" Margin="8" 
+                  HorizontalAlignment="Center" Fill="White"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!--  DdpmCombox Style usage from here  -->
+    <Style x:Key="DdpmUSBKVMComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+        <Setter Property="MinWidth" Value="120" />
+        <Setter Property="MinHeight" Value="80" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
+        <Setter Property="ItemTemplate" Value="{StaticResource ComboBoxItemTemplate}"/>
     </Style>
 
     <!-- General Control Colors

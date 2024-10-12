@@ -19,6 +19,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.CLIManager
@@ -63,7 +64,7 @@ namespace DDPM.SA.Plugin.CLIManager
         public CLIManagerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
-            WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
+            WriteLog($"CLIMamagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
 
         #endregion
@@ -176,7 +177,7 @@ namespace DDPM.SA.Plugin.CLIManager
             };
 
             WriteLog($"Got CLI request: ID:{arg.command_guid_string}, command: {arg.commandLineInput.Command}, target type: {arg.commandLineInput.TargetType}");
-
+            Trace.WriteLine($"check is ITcommand: {commandLineInput.isITCommands}, option value: {commandLineInput.Options.ToString()}");
             //Dean 0816, check if IT admin command and do not relay to CLIProxy if it's IT lock command.
             if (commandLineInput.isITCommands)
             {
@@ -250,6 +251,15 @@ namespace DDPM.SA.Plugin.CLIManager
                 return rst;
             }
 
+            List<string> peripheral_DeviceType = new List<string>()
+                {
+                    "MOUSE",
+                    "KEYBOARD",
+                    "AUDIO",
+                    "PEN",
+                    "WEBCAM",
+                };
+
             // !!!
             // Implement this switch-case, should match the Support_Lock_Feature in ICLICommandTable.cs
             // !!!
@@ -265,58 +275,161 @@ namespace DDPM.SA.Plugin.CLIManager
 
                 case "INAPPUPDATE":              //InAppUpdate               DDPMW-1329/1330
                     if (commandLineInput.PluginsType.Equals("APP"))
-                        rst = CLIHandlerApp.CLI_SW_FW_Update(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                        rst = CLIHandlerApp.CLI_App_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    break;
+                    //break;
                 case "INAPPBRICONT":             //InAppBriCont              DDPMW-1342/1343
-                    break;
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
-                    break;
+                case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "INAPPRESTOREDEFAULTS":     //InAppRestoreDefaults      DDPMW-1333
-                    break;
-                case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
-                    break;
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerApp.CLI_App_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
+                //case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
+                    //break;
                 case "RESTOREFACTORYDEFAULTS":   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
-                    break;
+                    if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else if(commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "USBCPRIORITIZATION":       //USBCPrioritization        DDPMW-1345
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "ACTIVEINPUTSOURCE":        //ActiveInputSource         DDPMW-1346
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
-                case "USBKVM":                   //USBKVM                    DDPMW-1347
+                case "INAPPUSBKVM":                   //InAppUSBKVM                    DDPMW-1347
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
-                    break;
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "INAPPCOLORPRESET":         //InAppColorPreset          DDPMW-1351/1352
-                    break;
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "POWERNAP":                 //PowerNap                  DDPMW-1361
-                    break;
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
-                    break;
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    //break;
                 case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
+                    if (commandLineInput.PluginsType.Equals("KEYBOARD"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "HDR":                      //hdr                       DDPMW-1729
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "ANTIFLICKER":              //AntiFlicker               DDPMW-1735
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "MICSWITCH":                //MicSwitch                 DDPMW-1736
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "AIAUTOFRAMING":            //AIAutoFraming             DDPMW-1742
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "PRESENCEDETECTION":        //PresenceDetection         DDPMW-1747
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "ANCMODE":                  //ancMode                   DDPMW-1853
+                    if (commandLineInput.PluginsType.Equals("AUDIO"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "MICNOISECANCELLATION":     //micNoiseCancellation      DDPMW-1855
+                    if (commandLineInput.PluginsType.Equals("AUDIO"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "WEARDETECTION":             //wearDetection             DDPMW-2093
+                    if (commandLineInput.PluginsType.Equals("AUDIO"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 default:
                     response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";

@@ -1,4 +1,6 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
+using System.Net;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.AddPen_Other
@@ -12,15 +14,16 @@ namespace DDPM.UI.Module.AddPen_Other
 
         //private readonly string Caption = "Connecting your Pen";
         //private readonly string Step1 = "Touch your pen tip to the screen";
-        //private readonly string Step2 = "Select 'Yes' to confirm pairing on the prompt box to pair your pen";
+        private readonly string Step1 = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.1"];
 
         public AddPen_OtherRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            //txtCaption.Text = Caption;
-            //txtStep1.Text = Step1;
+            txtOther.Text = Strings.AddDeviceTypeOther;
+            txtCaption.Text = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.5"];
+            txtStep1.Text = string.Format(Step1, Dns.GetHostName());
             //txtStep2.Text = Step2;
         }
     }

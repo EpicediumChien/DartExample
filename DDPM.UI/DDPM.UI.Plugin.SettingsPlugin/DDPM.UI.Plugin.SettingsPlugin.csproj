@@ -32,6 +32,9 @@
 		<Reference Include="DPeMPublic.Common">
 		  <HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
 		</Reference>
+		<Reference Include="VcpCore.Common">
+		  <HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,6 +45,27 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Lock.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="General\Settings_General.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="About\Settings_About.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="WidgeSettings\Settings_WidgetSettings.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="About\ThirdPartyLicenses.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="WidgeSettings\Settings_WidgetSettings.xaml">
+	    <SubType>Designer</SubType>
+	  </Page>
 	</ItemGroup>
 
 

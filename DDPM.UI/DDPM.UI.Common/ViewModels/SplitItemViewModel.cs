@@ -50,9 +50,20 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (_split != null)
                     return _split.Description;
-                else
-                    return "";
+                else if (SplitCtrl != null)
+                {
+                    //Release version:
+                    return $"{SplitCtrl.FriendlyName}";
+                    //Debug version
+                    //return $"[{CustomId}]{SplitCtrl.FriendlyName}";
+                }
+                return "";
             }
+        }
+
+        public void NotifyPropertyChanged_TooltipText()
+        {
+            OnPropertyChanged("ToolTipText");
         }
 
         #region Edit and Delete Icon
@@ -79,5 +90,36 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
         #endregion ISplitCtrl (EasyArrange)
+
+        #region CustomId
+        private long _customId = 0;
+        public long CustomId
+        {
+            get => _customId;
+            set => SetProperty(ref _customId, value);
+        }
+        #endregion
+
+        #region Screen Orientation
+
+        private bool isVertical = false;
+
+        public bool IsVertical
+        {
+            get { return isVertical; }
+            set { isVertical = value; OnPropertyChanged("IsVertical"); }
+        }
+
+        #endregion Screen Orientation
+
+        #region Add Custom Layout Button
+        private bool _isHoverable = true;
+        public bool IsHoverable
+        {
+            get => _isHoverable;
+            set => SetProperty(ref _isHoverable, value);
+        }
+        #endregion Add Custom Layout Button
+
     }
 }

@@ -51,7 +51,9 @@
                                                       GotFocus="tbToggleInputSource_GotFocus"
                                                       LostFocus="tbToggleInputSource_LostFocus"
                                                       ContextMenuOpening="tbToggleInputSource_ContextMenuOpening"
-                                                      ContextMenu="{x:Null}" />
+                                                      ContextMenu="{x:Null}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -94,11 +96,14 @@
                                                           GotFocus="tbFavoriteInputSource_GotFocus"
                                                           LostFocus="tbFavoriteInputSource_LostFocus"
                                                           ContextMenuOpening="tbFavoriteInputSource_ContextMenuOpening"
-                                                          ContextMenu="{x:Null}" />
+                                                          ContextMenu="{x:Null}" 
+                                                          InputLanguageManager.InputLanguage="en-US"
+                                                          InputLanguageManager.RestoreInputLanguage="True"/>
                                     <ComboBox Grid.Row="1" HorizontalAlignment="Right" Style="{StaticResource DdpmComboBoxStyle}"
-                                              Width="140" Margin="0,8,8,0" DisplayMemberPath="inputDisplayText"
-                                              ItemsSource="{Binding InputsList}"
-                                              SelectedItem="{Binding FavoriteInput_Selected, Mode=TwoWay}" />
+                                              Width="140" Margin="0,8,8,8" DisplayMemberPath="inputDisplayText"
+                                              ItemsSource="{Binding InputsList}"                                                                         
+                                              SelectedItem="{Binding FavoriteInput_Selected, Mode=OneWay}"
+                                              SelectionChanged="ComboBox_SelectionChanged"/>
                                     <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2" />
                                     <UXControls:UXTextBox Grid.Column="2" Grid.Row="2" Margin="2" Height="20"
                                                           Text="{Binding SwitchInputSourceKey,Mode=TwoWay}"
@@ -112,23 +117,27 @@
                                                           GotFocus="tbSwitchInputSource_GotFocus"
                                                           LostFocus="tbSwitchInputSource_LostFocus"
                                                           ContextMenuOpening="tbSwitchInputSource_ContextMenuOpening"
-                                                          ContextMenu="{x:Null}" />
+                                                          ContextMenu="{x:Null}" 
+                                                          InputLanguageManager.InputLanguage="en-US"
+                                                          InputLanguageManager.RestoreInputLanguage="True"/>
                                     <ComboBox Grid.Row="3" HorizontalAlignment="Right" Style="{StaticResource DdpmComboBoxStyle}"
-                                              Width="140" Margin="0,8,5,0" DisplayMemberPath="inputDisplayText"
+                                              Width="140" Margin="0,8,5,8" DisplayMemberPath="inputDisplayText"
                                               ItemsSource="{Binding InputsList}"
-                                              SelectedItem="{Binding SwitchInput1_Selected, Mode=TwoWay}" />
-                                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="0,8,8,0">
+                                              SelectedItem="{Binding SwitchInput1_Selected, Mode=OneWay}" 
+                                              SelectionChanged="ComboBox_SelectionChanged_1"/>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="0,8,8,8">
                                         <Image x:Name="SwapInputIcon"    Source="/DDPM.UI.Resources;component/Resources/Images/SwapArrow.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="14" Height="14" />
                                         <ComboBox  Style="{StaticResource DdpmComboBoxStyle}"
                                                   Width="140" Margin="5,0,0,0" DisplayMemberPath="inputDisplayText"
                                                   ItemsSource="{Binding InputsList}"
-                                                  SelectedItem="{Binding SwitchInput2_Selected, Mode=TwoWay}" />
+                                                  SelectedItem="{Binding SwitchInput2_Selected, Mode=OneWay}" 
+                                                  SelectionChanged="ComboBox_SelectionChanged_2"/>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding PxPkeySettings_Visibility}">
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type UXControls:UXTextBlock}">
@@ -163,7 +172,9 @@
                                                       GotFocus="tbSwapPIPPBPInputSource_GotFocus"
                                                       LostFocus="tbSwapPIPPBPInputSource_LostFocus"
                                                       ContextMenuOpening="tbSwapPIPPBPInputSource_ContextMenuOpening"
-                                                      ContextMenu="{x:Null}" />
+                                                      ContextMenu="{x:Null}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="1" />
                                 <UXControls:UXTextBox Grid.Column="2" Grid.Row="1" Margin="2" Height="20"
                                                       Text="{Binding ChangePIPPositionKey,Mode=TwoWay}"
@@ -177,12 +188,28 @@
                                                       GotFocus="tbChangePIPPosition_GotFocus"
                                                       LostFocus="tbChangePIPPosition_LostFocus"
                                                       ContextMenuOpening="tbChangePIPPosition_ContextMenuOpening"
-                                                      ContextMenu="{x:Null}" />
+                                                      ContextMenu="{x:Null}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                             <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
+                <Border Name="DisableAll" Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!--  Add a UXBusyIndicator from Robert  -->
+                    <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+                </Border>
             </Grid>
         </UXControls:UXScrollViewer>
     </Grid>

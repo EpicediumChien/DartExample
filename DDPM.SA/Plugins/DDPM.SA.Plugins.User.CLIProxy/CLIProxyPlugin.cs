@@ -387,11 +387,19 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     "MOUSE",
                     "KEYBOARD",
-                    "DOCK",
-                    "HEADSET",
                     "AUDIO",
                     "PEN",
+                    "DOCK",
                     "WEBCAM",
+                };
+                List<string> Display_Lock_WithoutAction = new List<string>()
+                {
+                    "INAPPBRICONT",
+                    "INAPPAUTOBRITEMP",
+                    "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as INAPPAUTOBRITEMP
+                    "INAPPNETWORKKVM",
+                    "INAPPCOLORPRESET",
+                    //"POWERNAP", //do not add powernap here, go throw normal process via CLI Display plugin as well
                 };
 
                 //Do command line action
@@ -401,7 +409,13 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (_CLIDisplay != null)
                     {
-                        cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                        if (Display_Lock_WithoutAction.FindIndex(x => x.Equals(commandLineInput.TargetFeature)) >= 0)
+                        {
+                            DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        }
+                        else
+                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                     }
                     else
                     {
@@ -415,7 +429,13 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (_CLIPeripherals != null)
                     {
-                        cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+                        {
+                            DDPMSettings data_restorefactorydefault = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data_restorefactorydefault, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        }
+                        else
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
                     }
                     else
                     {
@@ -443,13 +463,42 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "INAPPUPDATE":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             DDPMSettings data_update = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerApp.CLI_SW_FW_Update(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             //if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
                             //{
-                                //UpdateUINotify no = new UpdateUINotify();
-                                //no.UI_Field_Name = "INAPPUPDATE";
-                                //_DevManagerPlugin.OnUIUpdateNotify(no);
+                            //UpdateUINotify no = new UpdateUINotify();
+                            //no.UI_Field_Name = "INAPPUPDATE";
+                            //_DevManagerPlugin.OnUIUpdateNotify(no);
                             //}
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+
+                        case "INAPPRESTOREDEFAULTS":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            DDPMSettings data_restoredefaults = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_restoredefaults, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "DEVICEDATA":
+                        case "DEVICECONFIGURATION":
+                        case "CONNECTEDDEVICES":
+                        case "SCREENNOTIFICATION":
+                        case "DIAGNOSTICSREPORT":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
+                        case "FIRMWAREUPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+
+                            // add @ stephen
+                            DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "DISABLECA":
+                            cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
 
                         default:

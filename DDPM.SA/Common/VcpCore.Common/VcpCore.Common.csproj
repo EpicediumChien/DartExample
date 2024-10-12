@@ -12,5 +12,9 @@
 	<ItemGroup>
     <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
 	</ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)VcpCore.Common.*&quot; &quot;$(SolutionDir)..\DdpmSwUpdater\CommonDll\&quot; /Y /S /Q" />
+	</Target>
 
 </Project>

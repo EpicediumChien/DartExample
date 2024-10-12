@@ -15,6 +15,7 @@ namespace DDPM.UI.Common;
 /// </summary>
 public class Constants
 {
+    #region Plugin IDs
     /// <summary>
     /// DDPM.UI.Plugin.DisplayPlugin PluginId
     /// </summary>
@@ -79,4 +80,23 @@ public class Constants
     /// DDPM.UI.Plugin.WalkThroughPlugin PluginId
     /// </summary>
     public const string WalkThroughPluginId = "{CB7DD7CC-72C4-4D70-9C6B-AFF7758E5A29}";
+    #endregion Plugin IDs
+
+    // (Move to DDPM.SA.Common/Display/EAEMConstants.cs)
+    //#region EasyArrange Constants
+    //public const int MaxCustomItems = 5; //DDPMW-843
+    //public const int MaxCustomNameLenth = 30; //DDPMW-843, should be implemented in DDPM.SA
+    //#endregion
+
+    #region ModuleGroupNames
+    //Used to find a specific ModuleGroup and the associate VBarItem
+
+    public const string GroupName_DisplaySettings = "DisplaySettings";
+    public const string GroupName_InputSource = "InputSource";
+    public const string GroupName_EasyArrange = "EasyArrange";
+    public const string GroupName_Gaming = "Gaming";
+    public const string GroupName_KVM = "KVM";
+    public const string GroupName_DisplayOthers = "Others";
+
+    #endregion ModuleGroupNames
 }

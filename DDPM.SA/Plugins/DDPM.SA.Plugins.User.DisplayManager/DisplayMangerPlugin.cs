@@ -14,23 +14,33 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Security;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
+using System.Security.Policy;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using WinCopies.Util.Commands.Primitives;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -74,6 +84,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //private string currentInput;
 
         private readonly object _PluginConditionLock = new object();
+        private readonly object _GetMonitorsLock = new object();
+
 
         //0607 Bruce 是否鎖定畫面自動旋轉
         private bool isLockOrientation;
@@ -99,6 +111,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
+        private string Display_FWU_URL = $"https://clientperipherals.dell.com/DDPM/";
+        private string Display_FWU_URL_Folder = $"/Windows/Display/Firmware/";
 
         #endregion
 
@@ -184,7 +198,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<MonitorInfo>> GetMonitors(bool renew = false)
         {
-            lock (_PluginConditionLock)
+            lock (_GetMonitorsLock)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
@@ -202,7 +216,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
-            lock (_PluginConditionLock)
+            lock (_GetMonitorsLock)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
@@ -309,25 +323,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             inputSourcelist = new Dictionary<string, InputInfo>();
 
-            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+            //_getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
             usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
 
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
+            ObjGetVCP objGet = new ObjGetVCP();
             objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
-
-            if (!string.IsNullOrEmpty(_getVCPCapabilities))
+            objGet = GetVCPCapability(monitorInfo, "inputsourcelist").Result;
+            if (objGet.result)
             {
-                JObject VCPjson = JObject.Parse(_getVCPCapabilities);
-
-                JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                JArray input = (JArray)capsDataMap["Input Select"];
-                foreach (var tmp in input)
+                //JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+                //JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                //JArray input = (JArray)capsDataMap["Input Select"];
+                foreach (InputSourceObject tmp in (List<InputSourceObject>)objGet.value)
                 {
                     if (!inputSourcelist.ContainsKey(tmp.ToString()))
                     {
                         InputInfo inputInfo = new InputInfo();
-                        inputInfo.InputName = tmp.ToString();
+                        inputInfo.InputName = tmp.Name;
+                        inputInfo.Code = tmp.value;
                         if (objGetVCP.result && usbUpstreamList.Count > 0)
                         {
                             string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
@@ -360,13 +375,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 if (usbUpstreamList.Count > 3)//0708 non-EE issue
                                     inputInfo.USBUpstream = usbUpstreamList[3];
                             }
-                            inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.ToString()).Result;
+                            inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
                         }
                         else
                         {
                             inputInfo.USBUpstream = string.Empty;
                         }
-                        inputSourcelist.Add(tmp.ToString(), inputInfo);
+                        inputSourcelist.Add(tmp.Name, inputInfo);
                         input_num = input_num + 1;
                     }
                 }
@@ -1877,6 +1892,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(_DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result);
         }
+        public Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo)
+        {
+            DisplayCurrentPropertiesInfo ret = new DisplayCurrentPropertiesInfo();
+            if (_DisplayPropertiesPlugin != null)
+            {
+                ret = _DisplayPropertiesPlugin.GetCurrentDisplayProperties(monitorInfo).Result;
+            }
+            return Task.FromResult(ret);
+        }
 
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
@@ -1885,6 +1909,21 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             isSWSetOrientation = true;
             SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
             bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+            isSWSetOrientation = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
+        {
+            isSWSetOrientation = true;
+            bool ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
+            isSWSetOrientation = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
+        {
+            isSWSetOrientation = true;
+            SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
+            bool ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }
@@ -2428,11 +2467,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
 
-        public event EventHandler<string> EAEditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EAEditCompleted;
 
         public event EventHandler<string> EAEditStarted;
 
         public event EventHandler<EAArgs> EAEditReturn;
+
+        public event EventHandler<EAArgs> EASettingsChanged;
 
         private void InitializeEAPlugin()
         {
@@ -2467,10 +2509,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (!_isEaPluginConfigured)
                         {
                             _isEaPluginConfigured = true;
-                            _eaService.EditCompleted += _eaService_EditCompleted;
+                            //Robert_Lin, 2024-9-13 Remove unused interfaces
+                            //_eaService.EditCompleted += _eaService_EditCompleted;
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                     else if (pluginCondition is PluginRunningCondition)
@@ -2481,14 +2526,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (!_isEaPluginConfigured)
                         {
                             _isEaPluginConfigured = true;
-                            _eaService.EditCompleted += _eaService_EditCompleted;
+                            //Robert_Lin, 2024-9-13 Remove unused interfaces
+                            //_eaService.EditCompleted += _eaService_EditCompleted;
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                 }
             });
+        }
+
+        private void _eaService_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
         }
 
         private void _eaService_EditStarted(object sender, string e)
@@ -2499,13 +2555,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        private void _eaService_EditCompleted(object sender, string e)
-        {
-            if (EAEditCompleted != null)
-            {
-                Task.Run(() => EAEditCompleted.Invoke(this, e));
-            }
-        }
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //private void _eaService_EditCompleted(object sender, string e)
+        //{
+        //    if (EAEditCompleted != null)
+        //    {
+        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
+        //    }
+        //}
 
         private void EaCondition_PluginConditionChangeHandler(object sender, EventArgs e)
         {
@@ -2541,14 +2598,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        {
-            if (_eaService != null)
-            {
-                return _eaService.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-            }
-            return Task.FromResult(false);
-        }
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        return _eaService.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //    }
+        //    return Task.FromResult(false);
+        //}
 
         //Robert_Lin,2024-8-4
         public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
@@ -2572,6 +2630,247 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        Task.Run(() =>
+        //        {
+        //            return _eaService.EAReloadMonitorSettings(monitorInfo);
+        //        });
+        //    }
+        //    return Task.FromResult(false);
+        //}
+
+        public Task<bool> ReloadEzSettings()
+        {
+            if (_eaService != null)
+            {
+
+                return _eaService.ReloadEzSettings();
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.ReloadEzSettings(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.SetEASelectedLayout(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
+        #endregion
+
+        #region OutReport
+        public Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos)
+        {
+            _logs.DebugMsg($"{nameof(GetMonitorAssetReport)} start");
+            List<MonitorAssetReport> ret = new List<MonitorAssetReport>();
+            List<byte[]> currentMnoitorByteArr = GetCurrentMonitorEdid();
+            for (int i = 0; i < currentMnoitorByteArr.Count; i++)
+            {
+                EDID edid_FromeVCP = CommonFun.getEDID(currentMnoitorByteArr[i]);
+                byte[] edid_byte = currentMnoitorByteArr[i];
+                var (Resolutions_Width, Resolutions_High, Frequency) = Preferred_Detailed_Timing.GetResolutionAndRefreshRate(edid_byte);
+                int daysBetween = DaysBetweenWeekStartAndToday(edid_FromeVCP.Year, edid_FromeVCP.Week);
+                string manufacturer_Name = Vendor_Product_Identification.Manufacturer_Name(edid_byte);
+                string product_Id = Vendor_Product_Identification.Product_Id(edid_byte).PadLeft(4, '0');
+                MonitorInfo? monitorInfo = monitorInfos.Find(o => BitConverter.ToString((byte[])currentMnoitorByteArr[i]).Replace("-", "").StartsWith(o.edid.Edid));
+                Debug.WriteLine(monitorInfos[0].edid.Edid);
+                Debug.WriteLine(BitConverter.ToString((byte[])currentMnoitorByteArr[i]).Replace("-", ""));
+                string modelName = $"{manufacturer_Name} {manufacturer_Name + product_Id}";
+                string manufacturer = manufacturer_Name;
+                string orientation = "N/A";
+                string activeHour = "N/A";
+                string powerStatus = "N/A";
+                string technologyType = "N/A";
+                string controllerId = "N/A";
+                string firmwareVersion = "N/A";
+                string connection = "DisplayPort";
+                string serialNumber = "N/A";
+                string optimalResolution = "N/A";
+                if (monitorInfo != null)
+                {
+                    modelName = monitorInfo.modelName;
+                    if (modelName.StartsWith("AW"))
+                    {
+                        modelName = $"Alienware {modelName}";
+                    }
+                    else
+                    {
+                        modelName = $"Dell {modelName}";
+                    }
+                    manufacturer = manufacturer_Name.Equals("DEL") ? "Dell" : "";
+                    orientation = GetOSDOrientation(monitorInfo).Result;
+                    if (string.IsNullOrEmpty(orientation))
+                    {
+                        orientation = "N/A";
+                    }
+                    activeHour = $"{GetActiveHour(monitorInfo)} hours";
+                    powerStatus = GetPowerStatus(monitorInfo);
+                    controllerId = GetControllerID(monitorInfo);
+                    firmwareVersion = monitorInfo.FwVersion;
+                    connection = monitorInfo.inputSource;
+                    serialNumber = $"{edid_FromeVCP.ServiceTag}-{edid_FromeVCP.SerialNumber}";
+                }
+                if (Frequency == 60)
+                {
+                    technologyType = "LCD";
+                }
+                else if (Frequency == 75 || Frequency == 85)
+                {
+                    technologyType = "CRT";
+                }
+                if (Resolutions_Width > 0 && Resolutions_High > 0 && Frequency > 0)
+                {
+                    optimalResolution = $"{Resolutions_Width}x{Resolutions_High} at {Frequency}Hz";
+                }
+                ret.Add(new MonitorAssetReport()
+                {
+                    ModelName = modelName,
+                    Manufacturer = manufacturer,
+                    PlugandPlayID = manufacturer_Name + product_Id,
+                    SerialNumber = serialNumber,
+                    DateOfManufacture = $"{edid_FromeVCP.Year} ISO week {edid_FromeVCP.Week}",
+                    Age = $"{daysBetween.ToString()} days",
+                    ScreenSize = $"{Display_Parameters.Max_Horizontal_Image_Size(edid_byte)} x {Display_Parameters.Max_Vertical_Image_Size(edid_byte)} mm ({Display_Parameters.Max_Display_Size(edid_byte)} in)",
+                    InputFrequency = "N/A",
+                    PhysicalOrientation = orientation,
+                    TechnologyType = technologyType,
+                    UsageTime = activeHour,
+                    ControllerID = controllerId,
+                    FirmwareVersion = firmwareVersion,
+                    PowerState = powerStatus,
+                    OptimalResolution = optimalResolution,
+                    OptimalAspectRatio = Preferred_Detailed_Timing.Active_Ratio(edid_byte),
+                    Connection = connection
+                });
+            }
+            _logs.DebugMsg($"{nameof(GetMonitorAssetReport)} end");
+            return Task.FromResult(ret);
+        }
+        List<byte[]> GetCurrentMonitorEdid()
+        {
+            _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} start");
+            List<byte[]> ret_Edie_Byt = new List<byte[]>();
+            try
+            {
+                // Open the Display Reg-Key
+                RegistryKey actiyDisplayRegistry = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\monitor\Enum");
+                actiyDisplayRegistry.GetSubKeyNames();
+                int count = int.Parse(actiyDisplayRegistry.GetValue("Count").ToString());
+                List<string> displayPath = new List<string>();
+                for (int i = 0; i < count; i++)
+                {
+                    displayPath.Add($"SYSTEM\\CurrentControlSet\\Enum\\{actiyDisplayRegistry.GetValue(i.ToString()).ToString()}\\Device Parameters");
+                }
+                for (int i = 0; i < displayPath.Count; i++)
+                {
+                    RegistryKey a = Registry.LocalMachine.OpenSubKey(displayPath[i]);
+                    byte[] edidObj = (byte[])a.GetValue("EDID");
+                    ret_Edie_Byt.Add(edidObj);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} error:{ex.ToString()}");
+            }
+            _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} end");
+            return ret_Edie_Byt;
+        }
+        int DaysBetweenWeekStartAndToday(int year, int weekOfYear)
+        {
+            // 獲取當前日期
+            DateTime today = DateTime.Today;
+            // 創建 CultureInfo 物件，用於計算週數
+            CultureInfo ci = CultureInfo.CurrentCulture;
+            Calendar calendar = ci.Calendar;
+            // 獲取該年的第一個日期
+            DateTime jan1 = new DateTime(year, 1, 1);
+            // 計算該年第一週的第一天
+            DateTime jan1WeekStart = calendar.AddWeeks(jan1, 1 - (int)calendar.GetWeekOfYear(jan1, ci.DateTimeFormat.CalendarWeekRule, ci.DateTimeFormat.FirstDayOfWeek));
+            // 計算指定週的第一天
+            DateTime weekStart = jan1WeekStart.AddDays((weekOfYear - 1) * 7);
+            // 計算從該週第一天到今天的天數
+            int daysBetween = (int)(today - weekStart).TotalDays;
+            return daysBetween;
+        }
+        string GetActiveHour(MonitorInfo monitorInfo)
+        {
+            string ret = "N/A";
+            try
+            {
+                ObjGetVCP rc = GetVCPCapability(monitorInfo, 0xC0).Result;
+                if (rc.result)
+                {
+                    ret = rc.value.ToString();
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
+        string GetPowerStatus(MonitorInfo monitorInfo)
+        {
+            string ret = "N/A";
+            try
+            {
+                ObjGetVCP rc = GetVCPCapability(monitorInfo, 0xD6).Result;
+                if (rc.result)
+                {
+                    Debug.WriteLine((uint)rc.value);
+                    uint ret_uint = (uint)rc.value;
+                    switch (ret_uint)
+                    {
+                        case 0x01:
+                            ret = "On";
+                            break;
+                        case 0x04:
+                            ret = "Saving";
+                            break;
+                        case 0x05:
+                            ret = "Off";
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
+        string GetControllerID(MonitorInfo monitorInfo)
+        {
+            string ret = "N/A";
+            try
+            {
+                ObjGetVCP rc = GetVCPCapability(monitorInfo, 0xC8).Result;
+                if (rc.result)
+                {
+                    uint controllerId = ((uint)rc.value & 0xff);
+                    if (VcpCodeList.VCPC8.ContainsKey(controllerId))
+                    {
+                        ret = VcpCodeList.VCPC8[controllerId];
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
         #endregion
 
         #region Gaming
@@ -3045,6 +3344,185 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        #endregion
+
+        #region Display FWU Metadata
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin)
+        {
+            DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
+            SetDisplayFWUServer();
+            displayUpdateHelper = GetDisplayFWMetadata(isSkipCA, settingsPlugin);
+            return Task.FromResult(displayUpdateHelper);
+        }
+        private void SetDisplayFWUServer()
+        {
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            Display_FWU_URL = Display_FWU_URL + Display_FWU_URL_Folder;
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                if (registryKey != null)
+                {
+                    var obj = registryKey?.GetValue("TestServerURL");
+                    if (obj != null)
+                    {
+                        string s = obj.ToString();
+                        if (!string.IsNullOrEmpty(s))
+                        {
+                            Display_FWU_URL = obj + Display_FWU_URL_Folder;
+                        }
+                    }
+                }
+            }
+        }
+        private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
+        {
+            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} start");
+            DisplayUpdateHelper ret = new DisplayUpdateHelper();
+            if (!isSkipCA)
+            {
+                CertificateCheck certificateCheck = new CertificateCheck(_logs);
+                if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+                {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA fail");
+                    return ret;
+                }
+            }
+            else
+            {
+                _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA is skip");
+            }
+            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
+            monitorInfos = GetMonitors().Result;
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} get jsonContent");
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
+                    response.EnsureSuccessStatusCode();
+                    string jsonContent = response.Content.ReadAsStringAsync().Result;
+                    List<string> InfoPkey = new List<string>();
+                    if (settingsPlugin != null)
+                    {
+                        InfoPkey = settingsPlugin.GetInfos().Result;
+                    }
+                    if (InfoPkey == null || InfoPkey.Count == 0)
+                    {
+                        //if read info failed, load default key as well
+                        InfoPkey = new List<string>();
+                        InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                    }
+                    string szInfo = string.Empty;
+                    string jsonString = string.Empty;
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
+                    jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
+                    if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
+                    {
+                        settingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+                    }
+                    if (!string.IsNullOrEmpty(jsonString))
+                    {
+                        Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
+                        foreach (MonitorInfo monitorInfo in monitorInfos)
+                        {
+                            string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
+                            if (!string.IsNullOrEmpty(model) && data.ContainsKey(model))
+                            {
+                                Display_Firmwares_item firmwares_item = new Display_Firmwares_item()
+                                {
+                                    id = data[model].id,
+                                    url = data[model].url,
+                                    TheLastVersion = data[model].TheLastVersion,
+                                    SHA256 = data[model].SHA256,
+                                    SHA512 = data[model].SHA512,
+                                    Thumbprint = data[model].Thumbprint,
+                                    SupportedPlatform = data[model].SupportedPlatform,
+                                    fileName = data[model].fileName,
+                                    date = data[model].date,
+                                };
+                                if (firmwares_item != null)
+                                {
+                                    firmwares_item.id = model;
+                                    firmwares_item.url = Display_FWU_URL + firmwares_item.url;
+                                    firmwares_item.CurrentVersion = monitorInfo.FwVersion;
+                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    if (firmwares_item.SupportedPlatform != null)
+                                    {
+                                        string currentPlatform = GetSystemArchitecture();
+                                        string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
+                                        if (!supportedPlatform.ToList().Contains(currentPlatform))
+                                        {
+                                            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
+                                            continue;
+                                        }
+                                    }
+                                    int newVersion = -1;
+                                    int oldVersion = -1;
+                                    for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
+                                    {
+                                        if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                        {
+                                            int index = j + 1;
+                                            int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
+                                            break;
+                                        }
+                                    }
+                                    for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
+                                    {
+                                        if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                        {
+                                            int index = j + 1;
+                                            int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
+                                            break;
+                                        }
+                                    }
+                                    if (newVersion > oldVersion)
+                                    {
+                                        ret.Firmwares.Add(firmwares_item);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check fail");
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} error {ex.Message}");
+                }
+            }
+            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} done");
+            return ret;
+        }
+        public string GetSystemArchitecture()
+        {
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                return "Intel";//"Intel_x64";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+            {
+                return "Intel";//"Intel_x86";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm)
+            {
+                return "ARM";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                return "ARM";//"ARM_64";
+            }
+            else
+            {
+                return "Unknow";
+            }
+        }
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using System.Collections.Generic;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -9,35 +10,35 @@ namespace DDPM.SA.Common.Settings
         public List<int> ImportVCPSequence = new List<int>() { 0x66, 0x10, 0x12, /*0xF0,*/ 0xE9 };
     }
 
-    public class Input
+    public class InputSource
     {
-        public string strInputSourceList { get; set; } = string.Empty;
+        public string strInputSourceList { get; set; }
     }
 
-    public class KVM
+    public class KVMSettings
     {
-        public string strUSBKVMPCsList { get; set; } = string.Empty;
-        public bool isOnUSBKVM { get; set; } = false;
-        public bool isOnNKVM { get; set; } = false;
+        public string strUSBKVMPCsList { get; set; }
+        public bool isOnUSBKVM { get; set; }
+        public bool isOnNKVM { get; set; }
     }
 
-    public class VCP
+    public class VCPCode
     {
         public int Code { get; set; }
         public List<int> Value { get; set; }
 
-        public VCP()
+        public VCPCode()
         {
         }
 
-        public VCP(int code, int value)
+        public VCPCode(int code, int value)
         {
             Code = code;
             Value = new List<int>();
             Value.Add(value);
         }
 
-        public VCP(int code, List<int> value)
+        public VCPCode(int code, List<int> value)
         {
             Code = code;
             Value = ((value == null) ? new List<int>() : new List<int>(value));
@@ -52,7 +53,7 @@ namespace DDPM.SA.Common.Settings
         /// <summary>
         /// Current user selected Split item. Defaul is (CellCount=0, SplitKey='A')
         /// </summary>
-        public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '2A'
+        public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '0A'
 
         /// <summary>
         /// Custom layout items (up to 5 items), Default is empty.
@@ -63,8 +64,10 @@ namespace DDPM.SA.Common.Settings
         /// The Recent list, the first item should be the SelectedSplit.
         /// So the SelectedSplit could be removed.
         /// </summary>
-        public List<SplitJson> RecentList { get; set; }
+        public List<SplitJson> RecentList { get; set; } = SplitJson.DefaultRecentList;
 
+        //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
+        /*
         /// <summary>
         /// The setting of "Allow app to split side by side without gap" in Easy Arrange / Settings page.
         /// The defualt value is True.
@@ -82,6 +85,17 @@ namespace DDPM.SA.Common.Settings
         /// The defualt value is False.
         /// </summary>
         public bool? IsSpanAcrossMultiMonitors { get; set; } = false;
+
+        /// <summary>
+        /// The settings of "Application Window Snap" in Easy Arrange / Settings page.
+        /// </summary>
+        public bool IsAwsEnabled { get; set; } = false;
+        */
+    }
+
+    public class ImpExpSettings
+    {
+        public bool SameModel { get; set; } = false;
     }
 
     public class DDPMMonitorSettings
@@ -89,9 +103,22 @@ namespace DDPM.SA.Common.Settings
         public double Version { get; set; }
         public string Model { get; set; }
         public string ServiceTag { get; set; }
-        public Input Input { get; set; } = new Input();
-        public KVM KVM { get; set; } = new KVM();
-        public List<VCP> VCPs { get; set; } = new List<VCP>();
+        public InputSource Input { get; set; } = new InputSource();
+        public KVMSettings KVM { get; set; } = new KVMSettings();
+        public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
+        public ColorPresetSettings ColorPreset { get; set; } = new ColorPresetSettings();
+        public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
+        public HotkeySettings hotkeySettings { get; set; }
+        public List<HotkeyData> hotkeyData { get; set; } = new List<HotkeyData>();//1006 add for input source hotkey settings per monitor
+        public scheduleInfo scheduleInfo { get; set; }
+        public ImpExpSettings ImpExpSettings { get; set; }
+        public EasyArrangementDDPM easyArrangementDDPM { get; set; }
+    }
+
+    public class HotkeyData
+    {
+        public HotkeyType hotkeyType = HotkeyType.None;
+        public List<InputSourceObj> inputSource { get; set; } = new List<InputSourceObj>();
     }
 }

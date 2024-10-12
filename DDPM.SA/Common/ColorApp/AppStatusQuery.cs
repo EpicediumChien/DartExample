@@ -28,7 +28,7 @@ namespace DDPM.ColorApp
     {
         #region Native Win32 APIs
 
-        [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
+        [DllImport("USER32.DLL", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
 
@@ -163,7 +163,7 @@ namespace DDPM.ColorApp
         public static int GetWindowProcessId(IntPtr hwnd)
         {
             uint pid;
-            GetWindowThreadProcessId(hwnd, out pid);
+            _GetWindowThreadProcessId(hwnd, out pid);
             return (int)pid;
         }
 
@@ -187,7 +187,7 @@ namespace DDPM.ColorApp
                     strlog = String.Format($"[Watcher-callback] Got sandbox app, retrieve process info by process id");
                     writelog(strlog);
 
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         Thread.Sleep(1000);
                         forgroundProcess = Process.GetProcessById(GetWindowProcessId(Native._GetForegroundWindow()));

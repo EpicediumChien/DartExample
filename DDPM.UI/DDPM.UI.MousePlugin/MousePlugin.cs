@@ -33,7 +33,6 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
-        private readonly string? _applicationName;
         private MouseViewModel? _viewModel;
 
         private bool _isConfigured;
@@ -95,7 +94,14 @@ namespace DDPM.UI.Plugin.MousePlugin
             if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Mouse"))
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                {
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    {
+                        _viewModel.OnGoBackClicked();
+                        return;
+                    }
                     GetPeripheralsAsync();
+                }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
@@ -153,7 +159,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             }
             _log.Debug($"GetPeripherals is invoked");
             //_deviceHelper = await peripheralsPlugin.GetDevices();
-            Task<DeviceHelper> task = _deviceManagerPlugin!.GetDevices();
+            Task<DeviceHelper> task = _deviceManagerPlugin!.GetDevices(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
@@ -223,10 +229,11 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-      Task<int> task = _deviceManagerPlugin!.GetDpiValueByDTP("DellPeripheral.Mouse.0");
-      var DpiValue = task.Result;
+            Task<int> task = _deviceManagerPlugin!.GetDpiValueByDTP("DellPeripheral.Mouse.0");
+            var DpiValue = task.Result;
             _deviceManagerPlugin.SetDPIValueByDTP("DellPeripheral.Mouse.0", 1350);
-            if(_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            { }
             Mouse.OverrideCursor = null;
         }
 

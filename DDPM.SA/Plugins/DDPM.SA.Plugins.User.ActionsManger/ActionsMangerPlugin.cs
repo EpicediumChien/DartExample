@@ -89,7 +89,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             //Necessary to handle the notification is coming from which device and model name.
             //。。。。。。。。。。。。。。。。。。
 
-            var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions");
+            var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+            string fileinfo = string.Empty, info = string.Empty;
+            DDPMFileSecurity.CheckFold(fileFolder, out fileinfo, out info);
             if (!Directory.Exists(fileFolder))
                 Directory.CreateDirectory(fileFolder);
 

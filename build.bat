@@ -1,4 +1,6 @@
 @echo OFF
+:: start /wait /B cmd.exe /C .\del_files.bat
+
 set NET=net8.0
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
@@ -11,11 +13,53 @@ set build_arch="Any CPU"
 ::Build for [Release] or [Debug]
 set ConfigType=%1
 
+::It's going to build UI.
+set GetGotoUI=%2
+
+if "%GetGotoUI%"=="UI" goto BuildUI
+
 :: Call msbuild environment.
 :: start /B cmd.exe /C .\SetVSBuildEnvironment.bat
 
-RD /S /Q "_BIN"
+
 ::goto FileCopy
+
+::
+:: Build DdmLibrary.dll
+::
+echo Clean DDPM.SA\DdmLibrary(Decrypt)
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\Decrypt\Decrypt.sln"
+if errorlevel 1 goto errorDdmLibrary
+echo Build DdmLibrary
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\Decrypt\Decrypt.sln"
+if errorlevel 1 goto errorDdmLibrary
+echo *************************************
+echo BUILD DdmLibrary SUCCESS
+echo BUILD DdmLibrary SUCCESS
+echo BUILD DdmLibrary SUCCESS
+echo *************************************
+xcopy /Y ".\DDPM.SA\Decrypt\ConsoleApp2\bin\%ConfigType%\%NET%-windows10.0.19041.0\DdmLibrary.dll" ".\DDPM.SA\dll\"  
+xcopy /Y ".\DDPM.SA\Decrypt\ConsoleApp2\bin\%ConfigType%\%NET%-windows10.0.19041.0\DdmLibrary.deps.json" ".\DDPM.SA\dll\"  
+
+
+
+::
+:: Build DDPM.Easy.Common
+::
+echo Clean DDPM.UI\DDPM.Easy.Common
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+if errorlevel 1 goto errorEAComm
+echo Build VCPSDK
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+if errorlevel 1 goto errorEAComm
+echo *************************************
+echo BUILD DDPM.Easy.Common SUCCESS
+echo BUILD DDPM.Easy.Common SUCCESS
+echo BUILD DDPM.Easy.Common SUCCESS
+echo *************************************
+xcopy /Y ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.dll" ".\DDPM.SA\dll\DDPM.Easy.Common.dll"  
+xcopy /Y ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.deps.json" ".\DDPM.SA\dll\DDPM.Easy.Common.deps.json"  
+
 
 
 echo Clean VCPSDK
@@ -24,10 +68,12 @@ dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTar
 if errorlevel 1 goto errorVCPSDK
 :: pause
 echo Build VCPSDK
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\VCPSDK\VCPSDK.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\VCPSDK\VCPSDK.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorVCPSDK
 echo *************************************
+echo BUILD VCPSDK SUCCESS
+echo BUILD VCPSDK SUCCESS
 echo BUILD VCPSDK SUCCESS
 echo *************************************
 
@@ -42,17 +88,19 @@ dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTar
 if errorlevel 1 goto errorSA
 :: pause
 echo Build SA
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
 :: msbuild .\DDPM.SA\DDPM.SA.sln  /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorSA
 echo *************************************
+echo BUILD SA SUCCESS
+echo BUILD SA SUCCESS
 echo BUILD SA SUCCESS
 echo *************************************
 
 
 
 
-
+:BuildUI
 
 echo Clean UI
 dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
@@ -60,11 +108,29 @@ dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTar
 if errorlevel 1 goto errorUI
 :: pause
 echo Build UI
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorUI
 echo *************************************
 echo BUILD UI SUCCESS
+echo BUILD UI SUCCESS
+echo BUILD UI SUCCESS
+echo BUILD UI SUCCESS
+echo *************************************
+
+
+
+echo Clean DdpmSwUpdater
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DdpmSwUpdater\DdpmSwUpdater.sln"
+:: msbuild .\DDPM.UI\DDPM.UI.sln  /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorUI
+:: pause
+echo Build UI
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DdpmSwUpdater\DdpmSwUpdater.sln"
+:: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorUI
+echo *************************************
+echo BUILD Mini SUCCESS
 echo *************************************
 
 
@@ -72,6 +138,25 @@ echo *************************************
 
 
 goto PassDone
+
+:errorDdmLibrary
+echo ----------------------------------------
+echo ---- ERROR : Build DdmLibrary ERROR ----
+echo ----------------------------------------
+goto errorDone
+
+:errorEAComm
+    @echo.
+    @echo  #####       #             
+    @echo  #          # #        
+    @echo  #         #   #        
+    @echo  ####     #     #    
+    @echo  #        #######     
+    @echo  #        #     #      
+    @echo  #####    #     #   
+    @echo.
+goto errorDone
+
 
 :errorVCPSDK
     @echo.

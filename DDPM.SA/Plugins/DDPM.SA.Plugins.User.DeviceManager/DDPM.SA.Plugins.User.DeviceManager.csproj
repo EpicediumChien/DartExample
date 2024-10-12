@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.QAM\DDPM.QAM.csproj" />
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\..\Common\OSDs\DDPM.OSDs.csproj" />
     <ProjectReference Include="..\..\Common\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
@@ -21,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DdmLibrary">
+      <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="DPeMClientBroker">
       <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
     </Reference>

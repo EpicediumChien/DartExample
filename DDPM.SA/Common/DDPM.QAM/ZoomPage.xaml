@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="DDPM.QAM.ZoomPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.QAM"
+             mc:Ignorable="d"
+             Height="72"
+             Width="288">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:SliderWidthConverter x:Key="SliderWidthConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#141D28"
+            Height="72"
+            CornerRadius="0,0,10,10">
+        <Grid Margin="10,5,10,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Path Data="M2.89999 5.55005H9.24999V6.61005H2.89999V5.55005Z
+                  M16 15.25L10.73 10C11.7148 8.80873 12.2018 7.28332 12.0896 5.74175C11.9775 4.20017 11.2747 2.76136 10.1278 1.72518C8.9809 0.688992 7.47837 0.135379 5.93335 0.179718C4.38834 0.224056 2.92003 0.862926 1.83445 1.96318C0.74887 3.06343 0.129766 4.54018 0.106169 6.08565C0.0825719 7.63112 0.656302 9.12608 1.70779 10.259C2.75927 11.3918 4.20739 12.0752 5.75033 12.1667C7.29327 12.2582 8.812 11.7507 9.98999 10.75L15.25 16L16 15.25ZM6.06999 11.11C5.08109 11.11 4.11439 10.8168 3.29214 10.2674C2.4699 9.71799 1.82903 8.93709 1.4506 8.02346C1.07216 7.10983 0.973141 6.1045 1.16607 5.13459C1.35899 4.16469 1.8352 3.27377 2.53446 2.57451C3.23372 1.87525 4.12464 1.39905 5.09454 1.20612C6.06445 1.01319 7.06978 1.11221 7.98341 1.49065C8.89704 1.86909 9.67793 2.50995 10.2273 3.33219C10.7767 4.15444 11.07 5.12114 11.07 6.11005C11.07 7.43613 10.5432 8.7079 9.60553 9.64558C8.66785 10.5833 7.39608 11.11 6.06999 11.11Z"
+                      Fill="white"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+            </Grid>
+            <Slider Grid.Column="1"
+                    Margin="8,0"
+                    HorizontalContentAlignment="Stretch"
+                    AutoToolTipPlacement="None"
+                    IsMoveToPointEnabled="True"
+                    IsSnapToTickEnabled="True"
+                    LargeChange="1"
+                    SmallChange="1"
+                    Width="200"
+                    Maximum="{Binding ZoomMax}"
+                    Minimum="{Binding ZoomMin}"
+                    Value="{Binding Path=ZoomValue, Mode=TwoWay}"
+                    Thumb.DragStarted="ZoomSlider_DragStarted"
+                    Thumb.DragCompleted="ZoomSlider_DragCompleted" >
+                <Slider.Template>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <!-- Black background for the slider -->
+                            <Canvas Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Slider}}"
+                                    Height="4"
+                                    VerticalAlignment="Center">
+                                <Rectangle Fill="#293B4D"
+                                           Height="4"
+                                           Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Slider}}" />
+                                <Rectangle Fill="#A4B8CD"
+                                           Height="4"
+                                           Width="{Binding Value, RelativeSource={RelativeSource AncestorType=Slider}, Converter={StaticResource SliderWidthConverter}}" />
+                            </Canvas>
+                            
+                            <Track x:Name="PART_Track">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Ellipse Fill="#A4B8CD"
+                                                         Width="20"
+                                                         Height="20" />
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Slider.Template>
+            </Slider>
+            <Grid Grid.Column="2">
+                <Path Data="M6.58925 2.93002H5.52925V5.58002H2.88925V6.64002H5.52925V9.29002H6.58925V6.64002H9.23925V5.58002H6.58925V2.93002Z
+          M15.9993 15.25L10.7393 10C11.4833 9.11157 11.9583 8.02928 12.1087 6.88024C12.2591 5.73121 12.0785 4.56312 11.5882 3.51313C11.0978 2.46315 10.3181 1.57486 9.3405 0.952577C8.36292 0.33029 7.22809 -0.000164308 6.06925 1.70432e-05C5.08796 -0.00230429 4.12064 0.232535 3.24965 0.684541C2.37866 1.13655 1.62979 1.79233 1.06681 2.59606C0.503823 3.3998 0.143396 4.32767 0.0162124 5.30069C-0.110971 6.2737 -0.00114447 7.26304 0.336342 8.18447C0.673829 9.10591 1.22898 9.93214 1.95453 10.5928C2.68008 11.2535 3.55454 11.7291 4.50346 11.9791C5.45238 12.2291 6.44765 12.246 7.40454 12.0286C8.36143 11.8111 9.2516 11.3656 9.99925 10.73L15.2493 16L15.9993 15.25ZM6.06925 11.11C5.08034 11.11 4.11365 10.8168 3.2914 10.2674C2.46915 9.71796 1.82829 8.93707 1.44985 8.02343C1.07142 7.1098 0.972399 6.10447 1.16532 5.13457C1.35825 4.16466 1.83445 3.27375 2.53372 2.57448C3.23298 1.87522 4.12389 1.39902 5.0938 1.20609C6.0637 1.01316 7.06904 1.11218 7.98267 1.49062C8.8963 1.86906 9.67719 2.50992 10.2266 3.33217C10.776 4.15441 11.0693 5.12111 11.0693 6.11002C11.0693 7.4361 10.5425 8.70787 9.60478 9.64555C8.6671 10.5832 7.39533 11.11 6.06925 11.11Z"
+                      Fill="white"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

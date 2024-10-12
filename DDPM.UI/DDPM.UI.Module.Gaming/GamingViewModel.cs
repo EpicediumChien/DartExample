@@ -34,9 +34,9 @@ namespace DDPM.UI.Module.Gaming
             set
             {
                 SetProperty(ref _selectedResolution, value);
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(MyModule.SelectedHomeDevice.MonitorInfo,
-                    _selectedResolution.Properties,
-                    DisplayOrientation.Unknow
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                DdpmCommonHelper.DeviceManagerSA.SetResolutions(currentMonitorInfo,
+                    _selectedResolution.Properties
                     ).Wait();
             }
         }
@@ -47,7 +47,8 @@ namespace DDPM.UI.Module.Gaming
             set
             {
                 SetProperty(ref _selectedGameEnhancementMode, value);
-                DdpmCommonHelper.DeviceManagerSA.SetGameEnhancementMode(MyModule.SelectedHomeDevice.MonitorInfo,
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                DdpmCommonHelper.DeviceManagerSA.SetGameEnhancementMode(currentMonitorInfo,
                     _selectedGameEnhancementMode.GameEnhancementMode
                     ).Wait();
             }
@@ -59,7 +60,8 @@ namespace DDPM.UI.Module.Gaming
             set
             {
                 SetProperty(ref _selectedResponseTime, value);
-                DdpmCommonHelper.DeviceManagerSA.SetGaming_ResponseTime(MyModule.SelectedHomeDevice.MonitorInfo,
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                DdpmCommonHelper.DeviceManagerSA.SetGaming_ResponseTime(currentMonitorInfo,
                     _selectedResponseTime.ResponseTime
                     ).Wait();
             }
@@ -71,7 +73,8 @@ namespace DDPM.UI.Module.Gaming
             set
             {
                 SetProperty(ref _selectedDarkStabilizer, value);
-                DdpmCommonHelper.DeviceManagerSA.SetGaming_DarkStabilizer(MyModule.SelectedHomeDevice.MonitorInfo,
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                DdpmCommonHelper.DeviceManagerSA.SetGaming_DarkStabilizer(currentMonitorInfo,
                     _selectedDarkStabilizer.DarkStabilizer
                     ).Wait();
             }
@@ -83,7 +86,8 @@ namespace DDPM.UI.Module.Gaming
             set
             {
                 SetProperty(ref _selectedHDRType, value);
-                DdpmCommonHelper.DeviceManagerSA.SetGaming_HDRType(MyModule.SelectedHomeDevice.MonitorInfo,
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                DdpmCommonHelper.DeviceManagerSA.SetGaming_HDRType(currentMonitorInfo,
                     _selectedHDRType.HDRType
                     ).Wait();
             }
@@ -95,13 +99,12 @@ namespace DDPM.UI.Module.Gaming
             set
             {
                 SetProperty(ref _selectedDualResolution, value);
-                DdpmCommonHelper.DeviceManagerSA.SetGaming_DualResolutionType(MyModule.SelectedHomeDevice.MonitorInfo,
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                DdpmCommonHelper.DeviceManagerSA.SetGaming_DualResolutionType(currentMonitorInfo,
                     _selectedDualResolution.DualResolutionType
                     ).Wait();
             }
         }
-        public Visibility IsGameSeries { get; set; } = Visibility.Collapsed;
-        public Visibility IsAWSeries { get; set; } = Visibility.Collapsed;
         public bool GameEnhanceMode_IsEnable { get; set; }
         public string GameEnhanceMode_Opacity
         {
@@ -190,7 +193,8 @@ namespace DDPM.UI.Module.Gaming
         }
         private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             string swHortcutText = string.Empty;
 
             if (curHotkey.HotkeyInfo.Count > 0)
@@ -225,6 +229,8 @@ namespace DDPM.UI.Module.Gaming
         public Visibility IsSupported_ResponseTime { get; set; } = Visibility.Collapsed;
         public Visibility IsSupported_DarkStabilizer { get; set; } = Visibility.Collapsed;
         public Visibility IsSupported_DualResolution { get; set; } = Visibility.Collapsed;
+        public Visibility IsGameSeries { get; set; } = Visibility.Collapsed;
+        public Visibility IsAWSeries { get; set; } = Visibility.Collapsed;
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -281,38 +287,44 @@ namespace DDPM.UI.Module.Gaming
         {
             try
             {
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
                 Resolution_ItemsCollection = new List<UI_Properties>();
                 GameEnhanceMode_ItemsCollection = new List<UI_GameEnhancementMode>();
                 ResponseTime_ItemsCollection = new List<UI_ResponseTime>();
                 DarkStabilizer_ItemsCollection = new List<UI_DarkStabilizer>();
                 HDRType_ItemsCollection = new List<UI_HDRType>();
                 DualResolution_ItemsCollection = new List<UI_DualResolution>();
-
-                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                IsSupported_GameEnhanceMode = Visibility.Collapsed;
+                IsSupported_ResponseTime = Visibility.Collapsed;
+                IsSupported_DarkStabilizer = Visibility.Collapsed;
+                IsSupported_DualResolution = Visibility.Collapsed;
+                IsGameSeries = Visibility.Collapsed;
+                IsAWSeries = Visibility.Collapsed;
+                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(currentMonitorInfo).Result;
                 if (displayPropertiesInfo.IsSupported_GameEnhancementMode)
                 {
-                    displayPropertiesInfo.Current_GameEnhancementMode = DdpmCommonHelper.DeviceManagerSA.GetCurrentGame_EnhancementMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_GameEnhancementMode = DdpmCommonHelper.DeviceManagerSA.GetCurrentGame_EnhancementMode(currentMonitorInfo).Result;
                     IsSupported_GameEnhanceMode = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_ResponseTime)
                 {
-                    displayPropertiesInfo.Current_ResponseTime = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_ResponseTime(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_ResponseTime = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_ResponseTime(currentMonitorInfo).Result;
                     IsSupported_ResponseTime = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_DarkStabilizer)
                 {
-                    displayPropertiesInfo.Current_DarkStabilizer = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DarkStabilizer(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_DarkStabilizer = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DarkStabilizer(currentMonitorInfo).Result;
                     IsSupported_DarkStabilizer = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_HDRType)
                 {
-                    displayPropertiesInfo.Current_HDRType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_HDRType(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                    IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
-                    IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
+                    displayPropertiesInfo.Current_HDRType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_HDRType(currentMonitorInfo).Result;
+                    IsGameSeries = currentMonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
+                    IsAWSeries = currentMonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
                 }
                 if (displayPropertiesInfo.IsSupported_DualResolutionType)
                 {
-                    displayPropertiesInfo.Current_DualResolutionType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DualResolutionType(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_DualResolutionType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DualResolutionType(currentMonitorInfo).Result;
                     IsSupported_DualResolution = Visibility.Visible;
                 }
 

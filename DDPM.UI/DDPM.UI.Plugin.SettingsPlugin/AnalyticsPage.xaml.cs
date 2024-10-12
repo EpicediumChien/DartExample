@@ -111,7 +111,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             try
             {
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data == null)
                     return;
                 if (data.UserSettings == null)
@@ -149,7 +149,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             //Catch event if belong to telemetry consent
             if(e.UI_Field_Name.ToUpper().Trim().Equals("TELEMETRYCONSENT"))
             {
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings(true);//DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
@@ -164,30 +164,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            if (e == null || e.IT_Feature_TriggerList == null || e.target_object == null)
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Settings_TelemetryConsent", e);
+            if (isLocked != null)
             {
-                Trace.WriteLine("Got [DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
-                return;
-            }
-            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_TelemetryConsent"));
-            if(idx >= 0)
-            {
-                string feature = e.IT_Feature_TriggerList[idx];
-                PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
-                Trace.WriteLine($"Got [IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
-                //DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.isTabStoppable = !(bool)propertyInfo.GetValue(e.target_object);
-                        vm.ShowLockMask = (bool)propertyInfo.GetValue(e.target_object);
-                        Trace.WriteLine($"Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
-                        //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
-                        //Trace.WriteLine($"Apply TelemetryConsent(check) : {data.UserSettings.isTelemetryConsentOn}");
+                        vm.isTabStoppable = !(bool)isLocked;
+                        vm.ShowLockMask = (bool)isLocked;
+                        Trace.WriteLine($"Apply TelemetryConsent(Lock) : {isLocked}");
                     }
-                }));                
+                }));
             }
         }
 

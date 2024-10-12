@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -7,9 +9,11 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -35,13 +39,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private WebCameraViewModel? _viewModel;
 
         private bool _isConfigured;
-        private IDeviceManagerSA _deviceManagerPlugin;
-        private IFrameworkPluginConditionNotification? _deviceManagerPluginCondition;
-        private CancellationTokenSource StartupCancellationTokenSource { get; } = new();
-        private CancellationToken CancellationToken { get; }
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
-        private List<DeviceInfo> _deviceInfos = new();
 
         /// <summary>
         /// Default constructor
@@ -52,113 +51,43 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _console = console;
             _log = console.CreateLog("WebCamera");
             _log.Info($"{nameof(LaunchView)} - Constructed");
-
-            //var addDevicetGearItem = new GearMenuItem("WebCamera", new RelayCommand(ShowAddDeviceView));
-            //gearMenu.AddGearMenuItem(addDevicetGearItem, 4);
-
-            CancellationToken = StartupCancellationTokenSource.Token;
-            _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
         }
 
-        private void ShowAddDeviceView()
-        {
-            _console.ShowPluginById(PluginId);
-        }
-
-        private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
-        {
-            _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
-            try
-            {
-                _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-
-                if (_deviceManagerPlugin == null)
-                {
-                    _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
-                    return;
-                }
-
-                // Manager Peripheralslugin Condition
-                _deviceManagerPluginCondition = _deviceManagerPlugin as IFrameworkPluginConditionNotification;
-
-                if (_deviceManagerPluginCondition == null)
-                    return;
-
-                // Subscribe to plugin changes
-                _deviceManagerPluginCondition.PluginConditionChangeHandler += _peripheralsPluginCondition_PluginConditionChangeHandler;
-
-                // Get current condition
-                _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
-                _log.Error(ex, message);
-            }
-        }
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("WebCamera"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Webcam"))
             {
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
-            }
-        }
-
-        private void PeripheralsPlugin_UpdateNotify(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void _peripheralsPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
-        {
-            _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-        }
-
-        private async Task GetCurrentPeripheralsPluginCondition()
-        {
-            await _lock.WaitAsync(CancellationToken);
-            _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
-            try
-            {
-                if (_deviceManagerPluginCondition == null)
+                if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                {
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID)
+                    {
+                        if (_viewModel.IsMicEnumerationOnEnabled)
+                        {
+                            _viewModel!.OnGoBackClicked();
+                        }
+                    }
                     return;
-
-                var pluginCondition = await _deviceManagerPluginCondition.CurrentConditionAsync();
-
-                if (pluginCondition is PluginErrorCondition)
-                {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
-                else if (pluginCondition is PluginRunningCondition)
+                if (e.type == DeviceChangedType.Peripherals_PlugIn)
                 {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
+                    if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
+                    {
+                        _console.ShowPluginById(PluginId);
+                        GetPeripheralsAsync();
+                        _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
+                        Mouse.OverrideCursor = null;
+                    }
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
-                _log.Error(ex, message);
-                //throw new NotificationPluginException(message);
-            }
-            finally
-            {
-                _lock.Release();
-                _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} unlock");
+                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
 
         private void GetPeripheralsAsync()
         {
-            if (!SpinWait.SpinUntil(() =>
-            _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
-            {
-                Console.WriteLine("Could not establish communication with DDPM!!");
-                return;
-            }
             _log.Debug($"GetPeripherals is invoked");
-            //_deviceHelper = await peripheralsPlugin.GetDevices();
-            Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
@@ -173,12 +102,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_isConfigured)
                 return;
 
-            // Marked all the instances as singleton
-            // Pass the existing _console and _log instance so that Ioc doesn't new'up them
             PluginIoc.ConfigureServices(new ServiceCollection()
                 .AddSingleton(_console)
                 .AddSingleton(_log)
-                .AddSingleton(_deviceManagerPlugin)
                 .AddSingleton<IPeripheralViewModel, WebCameraViewModel>()
                 .BuildServiceProvider());
 
@@ -194,16 +120,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
@@ -212,14 +136,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null)
+            {
+                _viewModel.SetCurrentDevice(parameter);
+            }
         }
 
         #endregion Interface IConsolePluginSupportsActivations
 
         ~WebCameraplugin()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }

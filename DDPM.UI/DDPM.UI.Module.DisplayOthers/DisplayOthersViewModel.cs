@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using DDPM.UI.Common;
 using DDPM.SA.Common.Display;
 using System.Windows.Forms;
+using System.Windows;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -39,7 +41,7 @@ namespace DDPM.UI.Module.DisplayOthers
             get => _powerNapEnabled;
             set
             {
-                
+
                 SetProperty(ref _powerNapEnabled, value);
                 PowerNap_text = _powerNapEnabled ? Strings.On : Strings.Off;
                 OnPropertyChanged("PowerNap_Enable");
@@ -94,6 +96,42 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
 
+        private bool _autoApply_Checked;
+
+        public bool AutoApply_Checked 
+        {
+            get => _autoApply_Checked;
+            set
+            { 
+                SetProperty(ref _autoApply_Checked, value);
+                DdpmCommonHelper.DeviceManagerSA.SetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, _autoApply_Checked).Wait();
+            }
+        }
+
+        public bool isSettingsEnable { get; set; } = true;
+
+        public Visibility LockSettings_Visibility { get; set; } = Visibility.Collapsed;
+
+        public double Settings_Opacity { get; set; } = 1;
+
+        public bool isLockPowerNapEnable { get; set; } = true;
+
+        public Visibility LockPowerNap_Visibility { get; set; } = Visibility.Collapsed;
+
+        public double LockPowerNap_Opacity { get; set; } = 1;
+
+        #region UI Enable Flags
+
+        private bool _isBusy = false;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        #endregion UI Enable Flags
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -111,32 +149,20 @@ namespace DDPM.UI.Module.DisplayOthers
             try
             {
                 BackgroundWorker bwk = (BackgroundWorker)sender;
-                _powerNapEnabled = false;
-                //todo get powerNapSupport
-                List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
-                string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
-                settings.RemoveAll(x => x.SerialNumber == null);
-                PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
-                if (crtSetting != null)
+                AutoApply_Checked = DdpmCommonHelper.DeviceManagerSA.GetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo).Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
                 {
-                    _powerNapEnabled = crtSetting.Status;
-                    _powerNapText = _powerNapEnabled ? Strings.On : Strings.Off;
-                    switch (crtSetting.RunType)
+                    if (data.LockSettings.Lock_Display_PowerNap)
                     {
-                        case PowerNapType.ReduceBrightness:
-                            _reducebrtChecked = true;
-                            _putTosleepChecked = false;
-                            break;
-
-                        case PowerNapType.SleepIfRunning:
-                            _reducebrtChecked = false;
-                            _putTosleepChecked = true;
-                            break;
+                        //Do lock ui init here (direct set or binding via vm)
+                        LockPowerNap_Visibility = Visibility.Visible;
+                        isLockPowerNapEnable = true;
+                        LockPowerNap_Opacity = 0.5;
                     }
                 }
-                OnPropertyChanged("PowerNap_Enable");
-                OnPropertyChanged("Reducebrt_Checked");
-                OnPropertyChanged("PutTosleep_Checked");
+                OnPropertyChanged("AutoApply_Checked");
+                updatePowerNapUISetting();
             }
             catch (Exception)
             {
@@ -144,42 +170,146 @@ namespace DDPM.UI.Module.DisplayOthers
             }
         }
 
+        public void updatePowerNapUISetting()
+        {
+            _powerNapEnabled = false;
+            List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
+            string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
+            settings.RemoveAll(x => x.SerialNumber == null);
+            PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
+            if (crtSetting != null)
+            {
+                _powerNapEnabled = crtSetting.Status;
+                _powerNapText = _powerNapEnabled ? Strings.On : Strings.Off;
+                switch (crtSetting.RunType)
+                {
+                    case PowerNapType.ReduceBrightness:
+                        _reducebrtChecked = true;
+                        _putTosleepChecked = false;
+                        break;
+
+                    case PowerNapType.SleepIfRunning:
+                        _reducebrtChecked = false;
+                        _putTosleepChecked = true;
+                        break;
+                }
+            }
+            OnPropertyChanged("PowerNap_Enable");
+            OnPropertyChanged("Reducebrt_Checked");
+            OnPropertyChanged("PutTosleep_Checked");
+        }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
         }
 
+        #region Imp/Exp Loading
+
+        public void ImpExpSettings(string ImpExp, string path)
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += ImpExpSettings_Dowork;
+            bw.RunWorkerCompleted += ImpExpSettings_Done;
+            string ImpExppath = ImpExp + path;
+            bw.RunWorkerAsync(ImpExppath);
+            //IsBusy = true;
+            //OnPropertyChanged("IsBusy");
+        }
+        private void ImpExpSettings_Dowork(object sender, DoWorkEventArgs e)
+        {
+            string ImpExppath = e.Argument.ToString();
+            if (ImpExppath.Substring(0, 3) == "Imp")
+            {
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, ImpExppath.Substring(3)).Result;
+            }
+            else if (ImpExppath.Substring(0, 3) == "Exp")
+            {
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, ImpExppath.Substring(3)).Result;
+            }
+        }
+        private void ImpExpSettings_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
+        }
+
+        #endregion
+
         public bool ExportSettings()
         {
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
             saveFileDialog.Filter = "json files (*.json)|*.json";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = saveFileDialog.FileName;
-                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
-                if (b)
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
                 {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else 
+                { 
+                    ImpExpSettings("Exp", filename);
                     return true;
                 }
             }
+            else
+            {
+                IsBusy = false;
+                OnPropertyChanged("IsBusy");
+            }
+
             return false;
         }
         public bool ImportSettings()
         {
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "jason files (*.json)|*.json";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
-                if (b) 
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                 {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else
+                {
+                    ImpExpSettings("Imp", filename);
                     return true;
                 }
             }
+            else
+            {
+                IsBusy = false;
+                OnPropertyChanged("IsBusy");
+            }
+
             return false;
         }
+
+        public void OnPropertyChanged_Lock()
+        {
+            OnPropertyChanged("isSettingsEnable");
+            OnPropertyChanged("LockSettings_Visibility");
+            OnPropertyChanged("Settings_Opacity");
+            OnPropertyChanged("isLockPowerNapEnable");
+            OnPropertyChanged("LockPowerNap_Visibility");
+            OnPropertyChanged("LockPowerNap_Opacity");
+        }
+
     }
 }

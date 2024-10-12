@@ -17,13 +17,16 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 
 namespace DDPM.SA.Plugins.PeripheralsPlugin
@@ -52,7 +55,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private UpdateHelper _updateHelper;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
-        private bool IsPhysicalDeviceEventAdded = false;
 
         #endregion
 
@@ -68,6 +70,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private UpdateItemInfo _updateItems = new();
 
+        private static List<Guid> PhysicalDevices = new();
         private static List<Guid> PhysicalDevices1 = new();
         private static List<Guid> PhysicalDevices2 = new();
         private static List<Guid> LogicalDevices1 = new();
@@ -75,6 +78,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> LogicalDevices3 = new();
         private static List<Guid> LogicalDevices4 = new();
         private static List<Guid> LogicalDevicesPen = new();
+
+        private IDeviceManagerSA _DeviceManagerPlugin;
+        private readonly object _PluginConditionLock_DeviceManager = new object();
 
         #endregion
 
@@ -121,15 +127,28 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceHelper> GetDevices()
+        public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
+            if (Rescan)
+                ScanDevices();
+
             if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);
             }
             return new DeviceHelper();
         }
+        public Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
+        {
+            if (Rescan)
+                ScanDevices();
 
+            if (_deviceHelper != null)
+            {
+                return Task.FromResult(_deviceHelper);
+            }
+            return Task.FromResult(new DeviceHelper());
+        }
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
         {
             var CTKMessageHelper = new CTKMessageHelper();
@@ -413,6 +432,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void StartPairingPen()
+        {
+            if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
+            {
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    if (device is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.StartPairing();
+                    }
+                }
+            }
+        }
+
         public void StopPairing(Guid physicalDeviceId)
         {
             if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
@@ -425,6 +458,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 else if (physicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
                 {
                     _physicalAudioDeviceDongle.StopPairing();
+                }
+            }
+        }
+
+        public void StopPairingPen()
+        {
+            if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
+            {
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    if (device is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.StopPairing();
+                    }
                 }
             }
         }
@@ -446,6 +493,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalAudioDeviceDongle.UnPair(logicalDeviceId.ToString());
                         break;
                     }
+                    else if (logicalDevice.ParentPhysicalDevice is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.UnPair(logicalDeviceId.ToString());
+                        break;
+                    }
                 }
             }
         }
@@ -454,17 +506,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             foreach (var device in _iDeviceManager.Devices)
             {
-                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
-                if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
-                {
-                    _logicalWiredAudioDevice.SetWiredAudioIMicNSEnable(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.IsWiredAudioIMicNSEnable = newValue;
-                        break;
-                    }
-                }
+                //var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                //if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
+                //{
+                //    _logicalWiredAudioDevice.SetWiredAudioIMicNSEnable(newValue);
+                //    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                //    if (_deviceInfo != null)
+                //    {
+                //        _deviceInfo.IsWiredAudioIMicNSEnable = newValue;
+                //        break;
+                //    }
+                //}
             }
         }
 
@@ -475,13 +527,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
                 {
-                    _logicalWiredAudioDevice.SetWiredAudioMicMuteSoundEnable(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.IsWiredAudioMicMuteSoundEnable = newValue;
-                        break;
-                    }
+                    //_logicalWiredAudioDevice.SetWiredAudioMicMuteSoundEnable(newValue);
+                    //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    //if (_deviceInfo != null)
+                    //{
+                    //    _deviceInfo.IsWiredAudioMicMuteSoundEnable = newValue;
+                    //    break;
+                    //}
                 }
             }
         }
@@ -493,13 +545,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
                 {
-                    _logicalWiredAudioDevice.SetWiredAudioVolumeAdjustmentTone(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.WiredAudioVolumeAdjustmentTone = newValue;
-                        break;
-                    }
+                    //_logicalWiredAudioDevice.SetWiredAudioVolumeAdjustmentTone(newValue);
+                    //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    //if (_deviceInfo != null)
+                    //{
+                    //    _deviceInfo.WiredAudioVolumeAdjustmentTone = newValue;
+                    //    break;
+                    //}
                 }
             }
         }
@@ -744,6 +796,30 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDevicePen _logicalDevicePen)
+                {
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        var payloadBytes = (byte[])newValue;
+                        var payloadSize = payloadBytes.Length;
+                        var byteArray = new byte[payloadSize + 4];
+                        BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
+                        payloadBytes.CopyTo(byteArray, 4);
+                        //_logicalDevicePen.SetSideTopSwitchSinglePressSetting(newValue);
+                        _logicalDevicePen.SideTopSwitchSinglePressSetting = byteArray;
+                        //_deviceInfo.SideTopSwitchSinglePressSetting = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Webcam methods
@@ -755,7 +831,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
+                    Debug.WriteLine($"{newValue}");
                     _iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.IsMicEnumerationOn = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -766,6 +844,187 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetCurrentSelectedProfile(string newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    _iLogicalDeviceWebcam.ProfileManager.SetCurrentSelectedProfile(newValue);
+                }
+            }
+        }
+
+        public void SetWALTime(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.WALTime = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.WALTime = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSnooze(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.Snooze = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.Snooze = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSnoozeLength(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.SnoozeLength = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.SnoozeLength = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsProximitySensorEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsProximitySensorEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsWakeonApproachEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsWakeonApproachEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsWakeonApproachEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsWalkAwayLockEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsWalkAwayLockEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsWalkAwayLockEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public int GetSnooze(Guid deviceId)
+        {
+            int nRes = -1;
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    //Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
+                    nRes = _iLogicalDeviceWebcam.Snooze;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        //_deviceInfo.WALTime = newValue;
+                        nRes = _deviceInfo.Snooze;
+                        break;
+                    }
+                }
+            }
+            return nRes;    
+        }
+
+        public int GetSnoozeLength(Guid deviceId)
+        {
+            int nRes = -1;
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    //Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
+                    nRes = _iLogicalDeviceWebcam.SnoozeLength;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        //_deviceInfo.WALTime = newValue;
+                        nRes = _deviceInfo.SnoozeLength;
+                        break;
+                    }
+                }
+            }
+            return nRes;
+        }
+
         #endregion
 
         #region Overriding methods
@@ -773,9 +1032,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
-            Log.Info("Enter DPeMTask1 ");
+            writelog("DTPProxyPlugin plugin starting");
 
             PluginCondition = new PluginStartedCondition();
+            InitializeDeviceManagerPlugin();
         }
 
         #endregion
@@ -961,35 +1221,94 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logicalDevice3.TouchScrollSensitivityLevelChanged += ILogicalDevice_TouchScrollSensitivityLevelChanged;
                             _logicalDevice3.BackLightingControlsChanged += ILogicalDevice_BackLightingControlsChanged;
                             _logicalDevice3.BackLightingLevelChanged += ILogicalDevice_BackLightingLevelChanged;
+                            _logicalDevice3.PairedHostNameChanged += ILogicalDevice_PairedHostNameChanged;
                             LogicalDevices2.Add(_logicalDevice3.Id);
                         }
                     }
 
                     if (item is ILogicalWiredAudio _logicalWiredAudio)
                     {
-                        info.MuteStatus = _logicalWiredAudio.MuteStatus;
-                        info.IsWiredAudioIMicNSEnable = _logicalWiredAudio.IsWiredAudioIMicNSEnable();
-                        info.IsWiredAudioMicMuteSoundEnable = _logicalWiredAudio.IsWiredAudioMicMuteSoundEnable();
-                        info.WiredAudioVolumeAdjustmentTone = _logicalWiredAudio.GetWiredAudioVolumeAdjustmentTone();
+                        //info.MuteStatus = _logicalWiredAudio.MuteStatus;
+                        //info.IsWiredAudioIMicNSEnable = _logicalWiredAudio.IsWiredAudioIMicNSEnable();
+                        //info.IsWiredAudioMicMuteSoundEnable = _logicalWiredAudio.IsWiredAudioMicMuteSoundEnable();
+                        //info.WiredAudioVolumeAdjustmentTone = _logicalWiredAudio.GetWiredAudioVolumeAdjustmentTone();
                         _logicalWiredAudio.MuteStatusChanged += ILogicalWiredAudio_MuteStatusChanged;
                     }
 
                     if (item is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                     {
-                        info.DeviceSymbolicLink = _iLogicalDeviceWebcam.DeviceSymbolicLink;
-                        info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
-                        info.IsESISupported = _iLogicalDeviceWebcam.IsESISupported;
-                        info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
-                        info.FOVValues = _iLogicalDeviceWebcam.FOVValues;
-                        info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
-                        info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
+                        info.BrightnessMax = _iLogicalDeviceWebcam.BrightnessMax;
+                        info.BrightnessMin = _iLogicalDeviceWebcam.BrightnessMin;
+                        info.BrightnessSteppingDelta = _iLogicalDeviceWebcam.BrightnessSteppingDelta;
+                        info.ContrastMax = _iLogicalDeviceWebcam.ContrastMax;
+                        info.ContrastMin = _iLogicalDeviceWebcam.ContrastMin;
+                        info.ContrastSteppingDelta = _iLogicalDeviceWebcam.ContrastSteppingDelta;
                         info.CurrentFeatures = _iLogicalDeviceWebcam.CurrentFeatures;
-                        info.IsMicEnumerationSupported = _iLogicalDeviceWebcam.IsMicEnumerationSupported;
-                        info.IsMicEnumerationOn = _iLogicalDeviceWebcam.IsMicEnumerationOn;
-                        info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
+                        info.DeviceSymbolicLink = _iLogicalDeviceWebcam.DeviceSymbolicLink;
+                        info.FocusMax = _iLogicalDeviceWebcam.FocusMax;
+                        info.FocusMin = _iLogicalDeviceWebcam.FocusMin;
+                        info.FocusSteppingDelta = _iLogicalDeviceWebcam.FocusSteppingDelta;
+                        info.FOVValues = _iLogicalDeviceWebcam.FOVValues;
                         info.HasWindowsHelloPowerConstraint = _iLogicalDeviceWebcam.HasWindowsHelloPowerConstraint;
+                        info.IsESISupported = _iLogicalDeviceWebcam.IsESISupported;
+                        info.IsMicEnumerationOn = _iLogicalDeviceWebcam.IsMicEnumerationOn;
+                        info.IsMicEnumerationSupported = _iLogicalDeviceWebcam.IsMicEnumerationSupported;
+                        info.IsPropertyAntiFlickerSupported = _iLogicalDeviceWebcam.IsPropertyAntiFlickerSupported;
+                        info.IsPropertyAutoFramingSensitivitySupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingSensitivitySupported;
+                        info.IsPropertyAutoFramingSizeSupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingSizeSupported;
+                        info.IsPropertyAutoFramingSupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingSupported;
+                        info.IsPropertyAutoFramingTransitionSupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingTransitionSupported;
+                        info.IsPropertyBrightnessSupported = _iLogicalDeviceWebcam.IsPropertyBrightnessSupported;
+                        info.IsPropertyContrastSupported = _iLogicalDeviceWebcam.IsPropertyContrastSupported;
+                        info.IsPropertyFocusSupported = _iLogicalDeviceWebcam.IsPropertyFocusSupported;
+                        info.IsPropertyFOVSupported = _iLogicalDeviceWebcam.IsPropertyFOVSupported;
+                        info.IsPropertyHDRSupported = _iLogicalDeviceWebcam.IsPropertyHDRSupported;
+                        info.IsPropertyPanSupported = _iLogicalDeviceWebcam.IsPropertyPanSupported;
+                        info.IsPropertyPrioritySupported = _iLogicalDeviceWebcam.IsPropertyPrioritySupported;
+                        info.IsPropertySaturationSupported = _iLogicalDeviceWebcam.IsPropertySaturationSupported;
+                        info.IsPropertySharpnessSupported = _iLogicalDeviceWebcam.IsPropertySharpnessSupported;
+                        info.IsPropertyTiltSupported = _iLogicalDeviceWebcam.IsPropertyTiltSupported;
+                        info.IsPropertyWhiteBalanceSupported = _iLogicalDeviceWebcam.IsPropertyWhiteBalanceSupported;
+                        info.IsPropertyZoomSupported = _iLogicalDeviceWebcam.IsPropertyZoomSupported;
                         info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
+                        info.PanMax = _iLogicalDeviceWebcam.PanMax;
+                        info.PanMin = _iLogicalDeviceWebcam.PanMin;
+                        info.PanSteppingDelta = _iLogicalDeviceWebcam.PanSteppingDelta;
+                        info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
+                        //info.ProfileManager = new(_iLogicalDeviceWebcam.ProfileManager);
+                        info.PresetProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.PresetProfiles);
+                        info.CustomProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.CustomProfiles);
+                        info.Profile = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Id;
+                        info.ProfileDescription = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Description;
+                        info.ProfileName = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Name;
+                        info.SaturationMax = _iLogicalDeviceWebcam.SaturationMax;
+                        info.SaturationMin = _iLogicalDeviceWebcam.SaturationMin;
+                        info.SaturationSteppingDelta = _iLogicalDeviceWebcam.SaturationSteppingDelta;
+                        info.SharpnessMax = _iLogicalDeviceWebcam.SharpnessMax;
+                        info.SharpnessMin = _iLogicalDeviceWebcam.SharpnessMin;
+                        info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
+                        info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
+                        info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
+                        info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
+                        info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
+                        info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
+                        info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
+                        info.WhiteBalanceMax = _iLogicalDeviceWebcam.WhiteBalanceMax;
+                        info.WhiteBalanceMin = _iLogicalDeviceWebcam.WhiteBalanceMin;
+                        info.WhiteBalanceSteppingDelta = _iLogicalDeviceWebcam.WhiteBalanceSteppingDelta;
+                        info.ZoomMax = _iLogicalDeviceWebcam.ZoomMax;
+                        info.ZoomMin = _iLogicalDeviceWebcam.ZoomMin;
+                        info.ZoomSteppingDelta = _iLogicalDeviceWebcam.ZoomSteppingDelta;
                         _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
+
+                        // webcam presence detection
+                        info.Snooze = _iLogicalDeviceWebcam.Snooze;
+                        info.SnoozeLength = _iLogicalDeviceWebcam.SnoozeLength;
+                        info.IsProximitySensorEnable = _iLogicalDeviceWebcam.IsProximitySensorEnable;
+                        info.IsWakeonApproachEnable = _iLogicalDeviceWebcam.IsWakeonApproachEnable;
+                        info.IsWalkAwayLockEnable = _iLogicalDeviceWebcam.IsWalkAwayLockEnable;
+                        info.WALTime = _iLogicalDeviceWebcam.WALTime;                        
+
                     }
 
                     if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
@@ -1060,20 +1379,23 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
                             Debug.WriteLine(textString);
                             DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
-                            info.DockData = dockData;
-                            info.ModelNumber = dockData.MarketingName;
-                            info.Name = $"Dell Dock {dockData.MarketingName}";
-                            if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                            if (dockData != null)
                             {
-                                info.Name = $"Dell Dock {dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
-                            }
-                            if (string.IsNullOrEmpty(info.DockServiceTag))
-                            {
-                                info.DockServiceTag = dockData.ServiceTag;
-                            }
-                            if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
-                            {
-                                info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                                info.DockData = dockData;
+                                info.ModelNumber = dockData.MarketingName;
+                                info.Name = $"Dell Dock";
+                                if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                                {
+                                    info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                                }
+                                if (string.IsNullOrEmpty(info.DockServiceTag))
+                                {
+                                    info.DockServiceTag = dockData.ServiceTag;
+                                }
+                                if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
+                                {
+                                    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                                }
                             }
                         }
                         catch
@@ -1084,14 +1406,26 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     //item.update
                 }
-                if (!IsPhysicalDeviceEventAdded)
+                _iDeviceManager_DeviceAddedEvent(device);
+            }
+            Console.WriteLine(_deviceHelper.ToString());
+        }
+
+        private void ILogicalDevice_PairedHostNameChanged(ILogicalDevice3 arg1, int arg2, string arg3)
+        {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                if (deviceInfo != null)
                 {
-                    _iDeviceManager_DeviceAddedEvent(device);
-                    IsPhysicalDeviceEventAdded = true;
+                    Console.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "PairedHostNameChanged";
+                    OnNotify(_EventArgs);
                 }
             }
-
-            Console.WriteLine(_deviceHelper.ToString());
         }
 
         private void Pen_PenSettingChanged(ILogicalDevicePen arg1, string arg2)
@@ -1320,7 +1654,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                 _iCTKMessageHelper = _iClient.CTKMessageHelper;
                 _iCTKMessageHelper.CollaborationMsgChanged += _iCTKMessageHelper_CollaborationMsgChanged;
-                _iCTKMessageHelper.CollabMultipleCallsDetectedChanged += _iCTKMessageHelper_CollabMultipleCallsDetectedChanged;
+
+                // << 241003 Currently not used by Hess
+                //_iCTKMessageHelper.CollabMultipleCallsDetectedChanged += _iCTKMessageHelper_CollabMultipleCallsDetectedChanged;
+                // >>
+
                 _iCTKMessageHelper.IsZoomMultipleCallsDetectedChanged += _iCTKMessageHelper_IsZoomMultipleCallsDetectedChanged;
                 _iCTKMessageHelper.IsZoomCallbacksRegisteredChanged += _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged;
             }
@@ -1382,10 +1720,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iDeviceManager_DeviceAddedEvent(IPhysicalDevice iPhysicalDevice)
         {
+            if (PhysicalDevices.Contains(iPhysicalDevice.Id))
+            { return; }
+
             System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
             iPhysicalDevice.DeviceAddedEvent += IPhysicalDevice_DeviceAddedEvent;
             iPhysicalDevice.DeviceRemovedEvent += IPhysicalDevice_DeviceRemovedEvent;
+            PhysicalDevices.Add(iPhysicalDevice.Id);
         }
 
         private void _iDeviceManager_DeviceRemovedEvent(IPhysicalDevice iPhysicalDevice)
@@ -1603,19 +1945,44 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
+                {
                     deviceInfo.BatteryLevel = arg2;
 
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "BatteryLevelChanged";
-                OnNotify(_EventArgs);
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "BatteryLevelChanged";
+                    OnNotify(_EventArgs);
+
+                    if (arg2 >= 0 && arg2 <= 9)
+                    {
+                        OSDType_Device type = OSDType_Device.Unknown;
+                        var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                        if (deviceType.Contains("PEN"))
+                        {
+                            if (deviceInfo.ModelNumber == "PN5122W" && arg2 > 6)
+                            { return; }
+                            type = OSDType_Device.Pen;
+                        }
+                        else if (deviceType.Contains("KEYBOARD"))
+                        {
+                            type = OSDType_Device.Keyboard;
+                        }
+                        else if (deviceType.Contains("MOUSE"))
+                        {
+                            type = OSDType_Device.Mouse;
+                        }
+                        else if (deviceType.Contains("HEADSET"))
+                        {
+                            type = OSDType_Device.Headset;
+                        }
+                        _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                    }
+                }
             }
         }
 
@@ -1634,6 +2001,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
+                {
+                    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
+                }
             }
         }
 
@@ -1760,6 +2131,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
+                {
+                    Task.Run(async () => _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newValue));
+                }
             }
         }
 
@@ -1912,6 +2287,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _updateItems.Priority = updateItem.Priority;
                 _updateItems.ServerPath = updateItem.ServerPath;
                 _updateItems.SupplierID = updateItem.SupplierID;
+                _updateItems.SHA512 = updateItem.SHA512;
+                _updateItems.Thumbprint = updateItem.Thumbprint;
+
 
                 _updateHelper.UpdateItems.Add(_updateItems);
             }
@@ -2008,6 +2386,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
         {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == iLogicalDeviceWebcam.Id.ToString());
+                if (deviceInfo != null)
+                {
+                    deviceInfo.IsMicEnumerationOn = newValue;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = deviceInfo,
+                        changedProperty = "IsMicEnumerationOn"
+                    };
+                    OnNotify(_EventArgs);
+                }
+            }
         }
 
         private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
@@ -2063,5 +2457,65 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
 
         #endregion
+        private void writelog(string text, log_type log_type = log_type.info)
+        {
+            text = "[PeripheralsPlugin] " + text;
+            Console.WriteLine(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
+        private enum log_type
+        {
+            info = 0,
+            error
+        }
+
+
+        private void InitializeDeviceManagerPlugin()
+        {
+            if (_DeviceManagerPlugin != null)
+                return;
+
+            _DeviceManagerPlugin = _agent.PluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+
+            if (_DeviceManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnDeviceManagerPluginConditionChangeHandler;
+                GetCurrentDeviceManagerPluginCondition();
+            }
+        }
+        private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentDeviceManagerPluginCondition();
+        }
+        private void GetCurrentDeviceManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_DeviceManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_DeviceManager)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDeviceManagerPluginCondition)} - DeviceManager Plugin is in an error condition");
+                        //_PeripheralsPluginCondition = pluginCondition;
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDeviceManagerPluginCondition)} - DeviceManager Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDeviceManagerPluginCondition)} - DeviceManager Plugin is in a started condition");
+                    }
+                }
+            });
+        }
     }
 }

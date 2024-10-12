@@ -1,0 +1,82 @@
+﻿<UXControls:UXWindow x:Class="DDPM.UI.Plugin.SettingsPlugin.ThirdPartyLicenses"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+                     xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+                     mc:Ignorable="d"
+                     Title="ThirdPartyLicenses"
+                     Height="428"
+                     Width="600"
+                     MaxHeight="428"
+                     MaxWidth="600"
+                     MinHeight="428"
+                     MinWidth="600"
+                     WindowState="Normal"
+                     WindowStyle="None"
+                     WindowStartupLocation="CenterScreen"
+                     Background="#99132F54"
+                     Topmost="True"
+                     Loaded="UXWindow_Loaded">
+    <UXControls:UXWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UXControls:UXWindow.Resources>
+    <Grid>
+        <Grid Grid.Column="1"
+              Margin="10"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              MouseDown="Grid_MouseDown"
+              Background="Transparent">
+            <Path VerticalAlignment="Center"
+                  Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
+                  Fill="#CCCCCC" />
+        </Grid>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <UXControls:UXTextBlock  Grid.Column="0"
+                                     FontSize="20"
+                                     Text="Third Party Licenses"
+                                     Style="{StaticResource ModuleCaptionStyle}" />
+            <UXControls:UXScrollViewer Grid.Row="1"
+                                       Margin="0,10,0,0">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding ThirdPartyLicensesList}"
+                                  Name="listTopics"
+                                  Background="Transparent"
+                                  BorderThickness="0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <UXControls:UXTextBlock  Grid.Column="0"
+                                                             Width="524"
+                                                             FontSize="20"
+                                                             FontWeight="Bold"
+                                                             TextWrapping="WrapWithOverflow"
+                                                             Style="{StaticResource ModuleCaptionStyle}"
+                                                             Text="{Binding Title}" />
+                                    <UXControls:UXTextBlock  Grid.Column="0"
+                                                             Width="524"
+                                                             FontSize="15"
+                                                             TextWrapping="WrapWithOverflow"
+                                                             Style="{StaticResource ModuleCaptionStyle}"
+                                                             Text="{Binding Content}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                
+            </UXControls:UXScrollViewer>
+        </Grid>
+    </Grid>
+</UXControls:UXWindow>

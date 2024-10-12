@@ -23,6 +23,10 @@
 
             <TextBlock Text="IsMoving=" />
             <TextBlock Text="{Binding IsMoving}" />
+            <TextBlock Text=", IsOnlyShift=" />
+            <TextBlock Text="{Binding IsOnlyShift}" />
+            <TextBlock Text=", IsShiftPressed=" />
+            <TextBlock Text="{Binding IsShiftPressed}" />
 
             <!-- -->
             <TextBlock Text=", IsWorkUIEnabled=" />
@@ -39,6 +43,15 @@
             <TextBlock Text=", hWndForeground=" />
             <TextBlock Text="{Binding hWndForeground}" />
 
+
+            <TextBlock Text=", IsAwsVisible=" />
+            <TextBlock Text="{Binding IsAwsWindowVisible}" />
+            <TextBlock Text=", AwsPos(" />
+            <TextBlock Text="{Binding xAws}" />
+            <TextBlock Text="," />
+            <TextBlock Text="{Binding yAws}" />
+            <TextBlock Text="), " />
+
             <TextBlock Text=", PathName=" />
             <TextBlock Text="{Binding PathNameForeground}" />
 
@@ -51,7 +64,6 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="WorkWindowCount=" />
                         <TextBlock Text="{Binding WorkWindowCount}" />
-                        <CheckBox Name="chkIsFading" Click="chkIsFading_Click" />
                     </StackPanel>
                     <ListBox Name="lbWorkWins" ItemsSource="{Binding WorkWinCellInfos}">
                     </ListBox>

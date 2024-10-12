@@ -205,12 +205,12 @@ namespace VcpCore.Common
             {"USB-C2" , 0x1C },
             {"USB-C3" , 0x1D },
             {"USB-C4" , 0x1E },
-            {"USB Comm from USB1 (Type-B, port 1)" , 0x80 },
-            {"USB Comm from USB2 (Type-B, port 2)" , 0x81 },
-            {"USB Comm from USB-C1 (Type-C, port 1)" , 0x82 },
-            {"USB Comm from USB-C2 (Type-C, port 2)" , 0x83 },
-            {"USB Comm from USB-C3 (Type-C, port 3)" , 0x84 },
-            {"USB Comm from USB-C4 (Type-C, port 4)" , 0x85 }
+            {"USB Comm from USB1, Type-B, port 1" , 0x80 },
+            {"USB Comm from USB2, Type-B, port 2" , 0x81 },
+            {"USB Comm from USB-C1, Type-C, port 1" , 0x82 },
+            {"USB Comm from USB-C2, Type-C, port 2" , 0x83 },
+            {"USB Comm from USB-C3, Type-C, port 3" , 0x84 },
+            {"USB Comm from USB-C4, Type-C, port 4" , 0x85 }
         };
 
         public static Dictionary<string, uint> VCPF8 = new Dictionary<string, uint> // USB-C Prioritization
@@ -239,6 +239,8 @@ namespace VcpCore.Common
         {
             { "Text", 1 },
             { "AdobeRGB", 2 },
+            { "AdobeRGB1 (D65G2.2L250)", 33 },
+            { "AdobeRGB2 (D50G2.2L250)", 34 },
             { "AdobeRGB1", 33 },
             { "AdobeRGB2", 34 },
             { "Adobe RGB D65 G2.2 L160", 33 },
@@ -260,6 +262,7 @@ namespace VcpCore.Common
             { "CAL2", 6 },
             { "Metro", 7 },
             { "Paper", 8 },
+            { "Rec.709 / BT.709", 9 }, //20241004 jim add
             { "Rec. 709 / BT.709", 9 },
             { "Rec. 709/BT.709", 9 },  // 20240731 jim remove
             { "Rec.709/BT.709", 9 }, // 20240808 jim remove
@@ -271,7 +274,8 @@ namespace VcpCore.Common
             { "BT.709 D65 BT1886 L100", 9 },
             { "DCI-P3", 10 },
             { "DCI P3 D65 G2.4 L100", 10 },
-            { "Rec2020", 11 },
+            { "Rec.2020 / BT.2020", 11 },
+            { "Rec.2020", 11 },
             { "BT.2020", 11 },
             { "BT.2020 D65 BT1886 L100", 11 },
             { "ComfortView", 12 },
@@ -350,12 +354,13 @@ namespace VcpCore.Common
             { 21, "CAL2" },
             { 24, "Metro" },
             { 25, "Paper" },
-            { 26, "Rec. 709 / BT.709" }, // 20240731 jim remove
+            { 26, "Rec.709 / BT.709" }, // 20241004 jim add
             //{ 26, "Rec. 709/BT.709" }, // 20240731 jim remove
             //{ 26, "Rec. 709" }, // 20240731 jim remove
             //{ 26, "Rec.709" }, // 20240731 jim add
             { 27, "DCI-P3" },
-            { 28, "Rec2020" },
+            //{ 28, "Rec2020" },
+            { 28, "Rec.2020 / BT.2020" },
             { 29, "ComfortView" },
             { 30, "Game2" },
             { 31, "Game3" },
@@ -374,8 +379,10 @@ namespace VcpCore.Common
             { 60, "HLG" },
             { 127, "Presets Disabled" },
             { 61, "Display P3" },
-            { 42, "AdobeRGB1" },
-            { 43, "AdobeRGB2" },
+            { 42, "AdobeRGB1 (D65G2.2L250)" },
+            { 43, "AdobeRGB2 (D50G2.2L250)" },
+            //{ 42, "AdobeRGB1" },
+            //{ 43, "AdobeRGB2" },
             { 44, "Custom 1 / User 1" },
             { 45, "Custom 2 / User 2" },
             { 46, "Custom 3 / User 3" },
@@ -401,11 +408,121 @@ namespace VcpCore.Common
             { "Adobe RGB D50 G2.2 L250", 43 },
             { "sRGB D65 sRGB L250", 11 },
             { "DCI P3 D65 G2.4 L100", 27 },
+            { "Rec.709 / BT.709", 26 }, // 20241004 jim add
             { "Rec. 709 / BT.709", 26 }, // 20240731 jim remove
             { "Rec. 709/BT.709", 26 }, // 20240731 jim remove
             { "Rec.709/BT.709", 26 }, // 20240731 jim add
             { "BT.709", 26 },
             { "Rec709", 26 }
+        };
+        public static Dictionary<uint, string> VCPC8 = new Dictionary<uint, string>
+        {
+            { 0x00, "Reserved" }, 
+            { 0x01, "Conexant" },
+            { 0x02, "Genesis Microchip" },
+            { 0x03, "Macronix" },
+            { 0x04, "IDT (Integrated Device Technology)" },
+            { 0x05, "Mstar Semiconductor" },
+            { 0x06, "Myson" },
+            { 0x07, "Philips" },
+            { 0x08, "PixelWorks" },
+            { 0x09, "RealTek Semiconductor" },
+            { 0x0A, "Sage" },
+            { 0x0B, "Silicon Image" },
+            { 0x0C, "SmartASIC" },
+            { 0X0D, "STMicroelectronics" },
+            { 0X0E, "Topro" },
+            { 0X0F, "Trumpion" },
+            { 0X10, "Welltrend" },
+            { 0X11, "Samsung" },
+            { 0X12, "Novatek Microelectronics" },
+            { 0X13, "STK" },
+            { 0X14, "Silicon Optix Inc" },
+            { 0X15, "Texas Instruments" },
+            { 0X16, "Analogix Semiconductor" },
+            { 0X17, "Quantum Data" },
+            { 0X18, "NXP Semiconductors" },
+            { 0X19, "Chrontel" },
+            { 0X1A, "Parade Technologies" },
+            { 0X1B, "THine Electronics" },
+            { 0X1C, "Trident" },
+            { 0X1D, "Micronas" }
+        };
+
+        public static Dictionary<string, int> VCPE2_ref = new Dictionary<string, int>
+        {
+            {"Standard/Native", 0},
+            {"Standard", 0 },
+            {"Native", 0},
+            {"Multimedia", 1},
+            {"Movie", 2},
+            {"Nature", 3},
+            {"Game/Game1", 4}, // 20240731 jim add
+            {"Game", 4},
+            {"Game1", 4},
+            {"Sport", 5},
+            {"Text", 6},
+            {"AdobeRGB", 7},
+            {"AdobeRGB1 (D65G2.2L250)", 42},
+            {"AdobeRGB2 (D50G2.2L250)", 43},
+            {"AdobeRGB1", 42},
+            {"AdobeRGB2", 43},           
+            {"xvMode", 8},
+            {"DICOM", 9},
+            {"CAL1", 10},
+            {"sRGB", 11},
+            {"5000K", 12},
+            {"5700K", 13},
+            {"Warm", 14},
+            {"6500K", 15},
+            {"7500K", 16},
+            {"9300K", 17},
+            {"Cool", 18},
+            {"10000K", 19},
+            {"Custom Color", 20},
+            {"Custom 1 / User 1", 44},
+            {"Custom 2 / User 2", 45},
+            {"Custom 3 / User 3", 46},
+            {"Custom 1", 44},
+            {"Custom 2", 45},
+            {"Custom 3", 46},
+            {"User 1", 44},
+            {"User 2", 45},
+            {"User 3", 46},
+            {"CAL2", 21},
+            {"Metro", 24},
+            {"Paper", 25},
+            {"Rec.709 / BT.709", 26}, // 20241004 jim add
+            {"Rec. 709 / BT.709", 26}, // 20240731 jim add
+            {"Rec. 709/BT.709", 26}, // 20240731 jim add
+            {"Rec.709/BT.709", 26}, // 20240731 jim add
+            {"Rec 709", 26},
+            {"Rec.709", 26},
+            {"Rec. 709", 26},
+            {"BT.709", 26},
+            {"DCI-P3", 27},
+            {"Display P3", 61},
+            {"Rec.2020 / BT.2020", 28}, // add 10/14
+            {"Rec2020", 28},
+            {"BT.2020", 28},
+            {"ComfortView", 29},
+            {"Game2", 30},
+            {"Game3", 31},
+            {"FPS Game", 32},
+            {"RTS Game", 33},
+            {"RPG Game", 34},
+            {"SPORTS Game", 47},
+            {"Standard HDR", 37},
+            {"Movie HDR", 35},
+            {"Game HDR", 36},
+            {"Vivid HDR", 38},
+            {"Desktop", 39},
+            {"Reference", 40},
+            {"Multiscreen Match", 41},
+            {"DisplayHDR", 58},
+            {"HDR10", 59},
+            {"HLG", 60},
+            {"Presets Disabled", 127}            
         };
 
         public struct VcpValue

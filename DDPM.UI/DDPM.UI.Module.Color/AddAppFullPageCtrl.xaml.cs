@@ -1,5 +1,6 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using VcpCore.Common;
@@ -9,7 +10,6 @@ namespace DDPM.UI.Module.Color
     public partial class AddAppFullPageCtrl : UserControl
     {
         private List<string> _supported_preset = new List<string>();
-
         public AddAppFullPageCtrl()
         {
             InitializeComponent();
@@ -24,8 +24,18 @@ namespace DDPM.UI.Module.Color
             string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
             strFolder += "\\";
 
+            string info = string.Empty;
+            DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+
             if (!System.IO.Directory.Exists(strFolder))
                 System.IO.Directory.CreateDirectory(strFolder);
+
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(UserControl_Loaded)} {FileInfo}");
+            //}
 
             foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
             {
@@ -79,7 +89,8 @@ namespace DDPM.UI.Module.Color
                 {
                     RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native"
+                    //PresetForManual = "Standard/Native"
+                    ColorForManual = 0
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
@@ -111,7 +122,9 @@ namespace DDPM.UI.Module.Color
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(temp_selApps.AppName, new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard/Native",
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
                         IconName = temp_selApps.AppIcon,
                     });
                 }
@@ -132,10 +145,51 @@ namespace DDPM.UI.Module.Color
 
         private int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)
         {
-            int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                            x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                            x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+            int index = -1;
 
+            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
+            {
+                // chech if ModelName and SerialNumber is null
+                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                {
+                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                    {
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                            return -1;
+
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                            return -1;
+                    }
+                }
+
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());              
+
+                if (index == -1)
+                {
+                    // chech if ModelName and ServiceTag is null
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                    {
+                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                                return -1;
+
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+                                return -1;
+                        }
+                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                }
+
+                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+            }
             return index;
         }
 

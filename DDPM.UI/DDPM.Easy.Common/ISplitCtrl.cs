@@ -4,6 +4,9 @@ using System.Windows.Media.Imaging;
 
 namespace DDPM.Easy.Common
 {
+    //LastModified: Robert_Lin 2024-9-4 16:48
+    //[2024-9-4 16:48]
+    //1 Add Clone()
     /// <summary>
     /// All SplitCtrlXX are inherient from this interface
     /// </summary>
@@ -15,8 +18,8 @@ namespace DDPM.Easy.Common
         public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
         {
             new SplitCtrl2A(), new SplitCtrl2B(), new SplitCtrl2C(), new SplitCtrl2D(),
-            //new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
-            //new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
+            new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
+            new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
             new SplitCtrl4A(), new SplitCtrl4B(), new SplitCtrl4C(), new SplitCtrl4D(),
             new SplitCtrl4E(), new SplitCtrl4F(),
             //new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
@@ -29,6 +32,11 @@ namespace DDPM.Easy.Common
             new SplitCtrl0A()
         };
 
+        public static bool IsExisted(int cellCount, char splitKey)
+        {
+            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            return (iSplit != null);
+        }
         #endregion Collection of support SplitCtrl classes
 
         #region Native members - value not be changed once created
@@ -76,12 +84,28 @@ namespace DDPM.Easy.Common
 
         public static ISplitCtrl? Create(int cellCount, char splitKey)
         {
+            if ((cellCount == 0) && (splitKey == 'B'))
+            {
+                return new SplitCtrl0B();
+            }
             ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
             if (iSplit == null)
                 return null;
             return iSplit.New();
         }
 
+        /// <summary>
+        /// Create a new ISplitCtrl and clone settings, but have different UserControl
+        /// </summary>
+        /// <returns></returns>
+        public ISplitCtrl Clone()
+        {
+            //Construct a new instance, class Native members are clone.
+            ISplitCtrl newObj = New();
+            //Clone settings
+            newObj.Settings = new List<double>(Settings);
+            return newObj;
+        }
         #endregion Create a new instance
 
         #region Working mode
@@ -128,6 +152,10 @@ namespace DDPM.Easy.Common
 
         #endregion Cell list
 
+        #region CellBorders
+        public List<CellBorder> CellBorders { get; set; }
+        #endregion
+
         #region Settings
 
         //1 Settings are not stored in a SplitCtrl class member, instead, it apply to UI directly.
@@ -172,6 +200,16 @@ namespace DDPM.Easy.Common
 
         #endregion Settings
 
+        #region Screen Orientation
+
+        public bool IsVertical
+        {
+            get { return VM.IsVertical; }
+            set { VM.IsVertical = value; }
+        }
+
+        #endregion Screen Orientation
+
         #region Bitmap - Currently is not used in DDPM
 
         /// <summary>
@@ -198,5 +236,12 @@ namespace DDPM.Easy.Common
         }
 
         #endregion Bitmap - Currently is not used in DDPM
+
+        #region Added Custom Layout
+        public bool IsAddedCustomLayout
+        {
+            get { return ((CellCount==0) && (SplitKey=='B')); }
+        }
+        #endregion
     }
 }

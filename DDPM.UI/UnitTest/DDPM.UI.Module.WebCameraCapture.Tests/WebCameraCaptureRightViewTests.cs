@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -26,6 +27,8 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         private Mock<IDeviceManagerSA>? deviceManagerMock;
         private ILog? log;
         private Mock<ILog>? logMock;
+        private WebcamSettings? webcamSettings;
+
 
         [SetUp]
         public void Setup()
@@ -38,7 +41,17 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             deviceManager = deviceManagerMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new WebCameraViewModel(console, log, deviceManager);
+            vm = new WebCameraViewModel(console, log);
+
+            webcamSettings = new WebcamSettings();
+            webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
+            webcamSettings.SupportedFPSs.Add("a", new List<string> { "a" });
+            webcamSettings.SelectedResolution = "a";
+            webcamSettings.SelectedFPSs = new Dictionary<string, string>();
+            webcamSettings.SelectedFPSs.Add("a", "a");
+            webcamSettings.Resolutions = new Dictionary<string, string>();
+            webcamSettings.Resolutions.Add("a", "a");
+            vm.WebcamSettings = webcamSettings;
             webCameraCaptureRightView = new WebCameraCaptureRightView(vm);
             privateObject = new PrivateObject(webCameraCaptureRightView);
         }

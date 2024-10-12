@@ -90,17 +90,28 @@
                         Background="{StaticResource FakeTransparent}"
                         MouseLeftButtonDown="spItem_MouseLeftButtonDown" />
 
-        <!-- Hover Layer -->
+        <!-- Hover Layer 
         <Border Name="bdHover" Width="88" Height="68" CornerRadius="6">
+        -->
+        <Border Name="bdHover" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
                     <Setter Property="BorderThickness" Value="1.5" />
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
+                        <!-- 
                         <DataTrigger Binding="{Binding ElementName=root, Path=IsMouseOver}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
+                        -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=root, Path=IsMouseOver}" Value="True"/>
+                                <Condition Binding="{Binding IsHoverable}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
@@ -128,7 +139,7 @@
 
                 <!-- closeX icon -->
                 <Border Width="16" Height="16" Margin="0,9,8.5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
-                        Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3">
+                        Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3" MouseLeftButtonDown="closeXIcon_MouseLeftButtonDown">
                     <Path Data="M8.5 0.41L8.09 0L4.5 3.6L0.91 0.025L0.5 0.435L4.075 4L0.525 7.565L0.935 8L4.5 4.425L8.065 8L8.475 7.59L4.9 4L8.5 0.41Z"
                           Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <Border.Style>
@@ -164,8 +175,11 @@
             </Border.ToolTip>
         </Border>
 
-        <!--  Background="{StaticResource FakeTransparent}" -->
+        <!--  Background="{StaticResource FakeTransparent}" 
+        
         <Border Name="bdSelected" Width="88" Height="68" CornerRadius="6">
+        -->
+        <Border Name="bdSelected" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}" />

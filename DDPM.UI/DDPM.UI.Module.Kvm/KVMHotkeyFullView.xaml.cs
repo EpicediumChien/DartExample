@@ -14,16 +14,18 @@ namespace DDPM.UI.Module.Kvm
     /// </summary>
     public partial class KVMHotkeyFullView : UserControl
     {
-        private string _strTbSwitchPCsKeyPreviousKey = string.Empty;
-        private string _strTbSwitchKbMsKeyPreviousKey = string.Empty;
-        private string _strTbChangePipKeyPreviousKey = string.Empty;
+        /* private string _strTbSwitchPCsKeyPreviousKey = string.Empty;
+         private string _strTbSwitchKbMsKeyPreviousKey = string.Empty;
+         private string _strTbChangePipKeyPreviousKey = string.Empty;
 
-        private List<VirtualKey> SwitchPCsKeyNewKeys = new List<VirtualKey>();
-        private List<VirtualKey> SwitchKbMsKeyNewKeys = new List<VirtualKey>();
-        private List<VirtualKey> ChangePipKeyNewKeys = new List<VirtualKey>();
+         private List<VirtualKey> SwitchPCsKeyNewKeys = new List<VirtualKey>();
+         private List<VirtualKey> SwitchKbMsKeyNewKeys = new List<VirtualKey>();
+         private List<VirtualKey> ChangePipKeyNewKeys = new List<VirtualKey>();*/
 
-        private bool updateKeys = false;
+        private bool alphabetKey = false;
+        private string _strPreviousKey = string.Empty;
         private List<VirtualKey> newKeys = new List<VirtualKey>();
+        private List<VirtualKey> BundleNewKeys = new List<VirtualKey>();
 
         public KVMHotkeyFullView()
         {
@@ -40,7 +42,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchPCsKey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbSwitchPCsKey_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -53,52 +55,55 @@ namespace DDPM.UI.Module.Kvm
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbSwitchPCsKeyPreviousKey = vm.SwitchPCsKey;
-                vm.SwitchPCsKey = string.Empty;
+                _strPreviousKey = vm.SwitchPCsKey;
+                //vm.SwitchPCsKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.SwitchPCsKey.Length, 1);
             }
         }
 
         private void tbSwitchPCsKey_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (SwitchPCsKeyNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.SwitchPCsKey = _strTbSwitchPCsKeyPreviousKey;
+                vm.SwitchPCsKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
 
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.KvmSwitchInputSource;
-                hotkeyInfo.Hotkey = SwitchPCsKeyNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "kvm switch between pcs";
                 //add inputsource
-                string inputSource1 = vm.PC1Inputs_Selected.inputSource;
+                string inputSource1 = vm.PC1Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource1))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource1));
                 }
-                string inputSource2 = vm.PC2Inputs_Selected.inputSource;
+                string inputSource2 = vm.PC2Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource2))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource2));
                 }
-                string inputSource3 = vm.PC3Inputs_Selected.inputSource;
+                string inputSource3 = vm.PC3Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource3))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource3));
                 }
-                string inputSource4 = vm.PC4Inputs_Selected.inputSource;
+                string inputSource4 = vm.PC4Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource4))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource4));
                 }
-                doLostFocus(hotkeyInfo, _strTbSwitchPCsKeyPreviousKey, vm.SwitchPCsKey, ref SwitchPCsKeyNewKeys);
-                SwitchPCsKeyNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.SwitchPCsKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -111,7 +116,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchKbMsKey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbSwitchKbMsKey_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -124,31 +129,34 @@ namespace DDPM.UI.Module.Kvm
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbSwitchKbMsKeyPreviousKey = vm.SwitchKbMsKey;
-                vm.SwitchKbMsKey = string.Empty;
+                _strPreviousKey = vm.SwitchKbMsKey;
+                //vm.SwitchKbMsKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.SwitchKbMsKey.Length, 1);
             }
         }
 
         private void tbSwitchKbMsKey_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (SwitchKbMsKeyNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.SwitchKbMsKey = _strTbSwitchKbMsKeyPreviousKey;
+                vm.SwitchKbMsKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
 
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.KvmSwitchKbMsKey;
-                hotkeyInfo.Hotkey = SwitchKbMsKeyNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "kvm switch KB MS";
-                doLostFocus(hotkeyInfo, _strTbSwitchKbMsKeyPreviousKey, vm.SwitchKbMsKey, ref SwitchKbMsKeyNewKeys);
-                SwitchKbMsKeyNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.SwitchKbMsKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -161,7 +169,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbChangePipKey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbChangePipKey_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -174,31 +182,34 @@ namespace DDPM.UI.Module.Kvm
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbChangePipKeyPreviousKey = vm.ChangePipKey;
-                vm.ChangePipKey = string.Empty;
+                _strPreviousKey = vm.ChangePipKey;
+                //vm.ChangePipKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.ChangePipKey.Length, 1);
             }
         }
 
         private void tbChangePipKey_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (ChangePipKeyNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.ChangePipKey = _strTbChangePipKeyPreviousKey;
+                vm.ChangePipKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
 
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.KvmChangePIPPosition;
-                hotkeyInfo.Hotkey = ChangePipKeyNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "kvm Change PIP position";
-                doLostFocus(hotkeyInfo, _strTbChangePipKeyPreviousKey, vm.ChangePipKey, ref ChangePipKeyNewKeys);
-                ChangePipKeyNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.ChangePipKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -225,100 +236,6 @@ namespace DDPM.UI.Module.Kvm
             //todo
         }
 
-        private void setUXTextBoxPreviewKey(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-            newKeys = newKeys.Distinct().ToList();
-            if (newKeys.Count >= 4) return;
-            var texBox = (sender as UXTextBox);
-            var texBoxName = texBox?.Name;
-            if (string.IsNullOrEmpty(texBoxName)) return;
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown---Key---{e.Key}");
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown---SystemKey---{e.SystemKey}");
-            VirtualKey thisVirtualKey;
-            VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.SystemKey);
-            if (thisVirtualKey_system != VirtualKey.None)
-            {
-                thisVirtualKey = thisVirtualKey_system;
-            }
-            else
-            {
-                thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
-            }
-            //if the key will be processed by an Input Method Editor (IME), then return ?
-            //Object v;
-            // Enum.TryParse(typeof(VirtualKey), e.Key.ToString(), out v);
-            bool r = Enum.IsDefined(typeof(VirtualKey), thisVirtualKey);
-            if (!r) return;
-            if (BlockKeys.isBlocked(thisVirtualKey)) return;
-            if (newKeys.Count > 0 && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift) || (x == VirtualKey.Menu)))
-            {
-                //second single key
-                return;
-            }
-            if (newKeys.Count == 2 && newKeys.Any(x => (x == VirtualKey.Menu)) && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift)))
-            {
-                //second Alt+ (key)
-                return;
-            }
-            if (thisVirtualKey == VirtualKey.LeftControl || thisVirtualKey == VirtualKey.RightControl)
-            {
-                thisVirtualKey = VirtualKey.Control;
-            }
-            else if (thisVirtualKey == VirtualKey.LeftShift || thisVirtualKey == VirtualKey.RightShift)
-            {
-                thisVirtualKey = VirtualKey.Shift;
-            }
-            else if (thisVirtualKey == VirtualKey.LeftMenu || thisVirtualKey == VirtualKey.RightMenu)
-            {
-                thisVirtualKey = VirtualKey.Menu;
-            }
-            if (!updateKeys)
-            {
-                newKeys.Clear();
-                updateKeys = true;
-                newKeys.Add(thisVirtualKey);
-            }
-
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown-NewKeys-----{string.Join(",", newKeys)}");
-            if (!newKeys.Contains(thisVirtualKey))
-            {
-                newKeys.Add(thisVirtualKey);
-                /*if ((thisVirtualKey == VirtualKey.Menu) ||
-                    (thisVirtualKey == VirtualKey.Control) ||
-                    (thisVirtualKey == VirtualKey.Shift) ||
-                    (thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.F24))
-                {
-                    newKeys.Add(thisVirtualKey);
-                }
-
-                if ((thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.Number9) ||
-                    (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z) ||
-                    (thisVirtualKey >= VirtualKey.F1 && thisVirtualKey <= VirtualKey.F24) ||
-                    (thisVirtualKey >= VirtualKey.NumberPad0 && thisVirtualKey <= VirtualKey.Divide))
-                {
-                    newKeys.Add(thisVirtualKey);
-                }*/
-            }
-            string swHortcutText = string.Empty;
-            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
-            texBox.Text = swHortcutText;
-            texBox.Select(swHortcutText.Length, 1);
-            switch (texBoxName)
-            {
-                case "tbSwitchPCsKey":
-                    SwitchPCsKeyNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbSwitchKbMsKey":
-                    SwitchKbMsKeyNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbChangePipKey":
-                    ChangePipKeyNewKeys.AddRange(newKeys);
-                    break;
-            }
-        }
 
         private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
         {
@@ -326,7 +243,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 //save hotkey
                 // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.KvmModule.SelectedHomeDevice.MonitorInfo.edid, hotkeyInfo).Result;
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.KvmModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                 vm.Invoke_RefreshHotkeySettings();
             }
             else

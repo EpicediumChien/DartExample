@@ -18,7 +18,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid IsEnabled="{Binding UpdatesPageUI_Enable}">
+    <Grid IsEnabled="{Binding UpdatesPageUI_IsEnable}"
+          Opacity="{Binding UpdatesPageUI_Opacity}">
         <UXControls:UXScrollViewer>
             <Border Background="#99132F54" CornerRadius="13">
 
@@ -129,5 +130,28 @@
                 </Grid>
             </Border>
         </UXControls:UXScrollViewer>
+        <Border Name="DisableAll"
+                Background="#4C24273C">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsBusy}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <!--  Add a UXBusyIndicator from Robert  -->
+            <UXControls:UXBusyIndicator Width="64"
+                                        Height="64"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        BusyIndicatorType="Secondary"
+                                        IsActive="{Binding IsBusy}" />
+        </Border>
     </Grid>
 </UserControl>

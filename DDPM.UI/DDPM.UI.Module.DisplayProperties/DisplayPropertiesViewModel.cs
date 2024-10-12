@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using VcpCore.Common;
@@ -28,13 +30,12 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _selectedResolution, value);
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(MyModule.SelectedHomeDevice.MonitorInfo,
-                    _selectedResolution.Properties,
-                    _selectedOrientation.Orientation
+                DdpmCommonHelper.DeviceManagerSA.SetResolutions(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                    _selectedResolution.Properties
                     ).Wait();
             }
         }
-
+        public Visibility Orientation_IsVisibility { get; set; } = Visibility.Visible;
         public List<UI_Orientation> Orientation_ItemsCollection { get; set; }
 
         public UI_Orientation SelectedOrientation
@@ -43,10 +44,25 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _selectedOrientation, value);
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(MyModule.SelectedHomeDevice.MonitorInfo,
-                    _selectedResolution.Properties,
+                if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     _selectedOrientation.Orientation
-                    ).Wait();
+                    ).Result)
+                {
+                    DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                    Resolution_ItemsCollection.Clear();
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
+                        {
+                            Resolution_ItemsCollection.Add(new UI_Properties
+                            {
+                                Properties = Properties
+                            });
+                        }
+                    }));
+                    _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
+                    RefreshUI();
+                }
             }
         }
 
@@ -56,7 +72,7 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _HDRStatus, value);
-                DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo, _HDRStatus).Wait();
+                DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, _HDRStatus).Wait();
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
                 DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
                 RefreshUI();
@@ -79,7 +95,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 SetProperty(ref _IsHighDataSpeed, value);
                 if (_IsHighDataSpeed)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(MyModule.SelectedHomeDevice.MonitorInfo,
+                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     USBCPrioritizationType.HighDataSpeed).Wait();
                 }
             }
@@ -93,7 +109,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 SetProperty(ref _IsHighResolution, value);
                 if (_IsHighResolution)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(MyModule.SelectedHomeDevice.MonitorInfo,
+                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     USBCPrioritizationType.HighResolution).Wait();
                 }
             }
@@ -129,7 +145,92 @@ namespace DDPM.UI.Module.DisplayProperties
                 return "0.5";
             }
         }
-
+        #region Lock/Unlock
+        #region RefreshRate
+        private bool _Lock_RefreshRate;
+        public bool Lock_RefreshRate
+        {
+            get
+            {
+                return _Lock_RefreshRate;
+            }
+            set
+            {
+                _Lock_RefreshRate = value;
+                OnPropertyChanged("RefreshRateUI_IsEnable");
+                OnPropertyChanged("RefreshRateUI_Opacity");
+                OnPropertyChanged("RefreshRateUI_LockTooltip");
+            }
+        }
+        public bool RefreshRateUI_IsEnable
+        {
+            get
+            {
+                return _Lock_RefreshRate ? false : true;
+            }
+        }
+        public string RefreshRateUI_Opacity
+        {
+            get
+            {
+                return _Lock_RefreshRate ? "0.5" : "1.0";
+            }
+        }
+        public Visibility RefreshRateUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_RefreshRate ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        #endregion
+        #region USB-C Prioritization
+        private bool _Lock_USBCrioritization;
+        public bool Lock_USBCrioritization
+        {
+            get
+            {
+                return _Lock_USBCrioritization;
+            }
+            set
+            {
+                _Lock_USBCrioritization = value;
+                OnPropertyChanged("USBCrioritizationUI_IsTabStoppable");
+                OnPropertyChanged("USBCrioritizationUI_Opacity");
+                OnPropertyChanged("USBCrioritizationUI_LockTooltip");
+                OnPropertyChanged("USBCrioritizationUI_NoLock");
+            }
+        }
+        public bool USBCrioritizationUI_IsTabStoppable
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? false : true;
+            }
+        }
+        public string USBCrioritizationUI_Opacity
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? "0.5" : "1.0";
+            }
+        }
+        public Visibility USBCrioritizationUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        public Visibility USBCrioritizationUI_NoLock
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+        #endregion
+        #endregion
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -161,11 +262,19 @@ namespace DDPM.UI.Module.DisplayProperties
             {
                 Resolution_ItemsCollection = new List<UI_Properties>();
                 Orientation_ItemsCollection = new List<UI_Orientation>();
-
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
                 //Robert_Lin 2024-05-15: No this method "GetDisplayPropertiesInfo"
-                DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(currentMonitorInfo).Result;
                 //Add return to let program continue running
                 //return;
+                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow)
+                {
+                    Orientation_IsVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Orientation_IsVisibility = Visibility.Visible;
+                }
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
                 _HDRStatus = displayPropertiesInfo.isHDREnable;
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
@@ -174,7 +283,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 if (_SupportedHDR)
                 {
                     UInt16 PipMode_Off = 0;
-                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(currentMonitorInfo).Result;
                     if (ret.result)
                     {
                         UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
@@ -197,8 +306,8 @@ namespace DDPM.UI.Module.DisplayProperties
                         _IsHighResolution = true;
                         break;
                 }
-                if (!(MyModule.SelectedHomeDevice.MonitorInfo.inputSource.ToUpper().StartsWith("USB-C") ||
-                    MyModule.SelectedHomeDevice.MonitorInfo.inputSource.ToUpper().StartsWith("THUNDERBOLT"))) // 2024-08-07 By Bruce.
+                if (!(currentMonitorInfo.inputSource.ToUpper().StartsWith("USB-C") ||
+                    currentMonitorInfo.inputSource.ToUpper().StartsWith("THUNDERBOLT"))) // 2024-08-07 By Bruce.
                 {
                     _SupportedUSBCPrioeitization = false;
                 }
@@ -222,6 +331,14 @@ namespace DDPM.UI.Module.DisplayProperties
                     });
                 }
                 _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.CurrentOrientation));
+
+                //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
+                Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {Lock_RefreshRate}");
+                Lock_USBCrioritization = (bool)data.LockSettings.Lock_Display_USBCPrioritization;
+                Trace.WriteLine($"[SettingsPage] USBC Prioritization(Lock) : {Lock_USBCrioritization}");
+
                 RefreshUI();
             }
             catch (Exception)
@@ -248,6 +365,7 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("SupportedUSBCPrioeitization");
             OnPropertyChanged("IsHighDataSpeed");
             OnPropertyChanged("IsHighResolution");
+            OnPropertyChanged("Orientation_IsVisibility");
         }
 
         public void UpdateHDRStatus()
@@ -258,7 +376,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 if (_SupportedHDR)
                 {
                     UInt16 PipMode_Off = 0;
-                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                     if (ret.result)
                     {
                         UInt16 _curPxpMode = Convert.ToUInt16(ret.value);

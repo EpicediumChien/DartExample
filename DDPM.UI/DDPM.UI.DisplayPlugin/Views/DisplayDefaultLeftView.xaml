@@ -7,9 +7,10 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.DisplayPlugin.Views"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="650" d:DesignWidth="900">
     <UserControl.Resources>
 
         <ResourceDictionary>
@@ -25,6 +26,7 @@
     </UserControl.Resources>
 
     <Grid>
+        <!-- Robert_Lin 2024-9-30 fix for Monitor Product image size is 1000x1000
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -35,19 +37,28 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        -->
 
-        <Grid Grid.Row="1" Grid.Column="1">
+        <Grid Grid.Row="0" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Viewbox Margin="32" Grid.Row="0">
+            <Grid Grid.Row="0">
+                <Viewbox Margin="32" Grid.Row="0" Stretch="Uniform">
 
-                <!-- Width="1378" Height="735"
+                    <!-- Width="1378" Height="735"
                 -->
-                <Grid>
-                    <Image Source="{Binding DeviceImage}" Stretch="Uniform">
+                    <Grid>
+                        <!-- Source="/DDPM.UI.Resources;component/Resources/Monitors/u2424h.png"
+                        Image Source="{Binding DeviceImage}" Stretch="None"
+                        -->
+
+                        <Image Source="{Binding DeviceImage}" Stretch="UniformToFill">
+                            
+                            <!-- Robert_Lin, 2024-9-30 The LeftView Product image don't need to show tooltip -->
+                            <!-- 
                         <Image.ToolTip>
                             <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
                                      ToolTipService.HasDropShadow="True"
@@ -68,9 +79,12 @@
                                 </Border>
                             </ToolTip>
                         </Image.ToolTip>
-                    </Image>
-                </Grid>
-            </Viewbox>
+                        -->
+                        </Image>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+
 
             <!-- 2024-6-20 Robert_Lin, move this stackPanel inside image box
             1 Change StackPanel Grid.Row=1 to 0; 2. Add VerticalAlignment=Bottom to StackPanel
@@ -85,8 +99,30 @@
 
                 <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
                     <Grid>
-                        <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center" Grid.Column="0"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
+                        <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
+                            <Image.ToolTip>
+                                <ToolTip>
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
                     </Grid>
                 </Border>
             </StackPanel>

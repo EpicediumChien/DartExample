@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Common;
+﻿using DDPM.SA.Common.Display;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,21 +9,36 @@ namespace DDPM.SA.Common.Interfaces
 {
     public interface IEasyArrangeService : IFrameworkPlugin
     {
+        #region CLI Flags: Enabled/Locked
         public bool IsFunctionEnabled { get; set; }
+        #endregion CLI Flags: Enabled/Locked
 
+        #region Events
+        public event EventHandler<string> EditStarted;
+
+        //Robert_Lin, 2024-8-4 new added
+        public event EventHandler<EAArgs> EditReturn;
+
+        //Robert_Lin, 2024-10-8 added
+        public event EventHandler<EAArgs> EASettingsChanged;
+        #endregion Events
+
+        #region Methods
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
+        public Task<bool> EditCommand(MonitorInfo monitorInfo, EAArgs args);
 
-        public event EventHandler<string> EditCompleted;
+        public Task<bool> ReloadEzSettings();
 
-        public event EventHandler<string> EditStarted;
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+        #endregion
+
+
+
 
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, SplitJson);
 
-        //Robert_Lin, 2024-8-4 new added
-        public Task<bool> EditCommand(MonitorInfo monitorInfo, EAArgs args);
 
-        public event EventHandler<EAArgs> EditReturn;
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
     }
 }

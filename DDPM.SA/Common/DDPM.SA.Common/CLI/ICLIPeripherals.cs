@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DDPM.SA.Common.Settings;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -20,6 +21,8 @@ namespace DDPM.SA.Common
         public string Result { get; set; } = "";
         public string Message { get; set; } = "";
 
+        private IDeviceManagerSA _devMgr;
+
         public CLI_PeripheralRESPONSE(string id, string command, string targetFeature, string result = "", string message = "", string name = "", string model = "")
         {
             Guid = id;
@@ -31,28 +34,210 @@ namespace DDPM.SA.Common
             Model = model;
         }
 
+        public CLI_PeripheralRESPONSE(IDeviceManagerSA devMgr, DeviceInfo di, string deviceType, string targetFeature)
+        {
+            _devMgr = devMgr;
+            bool retcode = false;
+            int retvalue = 0;
+            Name = di.Name;
+            Model = di.ModelNumber;
+            //Guid = di.ID.ToString();
+            Guid = "DellPeripheral.Webcam.0";
+            Command = "GET";
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
+
+            switch (targetFeature)
+            {
+                case "FIELDOFVIEW":
+                    if (_devMgr.CheckIsPropertyFOVSupportedByDTP(Guid).Result)
+                    {
+                        retvalue = _devMgr.GetFieldOfViewValueByDTP(Guid).Result;
+                        Value = retvalue.ToString();
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support Filed of View";
+                    }
+                    return;
+                case "HDR":
+                    if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
+                    {
+                        retcode = _devMgr.GetIsHDROnValueByDTP(Guid).Result;
+                        Value = (retcode) ? "ON" : "OFF";
+                        Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support HDR";
+                    }
+                    return;
+                case "ANTIFLICKER":
+
+                    if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(Guid).Result)
+                    {
+                        retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
+                        Value = retvalue.ToString();
+                        Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support AntiFlicker";
+                    }
+                    return;
+                case "AIAUTOFRAMING":
+                    if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(Guid).Result)
+                    {
+                        retcode = _devMgr.GetIsAutoFramingOnValueByDTP(Guid).Result;
+                        Value = (retcode) ? "ON" : "OFF";
+                        Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support AI AutoFraming";
+                    }
+                    return;
+                case "MICSWITCH":
+                    Result = "PASS";
+                    Message = "N/A";
+                    Value = "N/A";
+                    Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                    TargetFeature = targetFeature;
+                    return;
+                case "PRESENCEDETECTION":
+                    Result = "PASS";
+                    Message = "N/A";
+                    Value = "N/A";
+                    Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                    TargetFeature = targetFeature;
+                    return;
+                case "FWVERSION":
+                    TargetFeature = "FIRMWAREVERSION";
+                    break;
+                case "COLLABCAMERAENABLE":
+                    TargetFeature = "ISCOLLABORATIONCAMERAENABLE";
+                    break;
+                case "COLLABMICMUTE":
+                    TargetFeature = "ISCOLLABORATIONMICENABLE";
+                    break;
+                case "COLLABSCREENSHARE":
+                    TargetFeature = "ISCOLLABORATIONSCREENSHAREENABLE";
+                    break;
+                case "COLLABCHATENABLE":
+                    TargetFeature = "ISCOLLABORATIONCHATENABLE";
+                    break;
+                default:
+                    TargetFeature = targetFeature;
+                    break;
+            }
+            var properties = Property.DeviceProperties[deviceType];
+            if (properties.Contains(TargetFeature))
+            {
+                Result = "PASS";
+                Message = "N/A";
+
+                var type = di.GetType();
+                foreach (var prop in type.GetProperties())
+                {
+                    if (prop.Name.ToUpper() == TargetFeature)
+                    {
+                        if (prop.GetValue(di).ToString().Equals("1") || prop.GetValue(di).ToString().ToUpper().Equals("TRUE"))
+                            Value = "ENABLE";
+                        else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
+                            Value = "DISABLE";
+                        else if (prop.GetValue(di).ToString().Equals("7"))
+                        {
+                            if (TargetFeature.ToUpper().Equals("WEARDETECTION"))
+                                Value = "ENABLE";
+                        }                          
+                        else
+                        {
+                            Value = prop.GetValue(di).ToString() ?? "";
+                        }
+                    }
+                }
+                switch (targetFeature)
+                {
+                    case "COLLABSCREENSHARE":
+                        Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
+                        break;
+                    case "ANCMODE":
+                        Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                        break;
+                    case "MICNOISECANCELLATION":
+                        Value += "," + (data.LockSettings.Lock_Audio_micNoiseCancellation ? "LOCK" : "UNLOCK");
+                        break;
+                    case "WEARDETECTION":
+                        Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
+                        break;
+                    case "HDR":
+                        Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                        break;
+                    case "ANTIFLICKER":
+                        Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                        break;
+                    case "AIAUTOFRAMING":
+                        Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
+                        break;
+                    case "MICSWITCH":
+                        Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                        break;
+                    case "PRESENCEDETECTION":
+                        Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                        break;
+                }
+            }
+            else
+            {
+                Result = "FAIL";
+                Message = "invalid TargetFeature";
+            }
+            TargetFeature = targetFeature;
+        }
+
         public CLI_PeripheralRESPONSE(DeviceInfo di, string deviceType, string targetFeature)
         {
             Name = di.Name;
             Model = di.ModelNumber;
             Guid = di.ID.ToString();
             Command = "GET";
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
+
             switch (targetFeature)
             {
                 case "FWVERSION":
                     TargetFeature = "FIRMWAREVERSION";
                     break;
                 case "COLLABCAMERAENABLE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONCAMERAENABLE";
                     break;
                 case "COLLABMICMUTE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONMICENABLE";
                     break;
                 case "COLLABSCREENSHARE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONSCREENSHAREENABLE";
                     break;
                 case "COLLABCHATENABLE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONCHATENABLE";
                     break;
                 default:
                     TargetFeature = targetFeature;
@@ -80,13 +265,15 @@ namespace DDPM.SA.Common
                         }
                     }
                 }
-                TargetFeature = targetFeature;
+                if (targetFeature.Equals("COLLABSCREENSHARE"))
+                    Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
             }
             else
             {
                 Result = "FAIL";
                 Message = "invalid TargetFeature";
             }
+            TargetFeature = targetFeature;
         }
     }
 
@@ -199,10 +386,7 @@ namespace DDPM.SA.Common
             "FIRMWAREVERSION",
             "INSTANCEID",
             "ISBATTERYLEVELSUPPORTED",
-            "",
-            "",
-            "",
-        };
+         };
 
         internal static readonly List<string> Pen = new()
         {

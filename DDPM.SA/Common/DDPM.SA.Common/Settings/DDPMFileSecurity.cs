@@ -1,4 +1,6 @@
-﻿using Dell.Client.Framework.Security;
+using DDPM.SA.Obfuscation;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -7,15 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
-using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -34,6 +37,19 @@ namespace DDPM.SA.Common.Settings
 
     public class DDPMFileSecurity
     {
+        private static void WriteLog(ILog log, string message, bool isError = false)
+        {
+#if DEBUG
+            Console.WriteLine(message);
+#endif
+            if (log == null)
+                return;
+            if (!isError)
+                log.Info(message);
+            else
+                log.Error(message);
+        }
+
         /// <summary>
         /// Using DPAPI to protect data
         /// </summary>
@@ -72,6 +88,9 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        //need system privilege to query this string
+        //public static string AppAccessInfo { get; } = SettingsAccess.AppAccessInfo;
+
         /// <summary>
         /// Apply DDPM data security [Write settings]
         /// 1. Calculate hash of serialized string
@@ -83,7 +102,7 @@ namespace DDPM.SA.Common.Settings
         /// <param name="target_file">Describe your target file to save</param>
         /// <param name="info">Read this param for detail info if return false</param>
         /// <returns>true or false as result</returns>
-        public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info, bool isEncrypt = false)
+        public static bool SetJsonContentFromSerializedString(string accessInfo, string serialized_string, string target_file, out string info, bool isEncrypt = false)
         {
             info = "Success";
             if (string.IsNullOrEmpty(serialized_string))
@@ -91,13 +110,34 @@ namespace DDPM.SA.Common.Settings
                 info = "Null json content as input";
                 return false;
             }
+
+            //Elsa Add Security
+            //Dean 0913 if file not exist, this check will cause the fail and never init
+            if (File.Exists(target_file))
+            {
+                string FileInfo;
+                if (!IsFilePathValid(target_file, out FileInfo))
+                {
+                    info = $"[SetJsonContentFromSerializedString] {FileInfo}";
+                    return false;
+                }
+            }
             string signature;
             try
             {
-                byte[] decrypted_data = Encoding.UTF8.GetBytes(serialized_string);
+                //byte[] decrypted_data = Encoding.UTF8.GetBytes(serialized_string);
                 //1. Calculate the HASH
-                byte[] hash_sign = GetSHA512(decrypted_data, 0, decrypted_data.Length);
-                signature = Encoding.UTF8.GetString(hash_sign);
+                //byte[] hash_sign = GetSHA512(decrypted_data, 0, decrypted_data.Length);
+                //signature = Encoding.UTF8.GetString(hash_sign);
+
+                //0905 apply DDPM private key rule
+                if (accessInfo == null || accessInfo.Length < 32)
+                {
+                    info = "DDPM AccessInfo value is abnormal";
+                    return false;
+                }
+                //signature = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
+                signature = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
             }
             catch (Exception e)
             {
@@ -112,10 +152,34 @@ namespace DDPM.SA.Common.Settings
             string write_string;
             try
             {
-                JObject jObject = JObject.Parse(serialized_string);
+                //JObject jObject = JObject.Parse(serialized_string);
+                JToken token = JToken.Parse(serialized_string);
+                string temp = string.Empty;
+                if (token.Type == JTokenType.Object)
+                {
+                    JObject obj = (JObject)token;
+                    // Handle object
+                    obj.Add("Signature", signature);
+                    temp = obj.ToString();
+                }
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray array = (JArray)token;
+                    // Handle array
+                    //JObject newObject = new JObject();
+                    //newObject["Signature"] = signature;
+                    //array.Add(newObject);
+                    array.Add("Signature : " + signature);
+                    temp = array.ToString();
+                }
+                if(string.IsNullOrEmpty(temp))
+                {
+                    info = "Add sign to json object failed";
+                    return false;
+                }
                 //2. Add signature
-                jObject.Add("Signature", signature);
-                string modifiedJson = jObject.ToString();
+                //jObject.Add("Signature", signature);
+                string modifiedJson = temp;// jObject.ToString();
                 //convert whole content and protect it as bytes array
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 //3. Data protect if need
@@ -140,7 +204,15 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             //4. Write to target file
-            File.WriteAllText(target_file, write_string);
+            try
+            {
+                File.WriteAllText(target_file, write_string);
+            }
+            catch (Exception ex2)
+            {
+                info = $"Write serialized string to file failed. ({ex2.Message})";
+                return false;
+            }
             return true;
         }
 
@@ -154,11 +226,17 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         /// <param name="filePath">Source file for reading content</param>
         /// <returns>Empty string returned if any error occur</returns>
-        public static string GetSerializedJsonString(string filePath, out string info, bool isEncrypt = false)
+        public static string GetSerializedJsonString(string accessInfo, string filePath, out string info, bool isEncrypt = false)
         {
             info = "Success";
             if (!IsFilePathValid(filePath, out info))
             {
+                info = $"[GetSerializedJsonString] {info}";
+                return string.Empty;
+            }
+            if (accessInfo == null || accessInfo.Length < 32)
+            {
+                info = "DDPM AccessInfo value is abnormal";
                 return string.Empty;
             }
             //1. Read json content
@@ -166,7 +244,9 @@ namespace DDPM.SA.Common.Settings
             if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
+#if DEBUG 
                 Console.WriteLine(info);
+#endif 
                 return string.Empty;
             }
             string serialized;
@@ -193,55 +273,86 @@ namespace DDPM.SA.Common.Settings
             if (string.IsNullOrEmpty(serialized))
             {
                 info = "Retrieve content of json file failed";
+#if DEBUG 
                 Console.WriteLine(info);
+#endif
                 return string.Empty;
             }
             // Parse the JSON string into a JObject
-            string modifiedJson;
-            string signature;
+            string modifiedJson = string.Empty;
+            string signature = string.Empty;
             JObject jObject;
+            //3. retrieve signature for comparison
             try
             {
-                jObject = JObject.Parse(serialized);
-                //3. retrieve signature for comparison
-                signature = (string)jObject["Signature"];
-                if (!string.IsNullOrEmpty(signature))
+                //jObject = JObject.Parse(serialized);
+                JToken token = JToken.Parse(serialized);
+                string temp = string.Empty;
+                if (token.Type == JTokenType.Object)
                 {
+                    JObject obj = (JObject)token;
+                    // Handle object
+                    signature = (string)obj["Signature"];
                     // Remove the "signature" property for hash generating
-                    if (!jObject.Remove("Signature"))
+                    if (!obj.Remove("Signature"))
                     {
                         info = "Remove signature field of json failed";
+#if DEBUG 
                         Console.WriteLine(info);
+#endif
                         return string.Empty;
                     }
+                    modifiedJson = obj.ToString();
                 }
-                else
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray array = (JArray)token;
+                    // Handle array
+                    var signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("Signature"));
+                    foreach (var sign in signatureStrings)
+                    {
+                        if (sign != null && !string.IsNullOrEmpty(sign.ToString()))
+                        {
+                            signature = sign.ToString().Replace("Signature", "").Trim();
+                            if(signature.StartsWith(":"))
+                            {
+                                signature = signature.Substring(1).Trim();
+                            }
+                            array.Remove(sign);
+                            break;
+                        }
+                    }
+
+                    modifiedJson = array.ToString();
+                }
+                if (string.IsNullOrEmpty(signature))
                 {
                     info = "No signature in json file";
+#if DEBUG 
                     Console.WriteLine(info);
+#endif
                     return string.Empty;
                 }
             }
             catch (Exception ex)
             {
                 info = "Get Signature from json fail.\nReason: " + ex.ToString();
+#if DEBUG 
                 Console.WriteLine(info);
+#endif
                 return string.Empty;
             }
-            if (jObject == null || jObject.Count == 0)
-            {
-                info = "Convert from json content got no object";
-                Console.WriteLine(info);
-                return string.Empty;
-            }
+            //if (jObject == null)// || jObject.Count == 0)
+            //{
+            //    info = "Convert from json content got no object";
+            //    Console.WriteLine(info);
+            //    return string.Empty;
+            //}
             // Convert the modified JObject back to a JSON string
             string cal_sign;
             try
             {
-                modifiedJson = jObject.ToString();
-                byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
-                byte[] sign = GetSHA512(body_array, 0, body_array.Length);
-                cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
+                cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
@@ -279,6 +390,14 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithCheckSum] {FileInfo}";
+                    return false;
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -304,6 +423,14 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithCheckSum] {FileInfo}";
+                    return false;
+                }
+                
                 return true;
             }
             catch (Exception ex)
@@ -336,6 +463,13 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithSha512] {FileInfo}";
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -359,6 +493,13 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithoutSignature] {FileInfo}";
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -376,6 +517,13 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        info = $"[Json_ImportSettingsWithoutSignature] {FileInfo}";
+                        return null;
+                    }
                     int num = (int)new FileInfo(path).Length;
                     if (num > 0)
                     {
@@ -410,6 +558,14 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        info = $"[Json_ImportSettingsAndCheckCheckSum] {FileInfo}";
+                        return null;
+                    }
+
                     int num = (int)new FileInfo(path).Length;
                     if (num > 4)
                     {
@@ -452,6 +608,13 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        info = $"[Json_ImportSettingsAndCheckSha512] {FileInfo}";
+                        return null;
+                    }
                     int num = (int)new FileInfo(path).Length;
                     if (num > 64)
                     {
@@ -488,6 +651,122 @@ namespace DDPM.SA.Common.Settings
             return null;
         }
 
+        public static bool LoadFileToVerifyJson(string jsonfilepath, string publickeyfilepath, out string strJson)
+        {
+            //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
+            //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
+            string json_file = jsonfilepath;
+            string public_key = publickeyfilepath;
+            string info = string.Empty;
+            strJson = string.Empty;
+
+            if (!DDPMFileSecurity.CheckFileACL(json_file, out info, true))
+            {
+#if DEBUG 
+                Console.WriteLine($"File: {json_file}\nFail with [{info}]");
+#endif
+                return false;
+            }
+            if (!File.Exists(public_key))
+            {
+#if DEBUG 
+                Console.WriteLine($"Please check if public keys exists");
+#endif
+                return false;
+            }
+            //Read json content
+            string json_content = File.ReadAllText(json_file);
+
+            // Parse the JSON string into a JObject
+            JObject jObject = JObject.Parse(json_content);
+            string modifiedJson;
+            string signature;
+            try
+            {
+                signature = (string)jObject["Signature"];
+                // Remove the "age" property
+                jObject.Remove("Signature");
+                // Convert the modified JObject back to a JSON string
+                modifiedJson = jObject.ToString();
+                strJson = modifiedJson;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG 
+                Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+#endif
+                return false;
+            }
+
+            //use signature to verify json
+            if (!DDPMFileSecurity.IsJsonContentValid(modifiedJson, signature, public_key, HashAlgorithmName.SHA512, out info))
+            {
+#if DEBUG
+                Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
+#endif
+                return false;
+            }
+#if DEBUG
+            Console.WriteLine("Operation completed");
+#endif
+            return true;
+        }
+
+        public static bool LoadFileToVerifyJson_2(ILog log, string json_content, List<string> InfoPkey, out string strJson)
+        {
+            //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
+            //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
+            //string json_file = jsonfilepath;
+            string info = string.Empty;
+            strJson = string.Empty;
+
+            if (InfoPkey.Count <= 0)
+            {
+                WriteLog(log, $"Please check if Info keys exists", true);
+                return false;
+            }
+            //Read json content
+            //string json_content = File.ReadAllText(json_file);
+
+            // Parse the JSON string into a JObject
+            JObject jObject = JObject.Parse(json_content);
+            string signature;
+            try
+            {
+                signature = (string)jObject["Signature"];
+                // Remove the "age" property
+                jObject.Remove("Signature");
+                // Convert the modified JObject back to a JSON string
+                strJson = jObject.ToString();
+            }
+            catch (Exception ex)
+            {
+                WriteLog(log, "Try to get Signature from json fail.\nReason: " + ex.ToString(), true);
+                strJson = string.Empty;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(signature))
+            {
+                WriteLog(log, "Null signature in json content", true);
+                strJson = string.Empty;
+                return false;// No signature so fail
+            }
+
+            foreach(string key in InfoPkey)
+            {
+                //use signature to verify json
+                if (DDPMFileSecurity.IsJsonContentValid_2(strJson, signature, key, HashAlgorithmName.SHA512, out info))
+                {
+                    WriteLog(log, "operation complete");
+                    return true;
+                }
+            }
+            WriteLog(log, "Json content got no info matched to signature", true);
+            strJson = string.Empty;
+            return false;
+        }
+
         public static uint GetCheckSum(byte[] content, int count)
         {
             uint num = 0u;
@@ -522,62 +801,6 @@ namespace DDPM.SA.Common.Settings
             return array1.SequenceEqual(array2);
         }
 
-        /// <summary>
-        /// Encrypt bytes content with RSA key
-        /// </summary>
-        /// <param name="dataToEncrypt"></param>
-        /// <param name="outputFilePath">if null or empty then do not write to file</param>
-        /// <param name="publicKey"></param>
-        /// <returns></returns>
-        public static byte[] RsaEncryptByteArrayOverRsa(byte[] dataToEncrypt, string outputFilePath, string publicKey)
-        {
-            //byte[] dataToEncrypt = File.ReadAllBytes(inputFilePath);
-            try
-            {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
-                {
-                    rsa.FromXmlString(publicKey);
-                    byte[] encryptedData = rsa.Encrypt(dataToEncrypt, true);
-                    if (!string.IsNullOrEmpty(outputFilePath))
-                        File.WriteAllBytes(outputFilePath, encryptedData);
-
-                    return encryptedData;
-                }
-            }
-            catch (Exception)// ex)
-            {
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Decrypt bytes content with RSA key
-        /// </summary>
-        /// <param name="dataToDecrypt"></param>
-        /// <param name="outputFilePath">if null or empty then do not write to file</param>
-        /// <param name="privateKey"></param>
-        /// <returns></returns>
-        public static byte[] RsaDecryptByteArrayOverRsa(byte[] dataToDecrypt, string outputFilePath, string privateKey)
-        {
-            //byte[] dataToDecrypt = File.ReadAllBytes(inputFilePath);
-            try
-            {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
-                {
-                    rsa.FromXmlString(privateKey);
-                    byte[] decryptedData = rsa.Decrypt(dataToDecrypt, true);
-                    if (!string.IsNullOrEmpty(outputFilePath))
-                        File.WriteAllBytes(outputFilePath, dataToDecrypt);
-
-                    return decryptedData;
-                }
-            }
-            catch (Exception)// ex)
-            {
-            }
-            return null;
-        }
-
         public static bool IsFilePathValid(string filePath, out string info)
         {
             info = "Valid";
@@ -604,6 +827,19 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+        public static bool IsFilePathValid(string filePath, PathCheckOption option, out string info)
+        {
+            info = "Valid";
+            //check return code with Enum PathCheckErrorCodes
+            PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath, option);
+            if (result != PathCheckErrorCodes.SUCCESS)
+            {
+                info = $"IsFilePathValid: {nameof(result)}";
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Check if the path redirected/junction/Mountpoint
         /// </summary>
@@ -618,11 +854,11 @@ namespace DDPM.SA.Common.Settings
             if (result != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"IsPathSymboliced: {nameof(result)}";
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
-        
+
         /// <summary>
         /// Normal user only can read but admin has full right
         /// </summary>
@@ -645,6 +881,13 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            {
+                info = $"[ApplyFileACLUserReadOnly] {FileInfo}";
+                return false;
+            }
             FileInfo fileInfo = new FileInfo(fileName);
 
             // Get file's security content
@@ -698,6 +941,14 @@ namespace DDPM.SA.Common.Settings
             if (File.Exists(fileName) == false)
             {
                 info = $"[ApplyFileACLNormalUser] file ({fileName}) not exist";
+                return false;
+            }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            {
+                info = $"[ApplyFileACLNormalUser] {FileInfo}";
                 return false;
             }
 
@@ -774,6 +1025,13 @@ namespace DDPM.SA.Common.Settings
                 info = $"CheckFileACL: {filePath} isn't exist.";
                 return false;
             }
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))
+            {
+                info = $"[CheckFileACL] {FileInfo}";                
+                return false;
+            }
             FileInfo fileInfo = new FileInfo(filePath);
             try
             {
@@ -831,6 +1089,14 @@ namespace DDPM.SA.Common.Settings
                 info = $"CheckFolderACL: {folderPath} isn't exist.";
                 return false;
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFolderPathValid(folderPath, out FileInfo))
+            {
+                info = $"[CheckFolderACL] {FileInfo}";
+                return false;
+            }
             DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
             // verify the ACLs using the ACLChecker class
             try
@@ -874,7 +1140,44 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
-        public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
+        //
+        //The caller should use try-catch to catch exception and avoid crash
+        public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
+        {
+            // Elsa Add Security
+            string FileInfo;
+            if (!IsFolderPathValid(folderPath, out FileInfo))
+            {
+                //_log.Info($"{nameof(SetFolderPermissions_UserReadAndExecute)} {FileInfo}");
+                throw new SecurityException($"{FileInfo}"); 
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+            DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
+
+            // Admin - full control
+            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(adminRule);
+
+            // System - full control
+            SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+            FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(systemRule);
+
+            // normal user - read and execute (w/o write)
+            SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+            FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(usersRule);
+
+            // normal user - read write deny
+            FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+            directorySecurity.AddAccessRule(denyWriteRule);
+
+            // apply change
+            directoryInfo.SetAccessControl(directorySecurity);
+        }
+
+        /*public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
         {
             if (string.IsNullOrEmpty(executablePath))
             {
@@ -887,24 +1190,28 @@ namespace DDPM.SA.Common.Settings
                 // Check if file path is valid
                 if (string.IsNullOrWhiteSpace(filePath) || !Path.IsPathRooted(filePath) || filePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Invalid file path.");
                     throw new ArgumentException("Invalid file path.");
                 }
 
                 // Check if file exist
                 if (!File.Exists(filePath))
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- File isn't exist.");
                     throw new ArgumentException("File isn't exist. ");
                 }
 
                 // Perform Input Validation: check file path
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Invalid file path string - {filePath}");
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
                 // Prevent Path Traversal: check redirection
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Redirection detected along file path - {filePath}");
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
                 }
 
@@ -929,10 +1236,11 @@ namespace DDPM.SA.Common.Settings
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                throw new SecurityException(ex.Message);
+                //throw new SecurityException(ex.Message);
+                return false;
             }
             return true;
-        }
+        }*/
 
         private static X509Certificate2 GetCertificate(string filePath)
         {
@@ -940,11 +1248,20 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
+                //Dean 0911: only load file's cert, basic function
+                //Elsa Add Security
+                //string FileInfo;
+                //if (!IsFilePathValid(filePath, out FileInfo))
+                //{
+                //    _log.Info($"{nameof(GetCertificate)} {FileInfo}");
+                //    return cert;
+                //}
+
                 // Load the executable into a byte array
-                byte[] fileBytes = File.ReadAllBytes(filePath);
+                //byte[] fileBytes = File.ReadAllBytes(filePath);
 
                 // Load the executable as an X509Certificate2 object
-                cert = new X509Certificate2(fileBytes);
+                cert = new X509Certificate2(filePath); //fileBytes);
 
                 // Validate the certificate
                 if (!cert.Verify())
@@ -963,7 +1280,7 @@ namespace DDPM.SA.Common.Settings
         //Hard code for test
         //private static string _Sha256SubjectPublicKeyInfoHash = "1d58d1d2bbebc4f3c8169c17c75086b38348e1bcfe0210b21518d32e1301d763";
 
-        public static bool CheckIsValidFile_Secure(string JsonPath)//, string rsa_key_public)
+        /*public static bool CheckIsValidFile_Secure(string JsonPath)//, string rsa_key_public)
         {
             if (string.IsNullOrEmpty(JsonPath))
             {
@@ -973,11 +1290,11 @@ namespace DDPM.SA.Common.Settings
             {
                 string filePath = JsonPath.Trim();
 
-                /*
-                *   STEP 1: Create our Authenticode signature verifier
-                *
-                *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
-                */
+                //
+                //   STEP 1: Create our Authenticode signature verifier
+                //
+                //   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
+                //
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;     // fails validation on all errors or if the signing certificate was self signed
 
                 SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);     // object for storing our SHA256 subject public key info hash
@@ -994,49 +1311,51 @@ namespace DDPM.SA.Common.Settings
                     Constraints = constraints     // pass in our LeafCertConstraints that contains our pre-computed sha256 subject public key info hash
                 };
 
-                /*
-                *   STEP 2: Check our path string for invalid characters, null value, empty value, etc.
-                *
-                *   SDL Checklist: Perform Input Validation
-                */
+                //
+                //   STEP 2: Check our path string for invalid characters, null value, empty value, etc.
+                //
+                //   SDL Checklist: Perform Input Validation
+                //
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
+                    _log.Info($"{nameof(CheckIsValidFile_Secure)} -- Invalid file path string - {filePath}");
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
-                /*
-                *   STEP 3: Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
-                *
-                *   SDL Checklist: Prevent Path Traversal
-                */
+                //
+                //   STEP 3: Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
+                //
+                //   SDL Checklist: Prevent Path Traversal
+                //
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
+                    _log.Info($"{nameof(CheckIsValidFile_Secure)} -- Redirection detected along file path - {filePath}");
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
                 }
 
-                /*
-                *   STEP 4: Lock the file using Security Library FileLock class
-                *
-                *   SDL Checklist: Ensure Authorization and Access Controls (takes care of TOCTOU), Protect Against Brute Force Attacks
-                */
+                //
+                //   STEP 4: Lock the file using Security Library FileLock class
+                //
+                //   SDL Checklist: Ensure Authorization and Access Controls (takes care of TOCTOU), Protect Against Brute Force Attacks
+                //
                 using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))     // file lock protects us from TOCTOU attacks
                 {
-                    /*
-                    *   STEP 5: Verify file ACLs
-                    *
-                    *   SDL Checklist: Ensure Authorization and Access Controls
-                    */
+                    //
+                    //   STEP 5: Verify file ACLs
+                    //
+                    //   SDL Checklist: Ensure Authorization and Access Controls
+                    //
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
                         throw new SecurityException($"File ACLs for {filePath} contained unprivileged write access for one or more identity");
                     }
 
-                    /*
-                    *   STEP 6: Verify signature of signing certificate
-                    *
-                    *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
-                    */
+                    //
+                    //   STEP 6: Verify signature of signing certificate
+                    //
+                    //   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
+                    //
                     var result = verifier.Verify(fileLock);
                     if (result != Win32ErrorCodes.ERROR_SUCCESS)
                     {
@@ -1051,14 +1370,15 @@ namespace DDPM.SA.Common.Settings
             }
 
             return true;
-        }
+        }*/
 
-        public static byte[] GetFileSHA_256(string filePath, out string info)
+        public static string GetFileSHA_256(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                //_log.Info(info);
                 return null;
             }
 
@@ -1066,6 +1386,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                //_log.Info(info);
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
@@ -1074,17 +1395,38 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            string result = CalculateFileSHA256(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
         }
+        static string CalculateFileSHA256(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hashBytes = sha256.ComputeHash(fileStream);
 
-        public static byte[] GetFileSHA_512(string filePath, out string info)
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
+                }
+            }
+            return ret;
+        }
+        public static string GetFileSHA_512(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+               // _log.Info(info);
                 return null;
             }
 
@@ -1092,6 +1434,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+               // _log.Info(info);
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
@@ -1100,18 +1443,40 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            string result = CalculateFileSHA512(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
         }
+        static string CalculateFileSHA512(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA512 sha512 = SHA512.Create())
+                {
+                    byte[] hashBytes = sha512.ComputeHash(fileStream);
 
-        public static bool IsContainValidDigitalSignature(string filePath, out string info)
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
+                }
+            }
+            return ret;
+        }
+
+        /*public static bool IsContainValidDigitalSignature(string filePath, out string info)
         {
             info = "";
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                _log.Info(info);
                 return false;
             }
 
@@ -1119,6 +1484,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                _log.Info(info);
                 return false;
             }
 
@@ -1130,10 +1496,10 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             return true;
-        }
+        }*/
 
         //using private key and source json file to create signature output file
-        public static bool CreateJsonSignature(string json_content, string private_key_file, string target_sign_file, HashAlgorithmName algorithm, out string info)
+        /*public static bool CreateJsonSignature(string json_content, string private_key_file, string target_sign_file, HashAlgorithmName algorithm, out string info)
         {
             info = "unknow error";
 
@@ -1168,7 +1534,7 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-        }
+        }*/
 
         //Using public key and pre-generated signature to validate json file
         public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
@@ -1199,7 +1565,47 @@ namespace DDPM.SA.Common.Settings
 
                     //algorithm could be SHA256 or SHA512
                     bool isSignatureValid = rsa.VerifyData(dataBytes, signature, algorithm, RSASignaturePadding.Pkcs1);
+#if DEBUG
                     Console.WriteLine($"Signature is valid: {isSignatureValid}");
+#endif
+                    info = $"The signature validated result: {isSignatureValid}";
+                    return isSignatureValid;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+        }
+
+        //Using public key and pre-generated signature to validate json file
+        public static bool IsJsonContentValid_2(string json_content, string base64_signature, string PInfoKey, HashAlgorithmName algorithm, out string info)
+        {
+            info = "unknow error";
+
+            // Convert the base64 string to bytes
+            byte[] publicKeyBytes = Convert.FromBase64String(PInfoKey);
+
+            try
+            {
+                // Create an RSACryptoServiceProvider from the public key
+                using (var rsa = new RSACryptoServiceProvider())
+                {
+                    rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
+
+                    // Now you can use 'rsa' for verification
+                    // For example, verify a JSON file's content
+                    byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(json_content);
+
+                    // Assume you have the signature (base64-encoded) in 'signatureBase64'
+                    byte[] signature = Convert.FromBase64String(base64_signature);
+
+                    //algorithm could be SHA256 or SHA512
+                    bool isSignatureValid = rsa.VerifyData(dataBytes, signature, algorithm, RSASignaturePadding.Pkcs1);
+#if DEBUG
+                    Console.WriteLine($"Signature is valid: {isSignatureValid}");
+#endif
                     info = $"The signature validated result: {isSignatureValid}";
                     return isSignatureValid;
                 }
@@ -1212,7 +1618,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         //for test purpose to generate public and private key pair, method 1
-        public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
+        /*public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
         {
             using (var rsa = RSA.Create(4096))
             {
@@ -1255,10 +1661,10 @@ namespace DDPM.SA.Common.Settings
                 }
                 return true;
             }
-        }
+        }*/
 
         //for test purpose to generate public and private key pair, method 2
-        private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
+        /*private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
         {
             if (File.Exists(publicName))
             {
@@ -1302,9 +1708,9 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             return true;
-        }
+        }*/
 
-        public static void DirectoryLockTest(string folderPath)
+        /*public static void DirectoryLockTest(string folderPath)
         {
             try
             {
@@ -1325,12 +1731,101 @@ namespace DDPM.SA.Common.Settings
             {
                 Console.WriteLine($"Error：{ex.Message}");
             }
+        }*/
+        /*
+        //public static X509Certificate2 LoadCertificate(string filePath)
+        //{
+        //    byte[] certBytes = File.ReadAllBytes(filePath);
+        //    return new X509Certificate2(certBytes);
+        //}*/
+
+        private static byte[] ConvertThumbprintToByteArray(string thumbprint)
+        {
+            return Enumerable.Range(0, thumbprint.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
+                             .ToArray();
         }
 
-        public static X509Certificate2 LoadCertificate(string filePath)
+        public static bool VerifyFileCertWithThumbprint(string filePath, out string info)
         {
-            byte[] certBytes = File.ReadAllBytes(filePath);
-            return new X509Certificate2(certBytes);
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+#if DEBUG
+                Console.WriteLine(info);
+#endif
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint
+                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+                //Target cert.Thumbprint
+
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+            return true;
+        }
+
+        public static bool VerifyFileCertWithThumbprint(string filePath, string targetThumbprint, out string info)
+        {
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+#if DEBUG
+                Console.WriteLine(info);
+#endif
+                return false;
+            }
+            if (string.IsNullOrEmpty(targetThumbprint))
+            {
+                info = "Abnormal thumbprint as input";
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint from input
+                //Target cert.Thumbprint{
+                bool contains = targetThumbprint.ToUpper().Trim().Equals(cert.Thumbprint.ToUpper().Trim());
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                info = e.Message;
+                return false;
+
+            }
+            return true;
+
         }
 
         #region Bruce 0814 Move this method to DDPM.SA.Common
@@ -1373,13 +1868,16 @@ namespace DDPM.SA.Common.Settings
             IntPtr buffer;
             int bytesReturned = 0;
             int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
+#if DEBUG
             Console.WriteLine($"WTSGetActiveConsoleSessionId: {sessionId}");
-
+#endif
             if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
             {
                 string userName = Marshal.PtrToStringAnsi(buffer);
                 WTSFreeMemory_Public(buffer);
+#if DEBUG
                 Console.WriteLine($"WTSQuerySessionInformation: user name ({userName})");
+#endif
 
                 if (!string.IsNullOrEmpty(userName))
                 {
@@ -1396,12 +1894,16 @@ namespace DDPM.SA.Common.Settings
                 }
                 else
                 {
+#if DEBUG
                     Console.WriteLine("Got null user name");
+#endif
                 }
             }
             else
             {
+#if DEBUG
                 Console.WriteLine("WTSQuerySessionInformation: return false");
+#endif
             }
             return null;
         }
@@ -1411,26 +1913,34 @@ namespace DDPM.SA.Common.Settings
             NTAccount f_normal, f_domain = null;
             string accountName = $"{Environment.MachineName}\\{userName}";
             f_normal = new NTAccount(accountName);
+#if DEBUG
             Console.WriteLine($"GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
+#endif
             if (!string.IsNullOrEmpty(Environment.UserDomainName))
             {
                 accountName = $"{Environment.UserDomainName}\\{userName}";
+#if DEBUG 
                 Console.WriteLine($"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
+#endif
                 f_domain = new NTAccount(Environment.UserDomainName, userName);
             }
             //NTAccount f = new NTAccount(accountName);
             //writelog($"GetUserSid: final using: {accountName}");
-            String sidString;
+            string sidString;
             try
             {
                 SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
                 sidString = s.ToString();
+#if DEBUG
                 Console.WriteLine($"GetUserSid(normal user): SID: {sidString}");
+#endif
             }
             catch (Exception ex)
             {
                 sidString = null;
+#if DEBUG
                 Console.WriteLine($"GetUserSid(normal user): try translate fail: {ex.Message}");
+#endif
 
                 //0724 add code that translate normal user and do translate domain user if fail.
                 if (f_domain != null)
@@ -1439,12 +1949,16 @@ namespace DDPM.SA.Common.Settings
                     {
                         SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
                         sidString = s.ToString();
+#if DEBUG
                         Console.WriteLine($"GetUserSid(domain user): SID: {sidString}");
+#endif
                     }
                     catch (Exception e)
                     {
                         sidString = null;
+#if DEBUG
                         Console.WriteLine($"GetUserSid(domain user): try translate fail: {e.Message}");
+#endif
                     }
                 }
             }
@@ -1452,5 +1966,188 @@ namespace DDPM.SA.Common.Settings
         }
 
         #endregion Bruce 0814 Move this method to DDPM.SA.Common
+	
+	public static bool SRemoveSymbolicFile(string filePath, out string info)
+        {
+            info = "pass";
+            if (!DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            {
+                return true;
+            }
+
+            FileAttributes attr = File.GetAttributes(filePath);
+            if (!attr.HasFlag(FileAttributes.Directory))
+            {   // File
+                if (SymlinkHelper.IsFileHasSymlink(filePath, out info)) // is the current file symbolic ?
+                {
+                    if (!SymlinkHelper.RemoveFileSymlink2(filePath, out info))
+                    {
+#if DEBUG
+                        Console.WriteLine($"Delete File failed. ({info})");
+#endif
+                        return false;
+                    }
+                }
+                else
+                {
+                    info = "The File is not a Symbolic";    // need to check Symbolic in Path folder
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool SRemoveSymbolicFolder(string filePath, out string info)
+        {
+            info = "pass";
+            if (!IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            {
+                return true;
+            }
+
+            FileAttributes attr = File.GetAttributes(filePath);
+            if (attr.HasFlag(FileAttributes.Directory))
+            {   // Directory
+                if (SymlinkHelper.IsFolderHasSymlink(filePath, out info)) // is current folder symbolic ? 
+                {
+                    if (!SymlinkHelper.RemoveFolderSymlink2(filePath, out info)) // Remove current symbolic folder
+                    {
+#if DEBUG
+                        Console.WriteLine($"Delete Folder failed. ({info})");
+#endif
+                        return false;
+                    }
+                    else // check parent folder for symbolic
+                    {
+                        string tmpParentPath = string.Empty;
+                        tmpParentPath = Path.GetDirectoryName(filePath);
+                        if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    //info = "The Folder is not a Symbolic";
+                    string tmpParentPath = string.Empty;
+                    tmpParentPath = Path.GetDirectoryName(filePath); // to check parent 
+                    if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
+                    {
+                        Directory.CreateDirectory(filePath);
+                        return true;
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(filePath);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        public static bool CheckFold(string folderPath, out string folderInfo, out string pathSymbolicLinInfo)    // Move from Bruce code
+        {
+            folderInfo = "Error";
+            pathSymbolicLinInfo = "Error";
+            int count = 0;
+            bool folderValid = false;
+            do
+            {
+                folderInfo = string.Empty;
+                pathSymbolicLinInfo = string.Empty;
+                folderValid = false;
+                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(folderPath, out pathSymbolicLinInfo);  //0924 Bruce Add Security
+                if (!folderValid)
+                {
+                    count++;
+                }
+                folderValid = DDPMFileSecurity.IsFolderPathValid(folderPath, out folderInfo) && folderValid;
+                if (!folderValid)
+                {
+                    Directory.CreateDirectory(folderPath);
+                    count++;
+                }
+            } while (!folderValid && count < 2);
+            return folderValid;
+        }
+
+        public static bool VerifyDDPMMetadata(ILog log, string filePath, List<string> InfoPkey, out string inline_info, out string strJson)
+        {
+            // (for debugging) .json: with signature 
+            //filePath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+            //filePath = "D:\\DDPM\\test\\metaadata_display_test_info_sign.json";            
+
+            string msg = string.Empty;
+            inline_info = string.Empty;
+            strJson = string.Empty;
+            string json_read = string.Empty;
+            try
+            {
+                if (!IsFilePathValid(filePath, out msg))
+                {
+                    WriteLog(log, msg, true);
+                    return false;
+                }
+                json_read = File.ReadAllText(filePath);
+                if (string.IsNullOrEmpty(json_read))
+                {
+                    WriteLog(log, "Read file without any content", true);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(log, $"Read file failed: ({ex.Message})", true);
+                return false;
+            }
+            strJson = VerifyDDPMMetadata(log, json_read, InfoPkey, out inline_info);
+            return !string.IsNullOrEmpty(strJson);
+        }
+
+        //check json content to remove signature and info then output for caller
+        public static string VerifyDDPMMetadata(ILog log, string fileContent, List<string> InfoPkey, out string inline_info)
+        {
+            bool ret = false;
+            inline_info = string.Empty;
+            string strJson = string.Empty; 
+            //Pass json metadata to security check and try to output serialized json string
+            // the output json string will remove signature
+            ret = LoadFileToVerifyJson_2(log, fileContent, InfoPkey, out strJson);
+
+            //
+            //if the content has no info and signature, return data directly here
+            //inline_info = InfoHash.Info_Hash; //debug purpose
+            //return strJson;
+
+            // Handle "Info" section
+            if (ret && !string.IsNullOrEmpty(strJson))
+            {
+                JObject jObject = JObject.Parse(strJson);
+                string szInfo;
+                try
+                {
+                    szInfo = (string)jObject["Info"];
+                    if (!string.IsNullOrEmpty(szInfo))
+                    {
+                        jObject.Remove("Info");
+                        inline_info = szInfo;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteLog(log, "Try to get info key from json fail.\nReason: " + ex.ToString(), true);
+                }
+                // Convert the modified JObject back to a JSON string                
+                strJson = jObject.ToString();
+            }
+            else
+            {
+                WriteLog(log, "[Metadata check] metadata is invalid", true);
+            }
+
+            return strJson;
+        }
     }
 }

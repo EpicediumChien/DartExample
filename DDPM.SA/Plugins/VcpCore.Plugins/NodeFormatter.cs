@@ -339,12 +339,12 @@ namespace VcpCore.Plugins
                 case "1c": return "USB-C2";
                 case "1d": return "USB-C3";
                 case "1e": return "USB-C4";
-                case "80": return "USB Comm from USB1 (Type-B, port 1)";
-                case "81": return "USB Comm from USB2 (Type-B, port 2)";
-                case "82": return "USB Comm from USB-C1 (Type-C, port 1)";
-                case "83": return "USB Comm from USB-C2 (Type-C, port 2)";
-                case "84": return "USB Comm from USB-C3 (Type-C, port 3)";
-                case "85": return "USB Comm from USB-C4 (Type-C, port 4)";
+                case "80": return "USB Comm from USB1, Type-B, port 1";
+                case "81": return "USB Comm from USB2, Type-B, port 2";
+                case "82": return "USB Comm from USB-C1, Type-C, port 1";
+                case "83": return "USB Comm from USB-C2, Type-C, port 2";
+                case "84": return "USB Comm from USB-C3, Type-C, port 3";
+                case "85": return "USB Comm from USB-C4, Type-C, port 4";
                 default: return null;
             }
         }
@@ -396,7 +396,8 @@ namespace VcpCore.Plugins
                 case "08": return "Paper";
                 //case "09": return "Rec 709";
                 //case "09": return "Rec.709";
-                case "09": return "Rec. 709 / BT.709";
+                //case "09": return "Rec. 709 / BT.709";
+                case "09": return "Rec.709 / BT.709"; // 1004 jim add
                 case "0a": return "DCI-P3";
                 case "0b": return "Rec2020";
                 case "0c": return "ComfortView";
@@ -460,7 +461,8 @@ namespace VcpCore.Plugins
                 case "19": return "Paper";
                 //case "1a": return "Rec. 709"; // 20240731 jim remove
                 //case "1a": return "Rec.709"; // 20240731 jim add
-                case "1a": return "Rec. 709 / BT.709";
+                //case "1a": return "Rec. 709 / BT.709";
+                case "1a": return "Rec.709 / BT.709"; // 10/04 add
                 case "1b": return "DCI-P3";
                 case "1c": return "Rec2020";
                 case "1d": return "ComfortView";

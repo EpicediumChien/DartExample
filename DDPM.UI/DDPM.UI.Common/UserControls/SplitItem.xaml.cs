@@ -1,4 +1,5 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.EAEM;
@@ -179,9 +180,9 @@ namespace DDPM.UI.Common.UserControls
 
         private void pencilIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
             if (EditClickCommand != null)
             {
-                e.Handled = true;
                 EditClickCommand.Execute(this);
             }
         }
@@ -200,11 +201,38 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty IsDeleteEnabledProperty =
             DependencyProperty.Register("IsDeleteEnabled", typeof(bool), typeof(SplitItem), new PropertyMetadata(false));
 
+
+
+
+        public ICommand DeleteCommand
+        {
+            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            set { SetValue(DeleteCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DeleteCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DeleteCommandProperty =
+            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(SplitItem));
+
+        private void closeXIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (DeleteCommand != null)
+            {
+                DeleteCommand.Execute(this);
+            }
+        }
+
         #endregion Del Icon
 
         #region For Easy Arrange
 
-        public int CustomId;
+        public long CustomId
+        {
+            get => vm.CustomId;
+            set { vm.CustomId = value; }
+        }
+
         public SplitItem? Buddy { get; set; } = null;
 
         public int CellCount
@@ -267,6 +295,92 @@ namespace DDPM.UI.Common.UserControls
             }
         }
 
+        /// <summary>
+        /// Compare with other, return true if they are same layout in EasyArrange.
+        /// 1 Compare CustomId, if different return false;
+        /// 2 Compare (CellCount,SplitKey)
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool IsEquals(SplitItem other)
+        {
+            //Support EasyArrange content only
+            if (ISplitCtrl == null)
+                return true;
+            if (other.ISplitCtrl == null)
+                return true;
+
+            //1 Compare CustomId (0=predefined layout; others=custom layout)
+            //  custom layout is d=identified with CustomId
+            if (CustomId != other.CustomId)
+                return false;
+            //Can be a.Both are Predefined layout (CustomId=0) => need to compare with (CellCount,SplitKey)
+            //    or b.Both are custom layout and are the same layout
+            if (CustomId == 0)
+                return (CellCount == other.CellCount) && (SplitKey == other.SplitKey);
+            return true;
+        }
         #endregion For Easy Arrange
+
+        #region Replace
+        public void ReplaceByEAArgs(EAArgs args)
+        {
+            //Check if it need to change ISplitCtrl
+            if ((CellCount != args.CellCount) || (SplitKey !=  args.SplitKey))
+            {
+                if ((args.CellCount == 0) && (args.SplitKey == 'B'))
+                {
+                    ISplitCtrl ispNew = new SplitCtrl0B();
+                    InnerContent = ispNew.UC;
+                }
+                else
+                {
+                    ISplitCtrl? ispNew = ISplitCtrl.Create(args.CellCount, args.SplitKey);
+                    if (ispNew == null)
+                        return;
+                    InnerContent = ispNew.UC;
+                }
+            }
+            if (ISplitCtrl == null)
+                return;
+
+            //Copy data
+            ISplitCtrl.Settings = new List<double>(args.Settings);
+            ISplitCtrl.FriendlyName = args.CustomName;
+            //CustomId = args.CustomId;
+
+            vm.NotifyPropertyChanged_TooltipText();
+        }
+        #endregion
+
+        #region Add Custom Layout Button
+        public bool IsHoverable
+        {
+            get { return vm.IsHoverable; }
+            set { vm.IsHoverable = value; }
+        }
+        public bool IsAddedCustomLayout
+        {
+            get 
+            {
+                if (ISplitCtrl != null)
+                    return ISplitCtrl.IsAddedCustomLayout;
+                return false;
+            }
+        }
+        #endregion Add Custom Layout Button
+
+        #region For EzMemory
+        private int _layoutID;
+        public int LayoutID
+        {
+            get => _layoutID;
+            set
+            {
+                _layoutID = value;
+            }
+        }
+        #endregion For EzMemory
     }
+
 }

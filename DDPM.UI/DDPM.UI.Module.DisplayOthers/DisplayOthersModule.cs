@@ -10,7 +10,7 @@ namespace DDPM.UI.Module.DisplayOthers
     public class DisplayOthersModule : IDdpmModule
     {
         private UserControl? _leftView = null;
-        private UserControl _rightView/* = new DisplayOthersRightView()*/;
+        private UserControl _rightView = new DisplayOthersRightView();
         private DisplayOthersViewModel vm = new DisplayOthersViewModel();
 
         private bool isSelectChanged = false;
@@ -20,8 +20,9 @@ namespace DDPM.UI.Module.DisplayOthers
         {
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
 
+            _rightView.DataContext = vm;
             vm.DisplayOthersModule = this;
-            _rightView = new DisplayOthersRightView(vm);
+            //_rightView = new DisplayOthersRightView(vm);
             vm.Invoke_RefreshData();
         }
 
@@ -65,6 +66,8 @@ namespace DDPM.UI.Module.DisplayOthers
         //Handle new device coming
         private void InitNewViewModel()
         {
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm.Invoke_RefreshData();
         }
 
         public void OnActivated()

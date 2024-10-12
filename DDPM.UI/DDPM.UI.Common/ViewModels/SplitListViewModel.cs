@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.UserControls;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -40,6 +42,10 @@ namespace DDPM.UI.Common.ViewModels
             SplitList = new ObservableCollection<SplitItem>();
         }
 
+
+        #endregion ItemsSource
+
+        #region Find
         public SplitItem? FindSplitCtrl(int cellCount, char splitKey)
         {
             if (_splitList == null) return null;
@@ -57,7 +63,88 @@ namespace DDPM.UI.Common.ViewModels
             return null;
         }
 
-        #endregion ItemsSource
+        public SplitItem? FindSplitCtrlByFriendlyName(string friendlyName)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if (spItem.ISplitCtrl.FriendlyName.Equals(friendlyName, StringComparison.OrdinalIgnoreCase))
+                        return spItem;
+                }
+            }
+            return null;
+        }
+
+        public SplitItem? FindSplitItemByCustomId(long customId)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.CustomId == customId)
+                {
+                    return spItem;
+                }
+            }
+            return null;
+
+        }
+
+        public List<string> GetCustomFriendlyNameList()
+        {
+            List<string> listOut = new List<string>();
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if (!String.IsNullOrWhiteSpace(spItem.ISplitCtrl.FriendlyName))
+                        listOut.Add(spItem.ISplitCtrl.FriendlyName);
+                }
+            }
+            return listOut;
+
+        }
+
+        public SplitItem? FindItemBySplitJson(SplitJson spj)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                //Compare if it's equal between SplitItem and SplitJson
+                //  1 CustomId must be the same
+                //  2 If CustomId==0, the compare (CellCount, SplitKey)
+                //
+                //1 CustomId must be the same
+                if (spItem.CustomId != spj.CustomId)
+                    continue;
+
+                //2 If CustomId==0, the compare (CellCount, SplitKey)
+                if (spItem.CustomId == 0)
+                {
+                    if ((spItem.CellCount == spj.CellCount) && (spItem.SplitKey == spj.SplitKey))
+                        return spItem;
+                }
+                else
+                    return spItem;
+            }
+            return null;
+        }
+
+        public SplitItem? GetLatestItem()
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            return _splitList[ItemCount-1];
+        }
+        #endregion Find
 
         #region Index
 
@@ -147,6 +234,7 @@ namespace DDPM.UI.Common.ViewModels
             OnPropertyChanged("SplitItem3");
             OnPropertyChanged("SplitItem4");
             RefreshPrevNextButtons();
+            RefreshAddCustomButton();
         }
 
         #endregion Split Items
@@ -185,7 +273,10 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (ItemCount <= 0)
                     return false;
-                if (IsIndexValid(IndexToItem0 + ItemsPerPage))
+                int addButton = 0;
+                if (HasAddButton)
+                    addButton = -1;
+                if (IsIndexValid(IndexToItem0 + ItemsPerPage + addButton))
                     return true;
                 else
                     return false;
@@ -200,7 +291,8 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool GoToNextPage()
         {
-            if (IsIndexValid(IndexToItem0 + ItemsPerPage))
+            int addButton = HasAddButton ? -1 : 0;
+            if (IsIndexValid(IndexToItem0 + ItemsPerPage + addButton))
             {
                 IndexToItem0 += ItemsPerPage;
                 RefreshDisplayItems();
@@ -259,12 +351,66 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion Page Navigation
 
-        //private ICommand? _itemEditCommand;
+        #region Screen Orientation
 
-        //public ICommand? ItemEditCommand
-        //{
-        //    get => _itemEditCommand;
-        //    set => SetProperty(ref _itemEditCommand, value);
-        //}
+        private bool isVertical = false;
+
+        public bool IsVertical
+        {
+            get { return isVertical; }
+            set { isVertical = value; OnPropertyChanged("IsVertical"); }
+        }
+
+        #endregion Screen Orientation
+
+        #region AddCustomLayoutButton
+        private bool _hasAddButton = false;
+        private int _addButtonColumn = 0;
+        private bool _isAddButtonVisible = false;
+
+        public bool HasAddButton
+        {
+            get => _hasAddButton;
+            set
+            {
+                SetProperty(ref _hasAddButton, value);
+                RefreshAddCustomButton();
+            }
+        }
+
+        public int AddButtonColumn
+        {
+            get => _addButtonColumn;
+            set => SetProperty(ref _addButtonColumn, value);
+        }
+
+        private void RefreshAddCustomButton()
+        {
+            if (HasAddButton)
+            {
+                //Display items in current page
+                int displayItemsInCurPage = ItemCount - IndexToItem0;
+                if (displayItemsInCurPage < ItemsPerPage)
+                {
+                    AddButtonColumn = displayItemsInCurPage;
+                    IsAddButtonVisible = true;
+                }
+                else
+                {
+                    IsAddButtonVisible = false;
+                }
+            }
+            else
+            {
+                IsAddButtonVisible = false;
+            }
+        }
+
+        public bool IsAddButtonVisible
+        {
+            get => _isAddButtonVisible;
+            set => SetProperty(ref _isAddButtonVisible, value);
+        }
+        #endregion
     }
 }

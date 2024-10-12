@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -37,8 +38,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private AddDeviceViewModel? _viewModel;
         private bool _isConfigured;
 
-        private IDeviceManagerSA? _deviceManagerPlugin;
-        private IFrameworkPluginConditionNotification? _deviceManagerPluginCondition;
         private readonly CancellationTokenSource StartupCancellationTokenSource = new();
         private readonly CancellationToken CancellationToken;
         private readonly SemaphoreSlim _lock = new(1, 1);
@@ -54,100 +53,18 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _console = console;
             _log = console.CreateLog("AddDevice");
             _log.Info($"{nameof(AddDeviceView)} - Constructed");
-
-            CancellationToken = StartupCancellationTokenSource.Token;
-            _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
-        }
-
-        private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
-        {
-            _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
-            try
-            {
-                _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-
-                if (_deviceManagerPlugin == null)
-                {
-                    _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
-                    return;
-                }
-
-                // Manager Peripheralslugin Condition
-                _deviceManagerPluginCondition = _deviceManagerPlugin as IFrameworkPluginConditionNotification;
-
-                if (_deviceManagerPluginCondition == null)
-                    return;
-
-                // Subscribe to plugin changes
-                _deviceManagerPluginCondition.PluginConditionChangeHandler += PeripheralsPluginCondition_PluginConditionChangeHandler;
-
-                // Get current condition
-                _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
-                _log.Error(ex, message);
-            }
-        }
-
-        private void PeripheralsPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
-        {
-            _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-        }
-
-        private async Task GetCurrentPeripheralsPluginCondition()
-        {
-            await _lock.WaitAsync(CancellationToken);
-            _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
-            try
-            {
-                if (_deviceManagerPluginCondition == null)
-                    return;
-
-                var pluginCondition = await _deviceManagerPluginCondition.CurrentConditionAsync();
-
-                if (pluginCondition is PluginErrorCondition)
-                {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
-                }
-                else if (pluginCondition is PluginRunningCondition)
-                {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
-                }
-            }
-            catch (Exception ex)
-            {
-                var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
-                _log.Error(ex, message);
-                //throw new NotificationPluginException(message);
-            }
-            finally
-            {
-                _lock.Release();
-                _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} unlock");
-            }
         }
 
         private void GetRFDongleAsync()
         {
-            if (!SpinWait.SpinUntil(() =>
-            _deviceManagerPluginCondition is not null, TimeSpan.FromMinutes(2)))
-            {
-                Console.WriteLine("Could not establish communication with DDPM!!");
-                return;
-            }
             _log.Debug($"GetPeripherals is invoked");
-            Task<RFDeviceHelper> task = _deviceManagerPlugin!.GetRFDongleDevices();
+            Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+            _viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
+
+            Task<RFDeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices();
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
-        }
-
-        private void ShowAddDeviceView()
-        {
-            _log.Info($"{nameof(ShowAddDeviceView)} - shown");
-            _console.ShowPluginById(PluginId);
         }
 
         /// <summary>
@@ -165,7 +82,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 .AddSingleton(_showPluginManager)
                 .AddSingleton(_console)
                 .AddSingleton(_log)
-                .AddSingleton(_deviceManagerPlugin!)
                 .AddSingleton<IAddDeviceViewModel, AddDeviceViewModel>()
                 .BuildServiceProvider());
 
@@ -187,7 +103,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin!.DeviceChanged -= DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceChanged;
             _viewModel!.StopPairing();
             //Mouse.OverrideCursor = Cursors.Wait;
         }
@@ -197,7 +113,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             ConfigureServices();
             GetRFDongleAsync();
-            _deviceManagerPlugin!.DeviceChanged += DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
             Mouse.OverrideCursor = null;
         }
 

@@ -1,54 +1,102 @@
-﻿using System;
+﻿using DDPM.SA.Common.Settings;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Security;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Security
 {
     public class CertificateCheck
     {
-        private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
-        private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
+        private Logs? _logs;
         private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
-        public bool CheckFileCACertificate(string certificateFilePath)
+        public CertificateCheck(Logs logs)
         {
-            // 讀取憑證檔案並創建 X509Certificate2 物件
-            X509Certificate2 certificate = new X509Certificate2(certificateFilePath);
-
-            // 創建一個 X509Chain 物件
-            X509Chain chain = new X509Chain();
-            chain.Build(certificate);
-
-            // 設置 SSL 策略錯誤為 None，因為我們在這裡不處理 SSL 策略錯誤
-            SslPolicyErrors sslPolicyErrors = SslPolicyErrors.None;
-
-            return PinPublicKey(null, certificate, chain, sslPolicyErrors);
+            _logs = logs;
+        }
+        /// <summary>
+        /// Only for MiniInstaller use.
+        /// </summary>
+        public CertificateCheck()
+        {
+        }
+        public bool CheckFile_SHA512(string CertificateFilePath, string Stande_SHA512, out string Info)
+        {
+            bool ret = false;
+            Info = "SHA512 Is Null Or Empty";
+            if (!string.IsNullOrEmpty(Stande_SHA512))
+            {
+                try
+                {
+                    ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
+                    if (Info.Equals("Complete"))
+                    {
+                        Info = ret ? "Check ok" : "Check faile";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
+            }
+            return ret;
+        }
+        public bool CheckFile_SHA256(string CertificateFilePath, string Stande_SHA256, out string Info)
+        {
+            bool ret = false;
+            Info = "SHA256 Is Null Or Empty";
+            if (!string.IsNullOrEmpty(Stande_SHA256))
+            {
+                try
+                {
+                    ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
+                    if (Info.Equals("Complete"))
+                    {
+                        Info = ret ? "Check ok" : "Check faile";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
+            }
+            return ret;
+        }
+        public bool CheckFile_Thumbprint(string CertificateFilePath, string Stande_Thumbprint, out string Info)
+        {
+            bool ret = false;
+            Info = "Thumbprint Is Null Or Empty";
+            if (!string.IsNullOrEmpty(Stande_Thumbprint))
+            {
+                try
+                {
+                    // 讀取憑證檔案並創建 X509Certificate2 物件
+                    X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+                    ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
+                }
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
+            }
+            return ret;
         }
         public bool CheckURLCACertificate(string URL)
         {
             bool flag = false;
             int num = 1;
-            GetLocalTrustedCert();
             while (!flag && num > 0)
             {
                 try
                 {
                     HttpClientHandler handler = new HttpClientHandler();
-                    ////測試Proxy使用
-                    //var proxy = new WebProxy("http://192.168.137.31:808/", true)
-                    //{
-                    //    Credentials = new NetworkCredential("user-001", "user")
-                    //};
-                    //handler = new HttpClientHandler
-                    //{
-                    //    Proxy = proxy,
-                    //    UseProxy = true
-                    //};
                     handler.ServerCertificateCustomValidationCallback = PinPublicKey;
                     using (HttpClient client = new HttpClient(handler))
                     {
@@ -58,23 +106,21 @@ namespace DDPM.SA.Common.Security
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("[CheckURLCACertificate] error:" + ex.Message.ToString());
+                    _logs?.DebugMsg_1("[CheckURLCACertificate] error:" + ex.Message.ToString());
                     flag = false;
-                    Console.WriteLine(string.Format("[CheckURLCACertificate] error, retry:" + num));
+                    _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] error, retry:" + num));
                     Thread.Sleep(1000);
                 }
-
-
                 num--;
             }
-            Console.WriteLine(string.Format("[CheckURLCACertificate] res:" + flag));
+            _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] res:" + flag));
             if (!flag)
             {
                 flag = CheckCAHTTP(URL);
             }
             if (!flag)
             {
-                Console.WriteLine(string.Format("[CheckURLCACertificate][CheckCAHTTP] Fail, Send Telemetry." + flag));
+                _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate][CheckCAHTTP] Fail, Send Telemetry." + flag));
             }
             return flag;
         }
@@ -88,13 +134,13 @@ namespace DDPM.SA.Common.Security
                     httpClientHandler.ServerCertificateCustomValidationCallback = ValidateCertificate;
                     HttpClient client = new HttpClient(httpClientHandler);
                     bool response = GetResponse(client, URL);
-                    Console.WriteLine("[CheckCAHTTP] result:" + response);
+                    _logs?.DebugMsg_1("[CheckCAHTTP] result:" + response);
                     return response;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[CheckCAHTTP] error:" + ex.Message.ToString());
+                _logs?.DebugMsg_1("[CheckCAHTTP] error:" + ex.Message.ToString());
             }
             return false;
         }
@@ -102,47 +148,47 @@ namespace DDPM.SA.Common.Security
         {
             if (certificate == null)
             {
-                Console.WriteLine("[ValidateCertificate] certificate null.");
+                _logs?.DebugMsg_1("[ValidateCertificate] certificate null.");
                 return false;
             }
 
             if (request == null)
             {
-                Console.WriteLine("[ValidateCertificate] request null.");
+                _logs?.DebugMsg_1("[ValidateCertificate] request null.");
             }
 
             if (sslPolicyErrors != 0)
             {
-                Console.WriteLine($"[ValidateCertificate] sslPolicyErrors is Error. {sslPolicyErrors}");
+                _logs?.DebugMsg_1($"[ValidateCertificate] sslPolicyErrors is Error. {sslPolicyErrors}");
             }
 
             if (chain == null)
             {
-                Console.WriteLine("[ValidateCertificate] chain null.");
+                _logs?.DebugMsg_1("[ValidateCertificate] chain null.");
                 return false;
             }
-            return CheckCertificateIsVaild(certificate) && CheckIssuerAndSubject(certificate);
+            return CheckCertificateExpiration(certificate) && CheckCertificateRevocation(certificate) && CheckIssuerAndSubject(certificate, chain);
         }
         private bool PinPublicKey(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             X509Certificate2 certificate2 = new X509Certificate2(certificate);
             if (certificate == null)
             {
-                Console.WriteLine("[PinPublicKey] certificate null.");
+                _logs?.DebugMsg_1("[PinPublicKey] certificate null.");
                 return false;
             }
             HttpClient httpClient = sender as HttpClient;
             if (httpClient == null)
             {
-                Console.WriteLine("[PinPublicKey] request null.");
+                _logs?.DebugMsg_1("[PinPublicKey] request null.");
             }
             if (chain == null)
             {
-                Console.WriteLine("[PinPublicKey] chain null.");
+                _logs?.DebugMsg_1("[PinPublicKey] chain null.");
                 return false;
             }
             bool flag = false;
-            flag = CheckCertificateIsVaild(certificate2) && CheckIssuerAndSubject(certificate2);
+            flag = CheckCertificateExpiration(certificate2) && CheckCertificateRevocation(certificate2) && CheckIssuerAndSubject(certificate2, chain);
             return flag;
         }
         private bool CheckHTTPAvailable(string URL)
@@ -156,7 +202,7 @@ namespace DDPM.SA.Common.Security
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[CheckHTTPAvailable] error:" + ex.Message.ToString());
+                _logs?.DebugMsg_1("[CheckHTTPAvailable] error:" + ex.Message.ToString());
             }
             return false;
         }
@@ -169,56 +215,20 @@ namespace DDPM.SA.Common.Security
                 try
                 {
                     HttpResponseMessage result = client.GetAsync(URL).GetAwaiter().GetResult();
-                    Console.WriteLine("[GetResponse] statusCode:" + result.StatusCode);
+                    _logs?.DebugMsg_1("[GetResponse] statusCode:" + result.StatusCode);
                     flag = true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("[GetResponse] error:" + ex.Message.ToString());
+                    _logs?.DebugMsg_1("[GetResponse] error:" + ex.Message.ToString());
                     flag = false;
-                    Console.WriteLine(string.Format("[GetResponse] error, retry:" + num));
+                    _logs?.DebugMsg_1(string.Format("[GetResponse] error, retry:" + num));
                     Thread.Sleep(1000);
                 }
                 num--;
             }
-            Console.WriteLine(string.Format("[GetResponse] result:" + flag));
+            _logs?.DebugMsg_1(string.Format("[GetResponse] result:" + flag));
             return flag;
-        }
-        private void GetLocalTrustedCert()
-        {
-            try
-            {
-                X509Store x509Store_LocalMachine = new X509Store(StoreName.TrustedPublisher, StoreLocation.LocalMachine);
-                X509Store x509Store_CurrentUser = new X509Store(StoreName.TrustedPublisher, StoreLocation.CurrentUser);
-                x509Store_LocalMachine.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate in x509Store_LocalMachine.Certificates)
-                {
-                    TrustedPublisher.Add(certificate);
-                }
-                x509Store_CurrentUser.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate in x509Store_CurrentUser.Certificates)
-                {
-                    TrustedPublisher.Add(certificate);
-                }
-                x509Store_LocalMachine = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-                x509Store_CurrentUser = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-                x509Store_LocalMachine.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate2 in x509Store_LocalMachine.Certificates)
-                {
-                    TrustedRoot.Add(certificate2);
-                }
-                x509Store_LocalMachine.Close();
-                x509Store_CurrentUser.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate2 in x509Store_CurrentUser.Certificates)
-                {
-                    TrustedRoot.Add(certificate2);
-                }
-                x509Store_CurrentUser.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("[GetLocalTrustedCert] error:" + ex.Message.ToString());
-            }
         }
         private bool CheckCertificateIsVaild(X509Certificate2 certificate)
         {
@@ -234,11 +244,11 @@ namespace DDPM.SA.Common.Security
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[CheckCertificateIsVaild] error: " + ex.Message);
+                _logs?.DebugMsg_1("[CheckCertificateIsVaild] error: " + ex.Message);
             }
             return result;
         }
-        private bool CheckIssuerAndSubject(X509Certificate2 certificate)
+        private bool CheckIssuerAndSubject(X509Certificate2 certificate, X509Chain chain)
         {
             try
             {
@@ -246,16 +256,16 @@ namespace DDPM.SA.Common.Security
                 bool isIssuerCNMatch = false;
                 bool isSANCNMatch = false;
                 bool isCNMatch = false;
-                Console.WriteLine("--------------CheckIssuerAndSubject------------------");
-                Console.WriteLine($"Issuer:{certificate.Issuer.ToString()}");
-                Console.WriteLine($"Subject:{certificate.Subject.ToString()}");
-                Console.WriteLine($"SubjectName-Name:{certificate.SubjectName.Name}");
-                Console.WriteLine($"IssuerName:{certificate.GetIssuerName()}");
-                Console.WriteLine($"NotAfter:{certificate.NotAfter.ToString()}");
-                Console.WriteLine($"NotBefore:{certificate.NotBefore.ToString()}");
-                Console.WriteLine($"PublicKey:{certificate.PublicKey}");
-                //Console.WriteLine($"PublicKey:{certificate.GetPublicKeyString()}");
-                Console.WriteLine($"PrivateKey:{certificate.PrivateKey?.ToString()}");
+                //_logs?.DebugMsg_1("--------------CheckIssuerAndSubject------------------");
+                //_logs?.DebugMsg_1($"Issuer:{certificate.Issuer.ToString()}");
+                //_logs?.DebugMsg_1($"Subject:{certificate.Subject.ToString()}");
+                //_logs?.DebugMsg_1($"SubjectName-Name:{certificate.SubjectName.Name}");
+                //_logs?.DebugMsg_1($"IssuerName:{certificate.GetIssuerName()}");
+                //_logs?.DebugMsg_1($"NotAfter:{certificate.NotAfter.ToString()}");
+                //_logs?.DebugMsg_1($"NotBefore:{certificate.NotBefore.ToString()}");
+                //_logs?.DebugMsg_1($"PublicKey:{certificate.PublicKey}");
+                //_logs?.DebugMsg_1($"PublicKey:{certificate.GetPublicKeyString()}");
+                //_logs?.DebugMsg_1($"PrivateKey:{certificate.PrivateKey?.ToString()}");
                 foreach (string sub in Subject)
                 {
                     if (ExtractCN(certificate.Subject).Equals(sub))
@@ -271,87 +281,114 @@ namespace DDPM.SA.Common.Security
                     }
                 }
                 var sanList = GetSubjectAlternativeNames(certificate);
-                Console.WriteLine("Subject Alternative Names:");
-                Console.WriteLine("---SAN---");
+                //_logs?.DebugMsg_1("Subject Alternative Names:");
+                //_logs?.DebugMsg_1("---SAN---");
                 foreach (var san in sanList)
                 {
-                    Console.WriteLine(san);
+                    //_logs?.DebugMsg_1(san);
                     bool containsAny = ContainsAny(san, Subject);
                     if (containsAny)
                     {
-                        Console.WriteLine("[CheckIssuerAndSubject] Subject is included in the SAN.");
+                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is included in the SAN.");
                         isSANCNMatch = true;
                     }
                     else
                     {
-                        Console.WriteLine("[CheckIssuerAndSubject] Subject is NOT included in the SAN.");
+                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT included in the SAN.");
                     }
                 }
-                Console.WriteLine("---SAN END---");
+                //_logs?.DebugMsg_1("---SAN END---");
                 isCNMatch = isSubjectCNMatch && isIssuerCNMatch && isSANCNMatch;
                 if (isCNMatch)
                 {
-                    Console.WriteLine("[CheckIssuerAndSubject] Is match.");
+                    //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Is match.");
                 }
                 else
                 {
                     if (!isSubjectCNMatch)
                     {
-                        Console.WriteLine("[CheckIssuerAndSubject] Subject is NOT match.");
+                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Subject is NOT match.");
                     }
                     if (!isIssuerCNMatch)
                     {
-                        Console.WriteLine("[CheckIssuerAndSubject] Issuer is NOT match.");
+                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Issuer is NOT match.");
                     }
-                    isCNMatch = ValidateProxyCertificate(certificate);
+                    // Additional logic to handle proxy certificates if the above checks failed
+                    var storeNames = new[] { StoreName.Root, StoreName.TrustedPublisher };
+                    var storeLocations = new[] { StoreLocation.LocalMachine, StoreLocation.CurrentUser };
+                    // Implement custom validation logic for proxy certificates
+                    _logs?.DebugMsg_1("Going through Proxy");
+                    // Iterate through each combination of store name and location
+                    foreach (var storeLocation in storeLocations)
+                    {
+                        if (!isCNMatch)
+                        {
+                            foreach (var storeName in storeNames)
+                            {
+                                if (ValidateProxyCertificate(storeName, storeLocation, certificate, chain))
+                                {
+                                    _logs?.DebugMsg_1($"store Name:  {storeName} {storeLocation}");
+                                    isCNMatch = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if (isCNMatch)
                     {
-                        Console.WriteLine("[CheckIssuerAndSubject] Proxy is match.");
+                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Proxy is match.");
                     }
                     else
                     {
-                        Console.WriteLine("[CheckIssuerAndSubject] Not match.");
+                        //_logs?.DebugMsg_1("[CheckIssuerAndSubject] Not match.");
                     }
                 }
-                Console.WriteLine("--------------CheckIssuerAndSubject------------------");
+                //_logs?.DebugMsg_1("--------------CheckIssuerAndSubject------------------");
                 return isCNMatch;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("[CheckIssuerAndSubject] Error." + ex.ToString());
+                _logs?.DebugMsg_1("[CheckIssuerAndSubject] Error." + ex.ToString());
             }
             return false;
         }
-        private bool ValidateProxyCertificate(X509Certificate2 certificate)
+        private bool ValidateProxyCertificate(StoreName storeName, StoreLocation storeLocation, X509Certificate2 certificate, X509Chain chain)
         {
             // Implement custom validation logic for proxy certificates
             // For example, check specific attributes or extensions
-            Console.WriteLine("Going through Proxy");
-            // List all certificates in the store
-            foreach (X509Certificate2 cert in TrustedRoot)
+            _logs?.DebugMsg_1("Going through Proxy");
+
+            bool trustedRootMatched = false;
+
+            // Open the store
+            X509Store store = new X509Store(storeName, storeLocation);
+            store.Open(OpenFlags.ReadOnly);
+
+            foreach (var cert1 in chain.ChainElements)
             {
-                Console.WriteLine("-------------Local Root-------------------");
-                Console.WriteLine("CN: " + ExtractCN(cert.Subject));
-                Console.WriteLine("Subject: " + cert.Subject);
-                Console.WriteLine("Issuer: " + cert.Issuer);
-                Console.WriteLine("Thumbprint: " + cert.Thumbprint);
-                Console.WriteLine("Effective Date: " + cert.NotBefore);
-                Console.WriteLine("Expiration Date: " + cert.NotAfter);
-                Console.WriteLine("--------------------------------");
+                if (cert1.Certificate.Issuer == cert1.Certificate.Subject)
+                {
+                    X509Certificate2 rootCertificate = cert1.Certificate;
+                    //_logs?.DebugMsg_1($"Validate Root Certificate:  {cert1.Certificate.Issuer} {cert1.Certificate.Subject}");
+
+                    // List all valid certificates in the store
+                    foreach (X509Certificate2 cert in store.Certificates)
+                    {
+                        if (rootCertificate != null && IsValidCertificate(cert, chain))
+                        {
+                            if (rootCertificate.Issuer.Equals(cert.Issuer))
+                            {
+                                trustedRootMatched = true;
+                                //_logs?.DebugMsg_1($"Matching Root Certificate:  {cert.Issuer} {rootCertificate.Subject}");
+                                break;
+                            }
+                        }
+                    }
+                }
             }
-            foreach (X509Certificate2 cert in TrustedPublisher)
-            {
-                Console.WriteLine("-------------Trusted Publisher-------------------");
-                Console.WriteLine("CN: " + ExtractCN(cert.Subject));
-                Console.WriteLine("Subject: " + cert.Subject);
-                Console.WriteLine("Issuer: " + cert.Issuer);
-                Console.WriteLine("Thumbprint: " + cert.Thumbprint);
-                Console.WriteLine("Effective Date: " + cert.NotBefore);
-                Console.WriteLine("Expiration Date: " + cert.NotAfter);
-                Console.WriteLine("--------------------------------");
-            }
-            Console.WriteLine("Proxy check end");
-            return true; // Assuming the proxy certificate is valid
+            // Close the store
+            store.Close();
+            return trustedRootMatched; //proxy certitifacate is invalid
         }
         private string ExtractCN(string subject)
         {
@@ -369,7 +406,7 @@ namespace DDPM.SA.Common.Security
                 string trimmedPart = part.Trim();
                 if (trimmedPart.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine(trimmedPart.Substring(3).Trim());
+                    _logs?.DebugMsg_1(trimmedPart.Substring(3).Trim());
                     // Return the value after CN=
                     return trimmedPart.Substring(3).Trim();
                 }
@@ -419,6 +456,84 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
+        bool CheckCertificateExpiration(X509Certificate2 certificate)
+        {
+            bool ret = false;
+            DateTime now = DateTime.Now;
 
+            if (now < certificate.NotBefore)
+            {
+                _logs?.DebugMsg_1("The certificate is not yet valid.");
+            }
+            else if (now > certificate.NotAfter)
+            {
+                _logs?.DebugMsg_1("Certificate has expired.");
+            }
+            else
+            {
+                ret = true;
+                _logs?.DebugMsg_1("Certificate is valid.");
+            }
+            return ret;
+        }
+        bool CheckCertificateRevocation(X509Certificate2 certificate)
+        {
+            bool ret = false;
+            X509Chain chain = new X509Chain();
+            chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+            chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+            chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0); // 1 minute timeout
+            chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+
+            bool isChainValid = chain.Build(certificate);
+            if (isChainValid)
+            {
+                ret = true;
+                _logs?.DebugMsg_1("Credential has not been revoked.");
+            }
+            else
+            {
+                _logs?.DebugMsg_1("Credentials may be revoked.");
+                foreach (X509ChainStatus status in chain.ChainStatus)
+                {
+                    _logs?.DebugMsg_1($"Error: {status.StatusInformation}");
+                }
+            }
+            return ret;
+        }
+        bool IsValidCertificate(X509Certificate2 certificate, X509Chain chain)
+        {
+            try
+            {
+                // Check if the certificate is expired
+                if (DateTime.Now > certificate.NotAfter || DateTime.Now < certificate.NotBefore)
+                {
+                    throw new Exception("Certificate is expired");
+                }
+
+                // Build the chain and check for revocation
+                chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+                chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0); // 1 minute timeout
+                chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+
+                bool isValid = chain.Build(certificate);
+                if (isValid) _logs?.DebugMsg_1($"Certificate is valid: {certificate.PublicKey}");
+
+                foreach (X509ChainStatus status in chain.ChainStatus)
+                {
+                    if (status.Status == X509ChainStatusFlags.Revoked)
+                    {
+                        throw new Exception("Certificate is revoked");
+                    }
+                }
+                return isValid;
+            }
+            catch (Exception ex)
+            {
+                _logs?.DebugMsg_1(ex.Message);
+                return false;
+            }
+        }
     }
 }

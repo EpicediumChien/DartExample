@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <OutputPath>..\bin</OutputPath>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
-   
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +32,9 @@
     <Reference Include="DDPM.SA.Common">
       <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>
+			<Reference Include="VcpCore.Common">
+					<HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
+			</Reference>
     <Reference Include="DPeMPublic.Common">
       <HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
     </Reference>

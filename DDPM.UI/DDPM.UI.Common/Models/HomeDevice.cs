@@ -3,7 +3,9 @@ using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
+using System.Drawing.Imaging;
 using System.Net;
+using System.Reflection;
 using System.Windows.Media;
 using VcpCore.Common;
 
@@ -74,6 +76,10 @@ namespace DDPM.UI.Common.Models
                 {
                     _monitorModelName = model;
                 }
+
+                //Robert_Lin, 2024-9-30 Add Monitor Product Images
+                DetermineMonitorImage();
+
                 OnPropertyChanged("DisplayName");
             }
         }
@@ -218,13 +224,22 @@ namespace DDPM.UI.Common.Models
                     //return MonitorInfo.AliasDeviceName;
                     //return DisplayName;
 
+                    //Robert_Lin, 2024-9-9, per Dell Villavicencio, Kathia added a comment - 06/Sep/24 5:18 AM
+                    //Tooltip show "{MarketName} {InstanceNo}"
+                    //
                     //Robert_Lin, 2024-8-29, for DDPMW-2094 Update DDPM 2.0 Display Frontend for NPI; Non-NPI TBD
                     //For NPI models, MonitorInfo.MarketName will provide the name to show
                     //Otherwise (Non-NPI), MonitorInfo.MarketName will be empty, will show DisplayName (Model + instanceNo)
                     if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
                         return DisplayName;
                     else
-                        return MonitorInfo.MarketingName;
+                    {
+                        //If the InstanceNo is 0
+                        if (InstanceNo == 0)
+                            return MonitorInfo.MarketingName;
+                        else
+                            return MonitorInfo.MarketingName + $" ({InstanceNo})";
+                    }
                 }
                 return DeviceCategory.ToString();
             }
@@ -485,13 +500,46 @@ namespace DDPM.UI.Common.Models
             string name = DeviceInfo.Name; //"Dell Mobile Wireless Mouse MS3320W"
             var arr = name.Split(' ');
             string model = DeviceInfo.ModelNumber;
-            if (arr.Length > 0)
-            {
-                model = arr[arr.Length - 1];
-            }
+            //if (arr.Length > 0)
+            //{
+            //    model = arr[arr.Length - 1];
+            //}
             var colorCode = DeviceInfo.ColorCode == 0 ? "" : $"_{DeviceInfo.ColorCode}";
 
             DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}{colorCode}.png", assemblyName);
+        }
+
+        /// <summary>
+        /// Called in MonitorInfo setter, will output to HomeDevice.DeviceImage
+        /// </summary>
+        private void DetermineMonitorImage()
+        {
+            if (MonitorInfo == null)
+                return;
+
+            string assemblyName = "DDPM.UI.Resources";
+            if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
+            {
+                //The filename will come from MonitorInfo.ImageFileName
+                string imageFileName = MonitorInfo.ImageFileName;
+                //The ImageFileName will not have extention file name
+                //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
+
+                //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
+                ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
+                if (imgSource != null)
+                {
+                    DeviceImage = imgSource;
+                    return;
+                }
+            }
+            //Use LineArt.png instead
+            ImageSource? imgLineart = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/Lineart.png", assemblyName);
+            if (imgLineart != null) 
+            {
+                DeviceImage = imgLineart;
+                return;
+            }
         }
 
         #endregion DetermineDeviceImage - Robert_Lin 2024-6-20 added
@@ -500,6 +548,7 @@ namespace DDPM.UI.Common.Models
         private Dictionary<string, ObservableObject> _moduleData = new Dictionary<string, ObservableObject>();
 
         public EzArrangeViewModel vmEzArrange { get; set; }
+
         #endregion Module Data - Robert_Lin, 2024-6-23 added
 
         #region Sort and Grouping
@@ -660,7 +709,8 @@ namespace DDPM.UI.Common.Models
 
         private void SetBLConnectionStatus_Mouse()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             //Determine current connected host index: 1,2, or 3
             var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
@@ -772,7 +822,8 @@ namespace DDPM.UI.Common.Models
 
         private void SetBLConnectionStatus_Keyboard()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
 
@@ -852,7 +903,8 @@ namespace DDPM.UI.Common.Models
         //Currently, we will show only one host.
         private void SetBLConnectionStatus_Audio()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             string hostName = Dns.GetHostName();
 
@@ -893,7 +945,8 @@ namespace DDPM.UI.Common.Models
 
         private void SetBLConnectionStatus_IO()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             string hostName = Dns.GetHostName();
 
@@ -1011,6 +1064,8 @@ namespace DDPM.UI.Common.Models
             */
             switch (deviceInfo.PhysicalDeviceType)
             {
+                case DeviceType.PhysicalWebcam:
+                    return "Wired";
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Audio", "");
@@ -1238,11 +1293,13 @@ namespace DDPM.UI.Common.Models
             //Part II. Maskable
             if (!mask.Contains("DDCisON", StringComparison.OrdinalIgnoreCase))
             {
-                if (mi1.DDCisON != mi2.DDCisON) return false;
+                if (mi1.DDCisON != mi2.DDCisON)
+                    return false;
             }
             if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase))
             {
-                if (mi1.inputSource != mi2.inputSource) return false;
+                if (mi1.inputSource != mi2.inputSource)
+                    return false;
             }
             if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase))
             {
@@ -1257,7 +1314,8 @@ namespace DDPM.UI.Common.Models
         #region Dump Info to Log
         public void DumpInfoToLog(ILog? log)
         {
-            if (log == null) return;
+            if (log == null)
+                return;
 
             log.Info($"HomeDevice, DeviceCategory=[{DeviceCategory}], DisplayName=[{DisplayName}]");
             if (MonitorInfo != null)

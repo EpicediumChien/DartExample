@@ -59,6 +59,18 @@ namespace DDPM.SA.Common
             }
         }
 
+        private string apppath;
+
+        public string AppPath
+        {
+            get { return apppath; }
+            set
+            {
+                apppath = value;
+                OnPropertyChanged("AppPath");
+            }
+        }
+
         private Visibility isdeleteable;
 
         public Visibility IsDeleteAble
@@ -198,6 +210,20 @@ namespace DDPM.SA.Common
         Manual = 0,
         Auto = 1
     }
+
+    public enum ColorManagementStatus
+    {
+        Off = 0,
+        On = 1
+    }
+
+    public enum ColorManagementRunType
+    {
+        Off = 0,
+        Bymonitor = 1,
+        Byhost = 2
+    }
+
 
     internal class AppDataDefinitions
     {

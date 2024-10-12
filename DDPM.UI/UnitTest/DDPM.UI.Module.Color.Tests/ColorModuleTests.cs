@@ -1,9 +1,13 @@
+using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
+using System.Reflection;
 using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.Color.Tests
 {
@@ -14,14 +18,23 @@ namespace DDPM.UI.Module.Color.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
+        private Mock<IModuleOwner>? myconsoleMock;
+        private Mock<IModuleOwner>? DeviceManagerSAMock;
 
         [SetUp]
         public void Setup()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             DdpmCommonHelper.ModuleOwner = moduleOwner;
+            var myconsoleMock=new Mock<IConsole>();
+            DdpmCommonHelper.MyConsole= myconsoleMock.Object;
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA= DeviceManagerSAMock.Object;
+            DeviceManagerSAMock.Setup(x=>x.GetHDRStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
             colorModule = new ColorModule();
+            colorModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo() { modelName = "AWA" };
             privateObject = new PrivateObject(colorModule);
         }
 

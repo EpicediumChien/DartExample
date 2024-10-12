@@ -111,7 +111,7 @@
       <Grid Grid.Column="0">
         <Canvas Name="canvas" />
         <Image x:Name="imgCenter" Margin="145,145,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/PenRadialCenter.png" Stretch="Uniform"
-               VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" Height="110" MouseLeftButtonDown="BacklClick"/>
+               VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" Height="110"/>
         <UXControls:UXTextBlock Name="Label1" Style="{StaticResource LabelStyle1}" Margin="245,150,0,0" TextAlignment="Center" Width="150" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
         <UXControls:UXTextBlock Name="Label2" Style="{StaticResource LabelStyle1}" Margin="210,55,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
         <UXControls:UXTextBlock Name="Label3" Style="{StaticResource LabelStyle1}" Margin="80,55,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />

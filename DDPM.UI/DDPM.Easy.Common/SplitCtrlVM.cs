@@ -28,6 +28,7 @@ namespace DDPM.Easy.Common
 
         public bool IsWorkMode => SplitMode == eSplitModes.Work;
         public bool IsIconMode => SplitMode == eSplitModes.Icon;
+        public bool IsAwsMode => SplitMode == eSplitModes.AWS;
 
         #endregion SplitMode
 
@@ -155,7 +156,7 @@ namespace DDPM.Easy.Common
             return listOut;
         }
 
-        //double[] to string
+        //double[] to string, format: [1,2,1,0.8,1,4.52]
         public static string Double_To_String(List<double> settings)
         {
             StringBuilder sb = new StringBuilder();

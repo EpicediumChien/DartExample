@@ -38,7 +38,8 @@ namespace DDPM.SA.Common
 
         void NotifyNow();
 
-        Task<DeviceHelper> GetDevices();
+        Task<DeviceHelper> GetDevices(bool Rescan = false);
+        Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false);
 
         Task<CTKMessageHelper> GetCTKMessageHelper();
 
@@ -81,8 +82,10 @@ namespace DDPM.SA.Common
         void CheckForUpdate();
 
         void StartPairing(Guid physicalDeviceId);
+        void StartPairingPen();
 
         void StopPairing(Guid physicalDeviceId);
+        void StopPairingPen();
 
         void UnPair(Guid logicalDeviceId);
 
@@ -109,14 +112,29 @@ namespace DDPM.SA.Common
         void SetWearDetection(int newValue, Guid deviceId);
 
         void SetWearDetectionForCLI(int newValue, Guid deviceId);
-        
+
         void SetBusyLight(bool newValue, Guid deviceId);
 
         void SetVoiceGuidance(bool newValue, Guid deviceId);
 
         void SetMicNCIncoming(bool newValue, Guid deviceId);
 
-        public void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+        void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+
+        void SetCurrentSelectedProfile(string newValue, Guid deviceId);
+
+        void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId);
+
+        // webcam presence detection
+        void SetWALTime(int newValue, Guid deviceId);
+        void SetSnooze(int newValue, Guid deviceId);
+        void SetSnoozeLength(int newValue, Guid deviceId);
+        void SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+        void SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
+        void SetIsWalkAwayLockEnable(bool newValue, Guid deviceId);
+
+        int GetSnooze(Guid deviceId);
+        int GetSnoozeLength(Guid deviceId);
     }
 
     public interface IDPeMServiceRegPlugin : IFrameworkPlugin

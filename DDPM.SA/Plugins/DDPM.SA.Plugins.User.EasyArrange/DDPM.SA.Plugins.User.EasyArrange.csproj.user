@@ -2,12 +2,30 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="AwsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="InfoWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Window1.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="AwsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ComboBoxStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="InfoWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Window1.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Security;
+﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using System;
 using System.IO;
@@ -16,9 +17,44 @@ namespace DDPM.SA.Common.Method
         {
             _logs = logs;
         }
-
+        /// <summary>
+        /// Only for DdpmSwUpdater use.
+        /// </summary>
+        public Unzip()
+        {
+        }
+        public bool CheckFileIsZip(string filePath)
+        {
+            string extension = Path.GetExtension(filePath).ToLower();
+            bool isNeedUnzip = true;
+            if (extension == ".exe")
+            {
+                isNeedUnzip = false;
+            }
+            else if (extension == ".zip")
+            {
+                isNeedUnzip = true;
+            }
+            return isNeedUnzip;
+        }
+        /// <summary>
+        /// 解壓縮
+        /// </summary>
+        /// <param name="zipFilePath">壓縮檔路徑</param>
+        /// <param name="extractPath">解壓縮資料夾路徑</param>
+        /// <param name="exeFilePath">回傳解壓縮後資料夾中的exe檔案</param>
+        /// <returns></returns>
         public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
         {
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(zipFilePath, out FileInfo))
+            {
+                _logs.Info($"{nameof(ExecuteUnzip)} {FileInfo}");
+                exeFilePath = "";
+                return false;
+            }
+
             try
             {
                 _logs.DebugMsg_1(nameof(Unzip) + " start");

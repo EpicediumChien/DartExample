@@ -5,12 +5,12 @@ namespace DDPM.SA.Common
     //2024-7-18 Robert_Lin added for EasyArrange commands/events
     public class EAArgs
     {
-        //"EditCommand","EditError", "EditCancel","
+        //"EditCommand","EditError", "EditCancel"
         public string Command { get; set; }
 
         public int CellCount { get; set; }
         public char SplitKey { get; set; }
-        public int CustomId { get; set; }
+        public long CustomId { get; set; }
         public List<double> Settings { get; set; }
         public List<string> CustomNames { get; set; }
         public string CustomName { get; set; }

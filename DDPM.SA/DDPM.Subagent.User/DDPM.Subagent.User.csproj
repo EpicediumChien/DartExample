@@ -1,18 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<OutputType>Exe</OutputType>
+		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
-
 	<PropertyGroup>
-
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.38</Version>
+		<Version>2.0.0.43</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
@@ -38,6 +35,7 @@
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayProperties\DDPM.SA.Plugins.User.DisplayProperties.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DTPProxy\DDPM.SA.Plugins.User.DTPProxy.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EazyMemory\DDPM.SA.Plugins.User.EzMemory.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Hotkey\DDPM.SA.Plugins.User.Hotkey.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Peripherals\DDPM.SA.Plugins.User.Peripherals.csproj" />

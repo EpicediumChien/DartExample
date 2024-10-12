@@ -8,6 +8,7 @@ using NGA.UnitTest.PrivateObject;
 using Moq;
 using DDPM.SA.Common;
 using System.Windows.Controls;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.UI.Module.WebCameraCapture.Tests
 {
@@ -27,6 +28,8 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         private Mock<IDeviceManagerSA>? deviceManagerMock;
         private ILog? log;
         private Mock<ILog>? logMock;
+        private WebcamSettings? webcamSettings;
+        private WebCameraCaptureRightView? webCameraCaptureRightView;
 
         [SetUp]
         public void Setup()
@@ -42,7 +45,17 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             deviceManager = deviceManagerMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new WebCameraViewModel(console, log, deviceManager);
+            vm = new WebCameraViewModel(console, log);
+            webcamSettings = new WebcamSettings();
+            webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
+            webcamSettings.SupportedFPSs.Add("a",new List<string> { "a"});
+            webcamSettings.SelectedResolution = "a";
+            webcamSettings.SelectedFPSs = new Dictionary<string, string>();
+            webcamSettings.SelectedFPSs.Add("a", "a");
+            webcamSettings.Resolutions = new Dictionary<string, string>();
+            webcamSettings.Resolutions.Add("a", "a");           
+            vm.WebcamSettings = webcamSettings;
+            webCameraCaptureRightView = new WebCameraCaptureRightView(vm);
             webCameraCaptureModule = new WebCameraCaptureModule(vm);
             privateObject = new PrivateObject(webCameraCaptureModule);
         }

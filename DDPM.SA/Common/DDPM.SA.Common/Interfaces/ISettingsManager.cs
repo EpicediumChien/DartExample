@@ -4,6 +4,8 @@ using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Common
 {
@@ -38,6 +40,11 @@ namespace DDPM.SA.Common
         //Service to read/write current_user and local_machine
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
+        Task<string> QueryAccessInfo();
+        Task<string> QueryAccessInfoVer();
+        Task<string> QueryAccessInfoAddr();
+        Task AddInfo(string info);
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 
     /// <summary>
@@ -53,7 +60,7 @@ namespace DDPM.SA.Common
 
         Task<string> GetAppIconFolderPath();
 
-        Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname);
+        Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname, out bool binit);
 
         Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname);
 
@@ -83,7 +90,11 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
 
-        Task<bool> DisplayImportSettings(string path, out List<VCP> vcps);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings);
+
+        //GlobalSettings
+        Task<GlobalSettingParam> ReadGlobalSettings();
+        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
 
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
@@ -91,5 +102,21 @@ namespace DDPM.SA.Common
         //Service to read/write current_user and dispatch local_machine to ISettingsManagerSA
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
+
+        event EventHandler SettingReadyEvent;
+
+        //Migration
+        Task<bool> isDDMMigration(out string folder_appdatapath_migration);
+        Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
+        Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings);
+        Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
+
+        //Info Key
+        Task AddInfo(string info);
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 }

@@ -23,7 +23,6 @@
     <PackageReference Include="Dell.RPC.Transport" Version="1.5.1" />
     <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
-    <PackageReference Include="WinCopies.Util" Version="3.21.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DdmLibrary">
+      <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="DPeMClientBroker">
       <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
     </Reference>
@@ -45,5 +47,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)DDPM.SA.Common.*&quot; &quot;$(SolutionDir)..\DdpmSwUpdater\CommonDll\&quot; /Y /S /Q" />
+  </Target>
 
 </Project>

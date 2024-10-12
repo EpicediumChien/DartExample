@@ -1,11 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DDPM.SA.Common;
 using DDPM.UI.Common;
-using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DPeMPublic.Common.Enums;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using Dell.Client.Framework.UX.WPF;
+using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Media;
+using static DDPM.UI.WalkThroughData.WalkThroughData;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
 {
@@ -13,6 +16,160 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     {
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
         public bool[] IsSelected { get; set; } = new bool[5];
+        public int _currentTotalPage = 0;// Control button Visibility.Collapsed 
+        public int _currentPageIndex = 0;
+        public string _currentDeviceModel = string.Empty;
+        private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages();
+
+        public WalkThroughPageViewModel()
+        {
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+            {
+                //IsPeripheralVisible = false;
+                IsDDPMVisibility = true;
+                //IsOtherVisibility = false;
+                //初始頁固定
+                Img1Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-1.png", "DDPM.UI.WalkThroughData");
+                Img2Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-2.png", "DDPM.UI.WalkThroughData");
+                //Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM2.png", "DDPM.UI.WalkThroughData");
+            }
+            else
+            {
+                IsPeripheralVisible = true;
+                //IsDDPMVisibility = false;
+            }
+            InitializeDeviceFromQueue();
+            UpdateButtonVisibility();
+        }
+
+        public void InitializeDeviceFromQueue()
+        {
+            // Check WalkThroughQueue
+            while (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+            {
+                var device = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.First();
+
+                // If _devicePages ContainsKey ModelNumber
+                if (_devicePages.ContainsKey(device.ModelName))
+                {
+                    InitializeDevice(device.ModelName);
+                    break;
+                }
+                else
+                {
+                    // If _devicePages No ModelNumber, remove and next 
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                }
+            }
+
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
+            {
+                EndWalkThrough();
+            }
+        }
+
+        public void InitializeDevice(string deviceModel)
+        {
+            _currentDeviceModel = deviceModel;
+            _currentPageIndex = 0;
+
+            if (_devicePages.ContainsKey(deviceModel))
+            {
+                CurrentAnimationPage = _devicePages[deviceModel].Count;
+                _currentTotalPage = _devicePages[deviceModel].Count - 1;
+                UpdatePageContent();
+                UpdateButtonVisibility(); // refresh
+            }
+            else
+            {
+                EndWalkThrough();
+            }
+        }
+
+        /// <summary>
+        /// Update WalkThrough Page Content
+        /// </summary>
+        private void UpdatePageContent()
+        {
+            if (_devicePages.ContainsKey(_currentDeviceModel) && _currentPageIndex < _devicePages[_currentDeviceModel].Count)
+            {
+                var pageData = _devicePages[_currentDeviceModel][_currentPageIndex];
+                MainText = pageData.MainText!;
+                SubText = pageData.SubText!;
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(pageData.MainImageSource!, "DDPM.UI.WalkThroughData");
+            }
+        }
+
+        /// <summary>
+        /// Next Page
+        /// </summary>
+        public void NextPage()
+        {
+            if (_currentPageIndex < _devicePages[_currentDeviceModel].Count - 1)
+            {
+                _currentPageIndex++;
+                UpdatePageContent();
+            }
+            else
+            {
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+                {
+                    ProgressValue = 0;// second round set 0
+                    InitializeDeviceFromQueue();
+                }
+                else
+                {
+                    EndWalkThrough();
+                }
+            }
+            UpdateButtonVisibility(); // refresh button
+        }
+
+        /// <summary>
+        /// Previous Page
+        /// </summary>
+        public void PreviousPage()
+        {
+            if (_currentPageIndex > 0)
+            {
+                _currentPageIndex--;
+                UpdatePageContent();
+            }
+            UpdateButtonVisibility(); // refresh button
+        }
+
+        public void EndWalkThrough()
+        {
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
+                DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
+            string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
+            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{_currentDeviceModel}";
+            DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+            IConsole? console = WalkThroughPlugin.PluginIoc.GetService<IConsole>();
+            console?.ShowHomePage();
+        }
+
+        public void UpdateButtonVisibility()
+        {
+            // refresh button
+            ArrowButtonVisibility = (_currentPageIndex == 0) ? Visibility.Collapsed : Visibility.Visible;
+            SkipButtonVisibility = _currentPageIndex < _currentTotalPage ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private Visibility _arrowButtonVisibility = Visibility.Visible;
+        public Visibility ArrowButtonVisibility
+        {
+            get => _arrowButtonVisibility;
+            set => SetProperty(ref _arrowButtonVisibility, value);
+        }
+
+        private Visibility _skipButtonVisibility = Visibility.Visible;
+        public Visibility SkipButtonVisibility
+        {
+            get => _skipButtonVisibility;
+            set => SetProperty(ref _skipButtonVisibility, value);
+        }
 
         public List<HomeDevice> HomeDevices
         {
@@ -25,56 +182,129 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         }
 
         private HomeDevice? _selectedHomeDevice;
-
         public HomeDevice? SelectedHomeDevice
         {
             get => _selectedHomeDevice;
             set => SetProperty(ref _selectedHomeDevice, value);
         }
 
-        public IModuleOwner? ModuleOwner { get; set; }
-        private ContentControl? _fullView;
-
-        public ContentControl? FullView
-        {
-            get => _fullView;
-            set => SetProperty(ref _fullView, value);
-        }
-
-        //public ICommand? OpenFullViewCommand { get; set; }
-        //public ICommand? CloseFullViewCommand { get; set; }
-        public void SetSelected(int index)
-        {
-            for (int j = 0; j < IsSelected.Length; j++)
-            {
-                IsSelected[j] = false;
-            }
-            IsSelected[index] = true;
-            OnPropertyChanged("IsSelected");
-        }
-
-        public void OpenFullView(ContentControl content)
-        {
-            //if (OpenFullViewCommand != null)
-            //    OpenFullViewCommand?.Execute(this);
-            FullView = content;
-            FullView.Visibility = Visibility.Visible;
-        }
-
-        public void CloseFullView()
-        {
-            FullView = null;
-        }
-
-        private bool _UpdatesPageUI_Enable;
-
-        public bool UpdatesPageUI_Enable
+        private double _progressValue = 1;//first round set 1
+        public double ProgressValue
         {
             get
             {
-                _UpdatesPageUI_Enable = !DdpmCommonHelper.DeviceManagerSA.GetUILockStatus().Result;
-                return _UpdatesPageUI_Enable;
+                return _progressValue;
             }
+            set
+            {
+                _progressValue = value;
+                OnPropertyChanged(nameof(ProgressValue));
+            }
+        }
+
+        private int _currentAnimationPage;
+        public int CurrentAnimationPage
+        {
+            get => _currentAnimationPage;
+            set => SetProperty(ref _currentAnimationPage, value);
+        }
+
+        private string _mainText = string.Empty;
+        public string MainText
+        {
+            get => _mainText;
+            set => SetProperty(ref _mainText, value);
+        }
+
+        private string _subText = string.Empty;
+        public string SubText
+        {
+            get => _subText;
+            set => SetProperty(ref _subText, value);
+        }
+
+        private ImageSource? _deviceImage;
+        public ImageSource? DeviceImage
+        {
+            get => _deviceImage;
+            set => SetProperty(ref _deviceImage, value);
+        }
+        public bool _isPeripheralVisible = false;
+        public bool IsPeripheralVisible
+        {
+            get => _isPeripheralVisible;
+            set
+            {
+                SetProperty(ref _isPeripheralVisible, value);
+                
+                if (value)
+                {
+                    IsDDPMVisibility = false;
+                    IsOtherVisibility = false;
+                }
+                OnPropertyChanged(nameof(PeripheralVisibility));
+            }
+        }
+
+        public Visibility PeripheralVisibility => IsPeripheralVisible ? Visibility.Visible : Visibility.Collapsed;
+
+        public bool _isDDPMVisibility = true;
+        public bool IsDDPMVisibility
+        {
+            get => _isDDPMVisibility;
+            set
+            {
+                SetProperty(ref _isDDPMVisibility, value);
+                
+                if (value)
+                {
+                    IsPeripheralVisible = false;
+                    IsOtherVisibility = false;
+                }
+                OnPropertyChanged(nameof(DDPMVisibility));
+            }
+        }
+
+        public Visibility DDPMVisibility => IsDDPMVisibility ? Visibility.Visible : Visibility.Collapsed;
+
+        public bool _isOtherVisibility = false;
+        public bool IsOtherVisibility
+        {
+            get => _isOtherVisibility;
+            set
+            {
+                SetProperty(ref _isOtherVisibility, value);
+                
+                if (value)
+                {
+                    IsPeripheralVisible = false;
+                    IsDDPMVisibility = false;
+                    //Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM2.png", "DDPM.UI.WalkThroughData");
+                }
+                OnPropertyChanged(nameof(OtherVisibility));
+            }
+        }
+        public Visibility OtherVisibility => IsOtherVisibility ? Visibility.Visible : Visibility.Collapsed;
+
+        private ImageSource? _img1Source;
+        public ImageSource? Img1Source
+        {
+            get => _img1Source;
+            set => SetProperty(ref _img1Source, value);
+        }
+
+        private ImageSource? _img2Source;
+        public ImageSource? Img2Source
+        {
+            get => _img2Source;
+            set => SetProperty(ref _img2Source, value);
+        }
+
+        private ImageSource? _img3Source;
+        public ImageSource? Img3Source
+        {
+            get => _img3Source;
+            set => SetProperty(ref _img3Source, value);
         }
     }
 }

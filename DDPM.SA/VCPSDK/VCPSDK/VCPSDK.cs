@@ -25,11 +25,8 @@ namespace VCPSDK
         public event VCPEventHandler DDPMEvent;
         public NamedPipeClient(string NamedpipeName)
         {
-//#if DEBUG
             //pipeClient = new NamedPipeClientStream(".", "VCPNamedPipe", PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-//#else
             pipeClient = new NamedPipeClientStream(".", NamedpipeName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-//#endif
             //cancellationTokenSource = new CancellationTokenSource();
         }
         public async Task ConnectAsync(int timeout)
@@ -37,10 +34,12 @@ namespace VCPSDK
             if (!pipeClient.IsConnected)
             {
                 await pipeClient.ConnectAsync(timeout/*cancellationTokenSource.Token*/).ConfigureAwait(false);
+#if RELEASE
                 if (!NamedPipeServerSecurity(pipeClient))
                 {
                     Disconnect();
                 }
+#endif
             }
             //Task.Run(() => ReadAsync(), cancellationTokenSource.Token);
         }
@@ -112,30 +111,30 @@ namespace VCPSDK
             }
 
             //Need to check dll/exe thumbprint
-            //X509Certificate2 cert = LoadCertificate(filePath);
-            //if (cert == null)
-            //{
-            //    Console.WriteLine("Can't retrieve cert from file.");
-            //    return false;
-            //}
+            X509Certificate2 cert = new X509Certificate2(filePath);//LoadCertificate(filePath);
+            if (cert == null)
+            {
+                Console.WriteLine("Can't retrieve cert from file.");
+                return false;
+            }
 
-            ////compare thumbprint
-            ////source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
-            ////Target cert.Thumbprint
-            //try
-            //{
-            //    bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
-            //    if (!contains)
-            //    {
-            //        Console.WriteLine($"No matched cert. thumbprint in file is {cert.Thumbprint}");
-            //        return false;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.Message);
-            //    return false;
-            //}
+            //compare thumbprint
+            //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+            //Target cert.Thumbprint
+            try
+            {
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    Console.WriteLine($"No matched cert. thumbprint in file is {cert.Thumbprint}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
             return true;
         }
 

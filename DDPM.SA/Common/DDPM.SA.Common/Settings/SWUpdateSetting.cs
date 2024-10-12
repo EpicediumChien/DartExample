@@ -1,0 +1,129 @@
+﻿using DDPM.SA.Common.Security;
+using Dell.Client.Framework.Common;
+using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Policy;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace DDPM.SA.Common.Settings
+{
+    public class SWUpdateSetting
+    {
+        private static string URL = $"https://clientperipherals.dell.com/DDPM/";
+        private static string URL_Folder = $"/Windows/Application/";
+        private static void SetSWUServer()
+        {
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            URL = URL + URL_Folder;
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                if (registryKey != null)
+                {
+                    var obj = registryKey?.GetValue("TestServerURL");
+                    if (obj != null)
+                    {
+                        string s = obj.ToString();
+                        if (!string.IsNullOrEmpty(s))
+                        {
+                            URL = obj + URL_Folder;
+                        }
+                    }
+                }
+            }
+        }
+        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey)
+        {
+            SWUpdateHelper data = new SWUpdateHelper();
+            SetSWUServer();
+            CertificateCheck certificateCheck = new CertificateCheck();
+            if (!isSkipCA)
+            {
+                if (!certificateCheck.CheckURLCACertificate(URL))
+                {
+                    info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                    return data;
+                }
+            }
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        client.Timeout = TimeSpan.FromSeconds(5);
+                        HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
+                        response.EnsureSuccessStatusCode();
+                        string fileContent = response.Content.ReadAsStringAsync().Result;
+                        List<string> InfoPkey = new List<string>();
+                        if (InserInfoPkey != null && InserInfoPkey.Count > 0)
+                        {
+                            InfoPkey = InserInfoPkey;
+                        }
+                        else
+                        {
+                            if (settingsPlugin != null)
+                            {
+                                InfoPkey = settingsPlugin.GetInfos().Result;
+                            }
+                        }
+                        if (InfoPkey == null || InfoPkey.Count == 0)
+                        {
+                            //if read info failed, load default key as well
+                            InfoPkey = new List<string>();
+                            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                        }
+                        string szInfo = string.Empty;
+                        string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
+                        if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
+                        {
+                            settingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+                        }
+                        if (!string.IsNullOrEmpty(jsonString))
+                        {
+                            jsonString = jsonString.Replace("%1/", URL);
+                            data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+                            if (data != null)
+                            {
+                                foreach (Software software in data.Softwares)
+                                {
+                                    string version =
+                                    Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                                    software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}");
+                                    software.DdpmSwUpdaterServer_path = software.DdpmSwUpdaterServer_path.Replace("%21", $"DdpmSwUpdater");
+                                }
+                                info = $"{nameof(GetSWMetadata)} done";
+                            }
+                            else
+                            {
+                                info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                            }
+                        }
+                        else
+                        {
+                            info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty.";
+                        }
+                    }
+                    catch (JsonException ex)
+                    {
+                        data = new SWUpdateHelper();
+                        info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data = new SWUpdateHelper();
+                info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
+            }
+            return data;
+        }
+    }
+}

@@ -11,7 +11,7 @@
         public const string DDPM_USER_AGENT_ID = "{2E365D80-A333-42E9-B855-F326DFEF2C34}";
 
         public const string DDPM_USER_MUTEX_ID = "{6F2EB650-8307-42CC-B69B-D94976C24692}";
-
+        //-----------------------
         //Plugins for DDPM.SA
         //Settings Manager
         public const string DDPM_SETTINGS_MANAGER_PLUGIN_ID = "{F6909D0F-C70B-4B84-8EC3-9E506550A998}";
@@ -19,9 +19,18 @@
         //SWUpdate
         public const string SWUpdate_PLUGIN_ID = "{F716E8C1-1F8D-4BC6-83DA-51CD26031335}";//Should locate at system SA as SDL requirement
 
+        //FWUpdate
+        public const string FWUPDATE_PLUGIN_ID = "{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}";//Should move to System SA as SDL requirement
+
         //CLI Manager Plugin
         public const string CLI_Manager_Plugin = "{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}";//Used to relay elevated CLI subagent command to SA device manager
 
+        //PlatinumSDK Plugin
+        public const string PlatinumSDK_Plugin = "{BFAA77E8-CADF-4CE4-9473-363E65C6B4E0}";
+
+        //CMA Manager Plugin, open interface for CMA team to get/set config and receive event from DDPM
+        public const string CMA_Manager_Plugin = "{A9C07BA5-6499-4730-B5E1-3143F6A9409F}";
+        //-----------------------
         //Plugins for DDPM.SA.User
         //EAPlugin (DDPM.SA.Plugins.User.EasyArrange project) - Robert_Lin created 2024-6-18
         public const string DDPM_EAPlugin_PLUGIN_ID = "{998CE5F9-19FE-4EDF-841A-2497F39623BF}";
@@ -43,9 +52,6 @@
 
         //SchedulerManager
         public const string Scheduler_Manager_Plugin_ID = "{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}";
-
-        //FWUpdate
-        public const string FWUPDATE_PLUGIN_ID = "{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}";//Should move to System SA as SDL requirement
 
         //DisplayProperties
         public const string DisplayProperties_PLUGIN_ID = "{67A0D126-10BE-4EDB-95DC-8A4162AA3F6B}";
@@ -78,6 +84,9 @@
         //Actions Manger
         public const string DDPM_ACTIONS_MANGER_PLUGIN_ID = "{E5DA6004-21DC-4058-917F-A0ECF838EA03}";
 
+        //CLIProxy
+        public const string DDPM_CMA_Proxy_Plugin = "{09F670EB-3F2B-4005-9A8B-D4BF1033A425}";
+
         /// <summary>
         /// UniqueId for the thick client (NGA)
         /// </summary>
@@ -85,5 +94,8 @@
 
         //DTPProxy
         public const string DDPM_DTP_Proxy_Plugin = "{d034ee8f-7c8a-4296-8b5b-33b4e978c6b5}";
+
+        //EzMemory
+        public const string DDPM_EMPlugin_PLUGIN_ID = "{388F486D-2A86-421C-B571-3AAF9F839BA2}";
     }
 }

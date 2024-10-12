@@ -128,10 +128,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
         }
 
-        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
-        {
-            //_ = Task.Run(RefreshHomeDeviceListAsync);
-        }
+        //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        //{
+        //    //_ = Task.Run(RefreshHomeDeviceListAsync);
+        //}
 
         //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Return 'Task' instead
         //This method should be unused, rename the method, and add the suggest solution.
@@ -139,7 +139,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //OLD Code:
         //  private async void RefreshHomeDeviceListAsync()
         //NEW Code:
-        private async Task RefreshHomeDeviceListAsync_Unused()
+        /*private async Task RefreshHomeDeviceListAsync_Unused()
         {
             //if (_ddpmHomePageViewModel != null)
             //{
@@ -165,7 +165,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //    }
 
             //}
-        }
+        }*/
 
         #region RWD HomeDevices
 
@@ -198,6 +198,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private const double bkpt4 = minWidth * 4 + minGap * 5; //1280
         private const double bkpt5 = minWidth * 5 + minGap * 6;
 
+        private double _screenScale = 1.000; //Refresh in RefreshListViewItemWidth()
+
         private void RefreshListViewItemWidth()
         {
             double cxView = HomeDevicesListView.ActualWidth;
@@ -211,6 +213,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
             double scale = dpiScale.PixelsPerDip;
+            _screenScale = dpiScale.PixelsPerDip;
 
             //if (DdpmCommonHelper.IsMainWindowAtPrimaryScreen)
             //{
@@ -322,11 +325,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private double CalculateItemWidthV3_ItemsPerRow1(double cxView, double cyView)
         {
+            //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
+            //When screen resolution is very large, the ratio to gap to batteryIndicator is very large
+            //
+            double gapRatio = 1;
+            if (cxView >= 2200)
+            {
+                gapRatio = 2.0;
+            }
+            //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
+            double hugeReduce = 0;
+            if (cxView >= 2200)
+            {
+                //hugeReduce = 100;
+            }
             //sizeView = min (cxView, cyView)
-            double sizeView = Math.Min(cxView, cyView - cyBatteryIndicator * 2);
+            double sizeView = Math.Min(cxView, cyView - cyBatteryIndicator * 2 * gapRatio - hugeReduce);
 
             //Calculate the sizeItem
-            double sizeItem = sizeView - (minGap * 2); //sizeView * ratioItemView;
+            double sizeItem = sizeView - (minGap * 2 * gapRatio); //sizeView * ratioItemView;
 
             //But the sizeItem must >= minWidth
             if (sizeItem < minWidth)
@@ -337,17 +354,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView)
         {
-            double cxItem = (cxView - (minGap * 3.000)) / 2.000;
-            double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
+            //When screen resolution is very large, the ratio to gap to batteryIndicator is very large
+            //
+            double gapRatio = 1;
+            if (cxView >= 2200)
+            {
+                gapRatio = 2.0;
+            }
+            double cxItem = (cxView - (minGap * 3.000 * gapRatio)) / 2.000;
+            double cyItem = (cyView - (minGap * 2.000 * gapRatio));
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 * gapRatio);
             return sizeItem;
         }
 
         private double CalculateItemWidthV3_ItemsPerRow3(double cxView, double cyView)
         {
+            //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
+            double hugeReduce = 0;
+            if (cxView >= 2200)
+            {
+                hugeReduce = 100;
+            }
             double cxItem = (cxView - (minGap * 4.000)) / 3.000;
             double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce*3);
             return sizeItem;
         }
 
@@ -735,16 +766,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
-            }
-            //0901 Wayn 新增WalkThrough UI
-            if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.WalkThrough)
-            {
-                //Check if it's fake device
-                if (selectedHomeDevice.DeviceInfo == null)
-                    return;
-
-                IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
-                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId, selectedHomeDevice.DeviceInfo.ID.ToString());
             }
         }
 

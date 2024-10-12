@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -428,5 +429,293 @@ namespace DDPM.Win32Lib
         public const byte VK_DELETE = 0x2E;
 
         #endregion Actions (Wayn)
+
+        #region EnumWindows
+       //The major (high-level) method to Enumerate Windows is GetWindowHandles()
+
+        /// <summary>
+        /// EnumWindows with the 'proc' as the firter, and then add all acceptable WindowHandles as output.
+        /// find the sample code in DDPM.SA.Plugins.User.EasyArrange / EAEditWindow.xaml.cs / CaptureCustomLayout().
+        /// </summary>
+        /// <param name="proc"></param>
+        /// <returns>A list of hWnd which is accepted by 'proc'
+        /// If proc is null, then all enumerated handles will be output.</returns>
+        public static List<IntPtr> GetWindowHandles(EnumWindowsProc? proc = null)
+        {
+            List<IntPtr> listOut = new List<IntPtr>();
+            Win32._EnumWindows(delegate (IntPtr hWnd, IntPtr lParam)
+            {
+                if (proc != null)
+                {
+                    if (!proc(hWnd, lParam))
+                        return true;
+                }
+                listOut.Add(hWnd);
+                return true;
+            }, IntPtr.Zero);
+            return listOut;
+        }
+
+        //The callback delegate for EnumWindows( )
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
+
+        //Set to private currently, you can change it to public if you need.
+        private static bool _EnumWindows(EnumWindowsProc proc, IntPtr lParam)
+        {
+            return EnumWindows(proc, lParam);
+        }
+
+        //IsWindowVisible()
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool IsWindowVisible(IntPtr hWnd);
+        public static bool _IsWindowVisible(IntPtr hWnd)
+        {
+            return IsWindowVisible(hWnd);
+        }
+
+        //GetAncestor()
+        //
+        //GA Falgs
+        public enum eGaFlags : uint
+        {
+            GA_PARENT = 1,
+            GA_ROOT = 2,
+            GA_ROOTOWNER = 3
+        }
+
+        /// <summary>Retrieves the handle to the ancestor of the specified window.</summary>
+        /// <param name="hWnd">
+        ///     A handle to the window whose ancestor is to be retrieved. If this parameter is the desktop window,
+        ///     the function returns <see cref="IntPtr.Zero" />.
+        /// </param>
+        /// <param name="gaFlags">The ancestor to be retrieved.</param>
+        /// <returns>The handle to the ancestor window.</returns>
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr GetAncestor(IntPtr hWnd, eGaFlags gaFlags);
+        public static IntPtr _GetAncestor(IntPtr hWnd, eGaFlags gaFlags)
+        {
+            return GetAncestor(hWnd, gaFlags);
+        }
+
+        //DwmGetWindowAttribute()
+        //
+        public enum eDwmWindowAttribute : uint
+        {
+            NCRenderingEnabled = 1,
+            NCRenderingPolicy,
+            TransitionsForceDisabled,
+            AllowNCPaint,
+            CaptionButtonBounds,
+            NonClientRtlLayout,
+            ForceIconicRepresentation,
+            Flip3DPolicy,
+            ExtendedFrameBounds,
+            HasIconicBitmap,
+            DisallowPeek,
+            ExcludedFromPeek,
+            Cloak,
+            Cloaked,
+            FreezeRepresentation,
+            PassiveUpdateMode,
+            UseHostBackdropBrush,
+            UseImmersiveDarkMode = 20,
+            WindowCornerPreference = 33,
+            BorderColor,
+            CaptionColor,
+            TextColor,
+            VisibleFrameBorderThickness,
+            SystemBackdropType,
+            Last
+        }
+
+        public const uint DWM_CLOAKED_APP = 0x00000001; //視窗是由其擁有者應用程式所遮蔽。
+        public const uint DWM_CLOAKED_SHELL = 0x00000002; //視窗已由殼層遮蔽。
+        public const uint DWM_CLOAKED_INHERITED = 0x00000004; //封閉值繼承自其擁有者視窗。
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute);
+        public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute)
+        {
+            return DwmGetWindowAttribute(hwnd, dwAttribute, out pvAttribute, cbAttribute);
+        }
+
+        //GetParent()
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr GetParent(IntPtr hWnd);
+        public static IntPtr _GetParent(IntPtr hWnd)
+        {
+            return GetParent(hWnd);
+        }
+
+        #endregion EnumWindows
+
+        #region RECT, POINT
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public POINT(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+
+            public static implicit operator System.Drawing.Point(POINT p)
+            {
+                return new System.Drawing.Point(p.X, p.Y);
+            }
+
+            public static implicit operator POINT(System.Drawing.Point p)
+            {
+                return new POINT(p.X, p.Y);
+            }
+
+            public override string ToString()
+            {
+                return $"X: {X}, Y: {Y}";
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left, Top, Right, Bottom;
+
+            public RECT(int left, int top, int right, int bottom)
+            {
+                Left = left;
+                Top = top;
+                Right = right;
+                Bottom = bottom;
+            }
+
+            public RECT(System.Drawing.Rectangle r) : this(r.Left, r.Top, r.Right, r.Bottom) { }
+
+            public int X
+            {
+                get { return Left; }
+                set { Right -= (Left - value); Left = value; }
+            }
+
+            public int Y
+            {
+                get { return Top; }
+                set { Bottom -= (Top - value); Top = value; }
+            }
+
+            public int Height
+            {
+                get { return Bottom - Top; }
+                set { Bottom = value + Top; }
+            }
+
+            public int Width
+            {
+                get { return Right - Left; }
+                set { Right = value + Left; }
+            }
+
+            public System.Drawing.Point Location
+            {
+                get { return new System.Drawing.Point(Left, Top); }
+                set { X = value.X; Y = value.Y; }
+            }
+
+            public System.Drawing.Size Size
+            {
+                get { return new System.Drawing.Size(Width, Height); }
+                set { Width = value.Width; Height = value.Height; }
+            }
+
+            public static implicit operator System.Drawing.Rectangle(RECT r)
+            {
+                return new System.Drawing.Rectangle(r.Left, r.Top, r.Width, r.Height);
+            }
+
+            public static implicit operator RECT(System.Drawing.Rectangle r)
+            {
+                return new RECT(r);
+            }
+
+            public static bool operator ==(RECT r1, RECT r2)
+            {
+                return r1.Equals(r2);
+            }
+
+            public static bool operator !=(RECT r1, RECT r2)
+            {
+                return !r1.Equals(r2);
+            }
+
+            public bool Equals(RECT r)
+            {
+                return r.Left == Left && r.Top == Top && r.Right == Right && r.Bottom == Bottom;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is RECT)
+                    return Equals((RECT)obj);
+                else if (obj is System.Drawing.Rectangle)
+                    return Equals(new RECT((System.Drawing.Rectangle)obj));
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return ((System.Drawing.Rectangle)this).GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                //return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{{Left={0},Top={1},Right={2},Bottom={3}}}", Left, Top, Right, Bottom);
+                return string.Format(System.Globalization.CultureInfo.CurrentCulture, "({0},{1})-({2},{3}){4}x{5}", Left, Top, Right, Bottom, Width, Height);
+            }
+        }
+
+        //GetWindowRect()
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        public static bool _GetWindowRect(IntPtr hwnd, out RECT lpRect)
+        {
+            return GetWindowRect(hwnd, out lpRect);
+        }
+
+        #endregion
+
+        #region Window Text
+        //GetWindowText()
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetWindowText(IntPtr hWnd, StringBuilder strText, int maxCount);
+        public static string _GetWindowText(IntPtr hWnd)
+        {
+            // Allocate correct string length first
+            int length = _GetWindowTextLength(hWnd);
+            StringBuilder sb = new StringBuilder(length + 1);
+            GetWindowText(hWnd, sb, sb.Capacity);
+            return sb.ToString();
+        }
+
+        //GetWindowTextLength()
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetWindowTextLength(IntPtr hWnd);
+        private static int _GetWindowTextLength(IntPtr hWnd)
+        {
+            return GetWindowTextLength(hWnd);
+        }
+
+        #endregion
     }
 }

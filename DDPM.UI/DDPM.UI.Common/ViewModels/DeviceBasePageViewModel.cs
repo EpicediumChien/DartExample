@@ -22,7 +22,7 @@ namespace DDPM.UI.Common.ViewModels
         #region ctor
         public DeviceBasePageViewModel()
         {
-            
+
         }
         #endregion ctor
 
@@ -133,7 +133,12 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool IsLandingMode { get => (GroupSelectedIndex < 0); }
 
-        private int FindGroupIndexByGroupName(string groupName)
+        /// <summary>
+        /// Find the index with the specific GroupName
+        /// </summary>
+        /// <param name="groupName">Use the string in Constants.GroupName_XXXX</param>
+        /// <returns></returns>
+        public int FindGroupIndexByGroupName(string groupName)
         {
             int idx = 0;
             foreach (ModuleGroup mg in ModuleGroups)
@@ -625,6 +630,17 @@ namespace DDPM.UI.Common.ViewModels
             if (SelectedHomeDeviceChanged != null)
                 SelectedHomeDeviceChanged(this, EventArgs.Empty);
 
+            //handle the last select monitor
+            if(DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                if( DdpmCommonHelper.ModuleOwner != null && 
+                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
+                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+            }
+
             foreach (ModuleGroup group in ModuleGroups)
             {
                 foreach (RightViewHeader header in group.Headers)
@@ -677,7 +693,7 @@ namespace DDPM.UI.Common.ViewModels
             HomeDevice homeDev = SelectedHomeDevice as HomeDevice;
             LogInfo($"  * HomeDevice: {homeDev.DisplayName}");
 
-            
+
 
             //PIP/PBP capability
             LogInfo($"  * Has PIP/PBP Capability={homeDev.HasCapability_PipPbp}");
@@ -688,17 +704,17 @@ namespace DDPM.UI.Common.ViewModels
                 if (rightHeader != null)
                 {
                     rightHeader.IsShown = homeDev.HasCapability_PipPbp;
-                }
 
-                //If CurrentSelected module is "PIP/PBP" 
-                if (mg.HeaderSelectedIndex == 1)
-                {
-                    //Need update the index to 0 (InputSource)
-                    mg.HeaderSelectedIndex = 0;
-
-                    if (SelectedGroup == mg)
+                    //If PIP/PBP is not shown, AND current selected module is PIP/PBP
+                    if ((!rightHeader.IsShown) && (mg.HeaderSelectedIndex == 1))
                     {
-                        RightViewHeaderSelectedIndex = mg.HeaderSelectedIndex;
+                        //Need update the index to 0 (InputSource)
+                        mg.HeaderSelectedIndex = 0;
+
+                        if (SelectedGroup == mg)
+                        {
+                            RightViewHeaderSelectedIndex = mg.HeaderSelectedIndex;
+                        }
                     }
                 }
             }
@@ -708,7 +724,7 @@ namespace DDPM.UI.Common.ViewModels
             LogInfo($"  * Has KVM Capability={hasCapability_KVM}");
 
             //Search for ModuleGroup which ModuleName is "KVM"
-            ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals("KVM"));
+            ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Constants.GroupName_KVM));
             if (mgKvm != null)
             {
                 VbarItem1? vbarItem = VbarItems.Find(x => x.Text.Equals(mgKvm.VbarText));
@@ -720,10 +736,12 @@ namespace DDPM.UI.Common.ViewModels
                     //Then we will change the selected Group to another visible vbarItem
                     if ((!hasCapability_KVM) && (SelectedGroup != null))
                     {
-                        if (SelectedGroup.GroupName.Equals("KVM"))
+                        //if (SelectedGroup.GroupName.Equals("KVM"))
+                        if (SelectedGroup.GroupName.Equals(Constants.GroupName_KVM))
                         {
                             //Change to EasyArrange
-                            int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            //int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            int idxEaGroup = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
                             if (idxEaGroup < 0)
                                 idxEaGroup = 0;
                             GroupSelectedIndex = idxEaGroup;
@@ -746,16 +764,39 @@ namespace DDPM.UI.Common.ViewModels
 
                     //Robert_Lin, 2024-8-28, If "KVM" vbar item become Collapsed, and it's current selected Group
                     //Then we will change the selected Group to another visible vbarItem
-                    if ((!homeDev.HasCapability_Gaming) && (SelectedGroup != null))
+                    if ((homeDev.HasCapability_Gaming) && (SelectedGroup != null))
                     {
                         if (SelectedGroup.GroupName.Equals("Gaming"))
                         {
-                            //Change to EasyArrange
-                            int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
-                            if (idxEaGroup < 0)
-                                idxEaGroup = 0;
-                            GroupSelectedIndex = idxEaGroup;
+                            RightViewHeader? rightHeader = SelectedGroup.FindRightViewHeaderByModuleName("VisionEngineModule");
+                            //If Vision Engine is shown, AND current selected module is Vision Engine
+                            if ((rightHeader.IsShown) && (SelectedGroup.HeaderSelectedIndex == 1))
+                            {
+                                //Need update the index to 0 (InputSource)
+                                SelectedGroup.HeaderSelectedIndex = 0;
+
+                                if (SelectedGroup == SelectedGroup)
+                                {
+                                    RightViewHeaderSelectedIndex = SelectedGroup.HeaderSelectedIndex;
+                                }
+                            }
+                            //else
+                            //{
+                            //    //Change to EasyArrange
+                            //    int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            //    if (idxEaGroup < 0)
+                            //        idxEaGroup = 0;
+                            //    GroupSelectedIndex = idxEaGroup;
+                            //}
                         }
+                    }
+                    else if (SelectedGroup != null && SelectedGroup.GroupName.Equals("Gaming"))
+                    {
+                        //Change to EasyArrange
+                        int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                        if (idxEaGroup < 0)
+                            idxEaGroup = 0;
+                        GroupSelectedIndex = idxEaGroup;
                     }
                 }
             }
@@ -789,7 +830,7 @@ namespace DDPM.UI.Common.ViewModels
                     LogInfo($"  * DisplayProperties page isShown={rightHeader.IsShown}");
 
                     //If CurrentSelected module is "DisplayProperties" 
-                    if (mg.HeaderSelectedIndex == 2)
+                    if (!rightHeader.IsShown && mg.HeaderSelectedIndex == 2)
                     {
                         //Need update the index to 1
                         mg.HeaderSelectedIndex = 1;
@@ -815,44 +856,61 @@ namespace DDPM.UI.Common.ViewModels
 
         public void HandleDdcCiOffEvent(bool isDdcCiOn)
         {
-            //Find the "EasyArrange" group
-            int idxEA = -1;
-            string vbarText_EA = "Easy Arrange";
+            LogInfo($"@ HandleDdcCiOffEvent(isDdcCiOn={isDdcCiOn})");
 
-            for (int idx = 0; idx < ModuleGroups.Count; idx++)
+            //Find the "EasyArrange" group
+            int idxEA = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
+            string vbarText_EA = "Easy Arrange";
+            //Get if EasyArrange group is locked
+            bool isEaLocked = false;
+            if (idxEA >= 0)
             {
-                if (ModuleGroups[idx].GroupName.Equals("EasyArrange", StringComparison.OrdinalIgnoreCase))
-                {
-                    idxEA = idx;
-                    vbarText_EA = ModuleGroups[idx].VbarText;
-                    break;
-                }
+                //If EasyArrange group is NOT locked
+                isEaLocked = VbarItems[idxEA].IsLocked;
+                vbarText_EA = VbarItems[idxEA].Text;
+            }
+
+            //If DDCI is off and EasyArrange group is locked then go to homepage
+            if (!isDdcCiOn && isEaLocked)
+            {
+                LogInfo("  * DDC/CI is off and EasyArrange group is locked, will go back to Homepage.");
+                GotoHomepage();
+                return;
             }
 
             //If DDC/CI is off, then switch to Easy Arrange group
             if (!isDdcCiOn)
             {
-                //If current is LandingMode, then no selectied item
-                //If not Landing mode
+                //If current is not Landing mode
                 if (!IsLandingMode)
                 {
-                    //Change Group selection to "EasyArrange"
                     if (idxEA >= 0)
+                    {
+                        //If EasyArrange group is locked
+                        if (isEaLocked)
+                        {
+                            //If DDCI is off and EasyArrange group is locked then go to homepage
+                            LogInfo("  * DDC/CI is off and EasyArrange group is locked, will go back to Homepage.");
+                            GotoHomepage();
+                            return;
+                        }
+                        //Else Change Group selection to "EasyArrange"
                         GroupSelectedIndex = idxEA;
+                    }
                 }
             }
 
             //Disable/Enable all other (non EA) Groups (it it's visible)
-            foreach (VbarItem1 vbar in VbarItems)
+            for (int i = 0; i < VbarItems.Count; i++)
             {
                 //For the non-visible groupes. we don't need to change them
-                if (vbar.Visibility != Visibility.Visible)
+                if (VbarItems[i].Visibility != Visibility.Visible)
                     continue;
-                //If it's not EA
-                if (!vbar.Text.Equals(vbarText_EA, StringComparison.OrdinalIgnoreCase))
+                //If it's not EasyArrange group
+                if (i != idxEA)
                 {
-                    vbar.LeaveHoverState();
-                    vbar.IsEnabled = isDdcCiOn;
+                    VbarItems[i].LeaveHoverState();
+                    VbarItems[i].IsEnabled = isDdcCiOn;
                 }
             }
         }
@@ -876,5 +934,14 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion
 
+        #region DCF / DUCA related
+        public void GotoHomepage()
+        {
+            if (DdpmCommonHelper.MyConsole != null)
+            {
+                DdpmCommonHelper.MyConsole.ShowHomePage();
+            }
+        }
+        #endregion
     }
 }

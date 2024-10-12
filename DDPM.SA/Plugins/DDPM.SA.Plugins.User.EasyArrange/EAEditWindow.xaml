@@ -9,10 +9,9 @@
         WindowStyle="None" ResizeMode="NoResize" Background="Transparent"
         Topmost="True" ShowInTaskbar="False" AllowsTransparency="True"
         Loaded="Window_Loaded">
-    <Window.Resources>
-    </Window.Resources>
 
     <Grid>
         <ContentControl Name="splitCtrl" />
+        <Canvas Name="canvas"/>
     </Grid>
 </Window>

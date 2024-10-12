@@ -28,10 +28,13 @@ namespace VcpCore.Common
         public List<string> ColorPresetSupportList { get; set; }
         public string FwVersion { get; set; }
         public string inputSource { get; set; }
+        public string inputCable { get; set; }
         public DISPLAYCONFIG_PATH_INFO pathInfoTarget { get; set; }
         public List<string> SmartHDRSupportList { get; set; }
         public string modelName { get; set; }
         public string series { get; set; }
         public string MarketingName { get; set; }
+        public string ImageFileName { get; set; }
+        public string Display_DeviceName { get; set; }
     }
 }

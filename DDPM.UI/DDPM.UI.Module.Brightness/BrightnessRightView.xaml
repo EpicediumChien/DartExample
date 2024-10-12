@@ -5,8 +5,8 @@
     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
     xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
     xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+    xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="950"
     d:DesignWidth="800"
@@ -32,7 +32,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid KeyboardNavigation.DirectionalNavigation="{Binding TabSTOP}" KeyboardNavigation.TabNavigation="{Binding TabSTOP}">
         <UXControls:UXScrollViewer>
             <Grid>
                 <StackPanel>
@@ -73,7 +73,7 @@
                                         FontFamily="Roboto"
                                         FontSize="13"
                                         Foreground="White">
-                                        <Run Text="{Binding [Brightness.1], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
+                                        <Run Text="{Binding [Brightness.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                         <Hyperlink Click="Hyperlink_Click">
                                             <Hyperlink.Style>
                                                 <Style TargetType="Hyperlink">
@@ -84,9 +84,9 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Hyperlink.Style>
-                                            <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
+                                            <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                         </Hyperlink>
-                                        <Run Text="{Binding [Brightness.3], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
+                                        <Run Text="{Binding [Brightness.3], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>
@@ -157,7 +157,6 @@
                                                 AutoToolTipPlacement="None"
                                                 AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
                                                 AutomationProperties.Name="SliderToolTipNone"
-                                                IsMoveToPointEnabled="True"
                                                 IsSnapToTickEnabled="True"
                                                 LargeChange="1"
                                                 Maximum="100"
@@ -209,7 +208,6 @@
                                                 AutoToolTipPlacement="None"
                                                 AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
                                                 AutomationProperties.Name="SliderToolTipNone"
-                                                IsMoveToPointEnabled="True"
                                                 IsSnapToTickEnabled="True"
                                                 LargeChange="1"
                                                 Maximum="100"
@@ -279,8 +277,9 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
+                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
-                                            Stretch="Uniform" Cursor="Hand">
+                                            Stretch="Uniform">
                                             <Image.ToolTip>
                                                 <ToolTip>
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -296,6 +295,16 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="90,0,20,0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                            Visibility="{Binding synchronizeLock}" />
 
                                         <UXControls:UXToggleSwitch
                                             Name="SynchronizeSwitch"
@@ -388,7 +397,6 @@
                                             AutoToolTipPlacement="None"
                                             AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
                                             AutomationProperties.Name="SliderToolTipNone"
-                                            IsMoveToPointEnabled="True"
                                             IsSnapToTickEnabled="True"
                                             LargeChange="1"
                                             Maximum="{Binding Path=LuminanceMaxValue}"
@@ -457,6 +465,15 @@
                                         Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
+                                    <Image
+                                        Grid.Column="1"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="90,0,20,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                        Visibility="{Binding AutoALSLock}" />
                                 </Grid>
                             </Expander.Header>
 
@@ -471,18 +488,35 @@
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" Height="50">
+                                    <Grid
+                                        x:Name="AutoBriGrid"
+                                        Grid.Row="0"
+                                        Height="50">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <UXControls:UXTextBlock
+                                            Name="AutoBrightnessText"
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoBrightnessTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.6], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -509,9 +543,18 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image
+                                            Grid.Column="2"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="8,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                            Visibility="{Binding AutoBrightnessLock}" />
                                         <UXControls:UXToggleSwitch
                                             Name="AutoBrightnessSwitch"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -521,10 +564,35 @@
                                             ContentTextVisibility="True"
                                             Foreground="White"
                                             IsChecked="{Binding Path=AutoBrightnessStatus}"
-                                            IsEnabled="{Binding Path=SupportedAutoBrightness}" />
+                                            IsEnabled="{Binding Path=SupportedAutoBrightness}"
+                                            IsTabStop="False" />
+                                        <!--  遮罩  -->
+                                        <Border
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="4"
+                                            Background="#132F54"
+                                            CornerRadius="13"
+                                            Opacity="0.6"
+                                            Visibility="{Binding IsAutoBrightnessLockMask}" />
                                     </Grid>
-                                    <Grid Grid.Row="1" Height="50">
+                                    <Grid
+                                        x:Name="AutoBriRLGrid"
+                                        Grid.Row="1"
+                                        Height="50">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -534,7 +602,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -574,9 +642,18 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image
+                                            Grid.Column="2"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="8,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                            Visibility="{Binding AutoBrigRangeLevelLock}" />
                                         <ComboBox
                                             x:Name="cbAutoBrightness"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             Width="184"
                                             Margin="0,0,10,0"
                                             Padding="10,0,0,0"
@@ -585,19 +662,43 @@
                                             ItemsSource="{Binding AutoBrightnessRangeLevel}"
                                             SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex}"
                                             Style="{StaticResource DdpmComboBoxStyle}" />
+                                        <Border
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="4"
+                                            Background="#132F54"
+                                            CornerRadius="13"
+                                            Opacity="0.6"
+                                            Visibility="{Binding IsAutoBrigRangeLevelLockMask}" />
                                     </Grid>
-                                    <Grid Grid.Row="2" Height="50">
+                                    <Grid
+                                        x:Name="AutoColorTempGrid"
+                                        Grid.Row="2"
+                                        Height="50">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <UXControls:UXTextBlock
+                                            Name="AutoColorTempText"
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoColorTempTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.10], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -624,9 +725,18 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image
+                                            Grid.Column="2"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="8,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                            Visibility="{Binding AutoTemperatureLock}" />
                                         <UXControls:UXToggleSwitch
                                             Name="AutoColorTempSwitch"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -637,9 +747,38 @@
                                             Foreground="White"
                                             IsChecked="{Binding Path=AutoColorTempStatus}" />
                                         <!--  IsEnabled="{Binding Path=SupportedColorTemp}"  -->
+                                        <Border
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="4"
+                                            Background="#132F54"
+                                            CornerRadius="13"
+                                            Opacity="0.6"
+                                            Visibility="{Binding IsAutoTemperatureLockMask}" />
+                                        <Border
+                                            Grid.Column="4"
+                                            Background="#132F54"
+                                            CornerRadius="13"
+                                            Opacity="0.6"
+                                            Visibility="{Binding IsAutoTemperatureSwitchLockMask}" />
                                     </Grid>
-                                    <Grid Grid.Row="3" Height="50">
+                                    <Grid
+                                        x:Name="AutoPMSGrid"
+                                        Grid.Row="3"
+                                        Height="50">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -649,7 +788,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -689,9 +828,18 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image
+                                            Grid.Column="2"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="8,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                            Visibility="{Binding PrimaryMonitorSyncLock}" />
                                         <UXControls:UXToggleSwitch
                                             Name="PrimaryMonitorSyncSwitch"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -702,6 +850,13 @@
                                             Foreground="White"
                                             IsChecked="{Binding Path=PrimaryMonitorSyncStatus}"
                                             IsEnabled="{Binding Path=SupportedPrimaryMonitorSync}" />
+                                        <Border
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="4"
+                                            Background="#132F54"
+                                            CornerRadius="13"
+                                            Opacity="0.6"
+                                            Visibility="{Binding IsPrimaryMonitorSyncLockMask}" />
                                     </Grid>
                                     <Border
                                         Grid.Row="4"
@@ -713,9 +868,15 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="14"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding AutoBrightnessRangeLevel_String}" />
                                     </Border>
+                                    <Border
+                                        Grid.Row="4"
+                                        Background="#132F54"
+                                        CornerRadius="13"
+                                        Opacity="0.6"
+                                        Visibility="{Binding IsAutoBrightnessRangeLevelStringLockMask}" />
                                 </Grid>
                             </StackPanel>
                         </Expander>
@@ -801,7 +962,10 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                    Text="{Binding PR1Name}" />
+                                                    KeyDown="KeyDown_KeyDown"
+                                                    MaxLength="30"
+                                                    Text="{Binding PR1Name}"
+                                                    TextChanged="PR1Name_TextChanged" />
                                             </Grid>
 
                                             <Grid Grid.Column="1" />
@@ -981,7 +1145,6 @@
                                                 Margin="8,0"
                                                 HorizontalContentAlignment="Stretch"
                                                 IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                IsMoveToPointEnabled="True"
                                                 IsSnapToTickEnabled="True"
                                                 LargeChange="1"
                                                 Maximum="100"
@@ -1033,7 +1196,6 @@
                                                 Margin="8,0"
                                                 HorizontalContentAlignment="Stretch"
                                                 IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                IsMoveToPointEnabled="True"
                                                 IsSnapToTickEnabled="True"
                                                 LargeChange="1"
                                                 Maximum="100"
@@ -1122,7 +1284,10 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                    Text="{Binding PR2Name}" />
+                                                    KeyDown="KeyDown_KeyDown"
+                                                    MaxLength="30"
+                                                    Text="{Binding PR2Name}"
+                                                    TextChanged="PR2Name_TextChanged" />
                                             </Grid>
 
                                             <Grid Grid.Column="1" />
@@ -1302,7 +1467,6 @@
                                                 Margin="8,0"
                                                 HorizontalContentAlignment="Stretch"
                                                 IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                IsMoveToPointEnabled="True"
                                                 IsSnapToTickEnabled="True"
                                                 LargeChange="1"
                                                 Maximum="100"
@@ -1354,7 +1518,6 @@
                                                 Margin="8,0"
                                                 HorizontalContentAlignment="Stretch"
                                                 IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                IsMoveToPointEnabled="True"
                                                 IsSnapToTickEnabled="True"
                                                 LargeChange="1"
                                                 Maximum="100"
@@ -1415,5 +1578,10 @@
                 </Border>
             </Grid>
         </UXControls:UXScrollViewer>
+        <Border
+            Background="#132F54"
+            CornerRadius="13"
+            Opacity="0.6"
+            Visibility="{Binding LockMaskVisible}" />
     </Grid>
 </UserControl>

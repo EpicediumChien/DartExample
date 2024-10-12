@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+  <data name="AdaptiveLight" xml:space="preserve">
+    <value>Uyarlanabilir Aydınlatma</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>Ekran</value>
+  </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Ekran Ayarları</value>
+  </data>
+  <data name="EasyArrange" xml:space="preserve">
+    <value>Kolay Düzenleme</value>
+  </data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>Bellenim Sürümü</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="InputSource" xml:space="preserve">
+    <value>Giriş Kaynağı</value>
+  </data>
+  <data name="KVM" xml:space="preserve">
+    <value>KVM</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Manuel</value>
+  </data>
+  <data name="ManufactureMonth" xml:space="preserve">
+    <value>Üretim</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>KAPALI</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>AÇIK</value>
+  </data>
+  <data name="RestoreToDefault" xml:space="preserve">
+    <value>Varsayılanı geri yükle</value>
+  </data>
+  <data name="ServiceTag" xml:space="preserve">
+    <value>Servis Etiketi</value>
+  </data>
+  <data name="Unpair" xml:space="preserve">
+    <value>Eşleştirmeyi Kaldır</value>
+  </data>
+  <data name="VbarText_DisplayOthers" xml:space="preserve">
+    <value>Diğer</value>
+  </data>
+  <data name="QuickSettings" xml:space="preserve">
+    <value>Hızlı Ayarlar</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Analiz</value>
+  </data>
+  <data name="Updates" xml:space="preserve">
+    <value>Güncelleştirmeler</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Genel</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>Güncelleştirme mevcut</value>
+  </data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>Güncelleştirmeler tamamlandıktan sonra Dell Peripheral Manager kapanacak ve yeniden açılacaktır. Güncelleştirmeler başladıktan sonra iptal edilemez.</value>
+  </data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>Güncelleştirmeleri denetle</value>
+  </data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>Şu anda mevcut bir güncelleştirme yok.</value>
+  </data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>Ağ hatası. Lütfen tekrar deneyin.</value>
+  </data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>İndirme ve yükleme</value>
+  </data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>Güncelleştirmeler için hazırlanıyor. Lütfen bekleyin...</value>
+  </data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>Analiz</value>
+  </data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>Tanılama ve kullanım verilerini otomatik olarak göndererek Dell&apos;in ürün ve hizmetlerini geliştirmesine yardımcı olun.</value>
+  </data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>Dell&apos;in Gizlilik İlkesi</value>
+  </data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>Dell&apos;in ürünlerini ve hizmetlerini otomatik olarak geliştirmesine yardımcı olun</value>
+  </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>Aygıt Ekle</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>Ekran</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Web kamerası</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>Klavye\nve Fare</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>Kalem</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>Kulaklık</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>Hoparlör\nve Soundbar</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>Bağlantı İstasyonu</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>Aygıt ekleniyor, lütfen bekleyin...</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>Eşleştiriliyor</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>Eşleştirme biraz zaman alabilir. Aygıtınızın bağlantısını kesmeyin</value>
+  </data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>Ekranınızı sisteminizdeki HDMI/USB-C bağlantı noktası aracılığıyla bağlayın</value>
+  </data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>Web kameranızı sisteminizdeki USB bağlantı noktası aracılığıyla bağlayın</value>
+  </data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>Bluetooth Bağlantısı</value>
+  </data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>Windows ayarlarından eşleştirerek Bluetooth aygıtı ekleme</value>
+  </data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>Güç anahtarı kaydırıcısını AÇIK konumuna getirin</value>
+  </data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>Bir Bluetooth kanalı seçin, ardından aygıtı bulunabilir yapmak için 3 saniye basılı tutun</value>
+  </data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>Aygıtın eşleştirilmesine izin verin veya Windows ayarlarını başlatın ve bulunduktan sonra ilgili aygıtı seçin</value>
+  </data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>USB kablosuz alıcınızı sisteminize bağlayın</value>
+  </data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>Güç anahtarını KAPALI konumuna getirin.</value>
+  </data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>Herhangi bir tuşu/düğmeyi basılı tutun ve gücü AÇIK konumuna getirin</value>
+  </data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>Bu pencereyi açık tutun. Eşleştirme birkaç saniye sonra başlayacaktır. Başlamazsa tekrar denemek için 2. ve 3. adımları tekrarlayın.</value>
+  </data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>Birden fazla kablosuz alıcı algılandı. Klavye ve Fare için tüm Dell kablosuz alıcıları çıkarın. Eşleştirmek istediğiniz aygıtı takın.</value>
+  </data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>USB kablosuz alıcı bağlı değil. USB kablosuz alıcınızı bağlayın ve en fazla altı tane uyumlu aygıtı eşleştirin.</value>
+  </data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>USB kablosuz alıcı bağlı değil. Daha iyi UC uyumluluğu, daha düşük gecikme süresi ve daha stabil bağlantı için bir USB kablosuz alıcı bağlayın.</value>
+  </data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>Sisteminizdeki USB bağlantı noktası üzerinden klavye ve farenizi bağlayın</value>
+  </data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>Kaleminizi Bağlama</value>
+  </data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>Kaleminizin ucunu ekrana dokundurun</value>
+  </data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>Üst düğmeyi 3 saniye boyunca basılı tutun. Aygıtın Windows tarafından bulunmasını bekleyin.</value>
+  </data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>Aygıtın eşleştirilmesine izin verin veya Windows ayarlarını başlatın ve bulunduktan sonra ilgili aygıtı seçin.</value>
+  </data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>Kaleminizi eşleştirmek isterseniz mesaj kutusunda eşleştirmeyi onaylamak için &quot;Evet&quot;i seçin</value>
+  </data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>USB kablosuz alıcı ve hareket halinde bağlantı için</value>
+  </data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>Kulaklığı AÇIN</value>
+  </data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>Kulaklığın Bluetooth ile bulunabilmesi için güç düğmesini 3 saniye basılı tutun</value>
+  </data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>Aygıtın eşleştirilmesine izin verin veya Windows ayarlarını başlatın ve bulunduktan sonra ilgili aygıtı seçin.</value>
+  </data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>Kulaklığı KAPATIN. Mikrofon sesini kapatma düğmesini basılı tutun ve gücü tekrar AÇIN.</value>
+  </data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>Eşleştirme birkaç saniye sonra otomatik olarak başlayacaktır</value>
+  </data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>Sisteminizdeki USB bağlantı noktasını kullanarak kulaklığınızı bağlayın.</value>
+  </data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>Sisteminizdeki USB bağlantı noktasını kullanarak Hoparlörünüzü veya soundbar&apos;ınızı bağlayın.</value>
+  </data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>Sisteminizdeki USB bağlantı noktası aracılığıyla Bağlantı İstasyonunuzu bağlayın</value>
+  </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>Lütfen bekleyin...</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>Bellenimi Güncelleştirme</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} /{1} yuva kullanılabilir</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>Donanım kilidi {0}</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>Anahtar Özelleştirme</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>İş Birliği</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>Aydınlatma</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>Şunun için eylemler atayın</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>Tüm Uygulamalar</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
+  <data name="EOL.0" xml:space="preserve">
+    <value>Bu aygıtta gelişmiş özellik yok</value>
+  </data>
+  <data name="Mouse.6" xml:space="preserve">
+    <value>Fare Ayarları</value>
+  </data>
+  <data name="Mouse.7" xml:space="preserve">
+    <value>Düğme\nÖzelleştirme</value>
+  </data>
+  <data name="Pen.0" xml:space="preserve">
+    <value>Kalem Ayarları</value>
+  </data>
+  <data name="Soundbar.0" xml:space="preserve">
+    <value>Ses Ön Ayarı</value>
+  </data>
+  <data name="Soundbar.1" xml:space="preserve">
+    <value>Etkileşimler</value>
+  </data>
+  <data name="Camera.0" xml:space="preserve">
+    <value>Kamera Kontrolü</value>
+  </data>
+  <data name="Camera.1" xml:space="preserve">
+    <value>Renk ve Görüntü</value>
+  </data>
+  <data name="Camera.2" xml:space="preserve">
+    <value>Varlık Algılama</value>
+  </data>
+  <data name="Camera.3" xml:space="preserve">
+    <value>Yakalama</value>
+  </data>
+  <data name="Camera.4" xml:space="preserve">
+    <value>Mikrofon</value>
+  </data>
+  <data name="WiredConnection" xml:space="preserve">
+    <value>Kablolu Bağlantı</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="Brightness.0" xml:space="preserve">
+    <value>Önceden Ayarlanmış Başlangıç Zamanlarınızın ve Geçiş Uzunluklarınızın çakışmadığından emin olmak için ayarlarınızı kontrol edin</value>
+  </data>
+  <data name="Brightness.1" xml:space="preserve">
+    <value>Parlaklık/Kontrast şu durumlarda kullanılamaz: </value>
+  </data>
+  <data name="Brightness.2" xml:space="preserve">
+    <value>Akıllı HDR </value>
+  </data>
+  <data name="Brightness.3" xml:space="preserve">
+    <value>açık</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Parlaklık</value>
+  </data>
+  <data name="Contrast" xml:space="preserve">
+    <value>Kontrast</value>
+  </data>
+  <data name="Brightness.4" xml:space="preserve">
+    <value>Monitörler arasında senkronize edin</value>
+  </data>
+  <data name="Brightness.5" xml:space="preserve">
+    <value>Yukarıdaki parlaklığı/aydınlığı, kontrastı ve renk&amp;#x000A;ön ayar denetimlerini bağlı monitörlerinize uygulayın.</value>
+  </data>
+  <data name="Luminance" xml:space="preserve">
+    <value>Aydınlık</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Otomatik</value>
+  </data>
+  <data name="Brightness.6" xml:space="preserve">
+    <value>Otomatik Parlaklık  </value>
+  </data>
+  <data name="Brightness.7" xml:space="preserve">
+    <value>Ekranın parlaklığını çevredeki aydınlatma koşullarına göre ayarlar</value>
+  </data>
+  <data name="Brightness.8" xml:space="preserve">
+    <value>Otomatik Parlaklık Aralığı Düzeyi  </value>
+  </data>
+  <data name="Brightness.9" xml:space="preserve">
+    <value>Çevredeki aydınlatma koşullarına bağlı olarak 3 parlaklık aralığı seviyesi sağlar (Yüksek/Orta/Düşük)</value>
+  </data>
+  <data name="Brightness.10" xml:space="preserve">
+    <value>Otomatik Renk Sıcaklığı  </value>
+  </data>
+  <data name="Brightness.11" xml:space="preserve">
+    <value>Ekranın renk sıcaklığını, çevredeki ışığa uyacak şekilde otomatik olarak ayarlar.</value>
+  </data>
+  <data name="Brightness.12" xml:space="preserve">
+    <value>Senkronizasyon İçin Birincil Monitör  </value>
+  </data>
+  <data name="Brightness.13" xml:space="preserve">
+    <value>Birincil monitöre bağlı olarak parlaklığı, kontrastı, renk ön ayarını ve renk sıcaklığını diğer ALS monitörleriyle senkronize edin</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>Zamanlanmış</value>
+  </data>
+  <data name="Brightness.14" xml:space="preserve">
+    <value>Ön Ayar 1 Adı</value>
+  </data>
+  <data name="Brightness.15" xml:space="preserve">
+    <value>Balangıç Zamanı</value>
+  </data>
+  <data name="AM" xml:space="preserve">
+    <value>ÖÖ</value>
+  </data>
+  <data name="Brightness.16" xml:space="preserve">
+    <value>Geçiş Uzunluğu</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>TEST.</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>dk</value>
+  </data>
+  <data name="Brightness.18" xml:space="preserve">
+    <value>Ön Ayar 2 Adı</value>
+  </data>
+  <data name="PM" xml:space="preserve">
+    <value>ÖS</value>
+  </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>Kısayol tuşları</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Sıfırla</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>Parlaklık -</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>Parlaklık +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>Kontrast -</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>Kontrast +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>Aydınlık -</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>Aydınlık +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>Örnek: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nBirden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imlecinin hedeflenen monitör ekranında olması gerektiğini unutmayın.</value>
+  </data>
+  <data name="ButtonSettings.0" xml:space="preserve">
+    <value>Kaydırma Tekerleği Tıklaması</value>
+  </data>
+  <data name="ButtonSettings.1" xml:space="preserve">
+    <value>Kaydırma Sola Eğme</value>
+  </data>
+  <data name="ButtonSettings.2" xml:space="preserve">
+    <value>Kaydırma Sağa Eğme</value>
+  </data>
+  <data name="ButtonSettings.3" xml:space="preserve">
+    <value>Yan Düğme İleri</value>
+  </data>
+  <data name="ButtonSettings.4" xml:space="preserve">
+    <value>Yan Düğme Geri</value>
+  </data>
+  <data name="ButtonSettings.5" xml:space="preserve">
+    <value>Özelleştirmek için soldaki resimdeki bölümlerden birine tıklayın</value>
+  </data>
+  <data name="ButtonSettings.6" xml:space="preserve">
+    <value>Tüm Uygulamaları Geri Yükle</value>
+  </data>
+  <data name="ButtonSettings.7" xml:space="preserve">
+    <value>Önerilen Eylemler</value>
+  </data>
+  <data name="ButtonSettings.8" xml:space="preserve">
+    <value>Verimlilik Amaçlı Eylemler</value>
+  </data>
+  <data name="ButtonSettings.9" xml:space="preserve">
+    <value>Windows Eylemleri</value>
+  </data>
+  <data name="ButtonSettings.10" xml:space="preserve">
+    <value>Multimedya Eylemleri</value>
+  </data>
+  <data name="ButtonSettings.11" xml:space="preserve">
+    <value>Gelişmiş Eylemler</value>
+  </data>
+  <data name="ButtonSettings.12" xml:space="preserve">
+    <value>Arama Sonuçları</value>
+  </data>
+  <data name="ButtonSettings.13" xml:space="preserve">
+    <value>Düğme Özelleştirme</value>
+  </data>
+  <data name="Customize" xml:space="preserve">
+    <value>Özelleştir</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Düzenle</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Kaldır</value>
+  </data>
+  <data name="Collaboration.0" xml:space="preserve">
+    <value>İş Birliği Simgeleri</value>
+  </data>
+  <data name="Collaboration.1" xml:space="preserve">
+    <value>Konferans denetimlerine hızlı erişim sağlar.\nTuşları açmak/kapatmak, Microsoft Teams veya\nZoom araması sırasında tuşları klavyede gösterir veya gizler.</value>
+  </data>
+  <data name="Collaboration.3" xml:space="preserve">
+    <value>Konferans\ngörüşmesinde yeni bir sohbet mesajı olduğunda göz kırpma efektini etkinleştirin</value>
+  </data>
+  <data name="Collaboration.4" xml:space="preserve">
+    <value>Klavyedeki simgeleri tek\ndokunma yerine çift dokunma ile etkinleştirin</value>
+  </data>
+  <data name="Collaboration.5" xml:space="preserve">
+    <value>İş Birliği Klavyesini Microsoft Teams ile kullanmak için Microsoft Teams&apos;in en son sürümünde oturum açtığınızdan ve kullandığınızdan ve Üçüncü taraf uygulama API&apos;sinin etkinleştirildiğinden emin olun</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Daha fazla bilgi edinin</value>
+  </data>
+  <data name="Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Paylaşma</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Sohbet</value>
+  </data>
+  <data name="Mic" xml:space="preserve">
+    <value>Mikrofon</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="Collaboration" xml:space="preserve">
+    <value>İş Birliği</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Onayla</value>
+  </data>
+  <data name="Color.0" xml:space="preserve">
+    <value>Uygulama Ekle</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="Color.1" xml:space="preserve">
+    <value>Ada Göre Sırala</value>
+  </data>
+  <data name="Color.2" xml:space="preserve">
+    <value>Tarihe Göre Sırala</value>
+  </data>
+  <data name="Color.3" xml:space="preserve">
+    <value>ICC Renk profilini renk ön ayarına göre otomatik ayarlayın</value>
+  </data>
+  <data name="WindowsSettings" xml:space="preserve">
+    <value>Windows Ayarları</value>
+  </data>
+  <data name="Color.4" xml:space="preserve">
+    <value>Renk ön ayarını aşağıdakilere göre otomatik ayarlayın:</value>
+  </data>
+  <data name="Color.5" xml:space="preserve">
+    <value>ICC profili</value>
+  </data>
+  <data name="Color.6" xml:space="preserve">
+    <value>Renk Profili</value>
+  </data>
+  <data name="Color.7" xml:space="preserve">
+    <value>Uygulamaya Özel Renk Ön Ayarı</value>
+  </data>
+  <data name="Color.8" xml:space="preserve">
+    <value>Gece lambası </value>
+  </data>
+  <data name="Color.9" xml:space="preserve">
+    <value>Uyumanıza yardımcı olması için ekranınızda rahat renkleri gösterin.</value>
+  </data>
+  <data name="Color.11" xml:space="preserve">
+    <value>Renk Yönetimi</value>
+  </data>
+  <data name="Color.12" xml:space="preserve">
+    <value>ICC profilini monitörün renk ön ayarıyla otomatik olarak senkronize eder.</value>
+  </data>
+  <data name="Color.13" xml:space="preserve">
+    <value>Gelişmiş renk yönetimi için Dell Color Management uygulaması önerilir.</value>
+  </data>
+  <data name="DisplayHotkeys.0" xml:space="preserve">
+    <value>Giriş Kaynağı</value>
+  </data>
+  <data name="DisplayHotkeys.1" xml:space="preserve">
+    <value>Sonraki giriş kaynağına geçin</value>
+  </data>
+  <data name="DisplayHotkeys.2" xml:space="preserve">
+    <value>Sık kullanılan giriş</value>
+  </data>
+  <data name="DisplayHotkeys.3" xml:space="preserve">
+    <value>2 giriş kaynağı arasında geçiş yapın</value>
+  </data>
+  <data name="VideoSwap" xml:space="preserve">
+    <value>Video Değiştirme</value>
+  </data>
+  <data name="PIPorPBP" xml:space="preserve">
+    <value>PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.4" xml:space="preserve">
+    <value>2 PIP/PBP penceresi girişini değiştirme</value>
+  </data>
+  <data name="DisplayHotkeys.5" xml:space="preserve">
+    <value>PIP konumunu değiştir</value>
+  </data>
+  <data name="DisplayOthers.0" xml:space="preserve">
+    <value>Parlaklığı azalt</value>
+  </data>
+  <data name="DisplayOthers.1" xml:space="preserve">
+    <value>Ekranı uyku moduna al</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>İçe Aktar</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Dışa Aktar</value>
+  </data>
+  <data name="DisplayOthers.2" xml:space="preserve">
+    <value>Aynı model algılandığında ayarları otomatik olarak uygulayın</value>
+  </data>
+  <data name="PowerNap" xml:space="preserve">
+    <value>PowerNap</value>
+  </data>
+  <data name="DisplayOthers.3" xml:space="preserve">
+    <value>PowerNap, ekran koruyucunuz etkinleştiğinde güç tasarrufu yapmanıza yardımcı olur</value>
+  </data>
+  <data name="DisplayOthers.4" xml:space="preserve">
+    <value>Ekran koruyucu etkinleştiğinde (birini seçin):</value>
+  </data>
+  <data name="DisplayOthers.5" xml:space="preserve">
+    <value>Ekran Koruyucu Ayarlarını Yapılandırın </value>
+  </data>
+  <data name="DisplayOthers.6" xml:space="preserve">
+    <value>Uygulama Ayarları</value>
+  </data>
+  <data name="DisplayOthers.7" xml:space="preserve">
+    <value>Yapılandırmayı dışa aktarın ve aynı modelin başka bir monitörüne içe aktarın</value>
+  </data>
+  <data name="DisplayProperties.0" xml:space="preserve">
+    <value>Yüksek Veri Hızı</value>
+  </data>
+  <data name="DisplayProperties.1" xml:space="preserve">
+    <value>Yüksek Çözünürlük</value>
+  </data>
+  <data name="DisplayProperties.2" xml:space="preserve">
+    <value>Çözünürlük ve Yenileme Hızı</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>Yön</value>
+  </data>
+  <data name="SmartHDR" xml:space="preserve">
+    <value>Akıllı HDR</value>
+  </data>
+  <data name="DisplayProperties.3" xml:space="preserve">
+    <value>Metin, uygulamalar ve diğer öğelerin boyutunu değiştirin</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>Gelişmiş Ayarlar</value>
+  </data>
+  <data name="DisplayProperties.4" xml:space="preserve">
+    <value>USB-C Önceliklendirme </value>
+  </data>
+  <data name="DisplayProperties.5" xml:space="preserve">
+    <value>Verilerde ve ağ hızlarında ekran performansına göre öncelik.</value>
+  </data>
+  <data name="DisplayProperties.6" xml:space="preserve">
+    <value>Veri ve ağ hızına göre ekran performansında öncelik.</value>
+  </data>
+  <data name="Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Özel</value>
+  </data>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>Windows veya daha fazlası</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Yeni</value>
+  </data>
+  <data name="AudioSettings" xml:space="preserve">
+    <value>Ses Ayarları</value>
+  </data>
+  <data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>Duyduğum gürültüyü kontrol et</value>
+  </data>
+  <data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>Etkin Gürültü Engelleme</value>
+  </data>
+  <data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>Şeffaflık</value>
+  </data>
+  <data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>Şeffaflık düzeyi</value>
+  </data>
+  <data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>Ses modlarımı yapılandır</value>
+  </data>
+  <data name="Multimedia" xml:space="preserve">
+    <value>Multimedya</value>
+  </data>
+  <data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>Ses Çıkışı Ön Ayarları</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Varsayılan</value>
+  </data>
+  <data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>Bas Artırma</value>
+  </data>
+  <data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>Konuşma Artırma</value>
+  </data>
+  <data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>Tiz Artırma</value>
+  </data>
+  <data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>Ses Ekolayzeri</value>
+  </data>
+  <data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>Duyduğunuz sesin ses aralıklarını ayarlayın</value>
+  </data>
+  <data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>db</value>
+  </data>
+  <data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>Bas</value>
+  </data>
+  <data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>Orta aralık</value>
+  </data>
+  <data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>Tiz</value>
+  </data>
+  <data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>Mikrofon Gürültüsü Engelleme</value>
+  </data>
+  <data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>Giden Ses</value>
+  </data>
+  <data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>Gelen Ses</value>
+  </data>
+  <data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>Yan Ton</value>
+  </data>
+  <data name="AutomatedActions" xml:space="preserve">
+    <value>Otomatik Eylemler</value>
+  </data>
+  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>Kulağa Takmayı Algılama</value>
+  </data>
+  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>Hassasiyet</value>
+  </data>
+  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>Düşük</value>
+  </data>
+  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>Kulaklık çıkarıldığında:</value>
+  </data>
+  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>Müziği Duraklatma</value>
+  </data>
+  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>Mikrofonun Sesini Kapatma</value>
+  </data>
+  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>Hızlı Duraklatma</value>
+  </data>
+  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>Aramaları Cevaplama</value>
+  </data>
+  <data name="DeviceSettings" xml:space="preserve">
+    <value>Aygıt Ayarları</value>
+  </data>
+  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>Meşgul Işığı</value>
+  </data>
+  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>Sesli Yönlendirme</value>
+  </data>
+  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>Temel</value>
+  </data>
+  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>Tümü</value>
+  </data>
+  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>Dell Audio&apos;yu indirin</value>
+  </data>
+  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>Kulaklık ayarlarınızı iPhone veya Android aygıtınızın rahatlığında optimize etmek ve kişiselleştirmek için Dell Audio&apos;yu şimdi indirin.</value>
+  </data>
+  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>Daha fazla bilgi edinin</value>
+  </data>
+  <data name="Illumination.0" xml:space="preserve">
+    <value>Aydınlatma Kontrolü</value>
+  </data>
+  <data name="Illumination.1" xml:space="preserve">
+    <value>Aydınlatma</value>
+  </data>
+  <data name="InputSource.0" xml:space="preserve">
+    <value>Geçerli Giriş Kaynağı</value>
+  </data>
+  <data name="InputSource.1" xml:space="preserve">
+    <value>Giriş Kaynağını Yeniden Adlandırma ve USB Bağlantısı Atama</value>
+  </data>
+  <data name="InputSource.2" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="InputSource.3" xml:space="preserve">
+    <value>Giriş Adı</value>
+  </data>
+  <data name="InputSource.4" xml:space="preserve">
+    <value>USB Yukarı Akış</value>
+  </data>
+  <data name="KeyCustomization.0" xml:space="preserve">
+    <value>Bir tuşu özelleştirmek için soldaki görüntüde belirtilen tuşlardan birine tıklayın</value>
+  </data>
+  <data name="KeyCustomization.1" xml:space="preserve">
+    <value>Tüm eylemleri varsayılana geri yükle</value>
+  </data>
+  <data name="KeyCustomization.2" xml:space="preserve">
+    <value>Anahtar Özelleştirme</value>
+  </data>
+  <data name="Kvm.0" xml:space="preserve">
+    <value>PC</value>
+  </data>
+  <data name="Kvm.1" xml:space="preserve">
+    <value>İleri</value>
+  </data>
+  <data name="Kvm.2" xml:space="preserve">
+    <value>USB KVM KURULUMU</value>
+  </data>
+  <data name="Kvm.3" xml:space="preserve">
+    <value>Fareyi\n ve Klavyeyi Bağlama</value>
+  </data>
+  <data name="Kvm.4" xml:space="preserve">
+    <value>Fare ve Klavye için monitörün arkasına (USB-A) bağlayın.\n Not: Web\n Kamerası gibi diğer USB Çevre Birimlerini de bağlayabilirsiniz.</value>
+  </data>
+  <data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="Kvm.6" xml:space="preserve">
+    <value>Aygıtlarınıza\n bağlanma</value>
+  </data>
+  <data name="Kvm.7" xml:space="preserve">
+    <value>Lütfen her bir PC&apos;den\n monitöre bir video kablosu ve USB kablosu bağlayın. En fazla 4 cihaz (bilgisayarlar, oyun\n konsolları vb.) bağlayabilirsiniz.\r\n\r\nLütfen her bağlantı için kablo türünü seçin ve her kaynağa bir ad atayın.</value>
+  </data>
+  <data name="Kvm.8" xml:space="preserve">
+    <value>Bilgisayarlar arasında geçiş yapma</value>
+  </data>
+  <data name="Kvm.9" xml:space="preserve">
+    <value>Kablosuz Klavye ve Fare</value>
+  </data>
+  <data name="Kvm.10" xml:space="preserve">
+    <value>PIP konumunu değiştir</value>
+  </data>
+  <data name="Kvm.11" xml:space="preserve">
+    <value>PBP yan yana modunda otomatik geçiş USB yukarı akış bağlantı noktası</value>
+  </data>
+  <data name="Kvm.12" xml:space="preserve">
+    <value>Giriş Kaynağı Kısayol Tuşları</value>
+  </data>
+  <data name="Kvm.13" xml:space="preserve">
+    <value>Giriş Kaynağını Düzenle</value>
+  </data>
+  <data name="Kvm.14" xml:space="preserve">
+    <value>PIP/PBP düzenleme</value>
+  </data>
+  <data name="Kvm.15" xml:space="preserve">
+    <value>Pozisyonlar arasında geçiş yapın</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Son</value>
+  </data>
+  <data name="Kvm.16" xml:space="preserve">
+    <value>PIP/PBP KURULUMU</value>
+  </data>
+  <data name="Kvm.17" xml:space="preserve">
+    <value>Monitörünüz için PIP/PBP\nkurulumunu yapın</value>
+  </data>
+  <data name="Kvm.18" xml:space="preserve">
+    <value>Monitörünüz aynı anda bir PC veya kaynak görüntüleyebilir (tam ekran)\nveya kaynaklar arasında bölümlenebilir (iç resim/yan resim).</value>
+  </data>
+  <data name="Kvm.19" xml:space="preserve">
+    <value>KVM yok</value>
+  </data>
+  <data name="Kvm.20" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Kvm.21" xml:space="preserve">
+    <value>USB KVM&apos;yi Kurun</value>
+  </data>
+  <data name="Kvm.22" xml:space="preserve">
+    <value>Yeni USB KVM&apos;yi başlatın</value>
+  </data>
+  <data name="Kvm.23" xml:space="preserve">
+    <value>Ağ KVM</value>
+  </data>
+  <data name="Kvm.24" xml:space="preserve">
+    <value>KVM Kurulum Türünü Seçin</value>
+  </data>
+  <data name="Kvm.25" xml:space="preserve">
+    <value>Tek monitör kurulumu için uygun</value>
+  </data>
+  <data name="Kvm.26" xml:space="preserve">
+    <value>Monitörün USB bağlantı noktası üzerinden kurulum</value>
+  </data>
+  <data name="Kvm.27" xml:space="preserve">
+    <value>Kısayol Tuşları - PC&apos;ler arasında geçiş: Yok</value>
+  </data>
+  <data name="Kvm.28" xml:space="preserve">
+    <value>Birden fazla monitör kurulumu için uygundur</value>
+  </data>
+  <data name="Kvm.29" xml:space="preserve">
+    <value>Ağ üzerinden kurulum</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>PC&apos;ler (Mac ve Windows) arasında güvenli bir şekilde kolay dosya paylaşımı</value>
+  </data>
+  <data name="Kvm.31" xml:space="preserve">
+    <value>Ağ KVM Aç</value>
+  </data>
+  <data name="Kvm.32" xml:space="preserve">
+    <value>Ağ KVM&apos;sini yükseltmek veya düzenlemek için başka bir pencere açar</value>
+  </data>
+  <data name="MouseSettings.0" xml:space="preserve">
+    <value>DPI değerindeki değişikliği tamamlamak için farenizi hareket ettirin</value>
+  </data>
+  <data name="MouseSettings.1" xml:space="preserve">
+    <value>Yoklama hızının artırılması farenin pil ömrünü etkileyebilir.</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>Yavaş</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Yüksek</value>
+  </data>
+  <data name="PenButtonSettings.0" xml:space="preserve">
+    <value>Üst Düğme</value>
+  </data>
+  <data name="PenButtonSettings.1" xml:space="preserve">
+    <value>Üst bölümdeki düğme</value>
+  </data>
+  <data name="PenButtonSettings.2" xml:space="preserve">
+    <value>Alt Bölümdeki Düğme</value>
+  </data>
+  <data name="PenButtonSettings.3" xml:space="preserve">
+    <value>Bir Kez Tıklama</value>
+  </data>
+  <data name="PenButtonSettings.4" xml:space="preserve">
+    <value>Çift Tıklama</value>
+  </data>
+  <data name="PenButtonSettings.5" xml:space="preserve">
+    <value>Basılı Tutma</value>
+  </data>
+  <data name="PenButtonSettings.6" xml:space="preserve">
+    <value>Üzerinde Tıklama</value>
+  </data>
+  <data name="PenButtonSettings.7" xml:space="preserve">
+    <value>Bir düğmeyi özelleştirmek için soldaki görüntüde belirtilen bir düğmeye tıklayın</value>
+  </data>
+  <data name="PenButtonSettings.8" xml:space="preserve">
+    <value>Varsayılan eylemlere geri yükle</value>
+  </data>
+  <data name="PenSettings.0" xml:space="preserve">
+    <value>Kalem Ayarları</value>
+  </data>
+  <data name="PenSettings.1" xml:space="preserve">
+    <value>Uç Hassasiyeti</value>
+  </data>
+  <data name="PenSettings.2" xml:space="preserve">
+    <value>Kaydırıcıyı sağa hareket ettirmek, basınca duyarlılığı kademeli olarak azaltır\nve daha sıkı kalem basıncı uygulamanız\ngerekir</value>
+  </data>
+  <data name="PenSettings.3" xml:space="preserve">
+    <value>Eğme Hassasiyeti</value>
+  </data>
+  <data name="PenSettings.4" xml:space="preserve">
+    <value>Kaydırıcıyı sağa hareket ettirmek, eğme efektini kademeli olarak artırır ve daha az eğme açısı uygulamanız gerekir</value>
+  </data>
+  <data name="PenSettings.5" xml:space="preserve">
+    <value>Tile ile Eşleştirme</value>
+  </data>
+  <data name="PenSettings.6" xml:space="preserve">
+    <value>Tile\nuygulamasını kullanarak kaleminizi mobil aygıtınızla eşleştirin</value>
+  </data>
+  <data name="PenSettings.7" xml:space="preserve">
+    <value>Hemen başlayın</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>Tam ekran</value>
+  </data>
+  <data name="PipPbp.0" xml:space="preserve">
+    <value>PIP</value>
+  </data>
+  <data name="PipPbp.1" xml:space="preserve">
+    <value>PBP</value>
+  </data>
+  <data name="PipPbp.2" xml:space="preserve">
+    <value>Giriş 1 (Ana)</value>
+  </data>
+  <data name="PipPbp.3" xml:space="preserve">
+    <value>Giriş 2 (Alt)</value>
+  </data>
+  <data name="PipPbp.4" xml:space="preserve">
+    <value>Giriş 3 (Alt)</value>
+  </data>
+  <data name="PipPbp.5" xml:space="preserve">
+    <value>Giriş 4 (Alt)</value>
+  </data>
+  <data name="PipPbp.6" xml:space="preserve">
+    <value>USB Anahtarı</value>
+  </data>
+  <data name="PipPbp.7" xml:space="preserve">
+    <value>Pozisyonlar arasında geçiş yapın</value>
+  </data>
+  <data name="SpeakerAudioPreset.0" xml:space="preserve">
+    <value>Ses Ön Ayarı</value>
+  </data>
+  <data name="SpeakerAudioPreset.1" xml:space="preserve">
+    <value>Bu ayarlar yalnızca multimedya için geçerlidir</value>
+  </data>
+  <data name="SpeakerAudioPreset.2" xml:space="preserve">
+    <value>Konuşma</value>
+  </data>
+  <data name="SpeakerAudioPreset.3" xml:space="preserve">
+    <value>Ses aralıklarını tercihinize göre ayarlayın. Bu ayarlar yalnızca multimedya sesi için geçerlidir.</value>
+  </data>
+  <data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>Akıllı Mikrofon Gürültüsü İptali</value>
+  </data>
+  <data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>Ses Kapatma Bildirimi</value>
+  </data>
+  <data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>Ses Ayarlama Tonu</value>
+  </data>
+  <data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>Her Seviye</value>
+  </data>
+  <data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>Yalnızca Min ve Maks</value>
+  </data>
+  <data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>Etkileşimler</value>
+  </data>
+  <data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>Kullanılabilir hoparlör düğmelerini (yeşil renkle gösterilir) görüntülemek için aşağıdaki uygulama adlarının üzerine gelin</value>
+  </data>
+  <data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>Yakınlaştırma ve Uzaklaştırma</value>
+  </data>
+  <data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+  <data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype Kurumsal</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Geri sayımı</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Çerçeveleme Kılavuzu</value>
+  </data>
+  <data name="WebCameraCapture.2" xml:space="preserve">
+    <value>Aç</value>
+  </data>
+  <data name="WebCameraCapture.3" xml:space="preserve">
+    <value>Değiştir</value>
+  </data>
+  <data name="WebCameraCapture.4" xml:space="preserve">
+    <value>Çözünürlük</value>
+  </data>
+  <data name="WebCameraCapture.5" xml:space="preserve">
+    <value>4K UHD</value>
+  </data>
+  <data name="WebCameraCapture.6" xml:space="preserve">
+    <value>Full HD</value>
+  </data>
+  <data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+  <data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="WebCameraCapture.9" xml:space="preserve">
+    <value>Bir saniyede çekilen görüntü sayısını ayarlayarak video netliğini ve stilini kontrol eder</value>
+  </data>
+  <data name="WebCameraCapture.10" xml:space="preserve">
+    <value>Ortam Dosyalarının Konumu</value>
+  </data>
+  <data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>Yüksek Dinamik Aralık, çeşitli aydınlatma koşullarında optimum görüntü kalitesi için otomatik olarak düzeltme yapar</value>
+  </data>
+  <data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>Otomatik Beyaz Dengesi</value>
+  </data>
+  <data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>Parlaklık</value>
+  </data>
+  <data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>Keskinlik</value>
+  </data>
+  <data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>Kontrast</value>
+  </data>
+  <data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>Doygunluk</value>
+  </data>
+  <data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>Titreme Önleme</value>
+  </data>
+  <data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>Yapay ışık altında kayıt yaparken titreşim azaltma</value>
+  </data>
+  <data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>Hz</value>
+  </data>
+  <data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>Mikrofon</value>
+  </data>
+  <data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>Kamera Mikrofonu</value>
+  </data>
+  <data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>Not: Bu mikrofon Microsoft Teams sertifikalı değildir. En iyi Microsoft Teams arama deneyimi için Dell&apos;in Microsoft Teams sertifikalı ses aygıtlarını kullanın.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>Varlık Algılama</value>
+  </data>
+  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>Yakınlık Sensörü</value>
+  </data>
+  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>Görüş alanındayken varlığınızı tespit eder</value>
+  </data>
+  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>Yaklaşınca Açılma</value>
+  </data>
+  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>Yaklaştığınızda bilgisayarı açar</value>
+  </data>
+  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>Uzaklaşınca Kilitleme</value>
+  </data>
+  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>Uzaklaştığınızda bilgisayarı kilitler ve ekranı kapatır</value>
+  </data>
+  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>Gecikme</value>
+  </data>
+  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>Ertele</value>
+  </data>
+  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>Erteleme Uzunluğu</value>
+  </data>
+  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>Yüz tanıma özelliğiyle oturum açmanızı sağlar. Bu bağlantı sizi Windows Ayarlarına yönlendirir.</value>
+  </data>
+  <data name="WebCameraSettings.0" xml:space="preserve">
+    <value>Kamera Kontrolü</value>
+  </data>
+  <data name="WebCameraSettings.1" xml:space="preserve">
+    <value>Yapay Zeka Otomatik Çerçeveleme</value>
+  </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Yapay Zeka Otomatik Çerçeveleme akıllı sahne analizi ve hareket ettiğinizde görünümü yakınlaştırıp kaydırmak için yüz takibi sağlar</value>
+  </data>
+  <data name="WebCameraSettings.3" xml:space="preserve">
+    <value>Kamera Geçişi</value>
+  </data>
+  <data name="WebCameraSettings.4" xml:space="preserve">
+    <value>Kamera kadrajdaki konumunuzu yeniden ayarlarken kaydırma ve yakınlaştırma ile sorunsuz geçişler yapar</value>
+  </data>
+  <data name="WebCameraSettings.5" xml:space="preserve">
+    <value>İzleme Hassasiyeti</value>
+  </data>
+  <data name="WebCameraSettings.6" xml:space="preserve">
+    <value>Kameranın hareketinize ne kadar hızlı tepki vereceğini ayarlar ve kadrajdaki konumunuzu yeniden ayarlar</value>
+  </data>
+  <data name="WebCameraSettings.7" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="WebCameraSettings.8" xml:space="preserve">
+    <value>Hızlı</value>
+  </data>
+  <data name="WebCameraSettings.9" xml:space="preserve">
+    <value>Çerçeve Boyutu</value>
+  </data>
+  <data name="WebCameraSettings.10" xml:space="preserve">
+    <value>Dar</value>
+  </data>
+  <data name="WebCameraSettings.11" xml:space="preserve">
+    <value>Standart</value>
+  </data>
+  <data name="WebCameraSettings.12" xml:space="preserve">
+    <value>Görüş Alanı</value>
+  </data>
+  <data name="WebCameraSettings.13" xml:space="preserve">
+    <value>Kameranın görüş alanının açısını daraltır veya genişletir</value>
+  </data>
+  <data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="WebCameraSettings.15" xml:space="preserve">
+    <value>Yakınlaştırma ve Uzaklaştırma</value>
+  </data>
+  <data name="WebCameraSettings.16" xml:space="preserve">
+    <value>Otomatik Odaklama</value>
+  </data>
+  <data name="WebCameraSettings.17" xml:space="preserve">
+    <value>Odaklama ve netlik sağlamak için kamera merceğini akıllı olarak ayarlar</value>
+  </data>
+  <data name="WebCameraSettings.18" xml:space="preserve">
+    <value>Öncelik</value>
+  </data>
+  <data name="WebCameraSettings.19" xml:space="preserve">
+    <value>İdeal ışık seviyesini korumak amacıyla FPS video akıcılığı veya pozlama önceliklendirmesi yapar</value>
+  </data>
+  <data name="WebCameraSettings.20" xml:space="preserve">
+    <value>Pozlama</value>
+  </data>
+  <data name="WebCameraSettings.21" xml:space="preserve">
+    <value>Kare Hızı</value>
+  </data>
+  <data name="WebCameraSettings.22" xml:space="preserve">
+    <value>HDR açıkken Kare Hızı/Pozlama çalışmaz.\rBuraya </value>
+  </data>
+  <data name="WebCameraSettings.23" xml:space="preserve">
+    <value>tıklayarak </value>
+  </data>
+  <data name="WebCameraSettings.24" xml:space="preserve">
+    <value>HDR ayarlarınızı değiştirin.</value>
+  </data>
+  <data name="WebCameraSettings.25" xml:space="preserve">
+    <value>Harici Web Kamerasını Önceliklendir</value>
+  </data>
+  <data name="WebCameraSettings.26" xml:space="preserve">
+    <value>Dell UltraSharp Web Kamerası ve diğer web kameraları (entegre ve harici) arasında otomatik geçiş yapar. Windows Hello, yüz tanıma için aktif web kamerasını kullanır. Not: Aynı anda yalnızca bir kamera etkinleştirilebilir ve bir kameraya erişilebilir.</value>
+  </data>
+  <data name="Mouse.8" xml:space="preserve">
+    <value>Dokunmatik Kaydırma Hassasiyeti</value>
+  </data>
+  <data name="Mouse.9" xml:space="preserve">
+    <value>Kaydırma Hızını Ayarlama</value>
+  </data>
+  <data name="Mouse.10" xml:space="preserve">
+    <value>Birincil Fare Düğmesi</value>
+  </data>
+  <data name="Mouse.11" xml:space="preserve">
+    <value>DPI Ayarı</value>
+  </data>
+  <data name="Mouse.12" xml:space="preserve">
+    <value>Yoklama Hızı</value>
+  </data>
+  <data name="Mouse.13" xml:space="preserve">
+    <value>Farenizin konumunun sisteme saniyede kaç kez bildirildiği</value>
+  </data>
+  <data name="Wired" xml:space="preserve">
+    <value>Kablolu</value>
+  </data>
+  <data name="Tooltip.0" xml:space="preserve">
+    <value>Aynı modelden birden fazla aygıt bağladınız. Eylemler, aygıtın her örneğinde yinelenecektir</value>
+  </data>
+  <data name="Tooltip.1" xml:space="preserve">
+    <value>Aygıt bulunamadı. Kablosuz aygıtınızın şarjlı ve AÇIK olduğundan emin olun.</value>
+  </data>
+  <data name="Tooltip.2" xml:space="preserve">
+    <value>Bu aygıt zaten eşleştirilmiş. Yeniden eşleştirmek isterseniz önce aygıtın eşlemesini kaldırın.</value>
+  </data>
+  <data name="Tooltip.3" xml:space="preserve">
+    <value>Eşleştirdiğiniz bu aygıt, bağlı USB kablosuz alıcı ile desteklenmiyor. Aygıtla birlikte gelen alıcıyı kullanın.</value>
+  </data>
+  <data name="Tooltip.4" xml:space="preserve">
+    <value>Bu USB kablosuz alıcıdaki kullanılabilir yuvalar dolu. Kullanmak için aygıt ayarları sayfasındaki \&quot;Eşleşmeyi Kaldır\&quot; düğmesine tıklayarak aygıtın eşleşmesini kaldırın.</value>
+  </data>
+  <data name="Mouse.14" xml:space="preserve">
+    <value>Eylem atamak için tıklayın</value>
+  </data>
+  <data name="Mouse.15" xml:space="preserve">
+    <value>Sağdaki listeden bir eylem seçin\n</value>
+  </data>
+  <data name="USBWirelessReceiver" xml:space="preserve">
+    <value>USB Kablosuz Alıcı</value>
+  </data>
+  <data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>Alıcı Bellenim Sürümü</value>
+  </data>
+  <data name="ReadyToBePaired" xml:space="preserve">
+    <value>Eşleştirmeye hazır</value>
+  </data>
+  <data name="BrightnessOrContrast" xml:space="preserve">
+    <value>Parlaklık/Kontrast</value>
+  </data>
+  <data name="DisplayProperties" xml:space="preserve">
+    <value>Görüntü Özellikleri</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Düzen</value>
+  </data>
+  <data name="EasyMemory" xml:space="preserve">
+    <value>Kolay Bellek</value>
+  </data>
+  <data name="VisionEngine" xml:space="preserve">
+    <value>Vision Engine</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Yok</value>
+  </data>
+  <data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>Aygıtlar</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Kilitle</value>
+  </data>
+  <data name="NotificationCenter" xml:space="preserve">
+    <value>Bildirim Merkezi</value>
+  </data>
+  <data name="ScreenSnip" xml:space="preserve">
+    <value>Ekran Alıntısı</value>
+  </data>
+  <data name="ShowHideDesktop" xml:space="preserve">
+    <value>Masaüstünü Göster/Gizle</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Oturumu Kapat</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>Uyku</value>
+  </data>
+  <data name="SwitchApplications" xml:space="preserve">
+    <value>Uygulamaları Değiştir</value>
+  </data>
+  <data name="TaskView" xml:space="preserve">
+    <value>Görev Görünümü</value>
+  </data>
+  <data name="BarrelButton" xml:space="preserve">
+    <value>Dijital Kalem Düğmesi</value>
+  </data>
+  <data name="DefineBySystem" xml:space="preserve">
+    <value>Sisteme göre tanımla</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-Posta Adresiniz</value>
+  </data>
+  <data name="OneNote" xml:space="preserve">
+    <value>One Note</value>
+  </data>
+  <data name="PenMenu" xml:space="preserve">
+    <value>Kalem Menüsü</value>
+  </data>
+  <data name="QuickNote" xml:space="preserve">
+    <value>Quick Note</value>
+  </data>
+  <data name="ScreenSnipping" xml:space="preserve">
+    <value>Ekran Alıntısı</value>
+  </data>
+  <data name="StickyNotes" xml:space="preserve">
+    <value>Yapışkan Notlar</value>
+  </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>Araç Takımları</value>
+  </data>
+  <data name="WindowsSearch" xml:space="preserve">
+    <value>Windows Arama</value>
+  </data>
+  <data name="SwitchApplication" xml:space="preserve">
+    <value>Uygulama Değiştir</value>
+  </data>
+  <data name="AssignKeystroke" xml:space="preserve">
+    <value>Tuş Vuruşu Ata</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Renk</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Geri</value>
+  </data>
+  <data name="Calculator" xml:space="preserve">
+    <value>Hesap Makinesi</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>Pencereyi Kapat</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Kes</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Belgeler</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>İlet</value>
+  </data>
+  <data name="MaximizeWindow" xml:space="preserve">
+    <value>Pencereyi Büyüt</value>
+  </data>
+  <data name="MinimizeWindow" xml:space="preserve">
+    <value>Pencereyi Simge Durumuna Küçült</value>
+  </data>
+  <data name="MyHome" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>Dosya Aç</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Klasör Aç</value>
+  </data>
+  <data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>Yeni Tarayıcı Sekmesi Aç</value>
+  </data>
+  <data name="OpenWebPage" xml:space="preserve">
+    <value>Web Sayfası Aç</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Yapıştır</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Yakınlaştır</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Uzaklaştır</value>
+  </data>
+  <data name="ZoomReset" xml:space="preserve">
+    <value>Yakınlaştırmayı Sıfırla</value>
+  </data>
+  <data name="4thClick" xml:space="preserve">
+    <value>4. Tıklama</value>
+  </data>
+  <data name="5thClick" xml:space="preserve">
+    <value>5. Tıklama</value>
+  </data>
+  <data name="Erase" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="LeftClick" xml:space="preserve">
+    <value>Sol Tıklama</value>
+  </data>
+  <data name="MiddleClick" xml:space="preserve">
+    <value>Ortaya Tıklama</value>
+  </data>
+  <data name="OpenRun" xml:space="preserve">
+    <value>Aç/Çalıştır</value>
+  </data>
+  <data name="OpenRun2" xml:space="preserve">
+    <value>Aç ve Çalıştır</value>
+  </data>
+  <data name="PenPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PenPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="RadialMenu" xml:space="preserve">
+    <value>Dairesel Menü</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>Yinele</value>
+  </data>
+  <data name="RightClick" xml:space="preserve">
+    <value>Sağ Tıklama</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Geri al</value>
+  </data>
+</root>

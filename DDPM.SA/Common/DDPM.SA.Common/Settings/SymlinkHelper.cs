@@ -8,6 +8,7 @@ namespace DDPM.SA.Common.Settings
 {
     internal class SymlinkHelper
     {
+        //private static Log _log;
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
         private const uint FILE_READ_EA = 0x0008;
         private const uint FILE_FLAG_BACKUP_SEMANTICS = 0x2000000;
@@ -56,6 +57,14 @@ namespace DDPM.SA.Common.Settings
 
         public static string GetTargetPath(string path)
         {
+            //Dean 0911: basic function, no function mix with other file checking
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(GetTargetPath)} {FileInfo}");
+            //    return null;
+            //}
             var handle = _CreateFile(path, FILE_READ_EA, FileShare.ReadWrite | FileShare.Delete, IntPtr.Zero, FileMode.Open, FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
             if (handle == INVALID_HANDLE_VALUE)
                 throw new Win32Exception();
@@ -81,6 +90,15 @@ namespace DDPM.SA.Common.Settings
 
         public static bool RemoveFileSymlink(string path, out string info)
         {
+            //Dean 0911: basic function, no function mix with other file checking
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    info = $"{nameof(RemoveFileSymlink)} {FileInfo}";
+            //    _log.Info(info);
+            //    return false;
+            //}
             while (true)
             {
                 try
@@ -101,8 +119,38 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+	public static bool RemoveFileSymlink2(string path, out string info)
+        {
+            try
+            {
+                var targetPath = SymlinkHelper.GetTargetPath(path);
+                if (targetPath != null)
+                {
+                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+                    System.IO.File.Delete(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+
+            info = "Success";
+            return true;
+        }
+
         public static bool RemoveFolderSymlink(string path, out string info)
         {
+            //Dean 0911: basic function, no function mix with other file checking
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    info = $"{nameof(RemoveFolderSymlink)} {FileInfo}";
+            //    //_log.Info(info);
+            //    return false;
+            //}
             while (true)
             {
                 try
@@ -123,9 +171,39 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+	public static bool RemoveFolderSymlink2(string path, out string info)
+        {
+            try
+            {
+                var targetPath = SymlinkHelper.GetTargetPath(path);
+                if (targetPath != null)
+                {
+                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+                    System.IO.Directory.Delete(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+
+            info = "Success";
+            return true;
+        }
+
         public static bool IsFileHasSymlink(string path, out string info)
         {
             info = $"File {path} has symlink";
+            //Dean 0911: basic function, no function mix with other file checking
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    info = $"{nameof(IsFileHasSymlink)} {FileInfo}";
+            //    //_log.Info(info);
+            //    return false;
+            //}
             try
             {
                 FileInfo file = new FileInfo(path);
@@ -144,6 +222,15 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFolderHasSymlink(string path, out string info)
         {
             info = $"Folder {path} has symlink";
+            //Dean 0911: basic function, no function mix with other file checking
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    info = $"{nameof(IsFolderHasSymlink)} {FileInfo}";
+            //    //_log.Info(info);
+            //    return false;
+            //}
             try
             {
                 DirectoryInfo folder = new DirectoryInfo(path);

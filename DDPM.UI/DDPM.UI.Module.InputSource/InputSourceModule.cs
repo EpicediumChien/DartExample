@@ -1,9 +1,11 @@
+using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using System.Diagnostics;
 using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.InputSource
 {
@@ -26,7 +28,7 @@ namespace DDPM.UI.Module.InputSource
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             vm.InputSourceModule = this;
             _rightView = new InputSourceRightView(vm);
-            vm.Invoke_RefreshData();
+            vm.Invoke_RefreshData();            
         }
 
         public string ModuleName { get => "InputSourceModule"; }
@@ -69,6 +71,9 @@ namespace DDPM.UI.Module.InputSource
         //Handle new device coming
         private void InitNewViewModel()
         {
+            vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm.Invoke_RefreshData();
         }
 
         public void OnActivated()

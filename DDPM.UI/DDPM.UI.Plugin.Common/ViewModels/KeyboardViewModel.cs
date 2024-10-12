@@ -76,7 +76,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void OnTabOffClicked()
         {
-            if(IlluminationSelectedTabIndex == 0)
+            if (IlluminationSelectedTabIndex == 0)
             { return; }
             IlluminationSelectedTabIndex = 0;
             SwitchTab(0, true);
@@ -84,7 +84,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void OnTabAdaptiveLightClicked()
         {
-            if(IlluminationSelectedTabIndex == 1)
+            if (IlluminationSelectedTabIndex == 1)
             { return; }
             IlluminationSelectedTabIndex = 1;
             SwitchTab(1, true);
@@ -92,7 +92,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void OnTabManualClicked()
         {
-            if(IlluminationSelectedTabIndex == 2)
+            if (IlluminationSelectedTabIndex == 2)
             { return; }
             IlluminationSelectedTabIndex = 2;
             SwitchTab(2, true);
@@ -106,19 +106,19 @@ namespace DDPM.UI.Plugin.ViewModels
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
             DeviceInfos.Clear();
-            foreach(DeviceInfo deviceInfo in deviceInfos)
+            foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if(deviceInfo.LogicalDeviceType.Contains("Keyboard"))
+                if (deviceInfo.LogicalDeviceType.Contains("Keyboard"))
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
             }
         }
 
         public override bool SetCurrentDevice(string instanceID)
         {
-            if(!base.SetCurrentDevice(instanceID))
+            if (!base.SetCurrentDevice(instanceID))
                 return false;
 
-            if(CurrentDeviceInfo!.IsCollabsKeysSupported)
+            if (CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
                 IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
                 IsCollabShadowVisible = !IsCollaborationKeyEnable;
@@ -130,7 +130,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
             }
 
-            if(CurrentDeviceInfo.IsIlluminationSupported)
+            if (CurrentDeviceInfo.IsIlluminationSupported)
             {
                 TabOffCaption = Strings.Off;
                 //TabOffInfoTip = Resources.Resources.Keyboard_Illumination_Off_ToolTip;
@@ -145,7 +145,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 SwitchTab(IlluminationSelectedTabIndex);
             }
             InitializeKey();
-            if(Model == "KB500" || Model == "KB700" || Model == "KB740")
+            if (Model == "KB500" || Model == "KB700" || Model == "KB740")
             { CopilotInfoVisibility = Visibility.Visible; }
 
             return true;
@@ -154,10 +154,10 @@ namespace DDPM.UI.Plugin.ViewModels
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
             base.HandleNotification(changeType, di, property);
-            switch(changeType)
+            switch (changeType)
             {
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if(DeviceInfos.ContainsKey(di.ID))
+                    if (DeviceInfos.ContainsKey(di.ID))
                     {
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
@@ -166,18 +166,21 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         return;
                     }
-                    if(di.ID == CurrentDeviceID)
+                    if (di.ID == CurrentDeviceID)
                     {
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                        switch(property)
+                        switch (property)
                         {
                             case "BackLightingControlsChanged":
-                                if(di.BackLightTabIndex != IlluminationSelectedTabIndex)
+                                if (di.BackLightTabIndex != IlluminationSelectedTabIndex)
                                     SwitchTab(di.BackLightTabIndex);
                                 break;
 
                             case "BackLightingLevelChanged":
                                 BackLightingLevel = di.BackLightingLevel;
+                                break;
+                            case "CollaborationScreenShareEnable":
+                                IsCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
                                 break;
 
                             default:
@@ -195,7 +198,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private void SwitchTab(int index, bool NeedSetting = false)
         {
             int value = 0;
-            switch(index)
+            switch (index)
             {
                 case 0:
                     TabOffFocused = true;
@@ -203,7 +206,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     TabManualFocused = false;
                     IsSliderVisible = false;
                     value = 1;
-                    if(NeedSetting)
+                    if (NeedSetting)
                         BackLightingLevel = 0;
                     break;
 
@@ -223,7 +226,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     value = 3;
                     break;
             }
-            if(NeedSetting)
+            if (NeedSetting)
                 _deviceManager.SetBackLightingControls(value, CurrentDeviceInfo!.ID);
 
             IlluminationSelectedTabIndex = index;
@@ -241,7 +244,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _tabOffFocused;
             set
             {
-                if(_tabOffFocused != value)
+                if (_tabOffFocused != value)
                 {
                     _tabOffFocused = value;
                     OnPropertyChanged();
@@ -254,7 +257,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _tabAdaptiveLightFocused;
             set
             {
-                if(_tabAdaptiveLightFocused != value)
+                if (_tabAdaptiveLightFocused != value)
                 {
                     _tabAdaptiveLightFocused = value;
                     OnPropertyChanged();
@@ -267,7 +270,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _tabManualFocused;
             set
             {
-                if(_tabManualFocused != value)
+                if (_tabManualFocused != value)
                 {
                     _tabManualFocused = value;
                     OnPropertyChanged();
@@ -280,7 +283,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isSliderVisible;
             set
             {
-                if(_isSliderVisible != value)
+                if (_isSliderVisible != value)
                 {
                     _isSliderVisible = value;
                     OnPropertyChanged();
@@ -293,11 +296,11 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _backLightingLevel;
             set
             {
-                if(_backLightingLevel != value)
+                if (_backLightingLevel != value)
                 {
                     _backLightingLevel = value;
                     OnPropertyChanged();
-                    if(!IsSliderDragging)
+                    if (!IsSliderDragging)
                         SetDBackLightingLevel();
 
                     BackLightingLevelText = _backLightingLevel == 0 ? "0%" : (_backLightingLevel == 1 ? "25%" : (_backLightingLevel == 2 ? "50%" : (_backLightingLevel == 3 ? "75%" : "100%")));
@@ -310,7 +313,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _backLightingLevelText;
             set
             {
-                if(_backLightingLevelText != value)
+                if (_backLightingLevelText != value)
                 {
                     _backLightingLevelText = value;
                     OnPropertyChanged();
@@ -320,7 +323,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SetDBackLightingLevel()
         {
-            if(_backLightingLevel != CurrentDeviceInfo!.BackLightingLevel)
+            if (_backLightingLevel != CurrentDeviceInfo!.BackLightingLevel)
                 _deviceManager.SetBackLightingLevel(_backLightingLevel, CurrentDeviceInfo.ID);
         }
 
@@ -329,7 +332,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationKeyEnable;
             set
             {
-                if(_isCollaborationKeyEnable != value)
+                if (_isCollaborationKeyEnable != value)
                 {
                     _isCollaborationKeyEnable = value;
                     EnableCollaborationKey(value);
@@ -344,7 +347,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationKeyEnableText;
             set
             {
-                if(_isCollaborationKeyEnableText != value)
+                if (_isCollaborationKeyEnableText != value)
                 {
                     _isCollaborationKeyEnableText = value;
                     OnPropertyChanged();
@@ -357,7 +360,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationCameraEnableText;
             set
             {
-                if(_isCollaborationCameraEnableText != value)
+                if (_isCollaborationCameraEnableText != value)
                 {
                     _isCollaborationCameraEnableText = value;
                     OnPropertyChanged();
@@ -370,7 +373,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationScreenShareEnableText;
             set
             {
-                if(_isCollaborationScreenShareEnableText != value)
+                if (_isCollaborationScreenShareEnableText != value)
                 {
                     _isCollaborationScreenShareEnableText = value;
                     OnPropertyChanged();
@@ -383,7 +386,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationChatEnableText;
             set
             {
-                if(_isCollaborationChatEnableText != value)
+                if (_isCollaborationChatEnableText != value)
                 {
                     _isCollaborationChatEnableText = value;
                     OnPropertyChanged();
@@ -396,7 +399,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationMicEnableText;
             set
             {
-                if(_isCollaborationMicEnableText != value)
+                if (_isCollaborationMicEnableText != value)
                 {
                     _isCollaborationMicEnableText = value;
                     OnPropertyChanged();
@@ -409,7 +412,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationCameraEnable;
             set
             {
-                if(_isCollaborationCameraEnable != value)
+                if (_isCollaborationCameraEnable != value)
                 {
                     _isCollaborationCameraEnable = value;
                     IsCollaborationCameraEnableText = value ? Strings.On : Strings.Off;
@@ -424,7 +427,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationScreenShareEnable;
             set
             {
-                if(_isCollaborationScreenShareEnable != value)
+                if (_isCollaborationScreenShareEnable != value)
                 {
                     _isCollaborationScreenShareEnable = value;
                     IsCollaborationScreenShareEnableText = value ? Strings.On : Strings.Off;
@@ -439,7 +442,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationChatEnable;
             set
             {
-                if(_isCollaborationChatEnable != value)
+                if (_isCollaborationChatEnable != value)
                 {
                     _isCollaborationChatEnable = value;
                     IsCollaborationChatEnableText = value ? Strings.On : Strings.Off;
@@ -454,7 +457,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationMicEnable;
             set
             {
-                if(_isCollaborationMicEnable != value)
+                if (_isCollaborationMicEnable != value)
                 {
                     _isCollaborationMicEnable = value;
                     IsCollaborationMicEnableText = value ? Strings.On : Strings.Off;
@@ -469,7 +472,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationBlinkEffectEnable;
             set
             {
-                if(_isCollaborationBlinkEffectEnable != value)
+                if (_isCollaborationBlinkEffectEnable != value)
                 {
                     _isCollaborationBlinkEffectEnable = value;
                     OnPropertyChanged();
@@ -483,7 +486,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollaborationDoubleTapEnable;
             set
             {
-                if(_isCollaborationDoubleTapEnable != value)
+                if (_isCollaborationDoubleTapEnable != value)
                 {
                     _isCollaborationDoubleTapEnable = value;
                     OnPropertyChanged();
@@ -497,7 +500,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _cameraToggleEnabled;
             set
             {
-                if(_cameraToggleEnabled != value)
+                if (_cameraToggleEnabled != value)
                 {
                     _cameraToggleEnabled = value;
                     OnPropertyChanged();
@@ -510,7 +513,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _screenShareToggleEnabled;
             set
             {
-                if(_screenShareToggleEnabled != value)
+                if (_screenShareToggleEnabled != value)
                 {
                     _screenShareToggleEnabled = value;
                     OnPropertyChanged();
@@ -523,7 +526,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _chatToggleEnabled;
             set
             {
-                if(_chatToggleEnabled != value)
+                if (_chatToggleEnabled != value)
                 {
                     _chatToggleEnabled = value;
                     OnPropertyChanged();
@@ -536,7 +539,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _micToggleEnabled;
             set
             {
-                if(_micToggleEnabled != value)
+                if (_micToggleEnabled != value)
                 {
                     _micToggleEnabled = value;
                     OnPropertyChanged();
@@ -549,7 +552,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _blinkEffectToggleEnabled;
             set
             {
-                if(_blinkEffectToggleEnabled != value)
+                if (_blinkEffectToggleEnabled != value)
                 {
                     _blinkEffectToggleEnabled = value;
                     OnPropertyChanged();
@@ -562,7 +565,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _doubleTapToggleEnabled;
             set
             {
-                if(_doubleTapToggleEnabled != value)
+                if (_doubleTapToggleEnabled != value)
                 {
                     _doubleTapToggleEnabled = value;
                     OnPropertyChanged();
@@ -587,7 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isCollabShadowVisible;
             set
             {
-                if(_isCollabShadowVisible != value)
+                if (_isCollabShadowVisible != value)
                 {
                     _isCollabShadowVisible = value;
                     OnPropertyChanged();
@@ -602,6 +605,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "KB3121W";
             //Model = "KB500";
             //Model = "KB700";
+            //Model = "KB900";
             //Model = "KB7221W";
             //Model = "KB740";
             //Model = "KB7120W";
@@ -638,7 +642,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.F8);
@@ -653,7 +657,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.PrtSc);
@@ -668,7 +672,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.ScrollLock);
@@ -683,7 +687,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.PauseBreak);
@@ -698,7 +702,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.Calculator);
@@ -713,7 +717,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.Home);
@@ -728,7 +732,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.End);
@@ -743,7 +747,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.PgUp);
@@ -758,7 +762,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllKeysVisible == Visibility.Hidden)
+                if (IsAllKeysVisible == Visibility.Hidden)
                     return false;
                 else
                     return KeyboardAction.KeyActions.ContainsKey(KeyName.PgDown);
@@ -774,10 +778,10 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isAllKeysVisible;
             set
             {
-                if(_isAllKeysVisible != value)
+                if (_isAllKeysVisible != value)
                 {
                     _isAllKeysVisible = value;
-                    if(value == Visibility.Visible)
+                    if (value == Visibility.Visible)
                     {
                         OnPropertyChanged(nameof(IsF8Visible));
                         OnPropertyChanged(nameof(IsPrtScVisible));
@@ -971,9 +975,9 @@ namespace DDPM.UI.Plugin.ViewModels
             var action = KeyboardAction.KeyActions[keyName];
             ActionItem actionItem;
             var parameter = "";
-            if(action.AssignedAction.ID == -1)
+            if (action.AssignedAction.ID == -1)
             {
-                if(action.DefaultActionID == -1)
+                if (action.DefaultActionID == -1)
                 {
                     return Strings.NullActionTooltip1;
                 }
@@ -985,7 +989,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 parameter = action.AssignedAction.Parameter;
             }
             string tooltip = actionItem.Caption!;
-            if(parameter != "")
+            if (parameter != "")
                 tooltip += " : " + parameter;
             return tooltip;
         }
@@ -1020,15 +1024,15 @@ namespace DDPM.UI.Plugin.ViewModels
             var property = typeof(KeyboardViewModel).GetProperty($"{keyName}ImageFile");
 
             var action = KeyboardAction.KeyActions[_keyName];
-            if(action.AssignedAction.ID == action.DefaultActionID)
+            if (action.AssignedAction.ID == action.DefaultActionID)
             {
-                if(IsSelected)
+                if (IsSelected)
                 {
                     property!.SetValue(this, "/DDPM.UI.Resources;component/Resources/Images/Key5.png");
                 }
                 else
                 {
-                    if(IsHover)
+                    if (IsHover)
                     {
                         property!.SetValue(this, "/DDPM.UI.Resources;component/Resources/Images/Key2.png");
                     }
@@ -1040,13 +1044,13 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             else
             {
-                if(IsSelected)
+                if (IsSelected)
                 {
                     property!.SetValue(this, "/DDPM.UI.Resources;component/Resources/Images/Key6.png");
                 }
                 else
                 {
-                    if(IsHover)
+                    if (IsHover)
                     {
                         property!.SetValue(this, "/DDPM.UI.Resources;component/Resources/Images/Key4.png");
                     }
@@ -1065,9 +1069,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public void CheckRestoreStatus()
         {
             IsRestoreEnable = false;
-            foreach(var keyAction in KeyboardAction.KeyActions.Values)
+            foreach (var keyAction in KeyboardAction.KeyActions.Values)
             {
-                if(keyAction.DefaultActionID != keyAction.AssignedAction.ID)
+                if (keyAction.DefaultActionID != keyAction.AssignedAction.ID)
                 {
                     IsRestoreEnable = true;
                     break;
@@ -1078,13 +1082,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void RestoreToDefault()
         {
-            foreach(var keyAction in KeyboardAction.KeyActions.Values)
+            foreach (var keyAction in KeyboardAction.KeyActions.Values)
             {
                 keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID);
             }
             //ActionList.ExportActionList(KeyboardActions, Model, CurrentInstanceID);
             ActionList.ExportActionList(KeyboardAction, Model);
-            foreach(var key in KeyboardAction.KeyActions.Keys)
+            foreach (var key in KeyboardAction.KeyActions.Keys)
             {
                 RefreshKeyImageFile(key.ToString());
                 OnPropertyChanged($"{key}Tooltip");
@@ -1095,7 +1099,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void ClearSelectedKey()
         {
-            if(SelectedKey != "")
+            if (SelectedKey != "")
             {
                 RefreshKeyImageFile(SelectedKey);
                 SelectedKey = "";
@@ -1109,7 +1113,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void UpdateAction(int actionID, string parameter = "")
         {
-            if(SelectedKey != "")
+            if (SelectedKey != "")
             {
                 SelectedAction!.AssignedAction.ID = actionID;
                 SelectedAction!.AssignedAction.Parameter = parameter;

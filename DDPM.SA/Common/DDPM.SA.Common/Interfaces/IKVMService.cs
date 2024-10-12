@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using Dell.Client.Framework.Common;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -15,6 +16,10 @@ namespace DDPM.SA.Common
 
     public interface INKVMService : IFrameworkPlugin
     {
+        event EventHandler<NKVMRespone> NKVMCLIEvent;
+
+        event EventHandler<NKVMSetHotkey> NKVMSetHotkey;
+
         Task CreatNewNamedpipe();
 
         Task<bool> IsNamedpipeConnected();
@@ -44,6 +49,26 @@ namespace DDPM.SA.Common
         Task NKVM_ChangeLimitedSW(MonitorInfo monitorInfo, bool isON);
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
+        Task SetHotkeyResponse(string jsonstring, bool isSuccess);
+
+        Task GetNKVMVersion();
+
+        Task GetNKVMStatus();
+
+        Task GetNKVMAutoConnect();
+
+        Task GetNKVMContentTransfer();
+
+        Task GetNKVMIncommingPort();
+
+        Task GetNKVMOutgoingPort();
+
+        Task GetNKVMContentTransferPort();
+
+        Task GetNKVMSettings();
+
+        Task NKVM_State(bool state);
 
         Task CallNKVMConnent();
 

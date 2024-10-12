@@ -84,8 +84,8 @@
                                                 <ColumnDefinition Width="1*" />
                                                 <ColumnDefinition Width="2*" />
                                             </Grid.ColumnDefinitions>
-                                            <Image Grid.Column="0"
-                                                   Source="{Binding InputImage}" Stretch="Uniform" Margin="8" />
+                                            <Path Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   Data="{Binding InputImage}" Fill="White" Stretch="None" Margin="8" />
                                             <Label Grid.Column="1" VerticalAlignment="Center"
                                                    Content="{Binding InputType}" FontSize="14" Foreground="White" />
                                             <Grid Grid.Column="2">
@@ -94,11 +94,11 @@
                                                     <ColumnDefinition Width="{Binding USBWidth}" />
                                                 </Grid.ColumnDefinitions>
                                                 <UXControls:UXTextBox Grid.Column="{Binding NameColumn}" x:Name="InputName" Margin="2" Height="20"
-                                                                      Text="{Binding InputName}" TextChanged="TextBox_TextChanged"
+                                                                      Text="{Binding InputName}" TextChanged="TextBox_TextChanged" MaxLength="30"
                                                                       Tag="{Binding Index}"
                                                                       Background="#141D28" Foreground="White"
                                                                       BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                                                                      VerticalContentAlignment="Center" />
+                                                                      VerticalContentAlignment="Center" KeyDown="KeyDown_KeyDown" />
                                                 <ComboBox Grid.Column="1" x:Name="USBCB" Margin="4"
                                                           AutomationProperties.Name="SelectedCheck"
                                                           Style="{StaticResource DdpmComboBoxStyle}"

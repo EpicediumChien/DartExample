@@ -1,4 +1,6 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -26,6 +28,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public SaveCustomWindow()
         {
             InitializeComponent();
+           // Owner = owner;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -51,18 +54,35 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             this.Dispatcher.Invoke(() =>
             {
-                if (arg.CustomName != null)
+                Trace.WriteLine($"  * EAArgs.CustomName=[{arg.CustomName}]");
+
+                cbNames.Items.Clear();
+                string selectedName = arg.CustomName;
+                if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
                 {
+                    int addCount = 0;
                     foreach (string name in arg.CustomNames)
                     {
-                        cbNames.Items.Add((string)name);
+                        string addName = name;
+                        //Check length of name
+                        if (addName.Length > EAEMConstants.MaxCustomNameLenth)
+                            addName = addName.Substring(0, EAEMConstants.MaxCustomNameLenth);
+                        cbNames.Items.Add((string)addName);
+                        addCount++;
+                        if (addCount >= EAEMConstants.MaxCustomItems)
+                            break;
                     }
                 }
-                else
+                else //CustomNames is empty
                 {
-                    cbNames.Items.Add(arg.CustomName);
+                    //Add one item to ComboBox
+                    if (String.IsNullOrWhiteSpace(selectedName))
+                    {
+                        selectedName = "Custom Layout (1)";
+                    }
+                    cbNames.Items.Add(selectedName);
                 }
-                cbNames.SelectedValue = arg.CustomName;
+                cbNames.SelectedValue = selectedName;
 
                 //Calculate the position/size of EditWindow
                 double dpiX = 1.000;
@@ -99,10 +119,52 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            CustomName = cbNames.Text;
+            //If it's empty
+            if (String.IsNullOrWhiteSpace(cbNames.Text))
+                return;
+            //Trunk the string if it too long
+            string retName = cbNames.Text;
+            if (retName.Length > EAEMConstants.MaxCustomNameLenth)
+                retName = retName.Substring(0, EAEMConstants.MaxCustomNameLenth);
+            CustomName = retName;
             if (SaveButtonClick != null)
             {
                 SaveButtonClick(this, CustomName);
+            }
+        }
+
+        private void cbNames_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Reference: https://stackoverflow.com/questions/1572887/how-to-set-maxlength-for-combobox-in-wpf
+            System.Windows.Controls.ComboBox cb = (System.Windows.Controls.ComboBox)sender;
+            if (cb != null)
+            {
+                var partEditableTextBox = (System.Windows.Controls.TextBox)cb.Template.FindName("PART_EditableTextBox", cb);
+                if (partEditableTextBox != null)
+                {
+                    partEditableTextBox.MaxLength = EAEMConstants.MaxCustomNameLenth;
+                }
+            }
+        }
+
+        private void closeGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (CancelButtonClick != null)
+            {
+                CancelButtonClick(this, "");
+            }
+        }
+
+        private void cbNames_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            string custName = cbNames.Text;
+            if (String.IsNullOrWhiteSpace(custName))
+            {
+                saveBtn.IsEnabled = false;
+            }
+            else
+            {
+                saveBtn.IsEnabled = true;
             }
         }
     }

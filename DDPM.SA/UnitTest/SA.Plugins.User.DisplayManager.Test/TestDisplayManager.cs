@@ -10,7 +10,6 @@ using Moq;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies.Util;
 
 namespace DDPM.SA.Plugins.User.DisplayManager.Test
 {
@@ -258,9 +257,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             capabilityDic.Add("EF", new List<string> { "value2" });
             monitorInfo1.CapabilityDic = capabilityDic;  //GetUSBUpstreamList 里面包含EE
 
-            ObjGetVCP OBjbjGetVCP2 = new ObjGetVCP() { result = true, value = 48128 };//0xE7
+            List<InputSourceObject> inputSourceObjects = new List<InputSourceObject>();
+            inputSourceObjects.Add(new InputSourceObject() { Name = "Thunderbolt", value = 25 });
+            inputSourceObjects.Add(new InputSourceObject() { Name = "DisplayPort", value = 15 });
+            inputSourceObjects.Add(new InputSourceObject() { Name = "HDMI", value = 17 });
+
+            ObjGetVCP OBjbjGetVCP2 = new ObjGetVCP() { result = true, value = inputSourceObjects };//0xE7 add input list
             ObjGetVCP OBjbjGetVCP = new ObjGetVCP() { result = true, value = 35856u };//0XEE
             VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(OBjbjGetVCP));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(OBjbjGetVCP2));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
@@ -829,6 +834,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
         }
 
+        //Robert_Lin 2024-9-24 this interface has been removed
+        /*
         [Test]
         public void TestRequestEditSplit()
         {
@@ -855,6 +862,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.That(result2, Is.EqualTo(SetEAWrokSplitResult));
             }
         }
+        */
+
 
         [Test]
         public void TestGetALSFeatureValue()

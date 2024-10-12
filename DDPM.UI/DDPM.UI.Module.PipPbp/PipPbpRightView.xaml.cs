@@ -149,12 +149,24 @@ namespace DDPM.UI.Module.PipPbp
 
         private void usbSwitchButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            vm.ExecuteUsbSwitch();
+            //Robert_Lin, 2024-10-5 never call into here, change handle event to Button.Click
+            //vm.ExecuteUsbSwitch();
         }
 
         private void videoSwapButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //Robert_Lin, 2024-10-5 never call into here, change handle event to Button.Click
+            //vm.ExecuteVideoSwap();
+        }
+
+        private void videoSwapButton_Click(object sender, RoutedEventArgs e)
+        {
             vm.ExecuteVideoSwap();
+        }
+
+        private void usbSwitchButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.ExecuteUsbSwitch();
         }
     }
 }

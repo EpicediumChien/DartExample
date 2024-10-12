@@ -4,6 +4,7 @@ using Dell.Client.Framework.UX.WPF;
 using Microsoft;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -579,25 +580,33 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         // Please Wait logic
-        public void Invoke_PleaseWait(string model)
+        public void Invoke_PleaseWait(string model, HeadsetViewModel vm)
         {
             BackgroundWorker bw = new BackgroundWorker
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += (sender, e) => DoWork_PleaseWait(model);
+            bw.DoWork += (sender, e) => DoWork_PleaseWait(model, vm);
             bw.RunWorkerCompleted += RunWorkerCompleted_PleaseWait;
 
             ShowPleaseWait();
             bw.RunWorkerAsync();
         }
 
-        private void DoWork_PleaseWait(string model)
+        private void DoWork_PleaseWait(string model, HeadsetViewModel vm)
         {
             // Simulate time-consuming operation
-            //Thread.Sleep(1000);
-
+            Thread.Sleep(500);
+            int sun = 0;
+            while (vm.FirmwareVersion == "0000")
+            {
+                _deviceManager.GetDevices();
+                Thread.Sleep(2000);
+                sun++;
+                if (sun >= 3)
+                    break;
+            }
             // Call DetectPageShow
             DetectPageShow(model);
         }
@@ -612,6 +621,21 @@ namespace DDPM.UI.Plugin.ViewModels
         /// <summary>
         /// HeadsetAudioSettings Page
         /// </summary>
+
+        //private Visibility _isAncLockMask = Visibility.Collapsed;
+
+        //public Visibility IsAncLockMask
+        //{
+        //    get { return _isAncLockMask; }
+        //    set
+        //    {
+        //        if (_isAncLockMask != value)
+        //        {
+        //            _isAncLockMask = value;
+        //            OnPropertyChanged(nameof(_isAncLockMask));
+        //        }
+        //    }
+        //}
 
         #region HeadsetAudioSettings ToggleSwitch Binding
 
@@ -1661,5 +1685,75 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         #endregion HeadsetDeviceSettingsToolTip
+
+        #region lock/unlock
+        private Visibility _isAncModeLocked = Visibility.Collapsed;
+
+        public Visibility isAncModeLocked
+        {
+            get { return _isAncModeLocked; }
+            set { 
+                _isAncModeLocked = value;
+                OnPropertyChanged("isAncModeLocked");
+            }
+        }
+
+        private bool _isAncEnabled = true;
+
+        public bool isAncEnabled
+        {
+            get { return _isAncEnabled; }
+            set
+            {
+                _isAncEnabled = value;
+                OnPropertyChanged("isAncEnabled");
+            }
+        }
+
+        private Visibility _isMicCancelLocked = Visibility.Collapsed;
+
+        public Visibility isMicCancelLocked
+        {
+            get { return _isMicCancelLocked; }
+            set {
+                _isMicCancelLocked = value;
+                OnPropertyChanged("isMicCancelLocked");
+            }
+        }
+
+        private bool _isMicTabStopped = true;
+        public bool isMicTabStopped
+        {
+            get { return _isMicTabStopped; }
+            set
+            {
+                _isMicTabStopped = value;
+                OnPropertyChanged("isMicTabStopped");
+            }
+        }
+
+        private Visibility _isWearLocked = Visibility.Collapsed;
+
+        public Visibility isWearLocked
+        {
+            get { return _isWearLocked; }
+            set
+            {
+                _isWearLocked = value;
+                OnPropertyChanged("isWearLocked");
+            }
+        }
+
+        private bool _isWearTabStopped = true;
+        public bool isWearTabStopped
+        {
+            get { return _isWearTabStopped; }
+            set
+            {
+                _isWearTabStopped = value;
+                OnPropertyChanged("isWearTabStopped");
+            }
+        }
+        #endregion
     }
 }
