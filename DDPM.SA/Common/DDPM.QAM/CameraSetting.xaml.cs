@@ -22,6 +22,10 @@ namespace DDPM.QAM
         public CameraSetting()
         {
             InitializeComponent();
+            if (DdpmCommonHelper.QAMPageViewModel != null)
+            {
+                DataContext = DdpmCommonHelper.QAMPageViewModel;
+            }
             InitializeSettings();
         }
         private void InitializeSettings()
@@ -43,6 +47,7 @@ namespace DDPM.QAM
                     btnRes2.Width = 96;
                     btnRes3.Width = 96;
                 }
+                vm.RefreshUI();
             }
         }
         private void Presets_Click(object sender, MouseButtonEventArgs e)

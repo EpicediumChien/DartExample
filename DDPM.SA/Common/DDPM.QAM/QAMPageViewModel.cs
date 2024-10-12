@@ -90,7 +90,7 @@ namespace DDPM.QAM
         {
             try
             {
-                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
@@ -197,6 +197,17 @@ namespace DDPM.QAM
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
                 }
+                List<UI_Profile> temp = UI_ProfileList.ToList();
+                UI_ProfileList = new ObservableCollection<UI_Profile>();
+                foreach (var profile in temp)
+                {
+                    profile.IsSelected = false;
+                    if (profile.Profile_Name.Equals(CurrentProfileName.Profile_Name))
+                    {
+                        profile.IsSelected = true;
+                    }
+                    UI_ProfileList.Add(profile);
+                }
                 RefreshUI();
             }
         }
@@ -290,5 +301,6 @@ namespace DDPM.QAM
     public class UI_Profile
     {
         public string Profile_Name { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

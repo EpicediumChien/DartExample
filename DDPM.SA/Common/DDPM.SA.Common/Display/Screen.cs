@@ -246,20 +246,42 @@ namespace DDPM.SA.Common.Screen
 
         #region DLL-Imports
 
-        [DllImport("user32.dll")]
-        public static extern int GetDisplayConfigBufferSizes(
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetDisplayConfigBufferSizes(
             QUERY_DEVICE_CONFIG_FLAGS flags, out uint numPathArrayElements, out uint numModeInfoArrayElements);
+        private static int _GetDisplayConfigBufferSizes(
+            QUERY_DEVICE_CONFIG_FLAGS flags, out uint numPathArrayElements, out uint numModeInfoArrayElements)
+        {
+            return GetDisplayConfigBufferSizes( flags, out numPathArrayElements, out numModeInfoArrayElements);
+        }
 
-        [DllImport("user32.dll")]
-        public static extern int QueryDisplayConfig(
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int QueryDisplayConfig(
             QUERY_DEVICE_CONFIG_FLAGS flags,
             ref uint numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] PathInfoArray,
             ref uint numModeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] ModeInfoArray,
             IntPtr currentTopologyId
             );
+        private static int _QueryDisplayConfig(
+            QUERY_DEVICE_CONFIG_FLAGS flags,
+            ref uint numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] PathInfoArray,
+            ref uint numModeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] ModeInfoArray,
+            IntPtr currentTopologyId
+            )
+        {
+            return QueryDisplayConfig(flags, ref numPathArrayElements, PathInfoArray,
+              ref numModeInfoArrayElements, ModeInfoArray, currentTopologyId);
+        }
 
-        [DllImport("user32.dll")]
-        public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName);
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName);
+        private static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName)
+        {
+            return DisplayConfigGetDeviceInfo(ref deviceName);
+        }
 
         #endregion
 
@@ -275,7 +297,7 @@ namespace DDPM.SA.Common.Screen
                     type = DISPLAYCONFIG_DEVICE_INFO_TYPE.DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME
                 }
             };
-            var error = DisplayConfigGetDeviceInfo(ref deviceName);
+            var error = _DisplayConfigGetDeviceInfo(ref deviceName);
             if (error != ERROR_SUCCESS)
                 throw new Win32Exception(error);
             return deviceName.monitorFriendlyDeviceName;
@@ -284,13 +306,13 @@ namespace DDPM.SA.Common.Screen
         private static IEnumerable<string> GetAllMonitorsFriendlyNames()
         {
             uint pathCount, modeCount;
-            var error = GetDisplayConfigBufferSizes(QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS, out pathCount, out modeCount);
+            var error = _GetDisplayConfigBufferSizes(QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS, out pathCount, out modeCount);
             if (error != ERROR_SUCCESS)
                 throw new Win32Exception(error);
 
             var displayPaths = new DISPLAYCONFIG_PATH_INFO[pathCount];
             var displayModes = new DISPLAYCONFIG_MODE_INFO[modeCount];
-            error = QueryDisplayConfig(QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS,
+            error = _QueryDisplayConfig(QUERY_DEVICE_CONFIG_FLAGS.QDC_ONLY_ACTIVE_PATHS,
                 ref pathCount, displayPaths, ref modeCount, displayModes, IntPtr.Zero);
             if (error != ERROR_SUCCESS)
                 throw new Win32Exception(error);

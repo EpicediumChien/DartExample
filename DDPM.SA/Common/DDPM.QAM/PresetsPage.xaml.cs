@@ -23,6 +23,10 @@ namespace DDPM.QAM
         public PresetsPage()
         {
             InitializeComponent();
+            if (DdpmCommonHelper.QAMPageViewModel != null)
+            {
+                DataContext = DdpmCommonHelper.QAMPageViewModel;
+            }
         }
         private void SetProfile_Click(object sender, MouseButtonEventArgs e)
         {

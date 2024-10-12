@@ -23,6 +23,10 @@ namespace DDPM.QAM
         public AutoFramingPage()
         {
             InitializeComponent();
+            if (DdpmCommonHelper.QAMPageViewModel != null)
+            {
+                DataContext = DdpmCommonHelper.QAMPageViewModel;
+            }
         }
     }
 }

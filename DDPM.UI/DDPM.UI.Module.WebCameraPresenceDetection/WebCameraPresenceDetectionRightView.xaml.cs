@@ -74,19 +74,27 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             int nRes = -1;
           
             nRes = DdpmCommonHelper.DeviceManagerSA!.GetWALTime(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            if (nRes != 30 && nRes != 60 && nRes != 120)
+                nRes = 60;
+
             _vm.SelectedDelay = _vm.Delay_ItemsCollection.Find(x => (x.Delay == nRes));
 
-            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
+            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
 
             if (nRes > 0)
                 _vm.IsChecked_Snooze = true;
             else
                 _vm.IsChecked_Snooze = false;
 
-            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID).Result;
-            _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
+            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID).Result;
+
+            if (nRes != 30 && nRes != 60 && nRes != 90 && nRes != 120)
+                nRes = 60;
+
+             _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
 
 
             //lock/unlock init, 9/23 add lock
