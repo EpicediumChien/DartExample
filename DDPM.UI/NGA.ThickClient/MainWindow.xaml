@@ -7,7 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wpf="clr-namespace:Dell.Client.Framework.UX.WPF.Console;assembly=DCF.UX.WPF"
     Background="#F20D121A"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    ResizeMode="CanResize">
+    
     <wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>
