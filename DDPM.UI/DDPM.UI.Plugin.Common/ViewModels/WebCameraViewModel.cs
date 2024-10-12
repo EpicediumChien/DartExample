@@ -1267,7 +1267,7 @@ namespace DDPM.UI.Plugin.ViewModels
             var propertyInfo = type.GetProperty(op.Property);
             object convertedValue = Convert.ChangeType(op.OldValue, propertyInfo!.PropertyType);
             propertyInfo.SetValue(CurrentProfile, convertedValue);
-            UPdateProperty(op.Property, convertedValue);
+            UpdateProperty(op.Property, convertedValue);
         }
         public void Redo()
         {
@@ -1279,10 +1279,10 @@ namespace DDPM.UI.Plugin.ViewModels
             var propertyInfo = type.GetProperty(op.Property);
             object convertedValue = Convert.ChangeType(op.NewValue, propertyInfo!.PropertyType);
             propertyInfo.SetValue(CurrentProfile, convertedValue);
-            UPdateProperty(op.Property, convertedValue);
+            UpdateProperty(op.Property, convertedValue);
         }
 
-        private void UPdateProperty(string property, object value)
+        private void UpdateProperty(string property, object value)
         {
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             switch (property)
@@ -1360,6 +1360,20 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(RedoVisibility));
             OnPropertyChanged(nameof(Redo2Visibility));
         }
+
+        private Visibility _tooltipVisibility = Visibility.Collapsed;
+        public Visibility TooltipVisibility
+        {
+            get => _tooltipVisibility;
+            set
+            {
+                _tooltipVisibility = value;
+                OnPropertyChanged();
+                MessageBoxVisibility = value;
+                OnPropertyChanged(nameof(MessageBoxVisibility));
+            }
+        }
+        public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
     }
 
     public class StreamResolution

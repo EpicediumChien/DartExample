@@ -809,9 +809,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.SetProfile();
             }
             txbName.Text = profileName;
+            _vm!.DisableVBar();
             gdBattery.Visibility = Visibility.Collapsed;
             gdAddProfile.Visibility = Visibility.Visible;
             txtCaption.Text = Strings.EditPreset;
+            _vm.TooltipVisibility = Visibility.Visible;
         }
 
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -944,10 +946,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
+            _vm!.DisableVBar();
             gdBattery.Visibility = Visibility.Collapsed;
             gdAddProfile.Visibility = Visibility.Visible;
             txbName.Text = string.Empty;
             txbName.Focus();
+            _vm.TooltipVisibility = Visibility.Visible;
         }
 
         private void NameTextChanged(object sender, TextChangedEventArgs e)
@@ -984,7 +988,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm!.CurrentProfileName = EditingProfileName;
                 _vm.SetProfile();
             }
-            txtCaption.Text = _vm.Name;
+            txtCaption.Text = _vm!.Name;
+            _vm.EnableVBar();
+            _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
@@ -1032,6 +1038,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             gdAddProfile.Visibility = Visibility.Collapsed;
             txtCaption.Text = _vm.Name;
             _vm.ClearUndo();
+            _vm.EnableVBar();
+            _vm.TooltipVisibility = Visibility.Collapsed;
         }
     }
 }

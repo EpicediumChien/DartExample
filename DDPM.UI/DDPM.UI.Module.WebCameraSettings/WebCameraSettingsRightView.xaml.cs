@@ -342,5 +342,11 @@ namespace DDPM.UI.Module.WebCameraSettings
                     _vm.Redo();
             }
         }
+
+        private void CloseMessageBox(object sender, MouseButtonEventArgs e)
+        {
+            _vm.MessageBoxVisibility = Visibility.Collapsed;
+            _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibility));
+        }
     }
 }
