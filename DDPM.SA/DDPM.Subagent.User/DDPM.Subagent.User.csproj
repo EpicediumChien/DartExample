@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<OutputType>Exe</OutputType>
+		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<OutputType>WinExe</OutputType>
