@@ -1173,6 +1173,118 @@ namespace ColorPreset.Plugins
             }
         }
 
+        public Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name)
+        {
+            if (Log != null)
+            {
+                Log.Info($"Sync_ColorPresetName requested ...");
+            }
+
+            string strSync_ColorPreset_Name = string.Empty;
+
+            int index = -1;
+
+            // check Color Preset Strings Standard or Native
+
+            if (monitorInfo.modelName.StartsWith("UP"))
+            {
+                if (ColorPreset_Name == "Standard/Native")
+                    strSync_ColorPreset_Name = "Native";
+            }
+            else
+            {
+                if (ColorPreset_Name == "Standard/Native")
+                    strSync_ColorPreset_Name = "Standard";
+            }
+
+            // check Color Preset Strings Custom 1/2/3 or User 1/2/3
+
+            if (monitorInfo.modelName.StartsWith("UP3221Q"))
+            {
+                if (ColorPreset_Name == "Custom 1 / User 1")
+                    strSync_ColorPreset_Name = "User 1";
+                else if (ColorPreset_Name == "Custom 2 / User 2")
+                    strSync_ColorPreset_Name = "User 2";
+                else if (ColorPreset_Name == "Custom 3 / User 3")
+                    strSync_ColorPreset_Name = "User 3";
+            }
+            else
+            {
+                if (ColorPreset_Name == "Custom 1 / User 1")
+                    strSync_ColorPreset_Name = "Custom 1";
+                else if (ColorPreset_Name == "Custom 2 / User 2")
+                    strSync_ColorPreset_Name = "Custom 2";
+                else if (ColorPreset_Name == "Custom 3 / User 3")
+                    strSync_ColorPreset_Name = "Custom 3";
+            }
+
+            // check Color Preset Strings Game or Game1
+            
+            if (ColorPresetSupportList.Count > 0)
+                index = ColorPresetSupportList.FindIndex(x => x == "Game2");
+
+            if (index >= 0)
+            {
+                if (ColorPreset_Name == "Game/Game1")
+                    strSync_ColorPreset_Name = "Game1";
+            }
+            else
+            {
+                if (ColorPreset_Name == "Game/Game1")
+                    strSync_ColorPreset_Name = "Game";
+            }
+
+            // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
+
+            string strFY = string.Empty;
+
+            for (int i = 0; i < monitorInfo.modelName.Length; i++) // loop over the complete modelName
+            {
+                if (Char.IsDigit(monitorInfo.modelName[i])) //check if the current char is digit
+                {
+                    strFY = monitorInfo.modelName.Substring(i + 2, 2);
+                    break;
+                }
+
+            }
+
+            // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
+            int numFY = 0;
+            try
+            {
+                numFY = Int32.Parse(strFY);
+
+                if (numFY <= 23)
+                {
+                    if (ColorPreset_Name == "Rec.709 / BT.709")
+                        strSync_ColorPreset_Name = "Rec.709";
+
+                    if (ColorPreset_Name == "Rec.2020 / BT.2020")
+                        strSync_ColorPreset_Name = "Rec.2020";
+
+                }
+                else if (numFY >= 25)
+                {
+                    if (ColorPreset_Name == "Rec.709 / BT.709")
+                        strSync_ColorPreset_Name = "BT.709";
+
+                    if (ColorPreset_Name == "Rec.2020 / BT.2020")
+                        strSync_ColorPreset_Name = "BT.2020";
+                }
+
+            }
+            catch (FormatException e)
+            {
+                Log?.Error("check Color Preset Strings Rec.709 or BT.709 / Rec.2020 or BT.2020..." + e.Message);
+            }
+
+            if (System.String.IsNullOrEmpty(strSync_ColorPreset_Name))
+                strSync_ColorPreset_Name = ColorPreset_Name;
+
+            return Task.FromResult(strSync_ColorPreset_Name);
+
+        }
+
         #endregion
 
         #region IDisposableObservable Support

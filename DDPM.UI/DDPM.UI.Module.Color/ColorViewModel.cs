@@ -277,7 +277,7 @@ namespace DDPM.UI.Module.Color
                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex]);
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0 ,false);
                     }
                 }
                 else
@@ -728,7 +728,8 @@ namespace DDPM.UI.Module.Color
                 //Dean 0612 add
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
                 string strSync_CurrentColorPreset = string.Empty;
-                strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
 
                 ColorPresets_ItemsCollection = new List<string>();
 
@@ -797,7 +798,8 @@ namespace DDPM.UI.Module.Color
                         strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
 
                     string strSync_ColorPresetName = string.Empty;
-                    strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
+                    //strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
+                    strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
 
                     //int pIdx = SupportColorPresets.FindIndex(x =>
                     //                    x.Trim() == value.ColorPresetName.Trim());
@@ -971,12 +973,13 @@ namespace DDPM.UI.Module.Color
         {   
             Trace.WriteLine($"VCPchangedEventArgs e.vcpcode = {e.vcpcode}");
 
-            if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2")) // Color changes by OSD menu
+            if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("F4")) // Color changes by OSD menu
             {
                 
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
                 string strSync_CurrentColorPreset = string.Empty;
-                strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {  
@@ -1128,8 +1131,6 @@ namespace DDPM.UI.Module.Color
 
             //UpdateHDRStatus();
         }
-
-
 
         private void SyncNightlightStatus()
         {
@@ -1482,6 +1483,7 @@ namespace DDPM.UI.Module.Color
         }
         */
 
+        /*
         public string Sync_CurrentColorPreset(string curcolorPreset)
         {
             string strSync_CurrentColorPreset = string.Empty;
@@ -1586,6 +1588,7 @@ namespace DDPM.UI.Module.Color
 
             return strSync_CurrentColorPreset;
         }
+        */
 
         #region UI Enable Flags
         private bool _isBusy = false;
