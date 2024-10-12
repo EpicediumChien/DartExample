@@ -2429,6 +2429,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_IsSkipCA);
         }
 
+        public Task<bool> SetServerURL(string url)
+        {
+            bool ret = false;
+            writelog($"{nameof(SetServerURL)} start");
+            if (!string.IsNullOrEmpty(url))
+            {
+                writelog($"{nameof(url)} is valid");
+                string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
+                string KeyName = @"TestServerURL";
+                ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result;
+                writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
+                KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
+                ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result && ret;
+                writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
+                if (_FWUpdatePlugin != null)
+                {
+                    ret = _FWUpdatePlugin.RestartService().Result && ret;
+                    writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+                }
+            }
+            writelog($"{nameof(SetServerURL)} done");
+            return Task.FromResult(ret);
+        }
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -3803,7 +3826,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
-                    return false; 
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -5043,7 +5066,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Directory.CreateDirectory(saveFolderPath);
                     }
                 } while (!folderValid && count < 2);
-                string LogFolder = @"C:\ProgramData\Dell\DDPM Subagent";
+                string LogFolder = @"C:\ProgramData\Dell\DDPM.Subagent";
                 if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
@@ -9341,10 +9364,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (Device is OSDType_Device.Headset)
                             {
-                                if(!string.IsNullOrWhiteSpace(Content))
+                                if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
-								else
-									writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
@@ -9374,7 +9397,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State=false)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State = false)
         {
             if (monitorInfo != null)
             {

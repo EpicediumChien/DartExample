@@ -96,7 +96,14 @@ namespace DDPM.UI.Plugin.DockPlugin
             if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Dock"))
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                {
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    {
+                        _viewModel.OnGoBackClicked();
+                        return;
+                    }
                     GetPeripheralsAsync();
+                }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
