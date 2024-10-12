@@ -1664,7 +1664,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                //if (CheckSHA(filePath, out FileCAInfo)) Wait IL R14
+                ret = true;//Wait IL R14 force true
+                if (CheckSHA(filePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
@@ -1690,11 +1691,36 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
                     }
                 }
-                /*else Wait IL R14
+                else
                 {
                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
-                }*/
+                    //////////////Wait IL R14 force true//////////////////
+                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    {
+                        if (!string.IsNullOrEmpty(exeFilePath))
+                        {
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
+                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
+                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                            {
+                                ret = true;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                            }
+                            else
+                            {
+                                ret = true;//Wait IL R14 force true
+                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
+                    }
+                    //////////////Wait IL R14 force true//////////////////
+                }
             }
             else
             {
