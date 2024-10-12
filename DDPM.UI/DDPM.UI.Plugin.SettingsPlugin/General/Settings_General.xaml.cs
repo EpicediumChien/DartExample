@@ -30,7 +30,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         // 10/12/2024 Derek add checkBoxHeight for RWD
         private const int checkBoxHeight = 30;
-        private const int breakPoints = 500;
+        private const int breakPoints = 670;
 
         public Settings_General()
         {
