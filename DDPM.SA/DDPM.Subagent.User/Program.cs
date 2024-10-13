@@ -100,13 +100,14 @@ namespace DDPM.Subagent.User
                 /*
                  * Populate any plugin wildcards. If you do not provides wildcards that match your plugin naming schema DCF will not load the plugins
                  */
-                PluginWildcards = new[] { "VcpCore.Plugins.dll", "DDPM.SA.Plugins.User.*.dll",
-                  "Dell.Client.Framework.Plugin.*.dll", // Required DCF plugin loading
-                  "Dell.UnifiedAgent.*.dll",            // Required UA plugin loading
+                PluginWildcards = new[] {
+                  "VcpCore.Plugins.dll",
+                  "DDPM.SA.Plugins.User.*.dll",
+                  "Dell.Client.Framework.Plugin.*.dll",   // Required DCF plugin loading
+                  "Dell.UnifiedAgent.*.dll",              // Required UA plugin loading
                   "DtpInstrumentationUtil.Plugin.dll",
                   "Dell.TechHub.Commodity.Sdk.dll",
                   "Dell.TechHub.Instrumentation.Sdk.dll",
-
                   "CLI.Plugins.*.dll" },
                 /*
                  * Populate your user process mutex guid so it does not collide with any existing DCF products on the machine
@@ -119,6 +120,7 @@ namespace DDPM.Subagent.User
                 {
                     new Guid(IDs.VCP_CORE_PLUGIN_ID),
                     new Guid(IDs.Scheduler_Manager_Plugin_ID),
+                    new Guid(IDs.Telementry_Scheduler_Plugin_ID),
                     new Guid(IDs.Display_Manager_PLUGIN_ID),
                     new Guid(IDs.DDPM_PERIPHERALS_PLUGIN_ID),
                     new Guid(IDs.Device_Manager_Plugin_ID),
