@@ -34,12 +34,12 @@
             <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
                                     Margin="18,14,0,0" Foreground="White"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [WiredConnection], Source={x:Static lang:LangHelper.Instance}}"/>
-            <Border Style="{StaticResource Border1}" Margin="16,23,0,0">
+            <Border Style="{StaticResource Border1}" Margin="16,23,16,0" Width="Auto">
                 <Grid>
                     <StackPanel Orientation="Vertical" Margin="0,0,0,13">
                         <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/WiredConnection.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                        <UXControls:UXTextBlock Name="txtStep1" Margin="15,10,0,0" Style="{StaticResource TextStyle1}" Text="{Binding [AddDevice.Headset.6], Source={x:Static lang:LangHelper.Instance}}"/>
+                        <UXControls:UXTextBlock Name="txtStep1" Margin="15,10,0,0" Style="{StaticResource TextStyle1}" TextWrapping="WrapWithOverflow" Text="{Binding [AddDevice.Headset.6], Source={x:Static lang:LangHelper.Instance}}"/>
                     </StackPanel>
                 </Grid>
             </Border>

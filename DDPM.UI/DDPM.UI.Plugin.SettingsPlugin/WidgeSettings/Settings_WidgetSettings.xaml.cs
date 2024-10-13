@@ -47,7 +47,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             vm.RefreshUI();
         }
 
-        // 10/12/2024   Derek   for RWD  -- not tested yet
+        // 10/12/2024   Derek  for RWD  -- not tested yet
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (this.ActualWidth <= breakPoints)

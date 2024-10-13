@@ -8,7 +8,8 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left"
+             SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
@@ -47,9 +48,9 @@
             <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
                                     Margin="18,14,0,0" Foreground="White"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.KnM.0], Source={x:Static lang:LangHelper.Instance}}"/>
-            <UXControls:UXTextBlock Name="txtCaption2" Margin="18,17,0,0" FontFamily="Roboto"
+            <UXControls:UXTextBlock Name="txtCaption2" Margin="18,17,0,0" FontFamily="Roboto" TextWrapping="WrapWithOverflow"
                                     HorizontalAlignment="Left" Foreground="#FFFFFF" FontSize="14" FontWeight="Normal" Text="{Binding [AddDevice.Headset.0], Source={x:Static lang:LangHelper.Instance}}"/>
-            <StackPanel Orientation="Horizontal" Margin="18,25,0,0">
+            <StackPanel Orientation="Horizontal" Margin="18,25,0,0" x:Name="stepsStackPanel">
                 <Border Style="{StaticResource Border1}">
                     <StackPanel Orientation="Vertical">
                         <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/PowerOn.png" Stretch="Uniform"

@@ -23,5 +23,11 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
             //txtStep2.Text = Step2;
             //txtStep3.Text = Step3;
         }
+
+        //10/13 Derek 需要根据breakpoints来调整布局
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //stepsStackPanel.ActualWidth
+        }
     }
 }

@@ -26,5 +26,11 @@ namespace DDPM.UI.Module.AddKnM_Dongle
             //txtStep3.Text = Step3;
             //txtStep4.Text = Step4;
         }
+
+        //10/13 Derek 需要根据breakpoints来调整布局
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //stepsStackPanel.ActualWidth
+        }
     }
 }

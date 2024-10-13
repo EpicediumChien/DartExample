@@ -11,6 +11,7 @@
              d:DataContext="{d:DesignInstance Type=plugin:HeadsetViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="655" d:DesignWidth="520" VerticalAlignment="Top" HorizontalAlignment="Left">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

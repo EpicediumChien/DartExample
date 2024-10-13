@@ -26,5 +26,10 @@ namespace DDPM.UI.Module.AddPen_Other
             txtStep1.Text = string.Format(Step1, Dns.GetHostName());
             //txtStep2.Text = Step2;
         }
+
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //stepsStackPanel.ActualWidth
+        }
     }
 }

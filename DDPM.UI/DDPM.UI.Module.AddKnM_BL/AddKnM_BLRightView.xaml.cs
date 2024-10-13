@@ -52,5 +52,11 @@ namespace DDPM.UI.Module.AddKnM_BL
             }
 #pragma warning restore CA1416
         }
+
+        //10/13 Derek 需要根据breakpoints来调整布局
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //stepsStackPanel.ActualWidth
+        }
     }
 }

@@ -8,7 +8,9 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left"
+             SizeChanged="UserControl_SizeChanged">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
@@ -38,7 +40,7 @@
                               Margin="18,14,0,0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left" />
       <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="14" FontWeight="Normal"
                                     Margin="18,14,0,0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.Pen.0], Source={x:Static lang:LangHelper.Instance}}"/>
-      <StackPanel Orientation="Horizontal" Margin="18,25,0,0">
+      <StackPanel Orientation="Horizontal" Margin="18,25,0,0" x:Name="stepsStackPanel">
                 <Border Style="{StaticResource Border1}">
                     <StackPanel Orientation="Vertical">
                         <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/Stylus.png" Stretch="Uniform"

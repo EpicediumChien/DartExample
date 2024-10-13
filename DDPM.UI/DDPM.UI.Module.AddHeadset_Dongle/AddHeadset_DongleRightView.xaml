@@ -9,7 +9,8 @@
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:AddDeviceViewModel}"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left"
+             SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
@@ -45,7 +46,7 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">
+            <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="17,2,17,10" Width="Auto" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">
                 <StackPanel Orientation="Horizontal">
                     <Grid VerticalAlignment="top">
                         <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
@@ -56,7 +57,7 @@
                     </Grid>
                 </StackPanel>
             </Border>
-            <StackPanel Orientation="Horizontal" Margin="18,5,0,0">
+            <StackPanel Orientation="Horizontal" Margin="18,5,0,0" x:Name="stepsStackPanel">
                 <Border Style="{StaticResource Border1}">
                     <StackPanel Orientation="Vertical">
                         <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/DongleC.png" Stretch="Uniform"

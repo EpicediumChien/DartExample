@@ -52,5 +52,10 @@ namespace DDPM.UI.Module.AddPen_BL
             }
 #pragma warning restore CA1416
         }
+
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //stepsStackPanel.ActualWidth
+        }
     }
 }
