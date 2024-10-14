@@ -10,8 +10,6 @@
                 <ResourceDictionary Source="/Resources/Styles.xaml" />
                 <!--dark sytle-->
                 <ResourceDictionary Source="pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml" />
-                <!--light sytle-->
-                <ResourceDictionary Source="pack://application:,,,/DDPM.UI.Common;component/ModuleStyle_light.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

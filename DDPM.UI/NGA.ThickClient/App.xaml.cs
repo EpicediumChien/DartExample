@@ -8,6 +8,7 @@
 
 #endregion
 
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
@@ -17,6 +18,7 @@ using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using Constants = NGA.Common.Constants;
@@ -106,7 +108,46 @@ namespace NGA.ThickClient
         public override ResourceManager LoadResources()
         {
             var resourceManager = base.LoadResources();
+            //dark/light mode
+            //windows mode  
 
+            string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
+            string lightModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle_light.xaml";
+            ResourceDictionary? darkResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
+            ResourceDictionary? lightResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(lightModeStyle));
+            bool darkMode = false;
+            if (darkMode)
+            {
+                if (darkResourceDictionary == null)
+                {
+                    darkResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(darkModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
+                }
+                if (lightResourceDictionary != null)
+                {
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Remove(lightResourceDictionary);
+                }
+            }
+            else
+            {
+                if (lightResourceDictionary == null)
+                {
+                    lightResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(lightModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(lightResourceDictionary);
+                }
+                if (darkResourceDictionary != null)
+                {
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
+                }
+            }
+            bool d = DdpmCommonHelper.isDarkMode();
+            //
             try
             {
                 var resourceDictionaries = new[] { new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) } };

@@ -22,7 +22,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <!--<Image x:Name="ConnectionType" Margin="0" Source="{Binding ImageSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16" />-->
-                <Image x:Name="ConnectionTypeImage" Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Port.png"
+                <Image x:Name="ConnectionTypeImage" Margin="0" Source="{DynamicResource ConnectionTypeImageKey}"
                        VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16" />
 
                 <StackPanel Orientation="Horizontal" Name="stackPanel">

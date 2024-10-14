@@ -121,7 +121,7 @@ namespace DDPM.UI.Common
                 string feature = event_object.IT_Feature_TriggerList[idx];
                 PropertyInfo propertyInfo = event_object.target_object.GetType().GetProperty(feature);
                 Trace.WriteLine($"Got [SettingsPage][IT settings event] {feature} : {propertyInfo.GetValue(event_object.target_object)}");
-                
+
                 return (bool?)propertyInfo.GetValue(event_object.target_object);
             }
             return null;//null as default if feature not found
@@ -174,7 +174,7 @@ namespace DDPM.UI.Common
 
             if (DeviceManagerSA == null)
                 return (isEnabled, visibility);
-            
+
             bool? isLocked = GetUINotifyPropertyValue_Boolean("Lock_Setting_RestoreDefaults", e);
             if (isLocked != null)
             {
@@ -233,15 +233,15 @@ namespace DDPM.UI.Common
         }
 
         public static bool WriteDDPMSettings(DDPMSettings data)
-        {            
-            if(data == null || data.LockSettings == null || data.UserSettings == null)
+        {
+            if (data == null || data.LockSettings == null || data.UserSettings == null)
                 return false;
 
             Settings_Cache = data;
 
             if (DeviceManagerSA == null)
-                return false;            
-            
+                return false;
+
             return DeviceManagerSA.SetAppConfigData(data).Result;
         }
 
@@ -260,6 +260,25 @@ namespace DDPM.UI.Common
                 }
             }
             return Settings_Cache;
+        }
+
+        public static bool isDarkMode()
+        {
+            string lightStyle = string.Format(@"pack://application:,,,/DDPM.UI.Common;component/{0}.xaml", "ModuleStyle_light");
+            ResourceDictionary? resourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.FirstOrDefault(x => x.Source.OriginalString.Equals(lightStyle));
+            return resourceDictionary == null;
+        }
+
+        public static string readOsThemeReg()
+        {
+            string regpath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            if (DeviceManagerSA != null)
+            {
+
+                object v = DeviceManagerSA.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.CurrentUser, regpath, "AppsUseLightTheme").Result;
+            }
+
+            return "";
         }
     }
 }

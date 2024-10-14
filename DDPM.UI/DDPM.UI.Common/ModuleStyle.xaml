@@ -9,17 +9,20 @@
     <UserControl.Resources>
     <ResourceDictionary>
     <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+     <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     . . . your other resources...
-    </ResourceDictionary>
-    </UserControl.Resources>
+</ResourceDictionary>
+</UserControl.Resources>
 
-    -->
+-->
     <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
     <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#99193457" />
     <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="White" />
+    <!-- batteryIndicator.xaml -->
+    <BitmapImage x:Key="ConnectionTypeImageKey" UriSource="/DDPM.UI.Common;component/Resources/Port.png"/>
+    <!-- DeviceBasePage.xaml -->
     <!-- Common -->
     <!-- FakeTransparent: When you need a transparent color and need can response mouse click -->
     <Color x:Key="Color_FakeTransparent">#02000000</Color>

@@ -81,6 +81,7 @@
     <None Remove="Resources\Dongle.png" />
     <None Remove="Resources\Icon_Info1.png" />
     <None Remove="Resources\info.png" />
+    <None Remove="Resources\LightMode\Port.png" />
     <None Remove="Resources\Loading.png" />
     <None Remove="Resources\Lock.png" />
     <None Remove="Resources\Luminance.png" />
@@ -212,6 +213,7 @@
     <Resource Include="Resources\Headset_GooglePlayStoreQR.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\LightMode\Port.png" />
     <Resource Include="Resources\Lock.png" />
     <Resource Include="Resources\Monitor_Outline.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
