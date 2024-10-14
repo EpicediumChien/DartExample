@@ -93,7 +93,7 @@ namespace DDPM.UI.Plugin.DockPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Dock"))
+            if (e != null && e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Dock"))
             {
                 if (_viewModel != null)
                 {
