@@ -60,11 +60,15 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         public List<SplitJson> CustomList { get; set; }
 
+        //Robert_Lin, 2024-10-10, dont provide default list in a get/set property, it would cause double items issue
+        // https://stackoverflow.com/questions/13394401/json-net-deserializing-list-gives-duplicate-items
+        //In , if we found that RecentList is empty, then return the default list.
         /// <summary>
         /// The Recent list, the first item should be the SelectedSplit.
         /// So the SelectedSplit could be removed.
         /// </summary>
-        public List<SplitJson> RecentList { get; set; } = SplitJson.DefaultRecentList;
+        //public List<SplitJson> RecentList { get; set; } //= SplitJson.DefaultRecentList;
+        public SplitJson[] RecentList { get; set; }
 
         //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
         /*
