@@ -1,3 +1,4 @@
+using DDPM.SA.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
@@ -136,9 +137,19 @@ namespace DDPM.UI.Common.Tests
         public void TestConstructor_ActionList()
         {
             //Act
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            var deviceManager=DeviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManager;
+            DeviceManagerSAMock.Setup(x=>x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             var result = ActionList.ExportActionList(new PenActions(), "PEN");
             // Assert
             Assert.That(result, Is.EqualTo(true));
+
+            //Act
+            DeviceManagerSAMock.Setup(x => x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(false));
+            result = ActionList.ExportActionList(new PenActions(), "PEN");
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
         }
 
         [Test]

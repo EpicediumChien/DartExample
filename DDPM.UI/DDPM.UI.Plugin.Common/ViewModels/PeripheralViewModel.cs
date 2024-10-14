@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -1142,6 +1143,27 @@ namespace DDPM.UI.Plugin.ViewModels
                 vbarItem.IsSelected = vbarItem.Id == VbarSelectedIndex;
             }
         }
+        public void DisableVBar()
+        {
+            for (var i = 2; i < _vbarItems.Count; i++)
+            {
+                _vbarItems[i].IsEnabled = false;
+                _vbarItems[i].TooltipVisibility = Visibility.Visible;
+            }
+            IsNotAddingProfile = false;
+            OnPropertyChanged(nameof(IsNotAddingProfile));
+        }
+        public void EnableVBar()
+        {
+            for (var i = 2; i < _vbarItems.Count; i++)
+            {
+                _vbarItems[i].IsEnabled = true;
+                _vbarItems[i].TooltipVisibility = Visibility.Collapsed;
+            }
+            IsNotAddingProfile = true;
+            OnPropertyChanged(nameof(IsNotAddingProfile));
+        }
+        public bool IsNotAddingProfile { get; set; } = true;
 
         private Cursor _currentCursor = Cursors.Arrow;
         public Cursor CurrentCursor
