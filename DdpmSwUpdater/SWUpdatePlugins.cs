@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -90,9 +91,11 @@ namespace DdpmSwUpdater
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<SWUpdateInfo>> DownloadAndInstall(string installPath)
         {
+            List<string> InfoPkey = new List<string>();
+            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             bool isSkipCA = GetCheckCAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo);
+            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey);
             LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
             List<SWUpdateInfo> swUpdateInfos = new List<SWUpdateInfo>();
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)

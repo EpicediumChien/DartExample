@@ -39,6 +39,7 @@ using Dell.Client.Framework.Security;
 using System.Security;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using System.ServiceProcess;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -749,7 +750,34 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             };
             return Task.FromResult(Install(fWUpdateInfo));
         }
-
+        public Task<bool> RestartService()
+        {
+            bool ret = false;
+            string serviceName = "DPMService"; // 替換為你的服務名稱
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status == ServiceControllerStatus.Running)
+                    {
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is running");
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is stopped");
+                    }
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is start");
+                    service.Start();
+                    service.WaitForStatus(ServiceControllerStatus.Running);
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is restart");
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(RestartService)} Error: {ex.Message}");
+            }
+            return Task.FromResult(ret);
+        }
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
@@ -1664,7 +1692,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                //if (CheckSHA(filePath, out FileCAInfo)) Wait IL R14
+                ret = true;//Wait IL R14 force true
+                if (CheckSHA(filePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
@@ -1690,11 +1719,36 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
                     }
                 }
-                /*else Wait IL R14
+                else
                 {
                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
-                }*/
+                    //////////////Wait IL R14 force true//////////////////
+                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    {
+                        if (!string.IsNullOrEmpty(exeFilePath))
+                        {
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
+                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
+                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                            {
+                                ret = true;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                            }
+                            else
+                            {
+                                ret = true;//Wait IL R14 force true
+                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
+                    }
+                    //////////////Wait IL R14 force true//////////////////
+                }
             }
             else
             {

@@ -50,12 +50,14 @@ using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
-using Microsoft.WindowsAPICodePack.Win32Native;
+//using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
 using DdmLibrary.Utility;
-using static VcpCore.Common.User32;
+using DDPM.QAM;
+using System.Drawing;
+using Point = System.Windows.Point;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -187,6 +189,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isInitMonitorSettings = false;
         private static bool _IsSkipCA = false;
 
+        private QAMPage _QAM;
+        private Point QAM_Position;
+
         #endregion
 
         #region Constructor
@@ -231,6 +236,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+
         }
 
         #endregion
@@ -316,7 +322,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -1484,6 +1490,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
+        public async Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
+        {
+            return _PeripheralsPlugin.GetDevices_WithoutAwait(Rescan).Result;
+        }
 
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
         {
@@ -2322,11 +2332,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false)
         {
-            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null)
+            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result, isOnlyDisplay).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2419,6 +2429,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_IsSkipCA);
         }
 
+        public Task<bool> SetServerURL(string url)
+        {
+            bool ret = false;
+            writelog($"{nameof(SetServerURL)} start");
+            if (!string.IsNullOrEmpty(url))
+            {
+                writelog($"{nameof(url)} is valid");
+                string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
+                string KeyName = @"TestServerURL";
+                ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result;
+                writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
+                KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
+                ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result && ret;
+                writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
+                if (_FWUpdatePlugin != null)
+                {
+                    ret = _FWUpdatePlugin.RestartService().Result && ret;
+                    writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+                }
+            }
+            writelog($"{nameof(SetServerURL)} done");
+            return Task.FromResult(ret);
+        }
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -2440,7 +2473,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
             if (_DisplayManagerPlugin == null)
                 return Task.FromResult(false);
-            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result;
+            if (_SettingsPlugin == null)
+            {
+                return Task.FromResult(false);
+            }
+            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
@@ -3205,7 +3242,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
-            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList);
+            //Robert_Lin, 2024-10-10 to fix defaule list will return double items when deserialize json
+            defaultOutput.RecentList = SplitJson.DefaultRecentList.ToArray();
+            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
 
             if (_SettingsPlugin == null)
             {
@@ -3234,7 +3273,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
-            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList);
+            //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
+            if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
+                monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+
+            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
@@ -3789,7 +3832,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
-                    return false; 
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -4995,7 +5038,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
-            if (_DisplayManagerPlugin != null)
+            if (_DisplayManagerPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
             {
                 // 確保資料夾存在
                 if (!Directory.Exists(saveFolderPath))
@@ -5029,65 +5072,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Directory.CreateDirectory(saveFolderPath);
                     }
                 } while (!folderValid && count < 2);
-                string LogFolder = @"C:\ProgramData\Dell\DDPM Subagent";
-                if (DirectoryContainsFiles(LogFolder))
+
+                string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                if (!string.IsNullOrEmpty(appDataPath))
                 {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @"C:\ProgramData\Dell\Dell TechHub";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @"C:\ProgramData\Dell\DTP\Logs";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = "DTP_Log";
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
-                object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
-                if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                {
-                    LogFolder = @$"C:\ProgramData\{o.ToString()}\DDPMW-NKVM";
+                    string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -5097,32 +5105,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CopyLogFolder(LogFolder, savePath);
                     }
                 }
-                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPMService\Log";
-                if (DirectoryContainsFiles(LogFolder))
+                if (!string.IsNullOrEmpty(programdataPath))
                 {
-                    // 取得資料夾名稱
-                    string folderName = "DPMService_Log";
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPM\Log";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = "DPM_Log";
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = "DPeMSDK_Log";
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
+                    string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = "DTP_Log";
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
+                    object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
+                        if (DirectoryContainsFiles(LogFolder))
+                        {
+                            // 取得資料夾名稱
+                            string folderName = GetFolderName(LogFolder);
+                            string savePath = Path.Combine(saveFolderPath, folderName);
+                            // 複製指定的 log 文件到選擇的資料夾
+                            CopyLogFolder(LogFolder, savePath);
+                        }
+                    }
+                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = "DPMService_Log";
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = "DPM_Log";
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = "DPeMSDK_Log";
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
                 }
                 string logFileName = "EventLog.evtx";
                 string logFilePath = Path.Combine(saveFolderPath, logFileName);
@@ -5333,6 +5385,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
         #endregion
 
+        #region WebCamera
+        private void QAMCloseEvent(object o, EventArgs e)
+        {
+            if (_QAM != null)
+            {
+                QAM_Position = new Point(_QAM.Left, _QAM.Top);
+                _QAM.Closed -= QAMCloseEvent;
+                _QAM = null;
+            }
+        }
+        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        {
+            writelog($"CallQAM_UI: Start");
+            if (_QAM == null)
+            {
+                writelog($"CallQAM_UI: Go");
+                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo;
+                if (deviceInfos != null)
+                {
+                    writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    if (deviceInfos.Any(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam))))
+                    {
+                        writelog($"CallQAM_UI: have Webcam show QAM");
+                        Thread thread1 = new Thread(() =>
+                        {
+                            _QAM = new QAMPage(deviceMangerPlugin);
+                            _QAM.Closed += QAMCloseEvent;
+                            if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            {
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
+                            }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
+                        thread1.SetApartmentState(ApartmentState.STA);
+                        thread1.Start();
+                    }
+                }
+            }
+            writelog($"CallQAM_UI: done");
+        }
+        #endregion
         #endregion
 
         #region Private Methods
@@ -7023,6 +7133,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
             //Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
+            if (_altPressed && strKey.Equals("Z"))
+            {
+                CallQAM_UI(this);
+                return;
+            }
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
@@ -7325,12 +7440,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if (eaSettings.RecentList == null)
+            if ( eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
             }
-            if (eaSettings.RecentList.Count == 0)
+            if (eaSettings.RecentList.Length == 0)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
                 return;
@@ -7338,9 +7453,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 //Should be always EAEMConstants.MaxRecentItems(=5)-1 = 4
-                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Count}");
+                writelog($"@ Toggle_EzRecentSetting(), EA RecentList.Count={eaSettings.RecentList.Length}");
             }
-            idxRecent = eaSettings.RecentList.Count - 1;
+            idxRecent = eaSettings.RecentList.Length - 1;
 
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
             bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
@@ -9264,17 +9379,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (Device is OSDType_Device.Headset)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
                             {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -9288,7 +9412,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
+        public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State = false)
         {
             if (monitorInfo != null)
             {
@@ -9296,7 +9420,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case OSDType.Mute:
                         {
-                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                             return Task.CompletedTask;
                         }
                     default:
@@ -9386,7 +9513,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         var vr = IsValidJson(monitorInfo.ToString());
 
                         MonitorInfo typeCheck_MonitorInfo = new MonitorInfo();
-                        string Validstr = string.Empty;
                         if (vr)
                             typeCheck_MonitorInfo = JsonConvert.DeserializeObject<MonitorInfo>(monitorInfo.ToString());
 
@@ -9417,15 +9543,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if (string.IsNullOrWhiteSpace(Content))
                                 {
-                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' '));
+                                    string[] strings = (ScreenInterrogatory.DeviceFriendlyName(sreen).Split(' ')) ?? string.Empty.Split(' ');
                                     if (strings.Length > 1)
-                                    {
                                         Content = strings[1];
-                                    }
                                     else
-                                    {
                                         Content = strings[0];
-                                    }
                                 }
 
 

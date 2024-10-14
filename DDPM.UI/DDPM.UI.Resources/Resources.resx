@@ -2049,4 +2049,10 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>Not available while adding a preset</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>Not all features are available while adding a preset</value>
+  </data>
 </root>

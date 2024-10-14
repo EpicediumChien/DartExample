@@ -46,6 +46,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("Wtsapi32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool WTSQueryUserToken(uint sessionId, out IntPtr Token);
         private static bool _WTSQueryUserToken(uint sessionId, out IntPtr Token)
         {
@@ -54,6 +55,7 @@ namespace DDPM.SA.Common.Settings
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool CloseHandle(IntPtr hObject);
         public static bool _CloseHandle(IntPtr hObject)
         {
@@ -61,6 +63,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private extern static bool ImpersonateLoggedOnUser(IntPtr hToken);
         private static bool _ImpersonateLoggedOnUser(IntPtr hToken)
         {
@@ -68,6 +71,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes,
                                         int ImpersonationLevel, int TokenType, out IntPtr phNewToken);
         private static bool _DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes,
@@ -77,6 +81,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("advapi32", SetLastError = true), SuppressUnmanagedCodeSecurityAttribute]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, ref IntPtr TokenHandle);
         public static bool _OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, ref IntPtr TokenHandle)
         {
@@ -84,6 +89,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("kernel32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
         public static IntPtr _OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId)
         {
@@ -232,11 +238,11 @@ namespace DDPM.SA.Common.Settings
         public static void ImpersonateUser_WriteRegistry(ILog log, string subKey, string keyName, object value)
         {
             uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
-            if (WTSQueryUserToken(sessionId, out IntPtr userToken))
+            if (_WTSQueryUserToken(sessionId, out IntPtr userToken))
             {
                 SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
                 sa.Length = Marshal.SizeOf(sa);
-                if (DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
+                if (_DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     WindowsIdentity.RunImpersonated(new SafeAccessTokenHandle(duplicatedToken), () =>
                     {
@@ -248,9 +254,9 @@ namespace DDPM.SA.Common.Settings
                             }
                         }
                     });
-                    CloseHandle(duplicatedToken);
+                    _CloseHandle(duplicatedToken);
                 }
-                CloseHandle(userToken);
+                _CloseHandle(userToken);
             }
         }
 
@@ -258,11 +264,11 @@ namespace DDPM.SA.Common.Settings
         {
             object obj = null;
             uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
-            if (WTSQueryUserToken(sessionId, out IntPtr userToken))
+            if (_WTSQueryUserToken(sessionId, out IntPtr userToken))
             {
                 SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
                 sa.Length = Marshal.SizeOf(sa);
-                if (DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
+                if (_DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     WindowsIdentity.RunImpersonated(new SafeAccessTokenHandle(duplicatedToken), () =>
                     {
@@ -274,9 +280,9 @@ namespace DDPM.SA.Common.Settings
                             }
                         }
                     });
-                    CloseHandle(duplicatedToken);
+                    _CloseHandle(duplicatedToken);
                 }
-                CloseHandle(userToken);
+                _CloseHandle(userToken);
             }
             return obj;
         }
@@ -400,9 +406,9 @@ namespace DDPM.SA.Common.Settings
             finally
             {
                 if (userToken != IntPtr.Zero)
-                    CloseHandle(userToken);
+                    _CloseHandle(userToken);
                 if (duplicatedToken != IntPtr.Zero)
-                    CloseHandle(duplicatedToken);
+                    _CloseHandle(duplicatedToken);
             }
         }
 

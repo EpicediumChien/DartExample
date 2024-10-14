@@ -1175,6 +1175,7 @@ namespace VcpCore.Plugins
                                     edid = monitorInfoX.edid,
                                     FwVersion = monitorInfoX.FwVersion,
                                     inputSource = monitorInfoX.inputSource,
+                                    inputCable = monitorInfoX.inputCable,
                                     CapabilityDic = monitorInfoX.CapabilityDic,
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
@@ -1229,6 +1230,7 @@ namespace VcpCore.Plugins
                                     edid = monitorInfoX.edid,
                                     FwVersion = monitorInfoX.FwVersion,
                                     inputSource = val,
+                                    inputCable = monitorInfoX.inputCable,
                                     CapabilityDic = monitorInfoX.CapabilityDic,
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
@@ -1265,6 +1267,7 @@ namespace VcpCore.Plugins
                                     edid = monitorInfoX.edid,
                                     FwVersion = monitorInfoX.FwVersion,
                                     inputSource = monitorInfoX.inputSource,
+                                    inputCable = monitorInfoX.inputCable,
                                     CapabilityDic = monitorInfoX.CapabilityDic,
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
@@ -1404,6 +1407,7 @@ namespace VcpCore.Plugins
                                                 edid = monitorInfoX.edid,
                                                 FwVersion = monitorInfoX.FwVersion,
                                                 inputSource = monitorInfoX.inputSource,
+                                                inputCable = monitorInfoX.inputCable,
                                                 CapabilityDic = monitorInfoX.CapabilityDic,
                                                 modelName = monitorInfoX.modelName,
                                                 series = monitorInfoX.series,
@@ -1416,7 +1420,8 @@ namespace VcpCore.Plugins
                                     }
                                     else if (((uint)object_0x52).ToString("X").ToUpper().Equals("60"))
                                     {
-                                        uint val = (Convert.ToUInt32(tmp) >> 8) & 0xFF;
+                                        string rstring = string.Empty;
+                                        uint val = Convert.ToUInt32(tmp) & 0xFF;
                                         string rc_str = val.ToString("X2");
 
                                         if (!string.IsNullOrWhiteSpace(rc_str))
@@ -1433,12 +1438,6 @@ namespace VcpCore.Plugins
                                                         r.AddRange(R as List<InputSourceObject>);
 
                                                     var n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
-                                                    if (n == null)
-                                                    {
-                                                        val = Convert.ToUInt32(tmp) & 0xFF;
-                                                        rc_str = val.ToString("X2");
-                                                        n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
-                                                    }
 
                                                     bool rv = false;
                                                     if (r.Count > 0)
@@ -1457,22 +1456,27 @@ namespace VcpCore.Plugins
                                                     {
                                                         x.inputSource = n;
                                                         o.inputSource = x.inputSource;
+                                                        rstring = o.inputSource;
                                                     }
                                                     else
                                                     {
                                                         x.inputSource = System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
                                                         o.inputSource = x.inputSource;
+                                                        rstring = o.inputSource;
                                                     }
+
                                                     break;
                                                 }
                                             }
 
                                             Initialize2TypesMonitorInfo(false);
 
-                                            VCPchangedEventArgs _VCPchangedEventArgIIs = new VCPchangedEventArgs();
-                                            _VCPchangedEventArgIIs.vcpcode = ((uint)object_0x52).ToString("X");
-                                            _VCPchangedEventArgIIs.value = NodeFormatter.FormatVCP_60(rc_str.ToLower());
-                                            _VCPchangedEventArgIIs.monitor = new MonitorInfo()
+                                            //----------------------------------------------------------------------
+
+                                            VCPchangedEventArgs _VCPchangedEventArgsII = new VCPchangedEventArgs();
+                                            _VCPchangedEventArgsII.vcpcode = "input select";
+                                            _VCPchangedEventArgsII.value = rstring;
+                                            _VCPchangedEventArgsII.monitor = new MonitorInfo()
                                             {
                                                 AliasDeviceName = monitorInfoX.AliasDeviceName,
                                                 IsDellMonitor = monitorInfoX.IsDellMonitor,
@@ -1482,7 +1486,8 @@ namespace VcpCore.Plugins
                                                 DisplayName = monitorInfoX.DisplayName,
                                                 edid = monitorInfoX.edid,
                                                 FwVersion = monitorInfoX.FwVersion,
-                                                inputSource = NodeFormatter.FormatVCP_60(rc_str.ToLower()),
+                                                inputSource = rstring,
+                                                inputCable = monitorInfoX.inputCable,
                                                 CapabilityDic = monitorInfoX.CapabilityDic,
                                                 modelName = monitorInfoX.modelName,
                                                 series = monitorInfoX.series,
@@ -1490,7 +1495,33 @@ namespace VcpCore.Plugins
                                                 ImageFileName = monitorInfoX.ImageFileName,
                                                 Display_DeviceName = monitorInfoX.Display_DeviceName,
                                             };
-                                            OnVCPchanged(_VCPchangedEventArgIIs);
+                                            OnVCPchanged(_VCPchangedEventArgsII);
+
+                                            //----------------------------------------------------------------------
+
+                                            //VCPchangedEventArgs _VCPchangedEventArgIIs = new VCPchangedEventArgs();
+                                            //_VCPchangedEventArgIIs.vcpcode = ((uint)object_0x52).ToString("X");
+                                            //_VCPchangedEventArgIIs.value = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+                                            //_VCPchangedEventArgIIs.monitor = new MonitorInfo()
+                                            //{
+                                            //    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                            //    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                            //    Index = monitorInfoX.Index,
+                                            //    CapabilityString = monitorInfoX.CapabilityString,
+                                            //    DDCisON = monitorInfoX.DDCisON,
+                                            //    DisplayName = monitorInfoX.DisplayName,
+                                            //    edid = monitorInfoX.edid,
+                                            //    FwVersion = monitorInfoX.FwVersion,
+                                            //    inputSource = NodeFormatter.FormatVCP_60(rc_str.ToLower()),
+                                            //    inputCable = monitorInfoX.inputCable,
+                                            //    CapabilityDic = monitorInfoX.CapabilityDic,
+                                            //    modelName = monitorInfoX.modelName,
+                                            //    series = monitorInfoX.series,
+                                            //    MarketingName = monitorInfoX.MarketingName,
+                                            //    ImageFileName = monitorInfoX.ImageFileName,
+                                            //    Display_DeviceName = monitorInfoX.Display_DeviceName,
+                                            //};
+                                            //OnVCPchanged(_VCPchangedEventArgIIs);                                            
                                         }
                                     }
                                     else
@@ -1511,6 +1542,7 @@ namespace VcpCore.Plugins
                                             edid = monitorInfoX.edid,
                                             FwVersion = monitorInfoX.FwVersion,
                                             inputSource = monitorInfoX.inputSource,
+                                            inputCable = monitorInfoX.inputCable,
                                             CapabilityDic = monitorInfoX.CapabilityDic,
                                             modelName = monitorInfoX.modelName,
                                             series = monitorInfoX.series,
@@ -1723,6 +1755,7 @@ namespace VcpCore.Plugins
                                                 edid = m.edid,
                                                 FwVersion = m.FwVersion,
                                                 inputSource = m.inputSource,
+                                                inputCable = m.inputCable,
                                                 CapabilityDic = m.CapabilityDic,
                                                 modelName = m.modelName,
                                                 series = m.series,
@@ -1818,7 +1851,8 @@ namespace VcpCore.Plugins
                     foreach (var MonitorInfoX in _AllInfoMonitors)
                     {
                         GetVCPCapability_(MonitorInfoX, "inputsourcelist", 0);
-                        MonitorInfoX.inputSource = GetInputSource(MonitorInfoX);
+                        MonitorInfoX.inputSource = GetInputSource(MonitorInfoX).Item2;
+                        MonitorInfoX.inputCable = GetInputSource(MonitorInfoX).Item1;
 
                         MonitorInfo monitorInfo = new MonitorInfo();
                         monitorInfo.AliasDeviceName = MonitorInfoX.AliasDeviceName;
@@ -1830,6 +1864,7 @@ namespace VcpCore.Plugins
                         monitorInfo.edid = MonitorInfoX.edid;
                         monitorInfo.FwVersion = MonitorInfoX.FwVersion;
                         monitorInfo.inputSource = MonitorInfoX.inputSource;
+                        monitorInfo.inputCable = MonitorInfoX.inputCable;
                         monitorInfo.CapabilityDic = MonitorInfoX.CapabilityDic;
                         monitorInfo.modelName = MonitorInfoX.modelName;
                         monitorInfo.series = MonitorInfoX.series;
@@ -2442,52 +2477,57 @@ namespace VcpCore.Plugins
             return Newlist;
         }
 
-        private string GetInputSource(MonitorInfo_complex monitorInfo_)
+        private (string, string) GetInputSource(MonitorInfo_complex monitorInfo_)
         {
-            string rc = string.Empty;
+            string rc_H = string.Empty;
+            string rc_L = string.Empty;
             int count = 0;
             do
             {
                 var value = Get_VCPCapability(monitorInfo_, 0x60, 0, true);
                 if (value != null)
                 {
-                    uint val = (Convert.ToUInt32(value) >> 8) & 0XFF;
-                    rc = val.ToString("X2");
+                    uint val_H = (Convert.ToUInt32(value) >> 8) & 0XFF;
+                    uint val_L = Convert.ToUInt32(value) & 0XFF;
 
-                    if (!string.IsNullOrWhiteSpace(rc))
+                    rc_H = val_H.ToString("X2");
+                    rc_L = val_L.ToString("X2");
+
+                    if (!string.IsNullOrWhiteSpace(rc_H) && !string.IsNullOrWhiteSpace(rc_L))
                     {
-                        SetToCacheTable(monitorInfo_, 0x60, val);
+                        SetToCacheTable(monitorInfo_, 0x60, value);
 
                         List<InputSourceObject> r = new List<InputSourceObject>();
                         var R = GetFromCacheTable(monitorInfo_, "inputsourcelist");
                         if (R != null)
                             r.AddRange(R as List<InputSourceObject>);
 
-                        var n = NodeFormatter.FormatVCP_60(rc.ToLower());
-                        if (n == null)
-                        {
-                            val = (Convert.ToUInt32(value) & 0XFF);
-                            rc = val.ToString("X2");
-                            n = NodeFormatter.FormatVCP_60(rc.ToLower());
-                        }
+                        var n_H = NodeFormatter.FormatVCP_60(rc_H.ToLower());
+                        var n_L = NodeFormatter.FormatVCP_60(rc_L.ToLower());
+                        if (string.IsNullOrWhiteSpace(n_H))
+                            n_H = n_L;
 
-                        bool rv = false;
+                        bool rv_H = false;
+                        bool rv_L = false;
                         if (r.Count > 0)
                         {
                             foreach (InputSourceObject t in r)
                             {
-                                if (n.Equals(t.Name))
-                                {
-                                    rv = true;
+                                if (n_H.Equals(t.Name))
+                                    rv_H = true;
+
+                                if (n_L.Equals(t.Name))
+                                    rv_L = true;
+
+                                if (rv_H && rv_L)
                                     break;
-                                }
                             }
                         }
 
-                        if (rv)
-                            return n;
-                        else
-                            return System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
+                        n_H = (rv_H) ? n_H : (System.Text.RegularExpressions.Regex.Replace(n_H, @"\d", string.Empty));
+                        n_L = (rv_L) ? n_L : (System.Text.RegularExpressions.Regex.Replace(n_L, @"\d", string.Empty));
+
+                        return (n_H, n_L);
                     }
                 }
 
@@ -2497,7 +2537,7 @@ namespace VcpCore.Plugins
             } while (count < 3);
 
             _logs.DebugMsg($"[VcpCorePlugin] GetInputSource return string.Empty");
-            return rc;
+            return (string.Empty, string.Empty);
         }
 
         private bool Set_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, uint val, bool retry = true)
@@ -2524,6 +2564,7 @@ namespace VcpCore.Plugins
                         edid = monitorInfoX.edid,
                         FwVersion = monitorInfoX.FwVersion,
                         inputSource = monitorInfoX.inputSource,
+                        inputCable = monitorInfoX.inputCable,
                         CapabilityDic = monitorInfoX.CapabilityDic,
                         modelName = monitorInfoX.modelName,
                         series = monitorInfoX.series,

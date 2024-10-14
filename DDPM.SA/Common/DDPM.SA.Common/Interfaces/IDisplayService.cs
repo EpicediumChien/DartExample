@@ -173,7 +173,7 @@ namespace DDPM.SA.Common
         #endregion
         #region Display FWU Metadata
     
-        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA);
+        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
         #endregion
     }
 }

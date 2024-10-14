@@ -14,8 +14,8 @@ using System.Windows.Input;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies;
-using WinCopies.Util;
+//using WinCopies;
+//using WinCopies.Util;
 
 
 namespace SA.Plugins.User.USBKVM.Test
@@ -51,7 +51,7 @@ namespace SA.Plugins.User.USBKVM.Test
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
-            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(VcpCore.Common.IDs.Display_Manager_PLUGIN_ID)));
+            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(DDPM.SA.Common.IDs.Display_Manager_PLUGIN_ID)));
 
             return new DisplayMangerPlugin(DisplayMangerAgent.Object);
         }

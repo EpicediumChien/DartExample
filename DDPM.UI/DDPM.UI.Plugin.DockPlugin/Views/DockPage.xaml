@@ -83,9 +83,9 @@
                                                 Style="{StaticResource ModelNumberTextStyle}" />
                         <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
-                            <Image.InputBindings>
+                            <!--<Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding ShowInfoClickedCommand}" />
-                            </Image.InputBindings>
+                            </Image.InputBindings>-->
                             <Image.ToolTip>
                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                                     <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
