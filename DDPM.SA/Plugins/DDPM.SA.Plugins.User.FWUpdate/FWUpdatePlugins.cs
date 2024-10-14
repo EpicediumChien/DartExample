@@ -39,6 +39,7 @@ using Dell.Client.Framework.Security;
 using System.Security;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using System.ServiceProcess;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -749,7 +750,34 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             };
             return Task.FromResult(Install(fWUpdateInfo));
         }
-
+        public Task<bool> RestartService()
+        {
+            bool ret = false;
+            string serviceName = "DPMService"; // 替換為你的服務名稱
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status == ServiceControllerStatus.Running)
+                    {
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is running");
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is stopped");
+                    }
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is start");
+                    service.Start();
+                    service.WaitForStatus(ServiceControllerStatus.Running);
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is restart");
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(RestartService)} Error: {ex.Message}");
+            }
+            return Task.FromResult(ret);
+        }
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
