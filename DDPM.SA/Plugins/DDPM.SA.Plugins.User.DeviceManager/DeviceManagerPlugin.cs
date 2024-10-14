@@ -5075,32 +5075,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     // 複製指定的 log 文件到選擇的資料夾
                     CopyLogFolder(LogFolder, savePath);
                 }
-                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                if (DirectoryContainsFiles(LogFolder))
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                if (!string.IsNullOrEmpty(appDataPath))
                 {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
-                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
                 }
                 LogFolder = @"C:\ProgramData\Dell\Dell TechHub";
                 if (DirectoryContainsFiles(LogFolder))
@@ -5474,7 +5478,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
                         {
-                            _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                            Task.Run(() =>
+                            {
+                                _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors);
+                            });
                         }
 
                         //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
