@@ -180,7 +180,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] constructor ...");
             _logs.DebugMsg("[EzMemoryManagerPlugin] Plugin have Administrator: " + _IsAdministrator.ToString());
             _AllInfoMonitors ??= new List<MonitorInfo>();
-            _EzMemoryTimer = new Timer(CheckMonitorsAndLaunchApps, null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
+            _EzMemoryTimer = new Timer(CheckMonitorsAndLaunchApps, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
             //CheckMonitorsAndLaunchApps();
         }
 
@@ -449,21 +449,21 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                 //    Trace.WriteLine("Auto = " + ps.Auto);
                                 //    Trace.WriteLine("AutoStartTime = " + ps.AutoStartTime);
                                 //    Trace.WriteLine("StartUpLaunch = " + ps.StartUpLaunch);
-                                _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString() + " , AutoStartTime : " + autoStartTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
                                 if (IsTimeToLaunch(autoStartTime))
                                 {
+                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.Auto match, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString()+ ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
                                     LaunchAndArrangeApps(ps.ID);
                                     _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsTimeToLaunch, LaunchAndArrangeApps {ps.ID}");
                                 }
-
-                                if (ps.StartUpLaunch)
+                            }
+                            if (ps.StartUpLaunch)
+                            {                              
+                                long startupTime = Environment.TickCount64;
+                                if (IsStartupRecently(startupTime))
                                 {
-                                    long startupTime = Environment.TickCount64;
-                                    if (IsStartupRecently(startupTime))
-                                    {
-                                        LaunchAndArrangeApps(ps.ID);
-                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps {ps.ID}");
-                                    }
+                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch match, MonitorInfo {monitorInfo.modelName} "  + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
+                                    LaunchAndArrangeApps(ps.ID);
+                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps {ps.ID}");
                                 }
                             }
                         }
@@ -552,7 +552,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private bool IsStartupRecently(long startupTime)
         {
             // 1分鐘內定義為"剛啟動"狀態
-            long oneMinuteInMilliseconds = 60000;
+            long oneMinuteInMilliseconds = 120000;
             return startupTime < oneMinuteInMilliseconds;
         }
 
