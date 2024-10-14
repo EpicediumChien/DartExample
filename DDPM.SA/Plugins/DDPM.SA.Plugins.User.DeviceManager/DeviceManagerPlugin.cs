@@ -5452,7 +5452,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (displayInOut)
             {
                 writelog($"DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
-                OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, "DisplayChanged");
+                
                 if (isLetDisplayServiceIdle == true)
                 {
                     writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
