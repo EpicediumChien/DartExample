@@ -10,8 +10,10 @@ using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.ComponentModel;
+using System.Windows.Controls;
 using System.Windows.Input;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -336,6 +338,7 @@ namespace DDPM.UI.Common.ViewModels
         {
             HourList = Enumerable.Range(1, 12).Select(i => i.ToString("D2")).ToList();
             MinuteList = Enumerable.Range(0, 60).Select(i => i.ToString("D2")).ToList();//將數字格式化成兩位數，單位數自動補 0
+            AMPMList = new List<string> { "AM", "PM" }; 
         }
 
         private double _progressValue = 1;
@@ -765,47 +768,72 @@ namespace DDPM.UI.Common.ViewModels
             set => SetProperty(ref _minuteList, value);
         }
 
-        private string _selectedHour = "1";
+        private List<string> _ampmList;
+        public List<string> AMPMList
+        {
+            get => _ampmList;
+            set => SetProperty(ref _ampmList, value);
+        }
+       
+        private string _selectedHour;
         public string SelectedHour
         {
             get => _selectedHour;
             set => SetProperty(ref _selectedHour, value);
         }
 
-        private string _selectedMinute = "00";
+        private string _selectedMinute;
         public string SelectedMinute
         {
             get => _selectedMinute;
             set => SetProperty(ref _selectedMinute, value);
         }
 
-        private string _selectedAMPM = "AM";
+        private string _selectedAMPM;
         public string SelectedAMPM
         {
             get => _selectedAMPM;
             set => SetProperty(ref _selectedAMPM, value);
         }
-
-        private bool _isManualLaunch;
-        public bool IsManualLaunch
-        {
-            get => _isManualLaunch;
-            set => SetProperty(ref _isManualLaunch, value);
-        }
-
-        private bool _isAutoLaunch;
-        public bool IsAutoLaunch
-        {
-            get => _isAutoLaunch;
-            set => SetProperty(ref _isAutoLaunch, value);
-        }
-
-        private bool _isLaunchAtStartup;
+        private bool _isLaunchAtStartup = false;
         public bool IsLaunchAtStartup
         {
             get => _isLaunchAtStartup;
             set => SetProperty(ref _isLaunchAtStartup, value);
         }
+
+        private bool _isManualLaunch = true;
+        public bool IsManualLaunch
+        {
+            get => _isManualLaunch;
+            set
+            {
+                if (SetProperty(ref _isManualLaunch, value))
+                {
+                    if (_isManualLaunch)
+                    {
+                        IsAutoLaunch = false;
+                    }
+                }
+            }
+        }
+
+        private bool _isAutoLaunch = false;
+        public bool IsAutoLaunch
+        {
+            get => _isAutoLaunch;
+            set
+            {
+                if (SetProperty(ref _isAutoLaunch, value))
+                {
+                    if (_isAutoLaunch)
+                    {
+                        IsManualLaunch = false;
+                    }
+                }
+            }
+        }
+
         #endregion LaunchOption
 
     }
