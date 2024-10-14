@@ -5038,7 +5038,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
-            if (_DisplayManagerPlugin != null)
+            if (_DisplayManagerPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
             {
                 // 確保資料夾存在
                 if (!Directory.Exists(saveFolderPath))
@@ -5072,7 +5072,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Directory.CreateDirectory(saveFolderPath);
                     }
                 } while (!folderValid && count < 2);
-                
+
                 string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 if (!string.IsNullOrEmpty(appDataPath))
@@ -5452,7 +5452,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (displayInOut)
             {
                 writelog($"DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
-                
+
                 if (isLetDisplayServiceIdle == true)
                 {
                     writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
