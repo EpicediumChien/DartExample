@@ -5489,10 +5489,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
                         {
-                            Task.Run(() =>
-                            {
-                                _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors);
-                            });
+                            _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
                         }
 
                         //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
