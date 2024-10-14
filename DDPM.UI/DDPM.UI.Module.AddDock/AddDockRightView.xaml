@@ -6,7 +6,8 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">

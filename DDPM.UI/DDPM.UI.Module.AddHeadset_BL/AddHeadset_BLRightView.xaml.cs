@@ -1,5 +1,7 @@
 ﻿using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.AddHeadset_BL
@@ -10,6 +12,9 @@ namespace DDPM.UI.Module.AddHeadset_BL
     public partial class AddHeadset_BLRightView : UserControl
     {
         private readonly AddDeviceViewModel _vm;
+
+        // 10/14 Derek add for RWD
+        private readonly Int16 breakPoints = 537;
 
         //private readonly string Caption = "Bluetooth Connection";
         //private readonly string Caption2 = "For USB wireless receiver free and on-the-go connectivity";
@@ -29,6 +34,9 @@ namespace DDPM.UI.Module.AddHeadset_BL
             //txtStep2.Text = Step2;
             //txtStep3.Text = Step3;
             //txtStep3_1.Text = Step3_1;
+
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                breakPoints = width;
         }
 
         private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -56,7 +64,29 @@ namespace DDPM.UI.Module.AddHeadset_BL
         // 10/13 Derek 需要根据breakpoints来调整布局
         private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
-            //stepsStackPanel.ActualWidth
+
+            if (this.ActualWidth <= breakPoints)
+                changeToVerticalLayout();
+            else
+                changeToHorizontalLayout();
+        }
+
+        private void changeToVerticalLayout()
+        {
+            stepsStackPanel.Orientation = Orientation.Vertical;
+
+            //change Border size
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
+            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 180;
+        }
+
+        private void changeToHorizontalLayout()
+        {
+            stepsStackPanel.Orientation = Orientation.Horizontal;
+
+            //restore Border size
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 303;
+            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 262;
         }
     }
 }

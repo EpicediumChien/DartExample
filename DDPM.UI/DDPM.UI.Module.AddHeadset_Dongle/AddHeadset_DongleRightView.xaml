@@ -9,7 +9,7 @@
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:AddDeviceViewModel}"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left"
+             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" 
              SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -46,14 +46,16 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="17,2,17,10" Width="Auto" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">
+            <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="17,2,17,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">
                 <StackPanel Orientation="Horizontal">
-                    <Grid VerticalAlignment="top">
+                    <Grid>
                         <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                         </Image>
-                        <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="870"
-                                                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,16,0,13" LineHeight="19.5" Padding="0,3" Text="{Binding DongleAlertHeadset}" FontFamily="Roboto" FontWeight="Normal" />
+                        <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" 
+                                                TextWrapping="WrapWithOverflow"
+                                                Margin="36,16,0,13" LineHeight="19.5" Padding="0,3" 
+                                                Text="{Binding DongleAlertHeadset}" FontFamily="Roboto" FontWeight="Normal" />
                     </Grid>
                 </StackPanel>
             </Border>
