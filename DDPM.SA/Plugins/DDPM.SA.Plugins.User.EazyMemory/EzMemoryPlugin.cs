@@ -180,7 +180,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] constructor ...");
             _logs.DebugMsg("[EzMemoryManagerPlugin] Plugin have Administrator: " + _IsAdministrator.ToString());
             _AllInfoMonitors ??= new List<MonitorInfo>();
-            _EzMemoryTimer = new Timer(CheckMonitorsAndLaunchApps, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _EzMemoryTimer = new Timer(CheckMonitorsAndLaunchApps, null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
             //CheckMonitorsAndLaunchApps();
         }
 
