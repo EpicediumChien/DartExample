@@ -23,7 +23,6 @@
           Opacity="{Binding UpdatesPageUI_Opacity}">
         <UXControls:UXScrollViewer>
             <Border Background="#99132F54" CornerRadius="13">
-
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

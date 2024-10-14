@@ -10,7 +10,7 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="655" d:DesignWidth="470" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="655" d:DesignWidth="470">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -109,7 +109,7 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel>
-                                    <UXControls:UXTextBlock  Text="{Binding [SpeakerInteractions.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap"  Foreground="White" FontSize="14" Margin="20,0,0,20" />
+                                    <UXControls:UXTextBlock  Text="{Binding [SpeakerInteractions.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow"  Foreground="White" FontSize="14" Margin="20,0,0,20" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="1">

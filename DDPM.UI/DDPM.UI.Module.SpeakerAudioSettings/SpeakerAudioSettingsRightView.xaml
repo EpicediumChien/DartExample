@@ -11,7 +11,7 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="655" d:DesignWidth="470" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="655" d:DesignWidth="470">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
