@@ -414,8 +414,11 @@ namespace DDPM.UI.Module.EzMemory
             if (itemSouce.Buddy != null)
                 return null;
 
+            //Robert_Lin, 2024-10-11, Redefine RecentList MaxCount: (include "Off" -> Not include "Off"), so need +1 in DDPM.UI
+            //That is, RecentList from Settings file is 5 items, but UI SplitListView of Recent is "Off" + 5 RecentList => 6 items
+            //
             //If the RecentList item count has up to the limitation (always be true, but we will check anyway)
-            if (splitListView_RecentForEzM.ItemCount >= EAEMConstants.MaxRecentItems)
+            if (splitListView_RecentForEzM.ItemCount >= EAEMConstants.MaxRecentItems + 1)
             {
                 //Remove the last item
                 SplitItem? itemLatest = splitListView_RecentForEzM.GetLatestItem();

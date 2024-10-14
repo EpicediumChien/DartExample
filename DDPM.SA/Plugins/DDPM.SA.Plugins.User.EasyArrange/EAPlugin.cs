@@ -14,6 +14,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using nsWinEventHook;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -645,7 +646,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 LogInfo(" SetEASelectedLayout() return false: ReadEAMonitorSettings return null.");
                 return false;
             }
-            _dump_SplitJsonList(eaSettings.RecentList);
+            List<SplitJson> recentList = new List<SplitJson>();
+            recentList.AddRange(eaSettings.RecentList);
+
+            _dump_SplitJsonList(recentList.ToList<SplitJson>());
             //If the spJson is a custom layout
             if (spJson.CustomId != 0)
             {
@@ -668,7 +672,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
 
             //Step II. Find the index of spJson in RecentList
-            int idxRecent = eaSettings.RecentList.FindIndex(x => x.IsEquals(spJson));
+            //int idxRecent = eaSettings.RecentList.FindIndex(x => x.IsEquals(spJson));
+            int idxRecent = recentList.FindIndex(x => x.IsEquals(spJson));
             //If found in RecentList
             if (idxRecent >= 0)
             {
@@ -676,29 +681,36 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //If it's not at [0]
                 if (idxRecent > 0)
                 {
-                    eaSettings.RecentList.RemoveAt(idxRecent);
-                    eaSettings.RecentList.Insert(0, spJson.Clone());
+                    //eaSettings.RecentList.RemoveAt(idxRecent);
+                    //eaSettings.RecentList.Insert(0, spJson.Clone());
+                    recentList.RemoveAt(idxRecent);
+                    recentList.Insert(0, spJson.Clone());
                 }
             }
             else //Not found in RecentList, need to clone then add into RecentList
             {
                 //Step IV.
-                //If the RecentList.Count < 5-1, then Insert new (clone) item to RecentList[0]
-                if (eaSettings.RecentList.Count < EAEMConstants.MaxRecentItems - 1)
+                //If the RecentList.Count < 5, then Insert new (clone) item to RecentList[0]
+                //if (eaSettings.RecentList.Count < EAEMConstants.MaxRecentItems - 1)
+                if (recentList.Count < EAEMConstants.MaxRecentItems)
                 {
                     //Insert to RecentList[0]
-                    eaSettings.RecentList.Insert(0, spJson.Clone());
+                    //eaSettings.RecentList.Insert(0, spJson.Clone());
+                    recentList.Insert(0, spJson.Clone());
                 }
                 else //RecentList.Count >= 5-1, need to remove the latest item, then insert new (clone) item to RecentList[0]
                 {
-                    eaSettings.RecentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
-                    eaSettings.RecentList.Insert(0, spJson.Clone());
+                    //eaSettings.RecentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
+                    //eaSettings.RecentList.Insert(0, spJson.Clone());
+                    recentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
+                    recentList.Insert(0, spJson.Clone());
                 }
             }
             //Step V. Save Settings
-            _dump_SplitJsonList(eaSettings.RecentList);
+            _dump_SplitJsonList(recentList);
             //Update the selected layout
             eaSettings.SelectedSplit = spJson;
+            eaSettings.RecentList = recentList.ToArray();
             //Save the settings to MonitorSettings file
             bool isOKSaveSettings = _vmArrange.WriteEAMonitorSettings(monitorInfo, eaSettings);
             if (!isOKSaveSettings)
@@ -746,10 +758,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private void _dump_SplitJsonList(List<SplitJson> splitJsonList)
         {
             int idx = 0;
+            int max = 10;
             foreach (SplitJson splitJson in splitJsonList)
             {
                 Trace.WriteLine($"[{idx}] {splitJson.ToString()}");
                 idx++;
+                if (idx > max)
+                {
+                    Trace.WriteLine($"  TotalCount={splitJsonList.Count} . . .");
+                    break;
+                }
             }
         }
         #endregion Methods
@@ -818,7 +836,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     _vmArrange.EzSettings = new EzSettings()
                     {
-                        IsOnlyAllowWhenShiftKeyPressed = true,
+                        //IsOnlyAllowWhenShiftKeyPressed = true,
                         IsAwsEnabled = true
                     };
                 }
@@ -1126,6 +1144,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             if (_vmArrange != null)
             {
+                _vmArrange.RefreshEAScreens();
                 _vmArrange.RefreshWorkWindows2();
 
 
@@ -1918,5 +1937,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #endregion General DDPM.SA Plugins Methods
+
+        #region Test Monitor Settings
+        //private void Test_MonitorSettings()
+        //{
+        //    //Read
+        //    EAMonitorSettings eaSettings = _deviceManagerPlugin.ReadEAMonitorSettings()
+        //}
+        #endregion
     }
 }

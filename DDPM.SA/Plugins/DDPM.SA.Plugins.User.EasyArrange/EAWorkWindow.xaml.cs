@@ -214,6 +214,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //}
         }
 
+        public bool IsSameWorkSplit(ISplitCtrl? splitCtrl)
+        {
+            if (_workingSplit == null)
+                return false;
+            if (splitCtrl == null)
+                return false;
+
+            if ((_workingSplit.CellCount == splitCtrl.CellCount) && (_workingSplit.SplitKey == splitCtrl.SplitKey)
+                && (_workingSplit.Settings.SequenceEqual(splitCtrl.Settings)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void SetWorkSplitHoveringCellName(string cellName)
+        {
+            if (_workingSplit == null)
+                return;
+            _workingSplit.HoveringCell = cellName;
+        }
+
         #endregion [Input] Working SplitCtrl
 
         #region [Input] UI Settings
