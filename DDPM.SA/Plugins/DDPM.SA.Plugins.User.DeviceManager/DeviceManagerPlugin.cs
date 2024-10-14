@@ -5072,20 +5072,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Directory.CreateDirectory(saveFolderPath);
                     }
                 } while (!folderValid && count < 2);
-                string LogFolder = @"C:\ProgramData\Dell\DDPM.Subagent";
-                if (DirectoryContainsFiles(LogFolder))
-                {
-                    // 取得資料夾名稱
-                    string folderName = GetFolderName(LogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
-                    // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(LogFolder, savePath);
-                }
+                
                 string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 if (!string.IsNullOrEmpty(appDataPath))
                 {
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                    string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -5115,6 +5107,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 if (!string.IsNullOrEmpty(programdataPath))
                 {
+                    string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
                     LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
                     if (DirectoryContainsFiles(LogFolder))
                     {
@@ -5451,6 +5452,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (displayInOut)
             {
                 writelog($"DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
+                OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, "DisplayChanged");
                 if (isLetDisplayServiceIdle == true)
                 {
                     writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
