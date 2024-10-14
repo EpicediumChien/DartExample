@@ -473,6 +473,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Thread.Sleep(100);
             //}
 
+            Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
+            Trace.WriteLine("reqKey (showOSD) = " + showOSD);
+
             // Jim add 20240925
             if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory && showOSD)
             {

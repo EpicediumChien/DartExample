@@ -1184,39 +1184,43 @@ namespace ColorPreset.Plugins
 
             int index = -1;
 
-            // check Color Preset Strings Standard or Native
+            if (!string.IsNullOrEmpty(monitorInfo.modelName))
+            {
+                // check Color Preset Strings Standard or Native
 
-            if (monitorInfo.modelName.StartsWith("UP"))
-            {
-                if (ColorPreset_Name == "Standard/Native")
-                    strSync_ColorPreset_Name = "Native";
-            }
-            else
-            {
-                if (ColorPreset_Name == "Standard/Native")
-                    strSync_ColorPreset_Name = "Standard";
-            }
+                if (monitorInfo.modelName.StartsWith("UP"))
+                {
+                    if (ColorPreset_Name == "Standard/Native")
+                        strSync_ColorPreset_Name = "Native";
+                }
+                else
+                {
+                    if (ColorPreset_Name == "Standard/Native")
+                        strSync_ColorPreset_Name = "Standard";
+                }
 
-            // check Color Preset Strings Custom 1/2/3 or User 1/2/3
+                // check Color Preset Strings Custom 1/2/3 or User 1/2/3
 
-            if (monitorInfo.modelName.StartsWith("UP3221Q"))
-            {
-                if (ColorPreset_Name == "Custom 1 / User 1")
-                    strSync_ColorPreset_Name = "User 1";
-                else if (ColorPreset_Name == "Custom 2 / User 2")
-                    strSync_ColorPreset_Name = "User 2";
-                else if (ColorPreset_Name == "Custom 3 / User 3")
-                    strSync_ColorPreset_Name = "User 3";
+                if (monitorInfo.modelName.StartsWith("UP3221Q"))
+                {
+                    if (ColorPreset_Name == "Custom 1 / User 1")
+                        strSync_ColorPreset_Name = "User 1";
+                    else if (ColorPreset_Name == "Custom 2 / User 2")
+                        strSync_ColorPreset_Name = "User 2";
+                    else if (ColorPreset_Name == "Custom 3 / User 3")
+                        strSync_ColorPreset_Name = "User 3";
+                }
+                else
+                {
+                    if (ColorPreset_Name == "Custom 1 / User 1")
+                        strSync_ColorPreset_Name = "Custom 1";
+                    else if (ColorPreset_Name == "Custom 2 / User 2")
+                        strSync_ColorPreset_Name = "Custom 2";
+                    else if (ColorPreset_Name == "Custom 3 / User 3")
+                        strSync_ColorPreset_Name = "Custom 3";
+                }
             }
-            else
-            {
-                if (ColorPreset_Name == "Custom 1 / User 1")
-                    strSync_ColorPreset_Name = "Custom 1";
-                else if (ColorPreset_Name == "Custom 2 / User 2")
-                    strSync_ColorPreset_Name = "Custom 2";
-                else if (ColorPreset_Name == "Custom 3 / User 3")
-                    strSync_ColorPreset_Name = "Custom 3";
-            }
+                       
 
             // check Color Preset Strings Game or Game1
             
@@ -1238,15 +1242,18 @@ namespace ColorPreset.Plugins
 
             string strFY = string.Empty;
 
-            for (int i = 0; i < monitorInfo.modelName.Length; i++) // loop over the complete modelName
+            if (!string.IsNullOrEmpty(monitorInfo.modelName))
             {
-                if (Char.IsDigit(monitorInfo.modelName[i])) //check if the current char is digit
+                for (int i = 0; i < monitorInfo.modelName.Length; i++) // loop over the complete modelName
                 {
-                    strFY = monitorInfo.modelName.Substring(i + 2, 2);
-                    break;
-                }
+                    if (Char.IsDigit(monitorInfo.modelName[i])) //check if the current char is digit
+                    {
+                        strFY = monitorInfo.modelName.Substring(i + 2, 2);
+                        break;
+                    }
 
-            }
+                }
+            }           
 
             // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
             int numFY = 0;

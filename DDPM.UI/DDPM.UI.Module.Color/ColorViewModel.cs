@@ -43,6 +43,7 @@ using System;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Threading;
 using System.Windows.Markup;
+using Microsoft;
 
 
 //using System.Management;
@@ -274,11 +275,22 @@ namespace DDPM.UI.Module.Color
                 // 20240717 jim add
                 if (setting.UserSettings.IsSynchronizemonitor)
                 {
-                    foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                    int count = VerifyDellMonitor_Count();
+
+                    if (count == 1)
                     {
-                        if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0 ,false);
+                        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
+                      MyModule.SelectedHomeDevice?.MonitorInfo,
+                      SupportColorPresets[idex]);
                     }
+                    else
+                    {
+                        foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                        {
+                            if (hd.MonitorInfo.IsDellMonitor)
+                                DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, false);
+                        }
+                    }                
                 }
                 else
                     //ColorViewModel vm = (ColorViewModel)DataContext;
@@ -1589,6 +1601,17 @@ namespace DDPM.UI.Module.Color
             return strSync_CurrentColorPreset;
         }
         */
+
+        private int VerifyDellMonitor_Count()
+        {
+            int count = 0;
+            foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+            {
+                if (hd.MonitorInfo.IsDellMonitor)
+                    count++;
+            }
+            return count;
+        }
 
         #region UI Enable Flags
         private bool _isBusy = false;
