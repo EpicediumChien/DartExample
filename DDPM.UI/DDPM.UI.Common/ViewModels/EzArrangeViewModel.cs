@@ -303,7 +303,7 @@ namespace DDPM.UI.Common.ViewModels
 
             DateTime launchTime = DateTime.Today.Add(time);
 
-            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.CurrentCulture);
 
             return formattedTime;
         }
