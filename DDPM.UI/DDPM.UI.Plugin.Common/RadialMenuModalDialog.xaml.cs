@@ -158,7 +158,7 @@ namespace DDPM.UI.Plugin.Common
 
             txtLabelText.Visibility = Visibility.Visible;
             var parameter = "";
-            if (id == 2)
+            if (id == 8)
             {
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
@@ -186,7 +186,7 @@ namespace DDPM.UI.Plugin.Common
                     return;
                 }
             }
-            else if (id == 3)
+            else if (id == 23)
             {
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;

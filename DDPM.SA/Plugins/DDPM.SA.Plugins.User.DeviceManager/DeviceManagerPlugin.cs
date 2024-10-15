@@ -4353,6 +4353,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Pen
 
+        public async Task<JArray> GetPenDeviceItemsEx()
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
+        }
         public Task<string> PairingPen()
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
@@ -4361,6 +4365,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetEraserDoublePressValues()
         {
             return _DTPProxyPlugin.GetEraserDoublePressValues();
+        }
+        public Task<string> GetEraserSinglePressValues()
+        {
+            return _DTPProxyPlugin.GetEraserSinglePressValues();
+        }
+        public Task<string> GetEraserLongPressValues()
+        {
+            return _DTPProxyPlugin.GetEraserLongPressValues();
         }
         public Task<string> GetSideSwitchSinglePressValues()
         {

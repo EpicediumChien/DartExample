@@ -605,7 +605,10 @@ namespace DDPM.SA.Common
         Task SetDPIValueByDTP(string itemID, int newValue);
 
         #region Pen
+        Task<JArray> GetPenDeviceItemsEx();
         Task<string> GetEraserDoublePressValues();
+        Task<string> GetEraserSinglePressValues();
+        Task<string> GetEraserLongPressValues();
         Task<string> GetSideSwitchSinglePressValues();
         Task<string> GetMenuSinglePressValues();
         Task<string> GetLaunchableAppValues();

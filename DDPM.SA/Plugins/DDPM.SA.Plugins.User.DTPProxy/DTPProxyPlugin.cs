@@ -72,7 +72,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private ItemId _itemID;
         private ICommodity _comdity;
-        private const string PenItemID = "DellPeripheral.Pen.0";
+        private const string PenItemID = "DellPeripheral.Pen";
+        private const string PenItemID0 = "DellPeripheral.Pen.0";
 
         public const string PluginLogId = "DTPProxy";
 
@@ -1301,7 +1302,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<string> PairingPen()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
             if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_penInterfaceType, commodity, "Pair");
@@ -1316,9 +1317,35 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetEraserDoublePressValues()
+        public async Task<JArray> GetPenDeviceItemsEx()
         {
             _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "DeviceItemsEx");
+                    return (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return (JArray)"";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return (JArray)"";
+            }
+
+        }
+        public async Task<string> GetEraserDoublePressValues()
+        {
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1342,9 +1369,61 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<string> GetEraserSinglePressValues()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetEraserLongPressValues()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserLongPressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserLongPressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
         public async Task<string> GetSideSwitchSinglePressValues()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1370,7 +1449,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetMenuSinglePressValues()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1396,7 +1475,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetLaunchableAppValues()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1422,7 +1501,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetEraserDoublePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1448,7 +1527,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetEraserSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1474,7 +1553,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetEraserLongPressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1500,7 +1579,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetSideTopSwitchSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1526,7 +1605,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetSideBottomSwitchSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1552,7 +1631,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetMenuSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1578,7 +1657,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<bool> GetMenuCenterRightClickSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1604,7 +1683,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<bool> GetIsSideTopButtonHoverClick()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1630,7 +1709,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<bool> GetIsSideBottomButtonHoverClick()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {

@@ -46,7 +46,10 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
         Task<string> PairingPen();
+        Task<JArray> GetPenDeviceItemsEx();
         Task<string> GetEraserDoublePressValues();
+        Task<string> GetEraserSinglePressValues();
+        Task<string> GetEraserLongPressValues();
         Task<string> GetSideSwitchSinglePressValues();
         Task<string> GetMenuSinglePressValues();
         Task<string> GetLaunchableAppValues();
