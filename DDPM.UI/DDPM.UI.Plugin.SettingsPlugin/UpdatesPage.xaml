@@ -10,7 +10,8 @@
              xmlns:SAAlert="clr-namespace:DDPM.SA.Common.Alert;assembly=DDPM.SA.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Margin="5,4,60,120"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             SizeChanged="UserControl_SizeChanged">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -47,6 +48,19 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
+                                <StackPanel Grid.Row="0" Margin="0,0,0,24" Orientation="Horizontal" x:Name="spFWUpdate">
+                                    <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="CheckUpdate_Click" Cursor="Hand" Margin="20,20,8,8" Visibility="Visible" x:Name="btnFWU" HorizontalAlignment="Left">
+                                        <Grid>
+                                            <UXControls:UXTextBlock Text="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="#F5F6F7" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
+                                        </Grid>
+                                    </Border>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0" HorizontalAlignment="Left"/>
+                                        <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8" />
+                                    </StackPanel>                                    
+                                </StackPanel>
+                                <!-- change to stackpanel as above for RWD  Derek 10/15 -->
+                                <!-- 
                                 <Grid Grid.Row="0" Margin="0,0,0,24">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -60,9 +74,9 @@
                                     </Border>
                                     <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0" />
                                     <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8" />
-                                </Grid>
-                                <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}"> <!-- Updates.1 for testing Derek 10/12 -->
-                                    <SAAlert:AlertBase Height="53" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.3], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </Grid> -->
+                                <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}" x:Name="spSAAlert"> <!-- Updates.3 for testing Derek 10/12 -->
+                                    <SAAlert:AlertBase Height="53" x:Name="alertBase" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.1], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoNetwork}">
                                     <UXControls:UXAlert Margin="20,16,0,0">

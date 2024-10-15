@@ -15,6 +15,8 @@ namespace DDPM.UI.Module.AddHeadset_BL
 
         // 10/14 Derek add for RWD
         private readonly Int16 breakPoints = 537;
+        private readonly int textBlockWidth = 250;
+        private readonly int textBlockWidthRWD = 220;
 
         //private readonly string Caption = "Bluetooth Connection";
         //private readonly string Caption2 = "For USB wireless receiver free and on-the-go connectivity";
@@ -66,27 +68,33 @@ namespace DDPM.UI.Module.AddHeadset_BL
         {
 
             if (this.ActualWidth <= breakPoints)
-                changeToVerticalLayout();
+                ChangeToVerticalLayout();
             else
-                changeToHorizontalLayout();
+                ChangeToHorizontalLayout();
         }
 
-        private void changeToVerticalLayout()
+        private void ChangeToVerticalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Vertical;
 
             //change Border size
             stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
             stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 180;
+
+            //change textBlock size
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = textBlockWidthRWD;
         }
 
-        private void changeToHorizontalLayout()
+        private void ChangeToHorizontalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Horizontal;
 
             //restore Border size
             stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 303;
             stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 262;
+
+            //restore textBlock size
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = textBlockWidth;
         }
     }
 }

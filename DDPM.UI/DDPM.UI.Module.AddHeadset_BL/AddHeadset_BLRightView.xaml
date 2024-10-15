@@ -56,37 +56,37 @@
                                     HorizontalAlignment="Left" Foreground="#FFFFFF" FontSize="14" FontWeight="Normal" Text="{Binding [AddDevice.Headset.0], Source={x:Static lang:LangHelper.Instance}}"/>
 
                     <StackPanel Orientation="Horizontal" Margin="18,25,0,0" x:Name="stepsStackPanel">
-                        <Border Style="{StaticResource Border1}" Margin="7,7,0,0" x:Name="stepsBorder1">
+                        <Border Style="{StaticResource Border1}" Margin="7,7,0,7" x:Name="stepsBorder1">
                             <StackPanel Orientation="Vertical">
                                 <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/PowerOn.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="250" 
+                                    <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="{Binding textBlockWidth}" 
                                                     TextWrapping="WrapWithOverflow"
                                                     Text="{Binding [AddDevice.Headset.1], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                        <Border Style="{StaticResource Border1}" Margin="7,7,0,0" x:Name="stepsBorder2">
+                        <Border Style="{StaticResource Border1}" Margin="7,7,0,7" x:Name="stepsBorder2">
                             <StackPanel Orientation="Vertical">
                                 <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/PowerOn.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="250" 
+                                    <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="{Binding textBlockWidth}" 
                                                     TextWrapping="WrapWithOverflow"
                                                     Text="{Binding [AddDevice.Headset.2], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                        <Border Style="{StaticResource Border1}" Margin="7,7,0,0" x:Name="stepsBorder3">
+                        <Border Style="{StaticResource Border1}" Margin="7,7,0,7" x:Name="stepsBorder3">
                             <StackPanel Orientation="Vertical">
                                 <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/GearConnection.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="250" 
+                                    <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="{Binding textBlockWidth}" 
                                                     TextWrapping="WrapWithOverflow"
                                                     Text="{Binding [AddDevice.Headset.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
