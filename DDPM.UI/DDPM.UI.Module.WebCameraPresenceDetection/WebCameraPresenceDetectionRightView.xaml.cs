@@ -22,6 +22,10 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             InitializeComponent();
             _vm = vm;
 
+            _vm.UPD_Visibility = Visibility.Visible;
+            _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+            _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
             _vm.Delay_ItemsCollection = new List<UI_Delay_WalkAwayLock>();
             
             _vm.Delay_ItemsCollection.Add(new UI_Delay_WalkAwayLock
@@ -209,6 +213,21 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             psi.UseShellExecute = true;
 
             System.Diagnostics.Process.Start(psi);
+        }
+
+        private void CallPresenceSensor_Click(object sender, RoutedEventArgs e)
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo();
+
+            psi.FileName = "ms-settings:signinoptions-launchfaceenrollment";
+            psi.UseShellExecute = true;
+
+            System.Diagnostics.Process.Start(psi);
+        }
+
+        private void CallUpcdateMPSFW_Click(object sender, RoutedEventArgs e)
+        {
+           
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
