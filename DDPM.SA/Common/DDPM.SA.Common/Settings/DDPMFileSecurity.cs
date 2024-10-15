@@ -63,8 +63,10 @@ namespace DDPM.SA.Common.Settings
             }
             catch (CryptographicException e)
             {
+#if DEBUG 
                 Console.WriteLine("Data was not encrypted. An error occurred.");
                 Console.WriteLine(e.ToString());
+#endif
                 return null;
             }
         }
@@ -82,8 +84,10 @@ namespace DDPM.SA.Common.Settings
             }
             catch (CryptographicException e)
             {
+#if DEBUG 
                 Console.WriteLine("Data was not decrypted. An error occurred.");
                 Console.WriteLine(e.ToString());
+#endif
                 return null;
             }
         }
