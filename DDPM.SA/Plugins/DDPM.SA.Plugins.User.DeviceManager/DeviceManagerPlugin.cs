@@ -4885,6 +4885,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        #region Soundbar
+
+
+        #endregion
+
 
         #endregion
 
