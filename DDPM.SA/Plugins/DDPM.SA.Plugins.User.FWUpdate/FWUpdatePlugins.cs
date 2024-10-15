@@ -39,6 +39,7 @@ using Dell.Client.Framework.Security;
 using System.Security;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using System.ServiceProcess;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -418,7 +419,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceType = updateHelper.UpdateItems[i].DeviceType,
                             DeviceId = updateHelper.UpdateItems[i].DeviceId,
                             DevicePath = updateHelper.UpdateItems[i].DevicePath,
-                            SHA512 = updateHelper.UpdateItems[i].SHA512,
+                            //SHA512 = updateHelper.UpdateItems[i].SHA512,
                             Thumbprint = thumbprint,
                             IsUOD = (isUODMode &&
                             (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
@@ -456,7 +457,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
-                                SHA512 = updateHelper.UpdateItems[i].SHA512,
+                                //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                 Thumbprint = thumbprint,
                                 IsUOD = (isUODMode &&
                                 (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
@@ -483,7 +484,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         Model = displayUpdateHelper.Firmwares[i].id,
                         DeviceName = displayUpdateHelper.Firmwares[i].id,
                         SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
-                        SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
+                        //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
                         Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
                         IsUOD = false
                     };
@@ -538,7 +539,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     delayFUpdateInfo.ServerPath = fwUpdateInfo.ServerPath;
                                     delayFUpdateInfo.SHA256 = fwUpdateInfo.SHA256;
-                                    delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
+                                    //delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
                                     delayFUpdateInfo.Thumbprint = fwUpdateInfo.Thumbprint;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
@@ -749,7 +750,34 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             };
             return Task.FromResult(Install(fWUpdateInfo));
         }
-
+        public Task<bool> RestartService()
+        {
+            bool ret = false;
+            string serviceName = "DPMService"; // 替換為你的服務名稱
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status == ServiceControllerStatus.Running)
+                    {
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is running");
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is stopped");
+                    }
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is start");
+                    service.Start();
+                    service.WaitForStatus(ServiceControllerStatus.Running);
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is restart");
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(RestartService)} Error: {ex.Message}");
+            }
+            return Task.FromResult(ret);
+        }
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
@@ -978,7 +1006,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             newFWUpdateInfo.ServerPath = "";
                             newFWUpdateInfo.SHA256 = "";
-                            newFWUpdateInfo.SHA512 = "";
+                            //newFWUpdateInfo.SHA512 = "";
                             newFWUpdateInfo.Thumbprint = "";
                             _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(newFWUpdateInfo);
                         }
@@ -993,7 +1021,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         newFWUpdateInfo.ServerPath = "";
                         newFWUpdateInfo.SHA256 = "";
-                        newFWUpdateInfo.SHA512 = "";
+                        //newFWUpdateInfo.SHA512 = "";
                         newFWUpdateInfo.Thumbprint = "";
                     }
                     _DelayFWUpdateInfoPackage.DelayTimesAvailable = 2;
@@ -1630,11 +1658,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
-            if (!string.IsNullOrEmpty(_fWUpdateInfo.SHA512))
-            {
-                isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _fWUpdateInfo.SHA512, out fileCAInfo);
-            }
-            else
+            //if (!string.IsNullOrEmpty(_fWUpdateInfo.SHA512))
+            //{
+            //    isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _fWUpdateInfo.SHA512, out fileCAInfo);
+            //}
+            //else
             {
                 isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _fWUpdateInfo.SHA256, out fileCAInfo);
             }

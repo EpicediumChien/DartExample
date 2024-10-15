@@ -40,6 +40,7 @@ namespace DDPM.SA.Common
 
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath);
         Task<FWUErrorCode> Install(string installPath);
+        Task<bool> RestartService();
 
         void SetDeviceinfo(List<DeviceInfo> DeviceInfos);
 
