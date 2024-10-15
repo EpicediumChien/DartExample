@@ -771,6 +771,7 @@ namespace DDPM.EABroker
             set => SetProperty(ref _hoveringAwsIcon, value);
         }
 
+        //Robert_Lin, 2024-10-15 access to UI, may need move to Dispatcher thread
         /// <summary>
         /// Refresh AWS Icons from the specifies RecentList
         /// </summary>

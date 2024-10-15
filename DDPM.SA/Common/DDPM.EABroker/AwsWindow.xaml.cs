@@ -59,6 +59,7 @@ namespace DDPM.EABroker
             _vm = vm;
             DataContext = _vm;
             _vm.AwsWindowVisibilityChanged += HandleAwsWindowVisibilityChanged;
+            _vm.WorkScreenChanged += HandleWorkScreenChanged;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -380,6 +381,26 @@ namespace DDPM.EABroker
             return null;
         }
 
+        private void HandleWorkScreenChanged(object? sender, Screen newScreen)
+        {
+            _vm.WriteLog($"@AwsWindow.HandleWorkScreenChanged(newScreen={newScreen.DeviceName})");
+
+            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
+
+            _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+            System.Windows.Point ptAws = CalculateAwsPosition();
+            _vm.xAwsWindow = ptAws.X;
+            _vm.yAwsWindow = ptAws.Y;
+
+            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
+
+            //Get current working screen
+            Screen? scr = _vm.GetScreenFromCursor();
+            if (scr != null)
+            {
+                ReloadRecentList(scr.DeviceName);
+            }
+        }
         #endregion
 
         public Screen HoveringScreen { get; set; }

@@ -788,7 +788,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 LogInfo(" SetEASelectedLayout() return true but it fails to get WorkWindow of current Screen.");
             }
 
-            _eaBroker.VM.RefreshAwsIconsFromRecentList(eaSettings.RecentList);
+            if (_eaBroker.VM.AwsWindow != null)
+            {
+                _eaBroker.VM.AwsWindow.ReloadRecentList(monitorInfo.Display_DeviceName);
+            }
+            //_eaBroker.VM.RefreshAwsIconsFromRecentList(eaSettings.RecentList);
 
             //Step VII. Notify to EASettingsChanged event handler (the end handler should be DDPM.UI)
             if (EASettingsChanged != null)
@@ -820,7 +824,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             List<SplitJson> recentList = new List<SplitJson>();
             recentList.AddRange(eaSettings.RecentList);
 
-            _dump_SplitJsonList(recentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(recentList.ToList<SplitJson>());
             //If the spJson is a custom layout
             if (spJson.CustomId != 0)
             {
