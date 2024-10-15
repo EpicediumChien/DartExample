@@ -132,7 +132,7 @@
   <data name="EasyArrange" xml:space="preserve">
     <value>Easy Arrange</value>
   </data>
-  <data name="ccccc" xml:space="preserve">
+  <data name="FirmwareVersion" xml:space="preserve">
     <value>Firmware Version</value>
   </data>
   <data name="Gaming" xml:space="preserve">
@@ -2054,8 +2054,5 @@
   </data>
   <data name="Camera.13" xml:space="preserve">
     <value>Not all features are available while adding a preset</value>
-  </data>
-  <data name="CheckForUpdates" xml:space="preserve">
-    <value>Check for updates</value>
   </data>
 </root>
