@@ -53,6 +53,9 @@
         //SchedulerManager
         public const string Scheduler_Manager_Plugin_ID = "{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}";
 
+        //TelementryScheduler
+        public const string Telementry_Scheduler_Plugin_ID = "{EEB96C41-01ED-48DE-A7C7-B01E7A081CAD}";
+
         //DisplayProperties
         public const string DisplayProperties_PLUGIN_ID = "{67A0D126-10BE-4EDB-95DC-8A4162AA3F6B}";
 
