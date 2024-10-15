@@ -21,16 +21,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class Settings_WidgetSettings : UserControl
     {
-        private const int breakPoints = 670;
-        private readonly double originActivateTextBlockWidth;
-        private readonly double originEnableShortcutTextBlockWidth;
-
         public Settings_WidgetSettings()
         {
             InitializeComponent();
-
-            originActivateTextBlockWidth = activateTextBlock.ActualWidth;
-            originEnableShortcutTextBlockWidth = enableShortcutTextBlock.ActualWidth;
         }
 
         private void EnableQuickAccessWidget_Click(object sender, RoutedEventArgs e)
@@ -50,15 +43,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         // 10/12/2024   Derek  for RWD  -- not tested yet
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
-            {
-                activateTextBlock.Width = 350;
-                enableShortcutTextBlock.Width = 350;
-            }
-            else {
-                activateTextBlock.Width = originActivateTextBlockWidth;
-                enableShortcutTextBlock.Width = originEnableShortcutTextBlockWidth;
-            }
+            activateTextBlock.Width = borderContent.ActualWidth - 100;
+            enableShortcutTextBlock.Width = borderContent.ActualWidth - 100;
         }
     }
 }

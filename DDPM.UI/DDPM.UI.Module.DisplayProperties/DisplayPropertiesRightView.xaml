@@ -112,8 +112,8 @@
                                                         Foreground="White"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left" />
+                                                        TextWrapping="WrapWithOverflow" />
+                                
                                 <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}"
                                                    Click="CallWindowsSettings_Click"
                                                    IconPosition="IconRight"

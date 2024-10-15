@@ -32,7 +32,7 @@
                                                 TextWrapping="WrapWithOverflow"/>
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <Border Background="#132F54"
+                        <Border Background="#132F54" x:Name="borderContent"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,15,0">
@@ -48,8 +48,6 @@
                                                             Foreground="White"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Left" 
                                                             TextWrapping="WrapWithOverflow"/>
 
                                     <UXControls:UXToggleSwitch Grid.Column="1" Height="Auto"
@@ -66,8 +64,6 @@
                                                         Foreground="White"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left" 
                                                         TextWrapping="WrapWithOverflow"/>
                                 <Grid Height="40"
                                       Margin="0,8">
@@ -81,8 +77,6 @@
                                                             Foreground="White"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Left" 
                                                             TextWrapping="WrapWithOverflow"/>
                                     
                                     <UXControls:UXToggleSwitch Grid.Column="1"
