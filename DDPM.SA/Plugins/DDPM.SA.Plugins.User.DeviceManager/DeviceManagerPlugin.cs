@@ -3238,13 +3238,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        //Robert_Lin, 2024-10-12 Note that CustomList has been moved to UserSettings
+        //New added method: ReadEACustomList()
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo)
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
             //Robert_Lin, 2024-10-10 to fix defaule list will return double items when deserialize json
             defaultOutput.RecentList = SplitJson.DefaultRecentList.ToArray();
-            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
 
             if (_SettingsPlugin == null)
             {
@@ -3273,11 +3275,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
+            //Robert_Lin, 2024-10-13, If the settings are migrated from DDM, some of SplitJson,
+            //1 CustomLayouts:
+            //2 PresetLayouts: containts EAID only
+
+            //Need to refernce to CustomLayouts
+            SplitJson[] customArray = ReadEACustomList().Result;
+            List<SplitJson> customList = new List<SplitJson>();
+            if ((customArray != null) && (customArray.Length > 0))
+                customList = new List<SplitJson>(customArray);
+
+            //Convert SelectedSplit
+            if (monitorSetting.EA.SelectedSplit.CellCount < 0)
+            {
+                //It's a settings migrated from DDM
+
+                //If it's a custom layout
+                if (monitorSetting.EA.SelectedSplit.EAID >= 1000)
+                {
+                    monitorSetting.EA.SelectedSplit = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                    if (monitorSetting.EA.SelectedSplit == null)
+                        monitorSetting.EA.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
+                }
+                else
+                {
+                    //It's a preset layout
+                    monitorSetting.EA.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                }
+            }
+
+
+
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
             if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
                 monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+            else
+            {
+                //Convert RecentList
+                List<SplitJson> migratedRecentList = new List<SplitJson>();
+                foreach (SplitJson recentJson in monitorSetting.EA.RecentList)
+                {
+                    if (recentJson.CellCount < 0)
+                    {
+                        //If it's a custom layout
+                        if (recentJson.EAID >= 1000)
+                        {
+                            SplitJson? custJson = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                            if (custJson != null)
+                            {
+                                migratedRecentList.Add(custJson);
+                            }
+                        }
+                        else
+                        {
+                            //It's a preset layout
+                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                            if (presetJson != null)
+                            {
+                                migratedRecentList.Add(presetJson);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        migratedRecentList.Add(recentJson);
+                    }
+                }
+                monitorSetting.EA.RecentList = migratedRecentList.ToArray();
+            }
 
-            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
@@ -3504,6 +3571,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
             }
+        }
+
+        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Read the EACustomList for current user
+        /// </summary>
+        /// <returns></returns>
+        public Task<SplitJson[]> ReadEACustomList()
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                //Don't return null, return empty array instead
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        if (appSettings.UserSettings.EACustomList != null)
+                            return Task.FromResult(appSettings.UserSettings.EACustomList);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(new SplitJson[] { });
+        }
+        /// <summary>
+        /// Write the EACustomList to current user's settings file
+        /// </summary>
+        /// <param name="customList"></param>
+        /// <returns></returns>
+        public Task<bool> WriteEACustomList(SplitJson[] customList)
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        appSettings.UserSettings.EACustomList = (SplitJson[]) customList.Clone();
+                        //Writeback to app settings
+                        _SettingsPlugin.SetAppConfigData(appSettings);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(false);
         }
 
         #endregion EasyArrage
@@ -3832,7 +3948,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
-                    return false;
+                    return false; 
                 }
             }
             catch (Exception ex)
@@ -9234,6 +9350,151 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
+        }
+
+        //Robert_Lin, 2024-10-11, added
+        private void DDMtoDDPM_EzArrange(DDMMonitorSettings ddmMonitorSettings, DDMUserSettings ddmUserSettings)
+        {
+            if (_SettingsPlugin == null)
+                return;
+
+            //Migration UserSettings
+            //
+            //1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
+            //
+            List<SplitJson> ddpmCustomList = new List<SplitJson>();
+            if (ddmUserSettings.CustLayouts != null)
+            {
+                foreach(CustLayout custLayout in ddmUserSettings.CustLayouts)
+                {
+                    SplitJson spJson = new SplitJson();
+                    spJson.CellCount = 0;
+                    spJson.SplitKey = 'B';
+
+                    List<double> settings = new List<double>();
+                    //Format: settings[0] : BorderCount
+                    settings.Add((double)custLayout.Rects.Count);
+                    //settings[1] : screenScale
+                    settings.Add((double)1.000);
+                    //settings[2] : screenWidth
+                    settings.Add((double)1.000);
+                    //settings[3] : screenHeight
+                    settings.Add((double)1.000);
+
+                    //Settings[4 ~] : Rects
+                    int idxRect = 0;
+                    foreach(EARect eARect in custLayout.Rects)
+                    {
+                        //settings[4 + idxRect + 0] : left
+                        settings.Add(eARect.x);
+                        //settings[4 + idxRect + 1] : top
+                        settings.Add(eARect.y);
+                        //settings[4 + idxRect + 2] : width
+                        settings.Add(eARect.w);
+                        //settings[4 + idxRect + 3] : height
+                        settings.Add(eARect.h);
+                        idxRect++;
+                    }
+                    spJson.Settings = settings;
+                    spJson.CustomName = custLayout.Name;
+                    spJson.CustomId = custLayout.ID;
+                    spJson.EAID = custLayout.ID;
+
+                    ddpmCustomList.Add(spJson);
+                }
+            }
+
+            //2 Convert EasyArrange Per-user settings (EzSettings)
+            //
+            EzSettings ezSettings = new EzSettings();
+
+            ezSettings.IsWidthoutGap = ddmUserSettings.EAWithoutGap;
+            ezSettings.IsOnlyAllowWhenShiftKeyPressed = ddmUserSettings.EAWithShiftKey;
+            ezSettings.IsSpanAcrossMultiMonitors = ddmUserSettings.EASpan;
+            ezSettings.IsAwsEnabled = ddmUserSettings.SnapEnable;
+
+            //3 Save to DDPMUserSettings
+            //
+            DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (appSettings != null)
+            {
+                appSettings.UserSettings.EACustomList = ddpmCustomList.ToArray();
+                appSettings.UserSettings.EzSettings = ezSettings;
+
+                _SettingsPlugin.SetAppConfigData(appSettings);
+            }
+
+            //Migration MonitorSettings
+            //
+            if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
+            {
+                MonitorInfo moinfo = new MonitorInfo();
+                moinfo.modelName = ddmMonitorSettings.Model;
+                moinfo.edid.ModelName = ddmMonitorSettings.Model;
+                moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
+
+
+                //Will migrate Desktop[0] only
+                if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
+                {
+                    //Convert ActiveLayout to SelectedSplit
+                    //
+                    int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+                    SplitJson? selJson = null;
+                    //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
+                    if (activeLayout >= 1000)
+                    {
+                        //Find the CustomLayout by EAID
+                        selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
+                        if (selJson != null)
+                        {
+                        }
+                    }
+                    else
+                    {
+                        //Preset layout
+                        selJson = new SplitJson()
+                        {
+                            CellCount = -1,
+                            CustomId = 0,
+                            EAID = activeLayout
+                        };
+                    }
+
+                    //Convert RecentList
+                    List<SplitJson> recentList = new List<SplitJson>();
+                    foreach (int eaidRecent in ddmMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU)
+                    {
+                        if (activeLayout >= 1000) //Custom Layout
+                        {
+                            //Find the CustomLayout by EAID
+                            SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == eaidRecent);
+                            if (cusJson != null)
+                            {
+                                recentList.Add(cusJson.Clone());
+                            }
+                        }
+                        else
+                        {
+                            //Preset layout
+                            SplitJson presetJson = new SplitJson()
+                            {
+                                CellCount = -1,
+                                CustomId = 0,
+                                EAID = eaidRecent
+                            };
+                            recentList.Add(presetJson);
+                        }
+                    }
+
+                    //Save to EAMonitorSettings
+                    EAMonitorSettings eaSettings = ReadEAMonitorSettings(moinfo).Result;
+                    eaSettings.SelectedSplit = selJson;
+                    eaSettings.RecentList = recentList.ToArray();
+                    WriteEAMonitorSettings(moinfo, eaSettings);
+
+                }
+            }
         }
         #endregion Migration
 

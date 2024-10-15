@@ -392,44 +392,43 @@ namespace DDPM.UI.Module.EzMemory
 
             //B Load CustomList from settings file
             //
-            if (eaSettings != null)
+            //Robert_Lin, 2024-10-12 modify due to CustomList has move into UserSettings from MonitorSettings, 
+            SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+            if (customList != null)
             {
-                if (eaSettings.CustomList != null)
-                {
                     //Add saved custom list to custom list view
-                    foreach (SplitJson spj in eaSettings.CustomList)
+                foreach (SplitJson spj in customList)
+                {
+                    //Validate settings
+                    //1 CustomId must > 0
+                    if (spj.CustomId == 0)
                     {
-                        //Validate settings
-                        //1 CustomId must > 0
-                        if (spj.CustomId == 0)
-                        {
-                            //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                            continue;
-                        }
-                        //2 CustomName cannot be empty
-                        if (String.IsNullOrWhiteSpace(spj.CustomName))
-                        {
-                            //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
-                            continue;
-                        }
-                        //3 CustomName length
-                        if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
-                        {
-                            //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
-                            continue;
-                        }
-
-                        ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                        if (spCtrl == null)
-                            continue;
-                        spCtrl.Settings = new List<double>(spj.Settings);
-                        spCtrl.SplitMode = eSplitModes.Icon;
-                        spCtrl.FriendlyName = spj.CustomName;
-
-                        SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
-                        itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-                        itemCustom.CustomId = (int)spj.CustomId;
+                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                        continue;
                     }
+                    //2 CustomName cannot be empty
+                    if (String.IsNullOrWhiteSpace(spj.CustomName))
+                    {
+                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
+                        continue;
+                    }
+                    //3 CustomName length
+                    if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                    {
+                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
+                        continue;
+                    }
+
+                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                    if (spCtrl == null)
+                        continue;
+                    spCtrl.Settings = new List<double>(spj.Settings);
+                    spCtrl.SplitMode = eSplitModes.Icon;
+                    spCtrl.FriendlyName = spj.CustomName;
+
+                    SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
+                    itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+                    itemCustom.CustomId = (int)spj.CustomId;
                 }
             } //if (eaSettings != null)
 

@@ -131,6 +131,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _vmArrange.hWndForeground = hWnd;
 
+            //Step_1, determine the moving window is allowed to move
+            //
             Process process;
             string msg;
             if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
@@ -172,6 +174,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 _vmArrange.StartMovingMsg = $"GetProcessFromWindowHandle err: {msg}";
                 _vmArrange.LogInfo($"@OnWindowStartMovingProc, {_vmArrange.StartMovingMsg}");
             }
+
+            //Step_2, Set flags to show windows
+            //
 
             _vmArrange.RefreshScreenScale();
             Trace.WriteLine($"ScreenScale={_vmArrange.ScreenScale}");

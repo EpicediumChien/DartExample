@@ -1,4 +1,5 @@
 ﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using System;
 using System.Collections.Generic;
 
@@ -78,6 +79,9 @@ namespace DDPM.SA.Common.Settings
         //These settings are per-user settings and will apply to all monitors
         #region EzSettings
         //Recent Hotkey settings: will save to Hotkey settings, implemented by Gavin Liu
+
+        //Robert_Lin, 2024-10-11 EasyArrange Custom Layouts, move from MonitorSettings
+        public SplitJson[] EACustomList { get; set; }
 
         public EzSettings EzSettings { get; set; } = new EzSettings();
 
