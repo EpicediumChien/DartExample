@@ -2687,37 +2687,66 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //_USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
             Dictionary<string, PCsInfo> USBKVMPCsList = new Dictionary<string, PCsInfo>();
-            //get monitor settings
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            if (settings != null)
+            if (inputList != null && subInputList != null)
             {
-                //get monitor setting
-                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting == null)
+                if (GetOnUSBKVM(monitorInfo).Result)
                 {
-                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                    bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                }
-                else
-                {
-                    try
+                    //get monitor settings
+                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                    if (settings != null)
                     {
-                        if (monitorSetting.KVM.strUSBKVMPCsList != null && monitorSetting.KVM.strUSBKVMPCsList != string.Empty)
+                        //get monitor setting
+                        DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+                        if (monitorSetting == null)
                         {
-                            USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                            //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
                         }
                         else
                         {
-                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                            bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                                {
+                                    USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                                    if (USBKVMPCsList == null)
+                                    {
+                                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                    }
+                                    else
+                                    {
+                                        foreach (var pc in USBKVMPCsList)
+                                        {
+                                            if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                            {
+                                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                            }
                         }
                     }
-                    catch (Exception e)
-                    {
-                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                        bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                    }
                 }
+                else
+                {
+                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                }
+            }
+            else
+            {
+                writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
             }
 
             return Task.FromResult(USBKVMPCsList);
@@ -4386,6 +4415,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.PairingPen();
+        }
+        public Task<string> GetEraserDoublePressValues()
+        {
+            return _DTPProxyPlugin.GetEraserDoublePressValues();
+        }
+        public Task<string> GetSideSwitchSinglePressValues()
+        {
+            return _DTPProxyPlugin.GetSideSwitchSinglePressValues();
+        }
+        public Task<string> GetMenuSinglePressValues()
+        {
+            return _DTPProxyPlugin.GetMenuSinglePressValues();
+        }
+        public Task<string> GetLaunchableAppValues()
+        {
+            return _DTPProxyPlugin.GetLaunchableAppValues();
+        }
+        public Task<string> GetEraserDoublePressSetting()
+        {
+            return _DTPProxyPlugin.GetEraserDoublePressSetting();
+        }
+        public Task<string> GetEraserSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetEraserSinglePressSetting();
+        }
+        public Task<string> GetEraserLongPressSetting()
+        {
+            return _DTPProxyPlugin.GetEraserLongPressSetting();
+        }
+        public Task<string> GetSideTopSwitchSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetSideTopSwitchSinglePressSetting();
+        }
+        public Task<string> GetSideBottomSwitchSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetSideBottomSwitchSinglePressSetting();
+        }
+        public Task<string> GetMenuSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetMenuSinglePressSetting();
+        }
+        public Task<bool> GetMenuCenterRightClickSetting()
+        {
+            return _DTPProxyPlugin.GetMenuCenterRightClickSetting();
+        }
+        public Task<bool> GetIsSideTopButtonHoverClick()
+        {
+            return _DTPProxyPlugin.GetIsSideTopButtonHoverClick();
+        }
+        public Task<bool> GetIsSideBottomButtonHoverClick()
+        {
+            return _DTPProxyPlugin.GetIsSideBottomButtonHoverClick();
         }
 
         public Task SetEraserDoublePressSetting(string itemID, byte[] newValue)

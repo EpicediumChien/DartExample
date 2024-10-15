@@ -24,7 +24,15 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private string _selectedButton = "";
 
+        private bool IsActionItemsReady = false;
+        private Dictionary<int, string> _EraserActions = new();
+        private Dictionary<int, string> _SideSwitchActions = new();
+        private Dictionary<int, string> _MenuActions = new();
+        private List<string> _LaunchableAppValues = new();
+
         #endregion Variables
+
+        public PenActions PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
 
         public int AppSelectedIndex { get; set; } = 0;
         public string TopButtonBackground { get; set; } = "";
@@ -63,23 +71,47 @@ namespace DDPM.UI.Plugin.ViewModels
 
             TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 2 : 1);
             TipSensitivity = CurrentDeviceInfo.TipSensitivity;
-            PrepareAction();
+
+            if (!IsActionItemsReady)
+                PrepareActionItems();
+
             InitializeButton();
             return true;
         }
 
-        void PrepareAction()
+        void PrepareActionItems()
         {
-            JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues));
-            JsonElement jsonObject2 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideTopSwitchSinglePressSetting));
-            JsonElement jsonObject3 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideBottomSwitchSinglePressSetting));
+            //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
+            Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressValues();
+            JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
             foreach (var jo in jsonObject.EnumerateArray())
             {
-
+                _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
             }
-        }
+            //jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserSinglePressValues));
+            task = DdpmCommonHelper.DeviceManagerSA!.GetSideSwitchSinglePressValues();
+            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+            foreach (var jo in jsonObject.EnumerateArray())
+            {
+                _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
+            }
+            //jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserLongPressValues));
+            task = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressValues();
+            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+            foreach (var jo in jsonObject.EnumerateArray())
+            {
+                _MenuActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
+            }
+            //jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.LaunchableAppValues));
+            task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
+            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+            foreach (var jo in jsonObject.EnumerateArray())
+            {
+                _LaunchableAppValues.Add(jo.GetString()!);
+            }
 
-        public PenActions PenAction = new();
+            IsActionItemsReady = true;
+        }
 
         private void InitializeButton()
         {
@@ -87,8 +119,6 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "PN9315A";
             //Model = "PN5122W";
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
-
-            PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
 
             RefreshButtonImageFile(PenButtonName.TopButton.ToString());
             RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());

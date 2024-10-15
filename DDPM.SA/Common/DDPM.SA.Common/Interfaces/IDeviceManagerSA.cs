@@ -605,6 +605,19 @@ namespace DDPM.SA.Common
         Task SetDPIValueByDTP(string itemID, int newValue);
 
         #region Pen
+        Task<string> GetEraserDoublePressValues();
+        Task<string> GetSideSwitchSinglePressValues();
+        Task<string> GetMenuSinglePressValues();
+        Task<string> GetLaunchableAppValues();
+        Task<string> GetEraserDoublePressSetting();
+        Task<string> GetEraserSinglePressSetting();
+        Task<string> GetEraserLongPressSetting();
+        Task<string> GetSideTopSwitchSinglePressSetting();
+        Task<string> GetSideBottomSwitchSinglePressSetting();
+        Task<string> GetMenuSinglePressSetting();
+        Task<bool> GetMenuCenterRightClickSetting();
+        Task<bool> GetIsSideTopButtonHoverClick();
+        Task<bool> GetIsSideBottomButtonHoverClick();
         Task<string> PairingPen();
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
