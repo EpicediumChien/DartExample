@@ -10,6 +10,7 @@ using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Input;
 using VcpCore.Common;
@@ -338,7 +339,10 @@ namespace DDPM.UI.Common.ViewModels
         {
             HourList = Enumerable.Range(1, 12).Select(i => i.ToString("D2")).ToList();
             MinuteList = Enumerable.Range(0, 60).Select(i => i.ToString("D2")).ToList();//將數字格式化成兩位數，單位數自動補 0
-            AMPMList = new List<string> { "AM", "PM" }; 
+
+            string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+            string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+            AMPMList = new List<string> { amDesignator, pmDesignator };
         }
 
         private double _progressValue = 1;

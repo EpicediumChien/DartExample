@@ -30,6 +30,7 @@ using DDPM.UI.Common.UserControls;
 using DDPM.Easy.Common;
 using DDPM.UI.Common.ViewModels;
 using static System.Reflection.Metadata.BlobBuilder;
+using System.Globalization;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -90,7 +91,7 @@ namespace DDPM.UI.Module.EzMemory
                 SubText.Text = pageData.SubText!;
             }
 
-            if(_vm.IsEditProfile)
+            if (_vm.IsEditProfile)
             {
                 _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
                 if (_vm.currentEditprofileSetting.Auto)
@@ -104,46 +105,47 @@ namespace DDPM.UI.Module.EzMemory
                     _vm.IsManualLaunch = true;
                 }
 
-                // 取得 AutoStartTime 並轉換為 TimeSpan
                 long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
                 TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
 
-                // 轉換為 12 小時制
+                // 使用 CultureInfo 來取得 AM 和 PM
+                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
                 int hourValue = time.Hours;
                 if (hourValue == 0)
                 {
-                    // 將 0 點設為 12 AM
                     _vm.SelectedHour = "12";
-                    _vm.SelectedAMPM = "AM";
+                    _vm.SelectedAMPM = amDesignator; // AM
                 }
                 else if (hourValue >= 12)
                 {
-                    // PM
-                    _vm.SelectedAMPM = "PM";
+                    _vm.SelectedAMPM = pmDesignator; // PM
                     if (hourValue > 12)
                     {
-                        _vm.SelectedHour = (hourValue - 12).ToString("D2"); // 轉換成 12 小時制
+                        _vm.SelectedHour = (hourValue - 12).ToString("D2");
                     }
                     else
                     {
-                        _vm.SelectedHour = "12"; // 將 12 設為 PM
+                        _vm.SelectedHour = "12";
                     }
                 }
                 else
                 {
-                    // AM
-                    _vm.SelectedAMPM = "AM";
-                    _vm.SelectedHour = hourValue.ToString("D2"); // 保持兩位數格式
+                    _vm.SelectedAMPM = amDesignator; // AM
+                    _vm.SelectedHour = hourValue.ToString("D2");
                 }
 
-                // 分
                 _vm.SelectedMinute = time.Minutes.ToString("D2");
             }
             else
             {
                 DateTime now = DateTime.Now;
 
-                string ampm = now.Hour >= 12 ? "PM" : "AM";
+                string ampm = now.Hour >= 12
+                    ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
+                    : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+
                 string hour = now.ToString("hh");
                 string minute = now.ToString("mm");
 
