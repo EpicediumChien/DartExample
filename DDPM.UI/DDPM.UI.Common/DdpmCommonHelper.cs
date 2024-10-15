@@ -2,10 +2,12 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
@@ -261,24 +263,47 @@ namespace DDPM.UI.Common
             }
             return Settings_Cache;
         }
+        //default theme is dark
+        public static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+        public static void updateMergedDictionarie()
+        {
+            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            if (previousOsTheme == oSTheme) return;
+            //ar regTheme = RegistryWrapper.CurrentUser.GetRegKeyInt(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme");
+            string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
+            string lightModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle_light.xaml";
+            ResourceDictionary? darkResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
+            ResourceDictionary? lightResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(lightModeStyle));
+            System.Windows.Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
+            System.Windows.Application.Current.Resources.MergedDictionaries.Remove(lightResourceDictionary);
+            switch (oSTheme)
+            {
+                case OSThemeEnum.Dark:
+                    darkResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(darkModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
+
+                    Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    break;
+                case OSThemeEnum.Light:
+
+                    lightResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(lightModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(lightResourceDictionary);
+
+                    Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    break;
+            }
+            previousOsTheme = oSTheme;
+        }
 
         public static bool isDarkMode()
         {
-            string lightStyle = string.Format(@"pack://application:,,,/DDPM.UI.Common;component/{0}.xaml", "ModuleStyle_light");
-            ResourceDictionary? resourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.FirstOrDefault(x => x.Source.OriginalString.Equals(lightStyle));
-            return resourceDictionary == null;
-        }
-
-        public static string readOsThemeReg()
-        {
-            string regpath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-            if (DeviceManagerSA != null)
-            {
-
-                object v = DeviceManagerSA.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.CurrentUser, regpath, "AppsUseLightTheme").Result;
-            }
-
-            return "";
+            return UXSystemParameters.Instance.OSTheme == OSThemeEnum.Dark;
         }
     }
 }
