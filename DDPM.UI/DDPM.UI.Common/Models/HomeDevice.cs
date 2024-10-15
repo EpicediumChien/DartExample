@@ -351,16 +351,20 @@ namespace DDPM.UI.Common.Models
                 }
                 else if (MonitorInfo != null)
                 {
-                    //2024-5-24 Robert_Lin, remove the tail number and dash
-                    // "USB-C1" => "USB-C"; "HDMI-1" => "HDMI"
-                    //Rule:
-                    // 1 If tail char is number => remove it
-                    // 2 If tail char is '-' => remove it
-                    string strOut = MonitorInfo.inputSource;
-                    char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-' };
-                    strOut = strOut.TrimEnd(digits);
-                    strOut = strOut.TrimEnd(digits);
-                    strOut = strOut.TrimEnd(digits);
+                    //Robert_Lin, 2024-10-15 Change the Text1 of BatteryIndicator to inputCable.
+                    //The inputCable has been remove unwant - and number, so we should show it directly
+                    string strOut = MonitorInfo.inputCable;
+
+                    ////2024-5-24 Robert_Lin, remove the tail number and dash
+                    //// "USB-C1" => "USB-C"; "HDMI-1" => "HDMI"
+                    ////Rule:
+                    //// 1 If tail char is number => remove it
+                    //// 2 If tail char is '-' => remove it
+                    //string strOut = MonitorInfo.inputSource;
+                    //char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-' };
+                    //strOut = strOut.TrimEnd(digits);
+                    //strOut = strOut.TrimEnd(digits);
+                    //strOut = strOut.TrimEnd(digits);
                     return strOut;
                 }
                 return "";
