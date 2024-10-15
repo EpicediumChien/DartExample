@@ -1301,7 +1301,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<string> PairingPen()
         {
-            _itemID = new ItemId("DellPeripheral.Pen");
+            _itemID = new ItemId(PenItemID);
             if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_penInterfaceType, commodity, "Pair");
