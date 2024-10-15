@@ -107,7 +107,7 @@ namespace DDPM.SA.Common
         public string FileSavepath { get; set; }
         public string InstallPaths { get; set; }
         public string SHA256 { get; set; }
-        public string SHA512 { get; set; }
+        //public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
         public string ServiceTag { get; set; }
 

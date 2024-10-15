@@ -998,7 +998,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     }
                 }
             }
-            return nRes;    
+            return nRes;
         }
 
         public int GetSnoozeLength(Guid deviceId)
@@ -1307,7 +1307,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.IsProximitySensorEnable = _iLogicalDeviceWebcam.IsProximitySensorEnable;
                         info.IsWakeonApproachEnable = _iLogicalDeviceWebcam.IsWakeonApproachEnable;
                         info.IsWalkAwayLockEnable = _iLogicalDeviceWebcam.IsWalkAwayLockEnable;
-                        info.WALTime = _iLogicalDeviceWebcam.WALTime;                        
+                        info.WALTime = _iLogicalDeviceWebcam.WALTime;
 
                     }
 
@@ -2287,7 +2287,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _updateItems.Priority = updateItem.Priority;
                 _updateItems.ServerPath = updateItem.ServerPath;
                 _updateItems.SupplierID = updateItem.SupplierID;
-                _updateItems.SHA512 = updateItem.SHA512;
+                //_updateItems.SHA512 = updateItem.SHA512;
                 _updateItems.Thumbprint = updateItem.Thumbprint;
 
 
