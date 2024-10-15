@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.DdpmHomePlugin"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" d:Background="Black">
     <UserControl.Resources>
@@ -12,6 +13,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="ConnectionStyle1Brush" Color="White" />
@@ -393,6 +395,62 @@
                     -->
                     <UXControls:UXTextBlock Name="txtAudioBLText" Margin="20,16,20,16" Text="{Binding AudioBleText}"
                                             Foreground="White" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Viewbox>
+        <Viewbox Stretch="Uniform"
+                 MaxWidth="265"
+                 MaxHeight="104">
+            <!-- Audio BLE -->
+            <!--
+            [Firmware]
+            [Update button]
+            -->
+            <Border x:Name="Dock">
+                <!-- Only when ConnectionHoverMode=="Dock" will show this Border -->
+                <Border.Style>
+                    <Style TargetType="Border"
+                           BasedOn="{StaticResource BorderConnection}">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ConnectionHoverMode}"
+                                         Value="Dock">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel Orientation="Vertical">
+                    <UXControls:UXTextBlock Margin="0,16,0,16"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Text="{Binding Dokc_FirmwareVersion}"
+                                            Foreground="White" />
+                    <Button Style="{StaticResource SecondaryButtonStyle}"
+                            Margin="12,0,12,16"
+                            Click="CheckForUpdates_Click"
+                            Content="{Binding [CheckForUpdates], Source={x:Static lang:LangHelper.Instance}}"/>
+                    <!--<Border Style="{StaticResource BorderUnpair}"
+                            Width="176"
+                            MouseLeftButtonDown="CheckForUpdates_Click"
+                            Cursor="Hand"
+                            Margin="8,0,0,10"
+                            Visibility="Visible"
+                            x:Name="btnFWU"
+                            Background="Transparent">
+                        <Grid>
+                            <UXControls:UXTextBlock Name="txtFWUpdate"
+                                                    Foreground="#F5F6F7"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    FontFamily="Roboto"
+                                                    FontSize="14"
+                                                    Text="{Binding [CheckForUpdates], Source={x:Static lang:LangHelper.Instance}}" />
+                        </Grid>
+                    </Border>-->
                 </StackPanel>
             </Border>
         </Viewbox>

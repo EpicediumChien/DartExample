@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
@@ -59,8 +60,8 @@ namespace DDPM.UI.Plugin.ViewModels
             //0821 Bruce Add show Dock Fw Version
             Model = Model.Replace("_", " ");
             var fv = Regex.Replace(CurrentDeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
-            FirmwareVersion2 = $"Firmware Version {fv}";
-            FirmwareVersion2 += $"\nServiceTag {CurrentDeviceInfo.DockServiceTag}";
+            FirmwareVersion2 = $"{Strings.FirmwareVersion} {fv}";
+            FirmwareVersion2 += $"\n{Strings.ServiceTag} {CurrentDeviceInfo.DockServiceTag}";
             FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)

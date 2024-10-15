@@ -59,6 +59,29 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 IsSelected[j] = false;
             }
             IsSelected[index] = true;
+            switch (index)
+            {
+                case 0:
+                default:
+                    Settings_General settings_General = new Settings_General();
+                    OpenFullView(settings_General);
+                    break;
+                case 1:
+                    UpdatesPage updatesPage = new UpdatesPage();
+                    OpenFullView(updatesPage);
+                    break;
+                case 2:
+                    FullView = new AnalyticsPage();
+                    break;
+                case 3:
+                    Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();
+                    OpenFullView(settings_WidgetSettings);
+                    break;
+                case 4:
+                    Settings_About settings_About = new Settings_About();
+                    OpenFullView(settings_About);
+                    break;
+            }
             OnPropertyChanged("IsSelected");
         }
         #region UI Enable Flags
@@ -529,7 +552,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 case DeviceType.LogicalDock:
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Ensure only one dock is connected to your system. Devices connected to dock may not be available during update.";
-                    UXAlertItemVisibility_2= Visibility.Visible;
+                    UXAlertItemVisibility_2 = Visibility.Visible;
                     UXAlertItemMessage_2 = "Connect PC to power source and ensure PC battery charge is above 10% to continue with update";
                     break;
 

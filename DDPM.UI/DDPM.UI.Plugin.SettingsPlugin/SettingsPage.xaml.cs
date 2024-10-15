@@ -1,6 +1,8 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Interfaces;
+using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -24,13 +26,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public SettingsPage()
         {
             InitializeComponent();
-            DataContext = new SettingsPageViewModel();
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            SettingsPageViewModel _vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
+
+            if (_vm != null)
             {
-                vm.Invoke_RefreshData();
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
-                GeneralButton_Click(this, null);
+                DataContext = _vm;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    vm.Invoke_RefreshData();
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                    DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
+                }
             }
         }
 
@@ -108,34 +114,28 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void GeneralButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(0);
-            Settings_General settings_General = new Settings_General();
-            vm.OpenFullView(settings_General);
         }
         private void UpdatesButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(1);
-            UpdatesPage updatesPage = new UpdatesPage();
-            vm.OpenFullView(updatesPage);
         }
         private void AnalyticsButton_Click(object sender, MouseButtonEventArgs e)
         {
             //Dean 0618 add analytics page
             vm.SetSelected(2);
-            vm.FullView = new AnalyticsPage();
+            
         }
 
         private void WidgetSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
-            Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();
-            vm.OpenFullView(settings_WidgetSettings);
+            
         }
 
         private void AboutButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(4);
-            Settings_About settings_About = new Settings_About();
-            vm.OpenFullView(settings_About);
+            
         }
     }
 }
