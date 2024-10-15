@@ -11,21 +11,21 @@
           "DCF.UX.WPF": "2.2.4.1",
           "DDPM.SA.Common": "2.0.0.5",
           "DPeMPublic.Common": "1.7.6.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
         },
         "runtime": {
           "DDPM.QAM.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.34"
+            "fileVersion": "10.0.19041.31"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.8.46841"
+            "fileVersion": "2.0.4.44211"
           }
         }
       },
@@ -37,10 +37,11 @@
           }
         }
       },
-      "DCF.Security/2.4.1": {
+      "DCF.Security/2.4.2.1": {
         "dependencies": {
-          "DCF.Security.Interfaces": "2.4.1",
+          "DCF.Security.Interfaces": "2.4.2.1",
           "System.DirectoryServices": "8.0.0",
+          "System.Formats.Asn1": "8.0.1",
           "System.Security.Cryptography.Pkcs": "8.0.0",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "System.Security.Cryptography.Xml": "8.0.0"
@@ -48,22 +49,22 @@
         "runtime": {
           "lib/net8.0/Dell.Client.Framework.Security.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.4.1.0"
+            "fileVersion": "2.4.2.1"
           }
         }
       },
-      "DCF.Security.Interfaces/2.4.1": {
+      "DCF.Security.Interfaces/2.4.2.1": {
         "runtime": {
           "lib/net8.0/Dell.Client.Framework.Security.Interfaces.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.4.1.0"
+            "fileVersion": "2.4.2.1"
           }
         }
       },
       "DCF.UX.WPF/2.2.4.1": {
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
           "Microsoft.Toolkit.Uwp.Notifications": "7.1.2",
@@ -80,7 +81,7 @@
       },
       "Dell.RPC.Transport/1.5.1": {
         "dependencies": {
-          "DCF.Security": "2.4.1",
+          "DCF.Security": "2.4.2.1",
           "Microsoft.VisualStudio.Validation": "17.6.11"
         },
         "runtime": {
@@ -105,9 +106,9 @@
           }
         }
       },
-      "DellClientFramework/6.4.5.1": {
+      "DellClientFramework/6.4.11.2": {
         "dependencies": {
-          "DCF.Security": "2.4.1",
+          "DCF.Security": "2.4.2.1",
           "Microsoft.VisualStudio.Validation": "17.6.11",
           "Newtonsoft.Json": "13.0.3",
           "System.Management": "8.0.0",
@@ -117,15 +118,15 @@
         "runtime": {
           "lib/net8.0/DCF.Agent.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.4.5.1"
+            "fileVersion": "6.4.11.2"
           },
           "lib/net8.0/DCF.Common.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.4.5.1"
+            "fileVersion": "6.4.11.2"
           },
           "lib/net8.0/DCF.Interfaces.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.4.5.1"
+            "fileVersion": "6.4.11.2"
           }
         }
       },
@@ -302,7 +303,14 @@
           }
         }
       },
-      "System.Formats.Asn1/8.0.0": {},
+      "System.Formats.Asn1/8.0.1": {
+        "runtime": {
+          "lib/net8.0/System.Formats.Asn1.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.724.31311"
+          }
+        }
+      },
       "System.IO.FileSystem.AccessControl/5.0.0": {
         "dependencies": {
           "System.Security.AccessControl": "5.0.0",
@@ -365,7 +373,7 @@
       },
       "System.Security.Cryptography.Pkcs/8.0.0": {
         "dependencies": {
-          "System.Formats.Asn1": "8.0.0"
+          "System.Formats.Asn1": "8.0.1"
         }
       },
       "System.Security.Cryptography.ProtectedData/8.0.0": {},
@@ -402,46 +410,34 @@
           "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
           "VcpCore.Interfaces": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.SA.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.SA.Common.dll": {}
         }
       },
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
-          "DDPM.SA.Obfuscation.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DDPM.SA.Obfuscation.dll": {}
         }
       },
       "VcpCore.Common/2.0.0.5": {
         "dependencies": {
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "VcpCore.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Common.dll": {}
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
         "dependencies": {
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Interfaces.dll": {}
         }
       },
       "DPeMPublic.Common/1.7.6.0": {
@@ -500,7 +496,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -512,19 +508,19 @@
       "path": "communitytoolkit.mvvm/8.1.0",
       "hashPath": "communitytoolkit.mvvm.8.1.0.nupkg.sha512"
     },
-    "DCF.Security/2.4.1": {
+    "DCF.Security/2.4.2.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-NTVtEo0cJkjbrs1n2C6EEJ3EXXd1xcw4XWwBeUOmHs4Uh7P8Df908WZvTSvWGgO+4jMEyluvqAtKCWq3FzGlnQ==",
-      "path": "dcf.security/2.4.1",
-      "hashPath": "dcf.security.2.4.1.nupkg.sha512"
+      "sha512": "sha512-2e0ayVJ/GMzYMRLvl9zfuRrSAMNi7B7ssaJ+XSxu+SYxLVZazodYc8YktaXzFGtvnAJm2lq88+jCbZ1vDNAoXw==",
+      "path": "dcf.security/2.4.2.1",
+      "hashPath": "dcf.security.2.4.2.1.nupkg.sha512"
     },
-    "DCF.Security.Interfaces/2.4.1": {
+    "DCF.Security.Interfaces/2.4.2.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-TXO9zMBzXW4Gz+qPzsS2sn9VSuxGclCn3jo/SKMIPHZdA+WUJHhPbT4Yv+TroLLN6TyU9U8EB04ZbKlLRyFKJQ==",
-      "path": "dcf.security.interfaces/2.4.1",
-      "hashPath": "dcf.security.interfaces.2.4.1.nupkg.sha512"
+      "sha512": "sha512-QdZkQ256uPM0p4SJPRqp+ku7kOs2ggxSu0mCOEsIDZIPZXQtbZ+MuJ6ZJUttae4xWhOZz4EW7JpcM5GVySZFAg==",
+      "path": "dcf.security.interfaces/2.4.2.1",
+      "hashPath": "dcf.security.interfaces.2.4.2.1.nupkg.sha512"
     },
     "DCF.UX.WPF/2.2.4.1": {
       "type": "package",
@@ -547,12 +543,12 @@
       "path": "dell.techhub.sdk.common_net/3.0.0.606-2e2db9-beta",
       "hashPath": "dell.techhub.sdk.common_net.3.0.0.606-2e2db9-beta.nupkg.sha512"
     },
-    "DellClientFramework/6.4.5.1": {
+    "DellClientFramework/6.4.11.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-+nuGtRnJObWyjYNBiHoRwwHqQr/LSzVI19X5teJBVNuXaBvoNxnYqqTCGv02UzJiLC42v8qf5SwgUJa7epkusg==",
-      "path": "dellclientframework/6.4.5.1",
-      "hashPath": "dellclientframework.6.4.5.1.nupkg.sha512"
+      "sha512": "sha512-bfMsJ4F/3mjCr9uEsijYHLUOn2qMbKF/n+XPsGdAbV/AhEpPFlDE0ENFxlU/+VCHXWuXZEpnbQc5VCNdYQ5wRw==",
+      "path": "dellclientframework/6.4.11.2",
+      "hashPath": "dellclientframework.6.4.11.2.nupkg.sha512"
     },
     "Microsoft-WindowsAPICodePack-Core/1.1.5": {
       "type": "package",
@@ -673,12 +669,12 @@
       "path": "system.drawing.common/8.0.6",
       "hashPath": "system.drawing.common.8.0.6.nupkg.sha512"
     },
-    "System.Formats.Asn1/8.0.0": {
+    "System.Formats.Asn1/8.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-AJukBuLoe3QeAF+mfaRKQb2dgyrvt340iMBHYv+VdBzCUM06IxGlvl0o/uPOS7lHnXPN6u8fFRHSHudx5aTi8w==",
-      "path": "system.formats.asn1/8.0.0",
-      "hashPath": "system.formats.asn1.8.0.0.nupkg.sha512"
+      "sha512": "sha512-XqKba7Mm/koKSjKMfW82olQdmfbI5yqeoLV/tidRp7fbh5rmHAQ5raDI/7SU0swTzv+jgqtUGkzmFxuUg0it1A==",
+      "path": "system.formats.asn1/8.0.1",
+      "hashPath": "system.formats.asn1.8.0.1.nupkg.sha512"
     },
     "System.IO.FileSystem.AccessControl/5.0.0": {
       "type": "package",
