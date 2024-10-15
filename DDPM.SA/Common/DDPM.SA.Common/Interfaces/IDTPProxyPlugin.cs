@@ -22,6 +22,7 @@ namespace DDPM.SA.Common
 
         Task SetDPIValue(string itemID, int newValue);
 
+        #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -45,8 +46,23 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
         Task<string> PairingPen();
+        Task<string> GetEraserDoublePressValues();
+        Task<string> GetSideSwitchSinglePressValues();
+        Task<string> GetMenuSinglePressValues();
+        Task<string> GetLaunchableAppValues();
+        Task<string> GetEraserDoublePressSetting();
+        Task<string> GetEraserSinglePressSetting();
+        Task<string> GetEraserLongPressSetting();
+        Task<string> GetSideTopSwitchSinglePressSetting();
+        Task<string> GetSideBottomSwitchSinglePressSetting();
+        Task<string> GetMenuSinglePressSetting();
+        Task<bool> GetMenuCenterRightClickSetting();
+        Task<bool> GetIsSideTopButtonHoverClick();
+        Task<bool> GetIsSideBottomButtonHoverClick();
 
-        // webcam
+        #endregion
+
+        #region webcam
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
         Task<string> GetProfile(string Guid);
@@ -117,6 +133,6 @@ namespace DDPM.SA.Common
         Task<bool> GetIsProximitySensorEnable(string Guid);
         Task<bool> GetIsWakeonApproachEnable(string Guid);
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
-
+        #endregion
     }
 }

@@ -4387,6 +4387,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.PairingPen();
         }
+        public Task<string> GetEraserDoublePressValues()
+        {
+            return _DTPProxyPlugin.GetEraserDoublePressValues();
+        }
+        public Task<string> GetSideSwitchSinglePressValues()
+        {
+            return _DTPProxyPlugin.GetSideSwitchSinglePressValues();
+        }
+        public Task<string> GetMenuSinglePressValues()
+        {
+            return _DTPProxyPlugin.GetMenuSinglePressValues();
+        }
+        public Task<string> GetLaunchableAppValues()
+        {
+            return _DTPProxyPlugin.GetLaunchableAppValues();
+        }
+        public Task<string> GetEraserDoublePressSetting()
+        {
+            return _DTPProxyPlugin.GetEraserDoublePressSetting();
+        }
+        public Task<string> GetEraserSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetEraserSinglePressSetting();
+        }
+        public Task<string> GetEraserLongPressSetting()
+        {
+            return _DTPProxyPlugin.GetEraserLongPressSetting();
+        }
+        public Task<string> GetSideTopSwitchSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetSideTopSwitchSinglePressSetting();
+        }
+        public Task<string> GetSideBottomSwitchSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetSideBottomSwitchSinglePressSetting();
+        }
+        public Task<string> GetMenuSinglePressSetting()
+        {
+            return _DTPProxyPlugin.GetMenuSinglePressSetting();
+        }
+        public Task<bool> GetMenuCenterRightClickSetting()
+        {
+            return _DTPProxyPlugin.GetMenuCenterRightClickSetting();
+        }
+        public Task<bool> GetIsSideTopButtonHoverClick()
+        {
+            return _DTPProxyPlugin.GetIsSideTopButtonHoverClick();
+        }
+        public Task<bool> GetIsSideBottomButtonHoverClick()
+        {
+            return _DTPProxyPlugin.GetIsSideBottomButtonHoverClick();
+        }
 
         public Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
