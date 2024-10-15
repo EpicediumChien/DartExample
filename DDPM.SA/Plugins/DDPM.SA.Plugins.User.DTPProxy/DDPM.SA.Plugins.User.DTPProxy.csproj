@@ -6,9 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.1.0" />
-		<PackageReference Include="Dell.TechHub.Sdk.Common.Identifiers" Version="3.0.0.606-2e2db9-beta" />
-		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+	  <PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
