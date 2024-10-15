@@ -616,6 +616,7 @@ namespace DDPM.UI.Module.Kvm
                     subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     if (subInputList != null)
                     {
+                        subInputs.Clear();
                         foreach (UInt16 subinput in subInputList)
                         {
                             InputSourceObj inputSourceObj = new InputSourceObj();

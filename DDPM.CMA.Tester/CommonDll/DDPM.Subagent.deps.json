@@ -19,7 +19,7 @@
           "Dell.DTM.Platinum.Sdk": "3.1.0",
           "Dell.TechHub.Settings": "1.5.7.1",
           "Dell.UnifiedAgent.Client": "1.4.3.1",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
         },
         "runtime": {
@@ -72,7 +72,7 @@
       "DCF.UX.WPF/2.2.4.1": {
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
           "Microsoft.Toolkit.Uwp.Notifications": "7.1.3",
@@ -91,7 +91,7 @@
         "dependencies": {
           "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.612-beaa18-beta",
           "Dell.TechHub.Sdk.Exceptions": "3.0.0.612-beaa18-beta",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "System.Reflection.DispatchProxy": "4.7.1"
         },
         "runtime": {
@@ -172,7 +172,7 @@
       "Dell.UnifiedAgent.Client/1.4.3.1": {
         "dependencies": {
           "Dell.RPC.Transport": "1.5.1",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft.VisualStudio.Threading": "17.3.44",
           "StreamJsonRpc": "2.13.33",
           "System.Reflection.MetadataLoadContext": "8.0.0",
@@ -682,7 +682,7 @@
           "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
           "VcpCore.Interfaces": "2.0.0.5"
         },
@@ -698,7 +698,7 @@
       "DDPM.SA.Plugins.CLIManager/1.0.0": {
         "dependencies": {
           "DDPM.SA.Common": "2.0.0.5",
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "DDPM.SA.Plugins.CLIManager.dll": {}
@@ -719,7 +719,7 @@
           "DDPM.SA.Common": "2.0.0.5",
           "Dell.RPC.Transport": "1.5.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft.Toolkit.Uwp.Notifications": "7.1.3"
         },
         "runtime": {
@@ -732,7 +732,7 @@
           "Dell.DTM.Platinum.Sdk": "3.1.0",
           "Dell.TechHub.Settings": "1.5.7.1",
           "Dell.UnifiedAgent.Client": "1.4.3.1",
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "DDPM.SA.Plugins.PlatinumSDK.dll": {}
@@ -741,7 +741,7 @@
       "DDPM.SA.Plugins.SettingsManager/1.0.0": {
         "dependencies": {
           "DDPM.SA.Common": "2.0.0.5",
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "DDPM.SA.Plugins.SettingsManager.dll": {}
@@ -751,7 +751,7 @@
         "dependencies": {
           "DDPM.SA.Common": "2.0.0.5",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "DDPM.SA.Plugins.SWUpdate.dll": {}
@@ -759,7 +759,7 @@
       },
       "VcpCore.Common/2.0.0.5": {
         "dependencies": {
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "VcpCore.Common.dll": {}
@@ -767,7 +767,7 @@
       },
       "VcpCore.Interfaces/2.0.0.5": {
         "dependencies": {
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {

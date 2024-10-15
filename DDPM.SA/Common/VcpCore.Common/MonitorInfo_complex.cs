@@ -35,6 +35,5 @@ namespace VcpCore.Common
         public string series { get; set; }
         public string MarketingName { get; set; }
         public string ImageFileName { get; set; }
-        public string Display_DeviceName { get; set; }
     }
 }

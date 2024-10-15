@@ -28,6 +28,9 @@ using Windows.ApplicationModel;
 using VcpCore.Common;
 using DDPM.UI.Common.UserControls;
 using DDPM.Easy.Common;
+using DDPM.UI.Common.ViewModels;
+using static System.Reflection.Metadata.BlobBuilder;
+using System.Globalization;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -46,7 +49,7 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
+        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
@@ -61,8 +64,8 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;// _homeDevice.vmEzArrange;
+            DataContext = vm;// _homeDevice.vmEzArrange;
 
             InitializePage();
 
@@ -87,6 +90,71 @@ namespace DDPM.UI.Module.EzMemory
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
             }
+
+            if (_vm.IsEditProfile)
+            {
+                _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
+                if (_vm.currentEditprofileSetting.Auto)
+                {
+                    _vm.IsAutoLaunch = true;
+                    _vm.IsManualLaunch = false;
+                }
+                else
+                {
+                    _vm.IsAutoLaunch = false;
+                    _vm.IsManualLaunch = true;
+                }
+
+                long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
+                TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
+
+                // 使用 CultureInfo 來取得 AM 和 PM
+                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
+                int hourValue = time.Hours;
+                if (hourValue == 0)
+                {
+                    _vm.SelectedHour = "12";
+                    _vm.SelectedAMPM = amDesignator; // AM
+                }
+                else if (hourValue >= 12)
+                {
+                    _vm.SelectedAMPM = pmDesignator; // PM
+                    if (hourValue > 12)
+                    {
+                        _vm.SelectedHour = (hourValue - 12).ToString("D2");
+                    }
+                    else
+                    {
+                        _vm.SelectedHour = "12";
+                    }
+                }
+                else
+                {
+                    _vm.SelectedAMPM = amDesignator; // AM
+                    _vm.SelectedHour = hourValue.ToString("D2");
+                }
+
+                _vm.SelectedMinute = time.Minutes.ToString("D2");
+            }
+            else
+            {
+                DateTime now = DateTime.Now;
+
+                string ampm = now.Hour >= 12
+                    ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
+                    : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+
+                string hour = now.ToString("hh");
+                string minute = now.ToString("mm");
+
+                _vm.SelectedHour = hour;
+                _vm.SelectedMinute = minute;
+                _vm.SelectedAMPM = ampm;
+
+                _vm.IsLaunchAtStartup = false;
+            }
         }
 
         /// <summary>
@@ -97,7 +165,7 @@ namespace DDPM.UI.Module.EzMemory
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 2;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -139,6 +207,35 @@ namespace DDPM.UI.Module.EzMemory
                 }
 
                 // Handle Monitor Settings
+                if(_vm.IsAutoLaunch)
+                {
+                    if(_vm.SelectedHour == string.Empty || _vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty) return;
+                }
+                if(_vm.IsLaunchAtStartup)
+                {
+                    EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                    if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                    {
+                        foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                        {
+                            if (ps.StartUpLaunch)
+                            {
+                                ps.StartUpLaunch = false;
+                                if(DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                                {
+                                    _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update error ");
+                    }
+
+                }
+
                 long autoLaunchTime = _vm.IsAutoLaunch ? GetAutoLaunchTime() : default;
                 EzProfileSettingDDPM _ezProfileSettingDDPM = new EzProfileSettingDDPM(profileID, _vm.IsAutoLaunch, autoLaunchTime, _vm.IsLaunchAtStartup);
 
@@ -179,7 +276,20 @@ namespace DDPM.UI.Module.EzMemory
         {
             int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
             int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
-            return (long)(hour * 3600 + minute * 60); // Convert hours and minutes to seconds
+
+            // PM
+            if (_vm.SelectedAMPM == "PM")
+            {
+                hour += 12;
+            }
+            // AM
+            else if (_vm.SelectedAMPM == "AM" && hour == 12)
+            {
+                hour = 0;
+            }
+
+            // 轉換為秒
+            return (long)(hour * 3600 + minute * 60);
         }
 
         private bool HandleMonitorEasyArrangement(MonitorInfo monitorInfo, EzProfileSettingDDPM ezProfileSetting)
@@ -478,7 +588,39 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void StartupCB_Checked(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage);
+            try
+            {
+                EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                {
+                    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                    {
+                        if (ps.StartUpLaunch)
+                        {
+                            if (_vm.currentEditprofileSetting.ID != ps.ID)
+                            {
+                                if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
+                                {
+                                    _vm.IsLaunchAtStartup = true;
+                                }
+                                else
+                                {
+                                    _vm.IsLaunchAtStartup = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Info($"[EzMemoryLaunchOption] StartupCB_Checked Exception occurred: {ex.Message}");
+            }
         }
     }
 }

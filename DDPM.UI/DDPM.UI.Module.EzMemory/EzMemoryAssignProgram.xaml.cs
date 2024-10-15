@@ -3,6 +3,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -43,7 +44,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly ILog _log;
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
-        public EzMemoryAssignProgram(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
+        public EzMemoryAssignProgram(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
@@ -59,8 +60,8 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;
+            DataContext = vm;
 
             //Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             //_vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
@@ -144,7 +145,7 @@ namespace DDPM.UI.Module.EzMemory
             //前進 AddPage 前設False
             _vm.IsAddPageBack = false;
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
             //UpdatePageContent();
         }
@@ -182,7 +183,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay, _selecthomeDevice);
+            EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezMemoryFirst);
         }
 
@@ -194,7 +195,7 @@ namespace DDPM.UI.Module.EzMemory
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm._currentPageIndex++;
-            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _selecthomeDevice);
+            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
         }
 
@@ -251,7 +252,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
             _vm.ButtonName = button.Name;
-            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _selecthomeDevice);
+            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
         }
     }

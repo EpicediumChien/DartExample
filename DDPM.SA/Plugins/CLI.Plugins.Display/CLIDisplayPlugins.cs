@@ -3435,7 +3435,12 @@ namespace DDPM.CLI.Plugins.Display
                 return (int)CLI_ExitCode.null_device_manager;
             }
             if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors(reget);
+            {
+                if (reget)
+                    _AllInfoMonitors = await devMgr.Re_GetMonitors();
+                else
+                    _AllInfoMonitors = await devMgr.GetMonitors();
+            }
 
             int index = 0;
             foreach (var g in _AllInfoMonitors)
@@ -5778,7 +5783,7 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
             if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors(false).Result;
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
 
             string output = string.Empty;
             int ret = 0;

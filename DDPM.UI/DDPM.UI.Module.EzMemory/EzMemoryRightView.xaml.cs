@@ -18,6 +18,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft;
 using String = System.String;
 using static DDPM.UI.Common.User32;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -250,7 +251,7 @@ namespace DDPM.UI.Module.EzMemory
 
             _vm.IsEditProfile = true;
             _vm.CurrentEditSelectspItem = spItem;
-            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _homeDeviceSelect);
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
@@ -318,14 +319,20 @@ namespace DDPM.UI.Module.EzMemory
 
                     if (profileSetting != null)
                     {
-                        if (profileSetting.Auto)
+                        if (profileSetting.StartUpLaunch)
                         {
-                            _vm.AutomaticStartupValue = Strings.Yes;
-                            _vm.LaunchByTimeValue = _vm.ConvertAutoLaunchtimeToTime(profileSetting.AutoStartTime);
+                            _vm.AutomaticStartupValue = Strings.Yes;                          
                         }
                         else
                         {
                             _vm.AutomaticStartupValue = Strings.No;
+                        }
+                        if(profileSetting.Auto)
+                        {
+                            _vm.LaunchByTimeValue = _vm.ConvertAutoLaunchtimeToTime(profileSetting.AutoStartTime);
+                        }
+                        else
+                        {
                             _vm.LaunchByTimeValue = "_";
                         }
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, MonitorSettings updated for Profile ID {matchingProfile.ID}.");
@@ -349,7 +356,7 @@ namespace DDPM.UI.Module.EzMemory
             ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
 
             //Set as current Selected item
-            _vm.CurrentSelectspItem = spItem;
+            _vm.SelectedSplitItem = spItem;
             _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
 
             //Need to set it's buddy as IsSelected
@@ -475,7 +482,7 @@ namespace DDPM.UI.Module.EzMemory
 
                 }
             }
-            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _homeDeviceSelect);
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
         #endregion
