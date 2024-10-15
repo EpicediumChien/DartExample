@@ -1740,6 +1740,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
+
+                    writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
+                    if (_penInterfaceType != null)
+                    {
+                        _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                    .MakeGenericMethod(_headsetInterfaceType);
+                        writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
                     _ = RegisterEventAsync();
                 });
             }
@@ -1759,10 +1773,35 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             _comdity = await _commSdk.GetCommodityAsync<IMouseCommodity>(new ItemId("DellPeripheral.Mouse"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IMouseCommodity _mousecom)
             {
-                _mousecom.Connected += _comdity_Connected;
-                _mousecom.Disconnected += _comdity_Disconnected;
-                writelog($"Mouse Commodity event registered");
+                try
+                {
+                    _mousecom.Connected += _comdity_Connected;
+                    _mousecom.Disconnected += _comdity_Disconnected;
+                    writelog($"Mouse Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
             }
+
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
+            {
+                try
+                {
+                    //_headsetcom.AncModeChanged += _comdity_AncModeChange;
+                    _headsetcom.Connected += _comdity_Connected;
+                    _headsetcom.Disconnected += _comdity_Disconnected;
+                    writelog($"Headset Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -1851,6 +1890,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void _comdity_Connected(object sender, ConnectedArgs e)
         {
             Debug.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+
+        private void _comdity_AncModeChange(object sender, AncModeChangedArgs e)
+        {
+            Debug.WriteLine($"AncModeChange Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
     }
 }
