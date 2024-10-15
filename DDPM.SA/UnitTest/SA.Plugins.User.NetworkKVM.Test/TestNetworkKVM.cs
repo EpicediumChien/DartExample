@@ -138,7 +138,7 @@ public class TestNetworkKVM
         privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+        VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
         var VcpCoreServiceObject = VcpCoreService.Object;
         privatevNkvmPluginObject.SetFieldOrProperty("_VcpCorePlugin", VcpCoreServiceObject);
         try
