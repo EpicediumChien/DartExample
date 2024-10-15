@@ -306,8 +306,8 @@ namespace DDPM.UI.Module.DisplayProperties
                         _IsHighResolution = true;
                         break;
                 }
-                if (!(currentMonitorInfo.inputSource.ToUpper().StartsWith("USB-C") ||
-                    currentMonitorInfo.inputSource.ToUpper().StartsWith("THUNDERBOLT"))) // 2024-08-07 By Bruce.
+                if (!(currentMonitorInfo.inputCable.ToUpper().StartsWith("USB-C") ||
+                    currentMonitorInfo.inputCable.ToUpper().StartsWith("THUNDERBOLT"))) // 2024-08-07 By Bruce.
                 {
                     _SupportedUSBCPrioeitization = false;
                 }
