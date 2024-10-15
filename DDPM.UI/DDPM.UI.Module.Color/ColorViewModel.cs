@@ -267,64 +267,70 @@ namespace DDPM.UI.Module.Color
         {
             int idex = ColorPresetSelectedIndex;// cbManualPreset.SelectedIndex;
 
-            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+            int nSupportColorPresets_Count = SupportColorPresets.Count;
 
-            //this.Dispatcher.Invoke((Action)(() =>
-            Task.Run(() =>
+            if ( idex >= 0 && idex < nSupportColorPresets_Count)
             {
-                // 20240717 jim add
-                if (setting.UserSettings.IsSynchronizemonitor)
-                {
-                    int count = VerifyDellMonitor_Count();
+                DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
 
-                    if (count == 1)
+                //this.Dispatcher.Invoke((Action)(() =>
+                Task.Run(() =>
+                {
+                    // 20240717 jim add
+                    if (setting.UserSettings.IsSynchronizemonitor)
                     {
-                        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
-                      MyModule.SelectedHomeDevice?.MonitorInfo,
-                      SupportColorPresets[idex]);
+                        int count = VerifyDellMonitor_Count();
+
+                        if (count == 1)
+                        {
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
+                          MyModule.SelectedHomeDevice?.MonitorInfo,
+                          SupportColorPresets[idex]);
+                        }
+                        else
+                        {
+                            foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                            {
+                                if (hd.MonitorInfo.IsDellMonitor)
+                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, false);
+                            }
+                        }
                     }
                     else
-                    {
-                        foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
-                        {
-                            if (hd.MonitorInfo.IsDellMonitor)
-                                DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, false);
-                        }
-                    }                
-                }
-                else
-                    //ColorViewModel vm = (ColorViewModel)DataContext;
-                    // 20240619 jim modify
-                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
-                        MyModule.SelectedHomeDevice?.MonitorInfo,
-                        SupportColorPresets[idex]);
-            });
+                        //ColorViewModel vm = (ColorViewModel)DataContext;
+                        // 20240619 jim modify
+                        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
+                            MyModule.SelectedHomeDevice?.MonitorInfo,
+                            SupportColorPresets[idex]);
+                });
 
-            //this.Dispatcher.Invoke((Action)(() =>
-            {
-                //ColorViewModel vm = (ColorViewModel)DataContext;
-
-                // if Auto-adjust the ICC color profile based on Color preset
-
-                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                //this.Dispatcher.Invoke((Action)(() =>
                 {
-                    // add jim 20240604
-                    if (DCM_Visibility == Visibility.Hidden)
+                    //ColorViewModel vm = (ColorViewModel)DataContext;
+
+                    // if Auto-adjust the ICC color profile based on Color preset
+
+                    if (_ICC_Metadata.Is_Support_ICC_DeviceName)
                     {
-                        if (ColorManagement_isChecked)
+                        // add jim 20240604
+                        if (DCM_Visibility == Visibility.Hidden)
                         {
-                            if (ICCprofile_based_Colorpreset_enable)
+                            if (ColorManagement_isChecked)
                             {
-                                // add jim 20240830
-                                DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
-                                //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
-                                //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
+                                if (ICCprofile_based_Colorpreset_enable)
+                                {
+                                    // add jim 20240830
+                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                                    //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                                    //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
+                                }
                             }
                         }
                     }
                 }
+                //}));
             }
-            //}));
+
         }
 
         public bool ColorManagement_isChecked { get; set; } = false;

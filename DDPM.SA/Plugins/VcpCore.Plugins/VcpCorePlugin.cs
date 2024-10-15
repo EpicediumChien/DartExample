@@ -2718,8 +2718,12 @@ namespace VcpCore.Plugins
                 {
                     uint val = (Convert.ToUInt32(value) & 0XFFFF);
                     string valstring = val.ToString("X2");
-                    int pos = valstring.Length - 2;
-                    rc = valstring.Substring(pos);
+
+                    if (valstring.Length >= 2)
+                    {
+                        int pos = valstring.Length - 2;
+                        rc = valstring.Substring(pos);
+                    }                  
 
                     Trace.WriteLine("GetCurrentColorPreset()  valstring= " + valstring);
                     Trace.WriteLine("GetCurrentColorPreset()  rc= " + rc);
