@@ -414,10 +414,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         for (int i = 0; i < strUSB.Length; i = i + 4)
                         {
                             subUSB = strUSB.Substring(i, 4);
+                            _logs.DebugMsg("subUSB:" + subUSB);
 
                             string outUSB;
                             if (USBUplink.TryGetValue(subUSB, out outUSB))
                             {
+                                _logs.DebugMsg("outUSB:" + outUSB);
                                 _usbUpstreamList.Add(outUSB);
                             }
                         }
