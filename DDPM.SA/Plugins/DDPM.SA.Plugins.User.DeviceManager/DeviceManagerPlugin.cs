@@ -8875,52 +8875,96 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     foreach (var dDMuserProfile in dDMUserSettings.Profiles)
                     {
-                        var currentProfile = userEAProfileDDPMList.FirstOrDefault(p => p.ID == dDMuserProfile.ID);
-
-                        if (currentProfile != null)
-                        {
-                            // 將更新後的 currentProfile 寫入
-                            result = WriteUserEAProfileDDPM(currentProfile).Result;
-                        }
+                        EAProfileDDPM eaProfileDDPM = new EAProfileDDPM(dDMuserProfile.ID, dDMuserProfile.Name, dDMuserProfile.Layout, dDMuserProfile.AppInfos.ConvertAll
+                                              (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
+                        
+                        // 將更新後的 currentProfile 寫入
+                        result = WriteUserEAProfileDDPM(eaProfileDDPM).Result;
                     }
+                    if (result)
+                        writelog($"@ DDMtoDDPM_EzMemory: UserSettings PASS");
+                    else
+                        writelog($"@ DDMtoDDPM_EzMemory: UserSettings Fail");
                 }
 
                 //DDMMonitorSettings
                 if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null)
                 {
-                    //WriteMonitorEasyArrangement(dDMMonitorSettings);
                     MonitorInfo moinfo = new MonitorInfo();
+                    EDID edid = new EDID();
+                    moinfo.edid = edid;
                     moinfo.modelName = dDMMonitorSettings.Model;
                     moinfo.edid.ModelName = dDMMonitorSettings.Model;
                     moinfo.edid.ServiceTag = dDMMonitorSettings.ServiceTag;
 
-                    EasyArrangementDDPM easyArrangementDDPM = ReadMonitorEasyArrangement(moinfo).Result;
+                    EasyArrangementDDPM easyArrangementDDPM = new EasyArrangementDDPM();
+                    easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 
-                    foreach (var desktop in dDMMonitorSettings.EasyArrangement.Desktops)
+                    // 新增 DesktopDDPM 物件
+                    easyArrangementDDPM.Desktops.Add(new DesktopDDPM(dDMMonitorSettings.EasyArrangement.Desktops[0].ID, dDMMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout));
+
+                    // 設定 DesktopDDPM 的屬性
+                    easyArrangementDDPM.Desktops[0].ID = dDMMonitorSettings.EasyArrangement.Desktops[0].ID;
+                    easyArrangementDDPM.Desktops[0].Index = dDMMonitorSettings.EasyArrangement.Desktops[0].Index;
+                    easyArrangementDDPM.Desktops[0].ActiveLayout = dDMMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+
+                    List<int> layoutMRU = new List<int>();
+                    layoutMRU = dDMMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU;
+                    easyArrangementDDPM.Desktops[0].LayoutMRU = layoutMRU;
+
+                    List<int> profileMRU = new List<int>();
+                    profileMRU = dDMMonitorSettings.EasyArrangement.Desktops[0].ProfileMRU;
+                    easyArrangementDDPM.Desktops[0].ProfileMRU = profileMRU;
+
+                    // Profiles
+                    easyArrangementDDPM.Desktops[0].Profiles = new List<EzProfileDDPM>();
+                    foreach (var profile in dDMMonitorSettings.EasyArrangement.Desktops[0].Profiles)
                     {
-                        DesktopDDPM newDesktop = new DesktopDDPM(desktop.ID, desktop.ActiveLayout)
-                        {
-                            LayoutMRU = new List<int>(desktop.LayoutMRU),
-                            ProfileMRU = new List<int>(desktop.ProfileMRU),
-                            Profiles = new List<EzProfileDDPM>(),
-                            ProfileSettings = new List<EzProfileSettingDDPM>()
-                        };
+                        var newProfile = new EzProfileDDPM(
+                            profile.ID,
+                            profile.Name,
+                            profile.Layout,
+                            profile.Auto,
+                            profile.AutoStartTime ?? 0,
+                            profile.StartUpLaunch,
+                            new List<EAAppInfoDDPM>()
+                        );
 
-                        foreach (var profileSetting in desktop.ProfileSettings)
+                        // AppInfos
+                        foreach (var app in profile.AppInfos)
                         {
-                            EzProfileSettingDDPM newProfileSetting = new EzProfileSettingDDPM(
-                                profileSetting.ID,
-                                profileSetting.Auto,
-                                profileSetting.AutoStartTime ?? 0,
-                                profileSetting.StartUpLaunch
+                            var newAppInfo = new EAAppInfoDDPM(
+                                app.Name,
+                                app.Path,
+                                app.IsUWP,
+                                app.AppUserModelID,
+                                app.Param
                             );
+                            newProfile.AppInfos.Add(newAppInfo);
                         }
-                        // 將轉換後的 Desktop 加入到 EasyArrangementDDPM
-                        easyArrangementDDPM.Desktops.Add(newDesktop);
+
+                        easyArrangementDDPM.Desktops[0].Profiles.Add(newProfile);
+                    }
+
+                    // ProfileSettings
+                    easyArrangementDDPM.Desktops[0].ProfileSettings = new List<EzProfileSettingDDPM>();
+                    foreach (var setting in dDMMonitorSettings.EasyArrangement.Desktops[0].ProfileSettings)
+                    {
+                        var newSetting = new EzProfileSettingDDPM(
+                            setting.ID,
+                            setting.Auto,
+                            setting.AutoStartTime ?? 0,
+                            setting.StartUpLaunch
+                        );
+
+                        easyArrangementDDPM.Desktops[0].ProfileSettings.Add(newSetting);
                     }
                     result = WriteMonitorEasyArrangement(moinfo, easyArrangementDDPM).Result;
                 }
-                writelog($"@ DDMtoDDPM_EzMemory: PASS");
+                if(result)
+                    writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings PASS");
+                else
+                    writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings Fail");
             }
             catch (Exception ex)
             {
