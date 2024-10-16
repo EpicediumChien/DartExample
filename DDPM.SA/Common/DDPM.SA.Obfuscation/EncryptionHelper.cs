@@ -12,14 +12,14 @@ namespace DDPM.SA.Obfuscation
     {
         public static byte[] EncryptJsonToBytes(string json_string, string secretKey)
         {
-            byte[] encryptedData = EncryptStringToBytes_Aes(json_string, secretKey);
+            byte[] encryptedData = EncryptStringToBytes_Aes2(json_string, secretKey);
             return encryptedData;
         }
 
         public static string DecryptJsonFromFile(byte[] cipherText, string secretKey)
         {
             byte[] encryptedData = cipherText;
-            string decryptedJson = DecryptStringFromBytes_Aes(encryptedData, secretKey);
+            string decryptedJson = DecryptStringFromBytes_Aes2(encryptedData, secretKey);
             return decryptedJson;
         }
 
