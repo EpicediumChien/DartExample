@@ -210,7 +210,7 @@
                             </UXControls:UXComboBox> -->
                             <!-- HomeDeviceComboBox - Option1: Using WPF ComboBox -->
                             <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
-                            <ComboBox Style="{StaticResource DdpmComboBoxStyle}" MinWidth="140" Height="40"
+                            <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" MinWidth="140" Height="40"
                                       Visibility="{Binding HomeDevicesComboBoxVisibility}"
                                       ItemsSource="{Binding HomeDevices}"
                                       DisplayMemberPath="DisplayName"

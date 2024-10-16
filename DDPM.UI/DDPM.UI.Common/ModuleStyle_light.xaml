@@ -18,6 +18,7 @@
 
 -->
     <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background_Light.png" Stretch="UniformToFill" />
+    <SolidColorBrush x:Key="mainWindowBkColor" Color="#FFD2D2D2" />
     <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="#FF0E0E0E" />
     <!-- batteryIndicator.xaml -->
