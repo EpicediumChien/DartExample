@@ -180,8 +180,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] constructor ...");
             _logs.DebugMsg("[EzMemoryManagerPlugin] Plugin have Administrator: " + _IsAdministrator.ToString());
             _AllInfoMonitors ??= new List<MonitorInfo>();
+            object first_state = null;
+            CheckMonitorsAndLaunchApps(first_state);
             _EzMemoryTimer = new Timer(CheckMonitorsAndLaunchApps, null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
-            //CheckMonitorsAndLaunchApps();
         }
 
         #endregion
@@ -552,7 +553,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private bool IsStartupRecently(long startupTime)
         {
             // 1分鐘內定義為"剛啟動"狀態
-            long oneMinuteInMilliseconds = 120000;
+            long oneMinuteInMilliseconds = 60000;
             return startupTime < oneMinuteInMilliseconds;
         }
 

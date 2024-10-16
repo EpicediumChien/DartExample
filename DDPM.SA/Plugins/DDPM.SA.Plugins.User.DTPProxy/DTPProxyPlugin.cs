@@ -2084,7 +2084,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                     writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
-                    if (_penInterfaceType != null)
+                    if (_headsetInterfaceType != null)
                     {
                         _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                                     .MakeGenericMethod(_headsetInterfaceType);
