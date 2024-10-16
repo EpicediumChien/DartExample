@@ -4,6 +4,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -36,6 +37,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public PenActions PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
         public Dictionary<int, string> ActionNames = new();
         public List<string> LaunchableAppValues = new();
+        public List<int> RadialMenuActions = new();
 
         public int AppSelectedIndex { get; set; } = 0;
         public string TopButtonBackground { get; set; } = "";
@@ -117,7 +119,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 LaunchableAppValues.Add(jo.GetString()!);
             }
 
-            ActionNames = _EraserActions.Union(_SideSwitchActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            RadialMenuActions = _MenuActions.Keys.ToList();
             IsActionItemsReady = true;
         }
 
@@ -700,10 +703,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
 
-        public void UpdateRadialMenu(int index)
+        public void UpdateRadialMenu(int index, int id, string parameter)
         {
-            var value = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"menuIndex\":{index}}}";
-            byte[] newValue = Encoding.UTF8.GetBytes(value);
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":{index},\"actionName\":\"{parameter}\"}}");
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
         }
         public void UpdateRadialMenuRightClick(bool value)

@@ -299,8 +299,7 @@ namespace DDPM.UI.Common
           { 91, new ActionItem(ActionCategory.None, Strings.WindowsSearch, false, true) }
         };
 
-        //public static List<int> OpenRunActionsList => OpenRunActions.Select(x => x.Key).ToList();
-        public static List<String> OpenRunActionsList => OpenRunActions.Select(x => x.Value).ToList();
+        public static List<int> OpenRunActionsList => OpenRunActions.Select(x => x.Key).ToList();
         public static List<int> RadialMenuActionsList => RadialMenuActions.Select(x => x.Key).ToList();
 
         public static List<int> AllActionsKnM
