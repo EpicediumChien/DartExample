@@ -2444,6 +2444,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                if (updateHelper == null || updateHelper.UpdateItems == null)
+                {
+                    updateHelper = new UpdateHelper();
+                    updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                }
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result, isOnlyDisplay).Result);
             }
@@ -2584,6 +2589,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin == null)
                 return Task.FromResult(false);
             UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+            if (updateHelper == null || updateHelper.UpdateItems == null)
+            {
+                updateHelper = new UpdateHelper();
+                updateHelper.UpdateItems = new List<UpdateItemInfo>();
+            }
             if (_DisplayManagerPlugin == null)
                 return Task.FromResult(false);
             if (_SettingsPlugin == null)
@@ -2594,6 +2604,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
+
             List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
             bool b = true;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
@@ -7773,7 +7784,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if ( eaSettings.RecentList == null)
+            if (eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
