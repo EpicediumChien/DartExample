@@ -5701,8 +5701,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        #endregion
-
         #region Private Methods
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
