@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -161,7 +162,36 @@ namespace DDPM.UI.Module.DisplayOthers
         private void export_Click(object sender, RoutedEventArgs e)
         {
             DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
-            vm.ExportSettings();
+            if(vm.ExportSettings())
+            {
+                DisplayMsgBox("Warning", "This is not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync?", "Continue", "Cancel");
+            }
+            else
+            {
+                DisplayMsgBox("Success", "Application settings exported successfully", "");
+            }
+        }
+
+        private void DisplayMsgBox(string title, string content, string left_btn = "", string right_btn = "")
+        {
+            MessageModalDialog dlg = new MessageModalDialog(title, content, left_btn, right_btn);
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                dlg.Owner = parentWindow;
+            }
+            dlg.ShowDialog();
+        }
+
+        private void DisplayMsgBox_ModelLess(string title, string content, string left_btn = "", string right_btn = "")
+        {
+            MessageModalDialog dlg = new MessageModalDialog(title, content, left_btn, right_btn);
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                dlg.Owner = parentWindow;
+            }
+            dlg.Show();
         }
     }
 }
