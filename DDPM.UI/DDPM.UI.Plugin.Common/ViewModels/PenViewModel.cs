@@ -705,7 +705,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void UpdateRadialMenu(int index, int id, string parameter)
         {
-            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":{index},\"actionName\":\"{parameter}\"}}");
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
         }
         public void UpdateRadialMenuRightClick(bool value)
