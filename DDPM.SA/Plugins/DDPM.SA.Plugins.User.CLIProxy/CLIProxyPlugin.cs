@@ -494,13 +494,15 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
 
                             // add @ stephen
-                            DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            //DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            //cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
                         case "DISABLECA":
                             cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
-
+                        case "UPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;
