@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
-    <UseWPF>true</UseWPF>
-    <Version>2.0.0.5</Version>
-    <Configurations>Debug;Release;Debug_NKVM</Configurations>
+	  <UseWPF>true</UseWPF>
+	  <Version>2.0.0.5</Version>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

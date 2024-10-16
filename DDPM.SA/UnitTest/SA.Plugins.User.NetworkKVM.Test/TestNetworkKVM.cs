@@ -370,7 +370,7 @@ public class TestNetworkKVM
         int Value = 100;
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+        VcpCoreService.Setup(x => x.GetMonitors());
         var VcpCoreServiceObject = VcpCoreService.Object;
         PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
         privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -451,7 +451,7 @@ public class TestNetworkKVM
         pipeServerChangeLimitedSW_ = new NamedPipeServerStream("ChangeLimitedSW");
         privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServerChangeLimitedSW_);
 
-        VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+        VcpCoreService.Setup(x => x.GetMonitors());
         var VcpCoreServiceObject = VcpCoreService.Object;
         privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
@@ -487,7 +487,7 @@ public class TestNetworkKVM
         PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+        VcpCoreService.Setup(x => x.GetMonitors());
         var VcpCoreServiceObject = VcpCoreService.Object;
         privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
         var result = privatevNkvmPluginObject.Invoke("InitializeMonitorsList");
@@ -502,7 +502,7 @@ public class TestNetworkKVM
         PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+        VcpCoreService.Setup(x => x.GetMonitors());
         var VcpCoreServiceObject = VcpCoreService.Object;
         privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
         var result = privatevNkvmPluginObject.Invoke("GetMonitors", renew);
