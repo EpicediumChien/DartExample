@@ -477,14 +477,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         usbUpstreamList.Add(_usbUpstreamList[3]);
                                     }
                                 }
-                                usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
+                                //usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
                             }
                         }
                     }
                     catch
                     {
-                        //usbUpstreamList = _usbUpstreamList;
-                        usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
+                        usbUpstreamList = _usbUpstreamList;
+                        //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                 }
             }
