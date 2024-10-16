@@ -1981,6 +1981,105 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        #region Headset
+
+        public Task SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
+        #region Wired Audio
+        public async Task<int> GetBassAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(itemID));
+        }
+
+        public async Task SetBassAsync(string guid, int newValue)
+        {
+            _DTPProxyPlugin.SetBassAsync(guid, newValue);
+            //return Task.FromResult(true);
+        }
+
+        public async Task<int> GetMidRangeAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMidRangeAsync(itemID));
+        }
+
+        public async Task SetMidRangeAsync(string guid, int newValue)
+        {
+            _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+            //return Task.FromResult(true);
+        }
+
+        public async Task<int> GetTrebleAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(itemID));
+        }
+        public async Task SetTrebleAsync(string guid, int newValue)
+        {
+            _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+            //return Task.FromResult(true);
+        }
+        //-----------------------------------
+        public Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioMicMuteSoundEnableAsync requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID));
+        }
+        //-----------------------------------
+        public Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetWiredAudioVolumeAdjustmentToneAsync requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID));
+        }
+        //-----------------------------------
+        public Task SetIsWiredAudioIMicNSEnableValue(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableValue(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableValue(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(itemID));
+        }
+        //-----------------------------------
+        public Task SetResetToDefaultValue(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetResetToDefaultValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetResetToDefaultValueAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
         #region CMA/CLI Function area
 
         /*public void notifyDeviceConnected(CommandInput_notifyDeviceConnection input)
