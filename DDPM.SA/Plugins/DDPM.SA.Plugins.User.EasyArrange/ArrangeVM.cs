@@ -15,15 +15,33 @@ using System.Windows.Media.Media3D;
 using VcpCore.Common;
 using static System.Net.Mime.MediaTypeNames;
 using DDPM.SA.Common.Display;
+using System.Diagnostics.Eventing.Reader;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
     public class ArrangeVM : ObservableObject
     {
+        #region Private members
         private readonly object _lockObject = new();
         private readonly object _lockScreenMgr = new();
         private IDisplayService? _displayManagerPlugin;
         private IDeviceManagerSA? _deviceManagerPlugin;
+
+        private bool _isMoving = false; //true when a window is moving
+        //Cursor position to VirtualScreen
+        private int _xCursor = 0;
+        private int _yCursor = 0;
+
+        private Screen _workingScreen; //when (_isMoving==true), will update the Screen of current cursor
+        #endregion
+
+        #region Events
+        //Invoked,when (_isMoving==true) and cursor position cross screen boundary
+        public EventHandler<Screen> WorkingScreenChanged;
+
+        //Invoked when AWS Window visibility changed
+        public EventHandler<bool> AwsWindowVisibilityChanged;
+        #endregion
 
         #region Enabled flag
 
@@ -43,7 +61,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region Option flags
 
         private bool _isWorkUIEnabled = true;
-        private bool _isMoving = false;
 
         public bool IsWorkUIShowing
         {
@@ -119,14 +136,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Option flags
 
         #region Cursor position
-
         /// <summary>
-        /// Cursor position (xCursor, yCursor) will be updated by (OnLocationChanged handler).
+        /// Cursor position (xCursor, yCursor) will be updated by InfoWindow (OnLocationChanged handler).
         /// and then use it to determine if the custor is inside a CellBorder.
         /// </summary>
-        //xCursor
-        private int _xCursor = 0;
-
         public int xCursor
         {
             get { return _xCursor; }
@@ -136,10 +149,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 OnPropertyChanged("xCursor");
             }
         }
-
-        //yCursor
-        private int _yCursor = 0;
-
         public int yCursor
         {
             get { return _yCursor; }
@@ -149,7 +158,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 OnPropertyChanged("yCursor");
             }
         }
-
         #endregion Cursor position
 
         #region Screen Scale
@@ -176,6 +184,25 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return ScreenScale;
         }
         #endregion Screen Scale
+
+        #region WorkingScreen
+        //Will be updated by InfoWindow
+        public Screen WorkingScreen
+        {
+            get { return _workingScreen; }
+            set
+            {
+                if (value != _workingScreen)
+                {
+                    _workingScreen = value;
+                    if (WorkingScreenChanged != null)
+                    {
+                        Task.Run(() => WorkingScreenChanged.Invoke(this, _workingScreen));
+                    }
+                }
+            }
+        }
+        #endregion WorkingScreen
 
         #region Hovering Cell
 
@@ -1178,8 +1205,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 splitCtrl.Settings = new List<double>(spJson.Settings);
             }
             splitCtrl.FriendlyName = spJson.CustomName;
+
             splitCtrl.SplitMode = splitMode;
-            return splitCtrl;
+            if ((spJson.CellCount == 0) && (spJson.SplitKey == 'B'))
+            {
+                if (splitMode == eSplitModes.AWS)
+                {
+                    splitMode = eSplitModes.Work;
+                }
+            }
+           return splitCtrl;
         }
         #endregion Helper Functions
 
@@ -1250,6 +1285,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private double _xAws = 0;
         private double _yAws = 0;
 
+        //The last Visibility state of AwsWindow
+        private bool _isAwsWindowVisible = false;
+
         public bool IsAwsEnabled
         {
             get
@@ -1268,17 +1306,37 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             get
             {
-                if (!IsMoving)
-                    return false;
-                if (!IsAwsEnabled) 
-                    return false;
+                bool newValue = _isAwsWindowVisible;
 
-                if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
+                if (!IsMoving)
                 {
-                    //LogInfo($"@ ArrangeVM.IsWorkUIShowing: IsShiftPressed={IsShiftPressed}");
-                    return IsShiftPressed;
+                    newValue = false;
                 }
-                return true;
+                else
+                {
+                    if (!IsAwsEnabled)
+                        newValue = false;
+                    else
+                    {
+                        if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
+                        {
+                            newValue = IsShiftPressed;
+                        }
+                        else
+                        {
+                            newValue = true;
+                        }
+                    }
+                }
+                if (newValue != _isAwsWindowVisible)
+                {
+                    _isAwsWindowVisible = newValue;
+                    if (AwsWindowVisibilityChanged != null)
+                    {
+                        Task.Run(() => AwsWindowVisibilityChanged.Invoke(this, newValue));
+                    }
+                }
+                return _isAwsWindowVisible;
             }
         }
 
@@ -1350,6 +1408,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         }
         #endregion AWS Icons
+
 
         #region Screen Manager
         private List<EAScreen> _EAScreens = new List<EAScreen>();

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Configuration;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -66,6 +67,18 @@ namespace DDPM.Easy.Common
 
         public string FriendlyName { get; set; }
 
+        //Robert_Lin, 2024-10-12 added
+        /// <summary>
+        /// The ID number to spefiied a layout. this ID has the same definetion wil DDM 2
+        /// which is used to migrate settings from DDM, and used for CLI command.
+        /// 0 = Off = SplitCtrl0A
+        /// 1~999 = Predefind layout (current used are [1~49])
+        /// 1000~1004 = Custom layout
+        /// </summary>
+        public int EAID { get; set; }
+
+        //public CellJson[] Cells { get; set; }
+
         #endregion Native members - value not be changed once created
 
         #region ViewModel
@@ -89,6 +102,20 @@ namespace DDPM.Easy.Common
                 return new SplitCtrl0B();
             }
             ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            if (iSplit == null)
+                return null;
+            return iSplit.New();
+        }
+
+        /// <summary>
+        /// Create a ISplitCtrl by EAID
+        /// </summary>
+        /// <param name="cellCount"></param>
+        /// <param name="splitKey"></param>
+        /// <returns></returns>
+        public static ISplitCtrl? Create(int eaId)
+        {
+            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.EAID == eaId));
             if (iSplit == null)
                 return null;
             return iSplit.New();
@@ -149,6 +176,8 @@ namespace DDPM.Easy.Common
         /// and use the Rect to arrange target window.
         /// </summary>
         public List<CellObj> CellList { get; set; }
+
+       // public void UpdateSettingsToCells();
 
         #endregion Cell list
 
@@ -243,5 +272,6 @@ namespace DDPM.Easy.Common
             get { return ((CellCount==0) && (SplitKey=='B')); }
         }
         #endregion
+
     }
 }

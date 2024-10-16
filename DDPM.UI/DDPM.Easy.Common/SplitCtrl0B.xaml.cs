@@ -44,6 +44,8 @@ namespace DDPM.Easy.Common
         }
         public char SplitKey => 'B';
         public UserControl UC => this;
+        //SplitCtrl0B is used fro OnScreen custom layout, EAID should be [1000~1004], no defualt value
+        public int EAID { get; set; }
 
         #endregion ISplitCtrl Native Members
 
@@ -116,9 +118,9 @@ namespace DDPM.Easy.Common
 
             //settings[1] is screenScale
             double orgScreenScale = settings[1];
-            //settings[1] is screenWidth
+            //settings[2] is screenWidth
             double orgWidth = settings[2];
-            //settings[2] is screenHeight
+            //settings[3] is screenHeight
             double orgHeight = settings[3];
 
 
