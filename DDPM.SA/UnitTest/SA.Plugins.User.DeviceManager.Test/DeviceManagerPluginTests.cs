@@ -9,7 +9,7 @@ using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
-using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
+//using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
 using Moq;
 using System.Security.Cryptography;
 using System.Windows.Input;
@@ -82,7 +82,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPluginMock.Object);
-            _ColorPresetPluginMock.Setup(x => x.DownloadICCData(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(new DDPM.SA.Common.IIC_Metadata()));
+            //_ColorPresetPluginMock.Setup(x => x.DownloadICCData(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(new DDPM.SA.Common.IIC_Metadata()));
             result = deviceMangerPlugin.DownloadICCData(monitorInfo, "");
             Assert.That(result, Is.Not.Null);
         }
@@ -578,20 +578,20 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void TestGetMonitors()
         {
             //_DisplayManagerPlugin == null
-            var result = deviceMangerPlugin.GetMonitors(false).Result;
+            var result = deviceMangerPlugin.GetMonitors().Result;
             Assert.That(result.Count, Is.EqualTo(0));
 
             //_DisplayManagerPlugin != null
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
+            _DisplayManagerPluginMock.Setup(x => x.GetMonitors()).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             //_SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
-            result = deviceMangerPlugin.GetMonitors(false).Result;
+            result = deviceMangerPlugin.GetMonitors().Result;
             Assert.Greater(result.Count, 0);
         }
 
@@ -686,7 +686,7 @@ namespace SA.Plugins.User.DeviceManager.Test
 
             //r && FunctionName == "Input Select"
             funtionName = "Input Select";
-            _DisplayManagerPluginMock.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
+            _DisplayManagerPluginMock.Setup(x => x.GetMonitors()).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);

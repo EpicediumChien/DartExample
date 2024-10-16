@@ -8,10 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>   
-    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.QAM\DDPM.QAM.csproj" />
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\..\Common\OSDs\DDPM.OSDs.csproj" />
     <ProjectReference Include="..\..\Common\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />

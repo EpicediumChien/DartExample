@@ -10,8 +10,11 @@ using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.ComponentModel;
+using System.Globalization;
+using System.Windows.Controls;
 using System.Windows.Input;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -30,7 +33,8 @@ namespace DDPM.UI.Common.ViewModels
         public string _currentDeviceModel = "EzMemory";
         public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
-        public SplitItem currenySelectspItem;
+        public EAProfileDDPM currentEditprofile;
+        public EzProfileSettingDDPM currentEditprofileSetting;
 
         #endregion
 
@@ -256,7 +260,7 @@ namespace DDPM.UI.Common.ViewModels
 
         #region EzMemoryViewModel
 
-
+        //存取 RightView 的 SplitListView
         public SplitListView _splitListRightView;
         public SplitListView splitListRightView
         {
@@ -299,7 +303,7 @@ namespace DDPM.UI.Common.ViewModels
 
             DateTime launchTime = DateTime.Today.Add(time);
 
-            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.InvariantCulture);
+            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.CurrentCulture);
 
             return formattedTime;
         }
@@ -335,6 +339,10 @@ namespace DDPM.UI.Common.ViewModels
         {
             HourList = Enumerable.Range(1, 12).Select(i => i.ToString("D2")).ToList();
             MinuteList = Enumerable.Range(0, 60).Select(i => i.ToString("D2")).ToList();//將數字格式化成兩位數，單位數自動補 0
+
+            string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+            string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+            AMPMList = new List<string> { amDesignator, pmDesignator };
         }
 
         private double _progressValue = 1;
@@ -378,9 +386,9 @@ namespace DDPM.UI.Common.ViewModels
             {
                 { "EzMemory", new List<EzMemoryPageData>
                     {
-                        new EzMemoryPageData { MainText = "Easy Memory", SubText = "Save different profiles and restore them manually, by scheduled time or at system start-up.\r\n\r\nBegin by assigning a name to your Easy Memory Profile and selecting a layout."},
-                        new EzMemoryPageData { MainText = "Assign programs", SubText = "Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior."},
-                        new EzMemoryPageData { MainText = "Launch options", SubText = "Select a launch type"}
+                        new EzMemoryPageData { MainText = Strings.FirstPageMainText, SubText = Strings.FirstPageSubText},
+                        new EzMemoryPageData { MainText = Strings.AssignPageMainText, SubText = Strings.AssignPageSubText},
+                        new EzMemoryPageData { MainText = Strings.LaunchOptionPageMainText, SubText = Strings.LaunchOptionPageSubText}
                     }
                 },
 
@@ -390,6 +398,36 @@ namespace DDPM.UI.Common.ViewModels
         #endregion
 
         #region First page
+       
+        private SplitItem _currentSelectspItem;
+        public SplitItem CurrentSelectspItem
+        {
+            get => _currentSelectspItem;
+            set => SetProperty(ref _currentSelectspItem, value);
+        }
+
+        private SplitItem _currentEditSelectspItem;
+        public SplitItem CurrentEditSelectspItem
+        {
+            get => _currentEditSelectspItem;
+            set => SetProperty(ref _currentEditSelectspItem, value);
+        }
+
+        //記錄進入 Edit status
+        private bool _iseditProfile = false;
+        public bool IsEditProfile
+        {
+            get => _iseditProfile;
+            set => SetProperty(ref _iseditProfile, value);
+        }
+
+        //記錄 Edit status 由 AddPage 返回
+        private bool _isAddPageBack = false;
+        public bool IsAddPageBack
+        {
+            get => _isAddPageBack;
+            set => SetProperty(ref _isAddPageBack, value);
+        }
 
         private string _inputText = "Profile 1";
         public string InputText
@@ -690,6 +728,9 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool IsRightGridPageTotalVisible => !IsRightGridPage2Visible;
 
+        /// <summary>
+        /// Control Window 1 ~ 12 
+        /// </summary>
         private int _selectedValue;
 
         public int SelectedValue
@@ -702,6 +743,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
+        //AssignPage trigger 的 buttonName
         private string _buttonName;
         public string ButtonName
         {
@@ -730,47 +772,72 @@ namespace DDPM.UI.Common.ViewModels
             set => SetProperty(ref _minuteList, value);
         }
 
-        private string _selectedHour = "1";
+        private List<string> _ampmList;
+        public List<string> AMPMList
+        {
+            get => _ampmList;
+            set => SetProperty(ref _ampmList, value);
+        }
+       
+        private string _selectedHour;
         public string SelectedHour
         {
             get => _selectedHour;
             set => SetProperty(ref _selectedHour, value);
         }
 
-        private string _selectedMinute = "00";
+        private string _selectedMinute;
         public string SelectedMinute
         {
             get => _selectedMinute;
             set => SetProperty(ref _selectedMinute, value);
         }
 
-        private string _selectedAMPM = "AM";
+        private string _selectedAMPM;
         public string SelectedAMPM
         {
             get => _selectedAMPM;
             set => SetProperty(ref _selectedAMPM, value);
         }
-
-        private bool _isManualLaunch;
-        public bool IsManualLaunch
-        {
-            get => _isManualLaunch;
-            set => SetProperty(ref _isManualLaunch, value);
-        }
-
-        private bool _isAutoLaunch;
-        public bool IsAutoLaunch
-        {
-            get => _isAutoLaunch;
-            set => SetProperty(ref _isAutoLaunch, value);
-        }
-
-        private bool _isLaunchAtStartup;
+        private bool _isLaunchAtStartup = false;
         public bool IsLaunchAtStartup
         {
             get => _isLaunchAtStartup;
             set => SetProperty(ref _isLaunchAtStartup, value);
         }
+
+        private bool _isManualLaunch = true;
+        public bool IsManualLaunch
+        {
+            get => _isManualLaunch;
+            set
+            {
+                if (SetProperty(ref _isManualLaunch, value))
+                {
+                    if (_isManualLaunch)
+                    {
+                        IsAutoLaunch = false;
+                    }
+                }
+            }
+        }
+
+        private bool _isAutoLaunch = false;
+        public bool IsAutoLaunch
+        {
+            get => _isAutoLaunch;
+            set
+            {
+                if (SetProperty(ref _isAutoLaunch, value))
+                {
+                    if (_isAutoLaunch)
+                    {
+                        IsManualLaunch = false;
+                    }
+                }
+            }
+        }
+
         #endregion LaunchOption
 
     }

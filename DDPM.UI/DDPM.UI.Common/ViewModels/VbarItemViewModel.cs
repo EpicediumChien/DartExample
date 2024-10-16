@@ -80,6 +80,13 @@ namespace DDPM.UI.Common
             set => SetProperty(ref _isSelected, value);
         }
 
+        private Visibility _tooltipVisibility = Visibility.Collapsed;
+        public Visibility TooltipVisibility
+        {
+            get => _tooltipVisibility;
+            set => SetProperty(ref _tooltipVisibility, value);
+        }
+
         #endregion State
     }
 }

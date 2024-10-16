@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -47,7 +48,7 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
@@ -62,8 +63,8 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;// _homeDevice.vmEzArrange;
+            DataContext = vm;// _homeDevice.vmEzArrange;
 
             Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
@@ -103,7 +104,16 @@ namespace DDPM.UI.Module.EzMemory
             customListTooltipText.Text = Strings.CustomListTooltipText;
 
             InitializePage();
-            CheckInputText();
+
+            if(!_vm.IsEditProfile)
+            {
+                CheckInputText();
+            }
+            else
+            {
+                SyncEditStatusForFirstPage();
+            }
+            
         }
 
         /// <summary>
@@ -123,6 +133,18 @@ namespace DDPM.UI.Module.EzMemory
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
             }
+        }
+
+        /// <summary>
+        /// Sync Edit Status
+        /// </summary>
+        public void SyncEditStatusForFirstPage()
+        {
+            //Need to auto select
+            _vm.InputText = _vm.currentEditprofile.Name;
+            SplitItem profilwSplitItem = splitListView_Recent.FindSplitItem(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
+            profilwSplitItem.IsSelected = true;
+            OnListViewItemClicked(profilwSplitItem);
         }
 
         /// <summary>
@@ -187,7 +209,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -224,6 +246,9 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
+            // Need to Re-set Edit Profile status
+            _vm.IsEditProfile = false;
+            _vm.ClearTextBlockAppName();
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -244,16 +269,20 @@ namespace DDPM.UI.Module.EzMemory
             {
                 return;
             }
-            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
-            if (checkEAProfileDDPM != null)
+            if (!_vm.IsEditProfile)
             {
-                if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (checkEAProfileDDPM != null)
                 {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    return;
+                    if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Thickness headMargin = new Thickness(24, 30, 45, 24);
+                        Thickness subMargin = new Thickness(24, -16, 24, 8);
+                        DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                        return;
+                    }
                 }
             }
 
@@ -691,6 +720,9 @@ namespace DDPM.UI.Module.EzMemory
                 //SaveEaSettings();
                 //_deviceManagerSA.WriteEasyArrangeSettings()
             }
+
+            //If Edit，need to recoerd
+            _vm.CurrentSelectspItem = spItem;
         }
         #endregion SplitItem Selection
         #region Edit Layout

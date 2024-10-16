@@ -2022,4 +2022,37 @@
   <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
     <value>Simple charging</value>
   </data>
+  <data name="EazyMemory.34" xml:space="preserve">
+    <value>Assign programs</value>
+  </data>
+  <data name="EazyMemory.35" xml:space="preserve">
+    <value>Launch options</value>
+  </data>
+  <data name="EazyMemory.36" xml:space="preserve">
+    <value>Save different profiles and restore them manually, by scheduled time or at system start-up.\r\n\r\nBegin by assigning a name to your Easy Memory Profile and selecting a layout.</value>
+  </data>
+  <data name="EazyMemory.37" xml:space="preserve">
+    <value>Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior.</value>
+  </data>
+  <data name="EazyMemory.38" xml:space="preserve">
+    <value>Select a launch type</value>
+  </data>
+  <data name="EazyMemory.39" xml:space="preserve">
+    <value>EASY MEMORY SETUP</value>
+  </data>
+  <data name="WalkThrough.0" xml:space="preserve">
+    <value>FEATURE HIGHLIGHT</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Camera.12" xml:space="preserve">
+    <value>Not available while adding a preset</value>
+  </data>
+  <data name="Camera.13" xml:space="preserve">
+    <value>Not all features are available while adding a preset</value>
+  </data>
 </root>

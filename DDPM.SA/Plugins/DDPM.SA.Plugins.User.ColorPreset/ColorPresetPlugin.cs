@@ -84,7 +84,7 @@ namespace ColorPreset.Plugins
         private string[] Subjects;
 
         //20240829 Jim move to here 20240829
-        private ISettingsManagerDev _SettingsPlugin;
+        private ISettingsManagerDev _SettingsPlugin_internal;
 
         private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
@@ -415,7 +415,7 @@ namespace ColorPreset.Plugins
         }
 
         public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
-        {
+        {          
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
             if (on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
@@ -1549,9 +1549,9 @@ namespace ColorPreset.Plugins
             writelog("[CheckICC_JSON_Security] :" + filePath);
            
             List<string> InfoPkey = new List<string>();
-            if(_SettingsPlugin != null)
+            if(_SettingsPlugin_internal != null)
             {
-                InfoPkey = _SettingsPlugin.GetInfos().Result;
+                InfoPkey = _SettingsPlugin_internal.GetInfos().Result;
             }
             if(InfoPkey == null || InfoPkey.Count == 0)
             {
@@ -1562,9 +1562,9 @@ namespace ColorPreset.Plugins
             string szInfo = string.Empty;
             ret = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, filePath, InfoPkey, out szInfo, out strJson);
 
-            if (!string.IsNullOrEmpty(szInfo) && _SettingsPlugin != null)
+            if (!string.IsNullOrEmpty(szInfo) && _SettingsPlugin_internal != null)
             {
-                _SettingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+                _SettingsPlugin_internal.AddInfo(szInfo);//pass info to settings manager and judge if new to add
             }                       
 
             return ret;
@@ -1576,10 +1576,13 @@ namespace ColorPreset.Plugins
         /// </summary>
         /// <param name="m">Monitor Info</param>
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
-        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
+        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, string savelPath = "")
         {
             try
             {
+                if (_SettingsPlugin_internal == null)
+                    _SettingsPlugin_internal = _SettingsPlugin;
+
                 string strFilePath = string.Empty;
                 string strReadJson = string.Empty;
                

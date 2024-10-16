@@ -63,8 +63,10 @@ namespace DDPM.SA.Common.Settings
             }
             catch (CryptographicException e)
             {
+#if DEBUG 
                 Console.WriteLine("Data was not encrypted. An error occurred.");
                 Console.WriteLine(e.ToString());
+#endif
                 return null;
             }
         }
@@ -82,8 +84,10 @@ namespace DDPM.SA.Common.Settings
             }
             catch (CryptographicException e)
             {
+#if DEBUG 
                 Console.WriteLine("Data was not decrypted. An error occurred.");
                 Console.WriteLine(e.ToString());
+#endif
                 return null;
             }
         }
@@ -2130,10 +2134,10 @@ namespace DDPM.SA.Common.Settings
                 {
                     szInfo = (string)jObject["Info"];
                     if (!string.IsNullOrEmpty(szInfo))
-                    {                        
+                    {
                         jObject.Remove("Info");
                         inline_info = szInfo;
-                    }                    
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -2143,7 +2147,9 @@ namespace DDPM.SA.Common.Settings
                 strJson = jObject.ToString();
             }
             else
-                Console.WriteLine("[Metadata check] metadata is invalid");
+            {
+                WriteLog(log, "[Metadata check] metadata is invalid", true);
+            }
 
             return strJson;
         }

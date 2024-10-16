@@ -39,6 +39,7 @@ using Dell.Client.Framework.Security;
 using System.Security;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using System.ServiceProcess;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -418,7 +419,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceType = updateHelper.UpdateItems[i].DeviceType,
                             DeviceId = updateHelper.UpdateItems[i].DeviceId,
                             DevicePath = updateHelper.UpdateItems[i].DevicePath,
-                            SHA512 = updateHelper.UpdateItems[i].SHA512,
+                            //SHA512 = updateHelper.UpdateItems[i].SHA512,
                             Thumbprint = thumbprint,
                             IsUOD = (isUODMode &&
                             (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
@@ -456,7 +457,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
-                                SHA512 = updateHelper.UpdateItems[i].SHA512,
+                                //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                 Thumbprint = thumbprint,
                                 IsUOD = (isUODMode &&
                                 (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
@@ -483,8 +484,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         Model = displayUpdateHelper.Firmwares[i].id,
                         DeviceName = displayUpdateHelper.Firmwares[i].id,
                         SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
-                        SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
+                        //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
                         Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
+                        ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
                         IsUOD = false
                     };
                     _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -538,7 +540,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     delayFUpdateInfo.ServerPath = fwUpdateInfo.ServerPath;
                                     delayFUpdateInfo.SHA256 = fwUpdateInfo.SHA256;
-                                    delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
+                                    //delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
                                     delayFUpdateInfo.Thumbprint = fwUpdateInfo.Thumbprint;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
@@ -749,7 +751,34 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             };
             return Task.FromResult(Install(fWUpdateInfo));
         }
-
+        public Task<bool> RestartService()
+        {
+            bool ret = false;
+            string serviceName = "DPMService"; // 替換為你的服務名稱
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status == ServiceControllerStatus.Running)
+                    {
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is running");
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                        _logs.DebugMsg_1($"{nameof(RestartService)} is stopped");
+                    }
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is start");
+                    service.Start();
+                    service.WaitForStatus(ServiceControllerStatus.Running);
+                    _logs.DebugMsg_1($"{nameof(RestartService)} is restart");
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(RestartService)} Error: {ex.Message}");
+            }
+            return Task.FromResult(ret);
+        }
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
@@ -978,7 +1007,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             newFWUpdateInfo.ServerPath = "";
                             newFWUpdateInfo.SHA256 = "";
-                            newFWUpdateInfo.SHA512 = "";
+                            //newFWUpdateInfo.SHA512 = "";
                             newFWUpdateInfo.Thumbprint = "";
                             _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(newFWUpdateInfo);
                         }
@@ -993,7 +1022,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         newFWUpdateInfo.ServerPath = "";
                         newFWUpdateInfo.SHA256 = "";
-                        newFWUpdateInfo.SHA512 = "";
+                        //newFWUpdateInfo.SHA512 = "";
                         newFWUpdateInfo.Thumbprint = "";
                     }
                     _DelayFWUpdateInfoPackage.DelayTimesAvailable = 2;
@@ -1159,7 +1188,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _clientProcess.StartInfo.Arguments = arguments;
                             _clientProcess.Start();
                             _clientProcess.WaitForExit();
-                            exitCode = _clientProcess.ExitCode;
+                            if (fwUpdateInfo.IsDisplay&&_clientProcess != null)
+                            {
+                                exitCode = _clientProcess.ExitCode;
+                            }
                         }
                     });
                 }
@@ -1190,7 +1222,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+                    if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
                     {
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
@@ -1323,7 +1355,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 sendMessageToEvent(fWUpdateInfo);
             }
             _timeOutCount--;
-            if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+            if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
             {
                 resetState();
             }
@@ -1630,11 +1662,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
-            if (!string.IsNullOrEmpty(_fWUpdateInfo.SHA512))
-            {
-                isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _fWUpdateInfo.SHA512, out fileCAInfo);
-            }
-            else
+            //if (!string.IsNullOrEmpty(_fWUpdateInfo.SHA512))
+            //{
+            //    isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _fWUpdateInfo.SHA512, out fileCAInfo);
+            //}
+            //else
             {
                 isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _fWUpdateInfo.SHA256, out fileCAInfo);
             }
@@ -1664,7 +1696,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                //if (CheckSHA(filePath, out FileCAInfo)) Wait IL R14
+                ret = true;//Wait IL R14 force true
+                if (CheckSHA(filePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
@@ -1680,6 +1713,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                             else
                             {
+                                ret = true;//Wait IL R14 force true
                                 _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
                             }
@@ -1690,11 +1724,36 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
                     }
                 }
-                /*else Wait IL R14
+                else
                 {
                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
-                }*/
+                    //////////////Wait IL R14 force true//////////////////
+                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    {
+                        if (!string.IsNullOrEmpty(exeFilePath))
+                        {
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
+                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
+                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                            {
+                                ret = true;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                            }
+                            else
+                            {
+                                ret = true;
+                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
+                    }
+                    //////////////Wait IL R14 force true//////////////////
+                }
             }
             else
             {

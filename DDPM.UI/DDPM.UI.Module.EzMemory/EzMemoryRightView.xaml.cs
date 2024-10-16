@@ -18,6 +18,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft;
 using String = System.String;
 using static DDPM.UI.Common.User32;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -33,7 +34,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private HomeDevice _homeDeviceSelect;
+        private HomeDevice _homeDeviceSelect;//紀錄RightView切換CB的螢幕
         #endregion Private Members
 
         public EzMemoryRightView(DisplayViewModel vmDisplay)
@@ -56,23 +57,10 @@ namespace DDPM.UI.Module.EzMemory
 
             DataContext = _vm;
 
-            //InitializeTextBlocks();
-
             Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             InitListViewItems();
-        }
-
-        /// <summary>
-        /// Initialize Text Blocks
-        /// </summary>
-        private void InitializeTextBlocks()
-        {
-            //AutomaticStartupTextBlock.Text = _vm.AutomaticStartupTextBlockForRightViewUI;
-            //LaunchByTimeTextBlock.Text = _vm.LaunchByTimeTextBlockForRightViewUI;
-            //AppDocumentTextBlock.Text = _vm.AppDocumentTextBlockForRightViewUI;
-            //applybtn.Content = _vm.applybtnForRightViewUI;
         }
 
         /// <summary>
@@ -88,7 +76,7 @@ namespace DDPM.UI.Module.EzMemory
             if (startEAProfileDDPM != null)
             {
                 // 找相同 ID 的 Profile ID
-                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.currenySelectspItem.LayoutID);
+                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrentSelectspItem.LayoutID);
 
                 if (profileTostart != null)
                 {
@@ -104,11 +92,11 @@ namespace DDPM.UI.Module.EzMemory
                     }
 
                     _deviceManagerSA.LaunchAndArrangeApps(launchApp);
-                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.currenySelectspItem.LayoutID} removed from UserSettings.");
+                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} removed from UserSettings.");
                 }
                 else
                 {
-                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.currenySelectspItem.LayoutID} not found in UserSettings.");
+                    _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} not found in UserSettings.");
                 }
             }          
         }
@@ -201,7 +189,70 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="spItem"></param>
         private void OnListViewItemEdited(SplitItem spItem)
         {
-            return;
+            try
+            {
+                // User Setting Delete
+                List<EAProfileDDPM> clickedEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (clickedEAProfileDDPM != null)
+                {
+                    // 找相同 ID 的 Profile ID
+                    EAProfileDDPM profileToRemove = clickedEAProfileDDPM.FirstOrDefault(p => p.ID == spItem.LayoutID);
+
+                    if (profileToRemove != null)
+                    {
+                        _vm.currentEditprofile = profileToRemove;
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, Profile with ID {spItem.LayoutID} removed from UserSettings.");
+                    }
+                    else
+                    {
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, Profile with ID {spItem.LayoutID} not found in UserSettings.");
+                    }
+                }
+                else
+                {
+                    _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, No EAProfileDDPM found in UserSettings.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"@[EzMemoryRightView] OnListViewItemEdited, Error occurred while deleting from UserSettings: {ex.Message}");
+            }
+
+            try
+            {
+                // Monitor Setting Edit keep data
+                EasyArrangementDDPM _easyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
+
+                if (_easyArrangementDDPM != null && _easyArrangementDDPM.Desktops.Count > 0)
+                {
+                    // 找相同 ID
+                    EzProfileSettingDDPM profileSettingToRemove = _easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == spItem.LayoutID);
+
+                    if (profileSettingToRemove != null)
+                    {
+                        _vm.currentEditprofileSetting = profileSettingToRemove;
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.LayoutID} removed from MonitorSettings.");
+                    }
+                    else
+                    {
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.LayoutID} not found in MonitorSettings.");
+                    }
+                }
+                else
+                {
+                    _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, No valid EasyArrangementDDPM or Desktops found in MonitorSettings.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"@[EzMemoryRightView] OnListViewItemEdited, Error occurred while deleting from MonitorSettings: {ex.Message}");
+            }
+
+            _vm.IsEditProfile = true;
+            _vm.CurrentEditSelectspItem = spItem;
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
         #endregion SplitItem Edit
@@ -216,7 +267,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
-                _vm.currenySelectspItem = spItem;
+                _vm.CurrentSelectspItem = spItem;
 
                 // User Setting
                 List<EAProfileDDPM> clickedEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
@@ -233,7 +284,7 @@ namespace DDPM.UI.Module.EzMemory
                         int no = 1;
                         foreach (EAAppInfoDDPM profile in matchingProfile.AppInfos)
                         {
-                            _vm.AppDocumentValue += no + ". " + profile.Name + "\r\n";
+                            _vm.AppDocumentValue += no + ".  " + profile.Name + "\r\n";
                             no++;
                         }
                         //_vm.AppDocumentValue = matchingProfile.AppInfos[0].Name;
@@ -268,14 +319,20 @@ namespace DDPM.UI.Module.EzMemory
 
                     if (profileSetting != null)
                     {
-                        if (profileSetting.Auto)
+                        if (profileSetting.StartUpLaunch)
                         {
-                            _vm.AutomaticStartupValue = "Yes";
+                            _vm.AutomaticStartupValue = Strings.Yes;                          
+                        }
+                        else
+                        {
+                            _vm.AutomaticStartupValue = Strings.No;
+                        }
+                        if(profileSetting.Auto)
+                        {
                             _vm.LaunchByTimeValue = _vm.ConvertAutoLaunchtimeToTime(profileSetting.AutoStartTime);
                         }
                         else
                         {
-                            _vm.AutomaticStartupValue = "No";
                             _vm.LaunchByTimeValue = "_";
                         }
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, MonitorSettings updated for Profile ID {matchingProfile.ID}.");
@@ -364,8 +421,11 @@ namespace DDPM.UI.Module.EzMemory
             if (itemSouce.Buddy != null)
                 return null;
 
+            //Robert_Lin, 2024-10-11, Redefine RecentList MaxCount: (include "Off" -> Not include "Off"), so need +1 in DDPM.UI
+            //That is, RecentList from Settings file is 5 items, but UI SplitListView of Recent is "Off" + 5 RecentList => 6 items
+            //
             //If the RecentList item count has up to the limitation (always be true, but we will check anyway)
-            if (splitListView_RecentForEzM.ItemCount >= EAEMConstants.MaxRecentItems)
+            if (splitListView_RecentForEzM.ItemCount >= EAEMConstants.MaxRecentItems + 1)
             {
                 //Remove the last item
                 SplitItem? itemLatest = splitListView_RecentForEzM.GetLatestItem();
@@ -422,7 +482,7 @@ namespace DDPM.UI.Module.EzMemory
 
                 }
             }
-            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _homeDeviceSelect);
+            EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
         #endregion

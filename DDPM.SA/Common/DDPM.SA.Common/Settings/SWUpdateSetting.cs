@@ -39,7 +39,7 @@ namespace DDPM.SA.Common.Settings
                 }
             }
         }
-        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info)
+        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey)
         {
             SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();
@@ -63,6 +63,17 @@ namespace DDPM.SA.Common.Settings
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;
                         List<string> InfoPkey = new List<string>();
+                        if (InserInfoPkey != null && InserInfoPkey.Count > 0)
+                        {
+                            InfoPkey = InserInfoPkey;
+                        }
+                        else
+                        {
+                            if (settingsPlugin != null)
+                            {
+                                InfoPkey = settingsPlugin.GetInfos().Result;
+                            }
+                        }
                         if (InfoPkey == null || InfoPkey.Count == 0)
                         {
                             //if read info failed, load default key as well
@@ -71,6 +82,10 @@ namespace DDPM.SA.Common.Settings
                         }
                         string szInfo = string.Empty;
                         string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
+                        if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
+                        {
+                            settingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+                        }
                         if (!string.IsNullOrEmpty(jsonString))
                         {
                             jsonString = jsonString.Replace("%1/", URL);

@@ -12,21 +12,10 @@ namespace DDPM.UI.Plugin.Common
     public partial class ActionParameterModalDialog : Window
     {
         private readonly string Caption = "";
-        private readonly string Cancel = "Cancel";
-        private readonly string Clear = "Clear";
-        private readonly string Save = "Save";
-        private readonly string Browse = "Browse";
-
-        private readonly string AssignKeystroke = "Assign Keystroke";
-        private readonly string OpenFile = "Open File";
-        private readonly string OpenFolder = "Open Folder";
-        private readonly string OpenWebPage = "Open Web Page";
-        private readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
-        private readonly string OpenFileDesc = "Click the browse button to select a file";
-        private readonly string OpenFolderDesc = "Click the browse button to select a folder";
-        private readonly string OpenWebPageDesc = "Type the URL to the web page in the box below";
-        private readonly string OpenFileWaterMark = "File Name";
-        private readonly string OpenFolderWaterMark = "Folder Name";
+        //private readonly string Cancel = "Cancel";
+        //private readonly string Clear = "Clear";
+        //private readonly string Save = "Save";
+        //private readonly string Browse = "Browse";
 
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
@@ -46,8 +35,8 @@ namespace DDPM.UI.Plugin.Common
             switch (deviceCat)
             {
                 case AdvancedAction.AssignKeystroke:
-                    Caption = AssignKeystroke;
-                    txtDescription.Text = AssignKeystrokeDesc;
+                    Caption = Strings.AssignKeystroke;
+                    txtDescription.Text = Strings.AssignKeystrokeDesc;
                     txtKeystroke.Text = parameter;
                     btnClear.IsEnabled = parameter != "";
                     spKeystroke.Visibility = Visibility.Visible;
@@ -55,40 +44,40 @@ namespace DDPM.UI.Plugin.Common
                     break;
 
                 case AdvancedAction.OpenFile:
-                    Caption = OpenFile;
-                    txtDescription.Text = OpenFileDesc;
+                    Caption = Strings.OpenFile;
+                    txtDescription.Text = Strings.OpenFileDesc;
                     txtOpen.Text = parameter;
                     spOpen.Visibility = Visibility.Visible;
                     btnClear.Visibility = Visibility.Collapsed;
-                    txtWaterMark.Text = OpenFileWaterMark;
+                    txtWaterMark.Text = Strings.OpenFileWaterMark;
                     openFileDialog = new();
                     openFileDialog.FileName = parameter;
                     break;
 
                 case AdvancedAction.OpenFolder:
-                    Caption = OpenFolder;
-                    txtDescription.Text = OpenFolderDesc;
+                    Caption = Strings.OpenFolder;
+                    txtDescription.Text = Strings.OpenFolderDesc;
                     txtOpen.Text = parameter;
                     spOpen.Visibility = Visibility.Visible;
                     btnClear.Visibility = Visibility.Collapsed;
-                    txtWaterMark.Text = OpenFolderWaterMark;
+                    txtWaterMark.Text = Strings.OpenFolderWaterMark;
                     folderBrowserDialog = new();
                     break;
 
                 case AdvancedAction.OpenWebPage:
-                    Caption = OpenWebPage;
+                    Caption = Strings.OpenWebPage;
                     txtKeystroke.Text = parameter;
-                    txtDescription.Text = OpenWebPageDesc;
+                    txtDescription.Text = Strings.OpenWebPageDesc;
                     spKeystroke.Visibility = Visibility.Visible;
                     txtKeystroke.IsEnabled = true;
                     break;
             }
             txtTitleBar.Text = Caption;
             txtCaption.Text = Caption;
-            btnCancel.Caption = Cancel;
-            btnClear.Caption = Clear;
-            btnSave.Caption = Save;
-            btnBrowse.Caption = Browse;
+            btnCancel.Caption = Strings.Cancel;
+            btnClear.Caption = Strings.Clear;
+            btnSave.Caption = Strings.Save;
+            btnBrowse.Caption = Strings.Browse;
         }
 
         private void CancelClick(object sender, MouseButtonEventArgs e)

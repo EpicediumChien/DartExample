@@ -417,6 +417,7 @@ namespace DDPM.UI.Common
 
         //Camera
         public static readonly string Preset = "Preset";
+        public static readonly string EditPreset = "Edit preset";
         public static readonly string Smooth = "Smooth";
         public static readonly string Vibrant = "Vibrant";
         public static readonly string Warm = "Warm";
@@ -428,6 +429,8 @@ namespace DDPM.UI.Common
         public static readonly string WarmProfileTooltip = "Warm Profile Tooltip";
 
         //EazyMemory
+        public static readonly string Yes = GetString("Yes");
+        public static readonly string No = GetString("No");
         public static readonly string ProfileTitleTextBlockForRightViewUI = GetString("EazyMemory.6");
         public static readonly string AutomaticStartupTextBlockForRightViewUI = GetString("EazyMemory.0");
         public static readonly string LaunchByTimeTextBlockForRightViewUI = GetString("EazyMemory.1");
@@ -445,6 +448,12 @@ namespace DDPM.UI.Common
         public static readonly string StartupCBContentForLaunchOptionPage = GetString("EazyMemory.13");
         public static readonly string ManulRBContentForLaunchOptionPage = GetString("EazyMemory.14");
         public static readonly string AutoRBContentForLaunchOptionPage = GetString("EazyMemory.15");
+        public static readonly string FirstPageMainText = GetString("EasyMemory");
+        public static readonly string FirstPageSubText = GetString("EazyMemory.36");
+        public static readonly string AssignPageMainText = GetString("EazyMemory.34");
+        public static readonly string AssignPageSubText = GetString("EazyMemory.37");
+        public static readonly string LaunchOptionPageMainText = GetString("EazyMemory.35");
+        public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
 
         //WalkThrough
         public static readonly string WalkThroughDDPM_Main0 = GetString("WalkThroughDDPM_Main.0");
@@ -514,6 +523,15 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughHeadsetWL7024_Sub1 = GetString("WalkThroughHeadsetWL7024_Sub.1");
         public static readonly string WalkThroughHeadsetWL7024_Main3 = GetString("WalkThroughHeadsetWL7024_Main.3");
         public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
+
+
+        //OpenAction
+        public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
+        public static readonly string OpenFileDesc = "Click the browse button to select a file";
+        public static readonly string OpenFolderDesc = "Click the browse button to select a folder";
+        public static readonly string OpenWebPageDesc = "Type the URL to the web page in the box below";
+        public static readonly string OpenFileWaterMark = "File Name";
+        public static readonly string OpenFolderWaterMark = "Folder Name";
 
     }
 }
