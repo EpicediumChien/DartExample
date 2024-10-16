@@ -191,7 +191,7 @@ namespace DDPM.UI.Plugin.Common
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -402,8 +402,9 @@ namespace DDPM.UI.Plugin.Common
             else if (id == 3)
             {
                 parameter = PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter;
-                var arr = parameter.Split('|');
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                //var arr = parameter.Split('|');
+                //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;

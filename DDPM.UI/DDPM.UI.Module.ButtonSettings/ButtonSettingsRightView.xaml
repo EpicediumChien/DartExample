@@ -48,7 +48,7 @@
                     <Border Style="{StaticResource SearchBoxBorderStyle}">
                         <Grid>
                             <UXControls:UXTextBox AutomationProperties.Name="TextBoxWithWaterMark"  Name="txtSearchText" Width="270" Height="0" Margin="12,-.8,0,0" Watermark="Search actions"
-                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="#0F2641" BorderThickness="0" Foreground="#FFFFFF" MaxLength="50"
+                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="#0F2641" BorderThickness="0" Foreground="#FFFFFF" MaxLength="30"
                                                   TextChanged="SearchBox_TextChanged">
                             </UXControls:UXTextBox>
                             <Image Margin="7,0,18,0" Source="/DDPM.UI.Resources;component/Resources/Images/Search.png" Stretch="Uniform"

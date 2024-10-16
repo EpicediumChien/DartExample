@@ -377,7 +377,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -489,9 +489,9 @@ namespace DDPM.UI.Module.PenButtonSettings
             }
             else if (id == 23)
             {
-                var arr = parameter.Split('|');
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
-                //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
+                //var arr = parameter.Split('|');
+                //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;

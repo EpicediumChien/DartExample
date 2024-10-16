@@ -15,20 +15,24 @@ namespace DDPM.UI.Plugin.Common
         public string Parameter { get; private set; } = "";
         public int ID { get; private set; } = 0;
 
-        public OpenRunModalDialog(double width, double height, int id = 0, string parameter = "")
+        List<string> OpenRunApps;
+
+        public OpenRunModalDialog(double width, double height, List<string> openRunApps, string parameter = "")
         {
             InitializeComponent();
             this.Width = width;
             this.Height = height;
-            ID = id;
+            //ID = id;
             Parameter = parameter;
-            if (id == 1)
-            {
-                spOpen.Visibility = Visibility.Visible;
-                btnBrowse.Visibility = Visibility.Collapsed;
-                FilePath.Visibility = Visibility.Visible;
-            }
-            if (id > 7)
+            OpenRunApps = openRunApps;
+            var id = OpenRunApps.IndexOf(parameter);
+            //if (id == 1)
+            //{
+            //    spOpen.Visibility = Visibility.Visible;
+            //    btnBrowse.Visibility = Visibility.Collapsed;
+            //    FilePath.Visibility = Visibility.Visible;
+            //}
+            if (id > 6)
             {
                 svAction.ScrollToVerticalOffset(id * 32);
             }
@@ -43,8 +47,9 @@ namespace DDPM.UI.Plugin.Common
             btnSave.Caption = Strings.Save;
             btnBrowse.Caption = Strings.SelectAFile;
 
-            OpenRunItems.ItemsSource = Actions.OpenRunActionsList;
-            btnSave.IsEnabled = id > 0;
+            //OpenRunItems.ItemsSource = Actions.OpenRunActionsList;
+            OpenRunItems.ItemsSource = OpenRunApps;
+            btnSave.IsEnabled = id >= 0;
         }
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
@@ -81,11 +86,15 @@ namespace DDPM.UI.Plugin.Common
         private void ActionRadioButton_Click(object sender, RoutedEventArgs e)
         {
             var rb = (UXRadioButton)sender;
-            var id = int.Parse(rb.Name.Replace("Radio", ""));
-            if (id == ID) { return; }
+            //var id = int.Parse(rb.Name.Replace("Radio", ""));
+            //if (id == ID)
+            //{ return; }
+            var name = rb.Content.ToString()!;
+            if (name == Parameter)
+            { return; }
 
-            ID = id;
-            if (id == 1)
+            //ID = id;
+            if (name == Strings.Browse)
             {
                 spOpen.Visibility = Visibility.Visible;
                 if (Parameter == "")
@@ -103,7 +112,10 @@ namespace DDPM.UI.Plugin.Common
             }
             else
             {
-                Parameter = "";
+                //Parameter = "";
+                //spOpen.Visibility = Visibility.Collapsed;
+                //btnSave.IsEnabled = true;
+                Parameter = name;
                 spOpen.Visibility = Visibility.Collapsed;
                 btnSave.IsEnabled = true;
             }
@@ -114,10 +126,14 @@ namespace DDPM.UI.Plugin.Common
             int id;
             if (sender is UXRadioButton rb)
             {
-                id = (int)((UXRadioButton)sender).DataContext;
-                rb.Name = $"Radio{id}";
-                rb.Content = Actions.OpenRunActions[id];
-                rb.IsChecked = ID == id;
+                //id = (int)((UXRadioButton)sender).DataContext;
+                //rb.Name = $"Radio{id}";
+                //rb.Content = Actions.OpenRunActions[id];
+                //rb.IsChecked = ID == id;
+                var name = ((UXRadioButton)sender).DataContext.ToString();
+                //rb.Name = $"{name}";
+                rb.Content = name;
+                rb.IsChecked = name == Parameter;
             }
         }
     }

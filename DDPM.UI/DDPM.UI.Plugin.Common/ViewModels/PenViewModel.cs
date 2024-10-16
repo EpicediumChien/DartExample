@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -616,12 +617,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedAction.AssignedAction.Parameter = parameter;
                 RefreshButtonInfo();
                 CheckRestoreStatus();
+                var actionName = actionID == 23 ? parameter : "";
                 switch (SelectedButton)
                 {
                     case "TopButton":
                         //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
-                        var value = $"{{\"actionId\":{actionID},\"actionName\":\"{_EraserActions[actionID]}\"}}";
-                        byte[] newValue = Encoding.UTF8.GetBytes(value);
+                        if (string.IsNullOrEmpty(actionName))
+                        { actionName = _EraserActions[actionID]; }
+
+                        byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":{actionID},\"actionName\":\"{actionName}\"}}");
                         if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                         {
                             DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
@@ -630,8 +634,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             if (actionID == 64)
                             {
-                                value = $"{{\"actionId\":65,\"actionName\":\"{_EraserActions[actionID]}\"}}";
-                                newValue = Encoding.UTF8.GetBytes(value);
+                                newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":65,\"actionName\":\"{actionName}\"}}");
                             }
                             DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(itemID, newValue);
                         }
@@ -639,8 +642,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             if (actionID == 64)
                             {
-                                value = $"{{\"actionId\":77,\"actionName\":\"{_EraserActions[actionID]}\"}}";
-                                newValue = Encoding.UTF8.GetBytes(value);
+                                newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":77,\"actionName\":\"{actionName}\"}}");
                             }
                             DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(itemID, newValue);
                         }
