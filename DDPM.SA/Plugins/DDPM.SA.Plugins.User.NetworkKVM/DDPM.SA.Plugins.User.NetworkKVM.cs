@@ -1045,14 +1045,14 @@ namespace NetworkKVM.Plugins
         //    }
         //}
 
-        private Task<List<MonitorInfo>> GetMonitors(bool renew = false)
+        private Task<List<MonitorInfo>> GetMonitors()
         {
             lock (_pluginConditionLock)
             {
                 //_logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
                 _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors(renew).Result);
+                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
 
                 //_logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 

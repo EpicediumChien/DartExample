@@ -106,7 +106,9 @@ namespace DDPM.SA.Common.Settings
                     var targetPath = SymlinkHelper.GetTargetPath(path);
                     if (targetPath == null)
                         break;
+#if DEBUG
                     Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+#endif
                     System.IO.File.Delete(targetPath);
                 }
                 catch (Exception ex)
@@ -126,7 +128,9 @@ namespace DDPM.SA.Common.Settings
                 var targetPath = SymlinkHelper.GetTargetPath(path);
                 if (targetPath != null)
                 {
+#if DEBUG
                     Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+#endif
                     System.IO.File.Delete(path);
                 }
             }
@@ -158,7 +162,9 @@ namespace DDPM.SA.Common.Settings
                     var targetPath = SymlinkHelper.GetTargetPath(path);
                     if (targetPath == null)
                         break;
+#if DEBUG
                     Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+#endif
                     System.IO.Directory.Delete(targetPath);
                 }
                 catch (Exception ex)
@@ -178,7 +184,9 @@ namespace DDPM.SA.Common.Settings
                 var targetPath = SymlinkHelper.GetTargetPath(path);
                 if (targetPath != null)
                 {
+#if DEBUG
                     Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+#endif
                     System.IO.Directory.Delete(path);
                 }
             }
