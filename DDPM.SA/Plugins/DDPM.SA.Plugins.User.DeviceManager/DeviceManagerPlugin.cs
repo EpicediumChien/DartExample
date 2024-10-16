@@ -2604,7 +2604,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
-
             List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
             bool b = true;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
