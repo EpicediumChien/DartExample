@@ -9,7 +9,7 @@
     <UserControl.Resources>
     <ResourceDictionary>
     <ResourceDictionary.MergedDictionaries>
-     <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+    <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> 
     </ResourceDictionary.MergedDictionaries>
 
     . . . your other resources...
@@ -17,12 +17,12 @@
 </UserControl.Resources>
 
 -->
-    <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
-    <SolidColorBrush x:Key="mainWindowBkColor" Color="#F20D121A" />
-    <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="White" />
+    <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background_Light.png" Stretch="UniformToFill" />
+    <SolidColorBrush x:Key="mainWindowBkColor" Color="#FFD2D2D2" />
+    <SolidColorBrush x:Key="BatteryIndicator_BkColor" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="TextBlock_ForegroundColor" Color="#FF0E0E0E" />
     <!-- batteryIndicator.xaml -->
-    <BitmapImage x:Key="ConnectionTypeImageKey" UriSource="/DDPM.UI.Common;component/Resources/Port.png"/>
+    <BitmapImage x:Key="ConnectionTypeImageKey" UriSource="/DDPM.UI.Common;component/Resources/LightMode/Port.png"/>
     <!-- DeviceBasePage.xaml -->
     <!-- Common -->
     <!-- FakeTransparent: When you need a transparent color and need can response mouse click -->
@@ -247,15 +247,15 @@
 
     <!--  Resources of DdpmComboBox  -->
     <!--  DdomCB_BdColor=(64,88,109,1) : the BorderBrush of the ComboBox ToggleButton part.  -->
-    <SolidColorBrush x:Key="DdpmCB_BdColor" Color="#FF40586D" />
+    <SolidColorBrush x:Key="DdpmCB_BdColor" Color="#FFD2D2D2" />
     <!--  DdpmCD_BkColor=(41,59,77,1): The background color of the DdpmComboBox  -->
-    <SolidColorBrush x:Key="DdpmCB_BkColor" Color="#FF2F3B4D" />
+    <SolidColorBrush x:Key="DdpmCB_BkColor" Color="#FFFFFFFF" />
     <!--  DdpmCB_TextColor=(255,255,255,1): The normal item text color of Text in Dropdown list  -->
-    <SolidColorBrush x:Key="DdpmCB_TextColor" Color="White" />
+    <SolidColorBrush x:Key="DdpmCB_TextColor" Color="#FF0E0E0E" />
     <!--  DdpmCB_HiTextColor=(49,162,227,1): The highlight item color of Text in Dropdown list  -->
-    <SolidColorBrush x:Key="DdpmCB_HiTextColor" Color="#FFFF6C6C" />
+    <SolidColorBrush x:Key="DdpmCB_HiTextColor" Color="#FFF4f7F9" />
     <!--  DdpmCB_SelTextColor=(49,162,227,1): The selected item color of Text in Dropdown list  -->
-    <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF31A2E3" />
+    <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF49A3E5" />
 
     <!--  ToogleButton PART of DdpmComboBox  -->
     <!--
@@ -264,7 +264,7 @@
     [3] When mouse over on the toggle button, hi light the button background color.
     -->
     <ControlTemplate x:Key="DdpmComboBoxToggleButtonTemplate" TargetType="ToggleButton">
-        <Grid x:Name="toggleBtnRoot" Background="#19000000">
+        <Grid x:Name="toggleBtnRoot" Background="White">
 
             <!--  [1]  -->
             <Viewbox
@@ -279,7 +279,7 @@
                     <Path
                         Name="Arrow"
                         Data="M1,0 L0,1 L10,11 L20,1 L19,0 L10,9 z"
-                        Fill="White" />
+                        Fill="#FF0E0E0E" />
                 </Grid>
             </Viewbox>
         </Grid>
@@ -290,7 +290,7 @@
             </Trigger>
             <!--  [3]  -->
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="toggleBtnRoot" Property="Background" Value="#4CB1B0B0" />
+                <Setter TargetName="toggleBtnRoot" Property="Background" Value="white" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -312,7 +312,7 @@
     -->
     <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="#FF0E0E0E" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
@@ -327,7 +327,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="true">
                             <!-- -->
-                            <Setter TargetName="Border" Property="Background" Value="#FF232D36" />
+                            <Setter TargetName="Border" Property="Background" Value="#FFE1EAF3" />
 
                             <!--
                             <Setter Property="Foreground" Value="{StaticResource DdpmCB_HiTextColor}" /> -->
@@ -479,7 +479,7 @@
         <Setter Property="MinWidth" Value="120" />
         <Setter Property="MinHeight" Value="20" />
         <Setter Property="Height" Value="48" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="#0E0E0E" />
         <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
@@ -504,7 +504,7 @@
         <Setter Property="MinWidth" Value="120" />
         <Setter Property="MinHeight" Value="80" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />

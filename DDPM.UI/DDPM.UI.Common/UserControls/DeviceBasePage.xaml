@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
             <Storyboard x:Key="StoryGotoTwoView">
@@ -142,10 +142,10 @@
                               MouseLeftButtonDown="leftArrow_MouseLeftButtonDown">
                             <!--2024/06/19 Elie, Fix the issue where canot go back to homepage.-->
                             <Polyline Points="12,5 5,12 12,19"
-                                      Stroke="White" StrokeThickness="2"
+                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                                       StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                             <Polyline Points="5,12 19,12"
-                                      Stroke="White" StrokeThickness="2"
+                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                                       StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
 
                             <Grid.Style>
@@ -177,13 +177,13 @@
                     <!-- Robert_Lin, 2024-8-29 for DDPMW-2094, for NPI projects show MarketName else show "Display" 
                     The binding Text will be HomeDevice.LandingMarketName
                     Support text wrap, maxmum tow rows, ending with "..."
-                    --> 
+                    -->
                     <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
                         <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
                                             Text="{Binding SelectedHomeDevice.LandingMarketName}"
                                             HorizontalAlignment="Left" TextBlockType="Header2"
                                             TextBlockSemanticColorType="DefaultHeader"
-                                            Foreground="White" TextWrapping="Wrap" TextTrimming="WordEllipsis"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" TextWrapping="Wrap" TextTrimming="WordEllipsis"
                                             FontSize="24"
                                                 MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
                                                 MaxHeight="90"/>
@@ -210,7 +210,7 @@
                             </UXControls:UXComboBox> -->
                             <!-- HomeDeviceComboBox - Option1: Using WPF ComboBox -->
                             <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
-                            <ComboBox Style="{StaticResource DdpmComboBoxStyle}" MinWidth="140" Height="40"
+                            <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" MinWidth="140" Height="40"
                                       Visibility="{Binding HomeDevicesComboBoxVisibility}"
                                       ItemsSource="{Binding HomeDevices}"
                                       DisplayMemberPath="DisplayName"

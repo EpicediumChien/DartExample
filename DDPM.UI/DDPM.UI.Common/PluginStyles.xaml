@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:DDPM.UI.Common"
                     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF">
   <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+    <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
   </ResourceDictionary.MergedDictionaries>
   <LinearGradientBrush x:Key="LinerGradientBrush1" StartPoint="0,0" EndPoint="1,0">
     <GradientStop Color="#55B4FD" Offset="0.0" />
