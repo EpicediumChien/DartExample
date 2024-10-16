@@ -384,5 +384,10 @@ namespace NGA.ThickClient
         private const UInt32 SWP_NOACTIVATE = 0x0010;
 
         #endregion
+
+        private void ConsoleWindow_Closed(object sender, EventArgs e)
+        {
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Closed");
+        }
     }
 }
