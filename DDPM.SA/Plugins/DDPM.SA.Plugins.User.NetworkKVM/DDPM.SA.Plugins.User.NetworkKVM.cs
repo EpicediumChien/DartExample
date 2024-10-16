@@ -48,6 +48,7 @@ namespace NetworkKVM.Plugins
 
         private NamedPipeServerStream pipeServer;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource cts = new CancellationTokenSource();
         private IVcpCoreService _VcpCorePlugin;
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
         private List<string> _SupportedMonitors = new List<string>();
@@ -84,7 +85,9 @@ namespace NetworkKVM.Plugins
             InitializeVcpCorePlugin();
 
             PluginCondition = new PluginStartedCondition();
-            _ = Task.Run(async () => await NamedPipeServer());
+            cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+            _ = Task.Run(async () => await NamedPipeServer(token));
         }
 
         #endregion Overriding methods
@@ -120,10 +123,11 @@ namespace NetworkKVM.Plugins
         /// </summary>
         /// <param name="monitorInfos">new coming MonitorInfo list, after check, replace to current object</param>
         /// <returns></returns>
-        public Task UpdateMonitorInfo(List<MonitorInfo> monitorInfos)
+        public Task UpdateMonitorInfo(List<MonitorInfo> monitorInfos, CancellationToken token)
         {
-            lock (NewNKVM_lock_wait)
-            {
+            
+            //lock (NewNKVM_lock_wait)
+            //{
                 if (monitorInfos == null || monitorInfos.Count == 0)
                 {
                     if (_AllInfoMonitors.Count == 0)
@@ -137,7 +141,7 @@ namespace NetworkKVM.Plugins
                         MonitorPlug();
                     }
                     Disconnect();
-                    //_ = Task.Run(async () => await NamedPipeServer());
+                    //_ = Task.Run(async () => await NamedPipeServer(token));
                     //CreateNamedPipe_init();
                     _AllInfoMonitors.Clear();
                 }
@@ -161,10 +165,10 @@ namespace NetworkKVM.Plugins
                             }
                             else
                             {
-                                Disconnect();
+                                //Disconnect();
                                 isMonintorChange = true;
                                 //_runloop = true;
-                                _ = Task.Run(async () => await NamedPipeServer());
+                                _ = Task.Run(async () => await NamedPipeServer(token));
                                 //CreateNamedPipe_init();
                                 //if (pipeServer.IsConnected)
                                 //{
@@ -196,7 +200,7 @@ namespace NetworkKVM.Plugins
                                 //CreateNamedPipe_init();
                                 isMonintorChange = true;
                                 //_runloop = true;
-                                _ = Task.Run(async () => await NamedPipeServer());
+                                _ = Task.Run(async () => await NamedPipeServer(token));
                                 //if (pipeServer.IsConnected)
                                 //{
                                 //    MonitorPlug();
@@ -223,7 +227,7 @@ namespace NetworkKVM.Plugins
                                 //CreateNamedPipe_init();
                                 isMonintorChange = true;
                                 //_runloop = true;
-                                _ = Task.Run(async () => await NamedPipeServer());
+                                _ = Task.Run(async () => await NamedPipeServer(token));
                                 //if (pipeServer.IsConnected)
                                 //{
                                 //    MonitorPlug();
@@ -236,7 +240,7 @@ namespace NetworkKVM.Plugins
                     }
                 }
                 return Task.CompletedTask;
-            }
+            //}
 
         }
 
@@ -357,6 +361,7 @@ namespace NetworkKVM.Plugins
 
         public Task<bool> isSupportMonitor(MonitorInfo monitorInfo)
         {
+            _logs.DebugMsg("[NetworkKVM] isSupportMonitor");
             string ModelName = monitorInfo.modelName.Replace(" ", "");
             if (ModelName.IndexOf("P2424HEB") != -1 ||
                 ModelName.IndexOf("P2725DEB") != -1 ||
@@ -433,12 +438,15 @@ namespace NetworkKVM.Plugins
             else
             {
                 _logs.DebugMsg("[NetworkKVM] no C6....");
-                string strSupport = ModelName.Substring(0, 1);
-                switch (strSupport)
+                if (!ModelName.Contains("25"))
                 {
-                    case "U":
-                    case "C":
-                        return Task.FromResult(true);
+                    string strSupport = ModelName.Substring(0, 1);
+                    switch (strSupport)
+                    {
+                        case "U":
+                        case "C":
+                            return Task.FromResult(true);
+                    }
                 }
             }
             return Task.FromResult(false);
@@ -1060,11 +1068,18 @@ namespace NetworkKVM.Plugins
             }
         }
 
-        private async Task NamedPipeServer()
+        private async Task NamedPipeServer(CancellationToken token)
         {
+            var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
+            var CancellationToken = Cancellation.Token;
             CreateNamedPipe_init();
             while (_runloop)
             {
+                if (CancellationToken.IsCancellationRequested)
+                {
+                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                    break;
+                }
                 if (pipeServer.IsConnected)
                 {
                     try
@@ -1073,6 +1088,7 @@ namespace NetworkKVM.Plugins
                         {
                             response = ReadAsync().Result;
                             _logs.DebugMsg("[NetworkKVM] Get :" + response);
+
                             if (response == "Disconnect")
                             {
                                 Disconnect();
@@ -1087,6 +1103,8 @@ namespace NetworkKVM.Plugins
                     catch (Exception ex)
                     {
                         //throw;
+                        Disconnect();
+                        CreateNamedPipe_init();
                     }
                 }
                 //else
@@ -1205,7 +1223,14 @@ namespace NetworkKVM.Plugins
 
         private void Stop()
         {
-            cancellationTokenSource.Cancel();
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+            }
+            if (cts != null)
+            {
+                cts.Cancel();
+            }
         }
 
         private void Disconnect()
@@ -1314,55 +1339,55 @@ namespace NetworkKVM.Plugins
                             break;
 
                         case "GET_NKVM_VERSION_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetVersionResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_STATUS_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetStatusResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_AUTO_CONNECT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetAutoConnectResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_CONTENT_TRANSFER_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetContentTransferResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_INCOMMING_PORT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetIncommingPortResponse(jsonstring);
                             }
                             break;
                         case "GET_NKVM_OUTGOING_PORT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetOutgoingPortResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_CONTENT_TRANSFER_PORT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetContentTransfedPortResponse(jsonstring);
                             }
                             break;
 
                         default:
-                            NotFindType(json).Wait();
+                            //NotFindType(json).Wait();
                             break;
                     }
                 }
@@ -1706,8 +1731,10 @@ namespace NetworkKVM.Plugins
                         }
                         return (false);
                     }
-                    else { return false; }
-
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                     return (false);

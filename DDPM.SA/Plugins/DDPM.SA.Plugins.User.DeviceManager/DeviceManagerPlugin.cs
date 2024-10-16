@@ -6098,7 +6098,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
+                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
                     SupportedNKVMMonitors();
                 }
             }
@@ -9222,7 +9222,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (currentProfile != null)
                         {
                             // 將更新後的 currentProfile 寫入
-                            result = WriteUserEAProfileDDPM(currentProfile).Result;
+                           result = WriteUserEAProfileDDPM(currentProfile).Result;
                         }
                     }
                 }
@@ -9375,11 +9375,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
             }
             //EM
-            //DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
+            DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
-            //DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
+            DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
         }
 
         private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings, DDMMonitorSettings ddmMonitorSettings)
@@ -9442,6 +9442,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         hotkeySettingList.Add(hotkeySettings);
+                                        bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                                     }
                                 }
                             }
@@ -9487,11 +9488,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         hotkeyData.inputSource = inputSourceObjs;
                                         monitorSettings.hotkeyData.Add(hotkeyData);
                                     }
+                                    bool bh = _SettingsPlugin.WriteMonitorSettings(ddmMonitorSettings.Model, monitorSettingList).Result;
                                 }
                             }
                         }
                     }
-                    bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
+                    
                 }
             }
             catch (Exception ex)
