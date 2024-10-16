@@ -2774,7 +2774,11 @@ namespace VcpCore.Plugins
             do
             {
                 object value = new object();
-                value = GetFromCacheTable(monitor, Convert.ToByte(0xE2));
+
+                // 20241014 jim add
+                value = null;
+                //value = GetFromCacheTable(monitor, Convert.ToByte(0xE2));
+
                 if (value == null)
                     value = Get_VCPCapability(monitor, 0xE2, 0, true);
 
@@ -2782,8 +2786,16 @@ namespace VcpCore.Plugins
                 {
                     uint val = (Convert.ToUInt32(value) & 0XFFFF);
                     string valstring = val.ToString("X2");
-                    int pos = valstring.Length - 2;
-                    rc = valstring.Substring(pos);
+
+                    if (valstring.Length >= 2)
+                    {
+                        int pos = valstring.Length - 2;
+                        rc = valstring.Substring(pos);
+                    }                  
+
+                    Trace.WriteLine("GetCurrentColorPreset()  valstring= " + valstring);
+                    Trace.WriteLine("GetCurrentColorPreset()  rc= " + rc);
+
                 }
                 if (!string.IsNullOrWhiteSpace(rc))
                     return NodeFormatter.FormatVCP_E2(rc.ToLower());

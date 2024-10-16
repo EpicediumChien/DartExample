@@ -439,7 +439,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         // 20240619 jim modify
-        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0)
+        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true)
         {
             writelog("DeviceManagerPlugin received WriteColorPreset requested ...");
 
@@ -466,8 +466,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Thread.Sleep(100);
             //}
 
+            Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
+            Trace.WriteLine("reqKey (showOSD) = " + showOSD);
+
             // Jim add 20240925
-            if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory)
+            if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory && showOSD)
             {
                 //show OSD over colorpreset plugin
                 _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
@@ -892,6 +895,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             var temp = _ColorPresetPlugin.GetColorVCPCoreValue(ColorPreset_Name).Result;
+
+            return Task.FromResult(temp);
+        }
+
+        public Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name)
+        {
+            writelog("DeviceManagerPlugin received Sync_ColorPresetName requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - Sync_ColorPresetName]");
+                return Task.FromResult(string.Empty);
+            }
+
+            var temp = _ColorPresetPlugin.Sync_ColorPresetName(monitorInfo, ColorPreset_Name).Result;
 
             return Task.FromResult(temp);
         }
