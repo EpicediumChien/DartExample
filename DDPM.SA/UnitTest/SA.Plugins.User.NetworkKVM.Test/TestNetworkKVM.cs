@@ -171,14 +171,16 @@ public class TestNetworkKVM
     public void TestUpdateMonitorInfo()
     {
         List<MonitorInfo> monitorInfos1 = new List<MonitorInfo>();
-        var UpdateMonitorInfoResult1 = NkvmPlugin.UpdateMonitorInfo(monitorInfos1); //Monitor no change
+        CancellationTokenSource cts = new CancellationTokenSource();
+        CancellationToken token = cts.Token;
+        var UpdateMonitorInfoResult1 = NkvmPlugin.UpdateMonitorInfo(monitorInfos1, token); //Monitor no change
         Assert.IsNotNull(UpdateMonitorInfoResult1);
 
         List<MonitorInfo> monitorInfos2 = new List<MonitorInfo>();
         monitorInfos2.Add(monitorInfo1);
         PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
         privatevNkvmPluginObject.SetFieldOrProperty("_AllInfoMonitors", monitorInfos2);
-        var UpdateMonitorInfoResult2 = NkvmPlugin.UpdateMonitorInfo(monitorInfos2);  //No Supported KVM Monitors
+        var UpdateMonitorInfoResult2 = NkvmPlugin.UpdateMonitorInfo(monitorInfos2, token);  //No Supported KVM Monitors
         var allInfoMonitors = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
         Assert.IsNotNull(UpdateMonitorInfoResult2);
         Assert.That(monitorInfos2, Is.EqualTo(allInfoMonitors));
@@ -224,7 +226,7 @@ public class TestNetworkKVM
         privatevNkvmPluginObject.SetFieldOrProperty("_AllInfoMonitors", monitorInfos3);
         privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
         privatevNkvmPluginObject.SetFieldOrProperty("_SupportedMonitors", supportedMonitorList_);
-        var UpdateMonitorInfoResult3 = NkvmPlugin.UpdateMonitorInfo(monitorInfos4);  //Supported KVM Monitors
+        var UpdateMonitorInfoResult3 = NkvmPlugin.UpdateMonitorInfo(monitorInfos4, token);  //Supported KVM Monitors
         var allInfoMonitors3 = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
         Assert.IsNotNull(UpdateMonitorInfoResult3);
         Assert.That(monitorInfos4, Is.EqualTo(allInfoMonitors3));
