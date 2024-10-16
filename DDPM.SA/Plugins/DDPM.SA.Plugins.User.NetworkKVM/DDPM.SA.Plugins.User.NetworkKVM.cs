@@ -1114,7 +1114,7 @@ namespace NetworkKVM.Plugins
                 //    CreateNamedPipe_init();
                 //}
             }
-            _agent.StopAgent();
+            //_agent.StopAgent();
         }
 
         private void CreateNamedPipe_init()
