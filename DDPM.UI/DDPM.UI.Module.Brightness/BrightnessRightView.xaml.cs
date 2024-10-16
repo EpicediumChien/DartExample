@@ -109,6 +109,9 @@ namespace DDPM.UI.Module.Brightness
             {
                 x.IsSynchronize = true;
                 SynchronizeSwitch.Content = Strings.On;
+
+                x.Set_Contrast_Value(x.ContrastValue);
+                x.Set_Brightness_Value(x.BrightnessValue);
             }
             else
             {
