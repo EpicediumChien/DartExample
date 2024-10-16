@@ -5850,15 +5850,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
-                DeviceChangedEventArgs _EventArgs_ = new DeviceChangedEventArgs();
-                _EventArgs_.type = DeviceChangedType.NotifyOnly;
-                _EventArgs_.device_display = null;
-                _EventArgs_.device_peripherals = null;
-                _EventArgs_.changedProperty = "DisplayChanged";
-                EventHandler<DeviceChangedEventArgs> handler_ = DeviceChanged;
-                if (handler_ != null)
-                    Task.Run(() => handler_.Invoke(this, _EventArgs_)).ConfigureAwait(false);
-
                 if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
                 else _AllInfoMonitors = new List<MonitorInfo>();
 
