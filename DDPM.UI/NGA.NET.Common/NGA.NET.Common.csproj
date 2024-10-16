@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\NGA.NET.Common.Interfaces\NGA.NET.Common.Interfaces.csproj" />
-		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+		<PackageReference Include="DellClientFramework" Version="6.4.11.2" />
 	</ItemGroup>
   
 	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">

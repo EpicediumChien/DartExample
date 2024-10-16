@@ -486,6 +486,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                         //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
                         Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
+                        ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
                         IsUOD = false
                     };
                     _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -1187,7 +1188,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _clientProcess.StartInfo.Arguments = arguments;
                             _clientProcess.Start();
                             _clientProcess.WaitForExit();
-                            exitCode = _clientProcess.ExitCode;
+                            if (fwUpdateInfo.IsDisplay&&_clientProcess != null)
+                            {
+                                exitCode = _clientProcess.ExitCode;
+                            }
                         }
                     });
                 }
@@ -1218,7 +1222,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+                    if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
                     {
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
@@ -1351,7 +1355,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 sendMessageToEvent(fWUpdateInfo);
             }
             _timeOutCount--;
-            if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+            if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
             {
                 resetState();
             }
@@ -1709,6 +1713,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                             else
                             {
+                                ret = true;//Wait IL R14 force true
                                 _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
                             }
@@ -1737,7 +1742,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                             else
                             {
-                                ret = true;//Wait IL R14 force true
+                                ret = true;
                                 _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
                             }

@@ -14,7 +14,7 @@
 
 	<ItemGroup>
     <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
-	  <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+	  <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
 	</ItemGroup>
 
 	<ItemGroup>
