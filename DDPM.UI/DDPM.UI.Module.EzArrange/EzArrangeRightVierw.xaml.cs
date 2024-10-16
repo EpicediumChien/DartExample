@@ -242,8 +242,8 @@ namespace DDPM.UI.Module.EzArrange
                 int idxRecentList = 0;
                 foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
                 {
-                    //Robert_Lin, 2024-10-4 Check maximun items
-                    if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                    //Robert_Lin, 2024-10-4 Check maximun items, +1:Off 
+                    if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems+1)
                         break;
 
                     //Validate RectentList items, skip the invalid items
@@ -340,7 +340,7 @@ namespace DDPM.UI.Module.EzArrange
             foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
             {
                 //Robert_Lin, 2024-10-4 Check maximun items
-                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems+1)
                     break;
 
                 if (itemCustom.Buddy == null)
@@ -368,7 +368,7 @@ namespace DDPM.UI.Module.EzArrange
             foreach (SplitItem itemWin in splitListView_2w.SplitList)
             {
                 //Robert_Lin, 2024-10-4 Check maximun items
-                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems + 1)
                     break;
 
                 if (itemWin.Buddy == null)
@@ -389,7 +389,7 @@ namespace DDPM.UI.Module.EzArrange
             foreach (SplitItem itemWin in splitListView_3w.SplitList)
             {
                 //Robert_Lin, 2024-10-4 Check maximun items
-                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems + 1)
                     break;
                 if (itemWin.Buddy == null)
                 {
@@ -409,7 +409,7 @@ namespace DDPM.UI.Module.EzArrange
             foreach (SplitItem itemWin in splitListView_4w.SplitList)
             {
                 //Robert_Lin, 2024-10-4 Check maximun items
-                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems + 1)
                     break;
                 if (itemWin.Buddy == null)
                 {
@@ -843,11 +843,13 @@ namespace DDPM.UI.Module.EzArrange
             {
                 eaSettings.CustomList.Add(itemCustom.ToSplitJson);
             }
-            eaSettings.RecentList = new List<SA.Common.Display.SplitJson>();
+
+            List<SplitJson> recentList = new List<SplitJson>();
             foreach (SplitItem itemRecent in splitListView_Recent.SplitList.Skip(1))
             {
-                eaSettings.RecentList.Add(itemRecent.ToSplitJson);
+                recentList.Add(itemRecent.ToSplitJson);
             }
+            eaSettings.RecentList = recentList.ToArray();
 
             bool res = false;
             if (_deviceManagerSA != null)
@@ -1050,7 +1052,7 @@ namespace DDPM.UI.Module.EzArrange
                 return null;
 
             //If the RecentList item count has up to the limitation (always be true, but we will check anyway)
-            if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+            if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems + 1)
             {
                 //Remove the last item
                 SplitItem? itemLatest = splitListView_Recent.GetLatestItem();

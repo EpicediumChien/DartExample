@@ -95,7 +95,7 @@ namespace DDPM.SA.Common
         public string Model { get; set; }
         public string PID { get; set; }
         public string ServiceTag { get; set; }
-        public string PPID { get; set; }
+        //public string PPID { get; set; }
         public string SerialNumber { get; set; }
         public string Result { get; set; }
         public string Message { get; set; }
@@ -107,7 +107,7 @@ namespace DDPM.SA.Common
             Model = "N/A";
             PID = "N/A";
             ServiceTag = "N/A";
-            PPID = "N/A";
+            //PPID = "N/A";
             SerialNumber = "N/A";
             ServiceTag = "N/A";
             Result = "N/A";
@@ -193,7 +193,7 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_Properties_USBCPrioritization_RESPONSE : CLI_RESPONSE
     {
-        public string SupportedUSBCPrioritization { get; set; }
+        //public string SupportedUSBCPrioritization { get; set; }
         //public string USBCPrioritizationType { get; set; }
 
         public CLI_Get_Properties_USBCPrioritization_RESPONSE(CLI_RESPONSE cli_RESPONSE)
@@ -238,9 +238,16 @@ namespace DDPM.SA.Common
             this.Model = cli_RESPONSE.Model;
         }
     }
-
-    public class CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE : CLI_RESPONSE
+    public class CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE
     {
+        public string Model { get; set; } = "N/A";
+        public string SerialNumber { get; set; } = "N/A";
+        public string Index { get; set; } = "N/A";
+        public string ServiceTag { get; set; } = "N/A";
+        public string Command { get; set; } = "N/A";
+        public string TargetFeature { get; set; } = "N/A";
+        public string Result { get; set; } = "N/A";
+        public string Message { get; set; } = "N/A";
         public List<string> AllResolutionRefreshRate { get; set; }
 
         public CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE(CLI_RESPONSE cli_RESPONSE)
@@ -254,6 +261,21 @@ namespace DDPM.SA.Common
             this.Model = cli_RESPONSE.Model;
         }
     }
+    //public class CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE : CLI_RESPONSE
+    //{
+    //    public List<string> AllResolutionRefreshRate { get; set; }
+
+    //    public CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE(CLI_RESPONSE cli_RESPONSE)
+    //    {
+    //        AllResolutionRefreshRate = new List<string>();
+    //        this.Index = cli_RESPONSE.Index;
+    //        this.ServiceTag = cli_RESPONSE.ServiceTag;
+    //        this.Command = cli_RESPONSE.Command;
+    //        this.TargetFeature = cli_RESPONSE.TargetFeature;
+    //        this.SerialNumber = cli_RESPONSE.SerialNumber;
+    //        this.Model = cli_RESPONSE.Model;
+    //    }
+    //}
 
     public class CLI_Get_Properties_SupportedOrientation_RESPONSE : CLI_RESPONSE
     {

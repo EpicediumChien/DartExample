@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using System.Drawing.Imaging;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 using VcpCore.Common;
 
@@ -535,7 +536,7 @@ namespace DDPM.UI.Common.Models
             }
             //Use LineArt.png instead
             ImageSource? imgLineart = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/Lineart.png", assemblyName);
-            if (imgLineart != null) 
+            if (imgLineart != null)
             {
                 DeviceImage = imgLineart;
                 return;
@@ -617,25 +618,33 @@ namespace DDPM.UI.Common.Models
                 {
                     if (DeviceInfo != null)
                     {
-                        if (ConnectionType == "Dongle")
+                        if (DeviceCategory == eDeviceCategory.Dock)
                         {
-                            ConnectionHoverMode = "IO_Dongle";
-                            RefreshDongleView();
+                            ConnectionHoverMode = "Dock";
+                            SetDockView();
                         }
-                        else if (ConnectionType.Contains("Bluetooth")) //Audio will be "BluetoothAudio"
+                        else
                         {
-                            ConnectionHoverMode = "IO_BLE";
-                            if (DeviceCategory == eDeviceCategory.KB)
-                                SetBLConnectionStatus_Keyboard();
-                            else if (DeviceCategory == eDeviceCategory.Mouse)
-                                SetBLConnectionStatus_Mouse();
-                            else if (DeviceCategory == eDeviceCategory.Headset)
+                            if (ConnectionType == "Dongle")
                             {
-                                ConnectionHoverMode = "Audio_BLE";
-                                SetBLConnectionStatus_Audio();
+                                ConnectionHoverMode = "IO_Dongle";
+                                RefreshDongleView();
                             }
-                            else
-                                SetBLConnectionStatus_IO();
+                            else if (ConnectionType.Contains("Bluetooth")) //Audio will be "BluetoothAudio"
+                            {
+                                ConnectionHoverMode = "IO_BLE";
+                                if (DeviceCategory == eDeviceCategory.KB)
+                                    SetBLConnectionStatus_Keyboard();
+                                else if (DeviceCategory == eDeviceCategory.Mouse)
+                                    SetBLConnectionStatus_Mouse();
+                                else if (DeviceCategory == eDeviceCategory.Headset)
+                                {
+                                    ConnectionHoverMode = "Audio_BLE";
+                                    SetBLConnectionStatus_Audio();
+                                }
+                                else
+                                    SetBLConnectionStatus_IO();
+                            }
                         }
                     }
                 }
@@ -674,6 +683,13 @@ namespace DDPM.UI.Common.Models
 
             //DongleSlot = "4 of 6 slots available"
             DongleSlot = $"{DeviceInfo.MaxPairingSlots - DeviceInfo.PairedDeviceCount} of {DeviceInfo.MaxPairingSlots} slots available";
+        }
+        private void SetDockView()
+        {
+            if (DeviceInfo == null)
+                return;
+            var fv = Regex.Replace(DeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
+            Dokc_FirmwareVersion = $"Dock {Strings.FirmwareVersion} {fv}";
         }
         /// <summary>
         /// "USB Wireless Receiver"
@@ -1023,6 +1039,12 @@ namespace DDPM.UI.Common.Models
         {
             get => _audioBleText;
             set => SetProperty(ref _audioBleText, value);
+        }
+        private string _dokc_FirmwareVersion;
+        public string Dokc_FirmwareVersion
+        {
+            get => _dokc_FirmwareVersion;
+            set => SetProperty(ref _dokc_FirmwareVersion, value);
         }
         #endregion Connection Hover View
 

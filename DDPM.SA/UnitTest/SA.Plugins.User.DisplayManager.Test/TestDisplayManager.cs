@@ -60,7 +60,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
-            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(VcpCore.Common.IDs.Display_Manager_PLUGIN_ID)));
+            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(DDPM.SA.Common.IDs.Display_Manager_PLUGIN_ID)));
 
             return new DisplayMangerPlugin(DisplayMangerAgent.Object);
         }
@@ -129,7 +129,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);//set _VcpCorePlugin为我们mock的对象
@@ -142,11 +142,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.Re_GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.Re_GetMonitors(new CancellationTokenSource().Token)).Returns(Task.FromResult(_allInfoMonitors));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
-            var re_GetMonitors = displayPlugin.Re_GetMonitors().Result;
+            var re_GetMonitors = displayPlugin.Re_GetMonitors(new CancellationTokenSource().Token).Result;
             Assert.Greater(re_GetMonitors.Count, 0);
         }
 
@@ -940,7 +940,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));  //mock get monitor
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));  //mock get monitor
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -964,7 +964,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1448,7 +1448,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject); //getmonitors
@@ -2169,7 +2169,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);

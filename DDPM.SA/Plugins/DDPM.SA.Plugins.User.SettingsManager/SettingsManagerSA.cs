@@ -868,86 +868,88 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion powerNap settings
 
-        #region EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
+        //#region EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
 
-        public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
-        {
-            ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
-            //string dir = GetEaUserSettingsDir();
-            ////Filename: EA-{MonitorModel}_{SerialNumber}.json
-            //string fileName = eaMonitorSettings.GetFileName();
-            //string pathName = Path.Combine(dir, fileName);
+        //Robert_Lin, 2024-10-10, remove unused method
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
+        //{
+        ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
+        //string dir = GetEaUserSettingsDir();
+        ////Filename: EA-{MonitorModel}_{SerialNumber}.json
+        //string fileName = eaMonitorSettings.GetFileName();
+        //string pathName = Path.Combine(dir, fileName);
 
-            //string jsonString = JsonConvert.SerializeObject(eaMonitorSettings);
+        //string jsonString = JsonConvert.SerializeObject(eaMonitorSettings);
 
-            //try
-            //{
-            //    using (StreamWriter writer = new StreamWriter(pathName))
-            //    {
-            //        writer.Write(jsonString);
-            //    }
-            //}
-            //catch (Exception e1)
-            //{
-            //    return Task.FromResult("EXCEPTION: " + e1.Message);
-            //}
+        //try
+        //{
+        //    using (StreamWriter writer = new StreamWriter(pathName))
+        //    {
+        //        writer.Write(jsonString);
+        //    }
+        //}
+        //catch (Exception e1)
+        //{
+        //    return Task.FromResult("EXCEPTION: " + e1.Message);
+        //}
 
-            return Task.FromResult("OK");
-        }
+        //return Task.FromResult("OK");
+        //}
 
-        public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
-        {
-            ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
-            //string dir = GetEaUserSettingsDir();
-            ////Filename: EA-{MonitorModel}_{SerialNumber}.json
-            //string fileName = EAMonitorSettings.GetFileName(monitorModel, serialNumber);
-            //string pathName = Path.Combine(dir, fileName);
+        //Robert_Lin, 2024-10-10, remove unused method
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
+        //{
+        ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
+        //string dir = GetEaUserSettingsDir();
+        ////Filename: EA-{MonitorModel}_{SerialNumber}.json
+        //string fileName = EAMonitorSettings.GetFileName(monitorModel, serialNumber);
+        //string pathName = Path.Combine(dir, fileName);
 
-            //if (string.IsNullOrWhiteSpace(pathName))
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName is empty.");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
+        //if (string.IsNullOrWhiteSpace(pathName))
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName is empty.");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-            //if (!File.Exists(pathName))
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName({pathName}) not exist.");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
+        //if (!File.Exists(pathName))
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName({pathName}) not exist.");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-            //EAMonitorSettings? eaSettings;
-            //try
-            //{
-            //    string jsonString = String.Empty;
-            //    using (var reader = new StreamReader(pathName))
-            //    {
-            //        jsonString = reader.ReadToEnd();
-            //    }
-            //    if (String.IsNullOrEmpty(jsonString))
-            //    {
-            //        WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) read file error, file is empty.");
-            //        return Task.FromResult<EAMonitorSettings>(null);
-            //    }
+        //EAMonitorSettings? eaSettings;
+        //try
+        //{
+        //    string jsonString = String.Empty;
+        //    using (var reader = new StreamReader(pathName))
+        //    {
+        //        jsonString = reader.ReadToEnd();
+        //    }
+        //    if (String.IsNullOrEmpty(jsonString))
+        //    {
+        //        WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) read file error, file is empty.");
+        //        return Task.FromResult<EAMonitorSettings>(null);
+        //    }
 
-            //    eaSettings = JsonConvert.DeserializeObject<EAMonitorSettings>(jsonString);
-            //}
-            //catch (Exception e1)
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) EXCEPTION: {e1.Message}");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
+        //    eaSettings = JsonConvert.DeserializeObject<EAMonitorSettings>(jsonString);
+        //}
+        //catch (Exception e1)
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) EXCEPTION: {e1.Message}");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-            //if (eaSettings != null)
-            //    return Task.FromResult<EAMonitorSettings>(eaSettings);
-            //else
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) Deserialize return null.");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
-            return Task.FromResult<EAMonitorSettings>(null);
-        }
+        //if (eaSettings != null)
+        //    return Task.FromResult<EAMonitorSettings>(eaSettings);
+        //else
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) Deserialize return null.");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
+        //return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-        #endregion EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
+        //#endregion EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
 
         #region DisplayImpExpSettings
 
