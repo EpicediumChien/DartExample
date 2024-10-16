@@ -361,6 +361,7 @@ namespace NetworkKVM.Plugins
 
         public Task<bool> isSupportMonitor(MonitorInfo monitorInfo)
         {
+            _logs.DebugMsg("[NetworkKVM] isSupportMonitor");
             string ModelName = monitorInfo.modelName.Replace(" ", "");
             if (ModelName.IndexOf("P2424HEB") != -1 ||
                 ModelName.IndexOf("P2725DEB") != -1 ||
@@ -437,12 +438,15 @@ namespace NetworkKVM.Plugins
             else
             {
                 _logs.DebugMsg("[NetworkKVM] no C6....");
-                string strSupport = ModelName.Substring(0, 1);
-                switch (strSupport)
+                if (!ModelName.Contains("25"))
                 {
-                    case "U":
-                    case "C":
-                        return Task.FromResult(true);
+                    string strSupport = ModelName.Substring(0, 1);
+                    switch (strSupport)
+                    {
+                        case "U":
+                        case "C":
+                            return Task.FromResult(true);
+                    }
                 }
             }
             return Task.FromResult(false);
@@ -1073,7 +1077,7 @@ namespace NetworkKVM.Plugins
             {
                 if (CancellationToken.IsCancellationRequested)
                 {
-
+                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
                     break;
                 }
                 if (pipeServer.IsConnected)
@@ -1084,15 +1088,16 @@ namespace NetworkKVM.Plugins
                         {
                             response = ReadAsync().Result;
                             _logs.DebugMsg("[NetworkKVM] Get :" + response);
-                        }
-                        if (response == "Disconnect")
-                        {
-                            Disconnect();
-                            //CreateNamedPipe();
-                        }
-                        else
-                        {
-                            JsonstringParse(response).Wait(); //read json type
+
+                            if (response == "Disconnect")
+                            {
+                                Disconnect();
+                                //CreateNamedPipe();
+                            }
+                            else
+                            {
+                                JsonstringParse(response).Wait(); //read json type
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -1218,8 +1223,14 @@ namespace NetworkKVM.Plugins
 
         private void Stop()
         {
-            cancellationTokenSource.Cancel();
-            cts.Cancel();
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+            }
+            if (cts != null)
+            {
+                cts.Cancel();
+            }
         }
 
         private void Disconnect()
@@ -1328,55 +1339,55 @@ namespace NetworkKVM.Plugins
                             break;
 
                         case "GET_NKVM_VERSION_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetVersionResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_STATUS_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetStatusResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_AUTO_CONNECT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetAutoConnectResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_CONTENT_TRANSFER_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetContentTransferResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_INCOMMING_PORT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetIncommingPortResponse(jsonstring);
                             }
                             break;
                         case "GET_NKVM_OUTGOING_PORT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetOutgoingPortResponse(jsonstring);
                             }
                             break;
 
                         case "GET_NKVM_CONTENT_TRANSFER_PORT_RESPONSE":
-                            if (ResponseSucces(json).Result)
+                            if (!ResponseSucces(json).Result)
                             {
                                 GetContentTransfedPortResponse(jsonstring);
                             }
                             break;
 
                         default:
-                            NotFindType(json).Wait();
+                            //NotFindType(json).Wait();
                             break;
                     }
                 }
@@ -1720,8 +1731,10 @@ namespace NetworkKVM.Plugins
                         }
                         return (false);
                     }
-                    else { return false; }
-
+                    else
+                    {
+                        return false;
+                    }
                 }
                 else
                     return (false);
