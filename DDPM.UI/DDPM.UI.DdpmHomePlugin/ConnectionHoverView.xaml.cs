@@ -12,5 +12,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             InitializeComponent();
         }
+
+        private void CheckForUpdates_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }

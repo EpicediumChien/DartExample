@@ -3488,6 +3488,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.url = Display_FWU_URL + firmwares_item.url;
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
                                     firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
                                     if (firmwares_item.SupportedPlatform != null)
                                     {
                                         string currentPlatform = GetSystemArchitecture();
