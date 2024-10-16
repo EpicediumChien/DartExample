@@ -22,9 +22,9 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             InitializeComponent();
             _vm = vm;
 
-            _vm.UPD_Visibility = Visibility.Visible;
-            _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-            _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+            //_vm.UPD_Visibility = Visibility.Visible;
+            //_vm.MPS_Setting_Visibility = Visibility.Collapsed;
+            //_vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
             _vm.Delay_ItemsCollection = new List<UI_Delay_WalkAwayLock>();
             

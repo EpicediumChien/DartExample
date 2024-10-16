@@ -273,36 +273,43 @@ namespace DDPM.UI.Module.Color
             {
                 DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
 
-                //this.Dispatcher.Invoke((Action)(() =>
-                Task.Run(() =>
+                if (setting != null)
                 {
-                    // 20240717 jim add
-                    if (setting.UserSettings.IsSynchronizemonitor)
+                    //this.Dispatcher.Invoke((Action)(() =>
+                    Task.Run(() =>
                     {
-                        int count = VerifyDellMonitor_Count();
-
-                        if (count == 1)
+                        if (setting.UserSettings != null)
                         {
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
-                          MyModule.SelectedHomeDevice?.MonitorInfo,
-                          SupportColorPresets[idex]);
-                        }
-                        else
-                        {
-                            foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                            // 20240717 jim add
+                            if (setting.UserSettings.IsSynchronizemonitor)
                             {
-                                if (hd.MonitorInfo.IsDellMonitor)
-                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, false);
+                                int count = VerifyDellMonitor_Count();
+
+                                if (count == 1)
+                                {
+                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
+                                  MyModule.SelectedHomeDevice?.MonitorInfo,
+                                  SupportColorPresets[idex]);
+                                }
+                                else
+                                {
+                                    foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                                    {
+                                        if (hd.MonitorInfo.IsDellMonitor)
+                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, false);
+                                    }
+                                }
                             }
+                            else
+                                //ColorViewModel vm = (ColorViewModel)DataContext;
+                                // 20240619 jim modify
+                                DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
+                                    MyModule.SelectedHomeDevice?.MonitorInfo,
+                                    SupportColorPresets[idex]);
                         }
-                    }
-                    else
-                        //ColorViewModel vm = (ColorViewModel)DataContext;
-                        // 20240619 jim modify
-                        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
-                            MyModule.SelectedHomeDevice?.MonitorInfo,
-                            SupportColorPresets[idex]);
-                });
+                        
+                    });
+                }               
 
                 //this.Dispatcher.Invoke((Action)(() =>
                 {
