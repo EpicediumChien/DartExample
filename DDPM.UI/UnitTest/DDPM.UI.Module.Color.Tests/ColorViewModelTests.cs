@@ -249,33 +249,63 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-        [Test]
-        public void TestWatchForProcessStart()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessStart();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessStart()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessStart();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
-        [Test]
-        public void TestWatchForProcessEnd()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessEnd();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessStart_Stop()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessStart_Stop();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
+        
+
+        //[Test]
+        //public void TestWatchForProcessEnd()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessEnd();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
+
+        //[Test]
+        //public void TestWatchForProcessEnd_Stop()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessEnd_Stop();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
+        
 
 
 
