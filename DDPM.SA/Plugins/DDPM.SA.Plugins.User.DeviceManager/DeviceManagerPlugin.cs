@@ -8256,23 +8256,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //[Dean] remove WinCopies utilties and fix code conflict
                 foreach (var input in inputList)
                 {
-                    allInputs.Add(new InputSourceObj(input.Value.InputName));
+                    allInputs.Add(new InputSourceObj((ushort)input.Value.Code, input.Value.InputName));
                 }
                 //debug
+                int idx = 0;
                 foreach (var s in subInputs)
                 {
-                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                    Debug.WriteLine($"subInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    idx++;
                 }
+                idx = 0;
                 foreach (var s in allInputs)
                 {
-                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                    Debug.WriteLine($"allInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    idx++;
                 }
+                //Robert_Lin, 2024-10-16, changed
                 //debug end
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
+                //OLD:
+                //List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
+                //NEW:
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;
                 }
+                Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
                 bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
                 writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
                 /*if (subInputs != null && subInputs.Count > 0)
