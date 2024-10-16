@@ -790,7 +790,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             if (_eaBroker.VM.AwsWindow != null)
             {
-                _eaBroker.VM.AwsWindow.ReloadRecentList(monitorInfo.Display_DeviceName);
+                _eaBroker.VM.AwsWindow.ReloadRecentList(monitorInfo.DisplayName); //Robert_Lin, 2024-10-16 fix
             }
             //_eaBroker.VM.RefreshAwsIconsFromRecentList(eaSettings.RecentList);
 
