@@ -266,7 +266,9 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
-
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList();
+        public Task<bool> WriteEACustomList(SplitJson[] customList);
         #endregion EasyArrange
 
         #region EasyMemory
