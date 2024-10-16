@@ -76,7 +76,7 @@
                                     <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8" />
                                 </Grid> -->
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}" x:Name="spSAAlert"> <!-- Updates.3 for testing Derek 10/12 -->
-                                    <SAAlert:AlertBase Height="53" x:Name="alertBase" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                                    <SAAlert:AlertBase Height="53" x:Name="alertBase" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoNetwork}">
                                     <UXControls:UXAlert Margin="20,16,0,0">
@@ -93,6 +93,13 @@
                                                     <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
                                                         <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
                                                     </UXControls:UXAlert>
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
+                                                                        Margin="0,17,16,17">
+                                                        <UXControls:UXAlertItem Background="#364861"
+                                                                                AlertItemType="Info"
+                                                                                Message="{Binding UXAlertItemMessage_2}"
+                                                                                Opacity="0.6" />
+                                                    </UXControls:UXAlert>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
@@ -108,6 +115,13 @@
                                                     <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
                                                         <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
                                                     </UXControls:UXAlert>
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
+                                                                        Margin="0,17,16,17">
+                                                        <UXControls:UXAlertItem Background="#364861"
+                                                                                AlertItemType="Info"
+                                                                                Message="{Binding UXAlertItemMessage_2}"
+                                                                                Opacity="0.6" />
+                                                    </UXControls:UXAlert>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
@@ -122,6 +136,13 @@
                                                     <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20" />
                                                     <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
                                                         <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
+                                                    </UXControls:UXAlert>
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
+                                                                        Margin="0,17,16,17">
+                                                        <UXControls:UXAlertItem Background="#364861"
+                                                                                AlertItemType="Info"
+                                                                                Message="{Binding UXAlertItemMessage_2}"
+                                                                                Opacity="0.6" />
                                                     </UXControls:UXAlert>
                                                 </StackPanel>
                                             </DataTemplate>

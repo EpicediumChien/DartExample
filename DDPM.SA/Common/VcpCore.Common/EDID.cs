@@ -19,8 +19,6 @@ namespace VcpCore.Common
         public string SerialNumber { get; set; }
         public string Edid { get; set; }
 
-        public string Display_DeviceName { get; set; }
-
         public override bool Equals(object obj)
         {
             return Equals(obj as EDID);
@@ -59,7 +57,6 @@ namespace VcpCore.Common
                    Size == other.Size &&
                    ServiceTag == other.ServiceTag &&
                    SerialNumber == other.SerialNumber &&
-                   Display_DeviceName == other.Display_DeviceName &&
                    Edid == other.Edid;
         }
 

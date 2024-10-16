@@ -36,15 +36,15 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 DataContext = _vm;
                 //_vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 //BuildModuleGroups();
-            }
-            if (_vm.IsEnableUpdate)
-            {
-                //0614 Bruce 修改按鈕名稱，並判斷是否需要顯示更新按鈕
-                btnFWU.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                btnFWU.Visibility = Visibility.Collapsed;
+                if (_vm.IsEnableUpdate)
+                {
+                    //0614 Bruce 修改按鈕名稱，並判斷是否需要顯示更新按鈕
+                    btnFWU.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnFWU.Visibility = Visibility.Collapsed;
+                }
             }
 
             //txtFWUpdate.Text = FWU;
@@ -229,10 +229,10 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
 
         private void FWUpdate_Click(object sender, MouseButtonEventArgs e)
         {
-            IConsole? console = DockPlugin.PluginIoc.GetService<IConsole>();
-            console?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
-            /*IShowPluginManager? _showPluginManager = DockPlugin.PluginIoc.GetService<IShowPluginManager>();
-            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "CallFWU");*/
+            //IConsole? console = DockPlugin.PluginIoc.GetService<IConsole>();
+            //console?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
+            IShowPluginManager? _showPluginManager = DockPlugin.PluginIoc.GetService<IShowPluginManager>();
+            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
         }
     }
 }

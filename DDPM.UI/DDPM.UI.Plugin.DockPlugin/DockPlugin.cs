@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Interfaces;
+using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DockPlugin.Views;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -33,6 +35,7 @@ namespace DDPM.UI.Plugin.DockPlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
+        private readonly IShowPluginManager _showPluginManager;
         private readonly string? _applicationName;
         private DockPageViewModel? _viewModel;
 
@@ -48,9 +51,10 @@ namespace DDPM.UI.Plugin.DockPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DockPlugin(IPluginManager pluginManager, IConsole console)
+        public DockPlugin(IPluginManager pluginManager, IConsole console, IShowPluginManager showPluginManager)
         {
             _pluginManager = pluginManager;
+            _showPluginManager= showPluginManager;
             _console = console;
             _log = console.CreateLog("Dock");
             _log.Info($"{nameof(DockPage)} - Constructed");
@@ -181,12 +185,17 @@ namespace DDPM.UI.Plugin.DockPlugin
 
             // Marked all the instances as singleton
             // Pass the existing _console and _log instance so that Ioc doesn't new'up them
-            PluginIoc.ConfigureServices(new ServiceCollection()
-                .AddSingleton(_console)
-                .AddSingleton(_log)
-                .AddSingleton(_deviceManagerPlugin!)
-                .AddSingleton<IPeripheralViewModel, DockPageViewModel>()
-                .BuildServiceProvider());
+            ServiceCollection services = new ServiceCollection();
+            if (_console != null)
+                services.AddSingleton(_console);
+            if (_log != null)
+                services.AddSingleton(_log);
+            if (_deviceManagerPlugin != null)
+                services.AddSingleton(_deviceManagerPlugin);
+            if (_showPluginManager != null)
+                services.AddSingleton(_showPluginManager);
+            services.AddSingleton<IPeripheralViewModel, DockPageViewModel>();
+            PluginIoc.ConfigureServices(services.BuildServiceProvider());
 
             _viewModel = (DockPageViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
