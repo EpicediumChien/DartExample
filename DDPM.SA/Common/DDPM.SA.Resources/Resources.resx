@@ -165,4 +165,49 @@
   <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
     <value>Auto Brightness is currently enabled.Do you wish to override it?</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="SW_info" xml:space="preserve">
+    <value>SW info</value>
+  </data>
+  <data name="UOD_update_completed" xml:space="preserve">
+    <value>UOD update completed.</value>
+  </data>
+  <data name="UOD_update_fail" xml:space="preserve">
+    <value>UOD update fail.</value>
+  </data>
+  <data name="FW_info" xml:space="preserve">
+    <value>FW info</value>
+  </data>
+  <data name="update_download_cancel" xml:space="preserve">
+    <value>update download cancel, because PC battery too low.</value>
+  </data>
+  <data name="FW_is_being_Installing" xml:space="preserve">
+    <value>FW is being Installing. Do not disconnect the device.</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Delay" xml:space="preserve">
+    <value>Delay</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Invalid_ID" xml:space="preserve">
+    <value>Invalid ID. Please provide a valid action ID.</value>
+  </data>
+  <data name="Failed_to_open_application" xml:space="preserve">
+    <value>Failed to open application</value>
+  </data>
+  <data name="will_be_updated_to " xml:space="preserve">
+    <value>will be updated to </value>
+  </data>
+  <data name="can_be_updated_to" xml:space="preserve">
+    <value>can be updated to</value>
+  </data>
 </root>
