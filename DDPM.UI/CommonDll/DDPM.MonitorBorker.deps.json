@@ -71,7 +71,7 @@
       "DCF.UX.WPF/2.2.4.1": {
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
           "Microsoft.Toolkit.Uwp.Notifications": "7.1.2",
@@ -113,7 +113,7 @@
           }
         }
       },
-      "DellClientFramework/6.4.5.1": {
+      "DellClientFramework/6.4.11.2": {
         "dependencies": {
           "DCF.Security": "2.4.2.1",
           "Microsoft.VisualStudio.Validation": "17.6.11",
@@ -125,15 +125,15 @@
         "runtime": {
           "lib/net8.0/DCF.Agent.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.4.5.1"
+            "fileVersion": "6.4.11.2"
           },
           "lib/net8.0/DCF.Common.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.4.5.1"
+            "fileVersion": "6.4.11.2"
           },
           "lib/net8.0/DCF.Interfaces.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.4.5.1"
+            "fileVersion": "6.4.11.2"
           }
         }
       },
@@ -548,7 +548,7 @@
           "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.2.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
           "VcpCore.Interfaces": "2.0.0.5"
         },
@@ -589,7 +589,7 @@
       },
       "VcpCore.Common/2.0.0.5": {
         "dependencies": {
-          "DellClientFramework": "6.4.5.1"
+          "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "VcpCore.Common.dll": {
@@ -600,7 +600,7 @@
       },
       "VcpCore.Interfaces/2.0.0.5": {
         "dependencies": {
-          "DellClientFramework": "6.4.5.1",
+          "DellClientFramework": "6.4.11.2",
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
@@ -713,12 +713,12 @@
       "path": "dell.techhub.sdk.common_net/3.0.0.606-2e2db9-beta",
       "hashPath": "dell.techhub.sdk.common_net.3.0.0.606-2e2db9-beta.nupkg.sha512"
     },
-    "DellClientFramework/6.4.5.1": {
+    "DellClientFramework/6.4.11.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-+nuGtRnJObWyjYNBiHoRwwHqQr/LSzVI19X5teJBVNuXaBvoNxnYqqTCGv02UzJiLC42v8qf5SwgUJa7epkusg==",
-      "path": "dellclientframework/6.4.5.1",
-      "hashPath": "dellclientframework.6.4.5.1.nupkg.sha512"
+      "sha512": "sha512-bfMsJ4F/3mjCr9uEsijYHLUOn2qMbKF/n+XPsGdAbV/AhEpPFlDE0ENFxlU/+VCHXWuXZEpnbQc5VCNdYQ5wRw==",
+      "path": "dellclientframework/6.4.11.2",
+      "hashPath": "dellclientframework.6.4.11.2.nupkg.sha512"
     },
     "H.Formatters/2.0.59": {
       "type": "package",
