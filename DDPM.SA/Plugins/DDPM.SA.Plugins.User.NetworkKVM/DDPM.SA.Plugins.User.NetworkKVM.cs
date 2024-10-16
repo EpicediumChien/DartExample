@@ -1082,10 +1082,11 @@ namespace NetworkKVM.Plugins
                 }
                 if (pipeServer.IsConnected)
                 {
-                    try
+                    lock (lock_wait)
                     {
-                        lock (lock_wait)
+                        try
                         {
+
                             response = ReadAsync().Result;
                             _logs.DebugMsg("[NetworkKVM] Get :" + response);
 
@@ -1099,12 +1100,12 @@ namespace NetworkKVM.Plugins
                                 JsonstringParse(response).Wait(); //read json type
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        //throw;
-                        Disconnect();
-                        CreateNamedPipe_init();
+                        catch (Exception ex)
+                        {
+                            //throw;
+                            Disconnect();
+                            CreateNamedPipe_init();
+                        }
                     }
                 }
                 //else
