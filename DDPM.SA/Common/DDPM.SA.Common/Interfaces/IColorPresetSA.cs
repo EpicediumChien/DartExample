@@ -57,6 +57,8 @@ namespace DDPM.SA.Common
 
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
+        Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
+
         Task<bool> Migration(DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration, string Model, string ServiceTag, ISettingsManagerDev _SettingsPlugin, int ColorForManual_VCPE2Code_value =0);
 
         Task<bool> Import(MonitorInfo MonitorInfo, ColorPresetSettings colorPresetSetting_Import, ISettingsManagerDev _SettingsPlugin);

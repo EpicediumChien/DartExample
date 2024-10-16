@@ -108,8 +108,8 @@ namespace DDPM.SA.Common.Display
             {20, HotkeyType.DualResolutionToggle},
             {5, HotkeyType.KvmSwitchInputSource },
             {6, HotkeyType.KvmSwitchKbMsKey },
-            {8, HotkeyType.None},
-            {9, HotkeyType.None },
+            //{8, HotkeyType.None},
+            //{9, HotkeyType.None },
             {10, HotkeyType.None},
             {12, HotkeyType.SwitchInputSource},
             {13, HotkeyType.ToggleInputSource},
@@ -118,8 +118,8 @@ namespace DDPM.SA.Common.Display
             {16, HotkeyType.BrightnessReduce},
             {17, HotkeyType.ContrastIncrease},
             {18, HotkeyType.ContrastReduce},
-            {11, HotkeyType.None },
-            {19, HotkeyType.None},
+            //{11, HotkeyType.None },
+            //{19, HotkeyType.None},
         };
     }
 }

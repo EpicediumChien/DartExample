@@ -71,7 +71,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int colorPresetRunType = 0, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -109,6 +109,8 @@ namespace DDPM.SA.Common
         Task<string> GetColorPresetName(int Color_VCPCore_E2);
 
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
+
+        Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
 
         #endregion public for ColorPreset
 
@@ -266,7 +268,9 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
-
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList();
+        public Task<bool> WriteEACustomList(SplitJson[] customList);
         #endregion EasyArrange
 
         #region EasyMemory
