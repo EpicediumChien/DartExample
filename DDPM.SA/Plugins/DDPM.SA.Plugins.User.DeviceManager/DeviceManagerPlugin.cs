@@ -5508,6 +5508,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
+        public Task<bool> Set_GlobalSetting_EnableTelemetryConsent(bool isEnable)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.isTelemetryConsentOn = isEnable;
+                ret = SaveGlobalSettingParam();
+            }
+            GlobalSettingChangeEvent?.Invoke(this, null);
+            return Task.FromResult(ret);
+        }
+
         private bool LoadGlobalSettingParam()
         {
             bool ret = false;

@@ -13,6 +13,7 @@ namespace DDPM.SA.Common
         public GlobalSetting_General GlobalSetting_General { get; set; }
         public GlobalSetting_WidgetSettings GlobalSetting_WidgetSettings { get; set; }
         public GlobalSetting_About GlobalSetting_About { get; set; }
+        public bool isTelemetryConsentOn { get; set; } = true;
         public GlobalSettingParam()
         {
             GlobalSetting_General = new GlobalSetting_General();
