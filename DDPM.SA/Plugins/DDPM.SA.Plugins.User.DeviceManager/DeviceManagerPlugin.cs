@@ -10234,6 +10234,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static ScrollLockOnWin ScrollLockOnWinx = null;
         private static StartRecordingWin StartRecordingWinx = null;
         private static WalkAwayLockWin WalkAwayLockWinx = null;
+        private static EasyMemoryWin EasyMemoryWinx = null;
 
         public Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content)
         {
@@ -10335,6 +10336,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 switch (type)
                 {
+                    case OSDType.EasyMemory:
+                        {
+                            _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.Fingerprint:
                         {
                             _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
@@ -10828,6 +10834,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             finally
                                             {
                                                 FingerprintWinx = null;
+                                            }
+                                        }
+                                        break;
+
+                                    case OSDType.EasyMemory:
+                                        {
+                                            if (EasyMemoryWinx != null)
+                                                EasyMemoryWinx.CloseWindow();
+
+                                            EasyMemoryWinx = new EasyMemoryWin();
+
+                                            try
+                                            {
+                                                EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                EasyMemoryWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
+                                                //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
+                                                //EasyMemoryWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                EasyMemoryWinx = null;
                                             }
                                         }
                                         break;
