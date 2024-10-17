@@ -71,7 +71,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int colorPresetRunType = 0, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -109,6 +109,8 @@ namespace DDPM.SA.Common
         Task<string> GetColorPresetName(int Color_VCPCore_E2);
 
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
+
+        Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
 
         #endregion public for ColorPreset
 
@@ -266,7 +268,9 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
-
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList();
+        public Task<bool> WriteEACustomList(SplitJson[] customList);
         #endregion EasyArrange
 
         #region EasyMemory
@@ -499,11 +503,10 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false);
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
-
-        Task<FWUErrorCode> Install(string installPath);
 
         void SetUILockStatus(bool isLockFWU_UI);
 
@@ -786,6 +789,10 @@ namespace DDPM.SA.Common
 
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
 
+        Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
+
+        Task ResetToDefault_webcam(string Guid, bool newValue);
+
         Task<int> GetWALTime(string Guid);
 
         Task<int> GetSnooze(string Guid);
@@ -798,7 +805,34 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
 
+        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+
         #endregion Webcam
+
+
+
+        #region Headset
+        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Wires Audio
+
+        Task<int> GetBassAsync(string guid);
+        Task SetBassAsync(string guid, int newValue);
+        Task<int> GetMidRangeAsync(string guid);
+        Task SetMidRangeAsync(string guid, int newValue);
+        Task<int> GetTrebleAsync(string guid);
+        Task SetTrebleAsync(string guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
+        Task<bool> GetIsWiredAudioIMicNSEnableValue(string itemID);
+        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
+        Task SetResetToDefaultValue(string itemID, bool newValue);
+
+        #endregion
 
         #endregion public for DTPProxy
 

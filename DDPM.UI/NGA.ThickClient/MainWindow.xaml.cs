@@ -15,6 +15,7 @@ using Dell.Client.Framework.UX.WPF.Console;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -150,6 +151,12 @@ namespace NGA.ThickClient
 
         private void UXSystemParametersChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+
+            if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
+            {
+                //update dark/light mode
+                DdpmCommonHelper.updateMergedDictionarie();
+            }
             if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
                 return;
             OnApplyTemplate();

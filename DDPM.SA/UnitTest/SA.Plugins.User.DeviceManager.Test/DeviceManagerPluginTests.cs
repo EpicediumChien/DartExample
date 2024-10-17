@@ -1651,7 +1651,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
-            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>())).Returns(Task.FromResult(new FWUErrorCode()));
+            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUErrorCode()));
             privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
             // Execute and Verify
 

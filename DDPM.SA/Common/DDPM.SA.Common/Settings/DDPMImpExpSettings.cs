@@ -16,4 +16,9 @@ namespace DDPM.SA.Common.Settings
         public DDMMonitorSettings MonitorSettings { get; set; }
 
     }
+
+    public class ImpVCPSequence
+    {
+        public uint ALSConfig { get; set; } = 0;
+    }
 }

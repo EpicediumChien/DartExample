@@ -9,7 +9,9 @@
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:AddDeviceViewModel}"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="527" d:DesignWidth="958" 
+             SizeChanged="UserControl_SizeChanged">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
@@ -44,60 +46,72 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <StackPanel Orientation="Vertical">
-            <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertKnMVisibility}">
-                <StackPanel Orientation="Horizontal">
-                    <Grid VerticalAlignment="top">
-                        <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
+        <UXControls:UXScrollViewer>
+            <Border>
+                <StackPanel Orientation="Vertical">
+                    <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Width="Auto" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertKnMVisibility}">
+                        <StackPanel Orientation="Horizontal">
+                            <Grid VerticalAlignment="top">
+                                <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
-                        </Image>
-                        <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="870"
+                                </Image>
+                                <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="870"
                                                 VerticalAlignment="Top" HorizontalAlignment="Left" Margin="36,16,0,13" LineHeight="19.5" Padding="0,3" Text="{Binding DongleAlertKnM}" FontFamily="Roboto" FontWeight="Normal" />
-                    </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" Margin="18,5,0,0" x:Name="stepsStackPanel">
+                        <Border Style="{StaticResource Border1}" x:Name="stepsBorder1" Margin="7,0,0,7">
+                            <StackPanel Orientation="Vertical">
+                                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/DongleC.png" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
+                                <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                    <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
+                                    <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
+                                                            Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
+                                                            Text="{Binding [AddDevice.KnM.6], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Border1}" x:Name="stepsBorder2" Margin="7,0,0,7">
+                            <StackPanel Orientation="Vertical">
+                                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/PowerOn.png" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
+                                <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                    <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}"/>
+                                    <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
+                                                            Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
+                                                            Text="{Binding [AddDevice.KnM.7], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Border1}" x:Name="stepsBorder3" Margin="7,0,0,7">
+                            <StackPanel Orientation="Vertical">
+                                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/HandTouch.png" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
+                                <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                    <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
+                                    <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
+                                                            Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
+                                                            Text="{Binding [AddDevice.KnM.8], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Border1}" x:Name="stepsBorder4" Margin="7,0,0,7">
+                            <StackPanel Orientation="Vertical">
+                                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/CheckOK.png" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
+                                <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                    <UXControls:UXTextBlock Text="4." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
+                                    <UXControls:UXTextBlock Name="txtStep4" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" 
+                                                            Width="{Binding textBlockWidth}" TextWrapping="WrapWithOverflow"
+                                                            Text="{Binding [AddDevice.KnM.9], Source={x:Static lang:LangHelper.Instance}}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </StackPanel>
             </Border>
-            <StackPanel Orientation="Horizontal" Margin="18,5,0,0">
-                <Border Style="{StaticResource Border1}">
-                    <StackPanel Orientation="Vertical">
-                        <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/DongleC.png" Stretch="Uniform"
-                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                        <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                            <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.6], Source={x:Static lang:LangHelper.Instance}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Border1}" Margin="7,0,0,0">
-                    <StackPanel Orientation="Vertical">
-                        <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/PowerOn.png" Stretch="Uniform"
-                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                        <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                            <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}"/>
-                            <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.7], Source={x:Static lang:LangHelper.Instance}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Border1}" Margin="7,0,0,0">
-                    <StackPanel Orientation="Vertical">
-                        <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/HandTouch.png" Stretch="Uniform"
-                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                        <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                            <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.8], Source={x:Static lang:LangHelper.Instance}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Border1}" Margin="7,0,0,0">
-                    <StackPanel Orientation="Vertical">
-                        <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/CheckOK.png" Stretch="Uniform"
-                               HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                        <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                            <UXControls:UXTextBlock Text="4." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep4" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.9], Source={x:Static lang:LangHelper.Instance}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </StackPanel>
+        </UXControls:UXScrollViewer>
     </Grid>
 </UserControl>

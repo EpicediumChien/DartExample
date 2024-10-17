@@ -6,19 +6,13 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
 
@@ -2351,6 +2345,7 @@ namespace DDPM.UI.Module.Brightness
             LockMaskVisible = value ? Visibility.Visible : Visibility.Collapsed;
             TabSTOP = value ? "None" : "Cycle";
         }
+
         public void Update_SyncLockStatus(bool value)
         {
             synchronizeLock = value ? Visibility.Visible : Visibility.Collapsed;
@@ -2865,6 +2860,117 @@ namespace DDPM.UI.Module.Brightness
 
         #endregion ALS functions
 
+        public void BR_Con_Sync()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += BRConSync;
+            bw.RunWorkerCompleted += BRConSync_finish;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
+        }
+
+        private void BRConSync(object sender, DoWorkEventArgs e)
+        {
+            Set_Brightness_Value(BrightnessValue);
+            Set_Contrast_Value(ContrastValue);
+        }
+
+        private void BRConSync_finish(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("LuminanceValue");
+            NotifyPropertyChanged("ContrastValue");
+            NotifyPropertyChanged("IsBusy");
+        }
+
+        public void Invoke_ColorPreset_Sync()
+        {
+            BackgroundWorker bw_ColorPreset_Sync = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw_ColorPreset_Sync.DoWork += DoWork_ColorPreset_Sync;
+            bw_ColorPreset_Sync.RunWorkerCompleted += RunWorkerCompleted_ColorPreset_Sync;
+            //Log?.Info("RunWorkerCompleted_DownloadICCData start...");
+            //IsBusy = true;
+            bw_ColorPreset_Sync.RunWorkerAsync();
+        }
+
+        private void DoWork_ColorPreset_Sync(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo);
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                string strSync_CurrentColorPreset = string.Empty;
+                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+
+                Task.Run(() =>
+                {
+                    foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, false);
+                    }
+                });
+
+                /*
+                Dispatcher.Invoke(new Action(() =>
+                {
+                }));
+                */
+            }
+            catch (System.Exception)
+            {
+            }
+        }
+
+        private void RunWorkerCompleted_ColorPreset_Sync(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+
+            //IsBusy = false;
+
+            //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
+            if (e.Cancelled)
+            {
+                //Log?.Info("** ColorPreset_Sync is cancelled.");
+                return;
+            }
+            if (e.Error != null)
+            {
+                //The message is e.Error.Message
+                //Log?.Info($"** ColorPreset_Sync stopped by an exception: {e.Error.Message}");
+                return;
+            }
+            //
+            if (e.Result == null)
+            {
+                //In case that you never set value to e-Result
+                //Log?.Info("** ColorPreset_Sync abnormal stopped unknown reason.");
+            }
+            else
+            {
+                //Log?.Info($"** DownloadICCData result: {e.Result}");
+
+                if (e.Result == "OK")
+                {
+                    //Result is passed.
+                }
+                else
+                {
+                    //Result is failed.
+                }
+            }
+        }
+
         public void ResetClick()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -2895,6 +3001,7 @@ namespace DDPM.UI.Module.Brightness
                     Contrast_Value = (uint)((long)rb_12.value);
             }
         }
+
         private void Reset_Click_finish(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;

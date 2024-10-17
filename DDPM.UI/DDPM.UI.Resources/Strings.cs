@@ -533,6 +533,42 @@ namespace DDPM.UI.Common
         public static readonly string OpenFileWaterMark = "File Name";
         public static readonly string OpenFolderWaterMark = "Folder Name";
 
+        //Headset
+        public static readonly string HeadsetAudioSettingsToolTip_1 = GetString("HeadsetAudioSettings.20");
+        public static readonly string HeadsetAudioSettingsToolTip_2 = GetString("HeadsetAudioSettings.21");
+        public static readonly string HeadsetAudioSettingsToolTip_3 = GetString("HeadsetAudioSettings.22");
+        public static readonly string HeadsetAudioSettingsToolTip_4 = GetString("HeadsetAudioSettings.23");
+        public static readonly string HeadsetAudioSettingsToolTip_5 = GetString("HeadsetAudioSettings.24");
+        public static readonly string HeadsetAudioSettingsToolTip_6 = GetString("HeadsetAudioSettings.25");
+        public static readonly string HeadsetAudioSettingsToolTip_7 = GetString("HeadsetAudioSettings.26");
+        public static readonly string HeadsetAudioSettingsToolTip_8 = GetString("HeadsetAudioSettings.27");
+        public static readonly string HeadsetAudioSettingsToolTip_9 = GetString("HeadsetAudioSettings.28");
+
+        public static readonly string HeadsetAutomatedActionsToolTip_1 = GetString("HeadsetAutomatedActions.9");
+        public static readonly string HeadsetAutomatedActionsToolTip_2 = GetString("HeadsetAutomatedActions.10");
+        public static readonly string HeadsetAutomatedActionsToolTip_3 = GetString("HeadsetAutomatedActions.11");
+        public static readonly string HeadsetAutomatedActionsToolTip_4 = GetString("HeadsetAutomatedActions.12");
+        public static readonly string HeadsetAutomatedActionsToolTip_5 = GetString("HeadsetAutomatedActions.13");
+
+        public static readonly string HeadsetDeviceSettingsToolTip_1 = GetString("HeadsetDeviceSettings.7");
+        public static readonly string HeadsetDeviceSettingsToolTip_2 = GetString("HeadsetDeviceSettings.8");
+
+        //Speaker
+        public static readonly string SpeakerToolTip_1 = GetString("SpeakerToolTip.0");
+        public static readonly string SpeakerToolTip_2 = GetString("SpeakerToolTip.1");
+        public static readonly string SpeakerToolTip_3 = GetString("SpeakerToolTip.2");
+
+        //Import/Export
+        public static readonly string ImpExp_Success = GetString("Success");
+        public static readonly string ImpExp_Warning = GetString("Warning");
+        public static readonly string ImpExp_Continue = GetString("Continue");
+        public static readonly string ImpExp_Cancel = GetString("Cancel");
+        public static readonly string ImpExp_Restart = GetString("RestartNeeded");
+        public static readonly string ImpExp_RestartMsg0 = GetString("ImpExp_RestartMsg.0");
+        public static readonly string ImpExp_SuccessMsg0 = GetString("ImpExp_SuccessMsg.0");
+        public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
+        public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
+        public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
         // Pair/Unpair
         public static readonly string Caption = "Are you sure?";
         public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";

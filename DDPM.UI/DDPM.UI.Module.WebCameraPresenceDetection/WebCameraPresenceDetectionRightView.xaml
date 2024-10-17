@@ -10,7 +10,7 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="600" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="700" d:DesignWidth="600">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -59,7 +59,7 @@
           </Image>
 
         </Grid>
-        <Grid Margin="16,0,16,10">
+        <Grid Margin="16,0,16,10" Visibility="{Binding UPD_Visibility}">
           <Border Background="#99132F54" CornerRadius="6">
             <StackPanel Orientation="Vertical">
               <Grid Margin="18,22,18,0">
@@ -110,18 +110,18 @@
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                       <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding Delay_ItemsCollection}"
                                         SelectedItem="{Binding SelectedDelay, Mode=TwoWay}"
-                                        IsEnabled="{Binding Path= IsChecked_ProximitySensor}"
+                                        IsEnabled="{Binding Path= IsChecked_WalkAwayLock}"
                                         TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
                     <Grid Margin="0,20,0,0">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
+                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
                     <Grid Margin="0,20,0,15">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                         <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
                                   SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
-                                  IsEnabled="{Binding Path= IsChecked_ProximitySensor}"
+                                  IsEnabled="{Binding Path= IsChecked_WalkAwayLock}"
                                   TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                     </Grid>
                 </StackPanel>
@@ -133,7 +133,7 @@
           <Border Background="#132F5499" Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
 
         </Grid>
-        <Grid VerticalAlignment="top" Margin="16,0,16,10">
+        <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding UPD_Visibility}">
           <Border Background="#99132F54" CornerRadius="6" Margin="0,0,0,4000">
             <Grid Margin="18,22,18,18">
               <StackPanel Orientation="Horizontal">
@@ -150,6 +150,42 @@
             </Grid>
           </Border>
         </Grid>
+        
+        <!-- MPS(1) -->
+        <Grid Margin="16,0,16,10" Visibility="{Binding MPS_Setting_Visibility}">
+                    <UXControls:UXTextBlock Text="To access Microsoft Presence Sensing features, visit Windows Settings" TextWrapping="WrapWithOverflow" Style="{StaticResource ModuleItemStyle}" TextBlock.FontSize="16" />            
+        </Grid>  
+          
+        <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding MPS_Setting_Visibility}">
+          <Border Background="#99132F54" CornerRadius="6" Margin="0,0,0,4000">
+            <Grid Margin="18,22,18,18">
+              <StackPanel Orientation="Horizontal">
+                <UXControls:UXTextBlock Text="Presence Detection" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />                
+              </StackPanel>
+                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallPresenceSensor_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+        </Grid>
+          
+        <!-- MPS(2) -->
+        <Grid Margin="16,0,16,10" Visibility="{Binding MPS_UpdateFW_Visibility}">              
+              <UXControls:UXAlert Margin="0,0,0,0">
+                  <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label=""
+                      Message="To access presence sensing features, use the link below to download compitible webcam firmware" />
+              </UXControls:UXAlert>             
+        </Grid>  
+          
+        <Grid VerticalAlignment="top" Margin="16,0,16,10" Visibility="{Binding MPS_UpdateFW_Visibility}">
+            <Border Background="#99132F54" CornerRadius="6" Margin="0,0,0,4000">
+              <Grid Margin="18,22,18,18">
+                <StackPanel Orientation="Horizontal">
+                  <UXControls:UXTextBlock Text="Compatible Firmware" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />                
+                </StackPanel>
+                  <UXControls:UXLink Content="Dell.com" Click="CallUpcdateMPSFW_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+              </Grid>
+            </Border>
+        </Grid>
+          
       </StackPanel>
     </Border>
   </Grid>

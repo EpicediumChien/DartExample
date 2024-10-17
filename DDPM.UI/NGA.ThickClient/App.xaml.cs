@@ -8,8 +8,10 @@
 
 #endregion
 
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Dell.Client.Framework.UX.WPF.ResourceManager.Enums;
 using Dell.UnifiedAgent.RemotePlugin.Client.Console;
@@ -17,6 +19,7 @@ using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using Constants = NGA.Common.Constants;
@@ -106,7 +109,8 @@ namespace NGA.ThickClient
         public override ResourceManager LoadResources()
         {
             var resourceManager = base.LoadResources();
-
+            //update dark/light mode
+            DdpmCommonHelper.updateMergedDictionarie();
             try
             {
                 var resourceDictionaries = new[] { new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) } };
@@ -164,6 +168,7 @@ namespace NGA.ThickClient
             }
 
             _mainWindow = new MainWindow(formBuilder, args);
+
 
             return _mainWindow;
         }

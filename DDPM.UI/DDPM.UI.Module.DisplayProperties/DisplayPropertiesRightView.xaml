@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -25,7 +25,7 @@
             <!-- RightGroupBorder -->
             <Grid>
                 <StackPanel>
-                    <Border Style="{StaticResource RightGroupBorderStyle}">
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
                         <StackPanel>
                             <Grid Height="50"
                                   Margin="0,8">
@@ -112,8 +112,8 @@
                                                         Foreground="White"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left" />
+                                                        TextWrapping="WrapWithOverflow" />
+                                
                                 <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}"
                                                    Click="CallWindowsSettings_Click"
                                                    IconPosition="IconRight"

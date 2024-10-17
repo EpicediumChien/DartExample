@@ -59,6 +59,29 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 IsSelected[j] = false;
             }
             IsSelected[index] = true;
+            switch (index)
+            {
+                case 0:
+                default:
+                    Settings_General settings_General = new Settings_General();
+                    OpenFullView(settings_General);
+                    break;
+                case 1:
+                    UpdatesPage updatesPage = new UpdatesPage();
+                    OpenFullView(updatesPage);
+                    break;
+                case 2:
+                    FullView = new AnalyticsPage();
+                    break;
+                case 3:
+                    Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();
+                    OpenFullView(settings_WidgetSettings);
+                    break;
+                case 4:
+                    Settings_About settings_About = new Settings_About();
+                    OpenFullView(settings_About);
+                    break;
+            }
             OnPropertyChanged("IsSelected");
         }
         #region UI Enable Flags
@@ -97,13 +120,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += Set_Page_Done;
             bw.RunWorkerAsync(); //myArg is the optional argument
-            IsBusy = true; 
+            IsBusy = true;
             OnPropertyChanged("IsBusy");
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            try 
+            try
             {
                 GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
@@ -207,7 +230,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
         }
-        
+
         #endregion
         #region Update
         public FWUpdateInfoPackage FWUpdateInfoPackage { get; set; }
@@ -513,6 +536,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = true;
             bool? b = null;
+            UXAlertItemVisibility = Visibility.Collapsed;
+            UXAlertItemVisibility_2 = Visibility.Collapsed;
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.LogicalMouse:
@@ -527,6 +552,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 case DeviceType.LogicalDock:
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Ensure only one dock is connected to your system. Devices connected to dock may not be available during update.";
+                    UXAlertItemVisibility_2 = Visibility.Visible;
+                    UXAlertItemMessage_2 = "Connect PC to power source and ensure PC battery charge is above 10% to continue with update";
                     break;
 
                 case DeviceType.PhysicalPen:
@@ -574,6 +601,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = false;
             UXAlertItemVisibility = Visibility.Collapsed;
+            UXAlertItemVisibility_2 = Visibility.Collapsed;
             UpdateInfo = $"Software update {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
         }
     }

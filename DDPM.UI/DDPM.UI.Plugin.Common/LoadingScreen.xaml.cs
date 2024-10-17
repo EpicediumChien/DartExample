@@ -11,7 +11,7 @@ namespace DDPM.UI.Plugin.Common
     /// </summary>
     public partial class LoadingScreen : Window
     {
-        private DispatcherTimer _closeTimer;
+        //private DispatcherTimer _closeTimer;
 
         public LoadingScreen(double width, double height)
         {
@@ -36,16 +36,21 @@ namespace DDPM.UI.Plugin.Common
 
             rotateTransform.BeginAnimation(RotateTransform.AngleProperty, animation);
 
-            _closeTimer = new DispatcherTimer();
-            _closeTimer.Interval = TimeSpan.FromSeconds(3);
-            _closeTimer.Tick += CloseTimer_Tick;
-            _closeTimer.Start();
+            //_closeTimer = new DispatcherTimer();
+            //_closeTimer.Interval = TimeSpan.FromSeconds(3);
+            //_closeTimer.Tick += CloseTimer_Tick;
+            //_closeTimer.Start();
         }
 
-        private void CloseTimer_Tick(object sender, EventArgs e)
+        //private void CloseTimer_Tick(object sender, EventArgs e)
+        //{
+        //    _closeTimer.Stop();
+        //    this.Close();
+        //}
+
+        public void CloseByCaller()
         {
-            _closeTimer.Stop();
-            this.Close();
+            Close();
         }
     }
 }

@@ -1,15 +1,10 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
-using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using VcpCore.Common;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Brightness
@@ -31,7 +26,7 @@ namespace DDPM.UI.Module.Brightness
             //vm = BrightnessViewModel.GetInstance();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;                
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
             }
         }
 
@@ -39,7 +34,7 @@ namespace DDPM.UI.Module.Brightness
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;    
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
         }
 
@@ -76,7 +71,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }));
             }
-            if(data != null && data.LockSettings != null)
+            if (data != null && data.LockSettings != null)
             {
                 bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
                 Dispatcher.Invoke(new Action(() =>
@@ -84,11 +79,11 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.Update_SyncLockStatus(isSyncLocked);                        
+                        vm.Update_SyncLockStatus(isSyncLocked);
                         Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
                     }
                 }));
-                
+
                 //apply this lock result to "synchronize between monitors" toggle button
             }
         }
@@ -101,22 +96,28 @@ namespace DDPM.UI.Module.Brightness
 
         private void SynchronizeSwitch_Click(object sender, RoutedEventArgs e)
         {
-            BrightnessViewModel x = (BrightnessViewModel)DataContext;
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
 
             DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if ((bool)SynchronizeSwitch.IsChecked)
             {
-                x.IsSynchronize = true;
+                _vm.IsSynchronize = true;
                 SynchronizeSwitch.Content = Strings.On;
+
+                // Brightness and contrast
+                _vm.BR_Con_Sync();
+
+                // Color
+                _vm.Invoke_ColorPreset_Sync();
             }
             else
             {
-                x.IsSynchronize = false;
+                _vm.IsSynchronize = false;
                 SynchronizeSwitch.Content = Strings.Off;
             }
 
-            setting.UserSettings.IsSynchronizemonitor = x.IsSynchronize;
+            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
@@ -568,7 +569,7 @@ namespace DDPM.UI.Module.Brightness
                 Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
                 Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
             {
-                // Handle 0-9, a-z, A-Z, " ", "-" 
+                // Handle 0-9, a-z, A-Z, " ", "-"
             }
             else
             {

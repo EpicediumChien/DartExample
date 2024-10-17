@@ -4,19 +4,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
+        xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
         mc:Ignorable="d"
-        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
-        Title="LoadingScreenModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
-        InputMethod.IsInputMethodEnabled="False" Height="264" Width="587"
-        WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
+        xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" 
+        Title="LoadingScreenModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
+        InputMethod.IsInputMethodEnabled="False" Height="264" Width="587" WindowStyle="None" 
+        AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <Style x:Key="BorderYes" TargetType="Border">
+            <Setter Property="Background" Value="#0E1C2F" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Width" Value="107" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#F5F6F7" />
+        </Style>
+        <Style x:Key="BorderNo" TargetType="Border">
+            <Setter Property="Background" Value="#0672CB" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Width" Value="107" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Window.Resources>
     <Grid>
-        <TextBlock Width="523" Height="40" VerticalAlignment="Top"
-                   Text="Please wait..." FontFamily="Roboto" FontSize="32"
-                   FontWeight="Light" TextAlignment="Center"
-                   Background="#0D121A" Foreground="White"
-                   Margin="32,20,32,0" />
-        <Image Name="LoadingImage" Width="64" Height="64"
-               HorizontalAlignment="Center" VerticalAlignment="Center"
-               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Loading.png" />
-    </Grid>
+        <Border Background="#E00B172C" CornerRadius="5"
+        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        BorderThickness="1" BorderBrush="#293B4D">
+            <Grid Margin="0,30,0,0">
+                <TextBlock Width="523" Height="40" VerticalAlignment="Top"
+               Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="32"
+               FontWeight="Light" TextAlignment="Center"
+               Background="Transparent" Foreground="White"
+               Margin="32,20,32,0" />
+                <Image Name="LoadingImage" Width="64" Height="64" Margin="0,20,0,0"
+           HorizontalAlignment="Center" VerticalAlignment="Center"
+           Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Loading.png" />
+            </Grid>
+        </Border>
+    </Grid>    
 </Window>

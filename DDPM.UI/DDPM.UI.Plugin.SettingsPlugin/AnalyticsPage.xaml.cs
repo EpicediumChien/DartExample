@@ -100,9 +100,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class AnalyticsPage : UserControl
     {
+        // 10/15 Derek add for RWD
+        private readonly Int16 breakPoints = 537;
+
         public AnalyticsPage()
         {
             InitializeComponent();
+
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                breakPoints = width;
 
             var vm = new AnalyticsViewModel();
             this.DataContext = vm;
@@ -193,6 +199,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 FileName = url,
                 UseShellExecute = true
             });
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.ActualWidth <= breakPoints)
+                url_btn.Width = 220;
+            else
+                url_btn.Width = 250;
         }
     }
 }

@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using System.Drawing.Imaging;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 using VcpCore.Common;
 
@@ -351,16 +352,20 @@ namespace DDPM.UI.Common.Models
                 }
                 else if (MonitorInfo != null)
                 {
-                    //2024-5-24 Robert_Lin, remove the tail number and dash
-                    // "USB-C1" => "USB-C"; "HDMI-1" => "HDMI"
-                    //Rule:
-                    // 1 If tail char is number => remove it
-                    // 2 If tail char is '-' => remove it
-                    string strOut = MonitorInfo.inputSource;
-                    char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-' };
-                    strOut = strOut.TrimEnd(digits);
-                    strOut = strOut.TrimEnd(digits);
-                    strOut = strOut.TrimEnd(digits);
+                    //Robert_Lin, 2024-10-15 Change the Text1 of BatteryIndicator to inputCable.
+                    //The inputCable has been remove unwant - and number, so we should show it directly
+                    string strOut = MonitorInfo.inputCable;
+
+                    ////2024-5-24 Robert_Lin, remove the tail number and dash
+                    //// "USB-C1" => "USB-C"; "HDMI-1" => "HDMI"
+                    ////Rule:
+                    //// 1 If tail char is number => remove it
+                    //// 2 If tail char is '-' => remove it
+                    //string strOut = MonitorInfo.inputSource;
+                    //char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-' };
+                    //strOut = strOut.TrimEnd(digits);
+                    //strOut = strOut.TrimEnd(digits);
+                    //strOut = strOut.TrimEnd(digits);
                     return strOut;
                 }
                 return "";
@@ -535,7 +540,7 @@ namespace DDPM.UI.Common.Models
             }
             //Use LineArt.png instead
             ImageSource? imgLineart = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/Lineart.png", assemblyName);
-            if (imgLineart != null) 
+            if (imgLineart != null)
             {
                 DeviceImage = imgLineart;
                 return;
@@ -617,25 +622,33 @@ namespace DDPM.UI.Common.Models
                 {
                     if (DeviceInfo != null)
                     {
-                        if (ConnectionType == "Dongle")
+                        if (DeviceCategory == eDeviceCategory.Dock)
                         {
-                            ConnectionHoverMode = "IO_Dongle";
-                            RefreshDongleView();
+                            ConnectionHoverMode = "Dock";
+                            SetDockView();
                         }
-                        else if (ConnectionType.Contains("Bluetooth")) //Audio will be "BluetoothAudio"
+                        else
                         {
-                            ConnectionHoverMode = "IO_BLE";
-                            if (DeviceCategory == eDeviceCategory.KB)
-                                SetBLConnectionStatus_Keyboard();
-                            else if (DeviceCategory == eDeviceCategory.Mouse)
-                                SetBLConnectionStatus_Mouse();
-                            else if (DeviceCategory == eDeviceCategory.Headset)
+                            if (ConnectionType == "Dongle")
                             {
-                                ConnectionHoverMode = "Audio_BLE";
-                                SetBLConnectionStatus_Audio();
+                                ConnectionHoverMode = "IO_Dongle";
+                                RefreshDongleView();
                             }
-                            else
-                                SetBLConnectionStatus_IO();
+                            else if (ConnectionType.Contains("Bluetooth")) //Audio will be "BluetoothAudio"
+                            {
+                                ConnectionHoverMode = "IO_BLE";
+                                if (DeviceCategory == eDeviceCategory.KB)
+                                    SetBLConnectionStatus_Keyboard();
+                                else if (DeviceCategory == eDeviceCategory.Mouse)
+                                    SetBLConnectionStatus_Mouse();
+                                else if (DeviceCategory == eDeviceCategory.Headset)
+                                {
+                                    ConnectionHoverMode = "Audio_BLE";
+                                    SetBLConnectionStatus_Audio();
+                                }
+                                else
+                                    SetBLConnectionStatus_IO();
+                            }
                         }
                     }
                 }
@@ -674,6 +687,13 @@ namespace DDPM.UI.Common.Models
 
             //DongleSlot = "4 of 6 slots available"
             DongleSlot = $"{DeviceInfo.MaxPairingSlots - DeviceInfo.PairedDeviceCount} of {DeviceInfo.MaxPairingSlots} slots available";
+        }
+        private void SetDockView()
+        {
+            if (DeviceInfo == null)
+                return;
+            var fv = Regex.Replace(DeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
+            Dokc_FirmwareVersion = $"Dock {Strings.FirmwareVersion} {fv}";
         }
         /// <summary>
         /// "USB Wireless Receiver"
@@ -1023,6 +1043,12 @@ namespace DDPM.UI.Common.Models
         {
             get => _audioBleText;
             set => SetProperty(ref _audioBleText, value);
+        }
+        private string _dokc_FirmwareVersion;
+        public string Dokc_FirmwareVersion
+        {
+            get => _dokc_FirmwareVersion;
+            set => SetProperty(ref _dokc_FirmwareVersion, value);
         }
         #endregion Connection Hover View
 

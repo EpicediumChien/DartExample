@@ -2055,4 +2055,88 @@
   <data name="Camera.13" xml:space="preserve">
     <value>Not all features are available while adding a preset</value>
   </data>
+  <data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>Controls the amount of external sound you hear</value>
+  </data>
+  <data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>Eliminates surrounding noise</value>
+  </data>
+  <data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>Allows ambient sound to be heard. Adjusts the volume level of ambient sound heard.</value>
+  </data>
+  <data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>Turns off Noise Cancellation features</value>
+  </data>
+  <data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>Limits your near-end mic noise to create a better audio experience for others</value>
+  </data>
+  <data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>Limits far-end mic noise to create a better audio experience for you</value>
+  </data>
+  <data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>Equalizer adjusts based on chosen preset</value>
+  </data>
+  <data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>Adjusts how much you can hear your own voice while speaking on a call. (Not available in Transparency mode)</value>
+  </data>
+  <data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>Removes background noise to allow your voice to be heard clearly</value>
+  </data>
+  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>Automatic actions when you remove your headset</value>
+  </data>
+  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>Pauses music automatically when headset is removed. Music will resume automatically when headset is put on.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>Mutes microphone automatically when headset is removed</value>
+  </data>
+  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>Pull down boom mic to answer calls</value>
+  </data>
+  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>Automatic actions when you move an ear cup off your ear</value>
+  </data>
+  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>Indicator light when on a call</value>
+  </data>
+  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>Audio prompts and announcements for device features</value>
+  </data>
+  <data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>Removes background noise to allow your voice to be heard clearly</value>
+  </data>
+  <data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>Plays a sound when the device goes on mute</value>
+  </data>
+  <data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>Plays a sound when the volume level is adjusted</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>Settings changed. Dell Display and Peripheral Manager will restart.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>Application settings exported successfully</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>Application settings applied to %1 successfully. Enjoy using your monitor.</value>
+  </data>
+  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync?</value>
+  </data>
+  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>e associated with the current layout. Do you want to overwrite it?</value>
+  </data>
+  <data name="RestartNeeded" xml:space="preserve">
+    <value>Restart needed</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
 </root>

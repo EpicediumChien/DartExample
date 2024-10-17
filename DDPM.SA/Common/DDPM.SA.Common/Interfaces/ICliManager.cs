@@ -32,6 +32,7 @@ namespace DDPM.SA.Common
         fail_FormantError = 102,
         fail_NotSupport = 103,
         fail_Value = 104, //Jason add
+        fail_SWUpdate = 105, //Jerry add
         fail_option_missing,
         fail_option_name,
         fail_option_value,

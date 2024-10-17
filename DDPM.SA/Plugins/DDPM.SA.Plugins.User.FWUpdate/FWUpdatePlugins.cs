@@ -394,14 +394,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     if (deviceTypeList == null)
                     {
-                        string thumbprint = "";
+                        List<string> thumbprint_List = new List<string>();
                         if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
                         {
                             foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
                             {
                                 if (s.Length >= 10)
                                 {
-                                    thumbprint = s;
+                                    thumbprint_List.Add(s);
                                     break;
                                 }
                             }
@@ -420,7 +420,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceId = updateHelper.UpdateItems[i].DeviceId,
                             DevicePath = updateHelper.UpdateItems[i].DevicePath,
                             //SHA512 = updateHelper.UpdateItems[i].SHA512,
-                            Thumbprint = thumbprint,
+                            Thumbprint = "",
+                            Thumbprint_List = thumbprint_List,
                             IsUOD = (isUODMode &&
                             (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                             updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
@@ -432,14 +433,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
                         {
-                            string thumbprint = "";
+                            List<string> thumbprint_List = new List<string>();
                             if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint))
                             {
                                 foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
                                 {
                                     if (s.Length >= 10)
                                     {
-                                        thumbprint = s;
+                                        thumbprint_List.Add(s);
                                         break;
                                     }
                                 }
@@ -458,7 +459,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
                                 //SHA512 = updateHelper.UpdateItems[i].SHA512,
-                                Thumbprint = thumbprint,
+                                Thumbprint = "",
+                                Thumbprint_List = thumbprint_List,
                                 IsUOD = (isUODMode &&
                                 (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                 updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
@@ -486,6 +488,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                         //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
                         Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
+                        Thumbprint_List = new List<string>(),
+                        ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
                         IsUOD = false
                     };
                     _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -541,6 +545,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     delayFUpdateInfo.SHA256 = fwUpdateInfo.SHA256;
                                     //delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
                                     delayFUpdateInfo.Thumbprint = fwUpdateInfo.Thumbprint;
+                                    delayFUpdateInfo.Thumbprint_List = fwUpdateInfo.Thumbprint_List;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
                                     {
@@ -742,11 +747,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        public Task<FWUErrorCode> Install(string installPath)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay)
         {
             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
             {
-                InstallPaths = installPath
+                InstallPaths = installPath,
+                IsDisplay = isOnlyDisplay
             };
             return Task.FromResult(Install(fWUpdateInfo));
         }
@@ -1008,6 +1014,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             newFWUpdateInfo.SHA256 = "";
                             //newFWUpdateInfo.SHA512 = "";
                             newFWUpdateInfo.Thumbprint = "";
+                            if (newFWUpdateInfo.Thumbprint_List == null)
+                            {
+                                newFWUpdateInfo.Thumbprint_List = new List<string>();
+                            }
+                            else
+                            {
+                                newFWUpdateInfo.Thumbprint_List.Clear();
+                            }
                             _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(newFWUpdateInfo);
                         }
                     }
@@ -1023,6 +1037,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         newFWUpdateInfo.SHA256 = "";
                         //newFWUpdateInfo.SHA512 = "";
                         newFWUpdateInfo.Thumbprint = "";
+                        if (newFWUpdateInfo.Thumbprint_List == null)
+                        {
+                            newFWUpdateInfo.Thumbprint_List = new List<string>();
+                        }
+                        else
+                        {
+                            newFWUpdateInfo.Thumbprint_List.Clear();
+                        }
                     }
                     _DelayFWUpdateInfoPackage.DelayTimesAvailable = 2;
                     _DelayFWUpdateInfoPackage.SaveTime = DateTime.Now;
@@ -1187,7 +1209,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _clientProcess.StartInfo.Arguments = arguments;
                             _clientProcess.Start();
                             _clientProcess.WaitForExit();
-                            exitCode = _clientProcess.ExitCode;
+                            if (fwUpdateInfo.IsDisplay && _clientProcess != null)
+                            {
+                                exitCode = _clientProcess.ExitCode;
+                            }
                         }
                     });
                 }
@@ -1218,7 +1243,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+                    if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
                     {
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
@@ -1351,7 +1376,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 sendMessageToEvent(fWUpdateInfo);
             }
             _timeOutCount--;
-            if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+            if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
             {
                 resetState();
             }
@@ -1702,15 +1727,33 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
                             CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                            if (_fWUpdateInfo.Thumbprint_List != null && _fWUpdateInfo.Thumbprint_List.Count > 0)
                             {
-                                ret = true;
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                                if (certificateCheck.CheckFile_Thumbprint_List(exeFilePath, _fWUpdateInfo.Thumbprint_List, out FileCAInfo))
+                                {
+                                    ret = true;
+                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint list done.");
+                                }
+                                else
+                                {
+                                    ret = true;//Wait IL R14 force true
+                                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint list fail. Ex: {FileCAInfo}");
+                                }
                             }
                             else
                             {
-                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                                if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
+                                {
+                                    ret = true;
+                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
+                                }
+                                else
+                                {
+                                    ret = true;//Wait IL R14 force true
+                                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
+                                }
                             }
                         }
                     }
@@ -1737,7 +1780,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                             else
                             {
-                                ret = true;//Wait IL R14 force true
+                                ret = true;
                                 _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
                             }

@@ -17,7 +17,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Border Style="{StaticResource SplitCtrl_OutterBorder}" />
+        <Border Style="{StaticResource SplitCtrl_OutterBorder}"/>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />

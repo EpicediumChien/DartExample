@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -110,7 +110,7 @@
                                                             Foreground="#F5F6F7" FontSize="16" LineHeight="28"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption"
                                                             IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
-                                                            HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                            TextWrapping="WrapWithOverflow" />
                                     <Grid Grid.Row="1" Margin="16,0" IsEnabled="{Binding PowerNap_Enable}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -177,7 +177,6 @@
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [DisplayOthers.6], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption"
-                                                            HorizontalAlignment="Left" VerticalAlignment="Center"
                                                             FontSize="20" LineHeight="28" />
                                     <Grid Grid.Column="1" Margin="8,0"
                                           HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">
