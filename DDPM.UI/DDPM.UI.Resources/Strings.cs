@@ -557,17 +557,5 @@ namespace DDPM.UI.Common
         public static readonly string SpeakerToolTip_1 = GetString("SpeakerToolTip.0");
         public static readonly string SpeakerToolTip_2 = GetString("SpeakerToolTip.1");
         public static readonly string SpeakerToolTip_3 = GetString("SpeakerToolTip.2");
-        
-        //Import/Export
-        public static readonly string ImpExp_Success = GetString("Success");
-        public static readonly string ImpExp_Warning = GetString("Warning");
-        public static readonly string ImpExp_Continue = GetString("Continue");
-        public static readonly string ImpExp_Cancel = GetString("Cancel");
-        public static readonly string ImpExp_Restart = GetString("RestartNeeded");
-        public static readonly string ImpExp_RestartMsg0 = GetString("ImpExp_RestartMsg.0");
-        public static readonly string ImpExp_SuccessMsg0 = GetString("ImpExp_SuccessMsg.0");
-        public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
-        public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
-        public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
     }
 }
