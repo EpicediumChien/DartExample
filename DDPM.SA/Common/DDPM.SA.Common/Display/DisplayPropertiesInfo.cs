@@ -263,11 +263,16 @@ namespace DDPM.SA.Common
         /// 螢幕可支援的解析度刷新率、方向列表(含現在值、建議值)
         /// </summary>
         public Properties CurrentProperties;
+        /// <summary>
+        /// USB-C Prioritization狀態
+        /// </summary>
+        public USBCPrioritizationType USBCPrioritizationType;
 
         public DisplayCurrentPropertiesInfo()
         {
             CurrentOrientation = DisplayOrientation.Unknow;
             CurrentProperties = new Properties();
+            USBCPrioritizationType = USBCPrioritizationType.Unknow;
         }
     }
 }
