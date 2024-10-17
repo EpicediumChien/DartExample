@@ -162,6 +162,28 @@ namespace DDPM.SA.Plugins.SettingsManager
             return Task.FromResult(_settings);
         }
 
+        public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam)
+        {
+            if(globalSettingParam == null)
+            {
+                WriteLog($"WriteGlobalSettingsToITConfig: null data, failed");
+                return Task.FromResult(false);
+            }
+            if(_settings == null || _settings.global_setting == null)
+            {
+                WriteLog($"WriteGlobalSettingsToITConfig: null cache, failed");
+                return Task.FromResult(false);
+            }
+            _settings.global_setting = globalSettingParam;
+            string info = string.Empty;
+            bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_settings).ToString(), _settings_path, out info);
+            if(!result)
+            {
+                WriteLog($"WriteGlobalSettingsToITConfig: write failed, reasion: {info}");
+            }
+            return Task.FromResult(result);
+        }
+
         /// <summary>
         /// Write IT feature to config file
         /// </summary>

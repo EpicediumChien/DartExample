@@ -40,5 +40,10 @@ namespace DDPM.UI.Module.Kvm
         {
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //splitGrid.ActualWidth
+        }
     }
 }

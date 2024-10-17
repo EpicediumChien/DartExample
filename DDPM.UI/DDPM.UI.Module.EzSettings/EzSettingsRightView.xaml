@@ -31,7 +31,7 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Style="{StaticResource RightGroupBorderStyle}">
+            <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
                 <Grid>
                     <StackPanel>
                         <!-- Row 0: Hotkey: Recent -->

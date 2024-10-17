@@ -7,7 +7,9 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="#FF0D121A"
-             d:DesignHeight="671" d:DesignWidth="1378">
+             d:DesignHeight="671" d:DesignWidth="1378"
+             SizeChanged="UserControl_SizeChanged">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,7 +32,7 @@
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel>
-            <Grid Margin="24">
+            <Grid Margin="24" x:Name="splitGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="552" />
                     <ColumnDefinition Width="Auto" />

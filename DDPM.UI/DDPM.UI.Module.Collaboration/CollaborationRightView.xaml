@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance Type=plugin:KeyboardViewModel}"
              mc:Ignorable="d"
              Unloaded="UserControl_Unloaded"
-             d:DesignHeight="647" d:DesignWidth="520" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="647" d:DesignWidth="520">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

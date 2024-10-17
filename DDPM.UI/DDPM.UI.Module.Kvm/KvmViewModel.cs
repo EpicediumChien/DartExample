@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.IO;
 using VcpCore.Common;
 using Windows.System;
 
@@ -585,7 +586,13 @@ namespace DDPM.UI.Module.Kvm
                     e.Result = "MonitorInfo is null";
                     return;
                 }
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result)
+
+                var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
+                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
                 {
                     SupportNKVM = Visibility.Visible;
                 }

@@ -1,19 +1,10 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
-using DDPM.UI.Common.Models;
-using Newtonsoft.Json;
-using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using VcpCore.Common;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Brightness
@@ -35,7 +26,7 @@ namespace DDPM.UI.Module.Brightness
             //vm = BrightnessViewModel.GetInstance();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;                
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
             }
         }
 
@@ -43,7 +34,7 @@ namespace DDPM.UI.Module.Brightness
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;    
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
         }
 
@@ -80,7 +71,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }));
             }
-            if(data != null && data.LockSettings != null)
+            if (data != null && data.LockSettings != null)
             {
                 bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
                 Dispatcher.Invoke(new Action(() =>
@@ -88,11 +79,11 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.Update_SyncLockStatus(isSyncLocked);                        
+                        vm.Update_SyncLockStatus(isSyncLocked);
                         Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
                     }
                 }));
-                
+
                 //apply this lock result to "synchronize between monitors" toggle button
             }
         }
@@ -105,29 +96,28 @@ namespace DDPM.UI.Module.Brightness
 
         private void SynchronizeSwitch_Click(object sender, RoutedEventArgs e)
         {
-            BrightnessViewModel x = (BrightnessViewModel)DataContext;
+            BrightnessViewModel _vm = (BrightnessViewModel)DataContext;
 
             DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if ((bool)SynchronizeSwitch.IsChecked)
             {
-                x.IsSynchronize = true;
+                _vm.IsSynchronize = true;
                 SynchronizeSwitch.Content = Strings.On;
 
                 // Brightness and contrast
-                x.Set_Contrast_Value(x.ContrastValue);
-                x.Set_Brightness_Value(x.BrightnessValue);
+                _vm.BR_Con_Sync();
 
                 // Color
-                Invoke_ColorPreset_Sync();             
+                _vm.Invoke_ColorPreset_Sync();
             }
             else
             {
-                x.IsSynchronize = false;
+                _vm.IsSynchronize = false;
                 SynchronizeSwitch.Content = Strings.Off;
             }
 
-            setting.UserSettings.IsSynchronizemonitor = x.IsSynchronize;
+            setting.UserSettings.IsSynchronizemonitor = _vm.IsSynchronize;
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
@@ -579,7 +569,7 @@ namespace DDPM.UI.Module.Brightness
                 Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
                 Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
             {
-                // Handle 0-9, a-z, A-Z, " ", "-" 
+                // Handle 0-9, a-z, A-Z, " ", "-"
             }
             else
             {
@@ -604,92 +594,5 @@ namespace DDPM.UI.Module.Brightness
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
         }
-
-        public void Invoke_ColorPreset_Sync()
-        {
-            BackgroundWorker bw_ColorPreset_Sync = new BackgroundWorker()
-            {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
-            };
-            bw_ColorPreset_Sync.DoWork += DoWork_ColorPreset_Sync;
-            bw_ColorPreset_Sync.RunWorkerCompleted += RunWorkerCompleted_ColorPreset_Sync;
-            //Log?.Info("RunWorkerCompleted_DownloadICCData start...");
-            //IsBusy = true;
-            bw_ColorPreset_Sync.RunWorkerAsync();
-        }
-
-        private void DoWork_ColorPreset_Sync(object sender, DoWorkEventArgs e)
-        {
-            try
-            {
-                DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo);
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
-                string strSync_CurrentColorPreset = string.Empty;
-                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-
-                Task.Run(() =>
-                {
-                    foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
-                    {
-                        if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, false);
-                    }
-
-                });
-
-                /*
-                Dispatcher.Invoke(new Action(() =>
-                {
-                  
-
-                }));   
-                */
-
-            }
-            catch (System.Exception)
-            {
-            }
-        }
-
-        private void RunWorkerCompleted_ColorPreset_Sync(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //Handling the result and final process
-
-            //IsBusy = false;
-
-            //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
-            if (e.Cancelled)
-            {
-                //Log?.Info("** ColorPreset_Sync is cancelled.");
-                return;
-            }
-            if (e.Error != null)
-            {
-                //The message is e.Error.Message
-                //Log?.Info($"** ColorPreset_Sync stopped by an exception: {e.Error.Message}");
-                return;
-            }
-            //
-            if (e.Result == null)
-            {
-                //In case that you never set value to e-Result
-                //Log?.Info("** ColorPreset_Sync abnormal stopped unknown reason.");
-            }
-            else
-            {
-                //Log?.Info($"** DownloadICCData result: {e.Result}");
-
-                if (e.Result == "OK")
-                {
-                    //Result is passed.
-                }
-                else
-                {
-                    //Result is failed.
-                }
-            }
-        }
-
     }
 }

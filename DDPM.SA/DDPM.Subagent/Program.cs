@@ -124,7 +124,7 @@ namespace DDPM.Subagent
                 LogDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.Subagent")
 #if RELEASE
                 ,
-                ValidCertificateHashes = ThumbprintHash_CICD.certificateHash
+                ValidCertificateHashes = ThumbprintHash.certificateHash
 #endif
             };
 
