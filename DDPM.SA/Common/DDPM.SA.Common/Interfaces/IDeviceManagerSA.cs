@@ -804,6 +804,31 @@ namespace DDPM.SA.Common
 
         #endregion Webcam
 
+
+
+        #region Headset
+        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Wires Audio
+
+        Task<int> GetBassAsync(string guid);
+        Task SetBassAsync(string guid, int newValue);
+        Task<int> GetMidRangeAsync(string guid);
+        Task SetMidRangeAsync(string guid, int newValue);
+        Task<int> GetTrebleAsync(string guid);
+        Task SetTrebleAsync(string guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
+        Task<bool> GetIsWiredAudioIMicNSEnableValue(string itemID);
+        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
+        Task SetResetToDefaultValue(string itemID, bool newValue);
+
+        #endregion
+
         #endregion public for DTPProxy
 
         #region OSD

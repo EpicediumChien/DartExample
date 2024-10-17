@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.SpeakerAudioPreset;
@@ -6,6 +7,7 @@ using DDPM.UI.Module.SpeakerAudioSettings;
 using DDPM.UI.Module.SpeakerInteractions;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
@@ -270,7 +272,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             bool? dialogResult = restoreModalDialog.ShowDialog();
             if (dialogResult == true)
             {
-                //MessageBox.Show("OK button was clicked");
+                _vm!.RestoreToDefault();
+                //((Border)sender).Visibility = Visibility.Collapsed;
             }
         }
 

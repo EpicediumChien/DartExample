@@ -327,6 +327,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             bool? dialogResult = restoreModalDialog.ShowDialog();
             if (dialogResult == true)
             {
+                _vm!.RestoreToDefault();
                 //MessageBox.Show("OK button was clicked");
             }
         }
