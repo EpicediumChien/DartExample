@@ -166,51 +166,49 @@ namespace DDPM.UI.Module.EzArrange
 
             //B Load CustomList from settings file
             //
-            if (eaSettings != null)
+            SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+            if (customList != null)
             {
-                if (eaSettings.CustomList != null)
+                //Add saved custom list to custom list view
+                foreach (SplitJson spj in customList)
                 {
-                    //Add saved custom list to custom list view
-                    foreach (SplitJson spj in eaSettings.CustomList)
+                    //Validate settings
+                    //1 CustomId must > 0
+                    if (spj.CustomId == 0)
                     {
-                        //Validate settings
-                        //1 CustomId must > 0
-                        if (spj.CustomId == 0)
-                        {
-                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                            continue;
-                        }
-                        //2 CustomName cannot be empty
-                        if (String.IsNullOrWhiteSpace(spj.CustomName))
-                        {
-                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
-                            continue;
-                        }
-                        //3 CustomName length
-                        if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
-                        {
-                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
-                            continue;
-                        }
+                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                        continue;
+                    }
+                    //2 CustomName cannot be empty
+                    if (String.IsNullOrWhiteSpace(spj.CustomName))
+                    {
+                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
+                        continue;
+                    }
+                    //3 CustomName length
+                    if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                    {
+                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
+                        continue;
+                    }
 
-                        ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                        if (spCtrl == null)
-                            continue;
-                        spCtrl.Settings = new List<double>(spj.Settings);
-                        spCtrl.SplitMode = eSplitModes.Icon;
-                        spCtrl.FriendlyName = spj.CustomName;
+                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                    if (spCtrl == null)
+                        continue;
+                    spCtrl.Settings = new List<double>(spj.Settings);
+                    spCtrl.SplitMode = eSplitModes.Icon;
+                    spCtrl.FriendlyName = spj.CustomName;
 
-                        SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
-                        itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-                        itemCustom.CustomId = (int)spj.CustomId;
+                    SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
+                    itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+                    itemCustom.CustomId = (int)spj.CustomId;
 
-                        //Robert_Lin, 2024-10-4 add max items check
-                        if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
-                            break;
+                    //Robert_Lin, 2024-10-4 add max items check
+                    if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
+                        break;
 
-                    } //(SplitJson spj in eaSettings.CustomList)
-                }
-            } //if (eaSettings != null)
+                } //foreach (SplitJson spj in customList)
+            } //if (customList != null)
 
             //C Load & Build Recent List
             //
@@ -591,7 +589,15 @@ namespace DDPM.UI.Module.EzArrange
                         Settings = spCtrl.Settings
 
                     };
-
+                    args.SplitJson = new SplitJson()
+                    {
+                        CellCount = spCtrl.CellCount,
+                        SplitKey = spCtrl.SplitKey,
+                        CustomId = spItem.CustomId,
+                        CustomName = friendlyNameList[selectedIndex],
+                        Settings = new List<double>(spCtrl.Settings),
+                        Cells = GetCellsFromISplitCtrl(spCtrl)
+                    };
                     //If editing SplitItem is NOT a Pre-defined layout (edit from CustomList)
                     if (spItem.CustomId != 0)
                     {
@@ -612,6 +618,22 @@ namespace DDPM.UI.Module.EzArrange
 #endif
                 }
             }
+        }
+
+        private CellJson[] GetCellsFromISplitCtrl(ISplitCtrl splitCtrl)
+        {
+            List<CellJson> cellList = new List<CellJson>();
+            foreach (CellObj objCell in splitCtrl.CellList)
+            {
+                CellJson cellJson = new CellJson();
+                cellJson.Name = objCell.Name;
+                cellJson.x = objCell.rcRatio.Left;
+                cellJson.y = objCell.rcRatio.Top;
+                cellJson.w = objCell.rcRatio.Width;
+                cellJson.h = objCell.rcRatio.Height;
+                cellList.Add(cellJson);
+            }
+            return cellList.ToArray();
         }
 
         //DDPM.SA.EAPlugin notify us the result of our previous EditCommand request.
@@ -772,7 +794,7 @@ namespace DDPM.UI.Module.EzArrange
 
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
                 _vm.SetWorkSplit(e.CellCount, e.SplitKey, e.Settings);
-                SaveEaSettings();
+                SaveEaSettings(true);
 
             }));
         }
@@ -829,20 +851,16 @@ namespace DDPM.UI.Module.EzArrange
                 _vm.SelectedSplitItem = item0A;
                 _vm.SetWorkSplit(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey, _vm.SelectedSplitItem.Settings);
             }
-            SaveEaSettings();
+            SaveEaSettings(true);
         }
         #endregion Delete Custom Layout item
 
         #region Settings File
-        private bool SaveEaSettings()
+        private bool SaveEaSettings(bool includeCustomList=false)
         {
+            //Save MonitorSettings: Selected, RecentList
             EAMonitorSettings eaSettings = new EAMonitorSettings();
             eaSettings.SelectedSplit = _vm.SelectedSplitItem.ToSplitJson;
-            eaSettings.CustomList = new List<SA.Common.Display.SplitJson>();
-            foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
-            {
-                eaSettings.CustomList.Add(itemCustom.ToSplitJson);
-            }
 
             List<SplitJson> recentList = new List<SplitJson>();
             foreach (SplitItem itemRecent in splitListView_Recent.SplitList.Skip(1))
@@ -855,6 +873,17 @@ namespace DDPM.UI.Module.EzArrange
             if (_deviceManagerSA != null)
             {
                 res = _deviceManagerSA.WriteEAMonitorSettings(_homeDevice.MonitorInfo, eaSettings).Result;
+            }
+
+            //Save UserSettings: CustomList
+            if (includeCustomList)
+            {
+                List<SplitJson> customList = new List<SplitJson>();
+                foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
+                {
+                    customList.Add(itemCustom.ToSplitJson);
+                }
+                res &= _deviceManagerSA.WriteEACustomList(customList.ToArray()).Result;
             }
             return res;
         }

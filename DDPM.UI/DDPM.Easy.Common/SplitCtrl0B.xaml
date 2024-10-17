@@ -29,6 +29,10 @@
                     <Trigger Property="Tag" Value="H">
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
                     </Trigger>
+                    <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                        <Setter Property="BorderThickness" Value="1.5"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
+                    </DataTrigger>
                 </Style.Triggers>
             </Style>
 

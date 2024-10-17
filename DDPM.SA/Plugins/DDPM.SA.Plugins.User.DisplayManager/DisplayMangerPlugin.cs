@@ -99,8 +99,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ["1001"] = "USB-C2",
             ["1010"] = "USB-C3",
             ["1011"] = "USB-C4",
-            ["1100"] = "Thunderbolt-1",
-            ["1101"] = "Thunderbolt-2"
+            ["1100"] = "Thunderbolt1",
+            ["1101"] = "Thunderbolt2"
         };
 
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
@@ -422,6 +422,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo)
         {
+            InputTypeString inputTypeString = new InputTypeString();
             ObjGetVCP objGetVCPEE = new ObjGetVCP();
             usbUpstreamList = new List<string>()
                 /*{ "Thunderbolt", "USB-C" }*/;
@@ -447,6 +448,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 _usbUpstreamList.Add(outUSB);
                             }
                         }
+                        _usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                     USBUpstream.Clear();
                     string str = string.Empty;
@@ -499,12 +501,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         usbUpstreamList.Add(_usbUpstreamList[3]);
                                     }
                                 }
+                                //usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
                             }
                         }
                     }
                     catch
                     {
                         usbUpstreamList = _usbUpstreamList;
+                        //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                 }
             }
@@ -3457,6 +3461,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     string szInfo = string.Empty;
                     string jsonString = string.Empty;
                     _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
+                    Debug.WriteLine(jsonContent);
                     jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
                     if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
                     {
@@ -3519,7 +3524,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             break;
                                         }
                                     }
-                                    if (newVersion > oldVersion)
+                                    if (newVersion >= oldVersion)
                                     {
                                         ret.Firmwares.Add(firmwares_item);
                                     }

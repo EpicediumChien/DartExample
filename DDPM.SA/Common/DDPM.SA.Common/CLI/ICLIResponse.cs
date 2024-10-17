@@ -308,7 +308,21 @@ namespace DDPM.SA.Common
             this.Model = cli_RESPONSE.Model;
         }
     }
+    public class CLI_SWU_RESPONSE : CLI_RESPONSE
+    {
+        public List<string> SWUpdateRESPONSE { get; set; }
 
+        public CLI_SWU_RESPONSE(CLI_RESPONSE cli_RESPONSE)
+        {
+            SWUpdateRESPONSE = new List<string>();
+            this.Index = cli_RESPONSE.Index;
+            this.ServiceTag = cli_RESPONSE.ServiceTag;
+            this.Command = cli_RESPONSE.Command;
+            this.TargetFeature = cli_RESPONSE.TargetFeature;
+            this.SerialNumber = cli_RESPONSE.SerialNumber;
+            this.Model = cli_RESPONSE.Model;
+        }
+    }
     public class CLI_Set_Input_RESPONSE : CLI_RESPONSE
     {
         public string Set_ActiveInputSource { get; set; }

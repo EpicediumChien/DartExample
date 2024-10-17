@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
