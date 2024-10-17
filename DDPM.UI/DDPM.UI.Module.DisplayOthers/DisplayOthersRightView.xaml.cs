@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -164,7 +165,14 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 vm.ImportExportResult += ImportExportNotify;
             }
-            vm.ImportSettings();
+            
+            if (vm.ImportSettings())
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    LoadingWindow();
+                }));
+            }
         }
 
         private void export_Click(object sender, RoutedEventArgs e)
@@ -174,11 +182,14 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 vm.ImportExportResult += ImportExportNotify;
             }
-            vm.ExportSettings();            
-            Dispatcher.Invoke(new Action(() =>
+
+            if (vm.ExportSettings())
             {
-                LoadingWindow();
-            }));
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    LoadingWindow();
+                }));
+            }
         }
 
         private void LoadingWindow()
@@ -232,30 +243,48 @@ namespace DDPM.UI.Module.DisplayOthers
             switch(e)
             {
                 case "close_loading":
-                    if(_dlg_loading != null)
+                    Dispatcher.Invoke(new Action(() =>
                     {
-                        _dlg_loading.CloseByCaller();
-                        _dlg_loading = null;
-                    }
+                        if (_dlg_loading != null)
+                        {
+                            _dlg_loading.CloseByCaller();
+                            _dlg_loading = null;
+                        }
+                    })); 
                     break;
                 case "result_success":
-                    DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
+                    }));
                     break;
                 case "result_success_model":
-                    string temp = Strings.ImpExp_SuccessMsg1;
-                    temp = temp.Replace("%1", model);
-                    DisplayMsgBox(Strings.ImpExp_Success, temp);
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        string temp = Strings.ImpExp_SuccessMsg1;
+                        temp = temp.Replace("%1", model);
+                        DisplayMsgBox(Strings.ImpExp_Success, temp);
+                    }));
                     break;
                 case "restart":
-                    DisplayMsgBox(Strings.ImpExp_Restart, Strings.ImpExp_RestartMsg0);
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        DisplayMsgBox(Strings.ImpExp_Restart, Strings.ImpExp_RestartMsg0);
+                    }));
                     //re-open application ?
                     break;
                 case "Warning1":
-                    bool? rst1 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg0, Strings.ImpExp_Continue, Strings.Cancel);
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        bool? rst1 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg0, Strings.ImpExp_Continue, Strings.Cancel);
+                    }));
                     //handle true(Continue) false(Cancel)
                     break;
                 case "Warning2":
-                    bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg1, Strings.Yes, Strings.No);
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg1, Strings.Yes, Strings.No);
+                    }));
                     //handle true(Yes) false(No)
                     break;
                 default:
