@@ -1411,35 +1411,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (monitorSetting.Input.strInputSourceList != null && monitorSetting.Input.strInputSourceList != string.Empty)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
-                                foreach (var input in inputSourcelist)
+                                if (inputSourcelist != null)
                                 {
-                                    //Maybe Migration...
-                                    if (input.Value.USBUpstream == string.Empty)
+                                    if (inputSourcelist.Count != 0)
                                     {
-                                        readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                        break;
-                                    }
-                                }
-                                if (readinputlist != null)
-                                {
-                                    if (readinputlist.Count != 0)
-                                    {
-                                        foreach (var input in readinputlist)
+                                        foreach (var input in inputSourcelist)
                                         {
-                                            foreach (var input2 in inputSourcelist)
+                                            //Maybe Migration...
+                                            if (input.Value.USBUpstream == string.Empty)
                                             {
-                                                if (input.Value.Code == input2.Value.Code)
+                                                readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                                if (readinputlist != null)
                                                 {
-                                                    input.Value.InputName = input2.Value.InputName;
-                                                    break;
+                                                    if (readinputlist.Count != 0)
+                                                    {
+                                                        foreach (var readinput in readinputlist)
+                                                        {
+                                                            foreach (var input2 in inputSourcelist)
+                                                            {
+                                                                if (readinput.Value.Code == input2.Value.Code)
+                                                                {
+                                                                    readinput.Value.InputName = input2.Value.InputName;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                                        return Task.FromResult(readinputlist);
+                                                    }
                                                 }
+                                                break;
                                             }
                                         }
-                                        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
-                                        return Task.FromResult(readinputlist);
+                                        return Task.FromResult(inputSourcelist);
                                     }
                                 }
-                                return Task.FromResult(inputSourcelist);
                             }
                         }
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
@@ -2957,18 +2963,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
                                 {
                                     USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-                                    if (USBKVMPCsList == null)
+                                    if (USBKVMPCsList != null)
                                     {
-                                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                    }
-                                    else
-                                    {
-                                        foreach (var pc in USBKVMPCsList)
+                                        if (USBKVMPCsList.Count != 0)
                                         {
-                                            if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                            foreach (var pc in USBKVMPCsList)
                                             {
-                                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                                break;
+                                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                                {
+                                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
