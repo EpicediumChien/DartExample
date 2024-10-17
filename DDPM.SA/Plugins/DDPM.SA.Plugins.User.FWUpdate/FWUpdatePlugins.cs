@@ -743,11 +743,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        public Task<FWUErrorCode> Install(string installPath)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay)
         {
             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
             {
-                InstallPaths = installPath
+                InstallPaths = installPath,
+                IsDisplay = isOnlyDisplay
             };
             return Task.FromResult(Install(fWUpdateInfo));
         }
