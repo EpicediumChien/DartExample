@@ -542,6 +542,7 @@ namespace DDPM.UI.Common
         public static readonly string Continue = "Continue";
         public static readonly string Imcompatible = "This device is not compatible with";
         public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
-
+        public static readonly string PairYourPen = "Pair your pen";
+        public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
     }
 }

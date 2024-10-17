@@ -258,6 +258,19 @@ namespace DDPM.UI.Plugin.ViewModels
         public string AlertText { get; set; } = "";
         public Visibility AlertVisibility { get; set; } = Visibility.Collapsed;
 
+        public void CheckPandora(List<DeviceInfo> DeviceInfos)
+        {
+            foreach (var info in DeviceInfos)
+            {
+                if (info.ModelNumber == "PN5122W")
+                {
+                    IsPandoraPaired = true;
+                    return;
+                }
+            }
+            IsPandoraPaired = false;
+        }
+
         public void PrepareDongleInfo(List<DongleInfo> dongleInfos)
         {
             DongleInfos.Clear();
@@ -341,10 +354,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 CurrentDongle = AudioDongleInfos.Values.First();
                 StartPairing(CurrentDongle.ID);
             }
-            if (DeviceBarSelectedIndex == 3 && RightViewHeaderSelectedIndex == 1)
-            {
-                StartPairingPen();
-            }
+            //if (DeviceBarSelectedIndex == 3 && RightViewHeaderSelectedIndex == 1)
+            //{
+            //    StartPairingPen();
+            //}
         }
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -416,9 +429,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void StartPairingPen()
         {
-            //DdpmCommonHelper.DeviceManagerSA!.StartPairingPen();
             DdpmCommonHelper.DeviceManagerSA!.PairingPen();
-            IsPairing = true;
         }
 
         public void StopPairing()
