@@ -43,6 +43,7 @@ namespace DDPM.UI.Common
 
         //DdpmHomePlugin will set this value
         public static IConsole? MyConsole { get; set; }
+        public static IShowPluginManager? MyShowPluginManager { get; set; }
 
         public static IDeviceManagerSA? DeviceManagerSA { get; set; }
         public static DDPMSettings? Settings_Cache { get; set; }

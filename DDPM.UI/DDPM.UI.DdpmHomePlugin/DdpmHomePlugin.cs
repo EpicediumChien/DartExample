@@ -184,7 +184,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (pluginCondition is PluginErrorCondition)
                 {
-                    if (_viewModel!=null)
+                    if (_viewModel != null)
                         _viewModel.IsDeviceManagerReady = false;
 
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
@@ -530,12 +530,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown()
+        public void OnShown(string param = "")
         {
+            if (!string.IsNullOrEmpty(param))
+            {
+                IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
+                if (viewModel != null)
+                {
+                    viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
+                }
+            }
             ConfigureServices();
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
             Mouse.OverrideCursor = null;
             DdpmCommonHelper.MyConsole = PluginIoc.GetService<IConsole>();
+            DdpmCommonHelper.MyShowPluginManager= PluginIoc.GetService<IShowPluginManager>();
+
 
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconAddDevice != null)
@@ -992,7 +1002,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     {
                         WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType));
                     }
- 
+
                     //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                    
                     _log.Info($"[Walkthrough] Device {modelNumber} added to the queue and registry value updated to true.");
                 }

@@ -37,6 +37,7 @@ using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -1929,6 +1930,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (_DisplayPropertiesPlugin != null)
             {
                 ret = _DisplayPropertiesPlugin.GetCurrentDisplayProperties(monitorInfo).Result;
+                string setParam = "USB-C Prioritization";
+                string capabilityString = monitorInfo.CapabilityString;
+                USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
+                bool supportedHDR = IsSupportHDR(capabilityString), supportedUSBC = IsSupportUSBCPrioritization(capabilityString);
+                if (supportedHDR)
+                {
+                    ret.isHDREnable = _DisplayPropertiesPlugin.GetHDRStatus(monitorInfo.edid).Result;
+                }
+                if (supportedUSBC)
+                {
+                    int count = 0;
+                    ObjGetVCP ObjGetVCP;
+                    do
+                    {
+                        ObjGetVCP = GetVCPCapability(monitorInfo, setParam).Result;
+                        count++;
+                    } while (ObjGetVCP.result != true && count < 3);
+                    if (ObjGetVCP.result == true)
+                    {
+                        PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                    }
+                    ret.USBCPrioritizationType = PrioritizationType;
+                }
             }
             return Task.FromResult(ret);
         }
