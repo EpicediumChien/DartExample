@@ -126,6 +126,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
         public event EventHandler SettingReadyEvent;
 
+        private static DDPMITConfig _DDPMITConfig {  get; set; } = new DDPMITConfig();
+
         #endregion Private Members
 
         #region Constructor
@@ -295,6 +297,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
+
+            updateITandGlobalSetting();
+
             SettingReadyEvent?.Invoke(this, new EventArgs());
         }
 
@@ -353,6 +358,35 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion Private methods
 
+        private void updateITandGlobalSetting()
+        {
+            if (_SysSettingsPlugin == null)
+                return;
+
+            DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs().Result;
+            if (tmp != null)
+            {
+                _DDPMITConfig = tmp;
+                if (tmp.global_setting != null)
+                {
+                    _GlobalSettingParam = _DDPMITConfig.global_setting;
+                }
+            }
+
+            if (_DDPMITConfig == null)
+                _DDPMITConfig = new DDPMITConfig();
+
+            if (_GlobalSettingParam == null)
+            {
+                if (_DDPMITConfig == null)
+                    _GlobalSettingParam = new GlobalSettingParam();
+                else if(_DDPMITConfig.global_setting == null)
+                    _GlobalSettingParam = new GlobalSettingParam();
+                else
+                    _GlobalSettingParam = _DDPMITConfig.global_setting;
+            }
+        }
+
         #region ISettingManagerDev implementation
 
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
@@ -362,6 +396,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
                 return;
+
+            updateITandGlobalSetting();
+
 
             EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
             if (Handler != null)
@@ -481,6 +518,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_SysSettingsPlugin != null)
                     {
                         DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs(force_reload).Result;
+                        _DDPMITConfig = tmp;
                         if (tmp != null)
                             _settings.LockSettings = tmp;
                     }
@@ -964,7 +1002,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             DDPMSettings settings = ReloadAppConfigData().Result;
             if (settings != null)
             {
-                impexpSettings.AppSettings = settings.AppSettings;
+                //impexpSettings.AppSettings = settings.AppSettings;
                 impexpSettings.UserSettings = settings.UserSettings;
                 List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
                 hotkeySettings = ReadHotkeySettings().Result;
@@ -1763,28 +1801,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam)
         {
-            /*if (globalSettingParam == null)
-            {
-                return Task.FromResult(false);
-            }
-            //string temp = RunSerializeObject(globalSettingParam);
-            string info;
-            bool result = false;
-            JToken token = JToken.FromObject(globalSettingParam);
-            if (token.Type == JTokenType.Object)
-            {
-                JObject obj = (JObject)token;
-                // Handle object
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _GlobalSetting_path, out info);
-            }
-            else if (token.Type == JTokenType.Array)
-            {
-                JArray array = (JArray)token;
-                // Handle array
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _GlobalSetting_path, out info);
-            }*/
-
             bool result = WriteSettings_Common(globalSettingParam, "global");
+            
+            //apply setting to system IT config
+            if (_GlobalSettingParam != null && result)
+            {
+                if (_SysSettingsPlugin != null)
+                {
+                    result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
+                    WriteLog("Call sys plugin to write global setting failed.");
+                }
+            }
 
             return Task.FromResult(result);
         }

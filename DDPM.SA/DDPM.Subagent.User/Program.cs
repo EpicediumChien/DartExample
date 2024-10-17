@@ -160,7 +160,7 @@ namespace DDPM.Subagent.User
                 LogDirectory = LogLocation
 #if RELEASE
                 ,
-                ValidCertificateHashes = ThumbprintHash_CICD.certificateHash
+                ValidCertificateHashes = ThumbprintHash.certificateHash
 #endif
             };
 

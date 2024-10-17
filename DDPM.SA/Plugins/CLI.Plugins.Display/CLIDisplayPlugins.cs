@@ -9163,7 +9163,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) GetDiagnosticReport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "SET" || commandLineInput.Options.Count == 0)
+            if (commandLineInput.Command == "SET")
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -9171,6 +9171,10 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Invalid command line syntax or missing -value=file";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            {
+                return DiagnosticReportv2(devMgr, commandLineInput).Result;
             }
             else
             {
@@ -9263,9 +9267,16 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
-            string filepath = commandLineInput.Options[0].Option_Value;
-            string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
-            string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            string filepath = @$"C:\Temp\";
+            string filepath_ = @$"C:\Temp\Temp.zip";
+            string file = @$"C:\Temp.zip";
+            if (commandLineInput.Options.Count == 1)
+            {
+                filepath = commandLineInput.Options[0].Option_Value;
+                filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
+                file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            }
+
             string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
 
@@ -9289,7 +9300,7 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Message = commandLineInput.Options[0].Option_Value;
+                    cli_Response.Message = filepath;
                     devMgr.SaveLogFile(filepath_);
 
                     if (!File.Exists(file))

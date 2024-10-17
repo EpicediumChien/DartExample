@@ -61,7 +61,7 @@ namespace DDPM.SA.Common.Settings
 
         //USBKVM
         //public string strUSBKVMPCsList { get; set; }
-        public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
+        //public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
 
         //FW Update
         public bool LockFWU_UI { get; set; }
