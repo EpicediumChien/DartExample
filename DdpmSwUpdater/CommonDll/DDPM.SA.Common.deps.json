@@ -413,7 +413,10 @@
       "System.ValueTuple/4.5.0": {},
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
-          "DDPM.SA.Obfuscation.dll": {}
+          "DDPM.SA.Obfuscation.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -421,7 +424,10 @@
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "VcpCore.Common.dll": {}
+          "VcpCore.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -430,7 +436,10 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {}
+          "VcpCore.Interfaces.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DdmLibrary/1.0.0.0": {
