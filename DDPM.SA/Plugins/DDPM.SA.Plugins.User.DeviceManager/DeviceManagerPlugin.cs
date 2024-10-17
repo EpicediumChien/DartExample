@@ -4551,33 +4551,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
                         monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                        int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
-                        vcps = monitorSettingsList[index].VCPs;
-                        SetVCPSequence(monitorInfo, impVCPSequence, vcps);
-                        foreach (VCPCode code in vcps)
+                        if (monitorSettingsList != null)
                         {
-                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                            if (monitorSettingsList.Count > 0)
                             {
-                                bool b = false;
-                                ObjGetVCP objGetVCP = new ObjGetVCP();
-                                //SHR on/off need load settings
-                                //if (code.Code == 0xF0)
-                                //{
-                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                //}
-                                //get vcp code
-                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
+                                vcps = monitorSettingsList[index].VCPs;
+                                SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                foreach (VCPCode code in vcps)
                                 {
-                                    //set vcp code
-                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                    writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                    if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                        importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                    {
+                                        bool b = false;
+                                        ObjGetVCP objGetVCP = new ObjGetVCP();
+                                        //SHR on/off need load settings
+                                        //if (code.Code == 0xF0)
+                                        //{
+                                        //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                        //}
+                                        //get vcp code
+                                        objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                        {
+                                            //set vcp code
+                                            writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                            b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                        }
+                                    }
                                 }
+                                return Task.FromResult(true);
+                            }
+                            else
+                            {
+                                writelog("[DisplayImportSettings]monitorSettingsList count is 0");
                             }
                         }
-                        return Task.FromResult(true);
+                        else
+                        {
+                            writelog("[DisplayImportSettings]monitorSettingsList is null");
+                        }
                     }
                     else
                     {
