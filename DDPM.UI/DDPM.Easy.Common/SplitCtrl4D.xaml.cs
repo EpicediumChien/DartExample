@@ -27,6 +27,8 @@ namespace DDPM.Easy.Common
         public char SplitKey => 'D';
         public UserControl UC => this;
 
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 17;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -85,6 +87,22 @@ namespace DDPM.Easy.Common
 
         #endregion Cell List
 
+        #region CellBorders
+        private List<CellBorder> celBordersH = new List<CellBorder>();
+        private List<CellBorder> celBordersV = new List<CellBorder>();
+
+        public List<CellBorder> CellBorders
+        {
+            get
+            {
+                if (VM.IsVertical)
+                    return celBordersV;
+                else
+                    return celBordersH;
+            }
+            set { }
+        }
+        #endregion
         #region Splitter List
 
         public List<GridSplitter> VSplitterList { get; set; } = new List<GridSplitter>();

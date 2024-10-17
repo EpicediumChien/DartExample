@@ -185,8 +185,8 @@ namespace DDPM.UI.Module.Kvm
         public Visibility Border2Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border3Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border4Visibility { get; set; } = Visibility.Collapsed;
-        public Visibility SupportUSBKVM { get; set; } = Visibility.Visible;
-        public Visibility SupportNKVM { get; set; } = Visibility.Visible;
+        public Visibility SupportUSBKVM { get; set; } = Visibility.Collapsed;
+        public Visibility SupportNKVM { get; set; } = Visibility.Collapsed;
         public Visibility SetInput { get; set; } = Visibility.Visible;
         public Visibility SetPXP { get; set; } = Visibility.Visible;
         public Visibility EditInput { get; set; } = Visibility.Collapsed;
@@ -296,7 +296,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     _isNoKVM = false;
                     _isNKVM = true;
-                    isOnNKVM(true);
+                    //isOnNKVM(true);
                 }
             }
         }
@@ -408,6 +408,10 @@ namespace DDPM.UI.Module.Kvm
         public double NKVM_Opacity { get; set; } = 1;
         public Visibility LockNKVM_Visibility {  get; set; } = Visibility.Collapsed;
 
+        public bool isUSBKVMEanble { get; set; } = true;
+        public double USBKVM_Opacity { get; set; } = 1;
+        public Visibility LockUSBKVM_Visibility { get; set; } = Visibility.Collapsed;
+
         #region Hotkey
 
         private string _switchPCsKey = "None";
@@ -463,7 +467,10 @@ namespace DDPM.UI.Module.Kvm
         {
             HotkeySettings hotkeySettings = new HotkeySettings
             {
-                DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                //DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                ModelName = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ModelName,
+                SerialNumber = KvmModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
+                ServiceTag = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag,
                 HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
             DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);
@@ -488,7 +495,8 @@ namespace DDPM.UI.Module.Kvm
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 //load hotkey setting
-                HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                HotkeySettings curHotkey = temp.Item1;
                 //0708 error handling for non-EE support monitor
                 string swHortcutText = string.Empty;
                 if (curHotkey.HotkeyInfo.Count > 0)
@@ -572,15 +580,21 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
                 MonitorInfo mi = selHomeDevice.MonitorInfo;
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result == false)
+                if (mi == null)
                 {
-                    SupportNKVM = Visibility.Collapsed;
+                    e.Result = "MonitorInfo is null";
+                    return;
+                }
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result)
+                {
+                    SupportNKVM = Visibility.Visible;
                 }
 
                 USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
+                    SupportUSBKVM = Visibility.Visible;
                     isUSBKVMButton = true;
                     USBKVMButtonOpacity = 1;
                     //_isUSBKVM = KvmModule.isUSBKVM;
@@ -601,10 +615,29 @@ namespace DDPM.UI.Module.Kvm
                     //myArgType arg = (myArgType)e.Argument;
                     inputList = new Dictionary<string, InputInfo>();
                     subInputs = new List<InputSourceObj>();
+                    List<UInt16> subInputList = new List<UInt16>();
                     usbsList = new List<string>();
                     //Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                    subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    if (subInputList != null)
+                    {
+                        subInputs.Clear();
+                        foreach (UInt16 subinput in subInputList)
+                        {
+                            InputSourceObj inputSourceObj = new InputSourceObj();
+                            foreach (var input in inputList)
+                            {
+                                if (input.Value.Code == (uint)subinput)
+                                {
+                                    inputSourceObj.Code = subinput;
+                                    inputSourceObj.Name = input.Key;
+                                    break;
+                                }
+                            }
+                            subInputs.Add(inputSourceObj);
+                        }
+                    }
                     string currentinput = KvmModule.SelectedHomeDevice.MonitorInfo.inputSource;
                     pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                     usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
@@ -614,6 +647,7 @@ namespace DDPM.UI.Module.Kvm
                         if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
                         {
                             string pathData = string.Empty;
+                            _inputsList.Clear();
                             foreach (string item in inputList.Keys)
                             {
                                 if (item.StartsWith("HDMI"))
@@ -635,6 +669,7 @@ namespace DDPM.UI.Module.Kvm
                                     kvmModule = KvmModule
                                 });
                             }
+                            _usbsList.Clear();
                             foreach (string str in usbsList)
                             {
                                 if (str.StartsWith("USB-C") || str.StartsWith("Thunderbolt"))
@@ -795,13 +830,15 @@ namespace DDPM.UI.Module.Kvm
                     //OnPropertyChanged("NoBattery");
                     //OnPropertyChanged("Text1");
                 }
-                else
-                {
-                    SupportUSBKVM = Visibility.Collapsed;
-                }
+                //else
+                //{
+                //    SupportUSBKVM = Visibility.Collapsed;
+                //}
             }
             catch (Exception)
             {
+                //SupportUSBKVM = Visibility.Collapsed;
+                //SupportNKVM = Visibility.Collapsed;
                 ;
             }
         }
@@ -1155,30 +1192,30 @@ namespace DDPM.UI.Module.Kvm
                 proc.StartInfo.Arguments = $"/ShowNKVM {index} {x} {y}";
                 proc.Start();
 
-                try
-                {
-                    proc.WaitForInputIdle();
-                }
-                catch (Exception)
-                {
-                }
+                //try
+                //{
+                //    proc.WaitForInputIdle();
+                //}
+                //catch (Exception)
+                //{
+                //}
 
-                if (NkvmdHandle == IntPtr.Zero)
-                {
-                    // Get the handle of the NKVM main window
-                    NkvmdHandle = proc.MainWindowHandle;
-                }
+                //if (NkvmdHandle == IntPtr.Zero)
+                //{
+                //    // Get the handle of the NKVM main window
+                //    NkvmdHandle = proc.MainWindowHandle;
+                //}
 
-                Window mainWindow = System.Windows.Application.Current.MainWindow;
-                IntPtr mainWindowHandle = new WindowInteropHelper(mainWindow).Handle;
+                //Window mainWindow = System.Windows.Application.Current.MainWindow;
+                //IntPtr mainWindowHandle = new WindowInteropHelper(mainWindow).Handle;
 
-                if (NkvmdHandle != IntPtr.Zero && mainWindowHandle != IntPtr.Zero)
-                {
-                    //SetParent(NkvmdHandle, mainWindowHandle);
-                    DDPMWindowPos windowPos = new DDPMWindowPos(NkvmdHandle, mainWindowHandle);
-                    //SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
-                    //EnableWindow(mainWindowHandle, false);
-                }
+                //if (NkvmdHandle != IntPtr.Zero && mainWindowHandle != IntPtr.Zero)
+                //{
+                //    //SetParent(NkvmdHandle, mainWindowHandle);
+                //    DDPMWindowPos windowPos = new DDPMWindowPos(NkvmdHandle, mainWindowHandle);
+                //    //SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
+                //    //EnableWindow(mainWindowHandle, false);
+                //}
 
                 //WindowInteropHelper helper = new WindowInteropHelper(mainWindow);
                 //helper.Owner = NkvmdHandle;
@@ -1203,6 +1240,16 @@ namespace DDPM.UI.Module.Kvm
                 DdpmCommonHelper.DeviceManagerSA.SupportedNKVMMonitors().Wait();
             }
             DdpmCommonHelper.DeviceManagerSA.SetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
+        }
+
+        public void OnPropertyChanged_Lock()
+        {
+            OnPropertyChanged("isNKVMEanble");
+            OnPropertyChanged("NKVM_Opacity");
+            OnPropertyChanged("LockNKVM_Visibility");
+            OnPropertyChanged("isUSBKVMEanble");
+            OnPropertyChanged("USBKVM_Opacity");
+            OnPropertyChanged("LockUSBKVM_Visibility");
         }
     }
 }

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+	  <Version>2.0.0.17</Version>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+    <ProjectReference Include="..\..\Common\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DPeMClientBroker">
+      <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
+    </Reference>
+    <Reference Include="DPeMPublic.Common">
+      <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -10,6 +10,7 @@ using System.IO;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Reflection;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Module.Color
 {
@@ -31,50 +32,31 @@ namespace DDPM.UI.Module.Color
         //  Jim remove 20240604
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ColorViewModel vm = (ColorViewModel)DataContext;
-
-            vm.WatchForProcessStart();
-            vm.WatchForProcessEnd();
-
-            //DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-
-            //vm.IsAutoColorPreset_Lock = setting.UserSettings.IsAutoColorPreset_Lock;
-
-            //if (setting.UserSettings.IsAutoColorPreset_Lock)
-            //{
-            //    ((Expander)(this.FindName("Expander_Auto"))).IsEnabled = false;
-            //    ((ListBox)(this.FindName("lb_AppList"))).IsEnabled = false;
-            //    ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = false;
-
-            //}
-            //else
-            //{
-            //    ((Expander)(this.FindName("Expander_Auto"))).IsEnabled = true;
-            //    ((ListBox)(this.FindName("lb_AppList"))).IsEnabled = true;
-            //    ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = true;
-
-            //}
+            //ColorViewModel vm = (ColorViewModel)DataContext;
+            //vm.WatchForProcessStart();
+            //vm.WatchForProcessEnd();
 
             //Lock/unlock
-
             if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
             try
             {
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data == null)
-                    return;
-                if (data.UserSettings == null)
-                    return;
+                //DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                //if (data == null)
+                //    return;
+                //if (data.LockSettings == null)
+                //    return;
 
-                vm.ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+                /*vm.ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+                vm.isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
 
                 if (vm.ShowLockMask)
-                    vm.isTabStoppable = "None";
+                    vm.TabNavigation = "None";
                 else
-                    vm.isTabStoppable = "Cycle";
+                    vm.TabNavigation = "Cycle";
 
-                //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
+                vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;*/
+                //PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 //DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotifyEvent;
@@ -83,13 +65,43 @@ namespace DDPM.UI.Module.Color
             {
 
             }
+        }
 
-            /*
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+        //If caller is not the same as UI main thread, please using Dispatcher to execute it
+        private void PerformLockUnlockUIAction(bool isColorLocked, bool isAutoBriTempLocked)
+        {
+            try
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;                
+                ColorViewModel vm = (ColorViewModel)DataContext;
+                if (vm != null)
+                {   
+                    ALSConfig cfg = DdpmCommonHelper.DeviceManagerSA?.GetALSFeatureValue(
+                        DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                        ALSFeatureQueryType.All, 0).Result;
+                    //Lock functionality:
+                    //Locking InAppAutoBriTemp' with "Auto Color Temperature" as "on" should lock 
+                    // 1) "Auto Color Temperature", 
+                    // 2) Manual color controls, Auto color controls, Color management found under the "Color" Tab,
+                    // 3) the conditions listed in the first 3 bullet points
+                    if (cfg != null && cfg.isAutoColorTemp && isAutoBriTempLocked)
+                    {
+                        isColorLocked = true;
+                    }
+
+                    vm.ShowLockMask = isColorLocked;
+                    vm.isTabStoppable = !isColorLocked;
+
+                    if (vm.ShowLockMask)
+                        vm.TabNavigation = "None";
+                    else
+                        vm.TabNavigation = "Cycle";
+
+                    vm.LockMaskVisible = isColorLocked ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
-            */
+            catch (Exception)
+            {
+            }
         }
 
         //  Jim add 20240606
@@ -116,25 +128,53 @@ namespace DDPM.UI.Module.Color
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);
-            if (isLocked != null)
+            bool? isLockColor = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);            
+            bool? isLockAutoTemp = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_AutoBriTemp", e);
+            
+            if (isLockColor != null || isLockAutoTemp != null)
             {
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data == null)
+                    return;
+                if (data.LockSettings == null)
+                    return;
+
+                bool isLock_Color = false;
+                if (isLockColor.HasValue)
+                {
+                    isLock_Color = isLockColor.Value;
+                }
+                else
+                {
+                    isLock_Color = data.LockSettings.Lock_Display_ColorPreset;
+                }
+                bool isLock_AutoBriTemp = false;
+                if (isLockAutoTemp.HasValue)
+                {
+                    isLock_AutoBriTemp = isLockAutoTemp.Value;
+                }
+                else
+                {
+                    isLock_AutoBriTemp = data.LockSettings.Lock_Display_AutoBriTemp;
+                }
+
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    ColorViewModel vm = (ColorViewModel)this.DataContext;
+                    /*ColorViewModel vm = (ColorViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.isTabStoppable = !(bool)isLocked;
+                        vm.isTabStoppable = !(bool)isLocked;
                         vm.ShowLockMask = (bool)isLocked;
 
                         if (vm.ShowLockMask)
-                            vm.isTabStoppable = "None";
+                            vm.TabNavigation = "None";
                         else
-                            vm.isTabStoppable = "Cycle";
+                            vm.TabNavigation = "Cycle";
 
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
-                    }
+                    }*/
+                    PerformLockUnlockUIAction(isLock_Color, isLock_AutoBriTemp);
                 }));
             }
         }
@@ -151,12 +191,46 @@ namespace DDPM.UI.Module.Color
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
+                // chech if ModelName and SerialNumber is null
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                    {
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                            return -1;
+
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                            return -1;
+                    }
                 }
+
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                if (index == -1)
+                {
+                    // chech if ModelName and ServiceTag is null
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                    {
+                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                                return -1;
+
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+                                return -1;
+                        }
+                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                }
+
+                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
             }
             return index;
         }
@@ -186,7 +260,16 @@ namespace DDPM.UI.Module.Color
                         if (index_config >= 0)
                         {
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
-                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+                            //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+
+                            string colorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+
+                            var nColorVCPCoreValue = DdpmCommonHelper.DeviceManagerSA.GetColorVCPCoreValue(colorPresetName).Result;
+                            
+                            if (vm.SmartHDR_ON )
+                                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].HDRColor = nColorVCPCoreValue;
+                            else
+                                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].Color = nColorVCPCoreValue;
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                             Thread.Sleep(500);
@@ -478,6 +561,8 @@ namespace DDPM.UI.Module.Color
                         string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
                         strFolder += "\\";
 
+                        string info = string.Empty;
+                        DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
                         if (!System.IO.Directory.Exists(strFolder))
                             System.IO.Directory.CreateDirectory(strFolder);
 
@@ -523,7 +608,9 @@ namespace DDPM.UI.Module.Color
                             {
                                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, new ColorPresetSettings_AppInfo()
                                 {
-                                    ColorPresetName = "Standard/Native",
+                                    //ColorPresetName = "Standard/Native",
+                                    Color = 0,
+                                    HDRColor = -1,
                                     IconName = strAppIcon,
 
                                 });
@@ -539,6 +626,10 @@ namespace DDPM.UI.Module.Color
                 }               
               
             }
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

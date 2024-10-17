@@ -25,7 +25,7 @@ namespace VcpCore.Plugins.Test
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
-            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(VcpCore.Common.IDs.Display_Manager_PLUGIN_ID)));
+            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(DDPM.SA.Common.IDs.Display_Manager_PLUGIN_ID)));
 
             return new DisplayMangerPlugin(DisplayMangerAgent.Object);
         }
@@ -223,6 +223,7 @@ namespace VcpCore.Plugins.Test
             _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            privatevcp.SetFieldOrProperty("_Isinitializing", false);
             var getMonitors = vcpCorePlugin.GetMonitors().Result;
             Assert.Greater(getMonitors.Count, 0);
             Assert.That(displayName, Is.EqualTo(getMonitors[0].DisplayName));
@@ -236,7 +237,7 @@ namespace VcpCore.Plugins.Test
             _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
-            var getMonitors = vcpCorePlugin.Re_GetMonitors().Result;
+            var getMonitors = vcpCorePlugin.Re_GetMonitors(new CancellationTokenSource().Token).Result;
             Assert.That(_allDisplays, Is.EqualTo(getMonitors));
         }
 

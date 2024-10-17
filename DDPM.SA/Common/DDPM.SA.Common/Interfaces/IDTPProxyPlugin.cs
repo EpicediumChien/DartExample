@@ -22,6 +22,7 @@ namespace DDPM.SA.Common
 
         Task SetDPIValue(string itemID, int newValue);
 
+        #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -44,9 +45,27 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+        Task<string> PairingPen();
+        Task<string> GetEraserDoublePressValues();
+        Task<string> GetSideSwitchSinglePressValues();
+        Task<string> GetMenuSinglePressValues();
+        Task<string> GetLaunchableAppValues();
+        Task<string> GetEraserDoublePressSetting();
+        Task<string> GetEraserSinglePressSetting();
+        Task<string> GetEraserLongPressSetting();
+        Task<string> GetSideTopSwitchSinglePressSetting();
+        Task<string> GetSideBottomSwitchSinglePressSetting();
+        Task<string> GetMenuSinglePressSetting();
+        Task<bool> GetMenuCenterRightClickSetting();
+        Task<bool> GetIsSideTopButtonHoverClick();
+        Task<bool> GetIsSideBottomButtonHoverClick();
 
-        // webcam
+        #endregion
+
+        #region webcam
         Task<JArray> GetPresetProfiles(string Guid);
+        Task<JArray> GetCustomProfiles(string Guid);
+        Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
@@ -76,6 +95,68 @@ namespace DDPM.SA.Common
 
         Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+        Task SetProfile(string Guid, string newValue);
+        Task SetProfileName(string Guid, string newValue);
+        Task CreateCustomProfile(string Guid, string newValue);
+        Task DeleteProfile(string Guid, string newValue);
+        Task SetZoom(string Guid, int newValue);
+        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task SetAutoFramingSensitivity(string Guid, int newValue);
+        Task SetAutoFramingFrameSize(string Guid, int newValue);
+        Task SetFieldOfView(string Guid, int newValue);
+        Task SetIsFocusOn(string Guid, bool newValue);
+        Task SetFocus(string Guid, int newValue);
+        Task SetPriority(string Guid, int newValue);
+        Task SetIsHDROn(string Guid, bool newValue);
+        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task SetAutoWhiteBalance(string Guid, int newValue);
+        Task SetBrightness(string Guid, int newValue);
+        Task SetSharpness(string Guid, int newValue);
+        Task SetContrast(string Guid, int newValue);
+        Task SetSaturation(string Guid, int newValue);
+        Task SetAntiFlicker(string Guid, int newValue);
+        Task SetTilt(string Guid, int newValue);
+        Task SetPan(string Guid, int newValue);
 
+        // webcam presence detection
+        Task SetWALTime(string Guid, int newValue);
+        Task SetSnooze(string Guid, int newValue);
+        Task SetSnoozeLength(string Guid, int newValue);
+        Task SetIsProximitySensorEnable(string Guid, bool newValue);
+        Task SetIsWakeonApproachEnable(string Guid, bool newValue);
+        Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+
+        Task<int> GetWALTime(string Guid);
+        Task<int> GetSnooze(string Guid);
+        Task<int> GetSnoozeLength(string Guid);
+        Task<bool> GetIsProximitySensorEnable(string Guid);
+        Task<bool> GetIsWakeonApproachEnable(string Guid);
+        Task<bool> GetIsWalkAwayLockEnable(string Guid);
+        #endregion
+
+        #region Headset
+
+        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Wired Audio
+
+        Task<int> GetBassAsync(string guid);
+        Task SetBassAsync(string guid, int newValue);
+        Task<int> GetMidRangeAsync(string guid);
+        Task SetMidRangeAsync(string guid, int newValue);
+        Task<int> GetTrebleAsync(string guid);
+        Task SetTrebleAsync(string guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
+        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
+        Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string itemID);
+        Task SetResetToDefaultValueAsync(string itemID, bool newValue);
+
+        #endregion
     }
 }

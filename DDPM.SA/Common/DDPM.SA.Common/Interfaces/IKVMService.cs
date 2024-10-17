@@ -2,6 +2,7 @@
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -36,7 +37,7 @@ namespace DDPM.SA.Common
 
         Task<List<string>> UpdateSupportMonitors();
 
-        Task UpdateMonitorInfo(List<MonitorInfo> monitorInfos);
+        Task UpdateMonitorInfo(List<MonitorInfo> monitorInfos, CancellationToken token);
 
         Task<bool> isSupportMonitor(MonitorInfo monitorInfo);
 

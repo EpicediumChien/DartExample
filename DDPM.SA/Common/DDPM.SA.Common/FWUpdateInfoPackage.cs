@@ -107,8 +107,9 @@ namespace DDPM.SA.Common
         public string FileSavepath { get; set; }
         public string InstallPaths { get; set; }
         public string SHA256 { get; set; }
-        public string SHA512 { get; set; }
+        //public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
+        public string ServiceTag { get; set; }
 
         public bool Equals(FWUpdateInfo fwUpdateInfo)
         {
@@ -148,10 +149,14 @@ namespace DDPM.SA.Common
         public string CurrentVersion { get; set; }
         public string fileName { get; set; }
         public string SHA256 { get; set; }
+        public string SHA512 { get; set; }
+        [JsonPropertyName("thumbprint")]
+        public string Thumbprint { get; set; }
         public string url { get; set; }
         public string date { get; set; }
-        [JsonPropertyName("Supported platform")]
+        [JsonPropertyName("support_platform")]
         public string SupportedPlatform { get; set; }
+        public string ServiceTag { get; set; }
     }
 
     /// <summary>
@@ -164,5 +169,23 @@ namespace DDPM.SA.Common
         {
             Firmwares = new List<Display_Firmwares_item>();
         }
+    }
+    public class UpdateProgressInfo
+    {
+        public string DeviceName { get; set; }
+        public string DeviceId { get; set; }
+        public string Model { get; set; }
+        public string DeviceVersion { get; set; }
+        public string TheLatestVersion { get; set; }
+
+        /// <summary>
+        /// 安裝時使用，獲取目前的進度資訊
+        /// </summary>
+        public string ProcessName { get; set; }
+
+        /// <summary>
+        /// 安裝時使用，獲取安裝進度
+        /// </summary>
+        public double ProcessProgress { get; set; }
     }
 }

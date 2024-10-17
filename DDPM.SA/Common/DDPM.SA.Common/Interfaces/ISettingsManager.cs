@@ -4,6 +4,8 @@ using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Common
 {
@@ -41,6 +43,8 @@ namespace DDPM.SA.Common
         Task<string> QueryAccessInfo();
         Task<string> QueryAccessInfoVer();
         Task<string> QueryAccessInfoAddr();
+        Task AddInfo(string info);
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 
     /// <summary>
@@ -78,15 +82,15 @@ namespace DDPM.SA.Common
 
         Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath);
 
-        //Easy Arrange
-        public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
-
-        public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
+        //Easy Arrange, Robret_Lin, 2024-10-10 remove unused method
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
+        //Robret_Lin, 2024-10-10 remove unused method
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
 
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
 
-        Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings);
 
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
@@ -100,5 +104,19 @@ namespace DDPM.SA.Common
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
 
         event EventHandler SettingReadyEvent;
+
+        //Migration
+        Task<bool> isDDMMigration(out string folder_appdatapath_migration);
+        Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
+        Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings);
+        Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
+
+        //For common json file read/write
+        Task<string> ReadSerializedContentFromFile(string filePath);
+        Task<bool> WriteSerializedContentToFile(string filePath, string content);
+
+        //Info Key
+        Task AddInfo(string info);
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 }

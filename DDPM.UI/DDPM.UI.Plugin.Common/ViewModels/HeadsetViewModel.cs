@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
@@ -489,7 +490,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             default:
                                 break;
                         }
-                        GenerateInfo();
+                        //GenerateInfo();
                     }
                     break;
 
@@ -497,7 +498,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
         }
-
+        public void RestoreToDefault()
+        {
+            _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Wait();
+            //IsRestoreEnable = false;
+            //OnPropertyChanged(nameof(IsRestoreEnable));
+        }
         /// <summary>
         /// Set Bit Value
         /// </summary>
@@ -580,25 +586,33 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         // Please Wait logic
-        public void Invoke_PleaseWait(string model)
+        public void Invoke_PleaseWait(string model, HeadsetViewModel vm)
         {
             BackgroundWorker bw = new BackgroundWorker
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += (sender, e) => DoWork_PleaseWait(model);
+            bw.DoWork += (sender, e) => DoWork_PleaseWait(model, vm);
             bw.RunWorkerCompleted += RunWorkerCompleted_PleaseWait;
 
             ShowPleaseWait();
             bw.RunWorkerAsync();
         }
 
-        private void DoWork_PleaseWait(string model)
+        private void DoWork_PleaseWait(string model, HeadsetViewModel vm)
         {
             // Simulate time-consuming operation
-            //Thread.Sleep(1000);
-
+            Thread.Sleep(500);
+            int sun = 0;
+            while (vm.FirmwareVersion == "0000")
+            {
+                _deviceManager.GetDevices();
+                Thread.Sleep(2000);
+                sun++;
+                if (sun >= 3)
+                    break;
+            }
             // Call DetectPageShow
             DetectPageShow(model);
         }
@@ -613,6 +627,21 @@ namespace DDPM.UI.Plugin.ViewModels
         /// <summary>
         /// HeadsetAudioSettings Page
         /// </summary>
+
+        //private Visibility _isAncLockMask = Visibility.Collapsed;
+
+        //public Visibility IsAncLockMask
+        //{
+        //    get { return _isAncLockMask; }
+        //    set
+        //    {
+        //        if (_isAncLockMask != value)
+        //        {
+        //            _isAncLockMask = value;
+        //            OnPropertyChanged(nameof(_isAncLockMask));
+        //        }
+        //    }
+        //}
 
         #region HeadsetAudioSettings ToggleSwitch Binding
 
@@ -1123,7 +1152,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region HeadsetAudioSettingsRightViewToolTip
 
-        private string _noiseControlToolTip = "Controls the amount of external sound you hear";
+        private string _noiseControlToolTip = Strings.HeadsetAudioSettingsToolTip_1;//"Controls the amount of external sound you hear";
 
         public string NoiseControlToolTip
         {
@@ -1493,35 +1522,35 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region HeadsetAutomatedActionsToolTip
 
-        private string _wearDetectionToolTip = "Automatic actions when you remove your headset";
+        private string _wearDetectionToolTip = Strings.HeadsetAutomatedActionsToolTip_1;//"Automatic actions when you remove your headset";
 
         public string WearDetectionToolTip
         {
             get => _wearDetectionToolTip;
         }
 
-        private string _pauseMusicToolTip = "Pauses music automatically when headset is removed. Music will resume automatically when headset is put on.";
+        private string _pauseMusicToolTip = Strings.HeadsetAutomatedActionsToolTip_2;//"Pauses music automatically when headset is removed. Music will resume automatically when headset is put on.";
 
         public string PauseMusicToolTip
         {
             get => _pauseMusicToolTip;
         }
 
-        private string _muteMicrophoneToolTip = "Mutes microphone automatically when headset is removed";
+        private string _muteMicrophoneToolTip = Strings.HeadsetAutomatedActionsToolTip_3;//"Mutes microphone automatically when headset is removed";
 
         public string MuteMicrophoneToolTip
         {
             get => _muteMicrophoneToolTip;
         }
 
-        private string _answerCallsToolTip = "Pull down boom mic to answer calls";
+        private string _answerCallsToolTip = Strings.HeadsetAutomatedActionsToolTip_4;//"Pull down boom mic to answer calls";
 
         public string AnswerCallsToolTip
         {
             get => _answerCallsToolTip;
         }
 
-        private string _quickPauseToolTip = "Automatic actions when you move an ear cup off your ear";
+        private string _quickPauseToolTip = Strings.HeadsetAutomatedActionsToolTip_5;//"Automatic actions when you move an ear cup off your ear";
 
         public string QuickPauseToolTip
         {
@@ -1647,14 +1676,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region HeadsetDeviceSettingsToolTip
 
-        private string _busyLightToolTip = "Indicator light when on a call";
+        private string _busyLightToolTip = Strings.HeadsetDeviceSettingsToolTip_1;//"Indicator light when on a call";
 
         public string BusyLightToolTip
         {
             get => _busyLightToolTip;
         }
 
-        private string _voiceGuidanceToolTip = "Audio prompts and announcements for device features";
+        private string _voiceGuidanceToolTip = Strings.HeadsetDeviceSettingsToolTip_2;//"Audio prompts and announcements for device features";
 
         public string VoiceGuidanceToolTip
         {

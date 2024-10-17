@@ -27,6 +27,7 @@ namespace DDPM.Easy.Common
         public int CellCount => 0;
         public char SplitKey => 'A';
         public UserControl UC => this;
+        public int EAID { get => 0; set { } }
 
         #endregion ISplitCtrl Native Members
 
@@ -78,6 +79,22 @@ namespace DDPM.Easy.Common
 
         #endregion Cell List
 
+        #region CellBorders
+        private List<CellBorder> celBordersH = new List<CellBorder>();
+        private List<CellBorder> celBordersV = new List<CellBorder>();
+
+        public List<CellBorder> CellBorders
+        {
+            get
+            {
+                if (VM.IsVertical)
+                    return celBordersV;
+                else
+                    return celBordersH;
+            }
+            set { }
+        }
+        #endregion
         #region Splitter List
 
         public List<GridSplitter> VSplitterList { get; set; } = new List<GridSplitter>();

@@ -9,7 +9,7 @@ namespace DDPM.SA.Common.Method
 {
     public class Download
     {
-        private Logs _logs;
+        private Logs? _logs;
         public long? DownloadFileSize = null;
         public FileStream? DownloadFileStream = null;
 
@@ -17,19 +17,33 @@ namespace DDPM.SA.Common.Method
         {
             _logs = logs;
         }
+        /// <summary>
+        /// Only for DdpmSwUpdater use.
+        /// </summary>
+        public Download()
+        {
+        }
 
-        public bool DownloadFile(string URLPath, string SavePath, out string FailInfo)
+        public bool DownloadFile(string URLPath, string SavePath, out string FailInfo, bool isSkipCA = false)
         {
             try
             {
-                _logs.DebugMsg_1(nameof(DownloadFile) + " start");
-                CertificateCheck caCheck = new CertificateCheck();
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " start");
+                CertificateCheck caCheck = new CertificateCheck(_logs);
                 {
-                    if (!caCheck.CheckURLCACertificate(URLPath))//0815 Bruce Add Security
+                    if (!isSkipCA)
                     {
-                        FailInfo = "CA check fail";
-                        _logs.DebugMsg_1(FailInfo);
-                        return false;
+                        if (!caCheck.CheckURLCACertificate(URLPath))//0815 Bruce Add Security
+                        {
+                            FailInfo = "CA check fail";
+                            _logs?.DebugMsg_1(FailInfo);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        FailInfo = "CA check skip";
+                        _logs?.DebugMsg_1(FailInfo);
                     }
                     string url = URLPath;
                     string savePath = SavePath;
@@ -51,14 +65,14 @@ namespace DDPM.SA.Common.Method
                     DownloadFileSize = null;
                     DownloadFileStream = null;
                 }
-                _logs.DebugMsg_1(nameof(DownloadFile) + " done");
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " done");
                 FailInfo = "Pass";
                 return true;
             }
             catch (Exception ex)
             {
                 FailInfo = "Network fail";
-                _logs.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.ToString());
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.ToString());
                 return false;
             }
         }
@@ -66,10 +80,10 @@ namespace DDPM.SA.Common.Method
         {
             try
             {
-                _logs.DebugMsg_1(nameof(DownloadFile_OnLocal) + " start");
+                _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " start");
                 using (FileStream sourceStream = new FileStream(URLPath, FileMode.Open, FileAccess.Read))
                 {
-                    DownloadFileSize= sourceStream.Length;
+                    DownloadFileSize = sourceStream.Length;
                     DownloadFileStream = new FileStream(SavePath, FileMode.Create, FileAccess.Write);
                 }
                 FailInfo = "Pass";
@@ -78,7 +92,7 @@ namespace DDPM.SA.Common.Method
             catch (Exception ex)
             {
                 FailInfo = "Network fail";
-                _logs.DebugMsg_1(nameof(DownloadFile_OnLocal) + " fail:" + ex.ToString());
+                _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " fail:" + ex.ToString());
                 return false;
             }
         }

@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -52,8 +53,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
         public List<string> EOLList = new() { "WK636", "KM714", "WM126", "WM116", "WM514" };
-        public DDPMSettings? DDPMSettings;
-
+        //public DDPMSettings? DDPMSettings;
+        public WebcamSettings WebcamSettings = new();
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
             Requires.NotNull(console, nameof(console));
@@ -146,17 +147,17 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             {
-                var arr = CurrentDeviceInfo.Name.Split(' ');
-                if (arr.Length > 0)
-                {
-                    Model = arr[arr.Length - 1];
-                }
-                else
-                {
+                //var arr = CurrentDeviceInfo.Name.Split(' ');
+                //if (arr.Length > 0)
+                //{
+                //    Model = arr[arr.Length - 1];
+                //}
+                //else
+                //{
                     Model = CurrentDeviceInfo.ModelNumber;
-                }
+                //}
                 //ID = CurrentDeviceInfo.ID.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
-                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
+                Name = CurrentDeviceInfo.Name;
             }
             if (instenceNo == "")
             {
@@ -331,6 +332,8 @@ namespace DDPM.UI.Plugin.ViewModels
             if (CurrentDeviceInfo!.Name.ToUpper().Contains("HEADSET"))
             {
                 DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                DeviceInfo.Append(Environment.NewLine);
+                DeviceInfo.Append($"IsReady : {CurrentDeviceInfo!.IsReady}");
                 DeviceInfo.Append(Environment.NewLine);
                 DeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
                 DeviceInfo.Append(Environment.NewLine);
@@ -1140,6 +1143,27 @@ namespace DDPM.UI.Plugin.ViewModels
                 vbarItem.IsSelected = vbarItem.Id == VbarSelectedIndex;
             }
         }
+        public void DisableVBar()
+        {
+            for (var i = 2; i < _vbarItems.Count; i++)
+            {
+                _vbarItems[i].IsEnabled = false;
+                _vbarItems[i].TooltipVisibility = Visibility.Visible;
+            }
+            IsNotAddingProfile = false;
+            OnPropertyChanged(nameof(IsNotAddingProfile));
+        }
+        public void EnableVBar()
+        {
+            for (var i = 2; i < _vbarItems.Count; i++)
+            {
+                _vbarItems[i].IsEnabled = true;
+                _vbarItems[i].TooltipVisibility = Visibility.Collapsed;
+            }
+            IsNotAddingProfile = true;
+            OnPropertyChanged(nameof(IsNotAddingProfile));
+        }
+        public bool IsNotAddingProfile { get; set; } = true;
 
         private Cursor _currentCursor = Cursors.Arrow;
         public Cursor CurrentCursor

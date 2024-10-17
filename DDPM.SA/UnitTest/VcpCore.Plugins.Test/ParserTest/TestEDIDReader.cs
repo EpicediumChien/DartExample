@@ -1,5 +1,5 @@
 ﻿using VcpCore.Common;
-using WinCopies;
+//using WinCopies;
 using static VcpCore.Common.EDIDReader;
 using static VcpCore.Common.EDIDReader.Monitor_Range_Limit;
 

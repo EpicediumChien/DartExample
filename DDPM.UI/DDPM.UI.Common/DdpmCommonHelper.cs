@@ -2,10 +2,12 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
@@ -38,6 +40,7 @@ namespace DDPM.UI.Common
             return null;
         }
 
+
         //DdpmHomePlugin will set this value
         public static IConsole? MyConsole { get; set; }
 
@@ -62,6 +65,12 @@ namespace DDPM.UI.Common
         public static void DDPMPureMesssageBox(string title, string text, bool IsCloseButton, Window Owner)
         {
             DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner);
+            msgBox.ShowDialog();
+        }
+
+        public static void DDPMEzMesssageBox(string title, string text, bool IsCloseButton, Window Owner, int width, int height, Thickness titlemargin, Thickness submargin)
+        {
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner, width, height, titlemargin, submargin);
             msgBox.ShowDialog();
         }
 
@@ -114,7 +123,7 @@ namespace DDPM.UI.Common
                 string feature = event_object.IT_Feature_TriggerList[idx];
                 PropertyInfo propertyInfo = event_object.target_object.GetType().GetProperty(feature);
                 Trace.WriteLine($"Got [SettingsPage][IT settings event] {feature} : {propertyInfo.GetValue(event_object.target_object)}");
-                
+
                 return (bool?)propertyInfo.GetValue(event_object.target_object);
             }
             return null;//null as default if feature not found
@@ -167,7 +176,7 @@ namespace DDPM.UI.Common
 
             if (DeviceManagerSA == null)
                 return (isEnabled, visibility);
-            
+
             bool? isLocked = GetUINotifyPropertyValue_Boolean("Lock_Setting_RestoreDefaults", e);
             if (isLocked != null)
             {
@@ -176,7 +185,7 @@ namespace DDPM.UI.Common
                 Trace.WriteLine($"Apply Global restore factory default(Lock) : {isLocked}");
                 if ((bool)isLocked == false)
                 {
-                    DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                    DDPMSettings data = ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                     if (data != null)// && data.LockSettings.Lock_Audio_RestoreFactoryDefaults)
                     {
                         bool retrieve = false;
@@ -206,7 +215,7 @@ namespace DDPM.UI.Common
             if (isLocked != null)
             {
                 Trace.WriteLine($"Apply restore factory default(Lock) to feature {device_lock_string} : {isLocked}");
-                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (data.LockSettings.Lock_Setting_RestoreDefaults)
@@ -223,6 +232,78 @@ namespace DDPM.UI.Common
                 }
             }
             return (isEnabled, visibility);
+        }
+
+        public static bool WriteDDPMSettings(DDPMSettings data)
+        {
+            if (data == null || data.LockSettings == null || data.UserSettings == null)
+                return false;
+
+            Settings_Cache = data;
+
+            if (DeviceManagerSA == null)
+                return false;
+
+            return DeviceManagerSA.SetAppConfigData(data).Result;
+        }
+
+        //Default data from cache, load from user subagent if force_reload = true
+        public static DDPMSettings ReadDDPMSettings(bool reload_from_SA = false)
+        {
+            if (reload_from_SA)
+            {
+                if (DeviceManagerSA == null)
+                    return null;
+
+                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    Settings_Cache = data;
+                }
+            }
+            return Settings_Cache;
+        }
+        //default theme is dark
+        public static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+        public static void updateMergedDictionarie()
+        {
+            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            if (previousOsTheme == oSTheme) return;
+            //ar regTheme = RegistryWrapper.CurrentUser.GetRegKeyInt(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme");
+            string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
+            string lightModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle_light.xaml";
+            ResourceDictionary? darkResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
+            ResourceDictionary? lightResourceDictionary = System.Windows.Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(lightModeStyle));
+            System.Windows.Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
+            System.Windows.Application.Current.Resources.MergedDictionaries.Remove(lightResourceDictionary);
+            switch (oSTheme)
+            {
+                case OSThemeEnum.Dark:
+                    darkResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(darkModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
+
+                    Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    break;
+                case OSThemeEnum.Light:
+
+                    lightResourceDictionary = new ResourceDictionary()
+                    {
+                        Source = new Uri(lightModeStyle)
+                    };
+                    System.Windows.Application.Current.Resources.MergedDictionaries.Add(lightResourceDictionary);
+
+                    Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                    break;
+            }
+            previousOsTheme = oSTheme;
+        }
+
+        public static bool isDarkMode()
+        {
+            return UXSystemParameters.Instance.OSTheme == OSThemeEnum.Dark;
         }
     }
 }

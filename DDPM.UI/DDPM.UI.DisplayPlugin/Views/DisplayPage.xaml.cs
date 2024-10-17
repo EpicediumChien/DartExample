@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Interfaces.ViewModels;
@@ -102,6 +103,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 _deviceManagerSA.DDCCIStatuschanged += _deviceManagerSA_DDCCIStatuschanged;
                 _deviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                //[Dean 1001]for hotkey to set current selected display device to SA
+                if(_ivm.SelectedHomeDevice != null && _ivm.SelectedHomeDevice.MonitorInfo != null)
+                    _deviceManagerSA.SetLastSelectedMonitorFromUI(_ivm.SelectedHomeDevice.MonitorInfo);
             }
         }
 
@@ -130,6 +135,25 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
                 }
             }
+
+            ApplyockStatusFromSettingsFile();
+            //basePage.SetLockModuleGroup(Constants.GroupName_EasyArrange, true);
+            //basePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
+        }
+
+        //Only for init (entering Landing page)
+        private void ApplyockStatusFromSettingsFile()
+        {
+            DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+            if (data == null)
+                return;
+            if (data.UserSettings == null)
+                return;
+
+            bool isLocked = data.LockSettings.Lock_Display_ActiveInputSource;
+            basePage.SetLockModuleGroup(Constants.GroupName_InputSource, isLocked);
+            isLocked = data.LockSettings.Lock_Display_EasyArrangeLayout;
+            basePage.SetLockModuleGroup(Constants.GroupName_EasyArrange, isLocked);
         }
 
         #endregion Init
@@ -243,7 +267,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //         Header[2] Display Properties,    DisplayPropertiesModule
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "DisplaySettings",
+                GroupName = Constants.GroupName_DisplaySettings, // "DisplaySettings",
                 VbarText = Strings.VbarText_DisplaySettings,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_DisplaySettings"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Settings.png")
@@ -310,7 +334,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //         Header[1] PIP/PBP,   PipPbpModule
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "InputSource",
+                GroupName = Constants.GroupName_InputSource, // "InputSource",
                 VbarText = Strings.VbarText_InputSource,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_InputSource"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.InputSource.png")
@@ -362,7 +386,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //         Header[2] Settings,      EzSettingsModule
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "EasyArrange",
+                GroupName = Constants.GroupName_EasyArrange, // "EasyArrange",
                 VbarText = Strings.VbarText_EasyArrange,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_EasyArrange"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.EA.png")
@@ -383,7 +407,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Easy Memory", new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
-                moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
+                moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule(_vmDisplay));
+                //moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* EzMemoryModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -392,8 +417,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //if (moduleCapabilities.EzSettings)
             {
                 sw.Restart();
-                //moduleGroup.AddHeader("Settings", new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
-                moduleGroup.AddHeader(Strings.RightViewHeader_Settings, new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
+                moduleGroup.AddHeader(Strings.RightViewHeader_Settings, typeof(EzSettingsModule));
+                //moduleGroup.AddHeader(Strings.RightViewHeader_Settings, new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* EzSettingsModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -409,7 +434,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //         Header[1] Vision Engine, VisionEngineModule
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Gaming",
+                GroupName = Constants.GroupName_Gaming, // "Gaming",
                 VbarText = Strings.VbarText_Gaming,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_Gaming"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Gaming.png")
@@ -444,7 +469,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //         Header[0] KVM,   KvmModule
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "KVM",
+                GroupName = Constants.GroupName_KVM, // "KVM",
                 VbarText = Strings.VbarText_KVM,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_KVM"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.KVM.png")
@@ -469,7 +494,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //         Header[0] Others,   DisplayOthersModule
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Others",
+                GroupName = Constants.GroupName_DisplayOthers, //  "Others",
                 VbarText = Strings.VbarText_DisplayOthers,
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_DisplayOthers"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Others.png")
@@ -829,33 +854,23 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         #region Lock/unlock event
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ActiveInputSource", e);
-            if (isLocked != null)
+            bool? isInputSourceLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ActiveInputSource", e);
+            bool? isEALocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_EasyArrangeLayout", e);
+
+            Dispatcher.Invoke(new Action(() =>
             {
-                Dispatcher.Invoke(new Action(() =>
+                //Apply lock status to VBarItem
+                if (isInputSourceLocked != null)
                 {
-                    InputSourceViewModel vm = (InputSourceViewModel)this.DataContext;
-                    if (vm != null)
-                    {
-                        //Please handle the tap stop and click disable at here
-                        Trace.WriteLine($"Apply InputSource(Lock) : {isLocked}");
-                    }
-                }));
-            }
-            //Wait for CLI ready
-            /*isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_EasyArrangeLayout", e);
-            if (isLocked != null)
-            {
-                Dispatcher.Invoke(new Action(() =>
+                    basePage.SetLockModuleGroup(Constants.GroupName_InputSource, isInputSourceLocked == true);
+                    Trace.WriteLine($"Apply InputSource(Lock) : {isInputSourceLocked}");
+                }
+                if (isEALocked != null)
                 {
-                    InputSourceViewModel vm = (InputSourceViewModel)this.DataContext;
-                    if (vm != null)
-                    {
-                        //Please handle the tap stop and click disable at here
-                        Trace.WriteLine($"Apply InputSource(Lock) : {isLocked}");
-                    }
-                }));
-            }*/
+                    basePage.SetLockModuleGroup(Constants.GroupName_EasyArrange, isEALocked == true);
+                    Trace.WriteLine($"Apply EasyArrange(Lock) : {isEALocked}");
+                }
+            }));
         }
         #endregion
 

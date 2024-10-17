@@ -119,6 +119,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private bool _isDebuggingOnWindowStartMoving = true;
+        private int _isRefresCellsCountAfterStartMoving = 0;
 
         private void OnWindowStartMovingProc(IntPtr hWnd)
         {
@@ -130,6 +131,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _vmArrange.hWndForeground = hWnd;
 
+            //Step_1, determine the moving window is allowed to move
+            //
             Process process;
             string msg;
             if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
@@ -172,16 +175,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 _vmArrange.LogInfo($"@OnWindowStartMovingProc, {_vmArrange.StartMovingMsg}");
             }
 
+            //Step_2, Set flags to show windows
+            //
+
             _vmArrange.RefreshScreenScale();
-            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            //var varX = (int)dpiXProperty.GetValue(null, null);
-            //double dpiX = (double)varX / (double)96;
             Trace.WriteLine($"ScreenScale={_vmArrange.ScreenScale}");
-            //_vmArrange.ScreenScale = dpiX;
             _vmArrange.IsMoving = true;
             _vmArrange.StartMovingMsg = "OK";
+            _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+
+            
+            //Temporary always update
+            if (_vmArrange.IsAwsWindowVisible)
+            {
+                if (_vmArrange.AwsWindow != null)
+                {
+                    _vmArrange.AwsWindow.OnStartMoving();
+                }
+            }
+            //_vmArrange.DetermineWorkWindowVisibility();
 
             _vmArrange.RefreshCellRects();
+            _isRefresCellsCountAfterStartMoving = 0;
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
@@ -193,6 +208,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _vmArrange.IsMoving = false;
             _vmArrange.StartMovingMsg = "";
+
+            _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+            //_vmArrange.DetermineWorkWindowVisibility();
 
             if (!isWorkUIShowing)
                 return;
@@ -211,9 +229,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             Rect rcArrange = _vmArrange.HoveringCellObj.rc;
 
+            if (_vmArrange.HoveringWindow.Equals("aws"))
+                rcArrange = _vmArrange.AwsWindow.CalculateHoveringCellArrangeRect();
+
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
-            rcArrange.Inflate(6, 6);
-            WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            if (_vmArrange.EzSettings.IsWidthoutGap)
+            {
+                rcArrange.Inflate(6, 6);
+            }
+            if (!rcArrange.IsEmpty)
+                WinEventHook.SetWindowPosition(hWnd, rcArrange);
         }
 
         private void OnLocationChangedProc(int x, int y)
@@ -224,8 +249,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.xCursor = x;
             _vmArrange.yCursor = y;
 
+            //_vmArrange.DetermineWorkWindowVisibility();
+            _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+
             if (!_vmArrange.IsWorkUIShowing)
                 return;
+
+            if (_isRefresCellsCountAfterStartMoving <= 20)
+            {
+                _isRefresCellsCountAfterStartMoving++;
+                _vmArrange.RefreshCellRects();
+            }
 
             CellObj orgCell = _vmArrange.HoveringCellObj;
             CellObj? newCell = _vmArrange.DetermineHoveringCellObj(x, y);
@@ -239,7 +273,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if (_vmArrange.HoveringCellObj != null)
                     strNew = _vmArrange.HoveringCellObj.Name;
 
-                //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+                Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
             }
             if (_vmArrange.HoveringCellObj != null)
             {

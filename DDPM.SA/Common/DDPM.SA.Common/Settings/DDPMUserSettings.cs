@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
+using System;
 using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
@@ -44,7 +46,7 @@ namespace DDPM.SA.Common.Settings
 
         //private static DDPMUserSettings userSettings;
 
-        public double Version { get; set; }
+        public double Version { get; set; } = 1.0; //consider how to control the setting's version in the feature
         public int Language { get; set; }
         public bool IsSynchronizemonitor { get; set; } = false;
         public string Schedule { get; set; } = string.Empty;
@@ -61,7 +63,6 @@ namespace DDPM.SA.Common.Settings
         //public string strUSBKVMPCsList { get; set; }
         public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
 
-        //public bool isTelemetryConsentAllow { get; set; } = true; //global setting -> Analytics page -> checkbox enable/disable
         //FW Update
         public bool LockFWU_UI { get; set; }
 
@@ -72,6 +73,25 @@ namespace DDPM.SA.Common.Settings
         //public bool isOnNKVM { get; set; } = false;
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
         public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+
+
+        //Robert_Lin added for Display / Easy Arrange / Settings (EzSettings module)
+        //These settings are per-user settings and will apply to all monitors
+        #region EzSettings
+        //Recent Hotkey settings: will save to Hotkey settings, implemented by Gavin Liu
+
+        //Robert_Lin, 2024-10-11 EasyArrange Custom Layouts, move from MonitorSettings
+        public SplitJson[] EACustomList { get; set; }
+
+        public EzSettings EzSettings { get; set; } = new EzSettings();
+
+        #endregion EzSettings
+
+        #region EasyMemory
+
+        public List<EAProfileDDPM> EAProfile { get; set; }// = new EAProfile();
+
+        #endregion EasyMemory
 
     }
 }

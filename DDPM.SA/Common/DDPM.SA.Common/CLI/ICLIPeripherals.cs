@@ -41,14 +41,15 @@ namespace DDPM.SA.Common
             int retvalue = 0;
             Name = di.Name;
             Model = di.ModelNumber;
-            //Guid = di.ID.ToString();
-            Guid = "DellPeripheral.Webcam.0";
+            Guid = di.ID.ToString();
+            //Guid = "DellPeripheral.Webcam.0";
             Command = "GET";
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
 
             switch (targetFeature)
             {
                 case "FIELDOFVIEW":
+                    Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyFOVSupportedByDTP(Guid).Result)
                     {
                         retvalue = _devMgr.GetFieldOfViewValueByDTP(Guid).Result;
@@ -65,6 +66,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "HDR":
+                    Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
                     {
                         retcode = _devMgr.GetIsHDROnValueByDTP(Guid).Result;
@@ -82,7 +84,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "ANTIFLICKER":
-
+                    Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(Guid).Result)
                     {
                         retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
@@ -100,6 +102,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "AIAUTOFRAMING":
+                    Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(Guid).Result)
                     {
                         retcode = _devMgr.GetIsAutoFramingOnValueByDTP(Guid).Result;
@@ -117,17 +120,28 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "MICSWITCH":
-                    Result = "PASS";
-                    Message = "N/A";
-                    Value = "N/A";
-                    Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
-                    TargetFeature = targetFeature;
+                    if (di.IsMicEnumerationSupported)
+                    {
+                        retcode = di.IsMicEnumerationOn;
+                        Value = (retcode) ? "ON" : "OFF";
+                        Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support MicSwitch";
+                    }
                     return;
                 case "PRESENCEDETECTION":
+                    retcode = _devMgr.GetIsProximitySensorEnable(Guid).Result;
+                    Value = (retcode) ? "ON" : "OFF";
+                    Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
                     Result = "PASS";
                     Message = "N/A";
-                    Value = "N/A";
-                    Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
                     TargetFeature = targetFeature;
                     return;
                 case "FWVERSION":

@@ -28,6 +28,7 @@ namespace DDPM.Easy.Common
 
         public bool IsWorkMode => SplitMode == eSplitModes.Work;
         public bool IsIconMode => SplitMode == eSplitModes.Icon;
+        public bool IsAwsMode => SplitMode == eSplitModes.AWS;
 
         #endregion SplitMode
 

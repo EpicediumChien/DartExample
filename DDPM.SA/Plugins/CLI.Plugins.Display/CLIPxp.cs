@@ -240,6 +240,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = rawValue;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
@@ -271,6 +273,8 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_PxpMode response = new CLI_RESPONSE_PxpMode();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
 
                 //1 Get supported modes
@@ -323,6 +327,8 @@ namespace CLI.Plugins.Display
             // Case_4. pxpMode is hexdecimal integiter, for example: -value=0x22
             // Case_5. pxpArg or pxpMode is not a valide value => return error
 
+            bool isOK = false;
+            InputSourceObj? sub1 = null, sub2 = null, sub3 = null;
             //Find the first -value option
             CommandType_Option? valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("value", StringComparison.OrdinalIgnoreCase));
 
@@ -343,7 +349,7 @@ namespace CLI.Plugins.Display
             }
 
             // more than one -value => return error.
-            if (_cmdLineInput.Options.Count != 1)
+            if (_cmdLineInput.Options.Count > 2)
             {
                 CLI_RESPONSE response = new CLI_RESPONSE()
                 {
@@ -437,15 +443,31 @@ namespace CLI.Plugins.Display
             foreach (int idx in _monitorIndeies)
             {
                 bool isPass = _devMgr.SetPbpMode(_AllInfoMonitors[idx], (UInt16)pxpModeObj.ModeCode).Result;
+                if (_cmdLineInput.Options.Count == 2)
+                {
+                    if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                    {
+                        string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                        if (ss.Length == 2)
+                        {
+                            sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                            sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                            sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                            isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
+                        }
+                    }
+                }
                 CLI_RESPONSE response = new CLI_RESPONSE()
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Index = change_0base_to_1base(idx.ToString());
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
-                if (isPass)
+                if (isPass || isOK)
                 {
                     response.Result = "PASS";
                     response.Message = "";
@@ -474,6 +496,8 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
 
                 List<InputSourceObj> inputSources = _devMgr.GetSubInputs(_AllInfoMonitors[idx]).Result;
@@ -533,42 +557,37 @@ namespace CLI.Plugins.Display
             // Case_2. Find matched inputSource from input Source List
             //         "HDMI" = "HDMI1"; "USBC" = "USB-C" = "USB-C1"; ,....
 
-            //Find the first -value option
-            string sub1Name = "";
+            //Find the first -value option            
             CommandType_Option? valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("value", StringComparison.OrdinalIgnoreCase));
+            string[] ss = null;
+
+            ss = _cmdLineInput.Options[0].Option_Value.Split(new string[] { "," }, StringSplitOptions.None);
             //-value is specified
-            if (valueOption != null)
+            if (ss.Length >= 1 && ss.Length < 2)
             {
-                sub1Name = valueOption.Option_Value;
-            }
-            else
-            {
-                valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("sub1", StringComparison.OrdinalIgnoreCase));
-                if (valueOption != null)
-                    sub1Name = valueOption.Option_Value;
+                if (ss[0] != null)
+                {
+                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                }
             }
 
-            //If need to set sub1
-            if (!String.IsNullOrWhiteSpace(sub1Name))
+            if (ss.Length > 1 && ss.Length < 3)
             {
-                //Find the first matched InputSourceObj
-                sub1 = InputSourceObj.FindFirstByName(sub1Name);
+                if (ss[1] != null)
+                {
+                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                    sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                }
             }
 
-            //Phase 2. -sub2=inputSource
-            valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("sub2", StringComparison.OrdinalIgnoreCase));
-            if (valueOption != null)
+            if (ss.Length > 2 && ss.Length < 4)
             {
-                //Find the first matched InputSourceObj
-                sub2 = InputSourceObj.FindFirstByName(valueOption.Option_Value);
-            }
-
-            //Phase 3. -sub3=inputSource
-            valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("sub3", StringComparison.OrdinalIgnoreCase));
-            if (valueOption != null)
-            {
-                //Find the first matched InputSourceObj
-                sub3 = InputSourceObj.FindFirstByName(valueOption.Option_Value);
+                if (ss[2] != null)
+                {
+                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                    sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                    sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[2]));
+                }
             }
 
             //Phase 4. If no any option
@@ -595,6 +614,8 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.Sub1InputSource = (sub1 == null) ? "" : sub1.Name;
                 response.Sub2InputSource = (sub2 == null) ? "" : sub2.Name;
@@ -622,6 +643,51 @@ namespace CLI.Plugins.Display
                 return (int)CLI_ExitCode.functional_error;
         }
 
+        private static string get_inputsource_type(string index)
+        {
+            switch (index)
+            {
+                case "HDMI": return "HDMI-1";
+                case "HDMI1": return "HDMI-1";
+                case "HDMI-1": return "HDMI-1";
+
+                case "HDMI2": return "HDMI-2";
+                case "HDMI-2": return "HDMI-2";
+
+                case "DP": return "DISPLAYPORT-1";
+                case "DP1": return "DISPLAYPORT-1";
+                case "DP-1": return "DISPLAYPORT-1";
+                case "DISPLAYPORT": return "DISPLAYPORT-1";
+                case "DISPLAYPORT1": return "DISPLAYPORT-1";
+                case "DISPLAYPORT-1": return "DISPLAYPORT-1";
+
+                case "DP2": return "DISPLAYPORT-2";
+                case "DP-2": return "DISPLAYPORT-2";
+                case "DISPLAYPORT2": return "DISPLAYPORT-2";
+                case "DISPLAYPORT-2": return "DISPLAYPORT-2";
+
+                case "USBC": return "USB-C1";
+                case "USBC1": return "USB-C1";
+                case "USB-C": return "USB-C1";
+                case "USB-C1": return "USB-C1";
+
+                case "USBC2": return "USB-C2";
+                case "USB-C2": return "USB-C2";
+
+                case "TBT": return "Thunderbolt-1";
+                case "TBT1": return "Thunderbolt-1";
+                case "THUNDERBOLT": return "Thunderbolt-1";
+                case "THUNDERBOLT1": return "Thunderbolt-1";
+                case "THUNDERBOLT-1": return "Thunderbolt-1";
+
+                case "TBT2": return "Thunderbolt-2";
+                case "THUNDERBOLT2": return "Thunderbolt-2";
+                case "THUNDERBOLT-2": return "Thunderbolt-2";
+
+                default: return "Unknown";
+            }
+        }
+
         //CmdLine: -set -name=Display.PxPZoom
         private static int SetPxpZoom()
         {
@@ -635,6 +701,8 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
@@ -674,6 +742,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = (rc.value).ToString();
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
@@ -705,9 +775,11 @@ namespace CLI.Plugins.Display
             //Find the first -value option
             CommandType_Option? valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("value", StringComparison.OrdinalIgnoreCase));
             //Dean 0626 fix SAST issue
+            string rawValue = string.Empty;
             if (valueOption == null)
             {
-                CLI_RESPONSE response = new CLI_RESPONSE()
+                rawValue = "1";
+                /*CLI_RESPONSE response = new CLI_RESPONSE()
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
@@ -718,9 +790,12 @@ namespace CLI.Plugins.Display
                 response.Result = "No keyword -value";
                 response.Message = "source=target in (-value=source,target).";
                 _responses.Add(response);
-                return (int)CLI_ExitCode.nothing_to_do;
+                return (int)CLI_ExitCode.nothing_to_do;*/
             }
-            string rawValue = valueOption.Option_Value;
+            else
+            {
+                rawValue = valueOption.Option_Value;
+            }
             int target = 0;
 
             //Not Case_1
@@ -766,6 +841,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Index = change_0base_to_1base(idx.ToString());
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
                 if (isPass)

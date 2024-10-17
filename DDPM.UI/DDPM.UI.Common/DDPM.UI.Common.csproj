@@ -37,10 +37,12 @@
     <None Remove="Resources\CameraColorImage.png" />
     <None Remove="Resources\CameraControl.png" />
     <None Remove="Resources\CameraPresenceDetection.png" />
+    <None Remove="Resources\CBvector.png" />
     <None Remove="Resources\Chat.png" />
     <None Remove="Resources\Close.png" />
     <None Remove="Resources\Connect_M_K.png" />
     <None Remove="Resources\DP.png" />
+    <None Remove="Resources\EzAdd.png" />
     <None Remove="Resources\G.png" />
     <None Remove="Resources\HD22Q.png" />
     <None Remove="Resources\HDMI.png" />
@@ -79,11 +81,13 @@
     <None Remove="Resources\Dongle.png" />
     <None Remove="Resources\Icon_Info1.png" />
     <None Remove="Resources\info.png" />
+    <None Remove="Resources\LightMode\Port.png" />
     <None Remove="Resources\Loading.png" />
     <None Remove="Resources\Lock.png" />
     <None Remove="Resources\Luminance.png" />
     <None Remove="Resources\Mic.png" />
     <None Remove="Resources\Microphone.png" />
+    <None Remove="Resources\Monitor_Outline.png" />
     <None Remove="Resources\popup_ArrowCorner.png" />
     <None Remove="Resources\Port.png" />
     <None Remove="Resources\Product_Display.png" />
@@ -182,6 +186,12 @@
     <Resource Include="Resources\AW.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\CBvector.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\EzAdd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\G.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -203,7 +213,11 @@
     <Resource Include="Resources\Headset_GooglePlayStoreQR.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\LightMode\Port.png" />
     <Resource Include="Resources\Lock.png" />
+    <Resource Include="Resources\Monitor_Outline.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\SB522A.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -402,8 +416,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DCF.Security" Version="2.4.2.1" />
     <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
-    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
   </ItemGroup>
 

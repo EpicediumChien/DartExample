@@ -55,6 +55,7 @@ echo "{F6909D0F-C70B-4B84-8EC3-9E506550A998}"="%BaseDir%\\DDPM.Subagent\\DDPM.SA
 echo "{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}"="%BaseDir%\\DDPM.Subagent\\DDPM.SA.Plugins.CLIManager.dll">>%OutFile%
 echo "{F716E8C1-1F8D-4BC6-83DA-51CD26031335}"="%BaseDir%\\DDPM.Subagent\\DDPM.SA.Plugins.SWUpdate.dll">>%OutFile%
 echo "{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}"="%BaseDir%\\DDPM.Subagent\\DDPM.SA.Plugins.FWUpdate.dll">>%OutFile%
+echo "{BFAA77E8-CADF-4CE4-9473-363E65C6B4E0}"="%BaseDir%\\DDPM.Subagent\\DDPM.SA.Plugins.PlatinumSDK.dll">>%OutFile%
 echo.>>%OutFile% 
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}]>>%OutFile%
 echo "ExecutablePath"="%BaseDir%\\DDPM.Subagent.User\\DDPM.Subagent.User.exe">>%OutFile%
@@ -63,6 +64,7 @@ echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A3
 echo.>>%OutFile% 
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}\PublishingAssemblies]>>%OutFile%
 echo "{A409E0AF-E2C3-4568-A194-B2D173DA26D4}"="%BaseDir%\\DDPM.Subagent.User\\VcpCore.Plugins.dll">>%OutFile%
+echo "{EEB96C41-01ED-48DE-A7C7-B01E7A081CAD}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.TelementryScheduler.dll">>%OutFile%
 echo "{39A9CF54-2EC0-434E-A0BF-49FF43F8C824}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.DisplayManager.dll">>%OutFile%
 echo "{9829A9C5-E129-488A-A522-B8FF705051EE}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.DeviceManager.dll">>%OutFile%
 echo "{CF223214-FAF4-4595-8ED4-C6C1F65FA02C}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.Peripherals.dll">>%OutFile%

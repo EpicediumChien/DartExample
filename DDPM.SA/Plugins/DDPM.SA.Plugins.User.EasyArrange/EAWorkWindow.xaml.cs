@@ -1,5 +1,7 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
+using nsWinEventHook;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,11 +18,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     {
         #region Private members
 
-        private ArrangeVM VM;
-        private MonitorInfo _mi;
+        private ArrangeVM _vm;
+        private MonitorInfo _attachedMonitor;
         private Screen _screen;
         private readonly List<MonitorInfo> _monitors;
 
+        //Per-monitor settings
+        private bool _isWidthoutGap = true;
+        private bool _isOnlyAllowWhenShiftKeyPressed = false;
+        private bool _IsAwsEnabled = false;
         #endregion Private members
 
         #region ctor
@@ -28,18 +34,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public EAWorkWindow(ArrangeVM vm, Screen scr, List<MonitorInfo> monitors)
         {
             InitializeComponent();
-            VM = vm;
+            _vm = vm;
             _screen = scr;
             _monitors = monitors;
             DataContext = vm;
-            VM.IsMovingChanged += VM_IsMovingChanged;
+            _vm.IsMovingChanged += VM_IsMovingChanged;
         }
         public EAWorkWindow(ArrangeVM vm)
         {
             InitializeComponent();
-            VM = vm;
+            _vm = vm;
             DataContext = vm;
-            VM.IsMovingChanged += VM_IsMovingChanged;
+            _vm.IsMovingChanged += VM_IsMovingChanged;
             Left = -99999;
             Top = -99999;
             Width = 10;
@@ -63,7 +69,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Init
 
-        #region Screen
+        #region [Input] Screen
         public void SetScreen(Screen screen)
         {
             _screen = screen;
@@ -78,9 +84,23 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return _screen.DeviceName;
             }
         }
+        #endregion [Input] Screen
+
+        #region [Input] AttachedMonitor
+        /// <summary>
+        /// Used to reload settings
+        /// </summary>
+        public MonitorInfo AttachedMonitor
+        {
+            get => _attachedMonitor;
+            set
+            {
+                _attachedMonitor = value; 
+            }
+        }
         #endregion
 
-        #region Working SplitCtrl
+        #region [Input] Working SplitCtrl
 
         private ISplitCtrl? _workingSplit = null;
         private bool _isSplitCtrl0A = false;
@@ -95,6 +115,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     splitCtrl.Content = null;
                     fadeOutCtrl.Content = null;
                     return;
+                }
+
+                if ((cellCount == 0) && (splitKey == 'B'))
+                {
+                    SplitCtrl0B sp0B = new SplitCtrl0B();
+                    _workingSplit = sp0B;
+                    _workingSplit.SplitMode = eSplitModes.Work;
+
+                    if (settings == null)
+                        _workingSplit.Settings = new List<double>();
+                    else
+                        _workingSplit.Settings = new List<double>(settings);
+
+                    sp0B.ApplySettingsToCellList(_screen.Bounds);
+
+                    _workingSplit.IsEditable = false;
+                    _workingSplit.IsVertical = IsVertical;
+                    splitCtrl.Content = _workingSplit;
                 }
                 else
                 {
@@ -123,6 +161,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         fadeSplit.Settings = new List<double>();
                     else
                         fadeSplit.Settings = new List<double>(settings);
+
+                    if ((cellCount == 0) && (splitKey == 'B'))
+                    {
+                        SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
+                        sp0b.ApplySettingsToCellList(_screen.Bounds);
+                    }
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = IsVertical;
                     fadeOutCtrl.Content = fadeSplit;
@@ -138,7 +182,72 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return true;
         }
 
-        #endregion Working SplitCtrl
+        private bool BuildAddedCustomLayout(List<double>? settings = null)
+        {
+            return false;
+            //if (settings == null)
+            //    return false;
+            //if (settings.Count == 0) 
+            //    return false;
+            //if (_screen == null)
+            //    return false;
+            
+            ////settings[0] is BorderCount
+            //int borderCount = (int)settings[0];
+            //if (borderCount <= 0)
+            //    return false;
+
+            ////Check the settings.Count should be (borderCount*4 + 4)
+            //if (settings.Count != ((borderCount + 1) * 4))
+            //    return false;
+
+            ////settings[1] is screenScale
+            //double orgScreenScale = settings[1];
+            ////settings[1] is screenWidth
+            //double orgWidth = settings[2];
+            ////settings[2] is screenHeight
+            //double orgHeight = settings[3];
+
+            //for (int idx = 0; idx < borderCount; idx++)
+            //{
+            //    Border border = new Border();
+            //}
+        }
+
+        public bool IsSameWorkSplit(ISplitCtrl? splitCtrl)
+        {
+            if (_workingSplit == null)
+                return false;
+            if (splitCtrl == null)
+                return false;
+
+            if ((_workingSplit.CellCount == splitCtrl.CellCount) && (_workingSplit.SplitKey == splitCtrl.SplitKey)
+                && (_workingSplit.Settings.SequenceEqual(splitCtrl.Settings)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void SetWorkSplitHoveringCellName(string cellName)
+        {
+            if (_workingSplit == null)
+                return;
+            _workingSplit.HoveringCell = cellName;
+        }
+
+        #endregion [Input] Working SplitCtrl
+
+        #region [Input] UI Settings
+        public bool IsOnlyAllowWhenShiftKeyPressed
+        {
+            get => _isOnlyAllowWhenShiftKeyPressed;
+            set
+            {
+                _isOnlyAllowWhenShiftKeyPressed = value;
+            }
+        }
+        #endregion
 
         #region WorkWindow Runtime Infos
 
@@ -234,10 +343,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             this.Dispatcher.Invoke(() =>
             {
-                //DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
-                //double scale = dpiScale.PixelsPerDip;
-                //VM.ScreenScale = scale;
-                //Trace.WriteLine($"WorkWin.Scale={scale}");
+                /*
+                if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
+                {
+                    SplitCtrl2A ctrl = _workingSplit as SplitCtrl2A;
+                    foreach (CellBorder cellBd in ctrl.CellBorders)
+                    {
+                        cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                    }
+                }
+                if (_vm.AwsIcon1.CtrlClass.Equals("SplitCtrl2C"))
+                {
+                    SplitCtrl2C ctrl = _vm.AwsIcon1 as SplitCtrl2C;
+                    foreach (CellBorder cellBd in ctrl.CellBorders)
+                    {
+                        cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                    }
+                }
+                */
+                foreach(CellBorder cellBd in _workingSplit.CellBorders)
+                {
+                    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                }
 
                 foreach (CellObj objCell in _workingSplit.CellList)
                 {
@@ -264,9 +391,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return Rect.Empty;
 
             System.Windows.Point ptTopLeft = ctrl.PointToScreen(new System.Windows.Point(0, 0));
-            double w = ctrl.ActualWidth * VM.ScreenScale;
-            double h = ctrl.ActualHeight * VM.ScreenScale;
-            Trace.WriteLine($"ctrlActual={ctrl.ActualWidth}x{ctrl.ActualHeight}; Scale={VM.ScreenScale} => {w}x{h}");
+            double w = ctrl.ActualWidth * _vm.ScreenScale;
+            double h = ctrl.ActualHeight * _vm.ScreenScale;
+            Trace.WriteLine($"ctrlActual={ctrl.ActualWidth}x{ctrl.ActualHeight}; Scale={_vm.ScreenScale} => {w}x{h}");
             return new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
 
@@ -288,9 +415,100 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_workingSplit == null)
                 return null;
 
+
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
             double scale = dpiScale.PixelsPerDip;
 
+            bool isHandled = false;
+
+            _workingSplit.HoveringCell = "";
+
+            /*
+            if (_workingSplit.CtrlClass.Equals("SplitCtrl2C"))
+            {
+                SplitCtrl2C ctrl = _workingSplit as SplitCtrl2C;
+                foreach (CellBorder cellBd in ctrl.CellBorders)
+                {
+                    if (cellBd.rect.Contains(x, y))
+                    {
+                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
+                        cellBd.IsHover = true;
+                        isHandled = true;
+                    }
+                    else
+                    {
+                        cellBd.IsHover = false;
+                    }
+                }
+            }
+
+            if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
+            {
+                SplitCtrl2A ctrl = _workingSplit as SplitCtrl2A;
+                foreach (CellBorder cellBd in ctrl.CellBorders)
+                {
+                    if (cellBd.rect.Contains(x, y))
+                    {
+                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
+                        cellBd.IsHover = true;
+                        isHandled = true;
+                    }
+                    else
+                    {
+                        cellBd.IsHover = false;
+                    }
+                }
+            }
+            */
+
+            //For AddedCustomLayout
+            if (_workingSplit.IsAddedCustomLayout)
+            {
+                CellObj? hoverCell = null;
+                foreach (CellObj objCell in _workingSplit.CellList)
+                {
+                    string tag = "N";
+                    if (hoverCell == null)
+                    {
+                        if (objCell.rc.Contains(x, y))
+                        {
+                            hoverCell = objCell;
+                            tag = "H";
+                            _workingSplit.HoveringCell = objCell.Name;
+                            isHandled = true;
+                        }
+                    }
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        objCell.bd.Tag = tag;
+                    });
+
+                }
+                return hoverCell; ;
+            }
+
+            foreach(CellBorder cellBd in _workingSplit.CellBorders)
+            {
+                if (isHandled)
+                {
+                    cellBd.IsHover = false;
+                    continue;
+                }
+
+                if (cellBd.rect.Contains(x, y))
+                {
+                    _vm.AwsIcon1.HoveringCell = cellBd.CellName;
+                    cellBd.IsHover = true;
+                    isHandled = true;
+                }
+                else
+                {
+                    cellBd.IsHover = false;
+                }
+            }
+
+            //For other layouts
             foreach (CellObj objCell in _workingSplit.CellList)
             {
                 if (objCell.rc.Contains(x, y))
@@ -298,8 +516,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _workingSplit.HoveringCell = objCell.Name;
                     return objCell;
                 }
-            }
-            _workingSplit.HoveringCell = "";
+             }
+
             return null;
         }
 
@@ -386,7 +604,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             sb.Completed += (o, s) =>
             {
-                VM.RefreshCellRects();
+                _vm.RefreshCellRects();
                 this.IsFading = false;
                 fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
@@ -434,6 +652,69 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Screen Orientation
 
-        public bool IsUsed { get; set; }  = false;
+        #region Used by ArrangeVM
+        public bool IsUsed { get; set; } = false;
+        #endregion
+
+        //public bool IsShown { get; set; } = false;
+        //public void DetermineWindowVisibility()
+        //{
+            //this.Dispatcher.Invoke(() =>
+            //{
+            //    if ((VM.IsMoving) && (VM.IsWorkUIEnabled))
+            //    {
+            //        bool isShiftPressed = WinEventHook.IsShiftPressed();
+
+            //        //IsOnlyAllowWhenShiftKeyPressed | isShiftPressed | Show UI?
+            //        //              N                   (Don't care)       Yes
+            //        //              Y                        Y             Yes
+            //        //              Y                        N              No
+            //        bool isUiShow = true;
+
+            //        if (VM.EzSettings.IsOnlyAllowWhenShiftKeyPressed && (!isShiftPressed))
+            //        {
+            //            isUiShow = false;
+            //        }
+            //        if (isUiShow)
+            //        {
+            //            splitGrid.Visibility = Visibility.Visible;
+            //            Topmost = true;
+            //            IsShown = true;
+            //            //this.Visibility = Visibility.Visible;
+            //            Trace.Write($"Screen[{ScreenDeviceName}] Show");
+            //            return;
+            //        }
+            //    }
+            //    splitGrid.Visibility = Visibility.Hidden;
+            //    IsShown = false;
+            //    //this.Visibility = Visibility.Hidden;
+            //    Trace.Write($"Screen[{ScreenDeviceName}] Hide");
+            //});
+//        }
+
+
+        //public bool ReloadMonitorSettings()
+        //{
+        //    if (AttachedMonitor == null)
+        //        return false;
+        //    EAMonitorSettings? eaSettings = VM.ReadEAMonitorSettings(AttachedMonitor);
+        //    if (eaSettings == null)
+        //    {
+        //        //Should be never to here
+        //        return false;
+        //    }
+ 
+        //    ////11 Apply settings to workWin
+        //    //int cellCount = eaSettings.SelectedSplit.CellCount;
+        //    //char splitKey = eaSettings.SelectedSplit.SplitKey;
+        //    //List<double> settings = eaSettings.SelectedSplit.Settings;
+        //    //VM.LogInfo($"  * SetWorkSplit: {eaSettings.SelectedSplit.ToString()}");
+        //    //SetWorkingSplit(cellCount, splitKey, settings);
+
+        //    _isWidthoutGap = eaSettings.IsWidthoutGap;
+        //    _isOnlyAllowWhenShiftKeyPressed = eaSettings.IsOnlyAllowWhenShiftKeyPressed;
+        //    _IsAwsEnabled = eaSettings.IsAwsEnabled;
+        //    return true;
+        //}
     }
 }

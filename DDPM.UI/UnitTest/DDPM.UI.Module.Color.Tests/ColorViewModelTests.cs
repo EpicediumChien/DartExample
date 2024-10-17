@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Collections.ObjectModel;
@@ -22,12 +23,17 @@ namespace DDPM.UI.Module.Color.Tests
         private MonitorInfo? monitorInfo;
         private ColorModule? colorModule;
         private ColorModule? myModleMock;
+        private IConsole? MyConsole;
+        private Mock<IConsole>? MyConsoleMock;
         private IDeviceManagerSA? deviceManagerSA;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
 
         [SetUp]
         public void Setup()
         {
+            MyConsoleMock = new Mock<IConsole>();
+            MyConsole = MyConsoleMock.Object;
+            DdpmCommonHelper.MyConsole = MyConsole;
             colorViewModel = new ColorViewModel();
             //privateObject = new PrivateObject(monitorInfo);
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -204,7 +210,7 @@ namespace DDPM.UI.Module.Color.Tests
         public void Testget_index_of_json_config_for_cur_monitor()
         {
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
+            temp.Add(new ColorPresetSettings() { ModelName = "123", SerialNumber = "111" });
             monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 
@@ -219,7 +225,7 @@ namespace DDPM.UI.Module.Color.Tests
         public void Testget_cur_monitor_preset_config()
         {
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
+            temp.Add(new ColorPresetSettings() { ModelName = "123", SerialNumber = "111" });
             monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 

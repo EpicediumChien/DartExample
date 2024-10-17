@@ -1,6 +1,8 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Interfaces;
+using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -24,38 +26,27 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public SettingsPage()
         {
             InitializeComponent();
-            DataContext = new SettingsPageViewModel();
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            SettingsPageViewModel _vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
+
+            if (_vm != null)
             {
-                vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
-                vm.SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
-                vm.RefreshUI();
-
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                Dispatcher.Invoke(new Action(() =>
+                DataContext = _vm;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                    if (vm != null)
-                    {
-                        vm.Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
-                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
-                        vm.Lock_UpdatesPage = data.LockSettings.Lock_Settings_Updates;
-                        Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
-                        vm.Lock_GeneralPage = data.LockSettings.Lock_Setting_ScreenNotification;
-                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
-                    }
-                }));
-
-
-                GeneralButton_Click(this, null);
+                    vm.Invoke_RefreshData();
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                    DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
+                }
             }
         }
 
         ~SettingsPage()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent -= GlobalSettingChangeEvent;
+            }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -101,6 +92,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }));
             }
         }
+        private void GlobalSettingChangeEvent(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                if (vm != null)
+                {
+                    vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    vm.RefreshUI();
+                }
+            }));
+        }
 
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -111,34 +114,28 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void GeneralButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(0);
-            Settings_General settings_General = new Settings_General();
-            vm.OpenFullView(settings_General);
         }
         private void UpdatesButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(1);
-            UpdatesPage updatesPage = new UpdatesPage();
-            vm.OpenFullView(updatesPage);
         }
         private void AnalyticsButton_Click(object sender, MouseButtonEventArgs e)
         {
             //Dean 0618 add analytics page
             vm.SetSelected(2);
-            vm.FullView = new AnalyticsPage();
+            
         }
 
         private void WidgetSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
-            Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();
-            vm.OpenFullView(settings_WidgetSettings);
+            
         }
 
         private void AboutButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(4);
-            Settings_About settings_About = new Settings_About();
-            vm.OpenFullView(settings_About);
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DDPM.ColorApp;
 using DDPM.SA.Common;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using VcpCore.Common;
 
@@ -20,6 +21,10 @@ namespace DDPM.MonitorBorker
 
         // jim add 20240605
         private bool b_AUTO_ColorPresetConfig = true;// Dean 0626 SAST issue. change to private without static
+
+        private bool b_SmartHDR_ON= false;
+
+        private List<string> _supported_preset = new List<string>();
 
         public MainWindow(IDeviceManagerSA _ddmLib, MonitorInfo m)
         {
@@ -58,12 +63,14 @@ namespace DDPM.MonitorBorker
         }
 
         // jim add 20240605
-        public void Set_AUTO_ColorPresetConfig(bool blAUTO)
+        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
         {
             b_AUTO_ColorPresetConfig = blAUTO;
+            b_SmartHDR_ON = blSmartHDR_ON;
+            _supported_preset = ColorPresetSupportList;
 
             if (ColorPresetWin != null) // 20240809 jim add
-                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig);
+                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig, b_SmartHDR_ON, _supported_preset);
         }
 
         // jim add 20240620

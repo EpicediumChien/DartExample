@@ -136,6 +136,14 @@ namespace DDPM.UI.Common.ViewModels
             }
             return null;
         }
+
+        public SplitItem? GetLatestItem()
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            return _splitList[ItemCount-1];
+        }
         #endregion Find
 
         #region Index
@@ -226,6 +234,7 @@ namespace DDPM.UI.Common.ViewModels
             OnPropertyChanged("SplitItem3");
             OnPropertyChanged("SplitItem4");
             RefreshPrevNextButtons();
+            RefreshAddCustomButton();
         }
 
         #endregion Split Items
@@ -264,7 +273,10 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (ItemCount <= 0)
                     return false;
-                if (IsIndexValid(IndexToItem0 + ItemsPerPage))
+                int addButton = 0;
+                if (HasAddButton)
+                    addButton = -1;
+                if (IsIndexValid(IndexToItem0 + ItemsPerPage + addButton))
                     return true;
                 else
                     return false;
@@ -279,7 +291,8 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool GoToNextPage()
         {
-            if (IsIndexValid(IndexToItem0 + ItemsPerPage))
+            int addButton = HasAddButton ? -1 : 0;
+            if (IsIndexValid(IndexToItem0 + ItemsPerPage + addButton))
             {
                 IndexToItem0 += ItemsPerPage;
                 RefreshDisplayItems();
@@ -349,5 +362,55 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         #endregion Screen Orientation
+
+        #region AddCustomLayoutButton
+        private bool _hasAddButton = false;
+        private int _addButtonColumn = 0;
+        private bool _isAddButtonVisible = false;
+
+        public bool HasAddButton
+        {
+            get => _hasAddButton;
+            set
+            {
+                SetProperty(ref _hasAddButton, value);
+                RefreshAddCustomButton();
+            }
+        }
+
+        public int AddButtonColumn
+        {
+            get => _addButtonColumn;
+            set => SetProperty(ref _addButtonColumn, value);
+        }
+
+        private void RefreshAddCustomButton()
+        {
+            if (HasAddButton)
+            {
+                //Display items in current page
+                int displayItemsInCurPage = ItemCount - IndexToItem0;
+                if (displayItemsInCurPage < ItemsPerPage)
+                {
+                    AddButtonColumn = displayItemsInCurPage;
+                    IsAddButtonVisible = true;
+                }
+                else
+                {
+                    IsAddButtonVisible = false;
+                }
+            }
+            else
+            {
+                IsAddButtonVisible = false;
+            }
+        }
+
+        public bool IsAddButtonVisible
+        {
+            get => _isAddButtonVisible;
+            set => SetProperty(ref _isAddButtonVisible, value);
+        }
+        #endregion
     }
 }

@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Resources.zh-TW.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Images\Alert.png" />
     <None Remove="Resources\Images\arrow-left.png" />
     <None Remove="Resources\Images\AW.png" />
@@ -43,6 +47,7 @@
     <None Remove="Resources\Images\DownloadTileA.png" />
     <None Remove="Resources\Images\DownloadTileG.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
+    <None Remove="Resources\Images\EzAdd.png" />
     <None Remove="Resources\Images\Folder.png" />
     <None Remove="Resources\Images\G.png" />
     <None Remove="Resources\Images\GearConnection.png" />
@@ -149,6 +154,10 @@
     <None Remove="Resources\Images\MultiDevice.png" />
     <None Remove="Resources\Images\P2424HEB.png" />
     <None Remove="Resources\Images\PairTile.png" />
+    <None Remove="Resources\Images\PanD.png" />
+    <None Remove="Resources\Images\PanL.png" />
+    <None Remove="Resources\Images\PanR.png" />
+    <None Remove="Resources\Images\PanT.png" />
     <None Remove="Resources\Images\Pause.png" />
     <None Remove="Resources\Images\PButton11.png" />
     <None Remove="Resources\Images\PButton12.png" />
@@ -198,6 +207,8 @@
     <None Remove="Resources\Images\R2.png" />
     <None Remove="Resources\Images\R3.png" />
     <None Remove="Resources\Images\RedCircle.png" />
+    <None Remove="Resources\Images\redo.png" />
+    <None Remove="Resources\Images\redo2.png" />
     <None Remove="Resources\Images\RedSquare.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
@@ -239,6 +250,8 @@
     <None Remove="Resources\Images\TopButton5.png" />
     <None Remove="Resources\Images\TopButton6.png" />
     <None Remove="Resources\Images\TrashCan.png" />
+    <None Remove="Resources\Images\undo.png" />
+    <None Remove="Resources\Images\undo2.png" />
     <None Remove="Resources\Images\Up.png" />
     <None Remove="Resources\Images\Usb24.png" />
     <None Remove="Resources\Images\Video.png" />
@@ -277,7 +290,64 @@
     <None Remove="Resources\Images\WM126.png" />
     <None Remove="Resources\Images\WM514.png" />
     <None Remove="Resources\Images\ZoomIn.png" />
+    <None Remove="Resources\Images\ZoomInS.png" />
     <None Remove="Resources\Images\ZoomOut.png" />
+    <None Remove="Resources\Images\ZoomOutS.png" />
+    <None Remove="Resources\Monitors\aw2521hf.png" />
+    <None Remove="Resources\Monitors\aw2725df.png" />
+    <None Remove="Resources\Monitors\aw5520qf.png" />
+    <None Remove="Resources\Monitors\c3422we.png" />
+    <None Remove="Resources\Monitors\c5519q.png" />
+    <None Remove="Resources\Monitors\c5522qt.png" />
+    <None Remove="Resources\Monitors\e1715s.png" />
+    <None Remove="Resources\Monitors\e1916hv.png" />
+    <None Remove="Resources\Monitors\e2220h.png" />
+    <None Remove="Resources\Monitors\e2222h.png" />
+    <None Remove="Resources\Monitors\e2222hs.png" />
+    <None Remove="Resources\Monitors\e2225h.png" />
+    <None Remove="Resources\Monitors\e2225hs.png" />
+    <None Remove="Resources\Monitors\e2420hs.png" />
+    <None Remove="Resources\Monitors\e2425h.png" />
+    <None Remove="Resources\Monitors\e2425hs.png" />
+    <None Remove="Resources\Monitors\e2723h.png" />
+    <None Remove="Resources\Monitors\e2724hs.png" />
+    <None Remove="Resources\Monitors\e2725h.png" />
+    <None Remove="Resources\Monitors\g2422hs.png" />
+    <None Remove="Resources\Monitors\g2724d.png" />
+    <None Remove="Resources\Monitors\Lineart.png" />
+    <None Remove="Resources\Monitors\p1424h.png" />
+    <None Remove="Resources\Monitors\p1917s.png" />
+    <None Remove="Resources\Monitors\p2219h.png" />
+    <None Remove="Resources\Monitors\p2222h.png" />
+    <None Remove="Resources\Monitors\p2225h.png" />
+    <None Remove="Resources\Monitors\p2418ht.png" />
+    <None Remove="Resources\Monitors\p2424heb.png" />
+    <None Remove="Resources\Monitors\p2424ht.png" />
+    <None Remove="Resources\Monitors\p2724deb.png" />
+    <None Remove="Resources\Monitors\p5525qc.png" />
+    <None Remove="Resources\Monitors\s2421h.png" />
+    <None Remove="Resources\Monitors\s2421hsx.png" />
+    <None Remove="Resources\Monitors\s2422hz.png" />
+    <None Remove="Resources\Monitors\s2721nx.png" />
+    <None Remove="Resources\Monitors\s3423dwc.png" />
+    <None Remove="Resources\Monitors\se2219h.png" />
+    <None Remove="Resources\Monitors\se2222h.png" />
+    <None Remove="Resources\Monitors\u2419h.png" />
+    <None Remove="Resources\Monitors\u2422h.png" />
+    <None Remove="Resources\Monitors\u2424h.png" />
+    <None Remove="Resources\Monitors\u2724de.png" />
+    <None Remove="Resources\Monitors\u2725qe.png" />
+    <None Remove="Resources\Monitors\u3223qz.png" />
+    <None Remove="Resources\Monitors\u3224kb.png" />
+    <None Remove="Resources\Monitors\u3225qe.png" />
+    <None Remove="Resources\Monitors\u3425we.png" />
+    <None Remove="Resources\Monitors\u4021qw.png" />
+    <None Remove="Resources\Monitors\u4320q.png" />
+    <None Remove="Resources\Monitors\u4323qe.png" />
+    <None Remove="Resources\Monitors\u4919dw.png" />
+    <None Remove="Resources\Monitors\up2720q.png" />
+    <None Remove="Resources\Monitors\up3218k.png" />
+    <None Remove="Resources\Monitors\up3221q.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -323,6 +393,9 @@
     <Resource Include="Resources\Images\DownloadTileA.png" />
     <Resource Include="Resources\Images\DownloadTileG.png" />
     <Resource Include="Resources\Images\EOLDongle.png" />
+    <Resource Include="Resources\Images\EzAdd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Images\Folder.png" />
     <Resource Include="Resources\Images\G.png" />
     <Resource Include="Resources\Images\GearConnection.png" />
@@ -338,9 +411,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\info18.png" />
+    <Resource Include="Resources\Images\KB740.png" />
+    <Resource Include="Resources\Images\PanD.png" />
+    <Resource Include="Resources\Images\PanL.png" />
+    <Resource Include="Resources\Images\PanR.png" />
+    <Resource Include="Resources\Images\PanT.png" />
     <Resource Include="Resources\Images\Pause.png" />
     <Resource Include="Resources\Images\Play.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
+    <Resource Include="Resources\Images\redo.png" />
+    <Resource Include="Resources\Images\redo2.png" />
     <Resource Include="Resources\Images\RedSquare.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -448,6 +528,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\TrashCan.png" />
+    <Resource Include="Resources\Images\undo.png" />
+    <Resource Include="Resources\Images\undo2.png" />
     <Resource Include="Resources\Images\WB5023.png" />
     <Resource Include="Resources\Images\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -521,7 +603,6 @@
     <Resource Include="Resources\Images\KB525C.png" />
     <Resource Include="Resources\Images\KB555.png" />
     <Resource Include="Resources\Images\KB700.png" />
-    <Resource Include="Resources\Images\KB740.png" />
     <Resource Include="Resources\Images\KB900.png" />
     <Resource Include="Resources\Images\MButton11.png" />
     <Resource Include="Resources\Images\MButton12.png" />
@@ -671,10 +752,67 @@
     <Resource Include="Resources\Images\ZoomIn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\ZoomInS.png" />
     <Resource Include="Resources\Images\ZoomOut.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WM126.png" />
+    <Resource Include="Resources\Images\ZoomOutS.png" />
+    <Resource Include="Resources\Monitors\aw2521hf.png" />
+    <Resource Include="Resources\Monitors\aw2725df.png" />
+    <Resource Include="Resources\Monitors\aw5520qf.png" />
+    <Resource Include="Resources\Monitors\c3422we.png" />
+    <Resource Include="Resources\Monitors\c5519q.png" />
+    <Resource Include="Resources\Monitors\c5522qt.png" />
+    <Resource Include="Resources\Monitors\e1715s.png" />
+    <Resource Include="Resources\Monitors\e1916hv.png" />
+    <Resource Include="Resources\Monitors\e2220h.png" />
+    <Resource Include="Resources\Monitors\e2222h.png" />
+    <Resource Include="Resources\Monitors\e2222hs.png" />
+    <Resource Include="Resources\Monitors\e2225h.png" />
+    <Resource Include="Resources\Monitors\e2225hs.png" />
+    <Resource Include="Resources\Monitors\e2420hs.png" />
+    <Resource Include="Resources\Monitors\e2425h.png" />
+    <Resource Include="Resources\Monitors\e2425hs.png" />
+    <Resource Include="Resources\Monitors\e2723h.png" />
+    <Resource Include="Resources\Monitors\e2724hs.png" />
+    <Resource Include="Resources\Monitors\e2725h.png" />
+    <Resource Include="Resources\Monitors\g2422hs.png" />
+    <Resource Include="Resources\Monitors\g2724d.png" />
+    <Resource Include="Resources\Monitors\Lineart.png" />
+    <Resource Include="Resources\Monitors\p1424h.png" />
+    <Resource Include="Resources\Monitors\p1917s.png" />
+    <Resource Include="Resources\Monitors\p2219h.png" />
+    <Resource Include="Resources\Monitors\p2222h.png" />
+    <Resource Include="Resources\Monitors\p2225h.png" />
+    <Resource Include="Resources\Monitors\p2418ht.png" />
+    <Resource Include="Resources\Monitors\p2424heb.png" />
+    <Resource Include="Resources\Monitors\p2424ht.png" />
+    <Resource Include="Resources\Monitors\p2724deb.png" />
+    <Resource Include="Resources\Monitors\p5525qc.png" />
+    <Resource Include="Resources\Monitors\s2421h.png" />
+    <Resource Include="Resources\Monitors\s2421hsx.png" />
+    <Resource Include="Resources\Monitors\s2422hz.png" />
+    <Resource Include="Resources\Monitors\s2721nx.png" />
+    <Resource Include="Resources\Monitors\s3423dwc.png" />
+    <Resource Include="Resources\Monitors\se2219h.png" />
+    <Resource Include="Resources\Monitors\se2222h.png" />
+    <Resource Include="Resources\Monitors\u2419h.png" />
+    <Resource Include="Resources\Monitors\u2422h.png" />
+    <Resource Include="Resources\Monitors\u2424h.png" />
+    <Resource Include="Resources\Monitors\u2724de.png" />
+    <Resource Include="Resources\Monitors\u2725qe.png" />
+    <Resource Include="Resources\Monitors\u3223qz.png" />
+    <Resource Include="Resources\Monitors\u3224kb.png" />
+    <Resource Include="Resources\Monitors\u3225qe.png" />
+    <Resource Include="Resources\Monitors\u3425we.png" />
+    <Resource Include="Resources\Monitors\u4021qw.png" />
+    <Resource Include="Resources\Monitors\u4320q.png" />
+    <Resource Include="Resources\Monitors\u4323qe.png" />
+    <Resource Include="Resources\Monitors\u4919dw.png" />
+    <Resource Include="Resources\Monitors\up2720q.png" />
+    <Resource Include="Resources\Monitors\up3218k.png" />
+    <Resource Include="Resources\Monitors\up3221q.png" />
   </ItemGroup>
 
   <ItemGroup>

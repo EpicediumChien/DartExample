@@ -6,11 +6,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wpf="clr-namespace:Dell.Client.Framework.UX.WPF.Console;assembly=DCF.UX.WPF"
-    Background="#F20D121A"
-    mc:Ignorable="d">
-    <wpf:ConsoleWindow.TopBackground>
+    Background="{DynamicResource mainWindowBkColor}"
+    mc:Ignorable="d"
+    TopBackground="{DynamicResource bkImage}">
+    <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
-    </wpf:ConsoleWindow.TopBackground>
+    </wpf:ConsoleWindow.TopBackground>-->
 
     <!--<Grid>
     <Rectangle Fill="#0D121AF2" />

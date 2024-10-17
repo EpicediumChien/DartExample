@@ -328,10 +328,18 @@ namespace DDPM.UI.Common.UserControls
             //Check if it need to change ISplitCtrl
             if ((CellCount != args.CellCount) || (SplitKey !=  args.SplitKey))
             {
-                ISplitCtrl? ispNew = ISplitCtrl.Create(args.CellCount, args.SplitKey);
-                if (ispNew == null)
-                    return;
-                InnerContent = ispNew.UC;
+                if ((args.CellCount == 0) && (args.SplitKey == 'B'))
+                {
+                    ISplitCtrl ispNew = new SplitCtrl0B();
+                    InnerContent = ispNew.UC;
+                }
+                else
+                {
+                    ISplitCtrl? ispNew = ISplitCtrl.Create(args.CellCount, args.SplitKey);
+                    if (ispNew == null)
+                        return;
+                    InnerContent = ispNew.UC;
+                }
             }
             if (ISplitCtrl == null)
                 return;
@@ -344,5 +352,35 @@ namespace DDPM.UI.Common.UserControls
             vm.NotifyPropertyChanged_TooltipText();
         }
         #endregion
+
+        #region Add Custom Layout Button
+        public bool IsHoverable
+        {
+            get { return vm.IsHoverable; }
+            set { vm.IsHoverable = value; }
+        }
+        public bool IsAddedCustomLayout
+        {
+            get 
+            {
+                if (ISplitCtrl != null)
+                    return ISplitCtrl.IsAddedCustomLayout;
+                return false;
+            }
+        }
+        #endregion Add Custom Layout Button
+
+        #region For EzMemory
+        private int _layoutID;
+        public int LayoutID
+        {
+            get => _layoutID;
+            set
+            {
+                _layoutID = value;
+            }
+        }
+        #endregion For EzMemory
     }
+
 }

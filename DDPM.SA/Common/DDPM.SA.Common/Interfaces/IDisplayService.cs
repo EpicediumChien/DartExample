@@ -2,6 +2,7 @@
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -11,9 +12,9 @@ namespace DDPM.SA.Common
     {
         Task Reset0x52TimerTick(int millisecond);
 
-        Task<List<MonitorInfo>> GetMonitors(bool renew = false);
+        Task<List<MonitorInfo>> GetMonitors();
 
-        Task<List<MonitorInfo>> Re_GetMonitors();
+        Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token);
 
         Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
 
@@ -43,7 +44,7 @@ namespace DDPM.SA.Common
         event EventHandler<bool> HDRChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
-
+        Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo);
         Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
         Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
@@ -126,11 +127,15 @@ namespace DDPM.SA.Common
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
 
-        public event EventHandler<string> EAEditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EAEditCompleted;
 
         public event EventHandler<string> EAEditStarted;
 
@@ -139,6 +144,9 @@ namespace DDPM.SA.Common
 
         public event EventHandler<EAArgs> EAEditReturn;
 
+        //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+        public Task<bool> ReloadEzSettings();
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion EasyArange
 
         #region Gaming
@@ -165,7 +173,8 @@ namespace DDPM.SA.Common
         Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
         #endregion
         #region Display FWU Metadata
-        Task<DisplayUpdateHelper> GetDisplayFWUpdate();
+    
+        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
         #endregion
     }
 }

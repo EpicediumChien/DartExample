@@ -96,5 +96,25 @@ namespace DDPM.OSDs
                 sb.Stop();
             });
         }
+
+        public void ShowWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(ShowWindow);
+                return;
+            }
+            Show();
+        }
+
+        public void CloseWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(CloseWindow);
+                return;
+            }
+            Close();
+        }
     }
 }

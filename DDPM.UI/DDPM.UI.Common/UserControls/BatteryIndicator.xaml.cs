@@ -106,7 +106,15 @@ namespace DDPM.UI.Common
             //0617 Bruce 新增如判斷為有線也跟使用Port的圖片
             if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio" || ConnectionType.Contains("USB"))
             {
-                ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
+                if (DdpmCommonHelper.isDarkMode())
+                {
+                    ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
+                }
+                else
+                {
+
+                    ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
+                }
                 stackPanel.Visibility = Visibility.Collapsed;
                 if (ConnectionType == "Wired" || ConnectionType == "WiredAudio")
                 {

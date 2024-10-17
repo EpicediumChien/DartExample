@@ -1,0 +1,626 @@
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Windows.Management.Deployment;
+using Microsoft.VisualBasic.Logging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Windows.ApplicationModel;
+using VcpCore.Common;
+using DDPM.UI.Common.UserControls;
+using DDPM.Easy.Common;
+using DDPM.UI.Common.ViewModels;
+using static System.Reflection.Metadata.BlobBuilder;
+using System.Globalization;
+
+namespace DDPM.UI.Module.EzMemory
+{
+    /// <summary>
+    /// EzMemoryLaunchOption.xaml 的互動邏輯
+    /// </summary>
+    public partial class EzMemoryLaunchOption : UserControl
+    {
+        #region Private Members
+        private HomeDevice _homeDevice;
+        private IDeviceManagerSA _deviceManagerSA;
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
+        private readonly DisplayViewModel _vmDisplay;
+        private readonly IConsole _console;
+        private readonly ILog _log;
+        private HomeDevice _selecthomeDevice;
+        #endregion Private Members
+
+        public EzMemoryLaunchOption(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
+        {
+            _vmDisplay = vmDisplay;
+            _homeDevice = vmDisplay.SelectedHomeDevice;
+            _console = vmDisplay.Console;
+            _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            _selecthomeDevice = _homeDeviceSelect;
+            _log = vmDisplay.Console.CreateLog("EzMemoryLaunchOption");
+            _log.Info($"{nameof(EzMemoryLaunchOption)} - Constructed");
+            InitializeComponent();
+
+            if (_homeDevice.vmEzArrange == null)
+            {
+                _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
+            }
+            _vm = vm;// _homeDevice.vmEzArrange;
+            DataContext = vm;// _homeDevice.vmEzArrange;
+
+            InitializePage();
+
+            _vm.ProgressValue = 3;
+        }
+
+        /// <summary>
+        /// Initialize Page
+        /// </summary>
+        public void InitializePage()
+        {
+            TitleTB.Text = Strings.TitleTBForLaunchOptionPage;
+            StartupCB.Content = Strings.StartupCBContentForLaunchOptionPage;
+            ManulRB.Content = Strings.ManulRBContentForLaunchOptionPage;
+            AutoRB.Content = Strings.AutoRBContentForLaunchOptionPage;
+            _vm.ezPages = _vm.GetEzPages();
+
+            if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
+            {
+                _vm.CurrentAnimationPage = _vm.ezPages[_vm._currentDeviceModel].Count;
+                var pageData = _vm.ezPages[_vm._currentDeviceModel][2];
+                MainText.Text = pageData.MainText!;
+                SubText.Text = pageData.SubText!;
+            }
+
+            if (_vm.IsEditProfile)
+            {
+                _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
+                if (_vm.currentEditprofileSetting.Auto)
+                {
+                    _vm.IsAutoLaunch = true;
+                    _vm.IsManualLaunch = false;
+                }
+                else
+                {
+                    _vm.IsAutoLaunch = false;
+                    _vm.IsManualLaunch = true;
+                }
+
+                long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
+                TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
+
+                // 使用 CultureInfo 來取得 AM 和 PM
+                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
+                int hourValue = time.Hours;
+                if (hourValue == 0)
+                {
+                    _vm.SelectedHour = "12";
+                    _vm.SelectedAMPM = amDesignator; // AM
+                }
+                else if (hourValue >= 12)
+                {
+                    _vm.SelectedAMPM = pmDesignator; // PM
+                    if (hourValue > 12)
+                    {
+                        _vm.SelectedHour = (hourValue - 12).ToString("D2");
+                    }
+                    else
+                    {
+                        _vm.SelectedHour = "12";
+                    }
+                }
+                else
+                {
+                    _vm.SelectedAMPM = amDesignator; // AM
+                    _vm.SelectedHour = hourValue.ToString("D2");
+                }
+
+                _vm.SelectedMinute = time.Minutes.ToString("D2");
+            }
+            else
+            {
+                DateTime now = DateTime.Now;
+
+                string ampm = now.Hour >= 12
+                    ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
+                    : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+
+                string hour = now.ToString("hh");
+                string minute = now.ToString("mm");
+
+                _vm.SelectedHour = hour;
+                _vm.SelectedMinute = minute;
+                _vm.SelectedAMPM = ampm;
+
+                _vm.IsLaunchAtStartup = false;
+            }
+        }
+
+        /// <summary>
+        /// Back
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ArrowButton_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.ProgressValue = 2;
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
+        }
+
+        private void FinishBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Determine if adding a new profile or editing an existing one
+                bool isEditMode = _vm.IsEditProfile;
+                int profileID = isEditMode ? _vm.currentEditprofile.ID : GetNewProfileID();
+                string profileName = _vm.InputText;
+                int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+
+                if (_vm._sortApps.Count < 2)
+                    return; // Proceed only if there are two or more apps
+
+                // Collect App Info
+                List<EAAppInfoDDPM> _appInfos = _vm._sortApps.Values.Select(app => new EAAppInfoDDPM(
+                    app.AppName, app.AppPath, bool.Parse(app.AppType), app.AppUserModelID, string.Empty)).ToList();
+
+                // Create the EAProfile object
+                EAProfileDDPM _eAProfileDDPM = new EAProfileDDPM(profileID, profileName, layout, _appInfos);
+
+                // Handle User Settings
+                bool userSettingsSuccess = isEditMode
+                    ? DdpmCommonHelper.DeviceManagerSA.UpdateUserEAProfileDDPM(_eAProfileDDPM).Result
+                    : DdpmCommonHelper.DeviceManagerSA.WriteUserEAProfileDDPM(_eAProfileDDPM).Result;
+
+                if (userSettingsSuccess)
+                {
+                    UpdateSplitListUI(profileID, layout, isEditMode);
+
+                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings PASS");
+                }
+                else
+                {
+                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings FAIL");
+                    return;
+                }
+
+                // Handle Monitor Settings
+                if(_vm.IsAutoLaunch)
+                {
+                    if(_vm.SelectedHour == string.Empty || _vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty) return;
+                }
+                if(_vm.IsLaunchAtStartup)
+                {
+                    EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                    if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                    {
+                        foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                        {
+                            if (ps.StartUpLaunch)
+                            {
+                                ps.StartUpLaunch = false;
+                                if(DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                                {
+                                    _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update error ");
+                    }
+
+                }
+
+                long autoLaunchTime = _vm.IsAutoLaunch ? GetAutoLaunchTime() : default;
+                EzProfileSettingDDPM _ezProfileSettingDDPM = new EzProfileSettingDDPM(profileID, _vm.IsAutoLaunch, autoLaunchTime, _vm.IsLaunchAtStartup);
+
+                bool monitorSettingsSuccess = isEditMode
+                    ? DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM).Result
+                    : HandleMonitorEasyArrangement(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM);
+
+                if (monitorSettingsSuccess)
+                {
+                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings PASS");
+                }
+                else
+                {
+                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings FAIL");
+                }
+
+                // Clear UI and close view
+                _vm.ClearTextBlockAppName();
+                _vm.IsEditProfile = false;
+                DdpmCommonHelper.ModuleOwner?.CloseFullView();
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Error occurred - {ex.Message}");
+            }
+        }
+
+        private int GetNewProfileID()
+        {
+            List<EAProfileDDPM> existingProfiles = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            if (existingProfiles == null) return 0;
+
+            List<int> existingIds = existingProfiles.Select(p => p.ID).ToList();
+            return Enumerable.Range(0, 9).Except(existingIds).FirstOrDefault();
+        }
+
+        private long GetAutoLaunchTime()
+        {
+            int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
+            int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
+
+            // PM
+            if (_vm.SelectedAMPM == "PM")
+            {
+                hour += 12;
+            }
+            // AM
+            else if (_vm.SelectedAMPM == "AM" && hour == 12)
+            {
+                hour = 0;
+            }
+
+            // 轉換為秒
+            return (long)(hour * 3600 + minute * 60);
+        }
+
+        private bool HandleMonitorEasyArrangement(MonitorInfo monitorInfo, EzProfileSettingDDPM ezProfileSetting)
+        {
+            EasyArrangementDDPM easyArrangement = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(monitorInfo).Result;
+            if (easyArrangement == null)
+            {
+                _log.Info($"@{nameof(EzMemoryLaunchOption)} ReadMonitorEasyArrangement returned null. Initializing a new EasyArrangementDDPM.");
+                easyArrangement = new EasyArrangementDDPM();
+            }
+
+            if (easyArrangement.Desktops == null || easyArrangement.Desktops.Count == 0)
+            {
+                DesktopDDPM newDesktop = new DesktopDDPM(string.Empty, 0);
+                newDesktop.ProfileSettings.Add(ezProfileSetting);
+                easyArrangement.Desktops = new List<DesktopDDPM> { newDesktop };
+            }
+            else
+            {
+                easyArrangement.Desktops[0].ProfileSettings.Add(ezProfileSetting);
+            }
+
+            return DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(monitorInfo, easyArrangement).Result;
+        }
+
+        private void UpdateSplitListUI(int profileID, int layout, bool isEditMode)
+        {
+            ISplitCtrl? splitCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+            splitCtrl.FriendlyName = "Off"; // Need multilingual support
+            splitCtrl.SplitMode = eSplitModes.Icon;
+
+            SplitItem newItem = _vm.splitListRightView.AddItemToList(splitCtrl.UC);
+            newItem.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+            newItem.CustomId = profileID;
+            newItem.IsHoverable = true;
+            newItem.IsDeleteEnabled = true;
+            newItem.IsEditEnabled = true;
+            newItem.LayoutID = profileID;
+
+            if (isEditMode)
+            {
+                _vm.splitListRightView.DeleteSplitItem(_vm.CurrentEditSelectspItem);
+            }
+        }
+
+        /// <summary>
+        /// Finish Btn, add profile to spilt item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //private void FinishBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (!_vm.IsEditProfile)
+        //        {
+
+        //            // 只有當 _sortApps 有兩個或以上的項目時才進行處理
+        //            if (_vm._sortApps.Count >= 2)
+        //            {
+        //                #region User Settings
+
+        //                // 讀取 User 的 EasyArrangement Profile
+        //                int profileID = 0;
+        //                string profileName = _vm.InputText;
+        //                // 重要!!!把分割數量與SplitKey代號轉換成layout
+        //                int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+        //                int _number = 0;
+        //                // 取得現有的 EAProfile
+        //                List<EAProfileDDPM> newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+        //                if (newEAProfileDDPM != null)
+        //                {
+        //                    // 計算已有的 profile 數量
+        //                    List<int> existingIds = newEAProfileDDPM.Select(p => p.ID).ToList();
+
+        //                    // 找到缺的最小ID
+        //                    profileID = Enumerable.Range(0, 9).Except(existingIds).FirstOrDefault();
+
+        //                    if (profileID == -1)
+        //                    {
+        //                        _log.Error($"@{nameof(EzMemoryLaunchOption)} No available ID for new profile.");
+        //                        return;
+        //                    }
+        //                }
+
+        //                // 收集 App 資訊並準備添加到新的 EAProfile 中
+        //                List<EAAppInfoDDPM> _appInfos = new List<EAAppInfoDDPM>();
+        //                foreach (var app in _vm._sortApps.Values)
+        //                {
+        //                    _appInfos.Add(new EAAppInfoDDPM(app.AppName, app.AppPath, bool.Parse(app.AppType), app.AppUserModelID, String.Empty));
+        //                }
+
+        //                // 建立新的 EAProfile 物件
+        //                EAProfileDDPM _eAProfileDDPM = new EAProfileDDPM(
+        //                    id: profileID,
+        //                    name: profileName,
+        //                    layout: layout,
+        //                    apps: _appInfos);
+
+        //                // 將新的 EAProfile 寫入 User Settings
+        //                if (DdpmCommonHelper.DeviceManagerSA.WriteUserEAProfileDDPM(_eAProfileDDPM).Result)
+        //                {
+        //                    ISplitCtrl? sp0A = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+        //                    SplitItem item0A;
+        //                    sp0A.FriendlyName = "Off"; //Need Multilogual support
+        //                    sp0A.SplitMode = eSplitModes.Icon;
+        //                    item0A = _vm.splitListRightView.AddItemToList(sp0A.UC);
+        //                    item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+        //                    item0A.CustomId = _eAProfileDDPM.ID;
+        //                    item0A.IsHoverable = true;
+        //                    item0A.IsDeleteEnabled = true;
+        //                    item0A.IsEditEnabled = true;
+        //                    item0A.LayoutID = _eAProfileDDPM.ID;
+
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings PASS");
+        //                }
+        //                else
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings FAIL");
+        //                }
+
+        //                #endregion
+
+        //                #region Monitor Settings
+
+        //                // 計算 AutoStartTime
+        //                long autoLaunchtime = default(long);
+        //                if (_vm.IsAutoLaunch)
+        //                {
+        //                    int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
+        //                    int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
+        //                    autoLaunchtime = (long)(hour * 3600 + minute * 60); // 將小時和分鐘轉換為秒數
+        //                }
+
+        //                EasyArrangementDDPM _easyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+        //                // 檢查 _easyArrangementDDPM 是否為 null，如果是，則new
+        //                if (_easyArrangementDDPM == null)
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} ReadMonitorEasyArrangement returned null. Initializing a new EasyArrangementDDPM.");
+        //                    _easyArrangementDDPM = new EasyArrangementDDPM();
+        //                }
+
+        //                // new EasyArrangement 設定
+        //                EzProfileSettingDDPM _ezProfileSettingDDPM = new EzProfileSettingDDPM(
+        //                    id: profileID,
+        //                    auto: _vm.IsAutoLaunch,
+        //                    autostarttime: autoLaunchtime,
+        //                    startuplaunch: _vm.IsLaunchAtStartup
+        //                );
+
+        //                // 檢查Desktops，如果沒有就新增一個
+        //                if (_easyArrangementDDPM.Desktops == null || _easyArrangementDDPM.Desktops.Count == 0)
+        //                {
+        //                    DesktopDDPM _desktopDDPM = new DesktopDDPM(string.Empty, 0);
+        //                    _desktopDDPM.ProfileSettings.Add(_ezProfileSettingDDPM);
+        //                    _easyArrangementDDPM.Desktops = new List<DesktopDDPM> { _desktopDDPM };
+        //                }
+        //                else
+        //                {
+        //                    _easyArrangementDDPM.Desktops[0].ProfileSettings.Add(_ezProfileSettingDDPM);
+        //                }
+
+        //                // 將更新寫回
+        //                if (DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(_selecthomeDevice.MonitorInfo, _easyArrangementDDPM).Result)
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings PASS");
+        //                }
+        //                else
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings FAIL");
+        //                }
+
+        //                #endregion
+        //                //LaunchAndArrangeApps(_vm._sortApps);
+        //                //_deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
+        //            }
+
+        //            // 清除TextBlock
+        //            _vm.ClearTextBlockAppName();
+
+        //            DdpmCommonHelper.ModuleOwner?.CloseFullView();
+        //        }
+        //        else//Edit Mode
+        //        {
+        //            // 只有當 _sortApps 有兩個或以上的項目時才進行處理
+        //            if (_vm._sortApps.Count >= 2)
+        //            {
+        //                #region User Settings
+        //                //EAProfileDDPM currentEditprofile;
+        //                //EzProfileSettingDDPM currentEditprofileSetting;
+
+        //                // 讀取 User 的 EasyArrangement Profile
+        //                int profileID = _vm.currentEditprofile.ID;
+        //                string profileName = _vm.InputText;
+        //                // 重要!!!把分割數量與SplitKey代號轉換成layout
+        //                int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+        //                int _number = 0;
+
+        //                // 收集 App 資訊並準備添加到新的 EAProfile 中
+        //                List<EAAppInfoDDPM> _appInfos = new List<EAAppInfoDDPM>();
+        //                foreach (var app in _vm._sortApps.Values)
+        //                {
+        //                    _appInfos.Add(new EAAppInfoDDPM(app.AppName, app.AppPath, bool.Parse(app.AppType), app.AppUserModelID, String.Empty));
+        //                }
+
+        //                // 建立新的 EAProfile 物件
+        //                EAProfileDDPM _eAProfileDDPM = new EAProfileDDPM(
+        //                    id: profileID,
+        //                    name: profileName,
+        //                    layout: layout,
+        //                    apps: _appInfos);
+
+        //                // 將新的 EAProfile 寫入 User Settings
+        //                if (DdpmCommonHelper.DeviceManagerSA.UpdateUserEAProfileDDPM(_eAProfileDDPM).Result)
+        //                {
+        //                    ISplitCtrl? sp0A = ISplitCtrl.Create(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
+        //                    SplitItem item0A;
+        //                    sp0A.FriendlyName = "Off"; //Need Multilogual support
+        //                    sp0A.SplitMode = eSplitModes.Icon;
+        //                    item0A = _vm.splitListRightView.AddItemToList(sp0A.UC);
+        //                    item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+        //                    item0A.CustomId = _eAProfileDDPM.ID;
+        //                    item0A.IsHoverable = true;
+        //                    item0A.IsDeleteEnabled = true;
+        //                    item0A.IsEditEnabled = true;
+        //                    item0A.LayoutID = _eAProfileDDPM.ID;
+        //                    _vm.splitListRightView.DeleteSplitItem(_vm.CurrentEditSelectspItem);
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Updaet User Settings PASS");
+        //                }
+        //                else
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Updaet User Settings FAIL");
+        //                }
+
+        //                #endregion
+
+        //                #region Monitor Settings
+
+        //                // 計算 AutoStartTime
+        //                long autoLaunchtime = default(long);
+        //                if (_vm.IsAutoLaunch)
+        //                {
+        //                    int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
+        //                    int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
+        //                    autoLaunchtime = (long)(hour * 3600 + minute * 60); // 將小時和分鐘轉換為秒數
+        //                }
+
+        //                //new EasyArrangement 設定
+        //                EzProfileSettingDDPM _ezProfileSettingDDPM = new EzProfileSettingDDPM(
+        //                     id: profileID,
+        //                     auto: _vm.IsAutoLaunch,
+        //                     autostarttime: autoLaunchtime,
+        //                     startuplaunch: _vm.IsLaunchAtStartup
+        //                 );
+
+        //                if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM).Result)
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings PASS");
+        //                }
+        //                else
+        //                {
+        //                    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings FAIL");
+        //                }
+        //                #endregion
+        //                //LaunchAndArrangeApps(_vm._sortApps);
+        //                //_deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
+        //            }
+
+        //            // 清除TextBlock
+        //            _vm.ClearTextBlockAppName();
+        //            _vm.IsEditProfile = false;
+        //            DdpmCommonHelper.ModuleOwner?.CloseFullView();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log.Error($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Error occurred - {ex.Message}");
+        //    }
+        //}
+
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CancelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.ModuleOwner?.CloseFullView();
+        }
+
+        /// <summary>
+        /// When 'Launch during PC startup' is checked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartupCB_Checked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                {
+                    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                    {
+                        if (ps.StartUpLaunch)
+                        {
+                            if (_vm.currentEditprofileSetting.ID != ps.ID)
+                            {
+                                if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
+                                {
+                                    _vm.IsLaunchAtStartup = true;
+                                }
+                                else
+                                {
+                                    _vm.IsLaunchAtStartup = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Info($"[EzMemoryLaunchOption] StartupCB_Checked Exception occurred: {ex.Message}");
+            }
+        }
+    }
+}

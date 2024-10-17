@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
@@ -147,7 +147,7 @@
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
                                 <UXControls:UXTextBox Text="{Binding InputName1}" Background="#141D28" Foreground="White"
-                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" />
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown1" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
@@ -204,7 +204,7 @@
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
                                 <UXControls:UXTextBox Text="{Binding InputName2}" Background="#141D28" Foreground="White"
-                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" />
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown2" />
                             </Grid>
                             <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
@@ -251,7 +251,7 @@
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
                                 <UXControls:UXTextBox Text="{Binding InputName3}" Background="#141D28" Foreground="White"
-                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" />
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center" MaxLength="30" KeyDown="KeyDown_KeyDown3" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
@@ -298,7 +298,7 @@
                             </Grid>
                             <Grid Grid.Row="1" Margin="16, 2, 16, 8">
                                 <UXControls:UXTextBox Text="{Binding InputName4}" Background="#141D28" Foreground="White"
-                                                      BorderBrush="#7E7E7E" BorderThickness="1" />
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" MaxLength="30" KeyDown="KeyDown_KeyDown4" />
                             </Grid>
                             <Grid Grid.Row="2" Margin="16, 8, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"

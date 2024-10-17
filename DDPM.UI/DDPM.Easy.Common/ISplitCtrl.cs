@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Configuration;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -18,8 +19,8 @@ namespace DDPM.Easy.Common
         public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
         {
             new SplitCtrl2A(), new SplitCtrl2B(), new SplitCtrl2C(), new SplitCtrl2D(),
-            //new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
-            //new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
+            new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
+            new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
             new SplitCtrl4A(), new SplitCtrl4B(), new SplitCtrl4C(), new SplitCtrl4D(),
             new SplitCtrl4E(), new SplitCtrl4F(),
             //new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
@@ -32,6 +33,11 @@ namespace DDPM.Easy.Common
             new SplitCtrl0A()
         };
 
+        public static bool IsExisted(int cellCount, char splitKey)
+        {
+            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            return (iSplit != null);
+        }
         #endregion Collection of support SplitCtrl classes
 
         #region Native members - value not be changed once created
@@ -61,6 +67,18 @@ namespace DDPM.Easy.Common
 
         public string FriendlyName { get; set; }
 
+        //Robert_Lin, 2024-10-12 added
+        /// <summary>
+        /// The ID number to spefiied a layout. this ID has the same definetion wil DDM 2
+        /// which is used to migrate settings from DDM, and used for CLI command.
+        /// 0 = Off = SplitCtrl0A
+        /// 1~999 = Predefind layout (current used are [1~49])
+        /// 1000~1004 = Custom layout
+        /// </summary>
+        public int EAID { get; set; }
+
+        //public CellJson[] Cells { get; set; }
+
         #endregion Native members - value not be changed once created
 
         #region ViewModel
@@ -79,7 +97,25 @@ namespace DDPM.Easy.Common
 
         public static ISplitCtrl? Create(int cellCount, char splitKey)
         {
+            if ((cellCount == 0) && (splitKey == 'B'))
+            {
+                return new SplitCtrl0B();
+            }
             ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            if (iSplit == null)
+                return null;
+            return iSplit.New();
+        }
+
+        /// <summary>
+        /// Create a ISplitCtrl by EAID
+        /// </summary>
+        /// <param name="cellCount"></param>
+        /// <param name="splitKey"></param>
+        /// <returns></returns>
+        public static ISplitCtrl? Create(int eaId)
+        {
+            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.EAID == eaId));
             if (iSplit == null)
                 return null;
             return iSplit.New();
@@ -141,7 +177,13 @@ namespace DDPM.Easy.Common
         /// </summary>
         public List<CellObj> CellList { get; set; }
 
+       // public void UpdateSettingsToCells();
+
         #endregion Cell list
+
+        #region CellBorders
+        public List<CellBorder> CellBorders { get; set; }
+        #endregion
 
         #region Settings
 
@@ -197,7 +239,6 @@ namespace DDPM.Easy.Common
 
         #endregion Screen Orientation
 
-
         #region Bitmap - Currently is not used in DDPM
 
         /// <summary>
@@ -224,5 +265,13 @@ namespace DDPM.Easy.Common
         }
 
         #endregion Bitmap - Currently is not used in DDPM
+
+        #region Added Custom Layout
+        public bool IsAddedCustomLayout
+        {
+            get { return ((CellCount==0) && (SplitKey=='B')); }
+        }
+        #endregion
+
     }
 }

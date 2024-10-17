@@ -101,7 +101,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         DeviceCategory = eDeviceCategory.Display,
                         MonitorInfo = mi,
                         //Text1 = currentInput,
-                        DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
+                        //Robert_Lin, 2024-9-30, Comment-out after phase in Monitor Product images
+                        //DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
                     };
 
                     //2024-6-20 Robert_Lin, check if any some model already in list
@@ -151,7 +152,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             lock (_LockPeripheralList)
             {
                 //Robert_Lin 2024-7-10 modify for HomePage Sort and Grouping
-                //Sort the deviceInfos with DeviceInfo.ID (HomeDevice.TooltipModelName)
+                //Sort the deviceInfos with DeviceInfo.Name (HomeDevice.TooltipModelName)
                 deviceInfos.Sort((x, y) => x.Name.CompareTo(y.Name));
 
                 //Determine the SortOrder in the foreach loop.
@@ -284,7 +285,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         (devType.ToString().ToUpper().Contains("23")))
                     {
                         dev.DeviceCategory = eDeviceCategory.Dock;
-                        //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/WD22TB4.png");
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
                         dev.SortOrder = (int)dev.DeviceCategory + idxDock;
                         idxDock++;
                     }

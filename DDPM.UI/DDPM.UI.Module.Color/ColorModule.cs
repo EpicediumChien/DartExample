@@ -27,6 +27,7 @@ namespace DDPM.UI.Module.Color
             vm.MyModule = this;
 
             vm.Invoke_RefreshData();
+            vm.Invoke_DownloadICCData();
         }
 
         public string ModuleName { get => "ColorModule"; }
@@ -64,12 +65,19 @@ namespace DDPM.UI.Module.Color
                 isSelectChanged = false;
                 InitNewViewModel();
             }
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
+            //vm.Invoke_DownloadICCData();
         }
 
         //Handle new device coming
         private void InitNewViewModel()
         {
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm = new ColorViewModel();
+            _rightView.DataContext = vm;
+            vm.MyModule = this;
+            vm.Invoke_RefreshData();
+            vm.Invoke_DownloadICCData();
         }
 
         public void OnActivated()
@@ -80,6 +88,7 @@ namespace DDPM.UI.Module.Color
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            vm.UpdateHDRStatus();
         }
 
         public void OnDeactivated()

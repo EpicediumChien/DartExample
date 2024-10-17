@@ -12,12 +12,16 @@ namespace DDPM.SA.Common
         event EventHandler<SWUpdateInfoPackage> CallSaveUpdateInfoPackage;
 
         event EventHandler<PopupContentPackage> CallPopup;
+        /// <summary>
+        /// for CLI use
+        /// </summary>
+        event EventHandler<List<SWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
         void StartCheckUpdateScheduleTimer();
 
-        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer);
+        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion);
 
-        Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify);
+        Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion);
 
         Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, string installPath);
 
@@ -26,5 +30,6 @@ namespace DDPM.SA.Common
         void DelayEvent(object e);
 
         void UpdateEvent(object e);
+        void SetSkipCA(bool isSkipCA);
     }
 }

@@ -21,7 +21,8 @@ namespace DDPM.UI.Module.AddPen_Other
             InitializeComponent();
             _vm = vm;
 
-            //txtCaption.Text = Caption;
+            txtOther.Text = Strings.AddDeviceTypeOther;
+            txtCaption.Text = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.5"];
             txtStep1.Text = string.Format(Step1, Dns.GetHostName());
             //txtStep2.Text = Step2;
         }

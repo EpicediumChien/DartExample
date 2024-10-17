@@ -21,7 +21,7 @@
     <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
     <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
     <PackageReference Include="Dell.RPC.Transport" Version="1.5.1" />
-    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
   </ItemGroup>
 
@@ -31,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DdmLibrary">
+      <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="DPeMClientBroker">
       <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
     </Reference>
@@ -44,5 +47,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)DDPM.SA.Common.*&quot; &quot;$(SolutionDir)..\DdpmSwUpdater\CommonDll\&quot; /Y /S /Q" />
+  </Target>
 
 </Project>

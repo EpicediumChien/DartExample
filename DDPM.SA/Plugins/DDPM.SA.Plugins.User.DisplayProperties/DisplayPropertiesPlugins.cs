@@ -84,9 +84,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 HDRSetting hDRSetting = new HDRSetting();
                 Properties currentProperties = new Properties();
                 displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
+                if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
                 {
                     return Task.FromResult(new DisplaySupportedProperties());
+                }
+                if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
+                {
+                    displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
                 }
                 displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
                 displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
@@ -117,6 +121,12 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(DisplayOrientation.Unknow);
         }
+        public Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo)
+        {
+            DisplayCurrentPropertiesInfo ret = new DisplayCurrentPropertiesInfo();
+            GetCurrentDisplaySetting(monitorInfo.DisplayName, out ret.CurrentProperties, out ret.CurrentOrientation);
+            return Task.FromResult(ret);
+        }
 
         /// <summary>
         /// 設定螢幕的解析度和畫面旋轉角
@@ -136,6 +146,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
                 if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
+                    if ((int)orientation >= 0)
+                    {
+                        devMode.dmDisplayOrientation = (int)orientation;
+                    }
                     if (properties.Resolutions_Width > 0 && properties.Resolutions_High > 0)
                     {
                         devMode.dmPelsWidth = properties.Resolutions_Width;
@@ -457,9 +471,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     HDRSetting hDRSetting = new HDRSetting();
                     Properties currentProperties = new Properties();
                     displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
                     {
                         return false;
+                    }
+                    if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
+                    {
+                        displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
                     }
                     displayPropertiesInfo.SupportedHDR = isSupportedHDR;
                     hDRSetting.GetWindowsHDRStatus(monitorInfo.edid, out displayPropertiesInfo.isHDREnable);
@@ -560,7 +578,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="Resolution">回傳值:解析度</param>
         /// <param name="displayOrientation">回傳值:畫面旋轉角</param>
         /// <returns>是否成功取得</returns>
-        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation, string ModelName)
+        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation)
         {
             DEVMODE devMode = new DEVMODE();
             if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))

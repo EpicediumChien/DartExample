@@ -1,12 +1,17 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Models;
 using Newtonsoft.Json;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using VcpCore.Common;
 using UserControl = System.Windows.Controls.UserControl;
@@ -46,7 +51,7 @@ namespace DDPM.UI.Module.Brightness
         {
             DDPMSettings data = null;
             if (DdpmCommonHelper.DeviceManagerSA != null)
-                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                data = DdpmCommonHelper.ReadDDPMSettings(true);// DeviceManagerSA.ReloadAppConfigData().Result;
 
             bool? isLocked_BriCont = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
             if (isLocked_BriCont != null)
@@ -56,7 +61,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
                         Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
                     }
                 }));
@@ -78,6 +83,16 @@ namespace DDPM.UI.Module.Brightness
             if(data != null && data.LockSettings != null)
             {
                 bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.Update_SyncLockStatus(isSyncLocked);                        
+                        Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
+                    }
+                }));
+                
                 //apply this lock result to "synchronize between monitors" toggle button
             }
         }
@@ -85,31 +100,26 @@ namespace DDPM.UI.Module.Brightness
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             BrightnessViewModel x = (BrightnessViewModel)DataContext;
-            bool r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(x.SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
-            if (r)
-            {
-                ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(x.SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
-                if (rb_10.result)
-                {
-                    B_slider.Value = (uint)((long)rb_10.value);
-                    LuminanceSlider.Value = (uint)((long)rb_10.value);
-                }
-                ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(x.SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
-                if (rb_12.result)
-                    C_slider.Value = (uint)((long)rb_12.value);
-            }
+            x.ResetClick();
         }
 
         private void SynchronizeSwitch_Click(object sender, RoutedEventArgs e)
         {
             BrightnessViewModel x = (BrightnessViewModel)DataContext;
 
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if ((bool)SynchronizeSwitch.IsChecked)
             {
                 x.IsSynchronize = true;
                 SynchronizeSwitch.Content = Strings.On;
+
+                // Brightness and contrast
+                x.Set_Contrast_Value(x.ContrastValue);
+                x.Set_Brightness_Value(x.BrightnessValue);
+
+                // Color
+                Invoke_ColorPreset_Sync();             
             }
             else
             {
@@ -118,7 +128,7 @@ namespace DDPM.UI.Module.Brightness
             }
 
             setting.UserSettings.IsSynchronizemonitor = x.IsSynchronize;
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void Expander_Manual_Expanded(object sender, RoutedEventArgs e)
@@ -406,103 +416,30 @@ namespace DDPM.UI.Module.Brightness
         {
             BrightnessViewModel vm = (BrightnessViewModel)VM_;
 
-            var ScheduleMaps_string = string.Empty;
-
-            if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-
             if (vm.hOurs1 > -1 && vm.hOurs2 > -1 && vm.mIns1 > -1 && vm.mIns2 > -1 && vm.dUration1 > -1 && vm.dUration2 > -1)
             {
-                if (vm.ScheduleMaps == null)
-                    vm.ScheduleMaps = new List<scheduleInfo>();
+                if (vm.ScheduleMap == null)
+                    vm.ScheduleMap = new scheduleInfo();
 
-                if (vm.ScheduleMaps.Count < 1)
-                {
-                    ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
-                    if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                        vm.ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-                }
-
-                if (vm.ScheduleMaps != null && vm.ScheduleMaps.Count > 0)
-                {
-                    bool find = false;
-
-                    foreach (scheduleInfo TMP in vm.ScheduleMaps)
-                    {
-                        if (TMP.Monitor.Equals(vm.SelectedHomeDevice.MonitorInfo.edid))
-                        {
-                            find = true;
-
-                            TMP.IsEnable = true;
-                            TMP.Pre1Name = vm.PR1Name;
-                            TMP.Pre2Name = vm.PR2Name;
-                            TMP.Hours1 = vm.hOurs1;
-                            TMP.Mins1 = vm.mIns1;
-                            TMP.Duration1 = vm.dUration1;
-                            TMP.Hours2 = vm.hOurs2;
-                            TMP.Mins2 = vm.mIns2;
-                            TMP.Duration2 = vm.dUration2;
-                            TMP.Brightness1 = vm.PR1BrightnessValue;
-                            TMP.Contrast1 = vm.PR1ContrastValue;
-                            TMP.Brightness2 = vm.PR2BrightnessValue;
-                            TMP.Contrast2 = vm.PR2ContrastValue;
-
-                            break;
-                        }
-                    }
-
-                    if (!find)
-                    {
-                        scheduleInfo newOne = new scheduleInfo();
-                        newOne.IsEnable = true;
-                        newOne.Monitor = vm.SelectedHomeDevice.MonitorInfo.edid;
-                        newOne.Pre1Name = vm.PR1Name;
-                        newOne.Pre2Name = vm.PR2Name;
-                        newOne.Hours1 = vm.hOurs1;
-                        newOne.Mins1 = vm.mIns1;
-                        newOne.Duration1 = vm.dUration1;
-                        newOne.Hours2 = vm.hOurs2;
-                        newOne.Mins2 = vm.mIns2;
-                        newOne.Duration2 = vm.dUration2;
-                        newOne.Brightness1 = vm.PR1BrightnessValue;
-                        newOne.Contrast1 = vm.PR1ContrastValue;
-                        newOne.Brightness2 = vm.PR2BrightnessValue;
-                        newOne.Contrast2 = vm.PR2ContrastValue;
-
-                        vm.ScheduleMaps.Add(newOne);
-                    }
-
-                    ScheduleMaps_string = JsonConvert.SerializeObject(vm.ScheduleMaps, Formatting.Indented);
-                }
-                else
-                {
-                    vm.ScheduleMaps = new List<scheduleInfo>();
-                    scheduleInfo newOne = new scheduleInfo();
-                    newOne.IsEnable = true;
-                    newOne.Monitor = vm.SelectedHomeDevice.MonitorInfo.edid;
-                    newOne.Pre1Name = vm.PR1Name;
-                    newOne.Pre2Name = vm.PR2Name;
-                    newOne.Hours1 = vm.hOurs1;
-                    newOne.Mins1 = vm.mIns1;
-                    newOne.Duration1 = vm.dUration1;
-                    newOne.Hours2 = vm.hOurs2;
-                    newOne.Mins2 = vm.mIns2;
-                    newOne.Duration2 = vm.dUration2;
-                    newOne.Brightness1 = vm.PR1BrightnessValue;
-                    newOne.Contrast1 = vm.PR1ContrastValue;
-                    newOne.Brightness2 = vm.PR2BrightnessValue;
-                    newOne.Contrast2 = vm.PR2ContrastValue;
-
-                    vm.ScheduleMaps.Add(newOne);
-
-                    ScheduleMaps_string = JsonConvert.SerializeObject(vm.ScheduleMaps, Formatting.Indented);
-                }
+                vm.ScheduleMap.IsEnable = true;
+                vm.ScheduleMap.model = vm.SelectedHomeDevice.MonitorInfo.modelName;
+                vm.ScheduleMap.serviceTag = vm.SelectedHomeDevice.MonitorInfo.edid.ServiceTag;
+                vm.ScheduleMap.Pre1Name = vm.PR1Name;
+                vm.ScheduleMap.Pre2Name = vm.PR2Name;
+                vm.ScheduleMap.Hours1 = vm.hOurs1;
+                vm.ScheduleMap.Mins1 = vm.mIns1;
+                vm.ScheduleMap.Duration1 = vm.dUration1;
+                vm.ScheduleMap.Hours2 = vm.hOurs2;
+                vm.ScheduleMap.Mins2 = vm.mIns2;
+                vm.ScheduleMap.Duration2 = vm.dUration2;
+                vm.ScheduleMap.Brightness1 = vm.PR1BrightnessValue;
+                vm.ScheduleMap.Contrast1 = vm.PR1ContrastValue;
+                vm.ScheduleMap.Brightness2 = vm.PR2BrightnessValue;
+                vm.ScheduleMap.Contrast2 = vm.PR2ContrastValue;
 
                 if ((!vm.IsMouseEnterSchedule_1 && !vm.IsMouseEnterSchedule_2) && (!vm.CheckIsTimeOverlap()) && (!vm.IsPR1Preview && !vm.IsPR2Preview))
                 {
-                    DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
-                    DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
-
+                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(vm.SelectedHomeDevice.MonitorInfo, vm.ScheduleMap);
                     vm.StartScheduleManger(60000);
                 }
             }
@@ -619,8 +556,140 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
+        private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                // Handle "@"
+            }
+            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
+            }
+            else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
+                Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
+                Keyboard.IsKeyDown(Key.A) || Keyboard.IsKeyDown(Key.B) || Keyboard.IsKeyDown(Key.C) || Keyboard.IsKeyDown(Key.D) || Keyboard.IsKeyDown(Key.E) ||
+                Keyboard.IsKeyDown(Key.F) || Keyboard.IsKeyDown(Key.G) || Keyboard.IsKeyDown(Key.H) || Keyboard.IsKeyDown(Key.I) || Keyboard.IsKeyDown(Key.J) ||
+                Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
+                Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
+                Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
+                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
+            {
+                // Handle 0-9, a-z, A-Z, " ", "-" 
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void PR1Name_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            vm.PR1Name = tb.Text;
+        }
+
+        private void PR2Name_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            BrightnessViewModel vm = (BrightnessViewModel)DataContext;
+            vm.PR2Name = tb.Text;
+        }
+
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
         }
+
+        public void Invoke_ColorPreset_Sync()
+        {
+            BackgroundWorker bw_ColorPreset_Sync = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw_ColorPreset_Sync.DoWork += DoWork_ColorPreset_Sync;
+            bw_ColorPreset_Sync.RunWorkerCompleted += RunWorkerCompleted_ColorPreset_Sync;
+            //Log?.Info("RunWorkerCompleted_DownloadICCData start...");
+            //IsBusy = true;
+            bw_ColorPreset_Sync.RunWorkerAsync();
+        }
+
+        private void DoWork_ColorPreset_Sync(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo);
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                string strSync_CurrentColorPreset = string.Empty;
+                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+
+                Task.Run(() =>
+                {
+                    foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, false);
+                    }
+
+                });
+
+                /*
+                Dispatcher.Invoke(new Action(() =>
+                {
+                  
+
+                }));   
+                */
+
+            }
+            catch (System.Exception)
+            {
+            }
+        }
+
+        private void RunWorkerCompleted_ColorPreset_Sync(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+
+            //IsBusy = false;
+
+            //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
+            if (e.Cancelled)
+            {
+                //Log?.Info("** ColorPreset_Sync is cancelled.");
+                return;
+            }
+            if (e.Error != null)
+            {
+                //The message is e.Error.Message
+                //Log?.Info($"** ColorPreset_Sync stopped by an exception: {e.Error.Message}");
+                return;
+            }
+            //
+            if (e.Result == null)
+            {
+                //In case that you never set value to e-Result
+                //Log?.Info("** ColorPreset_Sync abnormal stopped unknown reason.");
+            }
+            else
+            {
+                //Log?.Info($"** DownloadICCData result: {e.Result}");
+
+                if (e.Result == "OK")
+                {
+                    //Result is passed.
+                }
+                else
+                {
+                    //Result is failed.
+                }
+            }
+        }
+
     }
 }

@@ -389,12 +389,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     "KEYBOARD",
                     "AUDIO",
                     "PEN",
+                    "DOCK",
                     "WEBCAM",
                 };
                 List<string> Display_Lock_WithoutAction = new List<string>()
                 {
                     "INAPPBRICONT",
                     "INAPPAUTOBRITEMP",
+                    "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as INAPPAUTOBRITEMP
                     "INAPPNETWORKKVM",
                     "INAPPCOLORPRESET",
                     //"POWERNAP", //do not add powernap here, go throw normal process via CLI Display plugin as well
@@ -484,10 +486,23 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "DEVICECONFIGURATION":
                         case "CONNECTEDDEVICES":
                         case "SCREENNOTIFICATION":
+                        case "DIAGNOSTICSREPORT":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;
+                        case "FIRMWAREUPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
 
+                            // add @ stephen
+                            //DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            //cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "DISABLECA":
+                            cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "UPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;

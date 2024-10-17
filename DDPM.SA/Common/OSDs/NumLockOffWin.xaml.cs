@@ -36,6 +36,26 @@ namespace DDPM.OSDs
             //animationTimer.Start();
         }
 
+        public void ShowWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(ShowWindow);
+                return;
+            }
+            Show();
+        }
+
+        public void CloseWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(CloseWindow);
+                return;
+            }
+            Close();
+        }
+
         private void RunTimerTick(object sender, EventArgs e)
         {
             if (time == TimeSpan.Zero)

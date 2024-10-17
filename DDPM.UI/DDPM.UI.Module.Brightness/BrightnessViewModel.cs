@@ -37,6 +37,51 @@ namespace DDPM.UI.Module.Brightness
             return INSTANCE;
         }
 
+        private string _TabSTOP = "Cycle";
+
+        public string TabSTOP
+        {
+            get
+            {
+                return _TabSTOP;
+            }
+            set
+            {
+                _TabSTOP = value;
+                NotifyPropertyChanged("TabSTOP");
+            }
+        }
+
+        private Visibility _LockMaskVisible = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible
+        {
+            get
+            {
+                return _LockMaskVisible;
+            }
+            set
+            {
+                _LockMaskVisible = value;
+                NotifyPropertyChanged("LockMaskVisible");
+            }
+        }
+
+        private Visibility _synchronizeLock = Visibility.Collapsed;
+
+        public Visibility synchronizeLock
+        {
+            get
+            {
+                return _synchronizeLock;
+            }
+            set
+            {
+                _synchronizeLock = value;
+                NotifyPropertyChanged("synchronizeLock");
+            }
+        }
+
         private ImageSource? _BrightnessImage;
         private ImageSource? _ContrastImage;
         private ImageSource? _LuminanceImage;
@@ -76,7 +121,7 @@ namespace DDPM.UI.Module.Brightness
 
         public CancellationTokenSource PreviewToken = new CancellationTokenSource();
 
-        public List<scheduleInfo> ScheduleMaps = new List<scheduleInfo>();
+        public scheduleInfo ScheduleMap = new scheduleInfo();
 
         public bool IsMouseEnterSchedule_1 { get; set; }
         public bool IsMouseEnterSchedule_2 { get; set; }
@@ -264,7 +309,8 @@ namespace DDPM.UI.Module.Brightness
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
             string swHortcutText = string.Empty;
 
             if (curHotkey.HotkeyInfo.Count > 0)
@@ -556,12 +602,15 @@ namespace DDPM.UI.Module.Brightness
                 Trace.WriteLine($"7 {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
 
                 //Lock/unlock mask and tabstop init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
                 Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
+                Update_BriContLockStatus(data.LockSettings.Lock_Display_BriCont);
+                Update_SyncLockStatus((data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp));
                 //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
-                //Read user default lock value, these values are synced from IT lock event          
-                Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}"); 
-                Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");  
+                //Read user default lock value, these values are synced from IT lock event
+                Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}");
+                Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");
+                Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {(data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp)}");
             }
         }
 
@@ -594,7 +643,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 2)
                         {
-                            if(CheckALSOnOff(alsSynchronizeList) == false)
+                            if (CheckALSOnOff(alsSynchronizeList) == false)
                             {
                                 SynchronizeBtnExpectedResult("C");
                                 return;
@@ -687,21 +736,19 @@ namespace DDPM.UI.Module.Brightness
                     }
                     //else
                     //{
-                        //19 Test Scenario : G series monitor and S series monitor
-                        //20 Test Scenario : AW series Freesync monitor and U series monitor
-                        //21 Test Scenario : C series, SE series, E series and P series monitors
-                        //Expected Result B:
-                        SynchronizeBtnExpectedResult("B");
-                        return;
+                    //19 Test Scenario : G series monitor and S series monitor
+                    //20 Test Scenario : AW series Freesync monitor and U series monitor
+                    //21 Test Scenario : C series, SE series, E series and P series monitors
+                    //Expected Result B:
+                    SynchronizeBtnExpectedResult("B");
+                    return;
                     //}
                 }
-
-
                 else if (alsSynchronizeList.Count == 3)//Test case for 3 monitors
                 {
                     //0x12 = non Luminance
                     //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
-                    if(CheckLuminanceMonitorCount() == 2)
+                    if (CheckLuminanceMonitorCount() == 2)
                     {
                         ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
                         if (obj.result)
@@ -737,7 +784,7 @@ namespace DDPM.UI.Module.Brightness
                     //27 Test Scenario : 1 ALS monitor(ALS = ON) and 2 non ALS monitors
                     //28 Test Scenario : 1 ALS monitor(ALS = OFF) and 2 non ALS monitors
                     if (CheckALSMonitorCount(alsSynchronizeList) == 1)
-                    {                      
+                    {
                         if (Start_ALSConfig.isSupportALS == 2)
                         {
                             if (Start_ALSConfig.isAutoBrightness == true || Start_ALSConfig.isAutoColorTemp == true)
@@ -851,6 +898,7 @@ namespace DDPM.UI.Module.Brightness
             }
             SynchronizeBtnExpectedResult("default");
         }
+
         /// <summary>
         ///  Check the number of Luminance Monitor.0x12 = non Luminance
         /// </summary>
@@ -862,14 +910,15 @@ namespace DDPM.UI.Module.Brightness
             {
                 foreach (HomeDevice hd in ModuleOwner!.HomeDevices!)
                 {
-                    if(hd.MonitorInfo!.CapabilityDic.ContainsKey("12"))
+                    if (hd.MonitorInfo!.CapabilityDic.ContainsKey("12"))
                     {
                         _isLuminanceCount++;
-                    }                  
+                    }
                 }
             }
             return _isLuminanceCount;
         }
+
         /// <summary>
         /// Check if AutoBrightness/AutoColorTemp is enabled.
         /// </summary>
@@ -884,10 +933,11 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _isAlSON = true;
                     break;
-                }      
+                }
             }
             return _isAlSON;
         }
+
         /// <summary>
         /// Check the number of ALS Monitor.
         /// </summary>
@@ -903,16 +953,17 @@ namespace DDPM.UI.Module.Brightness
             }
             return _isMutliAlsMonitorCount;
         }
+
         ///<summary>
         ///Expected Result A: "Synchronize between monitors" is displayed and not greyed out with default is OFF.
         ///Expected Result B: "Synchronize between monitors" is displayed and not greyed out with default is OFF.
-        ///Expected Result C: "Synchronize between monitors" is displayed and default is OFF. 
+        ///Expected Result C: "Synchronize between monitors" is displayed and default is OFF.
         ///Expected Result D: "Synchronize between monitors" is displayed but greyed out.
         ///Expected Result E:  "Synchronize between monitors" is NOT displayed.
         ///</summary>
         private void SynchronizeBtnExpectedResult(string str)
         {
-            switch(str)
+            switch (str)
             {
                 case "A":
                 case "B":
@@ -920,13 +971,16 @@ namespace DDPM.UI.Module.Brightness
                     IsSynchronizeDisabled = false;
                     isShowSynchronize = Visibility.Visible;
                     break;
+
                 case "D":
                     IsSynchronizeDisabled = true;
                     isShowSynchronize = Visibility.Visible;
                     break;
+
                 case "E":
                     isShowSynchronize = Visibility.Collapsed;
                     break;
+
                 default:
                     isShowSynchronize = Visibility.Visible;
                     break;
@@ -1132,6 +1186,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 PR1_Name = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Pre1Name = PR1_Name;
+                else
+                    ScheduleMap = new scheduleInfo() { Pre1Name = PR1_Name };
+
                 NotifyPropertyChanged("PR1Name");
             }
         }
@@ -1145,6 +1205,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 PR2_Name = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Pre2Name = PR2_Name;
+                else
+                    ScheduleMap = new scheduleInfo() { Pre2Name = PR2_Name };
+
                 NotifyPropertyChanged("PR2Name");
             }
         }
@@ -1158,6 +1224,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 hOurs_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Hours1 = hOurs_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Hours1 = hOurs_1 };
+
                 NotifyPropertyChanged("hOurs1");
             }
         }
@@ -1171,6 +1243,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 mIns_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Mins1 = mIns_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Mins1 = mIns_1 };
+
                 NotifyPropertyChanged("mIns1");
             }
         }
@@ -1184,6 +1262,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 dUration_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Duration1 = dUration_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Duration1 = dUration_1 };
+
                 NotifyPropertyChanged("dUration1");
             }
         }
@@ -1197,6 +1281,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 hOurs_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Hours2 = hOurs_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Hours2 = hOurs_2 };
+
                 NotifyPropertyChanged("hOurs2");
             }
         }
@@ -1210,6 +1300,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 mIns_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Mins2 = mIns_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Mins2 = mIns_2 };
+
                 NotifyPropertyChanged("mIns2");
             }
         }
@@ -1223,6 +1319,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 dUration_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Duration2 = dUration_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Duration2 = dUration_2 };
+
                 NotifyPropertyChanged("dUration2");
             }
         }
@@ -1256,6 +1358,12 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR1Brightness_Value = value;
                 PR1Brightness_Debouncer.Debounce(value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Brightness1 = PR1Brightness_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Brightness1 = PR1Brightness_Value };
+
                 NotifyPropertyChanged("PR1BrightnessValue");
             }
         }
@@ -1289,6 +1397,12 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR2Brightness_Value = value;
                 PR2Brightness_Debouncer.Debounce(value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Brightness2 = PR2Brightness_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Brightness2 = PR2Brightness_Value };
+
                 NotifyPropertyChanged("PR2BrightnessValue");
             }
         }
@@ -1322,6 +1436,12 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR1Contrast_Value = (value < 25) ? 25 : value;
                 PR1Contrast_Debouncer.Debounce(PR1Contrast_Value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Contrast1 = PR1Contrast_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Contrast1 = PR1Contrast_Value };
+
                 NotifyPropertyChanged("PR1ContrastValue");
             }
         }
@@ -1355,87 +1475,74 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR2Contrast_Value = (value < 25) ? 25 : value;
                 PR2Contrast_Debouncer.Debounce(PR2Contrast_Value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Contrast2 = PR2Contrast_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Contrast2 = PR2Contrast_Value };
+
                 NotifyPropertyChanged("PR2ContrastValue");
             }
         }
 
         public void GetScheduleInfo()
         {
-            var ScheduleMaps_string = string.Empty;
-
             if (SelectedHomeDevice == null)
                 return;
 
-            if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            if (ScheduleMap == null)
+                ScheduleMap = new scheduleInfo();
 
-            if (ScheduleMaps == null)
-                ScheduleMaps = new List<scheduleInfo>();
+            ScheduleMap = DdpmCommonHelper.DeviceManagerSA.ReadScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo).Result;
 
-            if (ScheduleMaps.Count < 1)
+            if (ScheduleMap != null)
             {
-                ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
-                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                    ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-            }
-
-            if (ScheduleMaps != null && ScheduleMaps.Count > 0)
-            {
-                bool find = false;
-
-                foreach (scheduleInfo TMP in ScheduleMaps)
-                {
-                    if (TMP.Monitor.Equals(SelectedHomeDevice.MonitorInfo.edid))
-                    {
-                        find = true;
-
-                        PR1Name = TMP.Pre1Name;
-                        PR2Name = TMP.Pre2Name;
-                        hOurs1 = TMP.Hours1;
-                        mIns1 = TMP.Mins1;
-                        dUration1 = TMP.Duration1;
-                        hOurs2 = TMP.Hours2;
-                        mIns2 = TMP.Mins2;
-                        dUration2 = TMP.Duration2;
-                        PR1Brightness_Value = TMP.Brightness1;
-                        PR1Contrast_Value = TMP.Contrast1;
-                        PR2Brightness_Value = TMP.Brightness2;
-                        PR2Contrast_Value = TMP.Contrast2;
-
-                        break;
-                    }
-                }
-
-                if (!find)
-                {
-                    PR1Name = string.Empty;
-                    PR2Name = string.Empty;
-                    hOurs1 = 8;
-                    mIns1 = 0;
-                    dUration1 = 60;
-                    hOurs2 = 5;
-                    mIns2 = 0;
-                    dUration2 = 60;
-                    PR1Brightness_Value = 75;
-                    PR1Contrast_Value = 75;
-                    PR2Brightness_Value = 50;
-                    PR2Contrast_Value = 50;
-                }
+                PR1Name = ScheduleMap.Pre1Name;
+                PR2Name = ScheduleMap.Pre2Name;
+                hOurs1 = ScheduleMap.Hours1;
+                mIns1 = ScheduleMap.Mins1;
+                dUration1 = ScheduleMap.Duration1;
+                hOurs2 = ScheduleMap.Hours2;
+                mIns2 = ScheduleMap.Mins2;
+                dUration2 = ScheduleMap.Duration2;
+                PR1Brightness_Value = ScheduleMap.Brightness1;
+                PR1Contrast_Value = ScheduleMap.Contrast1;
+                PR2Brightness_Value = ScheduleMap.Brightness2;
+                PR2Contrast_Value = ScheduleMap.Contrast2;
             }
             else
             {
-                PR1Name = string.Empty;
-                PR2Name = string.Empty;
-                hOurs1 = 8;
-                mIns1 = 0;
-                dUration1 = 60;
-                hOurs2 = 5;
-                mIns2 = 0;
-                dUration2 = 60;
-                PR1Brightness_Value = 75;
-                PR1Contrast_Value = 75;
-                PR2Brightness_Value = 50;
-                PR2Contrast_Value = 50;
+                ScheduleMap = new scheduleInfo()
+                {
+                    model = SelectedHomeDevice.MonitorInfo.modelName ?? string.Empty,
+                    serviceTag = SelectedHomeDevice.MonitorInfo.edid.ServiceTag ?? string.Empty,
+                    IsEnable = true,
+                    Pre1Name = string.Empty,
+                    Pre2Name = string.Empty,
+                    Hours1 = 8,
+                    Mins1 = 0,
+                    Duration1 = 60,
+                    Hours2 = 5,
+                    Mins2 = 0,
+                    Duration2 = 60,
+                    Brightness1 = 75,
+                    Contrast1 = 75,
+                    Brightness2 = 50,
+                    Contrast2 = 50,
+                };
+
+                PR1Name = ScheduleMap.Pre1Name;
+                PR2Name = ScheduleMap.Pre2Name;
+                hOurs1 = ScheduleMap.Hours1;
+                mIns1 = ScheduleMap.Mins1;
+                dUration1 = ScheduleMap.Duration1;
+                hOurs2 = ScheduleMap.Hours2;
+                mIns2 = ScheduleMap.Mins2;
+                dUration2 = ScheduleMap.Duration2;
+                PR1Brightness_Value = ScheduleMap.Brightness1;
+                PR1Contrast_Value = ScheduleMap.Contrast1;
+                PR2Brightness_Value = ScheduleMap.Brightness2;
+                PR2Contrast_Value = ScheduleMap.Contrast2;
             }
 
             NotifyPropertyChanged("PR1Name");
@@ -1454,37 +1561,31 @@ namespace DDPM.UI.Module.Brightness
 
         public void CloseSchedule()
         {
-            var ScheduleMaps_string = string.Empty;
-
-            if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-
-            if (ScheduleMaps == null)
-                ScheduleMaps = new List<scheduleInfo>();
-
-            if (ScheduleMaps.Count < 1)
+            if (ScheduleMap == null)
             {
-                ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
-                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                    ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-            }
-
-            if (ScheduleMaps != null && ScheduleMaps.Count > 0)
-            {
-                foreach (scheduleInfo TMP in ScheduleMaps)
+                ScheduleMap = new scheduleInfo()
                 {
-                    if (TMP.Monitor.Equals(SelectedHomeDevice.MonitorInfo.edid))
-                    {
-                        TMP.IsEnable = false;
-                        break;
-                    }
-                }
-
-                ScheduleMaps_string = JsonConvert.SerializeObject(ScheduleMaps, Formatting.Indented);
+                    model = SelectedHomeDevice.MonitorInfo.modelName ?? string.Empty,
+                    serviceTag = SelectedHomeDevice.MonitorInfo.edid.ServiceTag ?? string.Empty,
+                    IsEnable = false,
+                    Pre1Name = string.Empty,
+                    Pre2Name = string.Empty,
+                    Hours1 = 8,
+                    Mins1 = 0,
+                    Duration1 = 60,
+                    Hours2 = 5,
+                    Mins2 = 0,
+                    Duration2 = 60,
+                    Brightness1 = 75,
+                    Contrast1 = 75,
+                    Brightness2 = 50,
+                    Contrast2 = 50,
+                };
             }
+            else
+                ScheduleMap.IsEnable = false;
 
-            DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
+            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
         }
 
         public bool CheckIsTimeOverlap()
@@ -1930,7 +2031,7 @@ namespace DDPM.UI.Module.Brightness
         private bool Get_Synchronize()
         {
             if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
             if (DdpmCommonHelper.Settings_Cache != null)
             {
                 IsSynchronizeMonitor = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor;
@@ -2020,17 +2121,17 @@ namespace DDPM.UI.Module.Brightness
             return LuminanceMax_Value;
         }
 
-        private void Set_Luminance_Value(object value_)
+        public void Set_Luminance_Value(object value_)
         {
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
             DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
 
-            //NotifyPropertyChanged("LuminanceValue");
+            NotifyPropertyChanged("LuminanceValue");
         }
 
-        private void Set_Brightness_Value(object value_)
+        public void Set_Brightness_Value(object value_)
         {
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
@@ -2046,7 +2147,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
 
-            //NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("BrightnessValue");
         }
 
         private double Get_Contrast_Value()
@@ -2069,7 +2170,7 @@ namespace DDPM.UI.Module.Brightness
             return Contrast_Value;
         }
 
-        private void Set_Contrast_Value(object value_)
+        public void Set_Contrast_Value(object value_)
         {
             var value = Convert.ToDouble(value_);
 
@@ -2086,7 +2187,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue);
 
-            //NotifyPropertyChanged("ContrastValue");
+            NotifyPropertyChanged("ContrastValue");
         }
 
         private void NotifyPropertyChanged(string info)
@@ -2157,13 +2258,13 @@ namespace DDPM.UI.Module.Brightness
         private Visibility _AutoBrigRangeLevelLock = Visibility.Collapsed;
         private Visibility _AutoTemperatureLock = Visibility.Collapsed;
         private Visibility _PrimaryMonitorSyncLock = Visibility.Collapsed;
-        
+
         public Visibility AutoALSLock
         {
             get => _AutoALSLock;
             set
             {
-                _AutoALSLock = value ;
+                _AutoALSLock = value;
                 NotifyPropertyChanged(nameof(AutoALSLock));
             }
         }
@@ -2177,6 +2278,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged(nameof(AutoBrightnessLock));
             }
         }
+
         public Visibility AutoBrigRangeLevelLock
         {
             get => _AutoBrigRangeLevelLock;
@@ -2186,6 +2288,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged(nameof(AutoBrigRangeLevelLock));
             }
         }
+
         public Visibility AutoTemperatureLock
         {
             get => _AutoTemperatureLock;
@@ -2195,6 +2298,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged(nameof(AutoTemperatureLock));
             }
         }
+
         public Visibility PrimaryMonitorSyncLock
         {
             get => _PrimaryMonitorSyncLock;
@@ -2219,7 +2323,7 @@ namespace DDPM.UI.Module.Brightness
                 IsPrimaryMonitorSyncLockMask = Visibility.Visible;
                 IsAutoBrightnessRangeLevelStringLockMask = Visibility.Visible;
             }
-            else if(value && _autoBrightnessStatus && _autoColorTempStatus)
+            else if (value && _autoBrightnessStatus && _autoColorTempStatus)
             {
                 AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
                 AutoTemperatureLock = value ? Visibility.Visible : Visibility.Collapsed;
@@ -2241,6 +2345,17 @@ namespace DDPM.UI.Module.Brightness
                 IsAutoBrightnessRangeLevelStringLockMask = Visibility.Collapsed;
             }
         }
+
+        public void Update_BriContLockStatus(bool value)
+        {
+            LockMaskVisible = value ? Visibility.Visible : Visibility.Collapsed;
+            TabSTOP = value ? "None" : "Cycle";
+        }
+        public void Update_SyncLockStatus(bool value)
+        {
+            synchronizeLock = value ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         private Visibility _isAutoBrightnessLockMask = Visibility.Collapsed;
 
         public Visibility IsAutoBrightnessLockMask
@@ -2299,7 +2414,7 @@ namespace DDPM.UI.Module.Brightness
                     NotifyPropertyChanged(nameof(IsAutoTemperatureSwitchLockMask));
                 }
             }
-        }        
+        }
 
         private Visibility _isPrimaryMonitorSyncLockMask = Visibility.Collapsed;
 
@@ -2330,11 +2445,11 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
         }
-     
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-
         private bool _isAutoBrightnessTextGrayedOut;
+
         public bool IsAutoBrightnessTextGrayedOut
         {
             get => _isAutoBrightnessTextGrayedOut;
@@ -2346,6 +2461,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _isAutoColorTempTextGrayedOut;
+
         public bool IsAutoColorTempTextGrayedOut
         {
             get => _isAutoColorTempTextGrayedOut;
@@ -2357,6 +2473,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _isAutoBrightnessRangeLevelTextGrayedOut;
+
         public bool IsAutoBrightnessRangeLevelTextGrayedOut
         {
             get => _isAutoBrightnessRangeLevelTextGrayedOut;
@@ -2368,6 +2485,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _isAutoPrimaryMonitorForSyncTextGrayedOut;
+
         public bool IsAutoPrimaryMonitorForSyncTextGrayedOut
         {
             get => _isAutoPrimaryMonitorForSyncTextGrayedOut;
@@ -2379,6 +2497,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _isAutoBrightnessRangeLevelStringGrayedOut;
+
         public bool IsAutoBrightnessRangeLevelStringGrayedOut
         {
             get => _isAutoBrightnessRangeLevelStringGrayedOut;
@@ -2745,6 +2864,45 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #endregion ALS functions
+
+        public void ResetClick()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Reset_Click;
+            bw.RunWorkerCompleted += Reset_Click_finish;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
+        }
+
+        private void Reset_Click(object sender, DoWorkEventArgs e)
+        {
+            bool r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
+            if (r)
+            {
+                ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+                if (rb_10.result)
+                {
+                    Brightness_Value = (uint)((long)rb_10.value);
+                    Luminance_Value = BrightnessValue;
+                }
+                ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
+                if (rb_12.result)
+                    Contrast_Value = (uint)((long)rb_12.value);
+            }
+        }
+        private void Reset_Click_finish(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("LuminanceValue");
+            NotifyPropertyChanged("ContrastValue");
+            NotifyPropertyChanged("IsBusy");
+        }
 
         public Visibility isShowSynchronize { get; set; } = Visibility.Visible;
 

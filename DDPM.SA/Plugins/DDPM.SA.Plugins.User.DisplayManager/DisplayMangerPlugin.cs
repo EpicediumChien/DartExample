@@ -15,7 +15,6 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
-using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -33,11 +32,10 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text.Json;
-using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 
@@ -82,6 +80,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //private string currentInput;
 
         private readonly object _PluginConditionLock = new object();
+        private readonly object _GetMonitorsLock = new object();
 
         //0607 Bruce 是否鎖定畫面自動旋轉
         private bool isLockOrientation;
@@ -100,8 +99,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ["1001"] = "USB-C2",
             ["1010"] = "USB-C3",
             ["1011"] = "USB-C4",
-            ["1100"] = "Thunderbolt-1",
-            ["1101"] = "Thunderbolt-2"
+            ["1100"] = "Thunderbolt1",
+            ["1101"] = "Thunderbolt2"
         };
 
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
@@ -192,14 +191,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(Task.CompletedTask);
         }
 
-        public Task<List<MonitorInfo>> GetMonitors(bool renew = false)
+        public Task<List<MonitorInfo>> GetMonitors()
         {
-            lock (_PluginConditionLock)
+            lock (_GetMonitorsLock)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
                 _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors(renew).Result);
+                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
 
                 _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
@@ -210,17 +209,46 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        public Task<List<MonitorInfo>> Re_GetMonitors()
+        public Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
         {
-            lock (_PluginConditionLock)
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
+            try
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
-
+                var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
+                var NewToken = Cancellation.Token;
                 _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.Re_GetMonitors().Result);
-
+                _AllInfoMonitors.AddRange(_VcpCorePlugin.Re_GetMonitors(NewToken).Result);
                 _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
+                return Task.FromResult(_AllInfoMonitors);
+            }
+            catch (TaskCanceledException)
+            {
+                // Task was canceled before running.
+                // Cancelled due to timeout
 
+                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
+                else _AllInfoMonitors = new List<MonitorInfo>();
+
+                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
+                return Task.FromResult(_AllInfoMonitors);
+            }
+            catch (OperationCanceledException)
+            {
+                // Task was canceled while running.
+                // Cancelled due to timeout
+
+                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
+                else _AllInfoMonitors = new List<MonitorInfo>();
+
+                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() cancellation happened...");
+                return Task.FromResult(_AllInfoMonitors);
+            }
+            catch (Exception ex)
+            {
+                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
+                else _AllInfoMonitors = new List<MonitorInfo>();
+
+                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
                 return Task.FromResult(_AllInfoMonitors);
             }
         }
@@ -394,6 +422,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo)
         {
+            InputTypeString inputTypeString = new InputTypeString();
             ObjGetVCP objGetVCPEE = new ObjGetVCP();
             usbUpstreamList = new List<string>()
                 /*{ "Thunderbolt", "USB-C" }*/;
@@ -410,13 +439,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         for (int i = 0; i < strUSB.Length; i = i + 4)
                         {
                             subUSB = strUSB.Substring(i, 4);
+                            _logs.DebugMsg("subUSB:" + subUSB);
 
                             string outUSB;
                             if (USBUplink.TryGetValue(subUSB, out outUSB))
                             {
+                                _logs.DebugMsg("outUSB:" + outUSB);
                                 _usbUpstreamList.Add(outUSB);
                             }
                         }
+                        _usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                     USBUpstream.Clear();
                     string str = string.Empty;
@@ -469,12 +501,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         usbUpstreamList.Add(_usbUpstreamList[3]);
                                     }
                                 }
+                                //usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
                             }
                         }
                     }
                     catch
                     {
                         usbUpstreamList = _usbUpstreamList;
+                        //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                 }
             }
@@ -1889,6 +1923,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result);
         }
 
+        public Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo)
+        {
+            DisplayCurrentPropertiesInfo ret = new DisplayCurrentPropertiesInfo();
+            if (_DisplayPropertiesPlugin != null)
+            {
+                ret = _DisplayPropertiesPlugin.GetCurrentDisplayProperties(monitorInfo).Result;
+            }
+            return Task.FromResult(ret);
+        }
+
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
         {
@@ -1899,6 +1943,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
             isSWSetOrientation = true;
@@ -1906,6 +1951,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
             isSWSetOrientation = true;
@@ -2454,11 +2500,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
 
-        public event EventHandler<string> EAEditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EAEditCompleted;
 
         public event EventHandler<string> EAEditStarted;
 
         public event EventHandler<EAArgs> EAEditReturn;
+
+        public event EventHandler<EAArgs> EASettingsChanged;
 
         private void InitializeEAPlugin()
         {
@@ -2493,10 +2542,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (!_isEaPluginConfigured)
                         {
                             _isEaPluginConfigured = true;
-                            _eaService.EditCompleted += _eaService_EditCompleted;
+                            //Robert_Lin, 2024-9-13 Remove unused interfaces
+                            //_eaService.EditCompleted += _eaService_EditCompleted;
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                     else if (pluginCondition is PluginRunningCondition)
@@ -2507,14 +2559,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (!_isEaPluginConfigured)
                         {
                             _isEaPluginConfigured = true;
-                            _eaService.EditCompleted += _eaService_EditCompleted;
+                            //Robert_Lin, 2024-9-13 Remove unused interfaces
+                            //_eaService.EditCompleted += _eaService_EditCompleted;
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
+                            //Robert_Lin, 2024-10-8
+                            _eaService.EASettingsChanged += _eaService_EASettingsChanged;
                         }
                     }
                 }
             });
+        }
+
+        private void _eaService_EASettingsChanged(object sender, EAArgs e)
+        {
+            if (EASettingsChanged != null)
+            {
+                Task.Run(() => EASettingsChanged.Invoke(this, e));
+            }
         }
 
         private void _eaService_EditStarted(object sender, string e)
@@ -2525,13 +2588,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        private void _eaService_EditCompleted(object sender, string e)
-        {
-            if (EAEditCompleted != null)
-            {
-                Task.Run(() => EAEditCompleted.Invoke(this, e));
-            }
-        }
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //private void _eaService_EditCompleted(object sender, string e)
+        //{
+        //    if (EAEditCompleted != null)
+        //    {
+        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
+        //    }
+        //}
 
         private void EaCondition_PluginConditionChangeHandler(object sender, EventArgs e)
         {
@@ -2567,14 +2631,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        {
-            if (_eaService != null)
-            {
-                return _eaService.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-            }
-            return Task.FromResult(false);
-        }
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        return _eaService.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //    }
+        //    return Task.FromResult(false);
+        //}
 
         //Robert_Lin,2024-8-4
         public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
@@ -2598,9 +2663,48 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        Task.Run(() =>
+        //        {
+        //            return _eaService.EAReloadMonitorSettings(monitorInfo);
+        //        });
+        //    }
+        //    return Task.FromResult(false);
+        //}
+
+        public Task<bool> ReloadEzSettings()
+        {
+            if (_eaService != null)
+            {
+                return _eaService.ReloadEzSettings();
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.ReloadEzSettings(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.SetEASelectedLayout(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion
 
         #region OutReport
+
         public Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos)
         {
             _logs.DebugMsg($"{nameof(GetMonitorAssetReport)} start");
@@ -2688,7 +2792,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"{nameof(GetMonitorAssetReport)} end");
             return Task.FromResult(ret);
         }
-        List<byte[]> GetCurrentMonitorEdid()
+
+        private List<byte[]> GetCurrentMonitorEdid()
         {
             _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} start");
             List<byte[]> ret_Edie_Byt = new List<byte[]>();
@@ -2717,7 +2822,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} end");
             return ret_Edie_Byt;
         }
-        int DaysBetweenWeekStartAndToday(int year, int weekOfYear)
+
+        private int DaysBetweenWeekStartAndToday(int year, int weekOfYear)
         {
             // 獲取當前日期
             DateTime today = DateTime.Today;
@@ -2734,7 +2840,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             int daysBetween = (int)(today - weekStart).TotalDays;
             return daysBetween;
         }
-        string GetActiveHour(MonitorInfo monitorInfo)
+
+        private string GetActiveHour(MonitorInfo monitorInfo)
         {
             string ret = "N/A";
             try
@@ -2747,11 +2854,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch
             {
-
             }
             return ret;
         }
-        string GetPowerStatus(MonitorInfo monitorInfo)
+
+        private string GetPowerStatus(MonitorInfo monitorInfo)
         {
             string ret = "N/A";
             try
@@ -2766,9 +2873,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         case 0x01:
                             ret = "On";
                             break;
+
                         case 0x04:
                             ret = "Saving";
                             break;
+
                         case 0x05:
                             ret = "Off";
                             break;
@@ -2777,11 +2886,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch
             {
-
             }
             return ret;
         }
-        string GetControllerID(MonitorInfo monitorInfo)
+
+        private string GetControllerID(MonitorInfo monitorInfo)
         {
             string ret = "N/A";
             try
@@ -2798,10 +2907,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch
             {
-
             }
             return ret;
         }
+
         #endregion
 
         #region Gaming
@@ -3009,6 +3118,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " done:Result " + DualResolutionType);
             return Task.FromResult(DualResolutionType);
         }
+
         public Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineType) + " start");
@@ -3278,13 +3388,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Display FWU Metadata
-        public Task<DisplayUpdateHelper> GetDisplayFWUpdate()
+
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
             SetDisplayFWUServer();
-            displayUpdateHelper = GetDisplayFWMetadata();
+            displayUpdateHelper = GetDisplayFWMetadata(isSkipCA, settingsPlugin);
             return Task.FromResult(displayUpdateHelper);
         }
+
         private void SetDisplayFWUServer()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
@@ -3306,13 +3418,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
         }
-        private DisplayUpdateHelper GetDisplayFWMetadata()
+
+        private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
+            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} start");
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
-            CertificateCheck certificateCheck = new CertificateCheck();
-            if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+            if (!isSkipCA)
             {
-                return ret;
+                CertificateCheck certificateCheck = new CertificateCheck(_logs);
+                if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+                {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA fail");
+                    return ret;
+                }
+            }
+            else
+            {
+                _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} check CA is skip");
             }
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
             monitorInfos = GetMonitors().Result;
@@ -3320,86 +3442,119 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 try
                 {
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} get jsonContent");
                     client.Timeout = TimeSpan.FromSeconds(5);
                     HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
-                    string jsonString = response.Content.ReadAsStringAsync().Result;
-                    var data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
-
-                    foreach (MonitorInfo monitorInfo in monitorInfos)
+                    string jsonContent = response.Content.ReadAsStringAsync().Result;
+                    List<string> InfoPkey = new List<string>();
+                    if (settingsPlugin != null)
                     {
-                        string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
-                        if (!string.IsNullOrEmpty(model) && data.ContainsKey(model))
+                        InfoPkey = settingsPlugin.GetInfos().Result;
+                    }
+                    if (InfoPkey == null || InfoPkey.Count == 0)
+                    {
+                        //if read info failed, load default key as well
+                        InfoPkey = new List<string>();
+                        InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                    }
+                    string szInfo = string.Empty;
+                    string jsonString = string.Empty;
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
+                    Debug.WriteLine(jsonContent);
+                    jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
+                    if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
+                    {
+                        settingsPlugin.AddInfo(szInfo);//pass info to settings manager and judge if new to add
+                    }
+                    if (!string.IsNullOrEmpty(jsonString))
+                    {
+                        Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
+                        foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
-                            Display_Firmwares_item firmwares_item = new Display_Firmwares_item()
+                            string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
+                            if (!string.IsNullOrEmpty(model) && data.ContainsKey(model))
                             {
-                                id = data[model].id,
-                                url = data[model].url,
-                                TheLastVersion = data[model].TheLastVersion,
-                                SHA256 = data[model].SHA256,
-                                SupportedPlatform = data[model].SupportedPlatform,
-                                fileName = data[model].fileName,
-                                date = data[model].date,
-                            };
-                            if (firmwares_item != null)
-                            {
-                                firmwares_item.id = model;
-                                firmwares_item.url = Display_FWU_URL + firmwares_item.url;
-                                firmwares_item.CurrentVersion = monitorInfo.FwVersion;
-                                firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
-                                if (firmwares_item.SupportedPlatform != null)
+                                Display_Firmwares_item firmwares_item = new Display_Firmwares_item()
                                 {
-                                    string currentPlatform = GetSystemArchitecture();
-                                    string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
-                                    if (!supportedPlatform.ToList().Contains(currentPlatform))
+                                    id = data[model].id,
+                                    url = data[model].url,
+                                    TheLastVersion = data[model].TheLastVersion,
+                                    SHA256 = data[model].SHA256,
+                                    SHA512 = data[model].SHA512,
+                                    Thumbprint = data[model].Thumbprint,
+                                    SupportedPlatform = data[model].SupportedPlatform,
+                                    fileName = data[model].fileName,
+                                    date = data[model].date,
+                                };
+                                if (firmwares_item != null)
+                                {
+                                    firmwares_item.id = model;
+                                    firmwares_item.url = Display_FWU_URL + firmwares_item.url;
+                                    firmwares_item.CurrentVersion = monitorInfo.FwVersion;
+                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
+                                    if (firmwares_item.SupportedPlatform != null)
                                     {
-                                        continue;
+                                        string currentPlatform = GetSystemArchitecture();
+                                        string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
+                                        if (!supportedPlatform.ToList().Contains(currentPlatform))
+                                        {
+                                            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
+                                            continue;
+                                        }
                                     }
-                                }
-                                int newVersion = -1;
-                                int oldVersion = -1;
-                                for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
-                                {
-                                    if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                    int newVersion = -1;
+                                    int oldVersion = -1;
+                                    for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
                                     {
-                                        int index = j + 1;
-                                        int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
-                                        break;
+                                        if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                        {
+                                            int index = j + 1;
+                                            int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
+                                            break;
+                                        }
                                     }
-                                }
-                                for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
-                                {
-                                    if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                    for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
                                     {
-                                        int index = j + 1;
-                                        int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
-                                        break;
+                                        if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                        {
+                                            int index = j + 1;
+                                            int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
+                                            break;
+                                        }
                                     }
-                                }
-                                //if (newVersion > oldVersion)
-                                {
-                                    ret.Firmwares.Add(firmwares_item);
+                                    if (newVersion >= oldVersion)
+                                    {
+                                        ret.Firmwares.Add(firmwares_item);
+                                    }
                                 }
                             }
                         }
                     }
+                    else
+                    {
+                        _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check fail");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} error {ex.Message}");
                 }
             }
+            _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} done");
             return ret;
         }
+
         public string GetSystemArchitecture()
         {
             if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
             {
-                return "Intel_x64";
+                return "Intel";//"Intel_x64";
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
             {
-                return "Intel_x86";
+                return "Intel";//"Intel_x86";
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm)
             {
@@ -3407,13 +3562,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
             {
-                return "ARM_64";
+                return "ARM";//"ARM_64";
             }
             else
             {
                 return "Unknow";
             }
         }
+
         #endregion
     }
 }

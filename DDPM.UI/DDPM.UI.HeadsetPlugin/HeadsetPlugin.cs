@@ -9,7 +9,9 @@ using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows.Forms;
 using System.Windows.Input;
+using Cursors = System.Windows.Input.Cursors;
 
 namespace DDPM.UI.Plugin.HeadsetPlugin
 {
@@ -95,11 +97,26 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Headset"))
+            try
             {
-                if (e.type == DeviceChangedType.Peripherals_UnPlug)
-                    GetPeripheralsAsync();
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Headset"))
+                {
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    {
+                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                        {
+                            _viewModel.OnGoBackClicked();
+                            return;
+                        }
+                        GetPeripheralsAsync();
+                    }
+                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                }
+            }
+            catch (Exception ex)
+            {
+                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
+                _log.Error(ex, message);
             }
         }
 
@@ -193,7 +210,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         public void OnActivated()
         {
             _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = null;
         }
 
@@ -201,7 +217,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         public void OnDeactivated()
         {
             _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 

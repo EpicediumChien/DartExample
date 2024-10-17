@@ -36,7 +36,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             var converter = (CollaborationCheckedToVisibilityConverter)Resources["CollaborationCheckedToVisibilityConverter"];
             _vm = vm;
             converter.ViewModel = _vm;
-            _vm.Invoke_PleaseWait(_vm.Model);
+            _vm.Invoke_PleaseWait(_vm.Model, _vm);
             if (_vm.CurrentDeviceInfo!.IsPresetsSupported)
             {
                 if(_vm.CurrentDeviceInfo!.Band1Gain > 4 || _vm.CurrentDeviceInfo!.Band1Gain < -6)
