@@ -515,6 +515,10 @@ namespace ColorPreset.Plugins
                     {
                         if (registryMonitor_ICC != null)
                         {
+                            registryMonitor_ICC.Stop();
+                            registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
+                            registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
+                           
                             if (registryMonitor_ICC.IsMonitoring)
                                 registryMonitor_ICC.Dispose();
                             registryMonitor_ICC = null;
@@ -572,6 +576,10 @@ namespace ColorPreset.Plugins
 
                     if (registryMonitor_ICC != null)
                     {
+                        registryMonitor_ICC.Stop();
+                        registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
+                        registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
+
                         if (registryMonitor_ICC.IsMonitoring)
                             registryMonitor_ICC.Dispose();
                         registryMonitor_ICC = null;
@@ -598,6 +606,10 @@ namespace ColorPreset.Plugins
                 {
                     if (registryMonitor_ICC != null)
                     {
+                        registryMonitor_ICC.Stop();
+                        registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
+                        registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
+
                         if (registryMonitor_ICC.IsMonitoring)
                             registryMonitor_ICC.Dispose();
                         registryMonitor_ICC = null;
@@ -669,16 +681,19 @@ namespace ColorPreset.Plugins
                     string[] separators = { "," };
                     string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
 
-                    if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
-                        WriteColorPreset(Active_monitorInfo, "Standard/Native");
-                    else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
-                        WriteColorPreset(Active_monitorInfo, "Game/Game1");
-                    else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
-                        WriteColorPreset(Active_monitorInfo, "Rec. 709 / BT.709");
-                    else
-                        WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);
+                    if (strICC_ColorPresets.Length > 0)
+                    {
+                        if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
+                            WriteColorPreset(Active_monitorInfo, "Standard");
+                        else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                            WriteColorPreset(Active_monitorInfo, "Game");
+                        else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("2020", StringComparison.OrdinalIgnoreCase))
+                            WriteColorPreset(Active_monitorInfo, "Rec.709 / BT.709");
+                        else
+                            WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);                        
 
-                    Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                        Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                    }                      
 
                     break;
                 }
@@ -1907,7 +1922,7 @@ namespace ColorPreset.Plugins
                     string[] separators = { "|" };
                     string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
 
-                    if (string.Equals(ColorPreset_Name, "Standard/Native", StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(ColorPreset_Name, "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "Native", StringComparison.OrdinalIgnoreCase))
                     {
                         if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                         {
@@ -1915,7 +1930,7 @@ namespace ColorPreset.Plugins
                             break;
                         }
                     }
-                    else if (string.Equals(ColorPreset_Name, "Game/Game1", StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(ColorPreset_Name, "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "Game1", StringComparison.OrdinalIgnoreCase))
                     {
                         if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
                         {
@@ -1923,9 +1938,9 @@ namespace ColorPreset.Plugins
                             break;
                         }
                     }
-                    else if (string.Equals(ColorPreset_Name, "Rec. 709 / BT.709", StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(ColorPreset_Name, "Rec.709 / BT.709", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "Rec.709", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "BT.709", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "Rec.2020 / BT.2020", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "Rec.2020", StringComparison.OrdinalIgnoreCase) || string.Equals(ColorPreset_Name, "BT.2020", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
+                        if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("2020", StringComparison.OrdinalIgnoreCase))
                         {
                             MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                             break;

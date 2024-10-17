@@ -288,8 +288,8 @@ namespace DDPM.UI.Module.Color
                                 if (count == 1)
                                 {
                                     DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
-                                  MyModule.SelectedHomeDevice?.MonitorInfo,
-                                  SupportColorPresets[idex]);
+                                      MyModule.SelectedHomeDevice?.MonitorInfo,
+                                      SupportColorPresets[idex]);
                                 }
                                 else
                                 {
@@ -328,7 +328,7 @@ namespace DDPM.UI.Module.Color
                                 {
                                     // add jim 20240830
                                     DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
-                                    //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                                    DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
                                     //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
                                 }
                             }
@@ -1031,7 +1031,7 @@ namespace DDPM.UI.Module.Color
                 {
                     foreach (string colorpreset in SupportColorPresets)
                     {
-                        if (string.Equals(colorpreset, "Standard/Native", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(colorpreset, "Standard", StringComparison.OrdinalIgnoreCase))
                             break;
                         index++;
                     }
@@ -1040,17 +1040,28 @@ namespace DDPM.UI.Module.Color
                 {
                     foreach (string colorpreset in SupportColorPresets)
                     {
-                        if (string.Equals(colorpreset, "Game/Game1", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(colorpreset, "Game", StringComparison.OrdinalIgnoreCase))
                             break;
                         index++;
                     }
                 }
-                else if (e.Contains("Rec", StringComparison.OrdinalIgnoreCase) || e.Contains("BT.", StringComparison.OrdinalIgnoreCase) || e.Contains("709", StringComparison.OrdinalIgnoreCase))
+                else if (e.Contains("Rec", StringComparison.OrdinalIgnoreCase) || e.Contains("BT.", StringComparison.OrdinalIgnoreCase) || e.Contains("709", StringComparison.OrdinalIgnoreCase) || e.Contains("2020", StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (string colorpreset in SupportColorPresets)
                     {
-                        if (string.Equals(colorpreset, "Rec. 709 / BT.709", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(colorpreset, "Rec.709 / BT.709", StringComparison.OrdinalIgnoreCase))
                             break;
+                        else if (string.Equals(colorpreset, "Rec.709", StringComparison.OrdinalIgnoreCase))
+                            break;
+                        else if (string.Equals(colorpreset, "BT.709", StringComparison.OrdinalIgnoreCase))
+                            break;
+                        else if (string.Equals(colorpreset, "Rec.2020 / BT.2020", StringComparison.OrdinalIgnoreCase))
+                            break;
+                        else if (string.Equals(colorpreset, "Rec.2020", StringComparison.OrdinalIgnoreCase))
+                            break;
+                        else if (string.Equals(colorpreset, "BT.2020", StringComparison.OrdinalIgnoreCase))
+                            break;
+
                         index++;
                     }
                 }
