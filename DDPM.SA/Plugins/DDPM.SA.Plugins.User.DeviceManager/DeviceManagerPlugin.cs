@@ -49,6 +49,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -4434,6 +4435,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 monitorSettings.ColorPreset = _ColorPresetPlugin.Export(monitorInfo, _SettingsPlugin).Result;
                             }
+                            List<ALSConfig> aLSConfigs = new List<ALSConfig>();
+                            aLSConfigs = GetAllExistAlsConfig().Result;
+                            if (aLSConfigs != null)
+                            {
+                                ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
+                                monitorSettings.ALSConfig = aLSConfig.AllValue;
+                            }
                             foreach (VCPCode vcp in monitorSettings.VCPs)
                             {
                                 if (vcp.Value != null)
@@ -4474,6 +4482,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             ImportVCP importVCP = new ImportVCP();
+            ImpVCPSequence impVCPSequence = new ImpVCPSequence();
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
@@ -4489,7 +4498,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (vcps.Count > 0)
                         {
                             //set ImportVCPSequence
-                            SetVCPSequence(monitorInfo, vcps);
+                            impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
+                            SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                             foreach (VCPCode code in vcps)
                             {
                                 writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
@@ -4541,33 +4551,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
                         monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                        int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
-                        vcps = monitorSettingsList[index].VCPs;
-                        SetVCPSequence(monitorInfo, vcps);
-                        foreach (VCPCode code in vcps)
+                        if (monitorSettingsList != null)
                         {
-                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                            if (monitorSettingsList.Count > 0)
                             {
-                                bool b = false;
-                                ObjGetVCP objGetVCP = new ObjGetVCP();
-                                //SHR on/off need load settings
-                                //if (code.Code == 0xF0)
-                                //{
-                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                //}
-                                //get vcp code
-                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
+                                vcps = monitorSettingsList[index].VCPs;
+                                SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                foreach (VCPCode code in vcps)
                                 {
-                                    //set vcp code
-                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                    writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                    if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                        importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                    {
+                                        bool b = false;
+                                        ObjGetVCP objGetVCP = new ObjGetVCP();
+                                        //SHR on/off need load settings
+                                        //if (code.Code == 0xF0)
+                                        //{
+                                        //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                        //}
+                                        //get vcp code
+                                        objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                        {
+                                            //set vcp code
+                                            writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                            b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                        }
+                                    }
                                 }
+                                return Task.FromResult(true);
+                            }
+                            else
+                            {
+                                writelog("[DisplayImportSettings]monitorSettingsList count is 0");
                             }
                         }
-                        return Task.FromResult(true);
+                        else
+                        {
+                            writelog("[DisplayImportSettings]monitorSettingsList is null");
+                        }
                     }
                     else
                     {
@@ -9377,39 +9401,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return vcps;
         }
 
-        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCPCode> vcps)
+        private void SetVCPSequence(MonitorInfo monitorInfo, ImpVCPSequence impVCPSequence, List<VCPCode> vcps)
         {
-            if (vcps.Count != 0)
+            if (impVCPSequence != null)
             {
-                foreach (var item in vcps)
+                if (vcps.Count != 0)
                 {
-                    Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
-                }
-
-                ImportVCP importVCP = new ImportVCP();
-                foreach (int code in importVCP.ImportVCPSequence)
-                {
-                    if (vcps.Exists(x => x.Code == code))
+                    foreach (var item in vcps)
                     {
-                        VCPCode vcp = vcps.Find(x => x.Code == code);
-                        writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
-                        ObjGetVCP objGetVCP = new ObjGetVCP();
-                        objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
-                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                        Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
+                    }
+
+                    ImportVCP importVCP = new ImportVCP();
+                    foreach (int code in importVCP.ImportVCPSequence)
+                    {
+                        if (vcps.Exists(x => x.Code == code))
                         {
-                            writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
-                            bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                            VCPCode vcp = vcps.Find(x => x.Code == code);
+                            writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
+                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                            objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                            {
+                                writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                                if (code == 0x66)
+                                {
+                                    bool b = SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result;
+                                }
+                                else
+                                {
+                                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
                         }
                     }
-                    else
-                    {
-                        writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
-                    }
+                }
+                else
+                {
+                    writelog("[SetVCPSequence] vcps count = 0");
                 }
             }
             else
             {
-                writelog("[SetVCPSequence] vcps count = 0");
+                writelog("[SetVCPSequence] ImpExpSettings is null");
             }
         }
 
@@ -9435,7 +9473,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             settings.VCPs = GetAllVCPcode(m);
                             settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
                             settings.EA = new EAMonitorSettings();
+                            settings.easyArrangementDDPM = new EasyArrangementDDPM();
                             settings.ImpExpSettings = new ImpExpSettings();
+                            settings.hotkeyData = new List<HotkeyData>();
+                            settings.scheduleInfo = new scheduleInfo();
+                            settings.ALSConfig = 0;
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                         }
@@ -9701,6 +9743,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
             }
+            //EA
+            DDMtoDDPM_EzArrange(DDMmonitorsettings, DDMusersettings);
             //EM
             DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
