@@ -9165,12 +9165,13 @@ namespace DDPM.CLI.Plugins.Display
         {
             if (commandLineInput.Command == "SET" || commandLineInput.Options.Count == 0)
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Invalid command line syntax or missing -value=file";
-                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                //CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                //cli_Response.Command = commandLineInput.Command;
+                //cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Result = "FAIL";
+                //cli_Response.Message = "Invalid command line syntax or missing -value=file";
+                //return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                return DiagnosticReportv2(devMgr, commandLineInput).Result;
             }
             else
             {
@@ -9263,9 +9264,18 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
-            string filepath = commandLineInput.Options[0].Option_Value;
-            string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
-            string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            string filepath = string.Empty;
+            string filepath_ = string.Empty;
+            string file = string.Empty;
+
+            if (commandLineInput.Options.Count > 0)
+            {
+                filepath = commandLineInput.Options[0].Option_Value;
+                filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
+                file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            }
+
+
             string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
 
