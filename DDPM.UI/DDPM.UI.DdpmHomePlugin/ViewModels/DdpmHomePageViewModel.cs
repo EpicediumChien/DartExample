@@ -518,7 +518,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             }
             while (!IsDeviceManagerReady)
             {
-                PleaseWaitMessage = "DDPM.Subagent.DeviceManagere is not ready";
+                PleaseWaitMessage = "DDPM.Subagent.DeviceManager is not ready";
                 Thread.Sleep(200);
             }
             int timeoutMsec = 10000;

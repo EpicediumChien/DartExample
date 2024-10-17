@@ -34,7 +34,7 @@
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <Grid Margin="24">
+        <Grid Margin="24" x:Name="splitGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />

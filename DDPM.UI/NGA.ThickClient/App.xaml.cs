@@ -169,6 +169,7 @@ namespace NGA.ThickClient
 
             _mainWindow = new MainWindow(formBuilder, args);
 
+
             return _mainWindow;
         }
     }

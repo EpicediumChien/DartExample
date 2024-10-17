@@ -44,7 +44,7 @@
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel>
-            <Grid Margin="24">
+            <Grid Margin="24" x:Name="splitGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="552" />
                     <ColumnDefinition Width="Auto" />

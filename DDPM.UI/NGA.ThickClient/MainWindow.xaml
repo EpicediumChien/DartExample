@@ -8,7 +8,8 @@
     xmlns:wpf="clr-namespace:Dell.Client.Framework.UX.WPF.Console;assembly=DCF.UX.WPF"
     Background="{DynamicResource mainWindowBkColor}"
     mc:Ignorable="d"
-    TopBackground="{DynamicResource bkImage}">
+    TopBackground="{DynamicResource bkImage}"
+    ResizeMode="CanResize">
     <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>-->
