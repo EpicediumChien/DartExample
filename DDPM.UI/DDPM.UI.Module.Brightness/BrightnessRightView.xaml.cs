@@ -115,6 +115,8 @@ namespace DDPM.UI.Module.Brightness
                 SynchronizeSwitch.Content = Strings.On;
 
                 // Brightness and contrast
+                x.Set_Contrast_Value(x.ContrastValue);
+                x.Set_Brightness_Value(x.BrightnessValue);
 
                 // Color
                 Invoke_ColorPreset_Sync();             
