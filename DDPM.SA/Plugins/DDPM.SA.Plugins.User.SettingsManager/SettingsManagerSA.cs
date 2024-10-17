@@ -966,6 +966,23 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 impexpSettings.AppSettings = settings.AppSettings;
                 impexpSettings.UserSettings = settings.UserSettings;
+                List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
+                hotkeySettings = ReadHotkeySettings().Result;
+                if (hotkeySettings != null)
+                {
+                    if (hotkeySettings.Count == 1)
+                    {
+                        impexpSettings.UserSettings.HotkeySettings = hotkeySettings[1];
+                    }
+                    else
+                    {
+                        WriteLog("[ExportSettingsFile] hotkeySettings count is " + hotkeySettings.Count.ToString());
+                    }
+                }
+                else
+                {
+                    WriteLog("[ExportSettingsFile] hotkeySettings is null ");
+                }
 
                 List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
 
@@ -1029,65 +1046,97 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //List<VCPCode> vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
-                DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
-                monitorSettings = ImpExpSettings.MonitorSettings;
-                WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
-                string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
-                WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
-                if (File.Exists(monitorSettings_path))
+                if (ImpExpSettings.UserSettings != null)
                 {
-                    monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
-                    if (monitorSettingsList != null)
+                    DDPMUserSettings userSettings = new DDPMUserSettings();
+                    userSettings = ImpExpSettings.UserSettings;
+                    List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
+                    hotkeySettings.Add(userSettings.HotkeySettings);
+                    WriteHotkeySettings(hotkeySettings);
+                    DDPMSettings settings = ReloadAppConfigData().Result;
+                    if (settings != null)
                     {
-                        if (monitorSettingsList.Count != 0)
+                        settings.UserSettings = userSettings;
+                        if (SetAppConfigData(settings).Result)
                         {
-                            foreach (DDPMMonitorSettings settings in monitorSettingsList)
-                            {
-                                if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
-                                {
-                                    settings.Input = monitorSettings.Input;
-                                    settings.KVM = monitorSettings.KVM;
-                                    settings.VCPs = monitorSettings.VCPs;
-                                    settings.EA = monitorSettings.EA;
-                                    settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
-                                    settings.scheduleInfo = monitorSettings.scheduleInfo;
-                                    if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
-                                    {
-                                        //vcps = monitorSettings.VCPs;
-                                        if (!isSameModel)
-                                        {
-                                            return Task.FromResult<bool>(true);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
-                                        WriteLog("[DisplayImportSettings] Import settings Fail...");
-                                        if (!isSameModel)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if (isSameModel)
-                            {
-                                return Task.FromResult(true);
-                            }
+                            WriteLog("[DisplayImportSettings] SetAppConfigData is success ");
                         }
                         else
                         {
-                            WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                            WriteLog("[DisplayImportSettings] SetAppConfigData is fail ");
                         }
                     }
                     else
                     {
-                        WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
+                        WriteLog("[DisplayImportSettings] DDPMSettings is null ");
                     }
                 }
                 else
                 {
-                    WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
+                    WriteLog("[DisplayImportSettings] UserSettings is null ");
+                }
+                if (ImpExpSettings.MonitorSettings != null)
+                {
+                    DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                    monitorSettings = ImpExpSettings.MonitorSettings;
+                    WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
+                    string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
+                    WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
+                    if (File.Exists(monitorSettings_path))
+                    {
+                        monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
+                        if (monitorSettingsList != null)
+                        {
+                            if (monitorSettingsList.Count != 0)
+                            {
+                                foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                                {
+                                    if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                                    {
+                                        settings.Input = monitorSettings.Input;
+                                        settings.KVM = monitorSettings.KVM;
+                                        settings.VCPs = monitorSettings.VCPs;
+                                        settings.EA = monitorSettings.EA;
+                                        settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
+                                        settings.scheduleInfo = monitorSettings.scheduleInfo;
+                                        if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                                        {
+                                            //vcps = monitorSettings.VCPs;
+                                            if (!isSameModel)
+                                            {
+                                                return Task.FromResult<bool>(true);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
+                                            WriteLog("[DisplayImportSettings] Import settings Fail...");
+                                            if (!isSameModel)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (isSameModel)
+                                {
+                                    return Task.FromResult(true);
+                                }
+                            }
+                            else
+                            {
+                                WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                            }
+                        }
+                        else
+                        {
+                            WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
+                        }
+                    }
+                    else
+                    {
+                        WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
+                    }
                 }
             }
             else
