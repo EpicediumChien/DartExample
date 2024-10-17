@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+	  <UseWindowsForms>true</UseWindowsForms>
+	  <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+    <ProjectReference Include="..\Win32Lib\DDPM.Win32Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDPM.Easy.Common">
+      <HintPath>..\..\dll\DDPM.Easy.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ComboBoxStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

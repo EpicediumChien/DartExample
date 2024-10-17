@@ -55,10 +55,11 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '0A'
 
+        //Robert_Lin, 2024-10-12 move to UserSerrings
         /// <summary>
         /// Custom layout items (up to 5 items), Default is empty.
         /// </summary>
-        public List<SplitJson> CustomList { get; set; }
+        //public List<SplitJson> CustomList { get; set; }
 
         //Robert_Lin, 2024-10-10, dont provide default list in a get/set property, it would cause double items issue
         // https://stackoverflow.com/questions/13394401/json-net-deserializing-list-gives-duplicate-items

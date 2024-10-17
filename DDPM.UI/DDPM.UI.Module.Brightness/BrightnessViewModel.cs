@@ -2121,17 +2121,17 @@ namespace DDPM.UI.Module.Brightness
             return LuminanceMax_Value;
         }
 
-        private void Set_Luminance_Value(object value_)
+        public void Set_Luminance_Value(object value_)
         {
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
             DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
 
-            //NotifyPropertyChanged("LuminanceValue");
+            NotifyPropertyChanged("LuminanceValue");
         }
 
-        private void Set_Brightness_Value(object value_)
+        public void Set_Brightness_Value(object value_)
         {
             var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
@@ -2147,7 +2147,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
 
-            //NotifyPropertyChanged("BrightnessValue");
+            NotifyPropertyChanged("BrightnessValue");
         }
 
         private double Get_Contrast_Value()
@@ -2170,7 +2170,7 @@ namespace DDPM.UI.Module.Brightness
             return Contrast_Value;
         }
 
-        private void Set_Contrast_Value(object value_)
+        public void Set_Contrast_Value(object value_)
         {
             var value = Convert.ToDouble(value_);
 
@@ -2187,7 +2187,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue);
 
-            //NotifyPropertyChanged("ContrastValue");
+            NotifyPropertyChanged("ContrastValue");
         }
 
         private void NotifyPropertyChanged(string info)

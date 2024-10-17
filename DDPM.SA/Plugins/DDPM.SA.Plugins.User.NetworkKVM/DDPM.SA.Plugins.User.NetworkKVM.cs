@@ -125,121 +125,121 @@ namespace NetworkKVM.Plugins
         /// <returns></returns>
         public Task UpdateMonitorInfo(List<MonitorInfo> monitorInfos, CancellationToken token)
         {
-            
+
             //lock (NewNKVM_lock_wait)
             //{
-                if (monitorInfos == null || monitorInfos.Count == 0)
-                {
-                    if (_AllInfoMonitors.Count == 0)
-                        return Task.CompletedTask;//return directly, no change
+            if (monitorInfos == null || monitorInfos.Count == 0)
+            {
+                if (_AllInfoMonitors.Count == 0)
+                    return Task.CompletedTask;//return directly, no change
 
-                    //means unplug all connected dell monitors
-                    //Call Func: OnMonitorUnPlug(_AllInfoMonitors);
+                //means unplug all connected dell monitors
+                //Call Func: OnMonitorUnPlug(_AllInfoMonitors);
+                _SupportedMonitors = GetSupportedNKVM().Result;
+                if (pipeServer.IsConnected)
+                {
+                    MonitorPlug();
+                }
+                Disconnect();
+                //_ = Task.Run(async () => await NamedPipeServer(token));
+                //CreateNamedPipe_init();
+                _AllInfoMonitors.Clear();
+            }
+            else
+            {
+                if (_AllInfoMonitors.Count == 0 && monitorInfos.Count > 0)
+                {
+                    //means plugin 1 or more monitor in
+                    _logs.DebugMsg("[NetworkKVM] monitor 0 -> 1");
+                    //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
                     _SupportedMonitors = GetSupportedNKVM().Result;
-                    if (pipeServer.IsConnected)
+                    _logs.DebugMsg("[NetworkKVM] NKVMState:" + NKVMState);
+                    //if (NKVMState)
+                    //{
+                    if (pipeServer != null)
                     {
-                        MonitorPlug();
+                        if (pipeServer.IsConnected)
+                        {
+                            ResponseSupportedMonitor();
+                            MonitorPlug();
+                        }
+                        else
+                        {
+                            //Disconnect();
+                            isMonintorChange = true;
+                            //_runloop = true;
+                            _ = Task.Run(async () => await NamedPipeServer(token));
+                            //CreateNamedPipe_init();
+                            //if (pipeServer.IsConnected)
+                            //{
+                            //    MonitorPlug();
+                            //}
+                        }
                     }
-                    Disconnect();
-                    //_ = Task.Run(async () => await NamedPipeServer(token));
-                    //CreateNamedPipe_init();
-                    _AllInfoMonitors.Clear();
+                    //}
+                    _AllInfoMonitors.AddRange(monitorInfos);
                 }
                 else
                 {
-                    if (_AllInfoMonitors.Count == 0 && monitorInfos.Count > 0)
+                    List<MonitorInfo> unplug = _AllInfoMonitors
+                        .Where(x => !monitorInfos.Any(y => y.edid.ModelName == x.edid.ModelName &&
+                                                            y.edid.SerialNumber == x.edid.SerialNumber &&
+                                                            y.DisplayName == x.DisplayName))
+                        .ToList();
+                    if (unplug.Count > 0)//means unplug
                     {
-                        //means plugin 1 or more monitor in
-                        _logs.DebugMsg("[NetworkKVM] monitor 0 -> 1");
-                        //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
+                        //Call Func: OnMonitorUnPlug(unplug);
                         _SupportedMonitors = GetSupportedNKVM().Result;
-                        _logs.DebugMsg("[NetworkKVM] NKVMState:" + NKVMState);
-                        //if (NKVMState)
-                        //{
-                        if (pipeServer != null)
+                        if (pipeServer.IsConnected)
                         {
-                            if (pipeServer.IsConnected)
-                            {
-                                ResponseSupportedMonitor();
-                                MonitorPlug();
-                            }
-                            else
-                            {
-                                //Disconnect();
-                                isMonintorChange = true;
-                                //_runloop = true;
-                                _ = Task.Run(async () => await NamedPipeServer(token));
-                                //CreateNamedPipe_init();
-                                //if (pipeServer.IsConnected)
-                                //{
-                                //    MonitorPlug();
-                                //}
-                            }
+                            MonitorPlug();
                         }
-                        //}
-                        _AllInfoMonitors.AddRange(monitorInfos);
+                        else
+                        {
+                            Disconnect();
+                            //CreateNamedPipe_init();
+                            isMonintorChange = true;
+                            //_runloop = true;
+                            _ = Task.Run(async () => await NamedPipeServer(token));
+                            //if (pipeServer.IsConnected)
+                            //{
+                            //    MonitorPlug();
+                            //}
+                        }
                     }
-                    else
+                    List<MonitorInfo> plugin = monitorInfos
+                        .Where(x => !_AllInfoMonitors.Any(y => y.edid.ModelName == x.edid.ModelName &&
+                                                               y.edid.SerialNumber == x.edid.SerialNumber &&
+                                                               y.DisplayName == x.DisplayName))
+                        .ToList();
+                    if (plugin.Count > 0)//means plugin
                     {
-                        List<MonitorInfo> unplug = _AllInfoMonitors
-                            .Where(x => !monitorInfos.Any(y => y.edid.ModelName == x.edid.ModelName &&
-                                                                y.edid.SerialNumber == x.edid.SerialNumber &&
-                                                                y.DisplayName == x.DisplayName))
-                            .ToList();
-                        if (unplug.Count > 0)//means unplug
+                        //Call Func: OnMonitorPlugIn(plugin);
+                        _SupportedMonitors = GetSupportedNKVM().Result;
+                        if (pipeServer.IsConnected)
                         {
-                            //Call Func: OnMonitorUnPlug(unplug);
-                            _SupportedMonitors = GetSupportedNKVM().Result;
-                            if (pipeServer.IsConnected)
-                            {
-                                MonitorPlug();
-                            }
-                            else
-                            {
-                                Disconnect();
-                                //CreateNamedPipe_init();
-                                isMonintorChange = true;
-                                //_runloop = true;
-                                _ = Task.Run(async () => await NamedPipeServer(token));
-                                //if (pipeServer.IsConnected)
-                                //{
-                                //    MonitorPlug();
-                                //}
-                            }
+                            ResponseSupportedMonitor();
+                            MonitorPlug();
                         }
-                        List<MonitorInfo> plugin = monitorInfos
-                            .Where(x => !_AllInfoMonitors.Any(y => y.edid.ModelName == x.edid.ModelName &&
-                                                                   y.edid.SerialNumber == x.edid.SerialNumber &&
-                                                                   y.DisplayName == x.DisplayName))
-                            .ToList();
-                        if (plugin.Count > 0)//means plugin
+                        else
                         {
-                            //Call Func: OnMonitorPlugIn(plugin);
-                            _SupportedMonitors = GetSupportedNKVM().Result;
-                            if (pipeServer.IsConnected)
-                            {
-                                ResponseSupportedMonitor();
-                                MonitorPlug();
-                            }
-                            else
-                            {
-                                Disconnect();
-                                //CreateNamedPipe_init();
-                                isMonintorChange = true;
-                                //_runloop = true;
-                                _ = Task.Run(async () => await NamedPipeServer(token));
-                                //if (pipeServer.IsConnected)
-                                //{
-                                //    MonitorPlug();
-                                //}
-                            }
+                            Disconnect();
+                            //CreateNamedPipe_init();
+                            isMonintorChange = true;
+                            //_runloop = true;
+                            _ = Task.Run(async () => await NamedPipeServer(token));
+                            //if (pipeServer.IsConnected)
+                            //{
+                            //    MonitorPlug();
+                            //}
                         }
-
-                        _AllInfoMonitors.Clear();
-                        _AllInfoMonitors.AddRange(monitorInfos);
                     }
+
+                    _AllInfoMonitors.Clear();
+                    _AllInfoMonitors.AddRange(monitorInfos);
                 }
-                return Task.CompletedTask;
+            }
+            return Task.CompletedTask;
             //}
 
         }
@@ -1082,10 +1082,11 @@ namespace NetworkKVM.Plugins
                 }
                 if (pipeServer.IsConnected)
                 {
-                    try
+                    lock (lock_wait)
                     {
-                        lock (lock_wait)
+                        try
                         {
+
                             response = ReadAsync().Result;
                             _logs.DebugMsg("[NetworkKVM] Get :" + response);
 
@@ -1099,12 +1100,12 @@ namespace NetworkKVM.Plugins
                                 JsonstringParse(response).Wait(); //read json type
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        //throw;
-                        Disconnect();
-                        CreateNamedPipe_init();
+                        catch (Exception ex)
+                        {
+                            //throw;
+                            Disconnect();
+                            CreateNamedPipe_init();
+                        }
                     }
                 }
                 //else
@@ -1113,7 +1114,7 @@ namespace NetworkKVM.Plugins
                 //    CreateNamedPipe_init();
                 //}
             }
-            _agent.StopAgent();
+            //_agent.StopAgent();
         }
 
         private void CreateNamedPipe_init()

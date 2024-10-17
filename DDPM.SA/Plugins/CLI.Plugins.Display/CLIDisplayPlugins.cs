@@ -11512,6 +11512,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        public event EventHandler<NKVMRespone> CLIActionEvent;
         private async Task<(int code, string result)> Networkkvm(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
@@ -11596,6 +11597,10 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
+                    await devMgr.GetNKVMStatus();
+                    Sleep(10000);
+                    CLIActionEvent += OnCLINKVMv2;
+
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -11603,7 +11608,15 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Networkkvm exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
+        private void OnCLINKVMv2(object sender, NKVMRespone e)
+        {
+            //EventHandler<NKVMRespone> handler = CLIActionEvent;
 
+            if (e.CLIName != null)
+                Trace.WriteLine($"TRUE");
+            else
+                Trace.WriteLine($"FALSE");
+        }
         private (int code, string result) InAppUSBkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")

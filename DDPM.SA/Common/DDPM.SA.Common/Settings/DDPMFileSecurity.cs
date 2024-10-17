@@ -1,3 +1,4 @@
+using DDPM.SA.Common.Method;
 using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
@@ -243,8 +244,22 @@ namespace DDPM.SA.Common.Settings
                 info = "DDPM AccessInfo value is abnormal";
                 return string.Empty;
             }
-            //1. Read json content
-            string json_content = File.ReadAllText(filePath);
+
+            string json_content = string.Empty;
+            try
+            {
+                using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                {
+                    //1. Read json content
+                    json_content = File.ReadAllText(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "FileLock/ReadFile fail: " + ex.Message;
+                return string.Empty;
+            }
+
             if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
@@ -674,12 +689,25 @@ namespace DDPM.SA.Common.Settings
             if (!File.Exists(public_key))
             {
 #if DEBUG 
-                Console.WriteLine($"Please check if public keys exists");
+                Console.WriteLine($"Please check if file exists. " + public_key);
 #endif
                 return false;
             }
-            //Read json content
-            string json_content = File.ReadAllText(json_file);
+
+            string json_content = string.Empty;
+            try
+            {
+                using (FileLock fileLock = new FileLock(json_file, PathCheckOption.None, lockNow: true))
+                {
+                    //Read json content
+                    json_content = File.ReadAllText(json_file);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "FileLock/ReadFile fail: " + ex.Message;
+                return false;
+            }
 
             // Parse the JSON string into a JObject
             JObject jObject = JObject.Parse(json_content);
@@ -1545,8 +1573,21 @@ namespace DDPM.SA.Common.Settings
         {
             info = "unknow error";
 
-            // Read the base64-encoded public key from a text file
-            string publicKeyBase64 = File.ReadAllText(public_key_file);
+            string publicKeyBase64 = string.Empty;
+            try
+            {
+                using (FileLock fileLock = new FileLock(public_key_file, PathCheckOption.None, lockNow: true))
+                {
+                    // Read the base64-encoded public key from a text file
+                    publicKeyBase64 = File.ReadAllText(public_key_file);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "FileLock/ReadFile fail: " + ex.Message;
+                return false;
+            }
+
 
             // Convert the base64 string to bytes
             byte[] publicKeyBytes = Convert.FromBase64String(publicKeyBase64);
@@ -2094,11 +2135,14 @@ namespace DDPM.SA.Common.Settings
                     WriteLog(log, msg, true);
                     return false;
                 }
-                json_read = File.ReadAllText(filePath);
-                if (string.IsNullOrEmpty(json_read))
+                using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
                 {
-                    WriteLog(log, "Read file without any content", true);
-                    return false;
+                    json_read = File.ReadAllText(filePath);
+                    if (string.IsNullOrEmpty(json_read))
+                    {
+                        WriteLog(log, "Read file without any content", true);
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)

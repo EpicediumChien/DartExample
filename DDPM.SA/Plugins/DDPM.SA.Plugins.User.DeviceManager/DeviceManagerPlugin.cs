@@ -1999,6 +1999,105 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        #region Headset
+
+        public Task SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
+        #region Wired Audio
+        public async Task<int> GetBassAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(itemID));
+        }
+
+        public async Task SetBassAsync(string guid, int newValue)
+        {
+            _DTPProxyPlugin.SetBassAsync(guid, newValue);
+            //return Task.FromResult(true);
+        }
+
+        public async Task<int> GetMidRangeAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMidRangeAsync(itemID));
+        }
+
+        public async Task SetMidRangeAsync(string guid, int newValue)
+        {
+            _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+            //return Task.FromResult(true);
+        }
+
+        public async Task<int> GetTrebleAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(itemID));
+        }
+        public async Task SetTrebleAsync(string guid, int newValue)
+        {
+            _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+            //return Task.FromResult(true);
+        }
+        //-----------------------------------
+        public Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioMicMuteSoundEnableAsync requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID));
+        }
+        //-----------------------------------
+        public Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetWiredAudioVolumeAdjustmentToneAsync requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID));
+        }
+        //-----------------------------------
+        public Task SetIsWiredAudioIMicNSEnableValue(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableValue(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableValue(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(itemID));
+        }
+        //-----------------------------------
+        public Task SetResetToDefaultValue(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetResetToDefaultValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetResetToDefaultValueAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
         #region CMA/CLI Function area
 
         /*public void notifyDeviceConnected(CommandInput_notifyDeviceConnection input)
@@ -2462,8 +2561,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                if (updateHelper == null || updateHelper.UpdateItems == null)
+                {
+                    updateHelper = new UpdateHelper();
+                    updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                }
+                DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
+                {
+                    displayUpdateHelper = new DisplayUpdateHelper();
+                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
+                }
+
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result, isOnlyDisplay).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2482,13 +2593,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(tmpFWUpdateInfos);
         }
 
-        public Task<FWUErrorCode> Install(string installPath)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
         {
             FWUErrorCode ret = FWUErrorCode.Unknow;
-            if (_UpdateProgress != null)
-            {
-                ret = _FWUpdatePlugin.Install(installPath).Result;
-            }
+            //if (_UpdateProgress != null)
+            //{
+            ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+            //}
             return Task.FromResult(ret);
         }
 
@@ -2602,6 +2713,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin == null)
                 return Task.FromResult(false);
             UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+            if (updateHelper == null || updateHelper.UpdateItems == null)
+            {
+                updateHelper = new UpdateHelper();
+                updateHelper.UpdateItems = new List<UpdateItemInfo>();
+            }
             if (_DisplayManagerPlugin == null)
                 return Task.FromResult(false);
             if (_SettingsPlugin == null)
@@ -3398,13 +3514,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        //Robert_Lin, 2024-10-12 Note that CustomList has been moved to UserSettings
+        //New added method: ReadEACustomList()
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo)
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
             //Robert_Lin, 2024-10-10 to fix defaule list will return double items when deserialize json
             defaultOutput.RecentList = SplitJson.DefaultRecentList.ToArray();
-            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
 
             if (_SettingsPlugin == null)
             {
@@ -3433,11 +3551,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
+            //Robert_Lin, 2024-10-13, If the settings are migrated from DDM, some of SplitJson,
+            //1 CustomLayouts:
+            //2 PresetLayouts: containts EAID only
+
+            //Need to refernce to CustomLayouts
+            SplitJson[] customArray = ReadEACustomList().Result;
+            List<SplitJson> customList = new List<SplitJson>();
+            if ((customArray != null) && (customArray.Length > 0))
+                customList = new List<SplitJson>(customArray);
+
+            //Convert SelectedSplit
+            if (monitorSetting.EA.SelectedSplit.CellCount < 0)
+            {
+                //It's a settings migrated from DDM
+
+                //If it's a custom layout
+                if (monitorSetting.EA.SelectedSplit.EAID >= 1000)
+                {
+                    monitorSetting.EA.SelectedSplit = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                    if (monitorSetting.EA.SelectedSplit == null)
+                        monitorSetting.EA.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
+                }
+                else
+                {
+                    //It's a preset layout
+                    monitorSetting.EA.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                }
+            }
+
+
+
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
             if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
                 monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+            else
+            {
+                //Convert RecentList
+                List<SplitJson> migratedRecentList = new List<SplitJson>();
+                foreach (SplitJson recentJson in monitorSetting.EA.RecentList)
+                {
+                    if (recentJson.CellCount < 0)
+                    {
+                        //If it's a custom layout
+                        if (recentJson.EAID >= 1000)
+                        {
+                            SplitJson? custJson = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                            if (custJson != null)
+                            {
+                                migratedRecentList.Add(custJson);
+                            }
+                        }
+                        else
+                        {
+                            //It's a preset layout
+                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                            if (presetJson != null)
+                            {
+                                migratedRecentList.Add(presetJson);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        migratedRecentList.Add(recentJson);
+                    }
+                }
+                monitorSetting.EA.RecentList = migratedRecentList.ToArray();
+            }
 
-            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
@@ -3669,6 +3852,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
             }
+        }
+
+        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Read the EACustomList for current user
+        /// </summary>
+        /// <returns></returns>
+        public Task<SplitJson[]> ReadEACustomList()
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                //Don't return null, return empty array instead
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        if (appSettings.UserSettings.EACustomList != null)
+                            return Task.FromResult(appSettings.UserSettings.EACustomList);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(new SplitJson[] { });
+        }
+        /// <summary>
+        /// Write the EACustomList to current user's settings file
+        /// </summary>
+        /// <param name="customList"></param>
+        /// <returns></returns>
+        public Task<bool> WriteEACustomList(SplitJson[] customList)
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        appSettings.UserSettings.EACustomList = (SplitJson[]) customList.Clone();
+                        //Writeback to app settings
+                        _SettingsPlugin.SetAppConfigData(appSettings);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(false);
         }
 
         #endregion EasyArrage
@@ -3996,7 +4228,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
-                    return false;
+                    return false; 
                 }
             }
             catch (Exception ex)
@@ -5155,6 +5387,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+
+        #endregion
+
+
         #endregion
 
         #region GlobalSetting
@@ -5735,8 +5971,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"CallQAM_UI: done");
         }
-
-        #endregion
 
         #endregion
 
@@ -7814,7 +8048,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if ( eaSettings.RecentList == null)
+            if (eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
@@ -8153,23 +8387,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //[Dean] remove WinCopies utilties and fix code conflict
                 foreach (var input in inputList)
                 {
-                    allInputs.Add(new InputSourceObj(input.Value.InputName));
+                    allInputs.Add(new InputSourceObj((ushort)input.Value.Code, input.Value.InputName));
                 }
                 //debug
+                int idx = 0;
                 foreach (var s in subInputs)
                 {
-                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                    Debug.WriteLine($"subInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    idx++;
                 }
+                idx = 0;
                 foreach (var s in allInputs)
                 {
-                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                    Debug.WriteLine($"allInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    idx++;
                 }
+                //Robert_Lin, 2024-10-16, changed
                 //debug end
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
+                //OLD:
+                //List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
+                //NEW:
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;
                 }
+                Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
                 bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
                 writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
                 /*if (subInputs != null && subInputs.Count > 0)
@@ -9248,52 +9491,96 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     foreach (var dDMuserProfile in dDMUserSettings.Profiles)
                     {
-                        var currentProfile = userEAProfileDDPMList.FirstOrDefault(p => p.ID == dDMuserProfile.ID);
-
-                        if (currentProfile != null)
-                        {
-                            // 將更新後的 currentProfile 寫入
-                           result = WriteUserEAProfileDDPM(currentProfile).Result;
-                        }
+                        EAProfileDDPM eaProfileDDPM = new EAProfileDDPM(dDMuserProfile.ID, dDMuserProfile.Name, dDMuserProfile.Layout, dDMuserProfile.AppInfos.ConvertAll
+                                              (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
+                        
+                        // 將更新後的 currentProfile 寫入
+                        result = WriteUserEAProfileDDPM(eaProfileDDPM).Result;
                     }
+                    if (result)
+                        writelog($"@ DDMtoDDPM_EzMemory: UserSettings PASS");
+                    else
+                        writelog($"@ DDMtoDDPM_EzMemory: UserSettings Fail");
                 }
 
                 //DDMMonitorSettings
                 if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null)
                 {
-                    //WriteMonitorEasyArrangement(dDMMonitorSettings);
                     MonitorInfo moinfo = new MonitorInfo();
+                    EDID edid = new EDID();
+                    moinfo.edid = edid;
                     moinfo.modelName = dDMMonitorSettings.Model;
                     moinfo.edid.ModelName = dDMMonitorSettings.Model;
                     moinfo.edid.ServiceTag = dDMMonitorSettings.ServiceTag;
 
-                    EasyArrangementDDPM easyArrangementDDPM = ReadMonitorEasyArrangement(moinfo).Result;
+                    EasyArrangementDDPM easyArrangementDDPM = new EasyArrangementDDPM();
+                    easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 
-                    foreach (var desktop in dDMMonitorSettings.EasyArrangement.Desktops)
+                    // 新增 DesktopDDPM 物件
+                    easyArrangementDDPM.Desktops.Add(new DesktopDDPM(dDMMonitorSettings.EasyArrangement.Desktops[0].ID, dDMMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout));
+
+                    // 設定 DesktopDDPM 的屬性
+                    easyArrangementDDPM.Desktops[0].ID = dDMMonitorSettings.EasyArrangement.Desktops[0].ID;
+                    easyArrangementDDPM.Desktops[0].Index = dDMMonitorSettings.EasyArrangement.Desktops[0].Index;
+                    easyArrangementDDPM.Desktops[0].ActiveLayout = dDMMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+
+                    List<int> layoutMRU = new List<int>();
+                    layoutMRU = dDMMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU;
+                    easyArrangementDDPM.Desktops[0].LayoutMRU = layoutMRU;
+
+                    List<int> profileMRU = new List<int>();
+                    profileMRU = dDMMonitorSettings.EasyArrangement.Desktops[0].ProfileMRU;
+                    easyArrangementDDPM.Desktops[0].ProfileMRU = profileMRU;
+
+                    // Profiles
+                    easyArrangementDDPM.Desktops[0].Profiles = new List<EzProfileDDPM>();
+                    foreach (var profile in dDMMonitorSettings.EasyArrangement.Desktops[0].Profiles)
                     {
-                        DesktopDDPM newDesktop = new DesktopDDPM(desktop.ID, desktop.ActiveLayout)
-                        {
-                            LayoutMRU = new List<int>(desktop.LayoutMRU),
-                            ProfileMRU = new List<int>(desktop.ProfileMRU),
-                            Profiles = new List<EzProfileDDPM>(),
-                            ProfileSettings = new List<EzProfileSettingDDPM>()
-                        };
+                        var newProfile = new EzProfileDDPM(
+                            profile.ID,
+                            profile.Name,
+                            profile.Layout,
+                            profile.Auto,
+                            profile.AutoStartTime ?? 0,
+                            profile.StartUpLaunch,
+                            new List<EAAppInfoDDPM>()
+                        );
 
-                        foreach (var profileSetting in desktop.ProfileSettings)
+                        // AppInfos
+                        foreach (var app in profile.AppInfos)
                         {
-                            EzProfileSettingDDPM newProfileSetting = new EzProfileSettingDDPM(
-                                profileSetting.ID,
-                                profileSetting.Auto,
-                                profileSetting.AutoStartTime ?? 0,
-                                profileSetting.StartUpLaunch
+                            var newAppInfo = new EAAppInfoDDPM(
+                                app.Name,
+                                app.Path,
+                                app.IsUWP,
+                                app.AppUserModelID,
+                                app.Param
                             );
+                            newProfile.AppInfos.Add(newAppInfo);
                         }
-                        // 將轉換後的 Desktop 加入到 EasyArrangementDDPM
-                        easyArrangementDDPM.Desktops.Add(newDesktop);
+
+                        easyArrangementDDPM.Desktops[0].Profiles.Add(newProfile);
+                    }
+
+                    // ProfileSettings
+                    easyArrangementDDPM.Desktops[0].ProfileSettings = new List<EzProfileSettingDDPM>();
+                    foreach (var setting in dDMMonitorSettings.EasyArrangement.Desktops[0].ProfileSettings)
+                    {
+                        var newSetting = new EzProfileSettingDDPM(
+                            setting.ID,
+                            setting.Auto,
+                            setting.AutoStartTime ?? 0,
+                            setting.StartUpLaunch
+                        );
+
+                        easyArrangementDDPM.Desktops[0].ProfileSettings.Add(newSetting);
                     }
                     result = WriteMonitorEasyArrangement(moinfo, easyArrangementDDPM).Result;
                 }
-                writelog($"@ DDMtoDDPM_EzMemory: PASS");
+                if(result)
+                    writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings PASS");
+                else
+                    writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings Fail");
             }
             catch (Exception ex)
             {
@@ -9524,7 +9811,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -9612,6 +9899,150 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return false;
         }
 
+        //Robert_Lin, 2024-10-11, added
+        private void DDMtoDDPM_EzArrange(DDMMonitorSettings ddmMonitorSettings, DDMUserSettings ddmUserSettings)
+        {
+            if (_SettingsPlugin == null)
+                return;
+
+            //Migration UserSettings
+            //
+            //1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
+            //
+            List<SplitJson> ddpmCustomList = new List<SplitJson>();
+            if (ddmUserSettings.CustLayouts != null)
+            {
+                foreach(CustLayout custLayout in ddmUserSettings.CustLayouts)
+                {
+                    SplitJson spJson = new SplitJson();
+                    spJson.CellCount = 0;
+                    spJson.SplitKey = 'B';
+
+                    List<double> settings = new List<double>();
+                    //Format: settings[0] : BorderCount
+                    settings.Add((double)custLayout.Rects.Count);
+                    //settings[1] : screenScale
+                    settings.Add((double)1.000);
+                    //settings[2] : screenWidth
+                    settings.Add((double)1.000);
+                    //settings[3] : screenHeight
+                    settings.Add((double)1.000);
+
+                    //Settings[4 ~] : Rects
+                    int idxRect = 0;
+                    foreach(EARect eARect in custLayout.Rects)
+                    {
+                        //settings[4 + idxRect + 0] : left
+                        settings.Add(eARect.x);
+                        //settings[4 + idxRect + 1] : top
+                        settings.Add(eARect.y);
+                        //settings[4 + idxRect + 2] : width
+                        settings.Add(eARect.w);
+                        //settings[4 + idxRect + 3] : height
+                        settings.Add(eARect.h);
+                        idxRect++;
+                    }
+                    spJson.Settings = settings;
+                    spJson.CustomName = custLayout.Name;
+                    spJson.CustomId = custLayout.ID;
+                    spJson.EAID = custLayout.ID;
+
+                    ddpmCustomList.Add(spJson);
+                }
+            }
+
+            //2 Convert EasyArrange Per-user settings (EzSettings)
+            //
+            EzSettings ezSettings = new EzSettings();
+
+            ezSettings.IsWidthoutGap = ddmUserSettings.EAWithoutGap;
+            ezSettings.IsOnlyAllowWhenShiftKeyPressed = ddmUserSettings.EAWithShiftKey;
+            ezSettings.IsSpanAcrossMultiMonitors = ddmUserSettings.EASpan;
+            ezSettings.IsAwsEnabled = ddmUserSettings.SnapEnable;
+
+            //3 Save to DDPMUserSettings
+            //
+            DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (appSettings != null)
+            {
+                appSettings.UserSettings.EACustomList = ddpmCustomList.ToArray();
+                appSettings.UserSettings.EzSettings = ezSettings;
+
+                _SettingsPlugin.SetAppConfigData(appSettings);
+            }
+
+            //Migration MonitorSettings
+            //
+            if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
+            {
+                MonitorInfo moinfo = new MonitorInfo();
+                moinfo.modelName = ddmMonitorSettings.Model;
+                moinfo.edid.ModelName = ddmMonitorSettings.Model;
+                moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
+
+
+                //Will migrate Desktop[0] only
+                if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
+                {
+                    //Convert ActiveLayout to SelectedSplit
+                    //
+                    int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+                    SplitJson? selJson = null;
+                    //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
+                    if (activeLayout >= 1000)
+                    {
+                        //Find the CustomLayout by EAID
+                        selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
+                        if (selJson != null)
+                        {
+                        }
+                    }
+                    else
+                    {
+                        //Preset layout
+                        selJson = new SplitJson()
+                        {
+                            CellCount = -1,
+                            CustomId = 0,
+                            EAID = activeLayout
+                        };
+                    }
+
+                    //Convert RecentList
+                    List<SplitJson> recentList = new List<SplitJson>();
+                    foreach (int eaidRecent in ddmMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU)
+                    {
+                        if (activeLayout >= 1000) //Custom Layout
+                        {
+                            //Find the CustomLayout by EAID
+                            SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == eaidRecent);
+                            if (cusJson != null)
+                            {
+                                recentList.Add(cusJson.Clone());
+                            }
+                        }
+                        else
+                        {
+                            //Preset layout
+                            SplitJson presetJson = new SplitJson()
+                            {
+                                CellCount = -1,
+                                CustomId = 0,
+                                EAID = eaidRecent
+                            };
+                            recentList.Add(presetJson);
+                        }
+                    }
+
+                    //Save to EAMonitorSettings
+                    EAMonitorSettings eaSettings = ReadEAMonitorSettings(moinfo).Result;
+                    eaSettings.SelectedSplit = selJson;
+                    eaSettings.RecentList = recentList.ToArray();
+                    WriteEAMonitorSettings(moinfo, eaSettings);
+
+                }
+            }
+        }
         #endregion Migration
 
         #region Event Handler
