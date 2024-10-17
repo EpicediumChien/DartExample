@@ -5577,10 +5577,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SaveLogFile(string saveFolderPath)
+        public Task<bool> SaveLogFile(string saveFolderPath = "")
         {
             writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
+            if (string.IsNullOrEmpty(saveFolderPath))
+            {
+                saveFolderPath = @$"C:\temp\Log";
+            }
             if (_DisplayManagerPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
             {
                 // 確保資料夾存在
@@ -6005,15 +6009,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
-                DeviceChangedEventArgs _EventArgs_ = new DeviceChangedEventArgs();
-                _EventArgs_.type = DeviceChangedType.NotifyOnly;
-                _EventArgs_.device_display = null;
-                _EventArgs_.device_peripherals = null;
-                _EventArgs_.changedProperty = "DisplayChanged";
-                EventHandler<DeviceChangedEventArgs> handler_ = DeviceChanged;
-                if (handler_ != null)
-                    Task.Run(() => handler_.Invoke(this, _EventArgs_)).ConfigureAwait(false);
-
                 if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
                 else _AllInfoMonitors = new List<MonitorInfo>();
 
@@ -9544,7 +9539,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         EAProfileDDPM eaProfileDDPM = new EAProfileDDPM(dDMuserProfile.ID, dDMuserProfile.Name, dDMuserProfile.Layout, dDMuserProfile.AppInfos.ConvertAll
                                               (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
-                        
+
                         // 將更新後的 currentProfile 寫入
                         result = WriteUserEAProfileDDPM(eaProfileDDPM).Result;
                     }
@@ -9628,7 +9623,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     result = WriteMonitorEasyArrangement(moinfo, easyArrangementDDPM).Result;
                 }
-                if(result)
+                if (result)
                     writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings PASS");
                 else
                     writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings Fail");
