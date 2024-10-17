@@ -1,4 +1,8 @@
 ﻿using DDPM.UI.Common.Models;
+using System.Runtime.CompilerServices;
+
+
+[assembly: InternalsVisibleTo("DDPM.UI.Plugin.SettingsPlugin.Tests")]
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {

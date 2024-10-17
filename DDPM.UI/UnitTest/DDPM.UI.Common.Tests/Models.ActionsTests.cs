@@ -17,6 +17,16 @@ namespace DDPM.UI.Common.Tests
         [SetUp]
         public void Setup()
         {
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            var deviceManager = DeviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManager;
+            DeviceManagerSAMock.Setup(x => x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            DeviceManagerSAMock.Setup(x => x.GetEraserDoublePressSetting()).Returns(Task.FromResult("actionId"));
+            DeviceManagerSAMock.Setup(x => x.GetEraserSinglePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetEraserLongPressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetSideTopSwitchSinglePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetSideBottomSwitchSinglePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetMenuSinglePressSetting()).Returns(Task.FromResult("true"));
             penActions = new PenActions();
         }
 
@@ -134,13 +144,20 @@ namespace DDPM.UI.Common.Tests
 
         //class ActionList
         [Test]
-        public void TestConstructor_ActionList()
+        public void TestExportActionList()
         {
             //Act
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
-            var deviceManager=DeviceManagerSAMock.Object;
+            var deviceManager = DeviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManager;
-            DeviceManagerSAMock.Setup(x=>x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            DeviceManagerSAMock.Setup(x => x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            DeviceManagerSAMock.Setup(x => x.GetEraserDoublePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetEraserSinglePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetEraserLongPressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetSideTopSwitchSinglePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetSideBottomSwitchSinglePressSetting()).Returns(Task.FromResult("true"));
+            DeviceManagerSAMock.Setup(x => x.GetMenuSinglePressSetting()).Returns(Task.FromResult("true"));
+
             var result = ActionList.ExportActionList(new PenActions(), "PEN");
             // Assert
             Assert.That(result, Is.EqualTo(true));
