@@ -9268,8 +9268,8 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
             string filepath = @$"C:\Temp\";
-            string filepath_ = @$"C:\Temp\Temp.zip";
-            string file = @$"C:\Temp.zip";
+            string filepath_ = @$"C:\Temp\Log";
+            string file = @$"C:\Temp\Log.zip";
             if (commandLineInput.Options.Count == 1)
             {
                 filepath = commandLineInput.Options[0].Option_Value;
