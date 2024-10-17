@@ -1343,6 +1343,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 _itemID = new ItemId($"{item}.{type}.{i}");
                 Debug.WriteLine($"{_itemID}");
+                Trace.WriteLine($"{_itemID}");
                 if (await GetCommodityInterfaceInstanceAsync(methodInfo) is ICommodity commodity)
                 {
                     Debug.WriteLine($"{commodity.GetType}");
@@ -1355,6 +1356,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             Debug.WriteLine($"Not found {type} GUID: {guid}");
             writelog($"Not found {type} GUID: {guid}");
+            Trace.WriteLine($"Not found {type} GUID: {guid}");
             return false;
         }
         #endregion
