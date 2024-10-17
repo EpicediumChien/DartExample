@@ -15,13 +15,21 @@ namespace DDPM.UI.Module.InputSource
     public class InputSourceList
     {
         public string inputSource = String.Empty;
-        public InputSourceModule inputSourceModule { get; set; }
+        public string inputName = String.Empty;
+        //public InputSourceModule inputSourceModule { get; set; }
 
         public string inputDisplayText
         {
             get
             {
-                return inputSource;
+                if (inputSource == inputName)
+                {
+                    return inputSource;
+                }
+                else
+                {
+                    return inputSource + " - " + inputName;
+                }
             }
         }
     }
@@ -153,12 +161,13 @@ namespace DDPM.UI.Module.InputSource
                 if (inputList != null)
                 {
                     _inputsList.Clear();
-                    foreach (string item in inputList.Keys)
+                    foreach (var item in inputList)
                     {
                         _inputsList.Add(new InputSourceList()
                         {
-                            inputSource = item,
-                            inputSourceModule = InputSourceModule,
+                            inputSource = item.Key,
+                            inputName = item.Value.InputName,
+                            //inputSourceModule = InputSourceModule,
                         });
                     }
                     InputsList = _inputsList;
@@ -291,6 +300,38 @@ namespace DDPM.UI.Module.InputSource
             }
         }
 
+        #region OnPropertyChanged
+        public Task OnInputNameChange()
+        {
+            //IsBusy = true;
+            _inputsList.Clear();
+            foreach (var item in inputList)
+            {
+                _inputsList.Add(new InputSourceList()
+                {
+                    inputSource = item.Key,
+                    inputName = item.Value.InputName
+                });
+            }
+            InputsList = _inputsList;
+            _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
+            OnPropertyChanged("InputsList");
+            OnPropertyChanged("Items_Selected");
+            //IsBusy = false;
+            //int index = _inputsList.FindIndex(x => (x.inputSource == inputtype));
+            //if (index != -1)
+            //{
+            //    _inputsList[index].inputName = inputname;
+            //    InputsList = _inputsList;
+            //    InputSourceList item = InputsList[index];
+            //    _selectInput = item;
+            //    OnPropertyChanged("Items_Selected");
+            //}
+            return Task.CompletedTask;
+        }
+        #endregion
+
+        #region Event
         /// <summary>
         /// Catch OSD menu event
         /// </summary>
@@ -312,5 +353,6 @@ namespace DDPM.UI.Module.InputSource
                 }
             }            
         }
+        #endregion
     }
 }

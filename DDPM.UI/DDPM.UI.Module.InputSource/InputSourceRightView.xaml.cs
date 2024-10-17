@@ -35,6 +35,7 @@ namespace DDPM.UI.Module.InputSource
             vm.inputList[vm.items[(int)tb.Tag].InputType].InputName = tb.Text;
             //DdpmCommonHelper.DeviceManagerSA.SetInputName(vm.items[(int)tb.Tag].InputType, vm.items[(int)tb.Tag].InputName);
             bool b = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.InputSourceModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
+            vm.OnInputNameChange();
         }
 
         private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
