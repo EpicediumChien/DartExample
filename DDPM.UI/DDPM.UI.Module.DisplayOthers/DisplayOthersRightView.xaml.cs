@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -12,16 +13,15 @@ namespace DDPM.UI.Module.DisplayOthers
     /// </summary>
     public partial class DisplayOthersRightView : UserControl
     {
-        //private DisplayOthersViewModel vm
-        //{
-        //    get => (DisplayOthersViewModel)DataContext != null ? (DisplayOthersViewModel)DataContext : null;
-        //}
+        private static LoadingScreen _dlg_loading = null;
+        private static MessageModalDialog _dlg_message = null;
 
         public DisplayOthersRightView(/*DisplayOthersViewModel vm*/)
         {
             InitializeComponent();
             //DataContext = vm;
             DisplayOthersViewModel vm = (DisplayOthersViewModel)DataContext;
+
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -63,6 +63,11 @@ namespace DDPM.UI.Module.DisplayOthers
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+            DisplayOthersViewModel vm = (DisplayOthersViewModel)DataContext;
+            if (vm != null)
+            {
+                vm.ImportExportResult -= ImportExportNotify;
             }
         }
 
@@ -155,13 +160,107 @@ namespace DDPM.UI.Module.DisplayOthers
         private void import_Click(object sender, RoutedEventArgs e)
         {
             DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
+            if (vm != null && vm.ImportExportResult == null)
+            {
+                vm.ImportExportResult += ImportExportNotify;
+            }
             vm.ImportSettings();
         }
 
         private void export_Click(object sender, RoutedEventArgs e)
         {
             DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
-            vm.ExportSettings();
+            if (vm != null && vm.ImportExportResult == null)
+            {
+                vm.ImportExportResult += ImportExportNotify;
+            }
+            vm.ExportSettings();            
+            Dispatcher.Invoke(new Action(() =>
+            {
+                LoadingWindow();
+            }));
+        }
+
+        private void LoadingWindow()
+        {
+            Window parentWindow = Window.GetWindow(this);
+            LoadingScreen loadDialog = new LoadingScreen(parentWindow.ActualWidth, parentWindow.ActualHeight);
+            if (parentWindow != null)
+            {
+                loadDialog.Owner = parentWindow;
+            }
+            _dlg_loading = loadDialog;
+            loadDialog.ShowDialog();
+        }
+
+        private bool? DisplayMsgBox(string title, string content, string left_btn = "", string right_btn = "")
+        {
+            MessageModalDialog dlg = new MessageModalDialog(title, content, left_btn, right_btn);
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                dlg.Owner = parentWindow;
+            }
+            return dlg.ShowDialog();
+        }
+
+        /*private MessageModalDialog DisplayMsgBox_ModelLess(string title, string content, string left_btn = "", string right_btn = "")
+        {
+            MessageModalDialog dlg = new MessageModalDialog(title, content, left_btn, right_btn);
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                dlg.Owner = parentWindow;
+            }
+            dlg.Show();
+            //please remember to use dlg.CloseByCaller to leave the messagebox if need
+            return dlg;
+        }*/
+
+        private void ImportExportNotify(object? sender, string e)
+        {
+            if (string.IsNullOrEmpty(e))
+                return;
+            string result_success = "result_success";
+            string model = string.Empty;
+            if (e.Contains("result_success") && e.Length > result_success.Length)
+            {
+                //retrieve model name
+                model = e.Substring(result_success.Length);
+                e = "result_success_model";
+            }
+            switch(e)
+            {
+                case "close_loading":
+                    if(_dlg_loading != null)
+                    {
+                        _dlg_loading.CloseByCaller();
+                        _dlg_loading = null;
+                    }
+                    break;
+                case "result_success":
+                    DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
+                    break;
+                case "result_success_model":
+                    string temp = Strings.ImpExp_SuccessMsg1;
+                    temp = temp.Replace("%1", model);
+                    DisplayMsgBox(Strings.ImpExp_Success, temp);
+                    break;
+                case "restart":
+                    DisplayMsgBox(Strings.ImpExp_Restart, Strings.ImpExp_RestartMsg0);
+                    //re-open application ?
+                    break;
+                case "Warning1":
+                    bool? rst1 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg0, Strings.ImpExp_Continue, Strings.Cancel);
+                    //handle true(Continue) false(Cancel)
+                    break;
+                case "Warning2":
+                    bool? rst2 = DisplayMsgBox(Strings.ImpExp_Warning, Strings.ImpExp_WarningMsg1, Strings.Yes, Strings.No);
+                    //handle true(Yes) false(No)
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

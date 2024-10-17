@@ -81,6 +81,7 @@ echo "{E993A925-BAF0-42DF-B878-7EC075D5B941}"="%BaseDir%\\DDPM.Subagent.User\\CL
 echo "{FE361209-1BEB-4B52-AC1A-D0227B7641CB}"="%BaseDir%\\DDPM.Subagent.User\\CLI.Plugins.Peripherals.dll">>%OutFile%
 echo "{E5DA6004-21DC-4058-917F-A0ECF838EA03}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.ActionsManger.dll">>%OutFile%
 echo "{D034EE8F-7C8A-4296-8B5B-33B4E978C6B5}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.DTPProxy.dll">>%OutFile%
+echo "{388F486D-2A86-421C-B571-3AAF9F839BA2}"="%BaseDir%\\DDPM.Subagent.User\\DDPM.SA.Plugins.User.EzMemory.dll">>%OutFile%
 echo.>>%OutFile%
 
 

@@ -62,6 +62,7 @@ namespace DDPM.UI.Module.DisplayProperties
                     }));
                     _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
                     RefreshUI();
+                    DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
                 }
             }
         }
@@ -76,6 +77,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
                 DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
                 RefreshUI();
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
             }
         }
 

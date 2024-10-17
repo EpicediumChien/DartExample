@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Alert;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System.Diagnostics;
@@ -14,9 +15,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class UpdatesPage : UserControl
     {
+        // 10/15 Derek for RWD
+        private readonly Int16 breakPoints = 537;
+
         public UpdatesPage()
         {
             InitializeComponent();
+
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                breakPoints = width;
         }
 
         ~UpdatesPage()
@@ -88,6 +95,26 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 DownloadUXBusyIndicator.Visibility = Visibility.Collapsed;
                 DownloadUXTextBlock.Visibility = Visibility.Collapsed;
             }));
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.ActualWidth <= breakPoints)
+                ChangeToVerticalLayout();
+            else
+                ChangeToHorizontalLayout();
+
+            alertBase.Width = spSAAlert.ActualWidth - 50;
+        }
+
+        private void ChangeToVerticalLayout()
+        {
+            spFWUpdate.Orientation = Orientation.Vertical;
+        }
+
+        private void ChangeToHorizontalLayout()
+        {
+            spFWUpdate.Orientation = Orientation.Horizontal;
         }
     }
 }

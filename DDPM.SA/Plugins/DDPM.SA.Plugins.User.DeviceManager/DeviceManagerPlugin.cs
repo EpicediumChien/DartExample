@@ -3894,7 +3894,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (appSettings.UserSettings != null)
                     {
-                        appSettings.UserSettings.EACustomList = (SplitJson[]) customList.Clone();
+                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
                         //Writeback to app settings
                         _SettingsPlugin.SetAppConfigData(appSettings);
                     }
@@ -4229,7 +4229,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
-                    return false; 
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -5293,6 +5293,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetIsPrioritizeExternalWebcam(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsPrioritizeExternalWebcam requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task ResetToDefault_webcam(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received ResetToDefault_webcam requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.ResetToDefault_webcam(guid, newValue);
+            return Task.FromResult(true);
+        }
+
         public Task SetBrightness(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetBrightness requested ...");
@@ -5384,6 +5402,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetIsWalkAwayLockEnable(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
+        }
+
+        public async Task<bool> GetIsPrioritizeExternalWebcam(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
 
         #endregion
@@ -5982,6 +6005,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
+                DeviceChangedEventArgs _EventArgs_ = new DeviceChangedEventArgs();
+                _EventArgs_.type = DeviceChangedType.NotifyOnly;
+                _EventArgs_.device_display = null;
+                _EventArgs_.device_peripherals = null;
+                _EventArgs_.changedProperty = "DisplayChanged";
+                EventHandler<DeviceChangedEventArgs> handler_ = DeviceChanged;
+                if (handler_ != null)
+                    Task.Run(() => handler_.Invoke(this, _EventArgs_)).ConfigureAwait(false);
+
                 if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
                 else _AllInfoMonitors = new List<MonitorInfo>();
 
@@ -9868,6 +9900,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 MonitorInfo monitorInfo = new MonitorInfo();
                 ret = SetDisplayPropertiest(monitorInfo, displayCurrentPropertiesInfo.CurrentProperties, displayCurrentPropertiesInfo.CurrentOrientation).Result;
                 ret = SetHDRStatus(monitorInfo, displayCurrentPropertiesInfo.isHDREnable).Result && ret;
+                if (displayCurrentPropertiesInfo.USBCPrioritizationType != USBCPrioritizationType.Unknow)
+                {
+                    ret = SetUSBCPrioritizationType(monitorInfo, displayCurrentPropertiesInfo.USBCPrioritizationType).Result && ret;
+                }
                 ret = true;
             }
             catch
@@ -9933,7 +9969,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<SplitJson> ddpmCustomList = new List<SplitJson>();
             if (ddmUserSettings.CustLayouts != null)
             {
-                foreach(CustLayout custLayout in ddmUserSettings.CustLayouts)
+                foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
                 {
                     SplitJson spJson = new SplitJson();
                     spJson.CellCount = 0;
@@ -9951,7 +9987,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //Settings[4 ~] : Rects
                     int idxRect = 0;
-                    foreach(EARect eARect in custLayout.Rects)
+                    foreach (EARect eARect in custLayout.Rects)
                     {
                         //settings[4 + idxRect + 0] : left
                         settings.Add(eARect.x);
@@ -10198,6 +10234,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static ScrollLockOnWin ScrollLockOnWinx = null;
         private static StartRecordingWin StartRecordingWinx = null;
         private static WalkAwayLockWin WalkAwayLockWinx = null;
+        private static EasyMemoryWin EasyMemoryWinx = null;
 
         public Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content)
         {
@@ -10299,6 +10336,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 switch (type)
                 {
+                    case OSDType.EasyMemory:
+                        {
+                            _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.Fingerprint:
                         {
                             _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
@@ -10792,6 +10834,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             finally
                                             {
                                                 FingerprintWinx = null;
+                                            }
+                                        }
+                                        break;
+
+                                    case OSDType.EasyMemory:
+                                        {
+                                            if (EasyMemoryWinx != null)
+                                                EasyMemoryWinx.CloseWindow();
+
+                                            EasyMemoryWinx = new EasyMemoryWin();
+
+                                            try
+                                            {
+                                                EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                EasyMemoryWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
+                                                //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
+                                                //EasyMemoryWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                EasyMemoryWinx = null;
                                             }
                                         }
                                         break;

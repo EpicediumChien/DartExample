@@ -365,6 +365,39 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
                 });
             }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))// for audio headset RESTOREFACTORYDEFAULTS.
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(ItemId, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            //retcode_ = _devMgr.GetIsAutoFramingOnValueByDTP(ItemId).Result;
+                            x.Value = "SUCCESS";
+                            //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
             foreach (var op in _commandLineInput.Options)
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
@@ -1210,7 +1243,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
-                            if (ss_1[0].ToUpper().Equals("UOD"))
+                            if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD"))
                             {
                                 isShowInfo = true;
                                 var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
@@ -1219,7 +1252,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 result.serialize_Json_response = fwupdate.result;
                                 ret = true;
                             }
-                            else if (ss_1[0].ToUpper().Contains(":\\"))
+                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\"))
                             {
                                 installPath = Path.GetFullPath(ss_1[1]);
                                 Trace.WriteLine($"installPath = {installPath}");
@@ -1564,7 +1597,31 @@ namespace DDPM.CLI.Plugins.Peripherals
                 _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
                 _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
-                FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode).Result;
+                if (installPath != "")
+                {
+
+                    Task.Run(new Action(() =>
+                    {
+                        FWUErrorCode ret = _devMgr.Install(installPath, false).Result;
+                        Trace.WriteLine($"ret = {ret}");
+
+                        cli_FWU_RESPONSE.Model = "retFWUpdateInfo.Model";
+                        if (ret == FWUErrorCode.NoError)
+                        {
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{"retFWUpdateInfo.DeviceName"} update success.");
+                        }
+                        else
+                        {
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{"retFWUpdateInfo.DeviceName"} update fail. Fail message:{ret.ToString()}");
+                        }
+                        FWResultReceived?.Invoke(this, (ret, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
+                        _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                        _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                    }));
+                }
+                else
+                {
+                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode).Result;
                 if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                 {
                     cli_FWU_RESPONSE.Message = "No updates available";
@@ -1607,6 +1664,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     return ((int)CLI_ExitCode.fail_NotSupport, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                 }
+                }
+                return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
+
             }
             catch
             {

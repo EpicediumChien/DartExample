@@ -9,7 +9,7 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:MouseViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="675" d:DesignWidth="320" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="675" d:DesignWidth="320">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

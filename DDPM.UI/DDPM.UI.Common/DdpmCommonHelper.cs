@@ -43,16 +43,25 @@ namespace DDPM.UI.Common
 
         //DdpmHomePlugin will set this value
         public static IConsole? MyConsole { get; set; }
+        public static IShowPluginManager? MyShowPluginManager { get; set; }
 
         public static IDeviceManagerSA? DeviceManagerSA { get; set; }
         public static DDPMSettings? Settings_Cache { get; set; }
 
         public static IModuleOwner? ModuleOwner { get; set; }
 
-        public static bool DDPMMesssageBox(string title, string text)
+        public static bool DDPMMesssageBox(string title, string text, DependencyObject obj = null)
         {
             //MessageBoxResult result = System.Windows.MessageBox.Show(text, "Confirmation", MessageBoxButton.YesNo);
             DDPMMsgBox msgBox = new DDPMMsgBox(title, text, null);
+            if (obj != null)
+            {
+                Window parentWindow = Window.GetWindow(obj);
+                if (parentWindow != null)
+                {
+                    msgBox.Owner = parentWindow;
+                }
+            }
             msgBox.ShowDialog();
 
             //if (result == MessageBoxResult.Yes)

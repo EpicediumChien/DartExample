@@ -12,6 +12,7 @@ using DDPM.SA.Common.Display;
 using System.Windows.Forms;
 using System.Windows;
 using DDPM.SA.Common.Settings;
+using DDPM.UI.Plugin.Common;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -235,6 +236,8 @@ namespace DDPM.UI.Module.DisplayOthers
         private void ImpExpSettings_Done(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
+            OnMessageDlgInvoke("close_loading");
+            OnMessageDlgInvoke("result_success");
             OnPropertyChanged("IsBusy");
         }
 
@@ -254,6 +257,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
                 {
                     IsBusy = false;
+                    OnMessageDlgInvoke("close_loading");
                     OnPropertyChanged("IsBusy");
                 }
                 else 
@@ -265,6 +269,7 @@ namespace DDPM.UI.Module.DisplayOthers
             else
             {
                 IsBusy = false;
+                OnMessageDlgInvoke("close_loading");
                 OnPropertyChanged("IsBusy");
             }
 
@@ -284,6 +289,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                 {
                     IsBusy = false;
+                    OnMessageDlgInvoke("close_loading");
                     OnPropertyChanged("IsBusy");
                 }
                 else
@@ -295,10 +301,21 @@ namespace DDPM.UI.Module.DisplayOthers
             else
             {
                 IsBusy = false;
+                OnMessageDlgInvoke("close_loading");
                 OnPropertyChanged("IsBusy");
             }
 
             return false;
+        }
+
+        public EventHandler<string>? ImportExportResult;
+        private void OnMessageDlgInvoke(string type)
+        {
+            EventHandler<string>? handler = ImportExportResult;
+            if (handler != null)
+            {
+                handler.Invoke(this, type);
+            }
         }
 
         public void OnPropertyChanged_Lock()
