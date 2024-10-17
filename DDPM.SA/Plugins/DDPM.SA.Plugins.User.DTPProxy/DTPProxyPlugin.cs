@@ -1065,7 +1065,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "ResetToDefault_webcam", newValue);
+                SetPropertyValue(_webcamInterfaceType, commodity, "ResetToDefault", newValue);
             }
             else
             {
