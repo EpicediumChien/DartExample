@@ -3893,7 +3893,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (appSettings.UserSettings != null)
                     {
-                        appSettings.UserSettings.EACustomList = (SplitJson[]) customList.Clone();
+                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
                         //Writeback to app settings
                         _SettingsPlugin.SetAppConfigData(appSettings);
                     }
@@ -4228,7 +4228,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"@ UpdateUserEAProfileDDPM: EAProfile list is null in UserSettings.");
-                    return false; 
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -5958,6 +5958,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
+                DeviceChangedEventArgs _EventArgs_ = new DeviceChangedEventArgs();
+                _EventArgs_.type = DeviceChangedType.NotifyOnly;
+                _EventArgs_.device_display = null;
+                _EventArgs_.device_peripherals = null;
+                _EventArgs_.changedProperty = "DisplayChanged";
+                EventHandler<DeviceChangedEventArgs> handler_ = DeviceChanged;
+                if (handler_ != null)
+                    Task.Run(() => handler_.Invoke(this, _EventArgs_)).ConfigureAwait(false);
+
                 if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
                 else _AllInfoMonitors = new List<MonitorInfo>();
 
@@ -9824,6 +9833,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 MonitorInfo monitorInfo = new MonitorInfo();
                 ret = SetDisplayPropertiest(monitorInfo, displayCurrentPropertiesInfo.CurrentProperties, displayCurrentPropertiesInfo.CurrentOrientation).Result;
                 ret = SetHDRStatus(monitorInfo, displayCurrentPropertiesInfo.isHDREnable).Result && ret;
+                if (displayCurrentPropertiesInfo.USBCPrioritizationType != USBCPrioritizationType.Unknow)
+                {
+                    ret = SetUSBCPrioritizationType(monitorInfo, displayCurrentPropertiesInfo.USBCPrioritizationType).Result && ret;
+                }
                 ret = true;
             }
             catch
@@ -9889,7 +9902,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<SplitJson> ddpmCustomList = new List<SplitJson>();
             if (ddmUserSettings.CustLayouts != null)
             {
-                foreach(CustLayout custLayout in ddmUserSettings.CustLayouts)
+                foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
                 {
                     SplitJson spJson = new SplitJson();
                     spJson.CellCount = 0;
@@ -9907,7 +9920,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //Settings[4 ~] : Rects
                     int idxRect = 0;
-                    foreach(EARect eARect in custLayout.Rects)
+                    foreach (EARect eARect in custLayout.Rects)
                     {
                         //settings[4 + idxRect + 0] : left
                         settings.Add(eARect.x);
