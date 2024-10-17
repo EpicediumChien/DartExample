@@ -93,5 +93,6 @@ namespace DDPM.SA.Common.Settings
 
         #endregion EasyMemory
 
+        public HotkeySettings HotkeySettings { get; set; } = new HotkeySettings();
     }
 }
