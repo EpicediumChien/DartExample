@@ -224,7 +224,7 @@ pause
 
 :FileCopy
 echo copy support list.
-xcopy /E /i ".\DDPM.SA\dll\SupportEncrypted.txt" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\" /Y
+xcopy /E /i ".\DDPM.SA\dll\LSTDDPM" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\" /Y
 
 echo Del SA all *.pdb 
 del /S ".\DDPM.SA\bin\*.pdb"
