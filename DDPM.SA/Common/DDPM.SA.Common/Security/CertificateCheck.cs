@@ -88,6 +88,32 @@ namespace DDPM.SA.Common.Security
             }
             return ret;
         }
+        public bool CheckFile_Thumbprint_List(string CertificateFilePath, List<string> Stande_Thumbprint, out string Info)
+        {
+            bool ret = false;
+            Info = "Thumbprint Is Null Or Empty";
+            if (Stande_Thumbprint != null && Stande_Thumbprint.Count > 0)
+            {
+                try
+                {
+                    // 讀取憑證檔案並創建 X509Certificate2 物件
+                    X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+                    for (int i = 0; i < Stande_Thumbprint.Count; i++)
+                    {
+                        ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
+                        if (ret)
+                        {
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Info = "No signature Ex:" + ex.ToString();
+                }
+            }
+            return ret;
+        }
         public bool CheckURLCACertificate(string URL)
         {
             bool flag = false;
