@@ -1,9 +1,13 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Models;
 using Newtonsoft.Json;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -109,6 +113,13 @@ namespace DDPM.UI.Module.Brightness
             {
                 x.IsSynchronize = true;
                 SynchronizeSwitch.Content = Strings.On;
+
+                // Brightness and contrast
+                x.Set_Contrast_Value(x.ContrastValue);
+                x.Set_Brightness_Value(x.BrightnessValue);
+
+                // Color
+                Invoke_ColorPreset_Sync();             
             }
             else
             {
@@ -593,5 +604,92 @@ namespace DDPM.UI.Module.Brightness
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
         }
+
+        public void Invoke_ColorPreset_Sync()
+        {
+            BackgroundWorker bw_ColorPreset_Sync = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw_ColorPreset_Sync.DoWork += DoWork_ColorPreset_Sync;
+            bw_ColorPreset_Sync.RunWorkerCompleted += RunWorkerCompleted_ColorPreset_Sync;
+            //Log?.Info("RunWorkerCompleted_DownloadICCData start...");
+            //IsBusy = true;
+            bw_ColorPreset_Sync.RunWorkerAsync();
+        }
+
+        private void DoWork_ColorPreset_Sync(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo);
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                string strSync_CurrentColorPreset = string.Empty;
+                strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+
+                Task.Run(() =>
+                {
+                    foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, false);
+                    }
+
+                });
+
+                /*
+                Dispatcher.Invoke(new Action(() =>
+                {
+                  
+
+                }));   
+                */
+
+            }
+            catch (System.Exception)
+            {
+            }
+        }
+
+        private void RunWorkerCompleted_ColorPreset_Sync(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+
+            //IsBusy = false;
+
+            //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
+            if (e.Cancelled)
+            {
+                //Log?.Info("** ColorPreset_Sync is cancelled.");
+                return;
+            }
+            if (e.Error != null)
+            {
+                //The message is e.Error.Message
+                //Log?.Info($"** ColorPreset_Sync stopped by an exception: {e.Error.Message}");
+                return;
+            }
+            //
+            if (e.Result == null)
+            {
+                //In case that you never set value to e-Result
+                //Log?.Info("** ColorPreset_Sync abnormal stopped unknown reason.");
+            }
+            else
+            {
+                //Log?.Info($"** DownloadICCData result: {e.Result}");
+
+                if (e.Result == "OK")
+                {
+                    //Result is passed.
+                }
+                else
+                {
+                    //Result is failed.
+                }
+            }
+        }
+
     }
 }
