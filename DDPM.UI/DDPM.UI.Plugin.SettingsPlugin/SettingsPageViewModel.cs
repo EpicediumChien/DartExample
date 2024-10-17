@@ -601,6 +601,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = false;
             UXAlertItemVisibility = Visibility.Collapsed;
+            UXAlertItemVisibility_2 = Visibility.Collapsed;
             UpdateInfo = $"Software update {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
         }
     }
