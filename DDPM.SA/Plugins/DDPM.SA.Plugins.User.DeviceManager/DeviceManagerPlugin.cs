@@ -5269,6 +5269,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetIsPrioritizeExternalWebcam(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsPrioritizeExternalWebcam requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task ResetToDefault_webcam(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received ResetToDefault_webcam requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.ResetToDefault_webcam(guid, newValue);
+            return Task.FromResult(true);
+        }
+
         public Task SetBrightness(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetBrightness requested ...");
@@ -5360,6 +5378,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetIsWalkAwayLockEnable(string guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
+        }
+
+        public async Task<bool> GetIsPrioritizeExternalWebcam(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
 
         #endregion

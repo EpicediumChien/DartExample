@@ -1042,6 +1042,38 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "IsPrioritizeExternalWebcam", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task ResetToDefault_webcam(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "ResetToDefault", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+
         public async Task<int> GetWALTime(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -1244,6 +1276,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"[GetIsWalkAwayLockEnable]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetIsWalkAwayLockEnable]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> GetIsPrioritizeExternalWebcam(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPrioritizeExternalWebcam");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
             }
 
