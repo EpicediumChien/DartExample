@@ -4184,6 +4184,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 monitorSettings.ColorPreset = _ColorPresetPlugin.Export(monitorInfo, _SettingsPlugin).Result;
                             }
+                            List<ALSConfig> aLSConfigs = new List<ALSConfig>();
+                            aLSConfigs = GetAllExistAlsConfig().Result;
+                            if (aLSConfigs != null)
+                            {
+                                ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
+                                monitorSettings.ALSConfig = aLSConfig.AllValue;
+                            }
                             foreach (VCPCode vcp in monitorSettings.VCPs)
                             {
                                 if (vcp.Value != null)
@@ -9142,7 +9149,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             settings.VCPs = GetAllVCPcode(m);
                             settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
                             settings.EA = new EAMonitorSettings();
+                            settings.easyArrangementDDPM = new EasyArrangementDDPM();
                             settings.ImpExpSettings = new ImpExpSettings();
+                            settings.hotkeyData = new List<HotkeyData>();
+                            settings.scheduleInfo = new scheduleInfo();
+                            settings.ALSConfig = 0;
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                         }
