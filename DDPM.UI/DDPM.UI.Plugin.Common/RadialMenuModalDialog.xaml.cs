@@ -81,7 +81,7 @@ namespace DDPM.UI.Plugin.Common
         private void DrawPieChart()
         {
             int numberOfSections = 8;
-            double angleStep = 360.0 / numberOfSections;
+            double angleStep = 360.0 / numberOfSections + 22.5;
 
             for (int i = 0; i < numberOfSections; i++)
             {

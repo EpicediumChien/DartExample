@@ -12,6 +12,7 @@
 
 using Dell.Client.Framework.Common;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -46,6 +47,7 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
         Task<string> PairingPen();
+        Task UnPairPen(string Guid);
         Task<JArray> GetPenDeviceItemsEx();
         Task<string> GetEraserDoublePressValues();
         Task<string> GetEraserSinglePressValues();
@@ -71,8 +73,6 @@ namespace DDPM.SA.Common
         Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
-
-        Task SetBrightnessValue(string itemID, int newValue);
 
         Task<string> GetCameraFirmwareVersion(string itemID);
 

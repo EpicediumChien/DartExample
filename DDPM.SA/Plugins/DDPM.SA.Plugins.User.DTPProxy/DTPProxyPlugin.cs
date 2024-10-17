@@ -246,30 +246,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetBrightnessValue(string itemID, int newValue)
-        {
-            _itemID = new ItemId(itemID);
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetBrightnessValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetBrightnessValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-            }
-
-        }
-
         public async Task<string> GetCameraFirmwareVersion(string itemID)
         {
             _itemID = new ItemId(itemID);
@@ -1253,6 +1229,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> GetItemIDAsync(string type, string guid)
         {
+            if (string.IsNullOrEmpty(type))
+            {
+                writelog($"Type is empty!");
+                return false;
+            }
+            if (string.IsNullOrEmpty(guid))
+            {
+                writelog($"Guid is empty!");
+                return false;
+            }
+
             MethodInfo methodInfo = type switch
             {
                 "Pen" => _penMethodInfo,
@@ -1314,6 +1301,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 return "";
+            }
+        }
+        public async Task UnPairPen(string Guid)
+        {
+            if (!await GetItemIDAsync("Pen", Guid))
+            { return; }
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "UnPair", true);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[UnPairPen]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[UnPairPen]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 

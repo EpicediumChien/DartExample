@@ -1747,13 +1747,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task StartPairingPen()
-        {
-            writelog("DeviceMangerPlugin received StartPairingPen requested ...");
-            _PeripheralsPlugin.StartPairingPen();
-            return Task.FromResult(true);
-        }
-
         public Task StopPairing(Guid deviceId)
         {
             writelog("DeviceMangerPlugin received StopPairing requested ...");
@@ -4549,6 +4542,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.PairingPen();
         }
+        public Task UnPairPen(string Guid)
+        {
+            writelog("DeviceMangerPlugin received PairingPen requested ...");
+            return _DTPProxyPlugin.UnPairPen(Guid);
+        }
         public Task<string> GetEraserDoublePressValues()
         {
             return _DTPProxyPlugin.GetEraserDoublePressValues();
@@ -4745,15 +4743,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<int> GetBrightness(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
-        }
-
-        public Task SetBrightnessValueByDTP(string itemID, int newValue)
-        {
-            writelog("DeviceMangerPlugin received SetBrightnessValueByDTP requested ...");
-            writelog($"Target itemID is {itemID}");
-            writelog($"Target Brightness Value is {newValue}");
-            _DTPProxyPlugin.SetBrightnessValue(itemID, newValue);
-            return Task.FromResult(true);
         }
 
         public async Task<string> GetCameraFirmwareVersionByDTP(string itemID)

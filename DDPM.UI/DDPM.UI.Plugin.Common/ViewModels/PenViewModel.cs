@@ -712,5 +712,11 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             DdpmCommonHelper.DeviceManagerSA!.SetMenuCenterRightClickSetting(itemID, value);
         }
+
+        public void UnpairPen()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.UnPairPen(CurrentDeviceID.ToString());
+            OnGoBackClicked();
+        }
     }
 }

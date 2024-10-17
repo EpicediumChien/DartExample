@@ -277,6 +277,22 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (_vm!.Model == "PN5122W")
+            {
+                UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Pen);
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    unpairModalDialog.Owner = parentWindow;
+                }
+
+                bool? dialogResult = unpairModalDialog.ShowDialog();
+                if (dialogResult == true)
+                {
+                    _vm.UnpairPen();
+                }
+                return;
+            }
             Version win10Version = new(10, 0);
             Version currentVersion = Environment.OSVersion.Version;
             if (currentVersion >= win10Version)

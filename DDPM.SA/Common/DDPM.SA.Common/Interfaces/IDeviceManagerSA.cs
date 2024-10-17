@@ -332,8 +332,6 @@ namespace DDPM.SA.Common
 
         Task StartPairing(Guid deviceId);
 
-        Task StartPairingPen();
-
         Task StopPairing(Guid deviceId);
 
         Task StopPairingPen();
@@ -661,6 +659,7 @@ namespace DDPM.SA.Common
         Task<bool> GetIsSideTopButtonHoverClick();
         Task<bool> GetIsSideBottomButtonHoverClick();
         Task<string> PairingPen();
+        Task UnPairPen(string Guid);
 
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
@@ -701,8 +700,6 @@ namespace DDPM.SA.Common
         Task<string> GetProfileName(string Guid);
 
         Task<int> GetBrightness(string Guid);
-
-        Task SetBrightnessValueByDTP(string itemID, int newValue);
 
         Task<string> GetCameraFirmwareVersionByDTP(string itemID);
 
