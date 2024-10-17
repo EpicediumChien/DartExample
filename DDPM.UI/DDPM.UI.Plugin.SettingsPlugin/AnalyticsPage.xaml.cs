@@ -80,6 +80,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 _isConsentChecked = value;
                 NotifyPropertyChanged("isConsentChecked");
+
+                if(DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(_isConsentChecked).Result;
+                }
             }
         }
 
