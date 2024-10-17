@@ -45,5 +45,6 @@
         public bool Lock_Webcam_PresenceDetection { get; set; } = false;
         #endregion Peripheral Setting
 
+        public GlobalSettingParam global_setting { get; set; } = new GlobalSettingParam();
     }
 }
