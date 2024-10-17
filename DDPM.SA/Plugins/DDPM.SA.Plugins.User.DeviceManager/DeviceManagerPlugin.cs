@@ -2566,8 +2566,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
+                DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
+                {
+                    displayUpdateHelper = new DisplayUpdateHelper();
+                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
+                }
+
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result, isOnlyDisplay).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2586,13 +2593,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(tmpFWUpdateInfos);
         }
 
-        public Task<FWUErrorCode> Install(string installPath)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
         {
             FWUErrorCode ret = FWUErrorCode.Unknow;
-            if (_UpdateProgress != null)
-            {
-                ret = _FWUpdatePlugin.Install(installPath).Result;
-            }
+            //if (_UpdateProgress != null)
+            //{
+            ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+            //}
             return Task.FromResult(ret);
         }
 
