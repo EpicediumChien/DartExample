@@ -143,7 +143,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                     //  _viewModel.GotoNewDevice();
                 }
-                if (e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio)
+                if (e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalPen)
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     _viewModel.GotoNewDevice();

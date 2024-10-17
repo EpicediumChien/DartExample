@@ -471,6 +471,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "LOGICALWIREDAUDIO":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
                     break;
+                case "LOGICALPEN":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, NewDevice.ID.ToString());
+                    break;
             }
             NewDevice = null;
             IsPairing = false;
