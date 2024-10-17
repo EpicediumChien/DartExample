@@ -600,4 +600,5 @@
         <GradientStop Offset="0" Color="#FF55B4FD" />
         <GradientStop Offset="1" Color="#FF6E69CF" />
     </LinearGradientBrush>
+
 </ResourceDictionary>

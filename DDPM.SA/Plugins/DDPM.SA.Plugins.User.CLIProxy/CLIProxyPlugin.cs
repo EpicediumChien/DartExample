@@ -429,13 +429,19 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (_CLIPeripherals != null)
                     {
-                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && commandLineInput.Options.Count == 0)
+                        {
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
                         {
                             DDPMSettings data_restorefactorydefault = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data_restorefactorydefault, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                         }
                         else
+                        {
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                        }
                     }
                     else
                     {

@@ -10,7 +10,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:KeyboardViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="647" d:DesignWidth="507" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="647" d:DesignWidth="507">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
