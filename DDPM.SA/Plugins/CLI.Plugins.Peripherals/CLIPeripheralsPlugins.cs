@@ -365,6 +365,39 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
                 });
             }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))// for audio headset RESTOREFACTORYDEFAULTS.
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(ItemId, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            //retcode_ = _devMgr.GetIsAutoFramingOnValueByDTP(ItemId).Result;
+                            x.Value = "SUCCESS";
+                            //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
             foreach (var op in _commandLineInput.Options)
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
