@@ -26,5 +26,13 @@ namespace DDPM.UI.Module.AddPen_Other
             txtStep1.Text = string.Format(Step1, Dns.GetHostName());
             //txtStep2.Text = Step2;
         }
+
+        private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
+        {
+            if (_vm.IsPandoraPaired)
+            {
+                return;
+            }
+        }
     }
 }

@@ -32,7 +32,6 @@ namespace DDPM.UI.Plugin.ViewModels
         private readonly string noDongleAlertKnM = Strings.AddDeviceKnMnoDongleAlertKnM;
         private readonly string noDongleAlertHeadset = Strings.AddDeviceKnMnoDongleAlertHeadset;
 
-        //public AddDeviceViewModel(IConsole console, ILog log, IDPeMPlugin peripheralPlugin) {
         public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log)
         {
             Requires.NotNull(console, nameof(console));
@@ -42,6 +41,8 @@ namespace DDPM.UI.Plugin.ViewModels
             _console = console;
             _log = log;
         }
+
+        public bool IsPandoraPaired = false; 
 
         public List<ModuleGroup> _moduleGroups = new();
 
