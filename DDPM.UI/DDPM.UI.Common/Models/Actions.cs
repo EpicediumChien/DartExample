@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System.Buffers;
+using System;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -111,25 +114,31 @@ namespace DDPM.UI.Common
         public void ResetRadialMenu()
         {
             RadialLabels = new() {
-                { 0, Strings.VolumeUp },
-                { 1, Strings.PlayPause },
-                { 2, Strings.VolumeDown },
-                { 3, Strings.PreviousTrack },
-                { 4, Strings.EMail },
-                { 5, Strings.Mute },
-                { 6, Strings.WebBrowser },
-                { 7, Strings.NextTrack },
+                { 0, Strings.NextTrack },
+                { 1, Strings.WebBrowser },
+                { 2, Strings.Mute },
+                { 3, Strings.EMail },
+                { 4, Strings.PreviousTrack },
+                { 5, Strings.VolumeDown },
+                { 6, Strings.PlayPause },
+                { 7, Strings.VolumeUp },
             };
             RadialActions.Clear();
-            RadialActions.Add(0, new SelectedAction(84, new AssignedAction(84)));
-            RadialActions.Add(1, new SelectedAction(81, new AssignedAction(81)));
-            RadialActions.Add(2, new SelectedAction(85, new AssignedAction(85)));
-            RadialActions.Add(3, new SelectedAction(83, new AssignedAction(83)));
-            RadialActions.Add(4, new SelectedAction(80, new AssignedAction(80)));
-            RadialActions.Add(5, new SelectedAction(86, new AssignedAction(86)));
-            RadialActions.Add(6, new SelectedAction(79, new AssignedAction(79)));
-            RadialActions.Add(7, new SelectedAction(82, new AssignedAction(82)));
+            RadialActions.Add(0, new SelectedAction(82, new AssignedAction(82)));
+            RadialActions.Add(1, new SelectedAction(79, new AssignedAction(79)));
+            RadialActions.Add(2, new SelectedAction(86, new AssignedAction(86)));
+            RadialActions.Add(3, new SelectedAction(80, new AssignedAction(80)));
+            RadialActions.Add(4, new SelectedAction(83, new AssignedAction(83)));
+            RadialActions.Add(5, new SelectedAction(85, new AssignedAction(85)));
+            RadialActions.Add(6, new SelectedAction(81, new AssignedAction(81)));
+            RadialActions.Add(7, new SelectedAction(84, new AssignedAction(84)));
             IsUseCenter = true;
+            foreach(var action in RadialActions)
+            {
+                byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{action.Key},\"actionId\":{action.Value.DefaultActionID},\"actionName\":\"{RadialLabels[action.Key]}\"}}");
+                DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting("DellPeripheral.Pen.0", newValue);
+            }
+            ActionList.ExportActionList(this, "PEN");
         }
 
         public class RadialLabel

@@ -93,32 +93,32 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
             }
-            //jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserSinglePressValues));
+
             task = DdpmCommonHelper.DeviceManagerSA!.GetSideSwitchSinglePressValues();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
             foreach (var jo in jsonObject.EnumerateArray())
             {
                 _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
             }
-            //jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserLongPressValues));
+
             task = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressValues();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
             foreach (var jo in jsonObject.EnumerateArray())
             {
                 _MenuActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
             }
-            //jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.LaunchableAppValues));
+
             task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-            var i = 1;
-            LaunchableAppValues.Add(Strings.Browse);
+            //var i = 1;
+            //LaunchableAppValues.Add(Strings.Browse);
             foreach (var jo in jsonObject.EnumerateArray())
             {
                 //LaunchableAppValues.Add(i, jo.GetString()!);
                 //i++;
                 LaunchableAppValues.Add(jo.GetString()!);
             }
-
+            LaunchableAppValues.Sort();
             ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             RadialMenuActions = _MenuActions.Keys.ToList();
             IsActionItemsReady = true;
@@ -620,7 +620,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedAction.AssignedAction.Parameter = parameter;
                 RefreshButtonInfo();
                 CheckRestoreStatus();
-                var actionName = actionID == 23 ? parameter : "";
+                var actionName = actionID == 8 || actionID == 23 ? parameter : "";
+                actionName = ""+(char)3;
                 switch (SelectedButton)
                 {
                     case "TopButton":
@@ -703,9 +704,10 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
 
-        public void UpdateRadialMenu(int index, int id, string parameter)
+        public void UpdateRadialMenu(int index, int id, string parameter = "")
         {
-            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
+            //byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{PenAction.RadialLabels[index]}\"}}");
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
         }
         public void UpdateRadialMenuRightClick(bool value)

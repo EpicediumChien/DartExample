@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,7 +29,7 @@ namespace DDPM.UI.Plugin.Common
         private const double CenterX = 200;
         private const double CenterY = 200;
 
-        private int SelectedMenuID = 2;
+        private int SelectedMenuID = 0;
         private int SelectedActionID = 0;
         private bool IsComboOpen = false;
         readonly SolidColorBrush NormalFillBrush = new();
@@ -46,7 +47,7 @@ namespace DDPM.UI.Plugin.Common
 
             DrawPieChart();
 
-            SelectedMenuID = 2;
+            SelectedMenuID = 0;
             SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
             txtTitleBar.Text = Strings.RadialMenu;
             txtFunction.Text = Strings.FunctionForSelectedRadial;
@@ -85,7 +86,7 @@ namespace DDPM.UI.Plugin.Common
 
             for (int i = 0; i < numberOfSections; i++)
             {
-                double startAngle = i * angleStep + 22.5;
+                double startAngle = -22.5 - i * angleStep;
                 double endAngle = startAngle + angleStep;
 
                 // Create a path for each section
@@ -158,7 +159,7 @@ namespace DDPM.UI.Plugin.Common
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", ""));
-            if (id == SelectedActionID && id != 23)
+            if (id == SelectedActionID)
             { return; }
 
             txtLabelText.Visibility = Visibility.Visible;
@@ -258,7 +259,7 @@ namespace DDPM.UI.Plugin.Common
             else if (sender is ActionButton btn)
             {
                 id = (int)((ActionButton)sender).DataContext;
-                if ((id == 2 || id == 3) && id == SelectedActionID)
+                if ((id == 8 || id == 23) && id == SelectedActionID)
                 {
                     btn.Name = $"btn{id}";
                     btn.Caption = Strings.Edit;
@@ -285,7 +286,7 @@ namespace DDPM.UI.Plugin.Common
                 svMenu.ScrollToVerticalOffset(SelectedActionID * 29);
             }
             RefreshLabel(all);
-            if (SelectedActionID == 2 || SelectedActionID == 3)
+            if (SelectedActionID == 8 || SelectedActionID == 23)
             {
                 spLabel.Visibility = Visibility.Collapsed;
             }
@@ -314,8 +315,9 @@ namespace DDPM.UI.Plugin.Common
         {
             double width = id switch
             {
-                1 or 4 or 5 or 0 => 150,
-                2 or 3 or 6 or 7 => 110,
+                0 or 4 => 130,
+                1 or 3 or 5 or 7 => 136,
+                2 or 6 => 140,
                 _ => 0
             };
             var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
@@ -466,7 +468,7 @@ namespace DDPM.UI.Plugin.Common
         private void RestoreClick(object sender, MouseButtonEventArgs e)
         {
             PenActions.ResetRadialMenu();
-            ActionList.ExportActionList(PenActions, "PEN");
+            //ActionList.ExportActionList(PenActions, "PEN");
             SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
             RefreshAction(true);
         }
@@ -474,6 +476,8 @@ namespace DDPM.UI.Plugin.Common
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
             PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
+            //_vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID, parameter);
+            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
             ActionList.ExportActionList(PenActions, "PEN");
             RefreshLabel();
         }
