@@ -414,6 +414,12 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                         }
+                        else if (commandLineInput.TargetFeature == "INAPPEXPORTSETTINGS")
+                        {
+
+                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        }
                         else
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                     }
@@ -477,11 +483,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //_DevManagerPlugin.OnUIUpdateNotify(no);
                             //}
                             break;
-                        case "INAPPEXPORTSETTINGS":
-                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            break;
+                        //case "INAPPEXPORTSETTINGS":
+                        //    //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                        //    DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                        //    cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        //    break;
 
                         case "INAPPRESTOREDEFAULTS":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
