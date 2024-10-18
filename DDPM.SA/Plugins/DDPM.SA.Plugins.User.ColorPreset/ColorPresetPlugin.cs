@@ -651,10 +651,13 @@ namespace ColorPreset.Plugins
 
                         string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
 
-                        registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
-                        registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
-                        registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
-                        registryMonitor_ICC.Start();
+                        if (registryMonitor_ICC == null)
+                        {
+                            registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                            registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                            registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                            registryMonitor_ICC.Start();
+                        }                       
                     }
                 }
 
