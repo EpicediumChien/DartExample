@@ -2098,6 +2098,13 @@ namespace DDPM.SA.Common.Settings
             pathSymbolicLinInfo = "Error";
             int count = 0;
             bool folderValid = false;
+
+            if(string.IsNullOrEmpty(folderPath))
+            {
+                folderInfo = "CheckFold - folder path NULL";
+                return folderValid;
+            }
+
             do
             {
                 folderInfo = string.Empty;
