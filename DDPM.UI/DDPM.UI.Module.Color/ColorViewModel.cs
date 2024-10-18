@@ -885,7 +885,7 @@ namespace DDPM.UI.Module.Color
 
                 AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
 
-                //_ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {                    
