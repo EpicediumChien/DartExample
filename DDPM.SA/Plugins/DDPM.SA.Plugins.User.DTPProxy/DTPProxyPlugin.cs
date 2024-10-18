@@ -298,7 +298,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyFOVSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -325,7 +327,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetFieldOfViewValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return -1; }
 
             if (_webcamMethodInfo != null)
             {
@@ -352,7 +356,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyHDRSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -379,7 +385,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> GetIsHDROnValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -406,7 +414,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetIsHDROnValue(string itemID, bool newValue)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return; }
 
             if (_webcamMethodInfo != null)
             {
@@ -430,7 +440,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -457,7 +469,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetAntiFlickerValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return -1; }
 
             if (_webcamMethodInfo != null)
             {
@@ -484,7 +498,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetAntiFlickerValue(string itemID, int newValue)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return; }
 
             if (_webcamMethodInfo != null)
             {
@@ -508,7 +524,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyAutoFramingSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -535,7 +553,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> GetIsAutoFramingOnValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -562,7 +582,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetIsAutoFramingOnValue(string itemID, bool newValue)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return; }
 
             if (_webcamMethodInfo != null)
             {
