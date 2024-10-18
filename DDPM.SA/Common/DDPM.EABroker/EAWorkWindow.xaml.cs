@@ -133,7 +133,14 @@ namespace DDPM.EABroker
                     else
                         _workingSplit.Settings = new List<double>(settings);
 
-                    sp0B.ApplySettingsToCellList(_workScreen.Bounds);
+                    Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
+                    Rect rcScreen = new Rect();
+                    rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
+                    rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
+                    rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
+                    rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
+                    Trace.WriteLine($"AfterScale(/{_vm.ScreenScale}):({rcScreen.X},{rcScreen.Y})-({rcScreen.Right},{rcScreen.Bottom}){rcScreen.Width}x{rcScreen.Height}");
+                    sp0B.ApplySettingsToCellList(rcScreen);
 
                     _workingSplit.IsEditable = false;
                     _workingSplit.IsVertical = _isVertical;
@@ -170,7 +177,7 @@ namespace DDPM.EABroker
                     if ((cellCount == 0) && (splitKey == 'B'))
                     {
                         SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
-                        sp0b.ApplySettingsToCellList(_workScreen.Bounds);
+                        sp0b.ApplySettingsToCellList(ArrangeVM.RectFromRectangle(_workScreen.Bounds));
                     }
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = _isVertical;
@@ -346,6 +353,7 @@ namespace DDPM.EABroker
                 return hoverCell; ;
             }
 
+            /*
             foreach (CellBorder cellBd in _workingSplit.CellBorders)
             {
                 if (isHandled)
@@ -365,6 +373,7 @@ namespace DDPM.EABroker
                     cellBd.IsHover = false;
                 }
             }
+            */
 
             //For other layouts
             foreach (CellObj objCell in _workingSplit.CellList)
@@ -410,10 +419,10 @@ namespace DDPM.EABroker
                     }
                 }
                 */
-                foreach (CellBorder cellBd in _workingSplit.CellBorders)
-                {
-                    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
-                }
+                //foreach (CellBorder cellBd in _workingSplit.CellBorders)
+                //{
+                //    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                //}
 
                 foreach (CellObj objCell in _workingSplit.CellList)
                 {

@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="EAWorkWindow" Height="450" Width="800"
         AllowsTransparency="True" Topmost="True"
-        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False" Loaded="Window_Loaded"
+        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False" 
+        Loaded="Window_Loaded"
         >
     <Window.Resources>
         <Storyboard x:Key="FadeOut">
@@ -18,22 +19,25 @@
 
     </Window.Resources>  
     <Grid>
-        <Grid Name="splitGrid">
+        <Border BorderBrush="Red" BorderThickness="0">
+            <Grid Name="splitGrid">
 
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Hidden"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsWorkWindowVisible}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Setter Property="Window.Topmost" Value="True" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <ContentControl Name="splitCtrl" />
-            <Canvas Name="canvasWorker"/>
-        </Grid>
+
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsWorkWindowVisible}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Setter Property="Window.Topmost" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <ContentControl Name="splitCtrl" />
+                <Canvas Name="canvasWorker"/>
+            </Grid>
+        </Border>
 
         <Grid Name="fadeOutGrid" Visibility="Hidden">
             <!-- 
