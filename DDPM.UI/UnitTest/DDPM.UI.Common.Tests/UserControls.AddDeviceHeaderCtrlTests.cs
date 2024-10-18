@@ -80,7 +80,6 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(i, Is.EqualTo(2));
             Assert.That(addDeviceHeaderCtrl.SelectedIndex, Is.EqualTo(0));
-
         }
 
         private void newRoutedEventArgs(object? sender, RoutedEventArgs e)
