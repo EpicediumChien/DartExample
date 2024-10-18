@@ -200,7 +200,13 @@ namespace VcpCore.Plugins
                 var NewToken = Cancellation.Token;
 
                 //while (_TaskQueueExecutor.IsBusy)
-                _TaskQueueExecutor.CancelAsync();
+                //_TaskQueueExecutor.CancelAsync();
+                while (!_TaskQueue.IsEmpty())
+                {
+                    _TaskQueueExecutor.CancelAsync();
+                    _AllInfoMonitors = new List<MonitorInfo_complex>();
+                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                }
 
                 InitializeMonitorsList(NewToken).Wait();
 
@@ -2616,7 +2622,7 @@ namespace VcpCore.Plugins
                 }
 
                 count++;
-                _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability retry ({count})");
+                _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability " + Convert.ToString(code, 16) + " , retry ( " + count + " )");
                 Thread.Sleep(1000);
             } while (count < 3 && retry);
 
