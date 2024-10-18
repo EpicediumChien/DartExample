@@ -412,11 +412,14 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
                     _AllInfoMonitors.AddRange(_DisplayManagerPlugin.GetMonitors().Result);
 
-                    // 對每一個螢幕進行檢查
-                    foreach (var monitor in _AllInfoMonitors)
+                    if (_AllInfoMonitors.Count >= 1)
                     {
-                        Trace.WriteLine("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor " + monitor.modelName);
-                        CheckAndLaunchForMonitor(monitor);
+                        // 對每一個螢幕進行檢查
+                        foreach (var monitor in _AllInfoMonitors)
+                        {
+                            Trace.WriteLine("[EzMemoryManagerPlugin] CheckAndLaunchForMonitor " + monitor.modelName);
+                            CheckAndLaunchForMonitor(monitor);
+                        }
                     }
 
                     _logs.DebugMsg_1("[EzMemoryManagerPlugin] _AllInfoMonitors count : " + _AllInfoMonitors.Count);
@@ -441,30 +444,33 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     if (monitorSettings != null && monitorSettings.easyArrangementDDPM != null)
                     {
                         var easyArrangement = monitorSettings.easyArrangementDDPM;
-                        foreach (var ps in easyArrangement.Desktops[0].ProfileSettings)
+                        if (easyArrangement.Desktops != null && easyArrangement.Desktops.Count > 0)
                         {
-                            if (ps.Auto)
+                            foreach (var ps in easyArrangement.Desktops[0].ProfileSettings)
                             {
-                                TimeSpan autoStartTime = TimeSpan.FromSeconds(ps.AutoStartTime.Value);
-                                //    Trace.WriteLine("ID = " + ps.ID);
-                                //    Trace.WriteLine("Auto = " + ps.Auto);
-                                //    Trace.WriteLine("AutoStartTime = " + ps.AutoStartTime);
-                                //    Trace.WriteLine("StartUpLaunch = " + ps.StartUpLaunch);
-                                if (IsTimeToLaunch(autoStartTime))
+                                if (ps.Auto)
                                 {
-                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.Auto match, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString()+ ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
-                                    LaunchAndArrangeApps(ps.ID);
-                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsTimeToLaunch, LaunchAndArrangeApps {ps.ID}");
+                                    TimeSpan autoStartTime = TimeSpan.FromSeconds(ps.AutoStartTime.Value);
+                                    //    Trace.WriteLine("ID = " + ps.ID);
+                                    //    Trace.WriteLine("Auto = " + ps.Auto);
+                                    //    Trace.WriteLine("AutoStartTime = " + ps.AutoStartTime);
+                                    //    Trace.WriteLine("StartUpLaunch = " + ps.StartUpLaunch);
+                                    if (IsTimeToLaunch(autoStartTime))
+                                    {
+                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.Auto match, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
+                                        LaunchAndArrangeApps(ps.ID);
+                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsTimeToLaunch, LaunchAndArrangeApps {ps.ID}");
+                                    }
                                 }
-                            }
-                            if (ps.StartUpLaunch)
-                            {                              
-                                long startupTime = Environment.TickCount64;
-                                if (IsStartupRecently(startupTime))
+                                if (ps.StartUpLaunch)
                                 {
-                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch match, MonitorInfo {monitorInfo.modelName} "  + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
-                                    LaunchAndArrangeApps(ps.ID);
-                                    _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps {ps.ID}");
+                                    long startupTime = Environment.TickCount64;
+                                    if (IsStartupRecently(startupTime))
+                                    {
+                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch match, MonitorInfo {monitorInfo.modelName} " + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
+                                        LaunchAndArrangeApps(ps.ID);
+                                        _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps {ps.ID}");
+                                    }
                                 }
                             }
                         }
