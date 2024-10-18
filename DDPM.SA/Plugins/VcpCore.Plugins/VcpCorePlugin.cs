@@ -199,8 +199,8 @@ namespace VcpCore.Plugins
                 var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(Token);
                 var NewToken = Cancellation.Token;
 
-                while (_TaskQueueExecutor.IsBusy)
-                    _TaskQueueExecutor.CancelAsync();
+                //while (_TaskQueueExecutor.IsBusy)
+                _TaskQueueExecutor.CancelAsync();
 
                 InitializeMonitorsList(NewToken).Wait();
 
@@ -2737,7 +2737,7 @@ namespace VcpCore.Plugins
                     {
                         int pos = valstring.Length - 2;
                         rc = valstring.Substring(pos);
-                    }                  
+                    }
 
                     Trace.WriteLine("GetCurrentColorPreset()  valstring= " + valstring);
                     Trace.WriteLine("GetCurrentColorPreset()  rc= " + rc);
