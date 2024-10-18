@@ -1793,7 +1793,10 @@ namespace ColorPreset.Plugins
             try
             {
                 if (_SettingsPlugin_internal == null)
-                    _SettingsPlugin_internal = _SettingsPlugin;
+                {
+                    writelog("ColorPresetPlugin DownloadICCData SettingsPlugin initiate");
+                    _SettingsPlugin_internal = _SettingsPlugin;                    
+                }
 
                 string strFilePath = string.Empty;
                 string strReadJson = string.Empty;
@@ -1814,7 +1817,7 @@ namespace ColorPreset.Plugins
                     strICC_Folder = savelPath;
                 }
 
-                writelog($"DownloadICCData Folder = {_AllAppData.Count}");
+                writelog($"DownloadICCData Folder = {strICC_Folder}");
 
                 if (!Directory.Exists(strICC_Folder))
                 {
@@ -2121,6 +2124,8 @@ namespace ColorPreset.Plugins
 
             if (index >= 0)
             {
+                writelog("ColorPresetPlugin Import Data is started");
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = colorPresetSetting_Import.RunType;
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = colorPresetSetting_Import.ColorForManual;
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = colorPresetSetting_Import.ColorManagement_Status;
@@ -2129,6 +2134,8 @@ namespace ColorPreset.Plugins
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo = colorPresetSetting_Import.AppInfo;
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
+
+                writelog("ColorPresetPlugin Import Data is finished");
 
                 return Task.FromResult(true);
             }
@@ -2155,6 +2162,8 @@ namespace ColorPreset.Plugins
 
                 if (index >= 0 && colorPresetSetting_Import.AppInfo.Count > 0)
                 {
+                    writelog("ColorPresetPlugin Import AppInfo is started");
+
                     foreach (KeyValuePair<string, ColorPresetSettings_AppInfo> kvp in colorPresetSetting_Import.AppInfo)
                     {
                         ColorPresetSettings_AppInfo temp = new ColorPresetSettings_AppInfo();
@@ -2166,9 +2175,12 @@ namespace ColorPreset.Plugins
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(kvp.Key, temp);
 
                     }
+
+                    writelog("ColorPresetPlugin Import AppInfo is finished");
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
+                writelog("ColorPresetPlugin Import exit ...");
 
                 return Task.FromResult(true);
             }
@@ -2251,9 +2263,17 @@ namespace ColorPreset.Plugins
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 1;
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = 2;
                 }
+                else 
+                {
+                    writelog("ColorPresetPlugin Migration ColorManagement value is not define.");
+                }
+
+                writelog("ColorPresetPlugin Migration ColorManagement is finished");
 
                 if (colorPresetSetting_Migration.AppInfos.Count > 0)
-                { 
+                {
+                    writelog("ColorPresetPlugin Migration AppInfo is started");
+
                     for (int i = 0; i < colorPresetSetting_Migration.AppInfos.Count; i++)
                     {
                         string strAppName = string.Empty;
@@ -2283,7 +2303,9 @@ namespace ColorPreset.Plugins
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, temp);
 
                         }
-                    }  
+                    }
+
+                    writelog("ColorPresetPlugin Migration AppInfo is finished");
                 }
                 _SettingsPlugin.WriteColorPresetSettings(config);
 
@@ -2362,11 +2384,19 @@ namespace ColorPreset.Plugins
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 1;
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = 2;
                     }
+                    else
+                    {
+                        writelog("ColorPresetPlugin Migration ColorManagement value is not define.");
+                    }
+
+                    writelog("ColorPresetPlugin Migration ColorManagement is finished");
 
                 }
 
                 if (index >= 0 && colorPresetSetting_Migration.AppInfos.Count > 0)
                 {
+                    writelog("ColorPresetPlugin Migration AppInfo is started");
+
                     for (int i = 0; i < colorPresetSetting_Migration.AppInfos.Count; i++)
                     {
                         string strAppName = string.Empty;
@@ -2396,7 +2426,9 @@ namespace ColorPreset.Plugins
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, temp);
 
                         }
-                    }                  
+                    }
+
+                    writelog("ColorPresetPlugin Migration AppInfo is finished");
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
