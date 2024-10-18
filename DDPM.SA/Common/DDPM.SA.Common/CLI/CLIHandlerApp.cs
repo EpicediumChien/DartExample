@@ -697,7 +697,12 @@ namespace DDPM.SA.Common.CLI
             WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
             ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
             IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
-
+            
+            GlobalSettingParam param = null;
+            if (_DeviceManagerPlugin != null)
+            {
+                param = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+            }
             //GET is for user mode using
             if (commandLineInput.Command.Equals("GET")) //ex: cli.exe /get -app=TelemetryConsent
             {
@@ -726,11 +731,11 @@ namespace DDPM.SA.Common.CLI
                 switch (commandLineInput.TargetFeature)
                 {
                     case "TELEMETRYCONSENT":
-                        DDPMITConfig tmp;
+                        DDPMITConfig tmp;                        
                         if (data_user != null)
                         {
-                            Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {data_user.UserSettings.isTelemetryConsentOn}");
-                            response.Value = (data_user.UserSettings.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                            Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {param.isTelemetryConsentOn}");
+                            response.Value = (param.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
                         }
                         else//IT
                         {
@@ -802,9 +807,9 @@ namespace DDPM.SA.Common.CLI
                     if (value.ToUpper().Equals("TRUE"))
                     {
                         if (data_user != null)
-                        {
+                        {                            
                             if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
-                                data_user.UserSettings.isTelemetryConsentOn = true;
+                                param.isTelemetryConsentOn = true;
                             else
                                 return CLI_Response_TypeNotSupport(commandLineInput, result);
                         }
@@ -814,7 +819,7 @@ namespace DDPM.SA.Common.CLI
                         if (data_user != null)
                         {
                             if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
-                                data_user.UserSettings.isTelemetryConsentOn = false;
+                                param.isTelemetryConsentOn = false;
                             else
                                 return CLI_Response_TypeNotSupport(commandLineInput, result);
                         }
@@ -1097,6 +1102,10 @@ namespace DDPM.SA.Common.CLI
                 {
                     if (data_user != null)
                         status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
+                    if(param != null && commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                    {
+                        _DeviceManagerPlugin.Set_GlobalSetting_EnableTelemetryConsent(param.isTelemetryConsentOn);
+                    }
                 }
 
                 if (status)
