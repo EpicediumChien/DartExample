@@ -1485,7 +1485,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
-                else 
+                else
                 {
                     writelog("[DeviceMangerPlugin] inputlist count is 0 ...");
                 }
@@ -2726,14 +2726,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DisplayUpdateHelper displayUpdateHelper;
             try
             {
-                 updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 writelog($"{nameof(CheckUpdate)} GetFWUpdateInfo Error:{ex.Message}");
                 return Task.FromResult(false);
@@ -2746,7 +2746,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             try
             {
-                 displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
                     displayUpdateHelper = new DisplayUpdateHelper();
@@ -2761,7 +2761,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
-            
+
             try
             {
                 SetDelayFWUpdateInfoPackage();
@@ -6654,6 +6654,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[DeviceManager] " + text;
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + text);
 
