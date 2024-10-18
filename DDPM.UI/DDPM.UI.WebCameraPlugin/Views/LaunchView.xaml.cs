@@ -314,7 +314,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
-            await CleanupMediaCaptureAsync();
+            try
+            {
+                await CleanupMediaCaptureAsync();
+            }
+            catch
+            { }
             //await _vm.CleanupMediaCapture();
         }
 
@@ -347,11 +352,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB")
             {
-               bool blRet = true;
+                bool blRet = true;
 
-               blRet = CheckPresenceDetection_UI();
+                blRet = CheckPresenceDetection_UI();
 
-               moduleGroup = new ModuleGroup()
+                moduleGroup = new ModuleGroup()
                 {
                     GroupName = PresenceDetection,
                     GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
@@ -964,7 +969,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void NameTextChanged(object sender, TextChangedEventArgs e)
         {
             var txt = txbName.Text.Trim();
-            if(string.IsNullOrEmpty(txt))
+            if (string.IsNullOrEmpty(txt))
             {
                 btnSave.IsEnabled = false;
                 return;
@@ -1050,7 +1055,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
 
         private bool CheckPresenceDetection_UI()
-        { 
+        {
             bool blWebcamFW_UPD = false;
             bool blSystemcompatibility_MPS = false;
 
@@ -1069,13 +1074,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (WinVersion.GetVersion(out var info))
             {
-                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))                
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
                     blSystemcompatibility_MPS = true;
                 else
                     blSystemcompatibility_MPS = false;
             }
 
-            string strComputerManufacturer= string.Empty;
+            string strComputerManufacturer = string.Empty;
 
             strComputerManufacturer = WinVersion.GetComputerManufacturer();
 
@@ -1084,9 +1089,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (strComputerManufacturer.Contains("Dell", StringComparison.OrdinalIgnoreCase))
                 blDellComputer = true;
             else
-                blDellComputer= false;
+                blDellComputer = false;
 
-            if ( blWebcamFW_UPD && blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+            if (blWebcamFW_UPD && blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
             {
                 _vm.UPD_Visibility = Visibility.Visible;
                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
@@ -1119,11 +1124,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             if (!blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
-            {  
+            {
                 return false;
             }
 
-            if (!blWebcamFW_UPD  && blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            if (!blWebcamFW_UPD && blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
             {
                 _vm.UPD_Visibility = Visibility.Collapsed;
                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
@@ -1133,7 +1138,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             if (!blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
-            {              
+            {
                 return false;
             }
 
