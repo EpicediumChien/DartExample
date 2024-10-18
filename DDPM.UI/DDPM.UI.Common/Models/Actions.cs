@@ -10,6 +10,8 @@ namespace DDPM.UI.Common
 {
     public class PenActions
     {
+        private const string ItemID = "DellPeripheral.Pen.0";
+
         public SelectedAction TopButtonClickAction = new(73, new AssignedAction(73));
         public SelectedAction TopButtonDoubleClickAction = new(90, new AssignedAction(90));
         public SelectedAction TopButtonPressHoldAction = new(75, new AssignedAction(75));
@@ -25,6 +27,7 @@ namespace DDPM.UI.Common
 
         public PenActions()
         {
+
             Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             TopButtonDoubleClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
@@ -91,23 +94,25 @@ namespace DDPM.UI.Common
             ResetRadialMenu();
         }
 
-        public PenActions(string _model)
+        public void RestoreToDefault()
         {
-            //var model = _model.ToUpper();
-            //switch (model)
-            //{
-            //    case "PN7522W":
-            //    case "PN9315A":
-            //        Buttons.Add(PenButtonName.TopButton);
-            //        Buttons.Add(PenButtonName.TopBarrelButton);
-            //        Buttons.Add(PenButtonName.BottomBarrelButton);
-            //        break;
+            TopButtonClickAction = new(73, new AssignedAction(73));
+            TopButtonDoubleClickAction = new(90, new AssignedAction(90));
+            TopButtonPressHoldAction = new(75, new AssignedAction(75));
+            TopBarrelButtonClickAction = new(27, new AssignedAction(27));
+            BottomBarrelButtonClickAction = new(26, new AssignedAction(26));
 
-            //    default:
-            //        Buttons.Add(PenButtonName.TopBarrelButton);
-            //        Buttons.Add(PenButtonName.BottomBarrelButton);
-            //        break;
-            //}
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(ItemID, newValue);
+
             ResetRadialMenu();
         }
 

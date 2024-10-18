@@ -98,6 +98,8 @@ namespace DDPM.UI.Plugin.ViewModels
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
             foreach (var jo in jsonObject.EnumerateArray())
             {
+                //var id = jo.GetProperty("actionId").GetInt32();
+                //if (id != 63)
                 _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
             }
 
@@ -105,7 +107,9 @@ namespace DDPM.UI.Plugin.ViewModels
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
             foreach (var jo in jsonObject.EnumerateArray())
             {
-                _MenuActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
+                var id = jo.GetProperty("actionId").GetInt32();
+                if (id != 63)
+                    _MenuActions.Add(id, jo.GetProperty("actionName").GetString()!);
             }
 
             task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
@@ -120,7 +124,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             LaunchableAppValues.Sort();
             ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            RadialMenuActions = _MenuActions.Keys.ToList();
+            RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
             IsActionItemsReady = true;
         }
 
@@ -594,12 +598,12 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RestoreToDefault()
         {
-            PenAction = new PenActions(Model);
-            ActionList.ExportActionList(PenAction, "PEN");
+            PenAction.RestoreToDefault();
             RefreshButtonInfo();
             IsRestoreEnable = false;
             OnPropertyChanged(nameof(IsRestoreEnable));
         }
+
         public void RefreshButtonInfo()
         {
             RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
@@ -621,7 +625,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 RefreshButtonInfo();
                 CheckRestoreStatus();
                 var actionName = actionID == 8 || actionID == 23 ? parameter : "";
-                actionName = ""+(char)3;
                 switch (SelectedButton)
                 {
                     case "TopButton":
@@ -655,7 +658,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         //var value2 = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
                         var value2 = $"{{\"actionId\":{actionID},\"actionName\":\"{_SideSwitchActions[actionID]}\"}}";
                         byte[] newValue2 = Encoding.UTF8.GetBytes(value2);
-                        DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting1(itemID, newValue2);
+                        DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
                         break;
                     case "BottomBarrelButton":
                         //var value3 = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";

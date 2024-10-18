@@ -350,7 +350,7 @@ namespace DDPM.UI.Plugin.PenPlugin
             bool? dialogResult = restoreModalDialog.ShowDialog();
             if (dialogResult == true)
             {
-                //MessageBox.Show("OK button was clicked");
+                _vm!.RestoreToDefault();
             }
         }
 

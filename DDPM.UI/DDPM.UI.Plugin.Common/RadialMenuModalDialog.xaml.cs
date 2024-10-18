@@ -401,7 +401,7 @@ namespace DDPM.UI.Plugin.Common
             Window parentWindow = Window.GetWindow(this);
             double windowLeft = 0;
             double windowTop = 0;
-            if (id == 2)
+            if (id == 8)
             {
                 ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
                 if (parentWindow != null)
@@ -424,7 +424,7 @@ namespace DDPM.UI.Plugin.Common
                     return;
                 }
             }
-            else if (id == 3)
+            else if (id == 23)
             {
                 parameter = PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter;
                 //var arr = parameter.Split('|');

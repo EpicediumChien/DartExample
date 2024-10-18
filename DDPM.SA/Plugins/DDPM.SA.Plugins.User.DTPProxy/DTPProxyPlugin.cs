@@ -1992,29 +1992,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue)
-        {
-            _itemID = new ItemId(itemID);
-
-            if (_penMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-            }
-        }
-        public async Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue)
+        public async Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
 
@@ -2647,18 +2625,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
-            var payloadBytes = (byte[])value;
-            var payloadSize = payloadBytes.Length;
-            var byteArray = new byte[payloadSize + 4];
-            BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
-            payloadBytes.CopyTo(byteArray, 4);
-
             Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
             try
             {
-                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
-                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
             }
             catch (Exception ex)
             {
