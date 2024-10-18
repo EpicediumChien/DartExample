@@ -1088,6 +1088,7 @@ namespace NetworkKVM.Plugins
             Trace.WriteLine("NKVM CreateNamedPipe_init to NamedPipeServer go...");
             if (pipeServer != null)
             {
+                _logs.DebugMsg("NKVM NamedPipeServer is go...");
                 Trace.WriteLine("NKVM NamedPipeServer is go...");
                 while (_runloop)
                 {
@@ -1133,6 +1134,7 @@ namespace NetworkKVM.Plugins
                     }
                 }
             }
+            _logs.DebugMsg("NKVM NamedPipeServer is End...");
             Trace.WriteLine("NKVM NamedPipeServer is End...");
             //_agent.StopAgent();
         }
@@ -1168,12 +1170,14 @@ namespace NetworkKVM.Plugins
                     }
                     else
                     {
+                        _logs.DebugMsg("NKVM CreateNamedPipe_init is not NKVM...");
                         Trace.WriteLine("NKVM CreateNamedPipe_init is not NKVM...");
                         Disconnect();
                     }
                 }
                 else
                 {
+                    _logs.DebugMsg("NKVM CreateNamedPipe_init is not supperMonitor...");
                     Trace.WriteLine("NKVM CreateNamedPipe_init is not supperMonitor...");
                     Disconnect();
                 }
