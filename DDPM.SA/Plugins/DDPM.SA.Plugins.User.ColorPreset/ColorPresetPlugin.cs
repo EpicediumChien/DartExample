@@ -252,7 +252,7 @@ namespace ColorPreset.Plugins
             return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
         }
 
-        public Task<List<ColorPresetSettings>> AddColorPresetForMonitorConfig(MonitorInfo mo, string AppName, string ColorPreset_Name, string supported_preset, List<ColorPresetSettings> config , bool SmartHDR_ON=false)
+        public Task<List<ColorPresetSettings>> AddColorPresetForMonitorConfig(MonitorInfo mo, string AppName, string ColorPreset_Name, string supported_preset, List<ColorPresetSettings> config, bool SmartHDR_ON = false)
         {
             ColorPresetSettings temp = get_cur_monitor_preset_config(mo, config);
 
@@ -415,7 +415,7 @@ namespace ColorPreset.Plugins
         }
 
         public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
-        {          
+        {
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
             if (on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
@@ -518,7 +518,7 @@ namespace ColorPreset.Plugins
                             registryMonitor_ICC.Stop();
                             registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
                             registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
-                           
+
                             if (registryMonitor_ICC.IsMonitoring)
                                 registryMonitor_ICC.Dispose();
                             registryMonitor_ICC = null;
@@ -690,10 +690,10 @@ namespace ColorPreset.Plugins
                         else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("2020", StringComparison.OrdinalIgnoreCase))
                             WriteColorPreset(Active_monitorInfo, "Rec.709 / BT.709");
                         else
-                            WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);                        
+                            WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);
 
                         Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
-                    }                      
+                    }
 
                     break;
                 }
@@ -900,7 +900,7 @@ namespace ColorPreset.Plugins
             }
             else
             {
-                ColorPresetSupportList.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));                
+                ColorPresetSupportList.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
 
                 // check Color Preset Strings Standard or Native
 
@@ -1028,7 +1028,7 @@ namespace ColorPreset.Plugins
                 catch (FormatException e)
                 {
                     Log?.Error("check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020..." + e.Message);
-                }                
+                }
             }
 
             index = 0;
@@ -1235,10 +1235,10 @@ namespace ColorPreset.Plugins
                         strSync_ColorPreset_Name = "Custom 3";
                 }
             }
-                       
+
 
             // check Color Preset Strings Game or Game1
-            
+
             if (ColorPresetSupportList.Count > 0)
                 index = ColorPresetSupportList.FindIndex(x => x == "Game2");
 
@@ -1268,7 +1268,7 @@ namespace ColorPreset.Plugins
                     }
 
                 }
-            }           
+            }
 
             // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
             int numFY = 0;
@@ -1344,6 +1344,9 @@ namespace ColorPreset.Plugins
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[ColorPreset] " + text;
             Console.WriteLine(text);
             if (Log != null)
@@ -1681,13 +1684,13 @@ namespace ColorPreset.Plugins
             strJson = string.Empty;
             bool ret = false;
             writelog("[CheckICC_JSON_Security] :" + filePath);
-           
+
             List<string> InfoPkey = new List<string>();
-            if(_SettingsPlugin_internal != null)
+            if (_SettingsPlugin_internal != null)
             {
                 InfoPkey = _SettingsPlugin_internal.GetInfos().Result;
             }
-            if(InfoPkey == null || InfoPkey.Count == 0)
+            if (InfoPkey == null || InfoPkey.Count == 0)
             {
                 //if read info failed, load default key as well
                 InfoPkey = new List<string>();
@@ -1699,7 +1702,7 @@ namespace ColorPreset.Plugins
             if (!string.IsNullOrEmpty(szInfo) && _SettingsPlugin_internal != null)
             {
                 _SettingsPlugin_internal.AddInfo(szInfo);//pass info to settings manager and judge if new to add
-            }                       
+            }
 
             return ret;
         }
@@ -1719,7 +1722,7 @@ namespace ColorPreset.Plugins
 
                 string strFilePath = string.Empty;
                 string strReadJson = string.Empty;
-               
+
                 // ICC profiles mapping schema
                 FileStream fileStream;
                 FileStream fileStream_ICM;
@@ -2086,7 +2089,7 @@ namespace ColorPreset.Plugins
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                     x.ModelName.Trim() == Model.Trim() &&
-                                                    x.ServiceTag.Trim() == ServiceTag.Trim());                    
+                                                    x.ServiceTag.Trim() == ServiceTag.Trim());
                 }
             }
 
@@ -2096,7 +2099,7 @@ namespace ColorPreset.Plugins
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
                 else
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
-                
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = ColorForManual_VCPE2Code_value;
 
                 if (colorPresetSetting_Migration.ColorManagement == 0)
@@ -2134,7 +2137,7 @@ namespace ColorPreset.Plugins
                 }
 
                 if (colorPresetSetting_Migration.AppInfos.Count > 0)
-                { 
+                {
                     for (int i = 0; i < colorPresetSetting_Migration.AppInfos.Count; i++)
                     {
                         string strAppName = string.Empty;
@@ -2154,17 +2157,17 @@ namespace ColorPreset.Plugins
 
                             foreach (KeyValuePair<string, InstalledAppInfo> kvp_applist in _AllAppData)
                             {
-                               if ( strAppName == kvp_applist.Value.AppName)
-                               {
+                                if (strAppName == kvp_applist.Value.AppName)
+                                {
                                     temp.IconName = _SettingsPlugin.GetAppIconFolderPath() + "\\" + strAppName + ".png";
                                 }
 
-                            }                   
+                            }
 
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, temp);
 
                         }
-                    }  
+                    }
                 }
                 _SettingsPlugin.WriteColorPresetSettings(config);
 
@@ -2197,7 +2200,7 @@ namespace ColorPreset.Plugins
                     }
                 }
 
-                if (index >= 0 )
+                if (index >= 0)
                 {
                     if (colorPresetSetting_Migration.Auto)
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
@@ -2273,7 +2276,7 @@ namespace ColorPreset.Plugins
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, temp);
 
                         }
-                    }                  
+                    }
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);

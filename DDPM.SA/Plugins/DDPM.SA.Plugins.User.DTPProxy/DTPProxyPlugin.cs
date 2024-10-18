@@ -2314,6 +2314,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[DTPProxyPlugin] " + text;
             Debug.WriteLine(text);
 

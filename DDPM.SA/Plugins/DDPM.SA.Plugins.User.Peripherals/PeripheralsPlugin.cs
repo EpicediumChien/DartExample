@@ -2486,6 +2486,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         #endregion
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[PeripheralsPlugin] " + text;
             Console.WriteLine(text);
             if (Log != null)
