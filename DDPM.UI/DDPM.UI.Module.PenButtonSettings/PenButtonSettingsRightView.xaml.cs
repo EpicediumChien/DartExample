@@ -118,7 +118,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 {
                     "ClickOnce" => ParentBorder.ActualHeight - 466,
                     "DoubleClick" => ParentBorder.ActualHeight - 509,
-                    _ => ParentBorder.ActualHeight - 552,
+                    _ => ParentBorder.ActualHeight > 552 ? ParentBorder.ActualHeight - 552 : 0,
                 };
             }
             else
