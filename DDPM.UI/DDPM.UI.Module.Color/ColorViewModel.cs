@@ -328,7 +328,7 @@ namespace DDPM.UI.Module.Color
                                 {
                                     // add jim 20240830
                                     DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
-                                    DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                                    //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
                                     //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
                                 }
                             }
