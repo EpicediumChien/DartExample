@@ -81,19 +81,19 @@ namespace DDPM.UI.Plugin.Common
         private void DrawPieChart()
         {
             int numberOfSections = 8;
-            double angleStep = 360.0 / numberOfSections + 22.5;
+            double angleStep = 360.0 / numberOfSections;
 
             for (int i = 0; i < numberOfSections; i++)
             {
-                double startAngle = i * angleStep;
+                double startAngle = i * angleStep + 22.5;
                 double endAngle = startAngle + angleStep;
 
                 // Create a path for each section
                 Path path = new Path
                 {
-                    Name = $"Path{i + 1}",
-                    Fill = (i == 1) ? FocusFillBrush : NormalFillBrush,
-                    Stroke = (i == 1) ? FocusBorderBrush : NormalBorderBrush,
+                    Name = $"Path{i}",
+                    Fill = (i == 0) ? FocusFillBrush : NormalFillBrush,
+                    Stroke = (i == 0) ? FocusBorderBrush : NormalBorderBrush,
                     StrokeThickness = 1
                 };
 
@@ -158,7 +158,7 @@ namespace DDPM.UI.Plugin.Common
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", ""));
-            if (id == SelectedActionID)
+            if (id == SelectedActionID && id != 23)
             { return; }
 
             txtLabelText.Visibility = Visibility.Visible;
@@ -196,7 +196,7 @@ namespace DDPM.UI.Plugin.Common
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -298,7 +298,7 @@ namespace DDPM.UI.Plugin.Common
         {
             if (all)
             {
-                for (int i = 1; i < 9; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     var tb = (UXTextBlock)FindName($"Label{i}");
                     tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
@@ -314,8 +314,9 @@ namespace DDPM.UI.Plugin.Common
         {
             double width = id switch
             {
-                1 or 4 or 5 or 8 => 150,
+                1 or 4 or 5 or 0 => 150,
                 2 or 3 or 6 or 7 => 110,
+                _ => 0
             };
             var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
@@ -504,7 +505,7 @@ namespace DDPM.UI.Plugin.Common
             if (sender is UXTextBlock tb)
             {
                 int id = int.Parse(tb.Name.Substring(5, 1));
-                var pa = (Path)canvas.Children[id - 1];
+                var pa = (Path)canvas.Children[id];
                 pa.Fill = FocusFillBrush;
                 pa.Stroke = FocusBorderBrush;
             }
@@ -525,7 +526,7 @@ namespace DDPM.UI.Plugin.Common
                 int id = int.Parse(tb.Name.Substring(5, 1));
                 if (id == SelectedMenuID)
                 { return; }
-                var pa = (Path)canvas.Children[id - 1];
+                var pa = (Path)canvas.Children[id];
                 pa.Fill = NormalFillBrush;
                 pa.Stroke = NormalBorderBrush;
             }
@@ -539,7 +540,7 @@ namespace DDPM.UI.Plugin.Common
                 if (id == SelectedMenuID)
                 { return; }
 
-                var pa = (Path)canvas.Children[SelectedMenuID - 1];
+                var pa = (Path)canvas.Children[SelectedMenuID];
                 pa.Fill = NormalFillBrush;
                 pa.Stroke = NormalBorderBrush;
 
@@ -554,11 +555,11 @@ namespace DDPM.UI.Plugin.Common
                 if (id == SelectedMenuID)
                 { return; }
 
-                var pa = (Path)canvas.Children[SelectedMenuID - 1];
+                var pa = (Path)canvas.Children[SelectedMenuID];
                 pa.Fill = NormalFillBrush;
                 pa.Stroke = NormalBorderBrush;
 
-                pa = (Path)canvas.Children[id - 1];
+                pa = (Path)canvas.Children[id];
                 pa.Fill = FocusFillBrush;
                 pa.Stroke = FocusBorderBrush;
 

@@ -112,14 +112,15 @@
         <Canvas Name="canvas" />
         <Image x:Name="imgCenter" Margin="145,145,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/PenRadialCenter.png" Stretch="Uniform"
                VerticalAlignment="Top" HorizontalAlignment="Left" Width="110" Height="110"/>
+        <UXControls:UXTextBlock Name="Label0" Style="{StaticResource LabelStyle1}" Margin="145,330,0,0" TextAlignment="Center" Width="150" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
+
         <UXControls:UXTextBlock Name="Label1" Style="{StaticResource LabelStyle1}" Margin="245,150,0,0" TextAlignment="Center" Width="150" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
         <UXControls:UXTextBlock Name="Label2" Style="{StaticResource LabelStyle1}" Margin="210,55,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
         <UXControls:UXTextBlock Name="Label3" Style="{StaticResource LabelStyle1}" Margin="80,55,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
         <UXControls:UXTextBlock Name="Label4" Style="{StaticResource LabelStyle1}" Margin="0,150,0,0" TextAlignment="Center" Width="150" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
         <UXControls:UXTextBlock Name="Label5" Style="{StaticResource LabelStyle1}" Margin="0,235,0,0" TextAlignment="Center" Width="150" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
-        <UXControls:UXTextBlock Name="Label6" Style="{StaticResource LabelStyle1}" Margin="80,330,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
-        <UXControls:UXTextBlock Name="Label7" Style="{StaticResource LabelStyle1}" Margin="210,330,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
-        <UXControls:UXTextBlock Name="Label8" Style="{StaticResource LabelStyle1}" Margin="245,235,0,0" TextAlignment="Center" Width="150" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
+        <UXControls:UXTextBlock Name="Label6" Style="{StaticResource LabelStyle1}" Margin="0,330,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
+        <UXControls:UXTextBlock Name="Label7" Style="{StaticResource LabelStyle1}" Margin="310,330,0,0" TextAlignment="Center" Width="110" MouseEnter="Path_MouseEnter" MouseLeave="Path_MouseLeave" MouseLeftButtonDown="Path_MouseLeftButtonDown" />
       </Grid>
       <Grid Grid.Column="1">
         <StackPanel Orientation="Vertical" Margin="88,28,0,0">
