@@ -1960,28 +1960,40 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
         {
-            //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
-            isSWSetOrientation = true;
-            SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
-            isSWSetOrientation = false;
+            bool ret = false;
+            if (monitorInfos != null && properties != null)
+            {
+                //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
+                isSWSetOrientation = true;
+                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
+                ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+                isSWSetOrientation = false;
+            }
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
-            isSWSetOrientation = true;
-            bool ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
-            isSWSetOrientation = false;
+            bool ret = false;
+            if (monitorInfos != null && properties != null)
+            {
+                isSWSetOrientation = true;
+                ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
+                isSWSetOrientation = false;
+            }
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
-            isSWSetOrientation = true;
-            SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
-            isSWSetOrientation = false;
+            bool ret = false;
+            if (monitorInfos != null)
+            {
+                isSWSetOrientation = true;
+                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
+                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                isSWSetOrientation = false;
+            }
             return Task.FromResult(ret);
         }
 
@@ -2118,16 +2130,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
-            if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
+            if (monitorInfo != null && !string.IsNullOrEmpty(orientation))
             {
-                for (int i = 1; i < OrientationString.Length; i++)
+                if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
                 {
-                    if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                    for (int i = 1; i < OrientationString.Length; i++)
                     {
-                        return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
+                        if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                        {
+                            return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
+                        }
                     }
+                    return Task.FromResult<bool?>(false);
                 }
-                return Task.FromResult<bool?>(false);
             }
             return Task.FromResult<bool?>(null);
         }
@@ -2216,7 +2231,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             try
             {
-                if (s == "" || s.Length < 10)
+                if (string.IsNullOrEmpty(s) || s.Length < 10)
                 {
                     return false;
                 }

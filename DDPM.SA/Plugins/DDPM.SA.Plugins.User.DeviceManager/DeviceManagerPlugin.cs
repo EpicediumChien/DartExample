@@ -4535,7 +4535,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (ImpExpSettings.MonitorSettings != null)
                         {
                             vcps = ImpExpSettings.MonitorSettings.VCPs;
-                            if (Import_DisplayProperties(ImpExpSettings.MonitorSettings.DisplayPropertiesInfo))
+                            if (Import_DisplayProperties(monitorInfo, ImpExpSettings.MonitorSettings.DisplayPropertiesInfo))
                             {
                                 writelog("[DisplayImportSettings] Import_DisplayProperties");
                             }
@@ -4607,7 +4607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             DDMtoDDPM_Input(impSettings.MonitorSettings);
                             DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
                             displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
-                            if (Import_DisplayProperties(displayCurrentPropertiesInfo))
+                            if (Import_DisplayProperties(monitorInfo, displayCurrentPropertiesInfo))
                             {
                                 writelog("[DisplayImportSettings] Import_DisplayProperties");
                             }
@@ -9965,12 +9965,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private bool Import_DisplayProperties(DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo)
+        private bool Import_DisplayProperties(MonitorInfo monitorInfo, DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo)
         {
             bool ret = false;
             try
             {
-                MonitorInfo monitorInfo = new MonitorInfo();
+                //MonitorInfo monitorInfo = new MonitorInfo();
                 ret = SetDisplayPropertiest(monitorInfo, displayCurrentPropertiesInfo.CurrentProperties, displayCurrentPropertiesInfo.CurrentOrientation).Result;
                 ret = SetHDRStatus(monitorInfo, displayCurrentPropertiesInfo.isHDREnable).Result && ret;
                 if (displayCurrentPropertiesInfo.USBCPrioritizationType != USBCPrioritizationType.Unknow)
