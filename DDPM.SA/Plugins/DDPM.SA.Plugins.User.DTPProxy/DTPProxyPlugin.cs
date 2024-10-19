@@ -1996,17 +1996,78 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #endregion
 
-        #region WiredAudio
+        #region Headset
+
+        public async Task<bool> GetBusyLightAsync(string Guid)
+        {
+            Trace.WriteLine(" [Headset] GetBusyLightAsync : " + Guid);
+            if (!await GetItemIDAsync("Headset", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_headsetInterfaceType, commodity, "BusyLight");
+                Trace.WriteLine(" [Headset] GetBusyLightAsync : " + Guid + " || " + value.ToString());
+                writelog(" [Headset] GetBusyLightAsync  Success ! ");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetBusyLightAsync]Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"[GetBusyLightAsync]Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                return false;
+            }
+        }
+
+        public async Task SetBusyLightAsync(string Guid, bool newValue)
+        {
+            Trace.WriteLine(" [Headset] SetBusyLightAsync : " + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Headset", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_headsetInterfaceType, commodity, "BusyLight", newValue);
+                writelog(" [Headset] SetBusyLightAsync  Success ! ");
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<string> GetFirmwareVersionAsync(string Guid)
+        {
+            Trace.WriteLine(" [Headset] GetFirmwareVersionAsync : " + Guid);
+            if (!await GetItemIDAsync("Headset", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_headsetInterfaceType, commodity, "FirmwareVersion");
+                Trace.WriteLine(" [Headset] GetFirmwareVersionAsync : " + Guid + " || " + value.ToString());
+                writelog(" [Headset] GetFirmwareVersionAsync  Success ! ");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetFirmwareVersionAsync]Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"[GetFirmwareVersionAsync]Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                return "";
+            }
+        }
 
         public async Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
         {
-            Trace.WriteLine("SetFactoryResetAsyncValue **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Headset] SetFactoryResetAsyncValue : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Headset", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                writelog(" [Headset] SetFactoryResetAsyncValue Success ! ");
             }
             else
             {
@@ -2020,13 +2081,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #region WiredAudio
         public async Task SetBassAsync(string Guid, int newValue)
         {
-            Trace.WriteLine("SetBassAsync **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetBassAsync : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "Bass", newValue);
+                writelog(" [Speaker] SetBassAsync Success ! ");
             }
             else
             {
@@ -2037,13 +2099,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetBassAsync(string Guid)
         {
+            Trace.WriteLine(" [Speaker] GetBassAsync : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return -1; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_speakerInterfaceType, commodity, "Bass");
-                Trace.WriteLine("GetBassAsync **********" + Guid + " || " + value.ToString());
+                Trace.WriteLine(" [Speaker] GetBassAsync Success ! ");
+                writelog(" [Speaker] GetBassAsync Success ! ");
                 return (int)value;
             }
             else
@@ -2056,13 +2120,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetMidRangeAsync(string Guid, int newValue)
         {
-            Trace.WriteLine("SetMidRangeAsync **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetMidRangeAsync : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "MidRange", newValue);
+                writelog(" [Speaker] SetMidRangeAsync Success ! ");
             }
             else
             {
@@ -2073,13 +2138,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetMidRangeAsync(string Guid)
         {
+            Trace.WriteLine(" [Speaker] GetMidRangeAsync : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return -1; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_speakerInterfaceType, commodity, "MidRange");
-                Trace.WriteLine("GetBassAsync **********" + Guid + " || " + value.ToString());
+                Trace.WriteLine(" [Speaker] GetBassAsync Success ! ");
+                writelog(" [Speaker] GetBassAsync Success ! ");
                 return (int)value;
             }
             else
@@ -2091,13 +2158,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task SetTrebleAsync(string Guid, int newValue)
         {
-            Trace.WriteLine("SetTrebleAsync **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetTrebleAsync : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "Treble", newValue);
+                writelog(" [Speaker] SetTrebleAsync Success ! ");
             }
             else
             {
@@ -2108,13 +2176,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetTrebleAsync(string Guid)
         {
+            Trace.WriteLine(" [Speaker] GetTrebleAsync : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return -1; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_speakerInterfaceType, commodity, "Treble");
-                Trace.WriteLine("GetTrebleAsync **********" + Guid + " || " + value.ToString());
+                Trace.WriteLine(" [Speaker] GetTrebleAsync Success ! ");
+                writelog(" [Speaker] GetTrebleAsync Success ! ");
                 return (int)value;
             }
             else
@@ -2128,13 +2198,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //--------------------------------------
         public async Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
         {
-            Trace.WriteLine("SetIsWiredAudioMicMuteSoundEnableAsync **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable", newValue);
+                writelog(" [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync Success ! ");
             }
             else
             {
@@ -2145,13 +2216,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
         {
+            Trace.WriteLine(" [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable");
-                Trace.WriteLine("GetIsWiredAudioMicMuteSoundEnableAsync **********" + Guid + " || " + value.ToString());
+                Trace.WriteLine(" [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync : " + Guid + " || " + value.ToString());
+                writelog(" [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync Success ! ");
                 return (bool)value;
             }
             else
@@ -2165,13 +2238,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //--------------------------------------
         public async Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
         {
-            Trace.WriteLine("SetIsWiredAudioIMicNSEnableValue **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetWiredAudioVolumeAdjustmentToneAsync : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone", newValue);
+                writelog(" [Speaker] SetWiredAudioVolumeAdjustmentToneAsync Success ! ");
             }
             else
             {
@@ -2182,13 +2256,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
         {
+            Trace.WriteLine(" [Speaker] GetWiredAudioVolumeAdjustmentToneAsync : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return -1; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone");
-                Trace.WriteLine("GetWiredAudioVolumeAdjustmentToneAsync **********" + Guid + " || " + value.ToString());
+                Trace.WriteLine(" [Speaker] GetWiredAudioVolumeAdjustmentToneAsync : " + Guid + " || " + value.ToString());
+                writelog(" [Speaker] GetWiredAudioVolumeAdjustmentToneAsync Success ! ");
                 return (int)value;
             }
             else
@@ -2202,13 +2278,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //--------------------------------------
         public async Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue)
         {
-            Trace.WriteLine("SetIsWiredAudioIMicNSEnableValue **********" + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetIsWiredAudioIMicNSEnableValue : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable", newValue);
+                writelog(" [Speaker] SetIsWiredAudioIMicNSEnableValue Success ! ");
             }
             else
             {
@@ -2219,13 +2296,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string Guid)
         {
+            Trace.WriteLine(" [Speaker] GetIsWiredAudioIMicNSEnableValueAsync : " + Guid );
             if (!await GetItemIDAsync("Speaker", Guid))
             { return false; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable");
-                Trace.WriteLine("GetIsWiredAudioIMicNSEnableValueAsync **********" + Guid + " || " + value.ToString());
+                Trace.WriteLine(" [Speaker] GetIsWiredAudioIMicNSEnableValueAsync : " + Guid + " || " + value.ToString());
+                writelog(" [Speaker] GetIsWiredAudioIMicNSEnableValueAsync Success ! ");
                 return (bool)value;
             }
             else
@@ -2238,12 +2317,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //--------------------------------------
         public async Task SetResetToDefaultValueAsync(string Guid, bool newValue)
         {
+            Trace.WriteLine(" [Speaker] SetResetToDefaultValueAsync : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "ResetToDefault", newValue);
+                writelog(" [Speaker] SetResetToDefaultValueAsync Success ! ");
             }
             else
             {

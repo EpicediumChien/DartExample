@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -34,6 +35,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public void DetectPageShow(string model)
         {
             //modelTest = model;
+            AllResetHeadsetPage();
             switch (model.ToUpper())
             {
                 case "WL7024"://Mito
@@ -100,6 +102,23 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CheckHeadsetFunc();
         }
+        public void AllResetHeadsetPage()
+        {
+            _controlTheNoiseIHearPageShow = false;
+            _configureMyAudioModesPageShow = false;
+            _wearDetectionPageShow = false;
+            _automatedActionsWhenHeadsetIsRemovedPageShow = false;
+            _automatedActionsQuickPausePageShow = false;
+            _automatedActionsSensitivityPageShow = false;
+            _voiceGuidancePageShow = false;
+            _deviceSettingsDownloadDellAudioPageShow = false;
+            _automatedActionsSensitivityUpPageShow = false;
+            _automatedActionsAnswerCallPageShow = false;
+            _automatedActionsAnswerCallPageShow = false;
+            _automatedActionsAnswerCallPageShow = false;
+            _automatedActionsAnswerCallPageShow = false;
+
+        }
 
         public void CheckHeadsetFunc()
         {
@@ -150,7 +169,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private void CheckBusyLightUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsBusyLightSupported)
-                _isBusyLightStatus = CurrentDeviceInfo.BusyLight;
+                _isBusyLightStatus = _deviceManager.GetBusyLightAsync(CurrentDeviceInfo!.ID.ToString()).Result; //CurrentDeviceInfo.BusyLight;
             if (PropertyChange)
             {
                 OnPropertyChanged("BusyLightStatus");
@@ -1570,7 +1589,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string BusyLight_String
         {
-            get => CurrentDeviceInfo!.BusyLight ? "ON" : "OFF";
+            get => _isBusyLightStatus ? "ON" : "OFF";
             //get => _isBusyLightStatus ? "ON" : "OFF";
             //set
             //{
@@ -1584,12 +1603,13 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                _isBusyLightStatus = CurrentDeviceInfo!.BusyLight;
+                _isBusyLightStatus = _deviceManager.GetBusyLightAsync(CurrentDeviceInfo!.ID.ToString()).Result; //CurrentDeviceInfo!.BusyLight;
                 return _isBusyLightStatus;
             }
             set
             {
-                _deviceManager.SetBusyLight(value, CurrentDeviceInfo!.ID).Wait();
+                //_deviceManager.SetBusyLight(value, CurrentDeviceInfo!.ID).Wait();
+                _deviceManager.SetBusyLightAsync(CurrentDeviceInfo!.ID.ToString(), value);
                 _isBusyLightStatus = value;
                 OnPropertyChanged("BusyLight_String");
             }

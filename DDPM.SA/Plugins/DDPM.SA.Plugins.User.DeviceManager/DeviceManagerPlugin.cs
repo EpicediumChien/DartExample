@@ -2008,6 +2008,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Headset
 
+        public async Task<bool> GetBusyLightAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBusyLightAsync(itemID));
+        }
+
+        public Task SetBusyLightAsync(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetBusyLightAsync requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetBusyLightAsync(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public async Task<string> GetFirmwareVersionAsync(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetFirmwareVersionAsync(itemID));
+        }
+
         public Task SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");

@@ -812,6 +812,10 @@ namespace DDPM.SA.Common
 
 
         #region Headset
+
+        Task<bool> GetBusyLightAsync(string Guid);
+        Task SetBusyLightAsync(string Guid, bool newValue);
+        Task<string> GetFirmwareVersionAsync(string Guid);
         Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
 
         #endregion
