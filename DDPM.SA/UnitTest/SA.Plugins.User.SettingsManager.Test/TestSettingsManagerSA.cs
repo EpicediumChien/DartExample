@@ -52,7 +52,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
-            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(VcpCore.Common.IDs.Display_Manager_PLUGIN_ID)));
+            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(DDPM.SA.Common.IDs.Display_Manager_PLUGIN_ID)));
 
             return new DisplayMangerPlugin(DisplayMangerAgent.Object);
         }
@@ -388,7 +388,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         {
             bool writeGlobalSettings_ = false;
             bool writeGlobalSettings_2 = true;
-            GlobalSettingParam globalSettingParamNull;
+            GlobalSettingParam? globalSettingParamNull;
             globalSettingParamNull = null;
             GlobalSettingParam globalSettingParam = new GlobalSettingParam()
             {
@@ -406,13 +406,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (globalSettingParamNull == null)
             {
-                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is not null
+                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is null
                 Assert.That(writeGlobalSettings_, Is.EqualTo(WriteGlobalSettingsResult1));
             }
 
             if (globalSettingParam != null)
             {
-                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is null
+                Mock<ISettingsManagerSA> mock_SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>())).Returns(Task.FromResult(true));
+                var mock_SysSettingsPluginObj = mock_SysSettingsPlugin.Object;
+                privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", mock_SysSettingsPluginObj);
+                privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam);
+                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is not  null
                 Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult2));
                 File.Delete(writeglobalSettings_path1_);
             }
@@ -598,36 +603,41 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }
 
-        [Test]
-        public void TestReadEasyArrangeSettings()
-        {
-            string monitorModel = "TestU2724";
-            string serialNumber = "123456789";
-            EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
-            eAMonitorSettings = null;
-            var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
-            Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
-        }
+        //Robert_Lin, 2024-10-10, SettingsManagerSAPlugin.ReadEasyArrangeSettings() has been removed,
+        //please use DeviceManagerPlugin.ReadEAMonitorSettings() instead.
+        //[Test]
+        //public void TestReadEasyArrangeSettings()
+        //{
+        //    string monitorModel = "TestU2724";
+        //    string serialNumber = "123456789";
+        //    EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
+        //    eAMonitorSettings = null;
+        //    var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
+        //    Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
+        //}
 
-        [Test]
-        public void TestWriteEasyArrangeSettings()
-        {
-            EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
-            {
-                CustomList = new List<SplitJson>(),
-                //Robert_Lin, 2024-9-24 below 3 properties has been moved to EzSettings class
-                // Which is one member of DDPMUserSetting (original in DDPMMonitorSettings)
-                //
-                //IsOnlyAllowWhenShiftKeyPressed = false,
-                //IsSpanAcrossMultiMonitors = false,
-                //IsWidthoutGap = true,
-                RecentList = new List<SplitJson>(),
-                SelectedSplit = new SplitJson()
-            };
-            string WriteEasyArrangeSettings_Success = "OK";
-            var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
-            Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
-        }
+
+        //Robert_Lin, 2024-10-10, SettingsManagerSAPlugin.ReadEasyArrangeSettings() has been removed,
+        //please use DeviceManagerPlugin.WriteEAMonitorSettings() instead.
+        //[Test]
+        //public void TestWriteEasyArrangeSettings()
+        //{
+        //    EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
+        //    {
+        //        CustomList = new List<SplitJson>(),
+        //        //Robert_Lin, 2024-9-24 below 3 properties has been moved to EzSettings class
+        //        // Which is one member of DDPMUserSetting (original in DDPMMonitorSettings)
+        //        //
+        //        //IsOnlyAllowWhenShiftKeyPressed = false,
+        //        //IsSpanAcrossMultiMonitors = false,
+        //        //IsWidthoutGap = true,
+        //        RecentList = new List<SplitJson>(),
+        //        SelectedSplit = new SplitJson()
+        //    };
+        //    string WriteEasyArrangeSettings_Success = "OK";
+        //    var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
+        //    Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
+        //}
 
         [Test]
         public void TestInitializeSysSettingsPlugin()
@@ -728,7 +738,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Schedule = string.Empty,
                 DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
                 LockRotate = true,
-                isTelemetryConsentOn = true,
+                //isTelemetryConsentOn = true,
                 LockFWU_UI = true,
                 UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
                 SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
@@ -805,7 +815,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Schedule = string.Empty,
                 DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
                 LockRotate = true,
-                isTelemetryConsentOn = true,
+                //isTelemetryConsentOn = true,
                 LockFWU_UI = true,
                 UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
                 SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
@@ -1114,6 +1124,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(ServiceTag, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.MonitorSettings.ServiceTag));
         }
 
+        //Robert_Lin, 2024-10-11, EAMonitorSettings property changed
         [Test]
         public void TestWriteImpExpSettings()
         {
@@ -1132,8 +1143,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                     EA = new EAMonitorSettings()
                     {
                         SelectedSplit = new SplitJson(),
-                        CustomList = new List<SplitJson>(),
-                        RecentList = new List<SplitJson>(),
+                        RecentList = new SplitJson[] { },
+                        //RecentList = new List<SplitJson>(),
                     },
                     Input = new InputSource()
                     {
@@ -1147,11 +1158,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                     },
                     VCPs = new List<VCPCode>()
             {
-                new VCPCode()
-                {
-                    Code=0X12,
-                    Value=new List<int>() { 1,2}
-                }
+              new VCPCode()
+              {
+                Code=0X12,
+                Value=new List<int>() { 1,2}
+              }
             },
                 }
             };
@@ -1242,7 +1253,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Schedule = string.Empty,
                 DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
                 LockRotate = true,
-                isTelemetryConsentOn = true,
+                //isTelemetryConsentOn = true,
                 LockFWU_UI = true,
                 UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
                 SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },

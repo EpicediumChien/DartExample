@@ -86,6 +86,31 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             if (txtRestore.IsEnabled == false)
                 return;
 
+            MessageModalDialog dlg = new MessageModalDialog(Strings.RestoreToDefault, Strings.DisplayDefault0, Strings.Yes, Strings.No);
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                dlg.Owner = parentWindow;
+            }
+            bool? dialogResult = dlg.ShowDialog();
+           
+            if ((dialogResult == true) && (DdpmCommonHelper.DeviceManagerSA != null) &&
+                (DdpmCommonHelper.ModuleOwner != null) && (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null))
+            {
+                bool r;
+
+                // 20240627 jim modify
+                r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x04, 1).Result;
+
+                // 20240627 jim add
+                //Return to DdpmHomePage
+                IConsole? console = DisplayPlugin.PluginIoc.GetService<IConsole>();
+                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+
+                //MessageBox.Show("OK button was clicked");
+            }
+
+            /*
             RestoreModalDialog restoreModalDialog = new();
             Window parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
@@ -109,6 +134,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
                 //MessageBox.Show("OK button was clicked");
             }
+            */
         }
     }
 }

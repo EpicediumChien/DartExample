@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DDPM.Easy.Common"
              mc:Ignorable="d" 
              d:Background="Black"
-             d:DesignHeight="80" d:DesignWidth="60"
+             d:DesignHeight="60" d:DesignWidth="80"
              d:DataContext="{DynamicResource vmDesign}"
              >
     <UserControl.Resources>
@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="BkFillBrush" Color="#FF132F54"/>
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Icon"
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Icon"
                                IsEditable="False" HoveringCell="2A1" />
             <!-- CellBorder -->
             <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Normal" Color="#FFE6AC28" />
@@ -29,6 +29,10 @@
                     <Trigger Property="Tag" Value="H">
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
                     </Trigger>
+                    <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                        <Setter Property="BorderThickness" Value="1.5"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
+                    </DataTrigger>
                 </Style.Triggers>
             </Style>
 
@@ -36,6 +40,9 @@
                 <Setter Property="Visibility" Value="Collapsed"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsIconMode}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
                         <Setter Property="Visibility" Value="Visible"/>
                     </DataTrigger>
                 </Style.Triggers>
@@ -46,35 +53,44 @@
     <Grid>
         <!-- Icon Mode -->
         <!-- OuterBorder -->
-        <Border Style="{StaticResource Split0BOuterBorderStyle}">
-            <!-- BaseGrid -->
-            <Grid>
+        <Border Style="{StaticResource Split0BOuterBorderStyle}"/>
 
-                <!-- HorzBase -->
-                <Grid Name="g0" Style="{StaticResource SplitBaseStyle_Horz}">
-                    <Grid Width="60" Height="35">
-                        <Rectangle Width="41" Height="34" Stroke="White" StrokeThickness="1" 
+        <!-- IconMode -->
+        <Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsIconMode}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger> 
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <!-- HorzBase -->
+            <Grid Name="g0" Style="{StaticResource SplitBaseStyle_Horz}">
+                <Grid Width="60" Height="35">
+                    <Rectangle Width="41" Height="34" Stroke="White" StrokeThickness="1" 
                       HorizontalAlignment="Right" Fill="{StaticResource BkFillBrush}"
                       RadiusX="3" RadiusY="3"/>
-                        <Rectangle Width="39" Height="18" Stroke="White" StrokeThickness="1" 
+                    <Rectangle Width="39" Height="18" Stroke="White" StrokeThickness="1" 
                       HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,11,0,0" Fill="{StaticResource BkFillBrush}"
                       RadiusX="3" RadiusY="3"/>
-                    </Grid>
-                </Grid>
-
-                <!-- VertBase -->
-                <Grid Name="G0" Style="{StaticResource SplitBaseStyle_Vert}">
-                    <Grid Width="35" Height="60">
-                        <Rectangle Width="34" Height="41" Stroke="White" StrokeThickness="1" 
-                      VerticalAlignment="Top" Fill="{StaticResource BkFillBrush}"
-                      RadiusX="3" RadiusY="3"/>
-                        <Rectangle Width="18" Height="39" Stroke="White" StrokeThickness="1" 
-                      HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="11,0,0,0" Fill="{StaticResource BkFillBrush}"
-                      RadiusX="3" RadiusY="3"/>
-                    </Grid>
                 </Grid>
             </Grid>
-        </Border>
+
+            <!-- VertBase -->
+            <Grid Name="G0" Style="{StaticResource SplitBaseStyle_Vert}">
+                <Grid Width="35" Height="60">
+                    <Rectangle Width="34" Height="41" Stroke="White" StrokeThickness="1" 
+                      VerticalAlignment="Top" Fill="{StaticResource BkFillBrush}"
+                      RadiusX="3" RadiusY="3"/>
+                    <Rectangle Width="18" Height="39" Stroke="White" StrokeThickness="1" 
+                      HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="11,0,0,0" Fill="{StaticResource BkFillBrush}"
+                      RadiusX="3" RadiusY="3"/>
+                </Grid>
+            </Grid>
+        </Grid>
 
         <!-- Work Mode -->
         <Canvas Name="canvas"/>

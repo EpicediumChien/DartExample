@@ -1,6 +1,7 @@
 ﻿using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -10,9 +11,9 @@ namespace VcpCore.Interfaces
     {
         Task Reset0x52TimerTick(int millisecond);
 
-        Task<List<MonitorInfo>> GetMonitors(bool renew = false);
+        Task<List<MonitorInfo>> GetMonitors();
 
-        Task<List<MonitorInfo>> Re_GetMonitors();
+        Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token);
 
         Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
 

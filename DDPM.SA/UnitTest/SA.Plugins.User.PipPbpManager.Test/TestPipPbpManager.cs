@@ -58,7 +58,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
-            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(VcpCore.Common.IDs.Display_Manager_PLUGIN_ID)));
+            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(DDPM.SA.Common.IDs.Display_Manager_PLUGIN_ID)));
 
             return new DisplayMangerPlugin(DisplayMangerAgent.Object);
         }
@@ -106,7 +106,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -474,6 +474,11 @@ namespace SA.Plugins.User.PipPbpManager.Test
             GetSubInputs2.Add(new InputSourceObj(25, "Thunderbolt-1"));
             GetSubInputs2.Add(new InputSourceObj(23, "DisplayPort-3")); //Code=15,Name="DisplayPort-1";
 
+            List<InputSourceObject> InputSourceObject = new List<InputSourceObject>();
+            InputSourceObject.Add(new VcpCore.Common.InputSourceObject() { Name = "", value = 31 });
+            InputSourceObject.Add(new VcpCore.Common.InputSourceObject() { Name = "Thunderbolt-1", value = 25 });
+            InputSourceObject.Add(new VcpCore.Common.InputSourceObject() { Name = "DisplayPort-3", value = 23 });
+            ObjGetVCP SubInputList3 = new ObjGetVCP() { result = true, value = InputSourceObject };
             string _DisplayManagerPlugin1 = string.Empty;
             string _DisplayManagerPlugin2 = "E9(";
 
@@ -489,6 +494,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
                 DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList3));
                 var DisplayManagerService2Object = DisplayManagerService2.Object;
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2Object);   //GetVCPCapability 0x8E :value 15 ,true
 

@@ -578,20 +578,20 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void TestGetMonitors()
         {
             //_DisplayManagerPlugin == null
-            var result = deviceMangerPlugin.GetMonitors(false).Result;
+            var result = deviceMangerPlugin.GetMonitors().Result;
             Assert.That(result.Count, Is.EqualTo(0));
 
             //_DisplayManagerPlugin != null
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
+            _DisplayManagerPluginMock.Setup(x => x.GetMonitors()).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             //_SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
-            result = deviceMangerPlugin.GetMonitors(false).Result;
+            result = deviceMangerPlugin.GetMonitors().Result;
             Assert.Greater(result.Count, 0);
         }
 
@@ -686,7 +686,7 @@ namespace SA.Plugins.User.DeviceManager.Test
 
             //r && FunctionName == "Input Select"
             funtionName = "Input Select";
-            _DisplayManagerPluginMock.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
+            _DisplayManagerPluginMock.Setup(x => x.GetMonitors()).Returns(Task.FromResult(new List<MonitorInfo>() { monitorInfo }));
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
@@ -1646,12 +1646,12 @@ namespace SA.Plugins.User.DeviceManager.Test
         [Test]
         public void TestInstall()
         {
-            Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+            //Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null"); //method remove _FWUpdatePlugin ==null 
 
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
-            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>())).Returns(Task.FromResult(new FWUErrorCode()));
+            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUErrorCode()));
             privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
             // Execute and Verify
 

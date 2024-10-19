@@ -17,7 +17,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <Style x:Key="UXTextBlock_Caption" TargetType="UXControls:UXTextBlock">
@@ -176,11 +176,11 @@
                             <!-- Radio Buttons for Manual or Automatic Launch -->
                                 <StackPanel Orientation="Vertical" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" />
+                                        <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36" Foreground="White" Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" />
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}" />
+                                        <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36" Foreground="White" Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}" />
                                 </StackPanel>
 
                                 <!-- Time Picker Controls (Disabled when manually select is checked) -->
@@ -190,11 +190,9 @@
                                         <!-- 添加時間選項 -->
                                         <UXControls:UXComboBox x:Name="MinuteCB" FontSize="14" Background="#293B4D" Width="81" Height="40" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="4,0,4,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" ItemsSource="{Binding MinuteList}" SelectedItem="{Binding SelectedMinute}"/>
 
-                                        <UXControls:UXComboBox x:Name="AMPMCB" Background="#293B4D" Width="81" Height="40" FontSize="14" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="4,0,4,0" SelectedItem="{Binding SelectedAMPM}">
-                                            <ComboBoxItem Content="AM" Background="#293B4D"/>
-                                            <ComboBoxItem Content="PM" Background="#293B4D"/>
-                                        </UXControls:UXComboBox>
-                                </StackPanel>
+                                        <UXControls:UXComboBox x:Name="AMPMCB" Background="#293B4D" Width="81" Height="40" FontSize="14" Style="{StaticResource DdpmComboBoxStyleEzMemory}" BorderThickness="0.3" Margin="4,0,4,0" ItemsSource="{Binding AMPMList}" SelectedItem="{Binding SelectedAMPM}" />
+
+                                    </StackPanel>
                             </StackPanel>
 
                             <!-- Launch during PC startup Checkbox -->

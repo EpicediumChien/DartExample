@@ -8,12 +8,14 @@
              mc:Ignorable="d"
              Margin="5,4,60,120"
              d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignWidth="800"
+             SizeChanged="UserControl_SizeChanged">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -71,7 +73,7 @@
                                                         Text="Device-specific"
                                                         Style="{StaticResource ModuleItemStyle}" />
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
-                                                       Height="25"
+                                                       Height="{Binding checkBoxHeight}"
                                                        Content="Keyboard lock key"
                                                        Foreground="#FFFFFF"
                                                        FontSize="16"
@@ -80,7 +82,7 @@
                                                        Click="KeyboardLockKey_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
-                                                       Height="25"
+                                                       Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="Webcam WB7022 Presence Detection sensor cover state"
                                                        Foreground="#FFFFFF"
@@ -90,7 +92,7 @@
                                                        Click="WB7022CoverState_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
-                                                       Height="25"
+                                                       Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="Headset, speakerphone and soundbar mute/unmute"
                                                        Foreground="#FFFFFF"
@@ -100,7 +102,7 @@
                                                        Click="MuteState_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
-                                                       Height="25"
+                                                       Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="Display Color Preset and Easy Memory"
                                                        Foreground="#FFFFFF"
@@ -125,7 +127,7 @@
                     <Grid Margin="20,20,8,8">
                         <Border Background="#132F54"
                                 CornerRadius="6">
-                            <StackPanel Orientation="Horizontal"
+                            <StackPanel Orientation="Horizontal" x:Name="reportsStackPanel"
                                         Margin="15,0,0,0">
                                 <Border Style="{StaticResource BorderUnpair}"
                                         Background="#132F54"

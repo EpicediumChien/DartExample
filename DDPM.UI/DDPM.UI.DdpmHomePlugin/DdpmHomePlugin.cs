@@ -184,7 +184,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (pluginCondition is PluginErrorCondition)
                 {
-                    if (_viewModel!=null)
+                    if (_viewModel != null)
                         _viewModel.IsDeviceManagerReady = false;
 
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
@@ -290,7 +290,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //2024-6-20 move refresh device form HomeView to here
                     //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
                     if (_deviceManager != null)
-                        _ = GetDdpmDevicesAsync(_deviceManager);
+                        _ = GetDdpmDevicesAsync(_deviceManager, e.changedProperty.ToLower());
 
                     if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
                     {
@@ -397,7 +397,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //    }
         //}
 
-        private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager)
+        //device caches, Dean 1018 add
+        private static List<DeviceInfo> _deviceInfos = null;
+        private static List<MonitorInfo> _monitorInfos = null;
+
+        private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, string condition = "all")
         {
             if (!SpinWait.SpinUntil(() =>
             (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
@@ -412,17 +416,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 DdpmCommonHelper.DeviceManagerSA = deviceManager;
                 DdpmCommonHelper.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
-                List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
-                _log.Info($"Monitor count is ${monitorInfos.Count}");
-
-                DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
-                List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-                if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
+                if (condition.Equals("all") || condition.Equals("displaychanged"))
                 {
-                    deviceInfos = deviceHelper.deviceInfo;
+                    _monitorInfos = deviceManager.GetMonitors().Result;
+                    _log.Info($"Monitor count is ${_monitorInfos.Count}");
                 }
-                _log.Info($"Peripheral count is ${deviceInfos.Count}");
-
+                if (condition.Equals("all") || !condition.Equals("displaychanged"))
+                {
+                    DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
+                    //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+                    _deviceInfos = new List<DeviceInfo>();
+                    if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                    {
+                        _deviceInfos = deviceHelper.deviceInfo;
+                    }
+                    _log.Info($"Peripheral count is ${_deviceInfos.Count}");
+                }
                 _ = Task.Run(() =>
                 {
                     while (!_isConfigured)
@@ -435,10 +445,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         _log.Info("Adding Monitors to HomePageViewModel...");
 
-                        viewModel.PrepareMonitorInfos(monitorInfos);
+                        viewModel.PrepareMonitorInfos(_monitorInfos);
 
                         _log.Info("Adding Periphrals to HomePageViewModel...");
-                        viewModel.PrepareDeviceInfos(deviceInfos);
+                        viewModel.PrepareDeviceInfos(_deviceInfos);
 
                         //Robert_Lin, 2024-8-5 for PIMS-289060, display a "Please wait" UI before devices ready
                         if (viewModel.HomeDevices.Count == 0)
@@ -530,12 +540,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown()
+        public void OnShown(string param = "")
         {
+            if (!string.IsNullOrEmpty(param))
+            {
+                IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
+                if (viewModel != null)
+                {
+                    viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
+                }
+            }
             ConfigureServices();
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
             Mouse.OverrideCursor = null;
             DdpmCommonHelper.MyConsole = PluginIoc.GetService<IConsole>();
+            DdpmCommonHelper.MyShowPluginManager= PluginIoc.GetService<IShowPluginManager>();
+
 
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconAddDevice != null)
@@ -992,7 +1012,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     {
                         WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType));
                     }
- 
+
                     //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                    
                     _log.Info($"[Walkthrough] Device {modelNumber} added to the queue and registry value updated to true.");
                 }

@@ -72,6 +72,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private ItemId _itemID;
         private ICommodity _comdity;
+        private const string PenItemID = "DellPeripheral.Pen.0";
 
         public const string PluginLogId = "DTPProxy";
 
@@ -297,7 +298,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyFOVSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -324,7 +327,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetFieldOfViewValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return -1; }
 
             if (_webcamMethodInfo != null)
             {
@@ -351,7 +356,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyHDRSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -378,7 +385,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> GetIsHDROnValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -405,7 +414,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetIsHDROnValue(string itemID, bool newValue)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return; }
 
             if (_webcamMethodInfo != null)
             {
@@ -429,7 +440,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -456,7 +469,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<int> GetAntiFlickerValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return -1; }
 
             if (_webcamMethodInfo != null)
             {
@@ -483,7 +498,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetAntiFlickerValue(string itemID, int newValue)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return; }
 
             if (_webcamMethodInfo != null)
             {
@@ -507,7 +524,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyAutoFramingSupported(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -534,7 +553,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> GetIsAutoFramingOnValue(string itemID)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return false; }
 
             if (_webcamMethodInfo != null)
             {
@@ -561,7 +582,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetIsAutoFramingOnValue(string itemID, bool newValue)
         {
-            _itemID = new ItemId(itemID);
+            //_itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", itemID))
+            { return; }
 
             if (_webcamMethodInfo != null)
             {
@@ -1041,6 +1064,38 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "IsPrioritizeExternalWebcam", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task ResetToDefault_webcam(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "ResetToDefault", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+
         public async Task<int> GetWALTime(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -1248,6 +1303,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
+        public async Task<bool> GetIsPrioritizeExternalWebcam(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPrioritizeExternalWebcam");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetIsPrioritizeExternalWebcam]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
 
         private async Task<bool> GetItemIDAsync(string type, string guid)
         {
@@ -1256,6 +1339,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Pen" => _penMethodInfo,
                 "Webcam" => _webcamMethodInfo,
                 "Headset" => _headsetMethodInfo,
+                "Speaker" => _speakerMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
@@ -1263,6 +1347,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Pen" => _penInterfaceType,
                 "Webcam" => _webcamInterfaceType,
                 "Headset" => _headsetInterfaceType,
+                "Speaker" => _speakerInterfaceType,
                 _ => null
             };
 
@@ -1280,6 +1365,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 _itemID = new ItemId($"{item}.{type}.{i}");
                 Debug.WriteLine($"{_itemID}");
+                Trace.WriteLine($"{_itemID}");
                 if (await GetCommodityInterfaceInstanceAsync(methodInfo) is ICommodity commodity)
                 {
                     Debug.WriteLine($"{commodity.GetType}");
@@ -1292,6 +1378,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             Debug.WriteLine($"Not found {type} GUID: {guid}");
             writelog($"Not found {type} GUID: {guid}");
+            Trace.WriteLine($"Not found {type} GUID: {guid}");
             return false;
         }
         #endregion
@@ -1314,6 +1401,346 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return "";
             }
         }
+
+        public async Task<string> GetEraserDoublePressValues()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserDoublePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserDoublePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetSideSwitchSinglePressValues()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "SideSwitchSinglePressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetSideSwitchSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetSideSwitchSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetMenuSinglePressValues()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetMenuSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetMenuSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetLaunchableAppValues()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "LaunchableAppValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetLaunchableAppValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetLaunchableAppValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetEraserDoublePressSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressSetting");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetEraserSinglePressSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressSetting");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetEraserLongPressSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressSetting");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserLongPressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserLongPressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetSideTopSwitchSinglePressSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserDGetSideTopSwitchSinglePressSettingoublePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetSideBottomSwitchSinglePressSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "SideBottomSwitchSinglePressSetting");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetMenuSinglePressSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<bool> GetMenuCenterRightClickSetting()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "MenuCenterRightClickSetting");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> GetIsSideTopButtonHoverClick()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "IsSideTopButtonHoverClick");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> GetIsSideBottomButtonHoverClick()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "IsSideBottomButtonHoverClick");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return false;
+            }
+
+        }
+
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
@@ -1591,6 +2018,263 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #endregion
 
+        #region WiredAudio
+
+        public async Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
+        {
+            Trace.WriteLine("SetFactoryResetAsyncValue **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Headset", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        #endregion
+
+        #region WiredAudio
+        public async Task SetBassAsync(string Guid, int newValue)
+        {
+            Trace.WriteLine("SetBassAsync **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "Bass", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<int> GetBassAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "Bass");
+                Trace.WriteLine("GetBassAsync **********" + Guid + " || " + value.ToString());
+                return (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetBassAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[GetBassAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return -1;
+            }
+        }
+
+        public async Task SetMidRangeAsync(string Guid, int newValue)
+        {
+            Trace.WriteLine("SetMidRangeAsync **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "MidRange", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<int> GetMidRangeAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "MidRange");
+                Trace.WriteLine("GetBassAsync **********" + Guid + " || " + value.ToString());
+                return (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetBasGetMidRangeAsyncsAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[GetMidRangeAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return -1;
+            }
+        }
+        public async Task SetTrebleAsync(string Guid, int newValue)
+        {
+            Trace.WriteLine("SetTrebleAsync **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "Treble", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<int> GetTrebleAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "Treble");
+                Trace.WriteLine("GetTrebleAsync **********" + Guid + " || " + value.ToString());
+                return (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetTrebleAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[GetTrebleAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return -1;
+            }
+        }
+
+        //--------------------------------------
+        public async Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
+        {
+            Trace.WriteLine("SetIsWiredAudioMicMuteSoundEnableAsync **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable");
+                Trace.WriteLine("GetIsWiredAudioMicMuteSoundEnableAsync **********" + Guid + " || " + value.ToString());
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsWiredAudioMicMuteSoundEnableAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[GetIsWiredAudioMicMuteSoundEnableAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return false;
+            }
+        }
+
+        //--------------------------------------
+        public async Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
+        {
+            Trace.WriteLine("SetIsWiredAudioIMicNSEnableValue **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone");
+                Trace.WriteLine("GetWiredAudioVolumeAdjustmentToneAsync **********" + Guid + " || " + value.ToString());
+                return (int)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetWiredAudioVolumeAdjustmentToneAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[GetWiredAudioVolumeAdjustmentToneAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return -1;
+            }
+        }
+
+        //--------------------------------------
+        public async Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue)
+        {
+            Trace.WriteLine("SetIsWiredAudioIMicNSEnableValue **********" + Guid + " || " + newValue.ToString());
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable");
+                Trace.WriteLine("GetIsWiredAudioIMicNSEnableValueAsync **********" + Guid + " || " + value.ToString());
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsWiredAudioIMicNSEnableValueAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[GetIsWiredAudioIMicNSEnableValueAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return false;
+            }
+        }
+        //--------------------------------------
+        public async Task SetResetToDefaultValueAsync(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Speaker", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_speakerInterfaceType, commodity, "ResetToDefault", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        #endregion
 
         #region Overriding methods
 
@@ -1630,6 +2314,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[DTPProxyPlugin] " + text;
             Debug.WriteLine(text);
 
@@ -1740,6 +2427,33 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
+
+                    writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
+                    if (_headsetInterfaceType != null)
+                    {
+                        _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                    .MakeGenericMethod(_headsetInterfaceType);
+                        writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
+                    writelog($"Find ISpeakerCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _speakerInterfaceType = FindCommodityInterfaceType("ISpeakerCommodity");
+                    if (_speakerInterfaceType != null)
+                    {
+                        _speakerMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                    .MakeGenericMethod(_speakerInterfaceType);
+                        writelog($"Find ISpeakerCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
                     _ = RegisterEventAsync();
                 });
             }
@@ -1759,10 +2473,54 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             _comdity = await _commSdk.GetCommodityAsync<IMouseCommodity>(new ItemId("DellPeripheral.Mouse"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IMouseCommodity _mousecom)
             {
-                _mousecom.Connected += _comdity_Connected;
-                _mousecom.Disconnected += _comdity_Disconnected;
-                writelog($"Mouse Commodity event registered");
+                try
+                {
+                    _mousecom.Connected += _comdity_Connected;
+                    _mousecom.Disconnected += _comdity_Disconnected;
+                    writelog($"Mouse Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
             }
+
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
+            {
+                try
+                {
+                    _headsetcom.IsReadyChanged += _headsetcomdity_IsReadyChanged;
+                    _headsetcom.FirmwareVersionChanged += _headsetcomdity_FirmwareVersionChanged;
+                    //_headsetcom.AncModeChanged += _comdity_AncModeChange;
+                    //_headsetcom.Connected += _comdity_Connected;
+                    //_headsetcom.Disconnected += _comdity_Disconnected;
+                    writelog($"Headset Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId("DellPeripheral.Speaker"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _speakercom)
+            {
+                try
+                {
+                    _speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
+                    _speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
+                    _speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
+                    writelog($"Speaker Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -1852,5 +2610,67 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Debug.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
+
+        #region Headset
+
+        private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
+        {
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+            //_EventArgs.device_peripherals = deviceInfo;
+            _EventArgs.changedProperty = "IsReadyChanged";
+            OnNotify(_EventArgs);
+            Debug.WriteLine($"IsReadyChanged Device ID: {e.DeviceId} ");
+        }
+        private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
+        {
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+            //_EventArgs.device_peripherals = deviceInfo;
+            _EventArgs.changedProperty = "FirmwareVersionChanged";
+            OnNotify(_EventArgs);
+            Debug.WriteLine($"FirmwareVersionChanged Device ID: {e.DeviceId} ");
+        }
+        private void _headsetcomdity_AncModeChange(object sender, AncModeChangedArgs e)
+        {
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+            //_EventArgs.device_peripherals = deviceInfo;
+            _EventArgs.changedProperty = "AncModeChange";
+            OnNotify(_EventArgs);
+            Debug.WriteLine($"AncModeChange Device ID: {e.DeviceId} ");
+        }
+        #endregion
+
+        #region Speaker
+
+        private void _speakercomdity_IsIMicNSEnabledChanged(object sender, IsIMicNSEnabledChangedArgs e)
+        {
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+            //_EventArgs.device_peripherals = deviceInfo;
+            _EventArgs.changedProperty = "IsIMicNSEnabledChanged";
+            OnNotify(_EventArgs);
+            Debug.WriteLine($"IsIMicNSEnabledChanged Device ID: {e.DeviceId} ");
+        }
+
+        private void _speakercomdity_VolumeAdjustmentToneChanged(object sender, VolumeAdjustmentToneChangedArgs e)
+        {
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+            //_EventArgs.device_peripherals = deviceInfo;
+            _EventArgs.changedProperty = "VolumeAdjustmentToneChanged(";
+            Debug.WriteLine($"VolumeAdjustmentToneChanged Device ID: {e.DeviceId} ");
+        }
+
+        private void _speakercomdity_IsMicMuteSoundEnabledChanged(object sender, IsMicMuteSoundEnabledChangedArgs e)
+        {
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+            //_EventArgs.device_peripherals = deviceInfo;
+            _EventArgs.changedProperty = "IsMicMuteSoundEnabledChanged(";
+            Debug.WriteLine($"IsMicMuteSoundEnabledChanged Device ID: {e.DeviceId} ");
+        }
+        #endregion
     }
 }

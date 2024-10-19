@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
 {
@@ -27,6 +28,8 @@ namespace DDPM.Easy.Common
         public char SplitKey => 'D';
         public UserControl UC => this;
 
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 17;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -71,16 +74,16 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("4d1", cell_4d1));
-            cellListH.Add(new CellObj("4d2", cell_4d2));
-            cellListH.Add(new CellObj("4d3", cell_4d3));
-            cellListH.Add(new CellObj("4d4", cell_4d4));
+            cellListH.Add(new CellObj("4d1", cell_4d1) { rcRatio = new Rect(0, 0, 1/4, 1) });
+            cellListH.Add(new CellObj("4d2", cell_4d2) { rcRatio = new Rect(1/4, 0, 1/4, 1) });
+            cellListH.Add(new CellObj("4d3", cell_4d3) { rcRatio = new Rect(2/4, 0, 1 / 4, 1) });
+            cellListH.Add(new CellObj("4d4", cell_4d4) { rcRatio = new Rect(3/4, 0, 1 / 4, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("4D1", cell_4D1));
-            cellListV.Add(new CellObj("4D2", cell_4D2));
-            cellListV.Add(new CellObj("4D3", cell_4D3));
-            cellListV.Add(new CellObj("4D4", cell_4D4));
+            cellListV.Add(new CellObj("4D1", cell_4D1) { rcRatio = new Rect(0, 0, 1, 1/4) });
+            cellListV.Add(new CellObj("4D2", cell_4D2) { rcRatio = new Rect(0, 1/4, 1, 1 / 4) });
+            cellListV.Add(new CellObj("4D3", cell_4D3) { rcRatio = new Rect(0, 2/4, 1, 1 / 4) });
+            cellListV.Add(new CellObj("4D4", cell_4D4) { rcRatio = new Rect(0, 3/4, 1, 1 / 4) });
         }
 
         #endregion Cell List

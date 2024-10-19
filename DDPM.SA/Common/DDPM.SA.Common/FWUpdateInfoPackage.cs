@@ -107,8 +107,10 @@ namespace DDPM.SA.Common
         public string FileSavepath { get; set; }
         public string InstallPaths { get; set; }
         public string SHA256 { get; set; }
-        public string SHA512 { get; set; }
+        //public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
+        public List<string> Thumbprint_List { get; set; }
+        public string ServiceTag { get; set; }
 
         public bool Equals(FWUpdateInfo fwUpdateInfo)
         {
@@ -153,8 +155,9 @@ namespace DDPM.SA.Common
         public string Thumbprint { get; set; }
         public string url { get; set; }
         public string date { get; set; }
-        [JsonPropertyName("Supported platform")]
+        [JsonPropertyName("support_platform")]
         public string SupportedPlatform { get; set; }
+        public string ServiceTag { get; set; }
     }
 
     /// <summary>

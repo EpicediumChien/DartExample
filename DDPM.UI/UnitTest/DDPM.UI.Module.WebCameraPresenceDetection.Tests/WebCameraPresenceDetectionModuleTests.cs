@@ -1,4 +1,6 @@
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.ViewModels;
@@ -32,7 +34,18 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection.Tests
             log = logMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManager;
+            deviceManagerMock.Setup(x => x.GetIsProximitySensorEnable(It.IsAny<string>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.GetIsWakeonApproachEnable(It.IsAny<string>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.GetIsWalkAwayLockEnable(It.IsAny<string>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.GetWALTime(It.IsAny<string>())).Returns(Task.FromResult(1));
+
+            deviceManagerMock.Setup(x => x.GetSnooze(It.IsAny<string>())).Returns(Task.FromResult(1));
+            deviceManagerMock.Setup(x => x.GetSnoozeLength(It.IsAny<string>())).Returns(Task.FromResult(1));
+            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings (), new DDPMUserSettings (), new DDPMITConfig ())));
+            var CurrentDeviceInfo = new DeviceInfo() { ID=new Guid()};
             vm = new WebCameraViewModel(console, log);
+            vm.CurrentDeviceInfo = CurrentDeviceInfo;
             webCameraPresenceDetectionModule = new WebCameraPresenceDetectionModule(vm);
             privateObject = new PrivateObject(webCameraPresenceDetectionModule);
         }

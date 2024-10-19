@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<OutputType>WinExe</OutputType>
+		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<OutputType>WinExe</OutputType>
@@ -9,7 +9,7 @@
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.43</Version>
+		<Version>2.0.0.45</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
@@ -18,8 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
-		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
+		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.8.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,6 +41,7 @@
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.PipPbpManager\DDPM.SA.Plugins.User.PipPbpManager.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SchedulerManager\DDPM.SA.Plugins.User.SchedulerManager.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SettingsManager\DDPM.SA.Plugins.User.SettingsManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.TelementryScheduler\DDPM.SA.Plugins.User.TelementryScheduler.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.USBKVM\DDPM.SA.Plugins.User.USBKVM.csproj" />
 		<ProjectReference Include="..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />
 	</ItemGroup>

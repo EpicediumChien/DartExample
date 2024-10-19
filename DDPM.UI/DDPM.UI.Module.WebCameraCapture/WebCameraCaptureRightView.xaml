@@ -10,7 +10,7 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="675" d:DesignWidth="554" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="675" d:DesignWidth="554">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -26,7 +26,7 @@
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
         </MultiBinding>
       </Border.Height>
-      <StackPanel Orientation="Vertical" Margin="16,16,16,0">
+      <StackPanel Orientation="Vertical" Margin="16,16,16,0" IsEnabled="{Binding IsNotAddingProfile}">
         <Grid>
           <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [Camera.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
           <Image Margin="0,0,53,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo2.png" Stretch="Fill"  

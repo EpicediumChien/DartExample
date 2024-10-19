@@ -22,6 +22,7 @@ namespace DDPM.SA.Common
 
         Task SetDPIValue(string itemID, int newValue);
 
+        #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -45,8 +46,23 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
         Task<string> PairingPen();
+        Task<string> GetEraserDoublePressValues();
+        Task<string> GetSideSwitchSinglePressValues();
+        Task<string> GetMenuSinglePressValues();
+        Task<string> GetLaunchableAppValues();
+        Task<string> GetEraserDoublePressSetting();
+        Task<string> GetEraserSinglePressSetting();
+        Task<string> GetEraserLongPressSetting();
+        Task<string> GetSideTopSwitchSinglePressSetting();
+        Task<string> GetSideBottomSwitchSinglePressSetting();
+        Task<string> GetMenuSinglePressSetting();
+        Task<bool> GetMenuCenterRightClickSetting();
+        Task<bool> GetIsSideTopButtonHoverClick();
+        Task<bool> GetIsSideBottomButtonHoverClick();
 
-        // webcam
+        #endregion
+
+        #region webcam
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
         Task<string> GetProfile(string Guid);
@@ -110,6 +126,8 @@ namespace DDPM.SA.Common
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+        Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
+        Task ResetToDefault_webcam(string Guid, bool newValue);
 
         Task<int> GetWALTime(string Guid);
         Task<int> GetSnooze(string Guid);
@@ -117,6 +135,32 @@ namespace DDPM.SA.Common
         Task<bool> GetIsProximitySensorEnable(string Guid);
         Task<bool> GetIsWakeonApproachEnable(string Guid);
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
+        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
+        #endregion
+
+        #region Headset
+
+        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Wired Audio
+
+        Task<int> GetBassAsync(string guid);
+        Task SetBassAsync(string guid, int newValue);
+        Task<int> GetMidRangeAsync(string guid);
+        Task SetMidRangeAsync(string guid, int newValue);
+        Task<int> GetTrebleAsync(string guid);
+        Task SetTrebleAsync(string guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
+        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
+        Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string itemID);
+        Task SetResetToDefaultValueAsync(string itemID, bool newValue);
+
+        #endregion
     }
 }

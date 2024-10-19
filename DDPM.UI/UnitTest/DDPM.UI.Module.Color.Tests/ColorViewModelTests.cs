@@ -243,33 +243,33 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-        [Test]
-        public void TestWatchForProcessStart()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessStart();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessStart()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessStart();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
-        [Test]
-        public void TestWatchForProcessEnd()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessEnd();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessEnd()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessEnd();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
 
 

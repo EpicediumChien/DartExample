@@ -45,6 +45,7 @@ namespace DDPM.SA.Common
         Task<string> QueryAccessInfoAddr();
         Task AddInfo(string info);
         Task<List<string>> GetInfos(bool force_reload = false);
+        Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
     }
 
     /// <summary>
@@ -82,10 +83,10 @@ namespace DDPM.SA.Common
 
         Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath);
 
-        //Easy Arrange
-        public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
-
-        public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
+        //Easy Arrange, Robret_Lin, 2024-10-10 remove unused method
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
+        //Robret_Lin, 2024-10-10 remove unused method
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
 
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);

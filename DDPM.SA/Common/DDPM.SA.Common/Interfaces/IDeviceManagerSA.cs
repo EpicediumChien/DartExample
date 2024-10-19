@@ -39,10 +39,12 @@ namespace DDPM.SA.Common
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
         #region EaM
+
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
 
         Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
-        #endregion
+
+        #endregion EaM
 
         #region public for SchedulerManger
 
@@ -69,7 +71,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int colorPresetRunType = 0, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -108,13 +110,17 @@ namespace DDPM.SA.Common
 
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
+        Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
+
         #endregion public for ColorPreset
 
         #region public for Displays
 
         Task Reset0x52TimerTick(int millisecond);
 
-        Task<List<MonitorInfo>> GetMonitors(bool reScan = false);
+        Task<List<MonitorInfo>> GetMonitors();
+
+        Task<List<MonitorInfo>> Re_GetMonitors();
 
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
@@ -252,11 +258,19 @@ namespace DDPM.SA.Common
 
         //Robert_Lin, 2024-9-18 added for EzSettings
         public Task<EzSettings> ReadEzSettings();
+
         public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue);
+
         public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue);
+
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
+
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
+
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList();
+        public Task<bool> WriteEACustomList(SplitJson[] customList);
         #endregion EasyArrange
 
         #region EasyMemory
@@ -321,9 +335,11 @@ namespace DDPM.SA.Common
         Task UnPair(Guid deviceId);
 
         Task StartPairing(Guid deviceId);
+
         Task StartPairingPen();
 
         Task StopPairing(Guid deviceId);
+
         Task StopPairingPen();
 
         Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
@@ -361,13 +377,19 @@ namespace DDPM.SA.Common
 
         // webcam presence detection
         Task SetWALTime(int newValue, Guid deviceId);
+
         Task SetSnooze(int newValue, Guid deviceId);
+
         Task SetSnoozeLength(int newValue, Guid deviceId);
+
         Task SetIsProximitySensorEnable(bool newValue, Guid deviceId);
+
         Task SetIsWakeonApproachEnable(bool newValue, Guid deviceId);
+
         Task SetIsWalkAwayLockEnable(bool newValue, Guid deviceId);
 
         Task<int> GetSnooze(Guid deviceId);
+
         Task<int> GetSnoozeLength(Guid deviceId);
 
         #endregion public for Peripherals
@@ -393,7 +415,9 @@ namespace DDPM.SA.Common
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
         Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
+
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
+
         Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
@@ -431,6 +455,7 @@ namespace DDPM.SA.Common
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
 
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
+
         #endregion public for settings
 
         #region public for hotkey
@@ -480,17 +505,17 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false);
-
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
-        Task<FWUErrorCode> Install(string installPath);
-
 
         void SetUILockStatus(bool isLockFWU_UI);
 
         Task<bool> GetUILockStatus();
+
         Task<bool> SetSkipCA(bool isSkipCA);
+
         Task<bool> GetSkipCA();
 
         #endregion public for FW Update by Bruce
@@ -512,7 +537,9 @@ namespace DDPM.SA.Common
         #endregion public ALS functions
 
         #region for NKVM
+
         event EventHandler<NKVMRespone> NKVMCLIRespone;
+
         Task CreatNewNamedpipe();
 
         Task<bool> IsNamedpipeConnected();
@@ -582,20 +609,35 @@ namespace DDPM.SA.Common
         #region Gaming
 
         event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+
         Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo);
+
         Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo);
+
         Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo);
+
         Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo);
+
         Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo);
+
         Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo);
+
         Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo);
+
         Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo);
+
         Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+
         Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+
         Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+
         Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+
         Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+
         Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
+
         #endregion Gaming
 
         #region public for DTPProxy
@@ -605,7 +647,21 @@ namespace DDPM.SA.Common
         Task SetDPIValueByDTP(string itemID, int newValue);
 
         #region Pen
+        Task<string> GetEraserDoublePressValues();
+        Task<string> GetSideSwitchSinglePressValues();
+        Task<string> GetMenuSinglePressValues();
+        Task<string> GetLaunchableAppValues();
+        Task<string> GetEraserDoublePressSetting();
+        Task<string> GetEraserSinglePressSetting();
+        Task<string> GetEraserLongPressSetting();
+        Task<string> GetSideTopSwitchSinglePressSetting();
+        Task<string> GetSideBottomSwitchSinglePressSetting();
+        Task<string> GetMenuSinglePressSetting();
+        Task<bool> GetMenuCenterRightClickSetting();
+        Task<bool> GetIsSideTopButtonHoverClick();
+        Task<bool> GetIsSideBottomButtonHoverClick();
         Task<string> PairingPen();
+
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -623,19 +679,27 @@ namespace DDPM.SA.Common
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
 
         Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue);
+
         Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue);
+
         Task SetSideTopSwitchSinglePressSetting3(byte[] newValue, Guid deviceId);
 
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
-        #endregion
+
+        #endregion Pen
 
         #region Webcam
+
         Task<JArray> GetPresetProfiles(string Guid);
+
         Task<JArray> GetCustomProfiles(string Guid);
+
         Task<string> GetProfile(string Guid);
+
         Task<string> GetProfileName(string Guid);
+
         Task<int> GetBrightness(string Guid);
 
         Task SetBrightnessValueByDTP(string itemID, int newValue);
@@ -663,45 +727,110 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAutoFramingOnValueByDTP(string itemID);
 
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
+
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+
         Task SetProfile(string Guid, string newValue);
+
         Task SetProfileName(string Guid, string newValue);
+
         Task CreateCustomProfile(string Guid, string newValue);
+
         Task DeleteProfile(string Guid, string newValue);
+
         Task SetZoom(string Guid, int newValue);
+
         Task SetIsAutoFramingOn(string Guid, bool newValue);
+
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+
         Task SetAutoFramingSensitivity(string Guid, int newValue);
+
         Task SetAutoFramingFrameSize(string Guid, int newValue);
+
         Task SetFieldOfView(string Guid, int newValue);
+
         Task SetIsFocusOn(string Guid, bool newValue);
+
         Task SetFocus(string Guid, int newValue);
+
         Task SetPriority(string Guid, int newValue);
+
         Task SetIsHDROn(string Guid, bool newValue);
+
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+
         Task SetAutoWhiteBalance(string Guid, int newValue);
+
         Task SetBrightness(string Guid, int newValue);
+
         Task SetSharpness(string Guid, int newValue);
+
         Task SetContrast(string Guid, int newValue);
+
         Task SetSaturation(string Guid, int newValue);
+
         Task SetAntiFlicker(string Guid, int newValue);
+
         Task SetTilt(string Guid, int newValue);
+
         Task SetPan(string Guid, int newValue);
 
         // webcam presence detection
         Task SetWALTime(string Guid, int newValue);
+
         Task SetSnooze(string Guid, int newValue);
+
         Task SetSnoozeLength(string Guid, int newValue);
+
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
+
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
+
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
 
+        Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
+
+        Task ResetToDefault_webcam(string Guid, bool newValue);
+
         Task<int> GetWALTime(string Guid);
+
         Task<int> GetSnooze(string Guid);
+
         Task<int> GetSnoozeLength(string Guid);
+
         Task<bool> GetIsProximitySensorEnable(string Guid);
+
         Task<bool> GetIsWakeonApproachEnable(string Guid);
-        Task<bool> GetIsWalkAwayLockEnable(string Guid);      
+
+        Task<bool> GetIsWalkAwayLockEnable(string Guid);
+
+        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+
+        #endregion Webcam
+
+
+
+        #region Headset
+        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Wires Audio
+
+        Task<int> GetBassAsync(string guid);
+        Task SetBassAsync(string guid, int newValue);
+        Task<int> GetMidRangeAsync(string guid);
+        Task SetMidRangeAsync(string guid, int newValue);
+        Task<int> GetTrebleAsync(string guid);
+        Task SetTrebleAsync(string guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
+        Task<bool> GetIsWiredAudioIMicNSEnableValue(string itemID);
+        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
+        Task SetResetToDefaultValue(string itemID, bool newValue);
 
         #endregion
 
@@ -719,27 +848,41 @@ namespace DDPM.SA.Common
 
         #endregion OSD
 
-
-
         #region GlobalSetting
+
         event EventHandler GlobalSettingChangeEvent;
+
         Task<GlobalSettingParam> GetGlobalSettingParam();
+
         Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
+
         Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay);
+
         Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay);
+
         Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay);
+
         Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay);
+
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable);
+
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
+
+        Task<bool> Set_GlobalSetting_EnableTelemetryConsent(bool isEnable);
+
         #region OutReport
+
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
-        Task<bool> SaveLogFile(string saveFolderPath);
-        #endregion
+
+        Task<bool> SaveLogFile(string saveFolderPath = "");
+
+        #endregion OutReport
 
         //For common json file read/write
         Task<string> ReadSerializedContentFromFile(string filePath);
+
         Task<bool> WriteSerializedContentToFile(string filePath, string content);
 
-        #endregion
+        #endregion GlobalSetting
     }
 }

@@ -27,6 +27,7 @@ namespace DDPM.Easy.Common
         public int CellCount => 0;
         public char SplitKey => 'A';
         public UserControl UC => this;
+        public int EAID { get => 0; set { } }
 
         #endregion ISplitCtrl Native Members
 

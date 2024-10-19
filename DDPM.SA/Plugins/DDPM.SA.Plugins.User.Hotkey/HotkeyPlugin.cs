@@ -211,6 +211,9 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[Hotkey] " + text;
             Console.WriteLine(text);
             if (Log != null)

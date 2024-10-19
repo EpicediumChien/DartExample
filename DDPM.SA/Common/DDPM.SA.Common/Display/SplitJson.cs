@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using Windows.Media.Streaming.Adaptive;
 
 namespace DDPM.SA.Common.Display
 {
@@ -16,7 +17,8 @@ namespace DDPM.SA.Common.Display
         public List<double> Settings { get; set; } = new List<double>();
         public string CustomName { get; set; } = "";
         public long CustomId { get; set; } = 0;
-
+        public int EAID { get; set; }
+        public CellJson[] Cells { get; set; }
         #endregion Native Properties
 
         #region ctor and create new instance
@@ -99,9 +101,49 @@ namespace DDPM.SA.Common.Display
             //[2] SplitCtrl3E
             new  SplitJson() { CellCount = 3, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1 } },
             //[3] SplitCtrl4A
-            new  SplitJson() { CellCount = 4, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1 } }
+            new  SplitJson() { CellCount = 4, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            //[4] SplitCtrl3C
+            new  SplitJson() { CellCount = 3, SplitKey='C', Settings=new List<double>() { 3, 4, 3 } }
 
         };
         #endregion Defaul Recent List
+
+        #region Preset List
+        public static List<SplitJson> PresetList = new List<SplitJson>()
+        {
+            new  SplitJson() { EAID=0, CellCount = 0, SplitKey='A', Settings=new List<double>() { 1 } },
+            new  SplitJson() { EAID=1, CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
+            new  SplitJson() { EAID=2, CellCount = 2, SplitKey='B', Settings=new List<double>() { 1, 1 } },
+            new  SplitJson() { EAID=3, CellCount = 2, SplitKey='C', Settings=new List<double>() { 7, 3 } },
+            new  SplitJson() { EAID=4, CellCount = 2, SplitKey='D', Settings=new List<double>() { 3, 7 } },
+
+            new  SplitJson() { EAID=5, CellCount = 3, SplitKey='A', Settings=new List<double>() { 1, 1, 1 } },
+            new  SplitJson() { EAID=6, CellCount = 3, SplitKey='B', Settings=new List<double>() { 1, 1, 1 } },
+            new  SplitJson() { EAID=7, CellCount = 3, SplitKey='C', Settings=new List<double>() { 3, 4, 3 } },
+            new  SplitJson() { EAID=8, CellCount = 3, SplitKey='D', Settings=new List<double>() { 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=9, CellCount = 3, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=10, CellCount = 3, SplitKey='F', Settings=new List<double>() { 1, 1, 3, 7 } },
+            new  SplitJson() { EAID=11, CellCount = 3, SplitKey='G', Settings=new List<double>() { 1, 1, 7, 3 } },
+            new  SplitJson() { EAID=12, CellCount = 3, SplitKey='H', Settings=new List<double>() { 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=13, CellCount = 3, SplitKey='I', Settings=new List<double>() { 1, 1, 1, 1 } },
+
+            new  SplitJson() { EAID=14, CellCount = 4, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=15, CellCount = 4, SplitKey='B', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=16, CellCount = 4, SplitKey='C', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=17, CellCount = 4, SplitKey='D', Settings=new List<double>() { 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=18, CellCount = 4, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            new  SplitJson() { EAID=19, CellCount = 4, SplitKey='F', Settings=new List<double>() { 1, 1, 1, 1, 1 } }
+
+        };
+        #endregion Preset List
+        public static SplitJson? CreatePresetLayoutFromEAID(int eaId)
+        {
+            SplitJson? presetJson = SplitJson.PresetList.Find(x => x.EAID == eaId);
+            if (presetJson != null)
+            {
+                return presetJson.Clone();
+            }
+            return null;
+        }
     }
 }

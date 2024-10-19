@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common.Models;
+using System.Runtime.CompilerServices;
 using System.Windows;
+[assembly: InternalsVisibleTo("DDPM.UI.Common.Tests")]
 
 namespace DDPM.UI.Common
 {

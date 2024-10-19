@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Method;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.WebCameraCapture;
 using DDPM.UI.Module.WebCameraColorImage;
@@ -13,6 +14,7 @@ using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -34,7 +36,10 @@ using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.UI.Popups;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
+using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
@@ -69,6 +74,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
+        private string EditMode = string.Empty;
+        private string EditingProfileName = string.Empty;
 
         public LaunchView()
         {
@@ -83,7 +90,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
-                txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                if (PresetNames.Contains(_vm!.CurrentProfileName))
+                {
+                    txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                }
+                else
+                {
+                    txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                }
                 txtAddPreset.Text = LangHelper.Instance["Camera.5"];
 
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
@@ -92,6 +106,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             txtName.Text = Strings.Name;
             txtMsg.Text = Strings.NameIsTaken;
+            btnCancel.Caption = Strings.Cancel;
+            btnSave.Caption = Strings.Save;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -328,9 +344,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(ColorandImage, new WebCameraColorImageModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB")
+
+            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
             {
-                moduleGroup = new ModuleGroup()
+               bool blRet = true;
+
+               blRet = CheckPresenceDetection_UI();
+
+               moduleGroup = new ModuleGroup()
                 {
                     GroupName = PresenceDetection,
                     GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
@@ -731,7 +752,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var profileName = ((UXTextBlock)sender).Tag.ToString()!;
-            if (profileName != _vm!.CurrentProfileName || txtPreset.Text == $"{Strings.Preset}: {LangHelper.Instance["None"]}")
+            if (profileName != _vm!.CurrentProfileName)
             {
                 //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                 _vm!.CurrentProfileName = profileName;
@@ -786,7 +807,20 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
+            var profileName = ((Image)sender).Tag.ToString()!;
+            EditMode = "EDIT";
+            EditingProfileName = profileName;
+            if (profileName != _vm.CurrentProfileName)
+            {
+                _vm.CurrentProfileName = profileName;
+                _vm.SetProfile();
+            }
+            txbName.Text = profileName;
+            _vm!.DisableVBar();
+            gdBattery.Visibility = Visibility.Collapsed;
+            gdAddProfile.Visibility = Visibility.Visible;
+            txtCaption.Text = Strings.EditPreset;
+            _vm.TooltipVisibility = Visibility.Visible;
         }
 
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -832,10 +866,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
 
-        private async void LaunchView_Loaded(object sender, RoutedEventArgs e)
-        {
-            //await InitializeCameraAsync();
-        }
         private async Task InitializeCameraAsync()
         {
             try
@@ -923,26 +953,200 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
-            //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
-            _vm!.CurrentProfile.Name = $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}";
-            var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
-            _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
-            WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
-            _vm.PrepareProfileItems();
-            ProfileItems.ItemsSource = null;
-            ProfileItems.ItemsSource = _vm.ProfileItems;
+            _vm!.DisableVBar();
+            gdBattery.Visibility = Visibility.Collapsed;
+            gdAddProfile.Visibility = Visibility.Visible;
+            txbName.Text = string.Empty;
+            txbName.Focus();
+            _vm.TooltipVisibility = Visibility.Visible;
         }
 
         private void NameTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_vm!.ProfileIDs.ContainsKey(txbName.Text.Trim()))
+            var txt = txbName.Text.Trim();
+            if(string.IsNullOrEmpty(txt))
+            {
+                btnSave.IsEnabled = false;
+                return;
+
+            }
+
+            if (_vm!.ProfileIDs.ContainsKey(txt) && txt != EditingProfileName)
             {
                 txtMsg.Visibility = Visibility.Visible;
+                bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x3E, 0x3B));
+                btnSave.IsEnabled = false;
             }
             else
             {
                 txtMsg.Visibility = Visibility.Hidden;
+                bdrName.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x7E, 0x7E, 0x7E));
+                btnSave.IsEnabled = true;
             }
+        }
+
+        private void CancelClick(object sender, MouseButtonEventArgs e)
+        {
+            gdBattery.Visibility = Visibility.Visible;
+            gdAddProfile.Visibility = Visibility.Collapsed;
+            btnPreset_Click(this, null);
+            if (EditMode == "EDIT")
+            {
+                _vm!.CurrentProfileName = EditingProfileName;
+                _vm.SetProfile();
+            }
+            txtCaption.Text = _vm!.Name;
+            _vm.EnableVBar();
+            _vm.TooltipVisibility = Visibility.Collapsed;
+        }
+
+        private void SaveClick(object sender, MouseButtonEventArgs e)
+        {
+            var txt = txbName.Text.Trim();
+            //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
+            _vm!.CurrentProfile.Name = txt;
+            Dictionary<string, WebcamProfile> NewProfiles = new();
+            if (EditMode == "EDIT")
+            {
+                if (txt == EditingProfileName)
+                {
+                    _vm.WebcamSettings.CustomProfiles[txt] = _vm.CurrentProfile;
+                }
+                else
+                {
+                    foreach (var profile in _vm.WebcamSettings.CustomProfiles)
+                    {
+                        if (profile.Key == EditingProfileName)
+                        {
+                            NewProfiles.Add(txt, JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!);
+                        }
+                        else
+                        {
+                            NewProfiles.Add(profile.Key, profile.Value);
+                        }
+                    }
+                    _vm.WebcamSettings.CustomProfiles = NewProfiles;
+                }
+            }
+            else
+            {
+                var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
+                NewProfiles.Add(txt, profile);
+                //_vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
+                _vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            }
+            _vm.CurrentProfileName = txt;
+            WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
+            _vm.PrepareProfileItems();
+            ProfileItems.ItemsSource = null;
+            ProfileItems.ItemsSource = _vm.ProfileItems;
+            btnPreset_Click(this, null);
+            gdBattery.Visibility = Visibility.Visible;
+            gdAddProfile.Visibility = Visibility.Collapsed;
+            txtCaption.Text = _vm.Name;
+            _vm.ClearUndo();
+            _vm.EnableVBar();
+            _vm.TooltipVisibility = Visibility.Collapsed;
+        }
+
+        private bool CheckPresenceDetection_UI()
+        { 
+            bool blWebcamFW_UPD = false;
+            bool blSystemcompatibility_MPS = false;
+
+            int nFirmwareVersion = int.TryParse(_vm.FirmwareVersion, out var fw) ? fw : 0;
+
+            if (nFirmwareVersion % 2 == 0 || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
+            {
+                //is even, is UPD FW
+                blWebcamFW_UPD = true;
+            }
+            else
+            {
+                //is odd , is MPS FW
+                blWebcamFW_UPD = false;
+            }
+
+            if (WinVersion.GetVersion(out var info))
+            {
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))                
+                    blSystemcompatibility_MPS = true;
+                else
+                    blSystemcompatibility_MPS = false;
+            }
+
+            string strComputerManufacturer= string.Empty;
+
+            strComputerManufacturer = WinVersion.GetComputerManufacturer();
+
+            bool blDellComputer = false;
+
+            if (strComputerManufacturer.Contains("Dell", StringComparison.OrdinalIgnoreCase))
+                blDellComputer = true;
+            else
+                blDellComputer= false;
+
+            if ( blWebcamFW_UPD && blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+            {
+                _vm.UPD_Visibility = Visibility.Visible;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return true;
+            }
+
+            if (blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+            {
+                return false;
+            }
+
+            if (blWebcamFW_UPD && blSystemcompatibility_MPS && blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return true;
+            }
+
+            if (blWebcamFW_UPD && blSystemcompatibility_MPS && !blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return true;
+            }
+
+            if (!blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            {  
+                return false;
+            }
+
+            if (!blWebcamFW_UPD  && blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return true;
+            }
+
+            if (!blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            {              
+                return false;
+            }
+
+            if (!blWebcamFW_UPD && blSystemcompatibility_MPS && info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

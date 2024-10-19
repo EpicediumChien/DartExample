@@ -10,11 +10,14 @@ using Dell.TechHub.Sdk.Common.Identifiers;
 using Microsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using VcpCore.Common;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugin.PlatinumSDK
 {
     [Plugin(Id, Name, Description = Description)]
     [PluginRequires(Id = PluginInformation.Id)]
+    [PublishedUnelevatedInterface(new[] { typeof(IPlatinumSDKService) })]
     public class PlatinumSDKPlugin : BaseAgentPlugin, IDisposableObservable, IPlatinumSDKService
     {
         public const string PluginLogId = "PlatinumSDK";
@@ -32,6 +35,8 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         private const string Name = pluginName;
         private const string Description = pluginDescription;
 
+        private static Logs _logs;
+
         private static readonly AgentPluginInfo _agentPluginInfo = new AgentPluginInfo()
         {
             PluginGuid = Guid.Parse(IDs.PlatinumSDK_Plugin),
@@ -45,12 +50,6 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
         private IPlatinumClientSdk _platinumClientSdk;
 
-        private enum log_type
-        {
-            info = 0,
-            error
-        }
-
         #endregion Private Members
 
         #region Constructor
@@ -58,8 +57,9 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         public PlatinumSDKPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+            _logs ??= new Logs(Log, PluginLogId);
             InitializePlatinumClientSdk();
-            WriteLog($"PlatinumSDKPlugin constructor ...(Admin:{_IsAdministrator})");
+            _logs.DebugMsg_1($"PlatinumSDKPlugin constructor ...(Admin:{_IsAdministrator})");
         }
 
         #endregion Constructor
@@ -73,7 +73,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                 if (_platinumClientSdk != null)
                 {
                     var transmissionId = _platinumClientSdk.LogEventAsync(Event, EventValue, DataClassificationId.Restricted).Result;
-                    WriteLog($"Logged event with transmission ID {transmissionId}");
+                    _logs.DebugMsg_1($"Logged event with transmission ID {transmissionId}");
                     TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
                     switch (status.State)
                     {
@@ -94,7 +94,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             }
             catch (Exception ex)
             {
-                WriteLog($"UpdateEventValue ex {ex.Message}");
+                _logs.DebugMsg_1($"UpdateEventValue ex {ex.Message}");
                 return Task.FromResult(false);
             }
         }
@@ -113,14 +113,17 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                 _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
                 base.OnPluginStarting();
                 InitializePlatinumClientSdk();
-                WriteLog("PlatinumSDK plugin report started");
+                _logs.DebugMsg_1("PlatinumSDK plugin report started");
 
                 if (_platinumClientSdk != null)
+                {
                     _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
+                    _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
+                }
             }
             catch (Exception ex)
             {
-                WriteLog($"PlatinumSDK plugin OnPluginStarting ex: {ex.Message}");
+                _logs.DebugMsg_1($"PlatinumSDK plugin OnPluginStarting ex: {ex.Message}");
             }
             //---------------------------------------------------------
         }
@@ -128,21 +131,6 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         #endregion Overriding methods
 
         #region Private methods
-
-        /// <summary>
-        /// //
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="log_type">0 means info, others means error</param>
-        private void WriteLog(string text, log_type log_type = log_type.info)
-        {
-            text = "[PlatinumSDKPlugin] " + text;
-            Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
-        }
 
         private void InitializePlatinumClientSdk()
         {
@@ -156,7 +144,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             }
             catch (Exception ex)
             {
-                WriteLog("PlatinumSDK InitializePlatinumClientSdk ex: " + ex.Message);
+                _logs.DebugMsg_1("PlatinumSDK InitializePlatinumClientSdk ex: " + ex.Message);
             }
         }
 
@@ -175,7 +163,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            WriteLog($"Dispose: {disposing}");
+            _logs.DebugMsg_1($"Dispose: {disposing}");
             if (!IsDisposed)
             {
                 if (disposing)
@@ -206,6 +194,5 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         }
 
         #endregion Event Handler
-
     }
 }

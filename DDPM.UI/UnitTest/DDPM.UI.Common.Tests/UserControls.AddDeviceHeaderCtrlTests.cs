@@ -65,11 +65,21 @@ namespace DDPM.UI.Common.Tests
         {
             // Act
             addDeviceHeaderCtrl.SelectionChanged += new RoutedEventHandler(newRoutedEventArgs);
-            addDeviceHeaderCtrl.SelectedIndex = 2;
+            addDeviceHeaderCtrl.SelectedIndex = 0;
             // Assert
             Assert.That(i, Is.EqualTo(2));
             Assert.That(addDeviceHeaderCtrl.SelectedIndex, Is.EqualTo(0));
 
+            var rightViewHeaderCtrlViewModel=new RightViewHeaderCtrlViewModel();
+            var privateobject = new PrivateObject(rightViewHeaderCtrlViewModel);
+            privateobject.SetFieldOrProperty("_shownCount",2);
+            privateobject.SetFieldOrProperty("_caseNo", 2);
+            privateObject.SetFieldOrProperty("vm", rightViewHeaderCtrlViewModel);        
+            addDeviceHeaderCtrl.SelectedIndex = 2;
+            
+            // Assert
+            Assert.That(i, Is.EqualTo(2));
+            Assert.That(addDeviceHeaderCtrl.SelectedIndex, Is.EqualTo(0));
         }
 
         private void newRoutedEventArgs(object? sender, RoutedEventArgs e)

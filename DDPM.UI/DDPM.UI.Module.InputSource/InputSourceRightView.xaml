@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -20,7 +20,7 @@
         <UXControls:UXScrollViewer>
             <Grid>
                 <StackPanel>
-                    <Border Style="{StaticResource RightGroupBorderStyle}">
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
 
                         <StackPanel>
                             <Grid Height="50">

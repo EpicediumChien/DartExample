@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
 {
@@ -27,6 +28,8 @@ namespace DDPM.Easy.Common
         public char SplitKey => 'A';
         public UserControl UC => this;
 
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 14;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -71,16 +74,101 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("4a1", cell_4a1));
-            cellListH.Add(new CellObj("4a2", cell_4a2));
-            cellListH.Add(new CellObj("4a3", cell_4a3));
-            cellListH.Add(new CellObj("4a4", cell_4a4));
+            cellListH.Add(new CellObj("4a1", cell_4a1) { rcRatio = new Rect(0, 0, 0.5, 0.5) });
+            cellListH.Add(new CellObj("4a2", cell_4a2) { rcRatio = new Rect(0.5, 0, 0.5, 0.5) });
+            cellListH.Add(new CellObj("4a3", cell_4a3) { rcRatio = new Rect(0, 0.5, 0.5, 0.5) });
+            cellListH.Add(new CellObj("4a4", cell_4a4) { rcRatio = new Rect(0.5, 0.5, 0.5, 0.5) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("4A1", cell_4A1));
-            cellListV.Add(new CellObj("4A2", cell_4A2));
-            cellListV.Add(new CellObj("4A3", cell_4A3));
-            cellListV.Add(new CellObj("4A4", cell_4A4));
+            cellListV.Add(new CellObj("4A1", cell_4A1) { rcRatio = new Rect(0.5, 0, 0.5, 0.5) });
+            cellListV.Add(new CellObj("4A2", cell_4A2) { rcRatio = new Rect(0.5, 0.5, 0.5, 0.5) });
+            cellListV.Add(new CellObj("4A3", cell_4A3) { rcRatio = new Rect(0, 0, 0.5, 0.5) });
+            cellListV.Add(new CellObj("4A4", cell_4A4) { rcRatio = new Rect(0, 0.5, 0.5, 0.5) });
+        }
+
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to CellList[i].rcRect
+        /// </summary>
+        public void UpdateToCellListFromSettings()
+        {
+            if (cellListH.Count >= 4)
+            {
+                double w = VM.Settings_Double[2] + VM.Settings_Double[3];
+                double h = VM.Settings_Double[0] + VM.Settings_Double[1];
+                if ((w > 0) && (h > 0))
+                {
+                    //4a1
+                    Rect rcRatio = (Rect)cellListH[0].rcRatio;
+                    rcRatio.X = 0;
+                    rcRatio.Y = 0;
+                    rcRatio.Width = VM.Settings_Double[2] / w;
+                    rcRatio.Height = VM.Settings_Double[0] / h;
+                    cellListH[0].rcRatio = rcRatio;
+
+                    //4a2
+                    rcRatio = (Rect)cellListH[1].rcRatio;
+                    rcRatio.X = VM.Settings_Double[2] / w;
+                    rcRatio.Y = 0;
+                    rcRatio.Width = VM.Settings_Double[3] / w;
+                    rcRatio.Height = VM.Settings_Double[0] / h;
+                    cellListH[1].rcRatio = rcRatio;
+
+                    //4a3
+                    rcRatio = (Rect)cellListH[2].rcRatio;
+                    rcRatio.X = 0;
+                    rcRatio.Y = VM.Settings_Double[0] / h; ;
+                    rcRatio.Width = VM.Settings_Double[2] / w;
+                    rcRatio.Height = VM.Settings_Double[1] / h;
+                    cellListH[2].rcRatio = rcRatio;
+
+                    //4a4
+                    rcRatio = (Rect)cellListH[3].rcRatio;
+                    rcRatio.X = VM.Settings_Double[2] / w;
+                    rcRatio.Y = VM.Settings_Double[0] / h; ;
+                    rcRatio.Width = VM.Settings_Double[3] / w;
+                    rcRatio.Height = VM.Settings_Double[1] / h;
+                    cellListH[3].rcRatio = rcRatio;
+                }
+            }
+            if (cellListV.Count >= 4)
+            {
+                double w = VM.Settings_Double[0] + VM.Settings_Double[1];
+                double h = VM.Settings_Double[2] + VM.Settings_Double[3];
+                if ((w > 0) && (h > 0))
+                {
+                    //4A1
+                    Rect rcRatio = (Rect)cellListV[0].rcRatio;
+                    rcRatio.X = VM.Settings_Double[1] / w;
+                    rcRatio.Y = 0;
+                    rcRatio.Width = VM.Settings_Double[0] / w;
+                    rcRatio.Height = VM.Settings_Double[2] / h;
+                    cellListV[0].rcRatio = rcRatio;
+
+                    //4A2
+                    rcRatio = (Rect)cellListV[1].rcRatio;
+                    rcRatio.X = VM.Settings_Double[1] / w;
+                    rcRatio.Y = VM.Settings_Double[2] / h;
+                    rcRatio.Width = VM.Settings_Double[0] / w;
+                    rcRatio.Height = VM.Settings_Double[2] / h;
+                    cellListV[1].rcRatio = rcRatio;
+
+                    //4A3
+                    rcRatio = (Rect)cellListV[2].rcRatio;
+                    rcRatio.X = 0;
+                    rcRatio.Y = 0;
+                    rcRatio.Width = VM.Settings_Double[1] / w;
+                    rcRatio.Height = VM.Settings_Double[2] / h;
+                    cellListV[2].rcRatio = rcRatio;
+
+                    //4A4
+                    rcRatio = (Rect)cellListV[3].rcRatio;
+                    rcRatio.X = 0;
+                    rcRatio.Y = VM.Settings_Double[2] / h;
+                    rcRatio.Width = VM.Settings_Double[1] / w;
+                    rcRatio.Height = VM.Settings_Double[3] / h;
+                    cellListV[3].rcRatio = rcRatio;
+                }
+            }
         }
 
         #endregion Cell List

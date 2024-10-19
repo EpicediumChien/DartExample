@@ -47,7 +47,7 @@ namespace DDPM.UI.Module.EzMemory
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
         private ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps { get; set; } = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
         private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
-        public EzMemoryAddApplication(DisplayViewModel vmDisplay, HomeDevice _homeDeviceSelect)
+        public EzMemoryAddApplication(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
@@ -63,9 +63,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
+            _vm = vm;
 
-            DataContext = _homeDevice.vmEzArrange;
+            DataContext = vm;
 
         }
 
@@ -246,7 +246,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -288,7 +288,7 @@ namespace DDPM.UI.Module.EzMemory
                 _vm.IsAddPageBack = true;
             }
 
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -349,7 +349,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     _vm.UpdateTextBlockAppName(_vm.ButtonName, fileName);
 
-                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _selecthomeDevice);
+                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
                     DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
                 }
             }

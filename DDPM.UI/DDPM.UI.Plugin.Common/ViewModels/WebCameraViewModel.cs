@@ -250,7 +250,53 @@ namespace DDPM.UI.Plugin.ViewModels
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedSnoozeLength");
             }
-        }        
+        }
+
+        private Visibility _UPD_Visibility = Visibility.Hidden;
+
+        public Visibility UPD_Visibility
+        {
+            get
+            {
+                return _UPD_Visibility;
+            }
+            set
+            {
+                _UPD_Visibility = value;
+                OnPropertyChanged("UPD_Visibility");
+            }
+        }
+
+        private Visibility _MPS_Setting_Visibility = Visibility.Hidden;
+
+        public Visibility MPS_Setting_Visibility
+        {
+            get
+            {
+                return _MPS_Setting_Visibility;
+            }
+            set
+            {
+                _MPS_Setting_Visibility = value;
+                OnPropertyChanged("MPS_Setting_Visibility");
+            }
+        }
+
+        private Visibility _MPS_UpdateFW_Visibility = Visibility.Hidden;
+
+        public Visibility MPS_UpdateFW_Visibility
+        {
+            get
+            {
+                return _MPS_UpdateFW_Visibility;
+            }
+            set
+            {
+                _MPS_UpdateFW_Visibility = value;
+                OnPropertyChanged("MPS_UpdateFW_Visibility");
+            }
+        }
+
 
         public event EventHandler<EventArgs> WebcamSettingChanged;
         public event EventHandler<EventArgs> ProfilePropertyChanged;
@@ -406,8 +452,6 @@ namespace DDPM.UI.Plugin.ViewModels
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
 
-            WCOperations.Clear();
-            OPIndex = -1;
         }
 
         public void RefreshProfiles()
@@ -546,6 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AntiFlicker);
                 OnPropertyChanged(nameof(AntiFlicker));
             }
+            ClearUndo();
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -1237,10 +1282,21 @@ namespace DDPM.UI.Plugin.ViewModels
                     WCOperations.RemoveAt(0);
                     OPIndex -= 1;
                 }
+                //CurrentProfileName = string.Empty;
                 ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
             }
             propertyInfo.SetValue(CurrentProfile, convertedValue);
             //WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(UndoVisibility));
+            OnPropertyChanged(nameof(Undo2Visibility));
+            OnPropertyChanged(nameof(RedoVisibility));
+            OnPropertyChanged(nameof(Redo2Visibility));
+        }
+
+        public void ClearUndo()
+        {
+            WCOperations.Clear();
+            OPIndex = -1;
             OnPropertyChanged(nameof(UndoVisibility));
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));
@@ -1257,7 +1313,7 @@ namespace DDPM.UI.Plugin.ViewModels
             var propertyInfo = type.GetProperty(op.Property);
             object convertedValue = Convert.ChangeType(op.OldValue, propertyInfo!.PropertyType);
             propertyInfo.SetValue(CurrentProfile, convertedValue);
-            UPdateProperty(op.Property, convertedValue);
+            UpdateProperty(op.Property, convertedValue);
         }
         public void Redo()
         {
@@ -1269,10 +1325,10 @@ namespace DDPM.UI.Plugin.ViewModels
             var propertyInfo = type.GetProperty(op.Property);
             object convertedValue = Convert.ChangeType(op.NewValue, propertyInfo!.PropertyType);
             propertyInfo.SetValue(CurrentProfile, convertedValue);
-            UPdateProperty(op.Property, convertedValue);
+            UpdateProperty(op.Property, convertedValue);
         }
 
-        private void UPdateProperty(string property, object value)
+        private void UpdateProperty(string property, object value)
         {
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             switch (property)
@@ -1350,6 +1406,20 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(RedoVisibility));
             OnPropertyChanged(nameof(Redo2Visibility));
         }
+
+        private Visibility _tooltipVisibility = Visibility.Collapsed;
+        public Visibility TooltipVisibility
+        {
+            get => _tooltipVisibility;
+            set
+            {
+                _tooltipVisibility = value;
+                OnPropertyChanged();
+                MessageBoxVisibility = value;
+                OnPropertyChanged(nameof(MessageBoxVisibility));
+            }
+        }
+        public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
     }
 
     public class StreamResolution

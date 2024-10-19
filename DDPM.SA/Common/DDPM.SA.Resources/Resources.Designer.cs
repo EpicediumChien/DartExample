@@ -79,6 +79,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delay.
+        /// </summary>
+        internal static string Delay {
+            get {
+                return ResourceManager.GetString("Delay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dock FW info.
         /// </summary>
         internal static string Dock_FW_info {
@@ -133,11 +142,56 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open application.
+        /// </summary>
+        internal static string Failed_to_open_application {
+            get {
+                return ResourceManager.GetString("Failed_to_open_application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firmware update unsuccessful..
         /// </summary>
         internal static string Firmware_update_unsuccessful {
             get {
                 return ResourceManager.GetString("Firmware_update_unsuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FW info.
+        /// </summary>
+        internal static string FW_info {
+            get {
+                return ResourceManager.GetString("FW_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FW is being Installing. Do not disconnect the device..
+        /// </summary>
+        internal static string FW_is_being_Installing {
+            get {
+                return ResourceManager.GetString("FW_is_being_Installing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid ID. Please provide a valid action ID..
+        /// </summary>
+        internal static string Invalid_ID {
+            get {
+                return ResourceManager.GetString("Invalid_ID", resourceCulture);
             }
         }
         
@@ -160,6 +214,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        internal static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to no updates available..
         /// </summary>
         internal static string no_updates_available {
@@ -174,6 +237,51 @@ namespace DDPM.SA.Resources {
         internal static string Software_update_unsuccessful {
             get {
                 return ResourceManager.GetString("Software_update_unsuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SW info.
+        /// </summary>
+        internal static string SW_info {
+            get {
+                return ResourceManager.GetString("SW_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UOD update completed..
+        /// </summary>
+        internal static string UOD_update_completed {
+            get {
+                return ResourceManager.GetString("UOD_update_completed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UOD update fail..
+        /// </summary>
+        internal static string UOD_update_fail {
+            get {
+                return ResourceManager.GetString("UOD_update_fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        internal static string Update {
+            get {
+                return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to update download cancel, because PC battery too low..
+        /// </summary>
+        internal static string update_download_cancel {
+            get {
+                return ResourceManager.GetString("update_download_cancel", resourceCulture);
             }
         }
         
@@ -201,6 +309,15 @@ namespace DDPM.SA.Resources {
         internal static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        internal static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }
