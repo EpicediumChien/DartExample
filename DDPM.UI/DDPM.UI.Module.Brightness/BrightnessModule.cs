@@ -1,4 +1,3 @@
-using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
@@ -66,12 +65,12 @@ namespace DDPM.UI.Module.Brightness
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
-            
+
             isSelectChanged = true;
-            if(IsModuleActive)
+            if (IsModuleActive)
             {
                 isSelectChanged = false;
-                InitNewViewModel();                
+                InitNewViewModel();
             }
         }
 
@@ -92,10 +91,10 @@ namespace DDPM.UI.Module.Brightness
         public void OnActivated()
         {
             Trace.WriteLine("BrightnessModule.OnActivated");
-            if(isSelectChanged)
+            if (isSelectChanged)
             {
                 isSelectChanged = false;
-                InitNewViewModel();                
+                InitNewViewModel();
             }
 
             vm.UpdateHDRStatus();

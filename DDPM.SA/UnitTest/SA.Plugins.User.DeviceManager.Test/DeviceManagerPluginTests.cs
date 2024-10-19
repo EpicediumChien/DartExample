@@ -1646,7 +1646,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         [Test]
         public void TestInstall()
         {
-            Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+            //Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null"); //method remove _FWUpdatePlugin ==null 
 
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();

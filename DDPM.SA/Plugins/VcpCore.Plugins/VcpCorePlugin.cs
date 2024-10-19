@@ -199,8 +199,14 @@ namespace VcpCore.Plugins
                 var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(Token);
                 var NewToken = Cancellation.Token;
 
-                while (_TaskQueueExecutor.IsBusy)
+                //while (_TaskQueueExecutor.IsBusy)
+                //_TaskQueueExecutor.CancelAsync();
+                while (!_TaskQueue.IsEmpty())
+                {
                     _TaskQueueExecutor.CancelAsync();
+                    _AllInfoMonitors = new List<MonitorInfo_complex>();
+                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                }
 
                 InitializeMonitorsList(NewToken).Wait();
 
@@ -2616,7 +2622,7 @@ namespace VcpCore.Plugins
                 }
 
                 count++;
-                _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability retry ({count})");
+                _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability " + Convert.ToString(code, 16) ?? string.Empty + " , retry ( " + count.ToString() + " )");
                 Thread.Sleep(1000);
             } while (count < 3 && retry);
 
@@ -2737,7 +2743,7 @@ namespace VcpCore.Plugins
                     {
                         int pos = valstring.Length - 2;
                         rc = valstring.Substring(pos);
-                    }                  
+                    }
 
                     Trace.WriteLine("GetCurrentColorPreset()  valstring= " + valstring);
                     Trace.WriteLine("GetCurrentColorPreset()  rc= " + rc);

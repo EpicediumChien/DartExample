@@ -1010,7 +1010,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     if (hotkeySettings.Count == 1)
                     {
-                        impexpSettings.UserSettings.HotkeySettings = hotkeySettings[1];
+                        impexpSettings.UserSettings.HotkeySettings = hotkeySettings[0];
                     }
                     else
                     {
