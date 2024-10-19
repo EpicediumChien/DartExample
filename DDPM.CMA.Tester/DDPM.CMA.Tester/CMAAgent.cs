@@ -122,22 +122,68 @@ namespace DDPM.CMA.Tester
 
         private void runRequest(string[] args)
         {
-            string json = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{""index"":""1"",""uod"":true,""updatesilent"":""""}}]}";
-            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{""index"":""1"",""uod"":true,""updatesilent"":""""}}]}";
-            string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{""index"":""1"",""uod"":true,""updatesilent"":""""}}]}";
+            Boolean isRunning = true;
+
+            string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
+            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
+            //string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
 
             string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""ConnectedDevices"",""options"":{}}]}";
             string jsondevicedata = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
             string jsondeviceconfig = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""set"",""devicetype"":""APP"",""command"":""DeviceConfiguration"",""options"":{}}]}";
 
+            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""D:\\Tools""}]}";
+
 
             CMARequestArgs cmarequest = new CMARequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
-            Console.WriteLine("Reg");
+            Console.WriteLine("Reg Event Success");
 
             // manager.Info(json);
 
+            while (isRunning) {
+                Console.WriteLine("\nCMAManagerPlugin Demo: ");
+                Console.WriteLine("1. Show ConnectedDevices.");
+                Console.WriteLine("2. Show Display FWUpdate.");
+                Console.WriteLine("3. Show Display ActiveHours.");
+                Console.WriteLine("4. Exit.");
+
+                Console.WriteLine("Enter the number to run ?");
+                int sel = Convert.ToInt32(Console.ReadLine());
+
+                switch (sel)
+                {
+                    case 1:
+                        Console.WriteLine($"json String = {jsondevice}");
+                        cmarequest.cma_request = jsondevice;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 2:
+                        Console.WriteLine($"json String = {jsonfwdisplay}");
+                        cmarequest.cma_request = jsonfwdisplay;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 3:
+                        Console.WriteLine($"json String = {jsonacthours}");
+                        cmarequest.cma_request = jsonacthours;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+
+                    default:
+                        isRunning = false;
+                        break;
+
+
+                }
+
+                while (!isresponse) { }
+
+            }
+/*
             if (args.Length > 0)
             {
                 switch (args[0].ToLower())
@@ -162,9 +208,9 @@ namespace DDPM.CMA.Tester
             {
                 cmarequest.cma_request = jsondevicedata;
                 _CMAManagerPlugin.Info(cmarequest);
-            }
+            }*/
 
-            while (!isresponse) { }
+            
         }
 
         private void InitializeCMAManagerPlugin()
@@ -238,7 +284,7 @@ namespace DDPM.CMA.Tester
             Console.WriteLine("CMA Notification Alert eventtype : " + e.eventtype);
             Console.WriteLine("CMA Notification Alert notification : " + e.notification);
 
-            //isresponse = true;
+            isresponse = true;
         }
         #endregion
     }
