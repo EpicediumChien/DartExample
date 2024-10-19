@@ -1370,9 +1370,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </returns>
         public Task<Dictionary<string, InputInfo>> GetInputSourcelist(MonitorInfo monitorInfo)
         {
+            writelog("[DeviceMangerPlugin] GetInputSourcelist ...");
             //_inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
             //DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
             Dictionary<string, InputInfo> inputSourcelist = new Dictionary<string, InputInfo>();
+            Dictionary<string, InputInfo> copyinputlist = new Dictionary<string, InputInfo>();
             Dictionary<string, InputInfo> readinputlist = new Dictionary<string, InputInfo>();
             //get monitor settings
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
@@ -1382,25 +1384,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
                 if (monitorSetting == null)
                 {
-                    inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                    //if (DDMinputlist != null)
-                    //{
-                    //    if (DDMinputlist.Count != 0)
-                    //    {
-                    //        foreach (var DDPMinput in inputSourcelist)
-                    //        {
-                    //            foreach (var DDMinput in DDMinputlist)
-                    //            {
-                    //                if (DDPMinput.Value.Code == DDMinput.Value.Code)
-                    //                {
-                    //                    DDPMinput.Value.InputName = DDMinput.Value.InputName;
-                    //                    break;
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                    //inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                    //bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                    writelog("[DeviceMangerPlugin] monitorSetting is null ...");
                 }
                 else
                 {
@@ -1408,13 +1394,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         if (monitorSetting.Input != null)
                         {
-                            if (monitorSetting.Input.strInputSourceList != null && monitorSetting.Input.strInputSourceList != string.Empty)
+                            if (!String.IsNullOrEmpty(monitorSetting.Input.strInputSourceList)/* != null && monitorSetting.Input.strInputSourceList != string.Empty*/)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
                                 if (inputSourcelist != null)
                                 {
                                     if (inputSourcelist.Count != 0)
                                     {
+                                        copyinputlist = inputSourcelist;
                                         foreach (var input in inputSourcelist)
                                         {
                                             //Maybe Migration...
@@ -1427,11 +1414,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     {
                                                         foreach (var readinput in readinputlist)
                                                         {
-                                                            foreach (var input2 in inputSourcelist)
+                                                            foreach (var copyinput in copyinputlist)
                                                             {
-                                                                if (readinput.Value.Code == input2.Value.Code)
+                                                                if (readinput.Value.Code == copyinput.Value.Code)
                                                                 {
-                                                                    readinput.Value.InputName = input2.Value.InputName;
+                                                                    readinput.Value.InputName = copyinput.Value.InputName;
                                                                     break;
                                                                 }
                                                             }
@@ -1447,6 +1434,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     }
                                 }
                             }
+                        }
+                        else
+                        {
+                            writelog("[DeviceMangerPlugin] monitorSetting.Input is null ...");
                         }
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                         bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
@@ -1470,26 +1461,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <returns></returns>
         public Task<bool> SetInputSourcelist(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputlist)
         {
+            writelog("[DeviceMangerPlugin] SetInputSourcelist ...");
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null && inputlist != null)
             {
-                foreach (DDPMMonitorSettings monitorSettings in settings)
+                if (inputlist.Count != 0)
                 {
-                    if (monitorSettings != null)
+                    foreach (DDPMMonitorSettings monitorSettings in settings)
                     {
-                        if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+                        if (monitorSettings != null)
                         {
-                            string strinputlist = string.Empty;
-                            strinputlist = InputSourceListSerialize(inputlist);
-                            monitorSettings.Input.strInputSourceList = strinputlist;
-                            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+                            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
                             {
-                                return Task.FromResult(true);
+                                string strinputlist = string.Empty;
+                                strinputlist = InputSourceListSerialize(inputlist);
+                                monitorSettings.Input.strInputSourceList = strinputlist;
+                                if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+                                {
+                                    return Task.FromResult(true);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
+                else
+                {
+                    writelog("[DeviceMangerPlugin] inputlist count is 0 ...");
+                }
+            }
+            else
+            {
+                writelog("[DeviceMangerPlugin] settings or inputlist is null ...");
             }
             return Task.FromResult(false);
         }
@@ -1531,7 +1534,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (inputSourceList.TryGetValue(input, out outinput))
                 {
                     inputSourceList[input].InputName = name;
-                    string strInputList = InputSourceListSerialize(inputSourceList);
+                    //string strInputList = InputSourceListSerialize(inputSourceList);
                     if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                     {
                         return Task.FromResult(true);
@@ -1574,7 +1577,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (inputSourceList.TryGetValue(inputsource, out outinput))
                     {
                         inputSourceList[inputsource].USBUpstream = upstream;
-                        string strInputList = InputSourceListSerialize(inputSourceList);
+                        //string strInputList = InputSourceListSerialize(inputSourceList);
                         if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                         {
                             return Task.FromResult(true);
@@ -1595,7 +1598,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     inputSourceList[inputsource1].USBUpstream = upstream1;
                     inputSourceList[inputsource2].USBUpstream = upstream2;
-                    string strInputList = InputSourceListSerialize(inputSourceList);
+                    //string strInputList = InputSourceListSerialize(inputSourceList);
                     if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                     {
                         return Task.FromResult(true);
@@ -2741,14 +2744,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DisplayUpdateHelper displayUpdateHelper;
             try
             {
-                 updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 writelog($"{nameof(CheckUpdate)} GetFWUpdateInfo Error:{ex.Message}");
                 return Task.FromResult(false);
@@ -2761,7 +2764,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             try
             {
-                 displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
                     displayUpdateHelper = new DisplayUpdateHelper();
@@ -2776,7 +2779,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
-            
+
             try
             {
                 SetDelayFWUpdateInfoPackage();
@@ -4502,6 +4505,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if (vcp.Value != null)
                                 {
+                                    vcp.Value.Clear();
                                     byte b_vcpcode = Convert.ToByte(vcp.Code);
                                     //object value = cacheTable[b_vcpcode];
                                     ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
@@ -4544,51 +4548,69 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 List<VCPCode> vcps = new List<VCPCode>();
                 if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
-                    vcps = ImpExpSettings.MonitorSettings.VCPs;
-                    if (_ColorPresetPlugin != null)
+                    if (ImpExpSettings != null)
                     {
-                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
-                    }
-                    if (vcps != null)
-                    {
-                        if (vcps.Count > 0)
+                        if (ImpExpSettings.MonitorSettings != null)
                         {
-                            //set ImportVCPSequence
-                            impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
-                            SetVCPSequence(monitorInfo, impVCPSequence, vcps);
-                            foreach (VCPCode code in vcps)
+                            vcps = ImpExpSettings.MonitorSettings.VCPs;
+                            if (Import_DisplayProperties(monitorInfo, ImpExpSettings.MonitorSettings.DisplayPropertiesInfo))
                             {
-                                writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                                if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                    importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                writelog("[DisplayImportSettings] Import_DisplayProperties");
+                            }
+                            if (_ColorPresetPlugin != null)
+                            {
+                                bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
+                            }
+                            if (vcps != null)
+                            {
+                                if (vcps.Count > 0)
                                 {
-                                    bool b = false;
-                                    ObjGetVCP objGetVCP = new ObjGetVCP();
-                                    //SHR on/off need load settings
-                                    //if (code.Code == 0xF0)
-                                    //{
-                                    //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                    //}
-                                    //get vcp code
-                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                    if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                    //set ImportVCPSequence
+                                    impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
+                                    SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                    foreach (VCPCode code in vcps)
                                     {
-                                        //set vcp code
-                                        writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                        writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                        if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                            importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                        {
+                                            bool b = false;
+                                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                                            //SHR on/off need load settings
+                                            //if (code.Code == 0xF0)
+                                            //{
+                                            //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                            //}
+                                            //get vcp code
+                                            objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                            {
+                                                //set vcp code
+                                                writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                                b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                            }
+                                        }
                                     }
+                                    return Task.FromResult(true);
+                                }
+                                else
+                                {
+                                    writelog("[DisplayImportSettings] VCPs List count is 0");
                                 }
                             }
-                            return Task.FromResult(true);
+                            else
+                            {
+                                writelog("[DisplayImportSettings] VCPs List is null");
+                            }
                         }
                         else
                         {
-                            writelog("[DisplayImportSettings] VCPs List count is 0");
+                            writelog("[DisplayImportSettings] ImpExpSettings.MonitorSettings is null");
                         }
                     }
                     else
                     {
-                        writelog("[DisplayImportSettings] VCPs List is null");
+                        writelog("[DisplayImportSettings] ImpExpSettings is null");
                     }
                 }
                 else
@@ -4598,55 +4620,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     impSettings = _SettingsPlugin.ReadDDMImpSettingsFile(path).Result;
                     if (impSettings != null)
                     {
-                        DDMtoDDPM_Input(impSettings.MonitorSettings);
-                        DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
-                        displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
-                        if (Import_DisplayProperties(displayCurrentPropertiesInfo))
+                        if (impSettings.MonitorSettings != null)
                         {
-                            writelog("[DisplayImportSettings] Import_DisplayProperties");
-                        }
-                        List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-                        monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                        if (monitorSettingsList != null)
-                        {
-                            if (monitorSettingsList.Count > 0)
+                            DDMtoDDPM_Input(impSettings.MonitorSettings);
+                            DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
+                            displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
+                            if (Import_DisplayProperties(monitorInfo, displayCurrentPropertiesInfo))
                             {
-                                int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
-                                vcps = monitorSettingsList[index].VCPs;
-                                SetVCPSequence(monitorInfo, impVCPSequence, vcps);
-                                foreach (VCPCode code in vcps)
+                                writelog("[DisplayImportSettings] Import_DisplayProperties");
+                            }
+                            List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+                            monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                            if (monitorSettingsList != null)
+                            {
+                                if (monitorSettingsList.Count > 0)
                                 {
-                                    writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                                    if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                        importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                    int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
+                                    vcps = monitorSettingsList[index].VCPs;
+                                    SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                    foreach (VCPCode code in vcps)
                                     {
-                                        bool b = false;
-                                        ObjGetVCP objGetVCP = new ObjGetVCP();
-                                        //SHR on/off need load settings
-                                        //if (code.Code == 0xF0)
-                                        //{
-                                        //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                        //}
-                                        //get vcp code
-                                        objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                        writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                        if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                            importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                                         {
-                                            //set vcp code
-                                            writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                            b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                            bool b = false;
+                                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                                            //SHR on/off need load settings
+                                            //if (code.Code == 0xF0)
+                                            //{
+                                            //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                            //}
+                                            //get vcp code
+                                            objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                            {
+                                                //set vcp code
+                                                writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                                b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                            }
                                         }
                                     }
+                                    return Task.FromResult(true);
                                 }
-                                return Task.FromResult(true);
+                                else
+                                {
+                                    writelog("[DisplayImportSettings]monitorSettingsList count is 0");
+                                }
                             }
                             else
                             {
-                                writelog("[DisplayImportSettings]monitorSettingsList count is 0");
+                                writelog("[DisplayImportSettings]monitorSettingsList is null");
                             }
-                        }
-                        else
-                        {
-                            writelog("[DisplayImportSettings]monitorSettingsList is null");
                         }
                     }
                     else
@@ -6647,6 +6672,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[DeviceManager] " + text;
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + text);
 
@@ -9955,12 +9983,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private bool Import_DisplayProperties(DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo)
+        private bool Import_DisplayProperties(MonitorInfo monitorInfo, DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo)
         {
             bool ret = false;
             try
             {
-                MonitorInfo monitorInfo = new MonitorInfo();
+                //MonitorInfo monitorInfo = new MonitorInfo();
                 ret = SetDisplayPropertiest(monitorInfo, displayCurrentPropertiesInfo.CurrentProperties, displayCurrentPropertiesInfo.CurrentOrientation).Result;
                 ret = SetHDRStatus(monitorInfo, displayCurrentPropertiesInfo.isHDREnable).Result && ret;
                 if (displayCurrentPropertiesInfo.USBCPrioritizationType != USBCPrioritizationType.Unknow)

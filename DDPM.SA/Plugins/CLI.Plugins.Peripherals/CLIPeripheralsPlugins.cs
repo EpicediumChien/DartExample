@@ -710,7 +710,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
 
                 case "HDR":
-                    ItemId = "DellPeripheral.Webcam.0";
+                    //ItemId = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyHDRSupportedByDTP(ItemId).Result)
                     {
                         SetResults.ForEach(x =>
@@ -754,7 +754,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
 
                 case "ANTIFLICKER":
-                    ItemId = "DellPeripheral.Webcam.0";
+                    //ItemId = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(ItemId).Result)
                     {
                         SetResults.ForEach(x =>
@@ -798,7 +798,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
 
                 case "AIAUTOFRAMING":
-                    ItemId = "DellPeripheral.Webcam.0";
+                    //ItemId = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(ItemId).Result)
                     {
                         SetResults.ForEach(x =>
