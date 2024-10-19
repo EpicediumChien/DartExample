@@ -81,9 +81,9 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("2A1", cell_2A1) { rcRatio = new Rect(0, 0, 1, 0.5) });
             cellListV.Add(new CellObj("2A2", cell_2A2) { rcRatio = new Rect(0, 0.5, 1, 0.5) });
 
-            celBordersH.Clear();
-            celBordersH.Add(cellBd_2a1);
-            celBordersH.Add(cellBd_2a2);
+            //celBordersH.Clear();
+            //celBordersH.Add(cellBd_2a1);
+            //celBordersH.Add(cellBd_2a2);
         }
 
         public void UpdateSettingsToCells()
