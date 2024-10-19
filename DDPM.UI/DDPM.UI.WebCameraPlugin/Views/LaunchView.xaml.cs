@@ -345,7 +345,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             groups.Add(moduleGroup);
 
 
-            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB")
+            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
             {
                bool blRet = true;
 
@@ -1056,7 +1056,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             int nFirmwareVersion = int.TryParse(_vm.FirmwareVersion, out var fw) ? fw : 0;
 
-            if (nFirmwareVersion % 2 == 0)
+            if (nFirmwareVersion % 2 == 0 || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
             {
                 //is even, is UPD FW
                 blWebcamFW_UPD = true;

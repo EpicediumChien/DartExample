@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define IL_NotReady
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -40,6 +41,7 @@ using System.Security;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using System.ServiceProcess;
+
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -381,60 +383,23 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _fWUpdateInfoPackage = new FWUpdateInfoPackage();
-            _fWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
-            if (updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
+            try
             {
-                for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
+                _fWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
+                if (updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
                 {
-                    //0614 Bruce 因版本號為16進制，可能為字母故新增轉換並判斷
-                    string newVer = updateHelper.UpdateItems[i].NewVersion;
-                    if (!int.TryParse(newVer, out _))
+                    for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
-                        newVer = Convert.ToInt32(newVer, 16).ToString();
-                    }
-                    if (deviceTypeList == null)
-                    {
-                        List<string> thumbprint_List = new List<string>();
-                        if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
+                        //0614 Bruce 因版本號為16進制，可能為字母故新增轉換並判斷
+                        string newVer = updateHelper.UpdateItems[i].NewVersion;
+                        if (!int.TryParse(newVer, out _))
                         {
-                            foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
-                            {
-                                if (s.Length >= 10)
-                                {
-                                    thumbprint_List.Add(s);
-                                    break;
-                                }
-                            }
+                            newVer = Convert.ToInt32(newVer, 16).ToString();
                         }
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
-                        {
-                            TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                            DeviceVersion = Regex.Replace(Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4").Length * 2) - 1),
-                            NeedUpdated = int.Parse(newVer) > int.Parse(updateHelper.UpdateItems[i].CurrentVersion) ? true : false,
-                            ServerPath = updateHelper.UpdateItems[i].ServerPath,
-                            FileSavepath = updateHelper.UpdateItems[i].InstallPath,
-                            Model = updateHelper.UpdateItems[i].DeviceModelNumber,
-                            DeviceName = updateHelper.UpdateItems[i].DeviceName,
-                            //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
-                            DeviceType = updateHelper.UpdateItems[i].DeviceType,
-                            DeviceId = updateHelper.UpdateItems[i].DeviceId,
-                            DevicePath = updateHelper.UpdateItems[i].DevicePath,
-                            //SHA512 = updateHelper.UpdateItems[i].SHA512,
-                            Thumbprint = "",
-                            Thumbprint_List = thumbprint_List,
-                            IsUOD = (isUODMode &&
-                            (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                            updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
-                            IsDisplay = false
-                        };
-                        _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
-                    }
-                    else if (deviceTypeList != null && !isOnlyDisplay)
-                    {
-                        if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
+                        if (deviceTypeList == null)
                         {
                             List<string> thumbprint_List = new List<string>();
-                            if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint))
+                            if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
                             {
                                 foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
                                 {
@@ -468,41 +433,85 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             };
                             _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                         }
+                        else if (deviceTypeList != null && !isOnlyDisplay)
+                        {
+                            if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
+                            {
+                                List<string> thumbprint_List = new List<string>();
+                                if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint))
+                                {
+                                    foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
+                                    {
+                                        if (s.Length >= 10)
+                                        {
+                                            thumbprint_List.Add(s);
+                                            break;
+                                        }
+                                    }
+                                }
+                                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                                {
+                                    TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
+                                    DeviceVersion = Regex.Replace(Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4").Length * 2) - 1),
+                                    NeedUpdated = int.Parse(newVer) > int.Parse(updateHelper.UpdateItems[i].CurrentVersion) ? true : false,
+                                    ServerPath = updateHelper.UpdateItems[i].ServerPath,
+                                    FileSavepath = updateHelper.UpdateItems[i].InstallPath,
+                                    Model = updateHelper.UpdateItems[i].DeviceModelNumber,
+                                    DeviceName = updateHelper.UpdateItems[i].DeviceName,
+                                    //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
+                                    DeviceType = updateHelper.UpdateItems[i].DeviceType,
+                                    DeviceId = updateHelper.UpdateItems[i].DeviceId,
+                                    DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                    //SHA512 = updateHelper.UpdateItems[i].SHA512,
+                                    Thumbprint = "",
+                                    Thumbprint_List = thumbprint_List,
+                                    IsUOD = (isUODMode &&
+                                    (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                    updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
+                                    IsDisplay = false
+                                };
+                                _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            }
+                        }
                     }
                 }
-            }
-            if (displayUpdateHelper != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
-            {
-                for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
+                if (displayUpdateHelper != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
                 {
-                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                    for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
-                        TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
-                        DeviceVersion = displayUpdateHelper.Firmwares[i].CurrentVersion,
-                        NeedUpdated = true,
-                        DeviceType = DeviceType.Unknown,
-                        IsDisplay = true,
-                        ServerPath = displayUpdateHelper.Firmwares[i].url,
-                        Model = displayUpdateHelper.Firmwares[i].id,
-                        DeviceName = displayUpdateHelper.Firmwares[i].id,
-                        SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
-                        //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
-                        Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
-                        Thumbprint_List = new List<string>(),
-                        ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
-                        IsUOD = false
-                    };
-                    _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        {
+                            TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
+                            DeviceVersion = displayUpdateHelper.Firmwares[i].CurrentVersion,
+                            NeedUpdated = true,
+                            DeviceType = DeviceType.Unknown,
+                            IsDisplay = true,
+                            ServerPath = displayUpdateHelper.Firmwares[i].url,
+                            Model = displayUpdateHelper.Firmwares[i].id,
+                            DeviceName = displayUpdateHelper.Firmwares[i].id,
+                            SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
+                            //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
+                            Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
+                            Thumbprint_List = new List<string>(),
+                            ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
+                            IsUOD = false
+                        };
+                        _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                    }
+                }
+                if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                {
+                    HandleUpdateInfo();
+                    _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
+                }
+                else
+                {
+                    _logs.DebugMsg_1(nameof(CheckUpdate) + " no updates available.");
                 }
             }
-            if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+            catch (Exception ex)
             {
-                HandleUpdateInfo();
-                _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
-            }
-            else
-            {
-                _logs.DebugMsg_1(nameof(CheckUpdate) + " no updates available.");
+                _logs.DebugMsg_1($"{nameof(CheckUpdate)} Error: {ex.Message}");
             }
             _IsShowNotify = true;
             _isDefer = false;
@@ -1245,9 +1254,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
                     {
+#if IL_Ready
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
                         return FWUErrorCode.NamedPipeServerIsNoSafe;
+#else
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe. But skip");
+#endif
                     }
                 }
                 if (fwUpdateInfo.IsUOD)
@@ -1285,6 +1298,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             catch (Exception ex)
             {
+                resetState();
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = $"{_fWUpdateInfo.DeviceName} Service not running. Try again.";
@@ -1378,7 +1392,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _timeOutCount--;
             if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
             {
+#if IL_Ready
                 resetState();
+#endif
             }
             if (_timeOutCount == 0)
             {
@@ -1631,7 +1647,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         [SupportedOSPlatform("windows10.0.19041.0")]
         private void resetState()
         {
-            _timerTimeOut.Enabled = false;
+            if (_timerTimeOut != null)
+            {
+                _timerTimeOut.Enabled = false;
+            }
             if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041))
             {
                 if (_clientProcess != null)
@@ -1717,7 +1736,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check SHA start.");
-                ret = true;//Wait IL R14 force true
                 if (CheckSHA(filePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip start.");
@@ -1736,13 +1754,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 }
                                 else
                                 {
+#if IL_NotReady
                                     ret = true;//Wait IL R14 force true
                                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint list fail. Ex: {FileCAInfo}");
+#endif
                                 }
                             }
                             else
                             {
+#if IL_NotReady
                                 if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
                                 {
                                     ret = true;
@@ -1754,6 +1775,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
                                 }
+#endif
                             }
                         }
                     }
@@ -1766,6 +1788,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check SHA fail. Ex: {FileCAInfo}");
+#if IL_NotReady
                     //////////////Wait IL R14 force true//////////////////
                     if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
                     {
@@ -1791,6 +1814,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Unzip Faile");
                     }
                     //////////////Wait IL R14 force true//////////////////
+#endif
                 }
             }
             else

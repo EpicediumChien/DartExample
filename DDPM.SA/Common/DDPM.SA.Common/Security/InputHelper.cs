@@ -25,6 +25,12 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+            if (string.IsNullOrEmpty(ProfileName))
+            {
+                info = $"InputValidation: ProfileName NULL";
+                return false;
+            }
+            
             int len = ProfileName.Length;
             if (len < 1 || len > 30)
             {
@@ -75,6 +81,12 @@ namespace DDPM.SA.Common.Security
                 opt = PathCheckOption.IgnoreFileExists;
             }
 
+            if (string.IsNullOrEmpty(filePathFileName))
+            {
+                info = $"InputValidation: filePathFileName NULL";
+                return false;
+            }
+
             if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
             {
 #if DEBUG 
@@ -121,6 +133,13 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+
+            if (string.IsNullOrEmpty(strURL))
+            {
+                info = $"InputValidation: URL NULL";
+                return false;
+            }
+
             int len = strURL.Length;
             if (len < 1 || len > 8000)
             {
@@ -193,6 +212,13 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+
+            if (string.IsNullOrEmpty(strData))
+            {
+                info = $"InputValidation: WLAN PWD NULL";
+                return false;
+            }
+
             int len = strData.Length;
             if (len < 1 || len > 63)
             {

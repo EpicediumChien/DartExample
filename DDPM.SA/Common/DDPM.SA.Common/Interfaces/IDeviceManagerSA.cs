@@ -868,11 +868,13 @@ namespace DDPM.SA.Common
 
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
 
+        Task<bool> Set_GlobalSetting_EnableTelemetryConsent(bool isEnable);
+
         #region OutReport
 
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
 
-        Task<bool> SaveLogFile(string saveFolderPath);
+        Task<bool> SaveLogFile(string saveFolderPath = "");
 
         #endregion OutReport
 

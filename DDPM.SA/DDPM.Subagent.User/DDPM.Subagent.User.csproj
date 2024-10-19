@@ -9,7 +9,7 @@
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.43</Version>
+		<Version>2.0.0.45</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.8.2" />
+		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.8.2" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
 {
@@ -73,16 +74,16 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("4f1", cell_4f1));
-            cellListH.Add(new CellObj("4f2", cell_4f2));
-            cellListH.Add(new CellObj("4f3", cell_4f3));
-            cellListH.Add(new CellObj("4f4", cell_4f4));
+            cellListH.Add(new CellObj("4f1", cell_4f1) { rcRatio = new Rect(0, 0, 1 / 3, 1) });
+            cellListH.Add(new CellObj("4f2", cell_4f2) { rcRatio = new Rect(1/3, 0, 1 / 3, 1) });
+            cellListH.Add(new CellObj("4f3", cell_4f3) { rcRatio = new Rect(2/3, 0, 1 / 3, 0.5) });
+            cellListH.Add(new CellObj("4f4", cell_4f4) { rcRatio = new Rect(2/3, 0.5, 1 / 3, 0.5) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("4F1", cell_4F1));
-            cellListV.Add(new CellObj("4F2", cell_4F2));
-            cellListV.Add(new CellObj("4F3", cell_4F3));
-            cellListV.Add(new CellObj("4F4", cell_4F4));
+            cellListV.Add(new CellObj("4F1", cell_4F1) { rcRatio = new Rect(0, 0, 1, 1/3) });
+            cellListV.Add(new CellObj("4F2", cell_4F2) { rcRatio = new Rect(0, 1/3, 1, 1/3) });
+            cellListV.Add(new CellObj("4F3", cell_4F3) { rcRatio = new Rect(0.5, 2/3, 0.5, 1/3) });
+            cellListV.Add(new CellObj("4F4", cell_4F4) { rcRatio = new Rect(0, 2/3, 0.5, 1/3) });
         }
 
         #endregion Cell List

@@ -173,7 +173,9 @@ namespace DDPM.EABroker
         {
             _vm.IsShiftPressed = WinEventHook.IsShiftPressed();
             if (!_vm.IsMoving)
+            {
                 return;
+            }
 
             _vm.IsMoving = false;
             _vm.StartMovingMsg = "";

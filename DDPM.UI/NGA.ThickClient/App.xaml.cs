@@ -110,7 +110,7 @@ namespace NGA.ThickClient
         {
             var resourceManager = base.LoadResources();
             //update dark/light mode
-            DdpmCommonHelper.updateMergedDictionarie();
+            //DdpmCommonHelper.updateMergedDictionarie();
             try
             {
                 var resourceDictionaries = new[] { new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) } };
