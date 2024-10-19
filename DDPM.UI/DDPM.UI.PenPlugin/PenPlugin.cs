@@ -70,8 +70,8 @@ namespace DDPM.UI.Plugin.PenPlugin
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
-            Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPenDeviceItemsEx();
-            var jArray = JArray.FromObject(task2.Result);
+            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPenDeviceItemsEx();
+            //var jArray = JArray.FromObject(task2.Result);
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
         }
 
