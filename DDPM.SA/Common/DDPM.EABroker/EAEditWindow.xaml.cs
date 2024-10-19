@@ -340,6 +340,10 @@ namespace DDPM.EABroker
                 border.Width = rcWnd.Width / scale;
                 border.Height = rcWnd.Height / scale;
 
+                //Convert and store in CellList, rcRatio
+                //CellObj cellObj = new CellObj();
+                //cellObj.Name = pathName;
+
                 canvas.Children.Add(border);
                 addCount++;
                 //Convert screen coordinate to EditWindow

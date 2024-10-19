@@ -372,19 +372,19 @@ public class TestNetworkKVM
         int Value = 100;
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        //VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
-        //var VcpCoreServiceObject = VcpCoreService.Object;
-        //PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
-        //privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+        VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));  //GetMonitors moethod Remove variable
+        var VcpCoreServiceObject = VcpCoreService.Object;
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
-        //NamedPipeServerStream pipeServerSetVCPNotify_;
-        //pipeServerSetVCPNotify_ = new NamedPipeServerStream("SetVCPNotify");
-        //privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServerSetVCPNotify_);
+        NamedPipeServerStream pipeServerSetVCPNotify_;
+        pipeServerSetVCPNotify_ = new NamedPipeServerStream("SetVCPNotify");
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServerSetVCPNotify_);
 
-        //var SetVCPNotifyResult = NkvmPlugin.SetVCPNotify(monitorInfo1, Vcpcode, Value);
-        //var get_allInfoMonitors = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
-        //Assert.IsNotNull(SetVCPNotifyResult);
-        //Assert.That(_allInfoMonitors, Is.EqualTo(get_allInfoMonitors));
+        var SetVCPNotifyResult = NkvmPlugin.SetVCPNotify(monitorInfo1, Vcpcode, Value);
+        var get_allInfoMonitors = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
+        Assert.IsNotNull(SetVCPNotifyResult);
+        Assert.That(_allInfoMonitors, Is.EqualTo(get_allInfoMonitors));
     }
 
     [Test]
@@ -453,14 +453,14 @@ public class TestNetworkKVM
         pipeServerChangeLimitedSW_ = new NamedPipeServerStream("ChangeLimitedSW");
         privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServerChangeLimitedSW_);
 
-        //VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
-        //var VcpCoreServiceObject = VcpCoreService.Object;
-        //privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+        VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));    //GetMonitors moethod Remove variable
+        var VcpCoreServiceObject = VcpCoreService.Object;
+        privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
-        //var NKVM_ChangeLimitedSWResult = NkvmPlugin.NKVM_ChangeLimitedSW(monitorInfo1, isOn);
-        //var monitors = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
-        //Assert.IsNotNull(NKVM_ChangeLimitedSWResult);
-        //Assert.That(_allInfoMonitors, Is.EqualTo(monitors));
+        var NKVM_ChangeLimitedSWResult = NkvmPlugin.NKVM_ChangeLimitedSW(monitorInfo1, isOn);
+        var monitors = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
+        Assert.IsNotNull(NKVM_ChangeLimitedSWResult);
+        Assert.That(_allInfoMonitors, Is.EqualTo(monitors));
     }
 
     [Test]
@@ -489,12 +489,12 @@ public class TestNetworkKVM
         PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        //VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
-        //var VcpCoreServiceObject = VcpCoreService.Object;
-        //privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
-        //var result = privatevNkvmPluginObject.Invoke("InitializeMonitorsList");
-        //var monitorlist = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
-        //Assert.That(_allInfoMonitors, Is.EqualTo(monitorlist));
+        VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
+        var VcpCoreServiceObject = VcpCoreService.Object;
+        privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+        var result = privatevNkvmPluginObject.Invoke("InitializeMonitorsList");
+        var monitorlist = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
+        Assert.That(_allInfoMonitors, Is.EqualTo(monitorlist));
     }
 
     [Test]
@@ -504,12 +504,12 @@ public class TestNetworkKVM
         PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
         List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
         _allInfoMonitors.Add(monitorInfo1);
-        //VcpCoreService.Setup(x => x.GetMonitors(It.IsAny<bool>())).Returns(Task.FromResult(_allInfoMonitors));
-        //var VcpCoreServiceObject = VcpCoreService.Object;
-        //privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
-        //var result = privatevNkvmPluginObject.Invoke("GetMonitors", renew);
-        //var monitorlist1 = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
-        //Assert.That(_allInfoMonitors, Is.EqualTo(monitorlist1));
+        VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
+        var VcpCoreServiceObject = VcpCoreService.Object;
+        privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+        var result = privatevNkvmPluginObject.Invoke("GetMonitors");                         //GetMonitors moethod Remove variable
+        var monitorlist1 = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
+        Assert.That(_allInfoMonitors, Is.EqualTo(monitorlist1));
     }
 
     [Test]
@@ -530,6 +530,277 @@ public class TestNetworkKVM
         {
             var IsSupportNKVMresult2 = privatevNkvmPluginObject.Invoke("IsSupportNKVM", capabilityString_2);
             Assert.That(isSupportNKVM, Is.EqualTo(IsSupportNKVMresult2));
+        }
+    }
+
+    [Test]
+    public void TestCallNKVMConnent()
+    {
+        try
+        {
+            var result = NkvmPlugin.CallNKVMConnent();
+            Assert.That(result, Is.Not.Null);
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail("not invoked");
+        }
+    }
+
+    [Test]
+    public void TestEventArgsjson()
+    {
+        string jsonstring_ = "jsonstring_test";
+        EventArgsjson eventArgsjson = new EventArgsjson(jsonstring_);
+        var result = eventArgsjson.jsonString;
+        Assert.That(jsonstring_, Is.EqualTo(result));
+    }
+
+    [Test]
+    public void TestNKVMDisconnectStop()
+    {
+        PrivateObject privateObjectNkvmPlugin = new PrivateObject(NkvmPlugin);
+        privateObjectNkvmPlugin.Invoke("Stop");
+        Assert.True(true);
+    }
+
+    [Test]
+    public void TestDisconnect()
+    {
+        PrivateObject privateObjectNkvmPlugin = new PrivateObject(NkvmPlugin);
+        NamedPipeServerStream pipeServerDisconnect_;
+        pipeServerDisconnect_ = new NamedPipeServerStream("TestDisconnect");
+        privateObjectNkvmPlugin.SetFieldOrProperty("pipeServer", pipeServerDisconnect_);
+        privateObjectNkvmPlugin.Invoke("Disconnect");
+        Assert.True(true);
+    }
+
+    [Test]
+    public void TestPluginManagerOnPluginsStarted()
+    {
+        object sender = new object();
+        List<IFrameworkPlugin> startedPlugins = new List<IFrameworkPlugin>();
+        PluginsStartedEventArgs e = new PluginsStartedEventArgs(startedPlugins);
+        PrivateObject privateObjectNkvmPlugin = new PrivateObject(NkvmPlugin);
+        var result = privateObjectNkvmPlugin.Invoke("PluginManagerOnPluginsStarted", sender, e);
+        Assert.True(true);
+    }
+
+    [Test]
+    public void TestPluginsStarted()
+    {
+        object sendertest = new object();
+        List<IFrameworkPlugin> startedPlugins = new List<IFrameworkPlugin>();
+        PluginsStartedEventArgs etest = new PluginsStartedEventArgs(startedPlugins);
+        PrivateObject privateObjectNkvmPlugin = new PrivateObject(NkvmPlugin);
+        var result = privateObjectNkvmPlugin.Invoke("PluginsStarted", sendertest, etest);
+        Assert.True(true);
+    }
+
+    [Test]
+    public void TestToNKVMCLI()
+    {
+        string cLIName = "TestCLI";
+        string respone = "Test Response";
+        NKVMRespone response = new NKVMRespone { CLIName = "TestCLI", Respone = "Test Response" };
+        // Registering the event handler
+        NkvmPlugin.NKVMCLIEvent += (sender, args) =>
+        {
+            Assert.That(cLIName, Is.EqualTo(args.CLIName));
+            Assert.That(respone, Is.EqualTo(args.Respone));
+        };
+        try
+        {
+            // Act
+            NkvmPlugin.ToNKVMCLI(response);
+            Assert.IsTrue(true);
+        }
+        catch
+        {
+            Assert.Fail("not invoked");
+        }
+    }
+
+    [Test]
+    public void TestSetDDPMHotkey()
+    {
+        string DDPMHotkeyjsonstring = "TestnKVMSetHotkey";
+        NKVMSetHotkey nKVMSetHotkey = new NKVMSetHotkey() { HotkeyInfo = new HotkeyInfo() { Description = "TestHotkey", Hotkey = new List<VirtualKey>(), InputSource = new List<InputSourceObj>(), Status = new HotkeyStatus() }, jsonstring = "TestnKVMSetHotkey" };
+        NKVMRespone response = new NKVMRespone { CLIName = "TestCLI", Respone = "Test Response" };
+        // Registering the event handler
+
+        NkvmPlugin.NKVMSetHotkey += (sender, args) =>
+        {
+            Assert.That(DDPMHotkeyjsonstring, Is.EqualTo(args.jsonstring));
+        };
+        try
+        {
+            // Act
+            NkvmPlugin.SetDDPMHotkey(nKVMSetHotkey);
+            Assert.IsTrue(true);
+        }
+        catch
+        {
+            Assert.Fail("not invoked");
+        }
+    }
+
+    [Test]
+    public void TestSetHotkeyResponse()
+    {
+        var jsonstring = "{\"Hotkey\":{\"Id\":\"KvmToggleInputSource\",\"Control\":false,\"Alt\":false,\"Shift\":false,\"Key\":65}}";
+        bool isSuccess = false;
+        PrivateObject privateObjectNkvmPlugin = new PrivateObject(NkvmPlugin);
+        NamedPipeServerStream pipeServerSetHotkeyResponse_;
+        pipeServerSetHotkeyResponse_ = new NamedPipeServerStream("SetHotkeyResponse");
+        privateObjectNkvmPlugin.SetFieldOrProperty("pipeServer", pipeServerSetHotkeyResponse_);
+        string message = "One or more errors occurred. (Pipe hasn't been connected yet.)";
+        try
+        {
+            var result = NkvmPlugin.SetHotkeyResponse(jsonstring, isSuccess);
+            Assert.NotNull(result);
+        }
+        catch (Exception ex)
+        {
+            Assert.That(message, Is.EqualTo(ex.Message));
+        }
+    }
+
+    [Test]
+    public void TestGetNKVMVersion()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMVersion");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMVersionResult = NkvmPlugin.GetNKVMVersion();
+        Assert.IsNotNull(GetNKVMVersionResult);
+    }
+
+    [Test]
+    public void TestGetNKVMStatus()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMStatus");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMStatusResult = NkvmPlugin.GetNKVMStatus();
+        Assert.IsNotNull(GetNKVMStatusResult);
+    }
+
+    [Test]
+    public void TestGetNKVMAutoConnect()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMAutoConnect");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMAutoConnectResult = NkvmPlugin.GetNKVMAutoConnect();
+        Assert.IsNotNull(GetNKVMAutoConnectResult);
+    }
+
+    [Test]
+    public void TestGetNKVMContentTransfer()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMContentTransfer");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMContentTransferResult = NkvmPlugin.GetNKVMContentTransfer();
+        Assert.IsNotNull(GetNKVMContentTransferResult);
+    }
+
+    [Test]
+    public void TestGetNKVMIncommingPort()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMIncommingPort");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMIncommingPortResult = NkvmPlugin.GetNKVMIncommingPort();
+        Assert.IsNotNull(GetNKVMIncommingPortResult);
+    }
+
+    [Test]
+    public void TestGetNKVMOutgoingPort()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMOutgoingPort");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMOutgoingPortResult = NkvmPlugin.GetNKVMOutgoingPort();
+        Assert.IsNotNull(GetNKVMOutgoingPortResult);
+    }
+
+    [Test]
+    public void TestGetNKVMContentTransferPort()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMContentTransferPort");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMContentTransferPortResult = NkvmPlugin.GetNKVMContentTransferPort();
+        Assert.IsNotNull(GetNKVMContentTransferPortResult);
+    }
+
+    [Test]
+    public void TestGetNKVMSettings()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("GetNKVMSettings");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var GetNKVMSettingsResult = NkvmPlugin.GetNKVMSettings();
+        Assert.IsNotNull(GetNKVMSettingsResult);
+    }
+
+    [Test]
+    public void TestNKVM_State()
+    {
+        bool NKVM_state = false;
+        NamedPipeServerStream pipeServer_;
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        var NKVM_StateResult = NkvmPlugin.NKVM_State(NKVM_state);
+        var NKVM_State = privatevNkvmPluginObject.GetFieldOrProperty("NKVMState");
+        Assert.IsNotNull(NKVM_StateResult);
+        Assert.That(NKVM_state, Is.EqualTo(NKVM_State));
+    }
+
+    [Test]
+    public void TestHaveSuppertMonitor()
+    {
+        bool HaveSuppertMonitor1 = true;
+        bool HaveSuppertMonitor2 = false;
+        List<MonitorInfo> _AllInfoMonitor = new List<MonitorInfo>();
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
+        monitorInfo1.modelName = "P5524Q";
+        _allInfoMonitors.Add(monitorInfo1);
+        privatevNkvmPluginObject.SetFieldOrProperty("_AllInfoMonitors", _AllInfoMonitor);
+        VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
+        var VcpCoreServiceObject = VcpCoreService.Object;
+        privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+
+        string isSupportMonitor = "P5524Q";
+        string isNotSupportMonitor = "TestU2724";
+        string[] validModelNames = { "P2424HEB", "P2725DEB", "P3424WEB", "P5524Q", "P5524QT", "P6524QT", "P7524QT", "P8624QT", "P5525QC" }; //isSupport KVM Monitor
+        if (validModelNames.Contains(isSupportMonitor))
+        {
+            var HaveSuppertMonitorResult = NkvmPlugin.HaveSuppertMonitor().Result;
+            Assert.That(HaveSuppertMonitor1, Is.EqualTo(HaveSuppertMonitorResult));
+        }
+
+        if (!validModelNames.Contains(isNotSupportMonitor))
+        {
+            List<MonitorInfo> _allInfoMonitors2 = new List<MonitorInfo>();
+            monitorInfo1.modelName = isNotSupportMonitor;
+            _allInfoMonitors2.Add(monitorInfo1);
+            privatevNkvmPluginObject.SetFieldOrProperty("_AllInfoMonitors", _AllInfoMonitor);
+            VcpCoreService.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors2));
+            var VcpCoreServiceObject2 = VcpCoreService.Object;
+            privatevNkvmPluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
+            var HaveSuppertMonitorResult2 = NkvmPlugin.HaveSuppertMonitor().Result;    // //is NOt Support kvm Monitor not ContainsKey "C6"
+            Assert.That(HaveSuppertMonitor2, Is.EqualTo(HaveSuppertMonitorResult2));
         }
     }
 

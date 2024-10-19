@@ -2622,7 +2622,7 @@ namespace VcpCore.Plugins
                 }
 
                 count++;
-                _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability " + Convert.ToString(code, 16) + " , retry ( " + count + " )");
+                _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability " + Convert.ToString(code, 16) ?? string.Empty + " , retry ( " + count.ToString() + " )");
                 Thread.Sleep(1000);
             } while (count < 3 && retry);
 

@@ -77,14 +77,14 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("3b1", cell_3b1));
-            cellListH.Add(new CellObj("3b2", cell_3b2));
-            cellListH.Add(new CellObj("3b3", cell_3b3));
+            cellListH.Add(new CellObj("3b1", cell_3b1) { rcRatio = new Rect(0, 0, 1/3, 1) });
+            cellListH.Add(new CellObj("3b2", cell_3b2) { rcRatio = new Rect(1/3, 0, 1/3, 1) });
+            cellListH.Add(new CellObj("3b3", cell_3b3) { rcRatio = new Rect(2/3, 0, 1/3, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("3B1", cell_3B1));
-            cellListV.Add(new CellObj("3B2", cell_3B2));
-            cellListV.Add(new CellObj("3B3", cell_3B3));
+            cellListV.Add(new CellObj("3B1", cell_3B1) { rcRatio = new Rect(0, 0, 1, 1 / 3) });
+            cellListV.Add(new CellObj("3B2", cell_3B2) { rcRatio = new Rect(0, 1/3, 1, 1 / 3) });
+            cellListV.Add(new CellObj("3B3", cell_3B3) { rcRatio = new Rect(0, 2/3, 1, 1 / 3) });
         }
         #endregion Cell List
 
