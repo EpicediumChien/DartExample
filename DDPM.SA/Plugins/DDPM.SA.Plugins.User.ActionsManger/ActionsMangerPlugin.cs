@@ -2297,6 +2297,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[ActionsMangerPlugin] " + text;
             Console.WriteLine(text);
             if (log_type == log_type.info)

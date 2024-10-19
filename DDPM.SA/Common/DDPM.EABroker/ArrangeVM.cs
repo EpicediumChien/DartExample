@@ -274,6 +274,7 @@ namespace DDPM.EABroker
 
                 bool isEqualed = (value.Equals(_workScreen));
                 SetProperty(ref _workScreen, value);
+                OnPropertyChanged("WorkScreenName");
                 if (!isEqualed)
                 {
                     if (WorkScreenChanged != null)
@@ -309,13 +310,16 @@ namespace DDPM.EABroker
                     _awsWindow.RefreshCellRects();
                 }
             }
-            foreach (EAWorkWindow workWin in _workWindows)
+            if (IsWorkWindowVisible)
             {
-                if (workWin == null)
-                    continue;
-                if (!workWin.IsUsed)
-                    continue;
-                workWin.RefreshCellRects();
+                foreach (EAWorkWindow workWin in _workWindows)
+                {
+                    if (workWin == null)
+                        continue;
+                    if (!workWin.IsUsed)
+                        continue;
+                    workWin.RefreshCellRects();
+                }
             }
             RefreshWorkWinInfos();
         }
@@ -409,6 +413,7 @@ namespace DDPM.EABroker
             set
             {
                 SetProperty(ref _isAwsEnabled, value);
+                OnPropertyChanged("IsWorkWindowVisible");
                 OnPropertyChanged("IsAwsWindowVisible");
             }
         }
@@ -473,6 +478,7 @@ namespace DDPM.EABroker
             {
                 SetProperty(ref _isWorkUIEnabled, value);
                 OnPropertyChanged("IsWorkWindowVisible");
+                OnPropertyChanged("IsAwsWindowVisible");
             }
         }
 
@@ -483,6 +489,8 @@ namespace DDPM.EABroker
                 if (!IsMoving)
                     return false;
                 if (!_isWorkUIEnabled)
+                    return false;
+                if (IsAwsEnabled)
                     return false;
 
                 if (IsOnlyShift)
@@ -495,6 +503,7 @@ namespace DDPM.EABroker
 
         public void InitWorkWindows()
         {
+            int added = 0;
             Thread thread = new Thread(() =>
             {
                 try
@@ -514,14 +523,20 @@ namespace DDPM.EABroker
                 }
                 catch (Exception eW)
                 {
-                    WriteLog("new EAWorkWIndow causes EXCEPTION", eW);
+                    WriteLog("new EAWorkWindow causes EXCEPTION", eW);
                 }
  
+                added++;
                 System.Windows.Threading.Dispatcher.Run();
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.IsBackground = true;
             thread.Start();
+
+            while (added <= 0)
+            {
+                Thread.Sleep(10);
+            }
         }
 
         public void RefreshWorkWindows()
@@ -584,6 +599,19 @@ namespace DDPM.EABroker
 
             OnPropertyChanged("WorkWindowUsedCount");
             RefreshWorkWinInfos();
+
+            //Robert_Lin, 2024-10-18 Workaround
+            //If ScreenCount>2, we assume it may have one Dell monitor, but no WorkWindow created, then we will
+            //Redo this method by raise a "DisplaySettingsChanged" event
+            if (System.Windows.Forms.Screen.AllScreens.Length >= 2)
+            {
+                if (WorkWindowUsedCount == 0)
+                {
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
+                        _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                    }, null, 2000, Timeout.Infinite);
+                }
+            }
         }
 
         private EAWorkWindow? GetUnusedWorkWindow()
@@ -651,6 +679,7 @@ namespace DDPM.EABroker
         #region AWS Window
         public void InitAwsWindow()
         {
+            int added = 0;
             Thread thread = new Thread(() =>
             {
                 if (_awsWindow == null)
@@ -664,15 +693,21 @@ namespace DDPM.EABroker
                     }
                     catch (Exception eA)
                     {
-                        WriteLog("new EAWorkWIndow causes EXCEPTION", eA);
+                        WriteLog("new AwsWindow causes EXCEPTION", eA);
                     }
                 }
+                added++;
  
                 System.Windows.Threading.Dispatcher.Run();
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.IsBackground = true;
             thread.Start();
+
+            while (added <= 0)
+            {
+                Thread.Sleep(10);
+            }
         }
 
         public bool IsAwsWindowVisible
@@ -688,6 +723,8 @@ namespace DDPM.EABroker
                 else
                 {
                     if (!IsAwsEnabled)
+                        newValue = false;
+                    else if (!IsWorkUIEnabled)
                         newValue = false;
                     else
                     {
@@ -728,6 +765,9 @@ namespace DDPM.EABroker
         #endregion
 
         #region AWS Icons
+        public static double cxIcon => 120;
+        public static double cyIcon => 90;
+
         public ISplitCtrl AwsIcon1
         {
             get => _awsIcon1;
@@ -821,9 +861,11 @@ namespace DDPM.EABroker
             splitCtrl.SplitMode = splitMode;
             if ((spJson.CellCount == 0) && (spJson.SplitKey == 'B'))
             {
+                SplitCtrl0B spctrl0B = (SplitCtrl0B) splitCtrl;
                 if (splitMode == eSplitModes.AWS)
                 {
                     splitMode = eSplitModes.Work;
+                    spctrl0B.ApplySettingsToCellList(new Rect(0, 0, ArrangeVM.cxIcon, ArrangeVM.cyIcon));
                 }
             }
             return splitCtrl;
@@ -876,11 +918,11 @@ namespace DDPM.EABroker
                     outString += ",";
                 if (objCell.rc == Rect.Empty)
                 {
-                    outString += $"{{\"{objCell.Name}\": EMPTY}}";
+                    outString += $"{{\"{objCell.Name}\": EMPTY}} ";
                 }
                 else
                 {
-                    outString += $"{{\"{objCell.Name}\":{ArrangeVM.FormatRect(objCell.rc)}}}";
+                    outString += $"{{\"{objCell.Name}\":{ArrangeVM.FormatRect(objCell.rc)}}} ";
                 }
             }
             outString += "]";
@@ -917,7 +959,7 @@ namespace DDPM.EABroker
 
         public static string FormatRect(System.Windows.Rect rc)
         {
-            return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
+            return $"({rc.Left:F2},{rc.Top:F2})-({rc.Right:F2},{rc.Bottom:F2}){rc.Width:F2}x{rc.Height:F2}";
         }
 
         public static Rect RectFromRectangle(Rectangle rectangle)

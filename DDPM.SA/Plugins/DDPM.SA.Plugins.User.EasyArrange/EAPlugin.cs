@@ -989,12 +989,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 ConsoleWriteLine("EABroker Start = = = = = = = =");
                 LogInfo("EABroker Start = = = = = = = =");
                 _vmArrange.DisplayManager = _displayManagerPlugin;
-                _eaBroker = new DDPM.EABroker.EABroker(_agent, _deviceManagerPlugin, _displayManagerPlugin, this);
-                _eaBroker.Start();
 
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
+                _eaBroker = new DDPM.EABroker.EABroker(_agent, _deviceManagerPlugin, _displayManagerPlugin, this);
+                _eaBroker.Start();
                 //new windows in separate STD threads 
                 //InitEditWindow();
                 //InitSaveCustomWindow();
@@ -1108,7 +1108,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 //WinEventHook_Stop();
                 //_vmArrange.ClearWorkWindows();
-                _vmArrange.ResetWorkWindows2();
+                //_vmArrange.ResetWorkWindows2();
 
                 System.Windows.Threading.Dispatcher.Run();
             });

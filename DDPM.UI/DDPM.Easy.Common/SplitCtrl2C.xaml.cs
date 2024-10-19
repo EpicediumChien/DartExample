@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
 {
@@ -73,16 +74,16 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("2c1", cell_2c1));
-            cellListH.Add(new CellObj("2c2", cell_2c2));
+            cellListH.Add(new CellObj("2c1", cell_2c1) { rcRatio = new Rect(0, 0, 0.7, 1) });
+            cellListH.Add(new CellObj("2c2", cell_2c2) { rcRatio = new Rect(0.7, 0, 0.3, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("2C1", cell_2C1));
-            cellListV.Add(new CellObj("2C2", cell_2C2));
+            cellListV.Add(new CellObj("2C1", cell_2C1) { rcRatio = new Rect(0, 0, 1, 0.7) });
+            cellListV.Add(new CellObj("2C2", cell_2C2) { rcRatio = new Rect(0, 0.7, 1, 0.3) });
 
-            celBordersH.Clear();
-            celBordersH.Add(cellBd_2c1);
-            celBordersH.Add(cellBd_2c2);
+            //celBordersH.Clear();
+            //celBordersH.Add(cellBd_2c1);
+            //celBordersH.Add(cellBd_2c2);
         }
 
         #endregion Cell List

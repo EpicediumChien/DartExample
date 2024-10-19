@@ -2139,4 +2139,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Automatically apply the settings when the same model is detected</value>
+  </data>
 </root>
