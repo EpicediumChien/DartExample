@@ -3791,6 +3791,9 @@ namespace DDPM.CLI.Plugins.Display
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[CLI Plugin Display] " + text;
             //Console.WriteLine(text);
             if (log_type == log_type.info)
