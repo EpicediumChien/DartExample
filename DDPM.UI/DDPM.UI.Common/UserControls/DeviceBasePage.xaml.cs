@@ -20,6 +20,9 @@ namespace DDPM.UI.Common.UserControls
         private DeviceBasePageViewModel viewModel = new DeviceBasePageViewModel();
         public DeviceBasePageViewModel ViewModel { get { return viewModel; } }
 
+        //Derek 10/17 for RWD
+        private readonly Int16 breakPoints = 537;
+
         public DeviceBasePage()
         {
             InitializeComponent();
@@ -40,6 +43,9 @@ namespace DDPM.UI.Common.UserControls
             //tooltipFwVer.Text = Strings.FirmwareVersion;
             //tooltipServiceTag.Text = Strings.ServiceTag;
             //tooltipManufactureMonth.Text = Strings.ManufactureMonth;
+
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                breakPoints = width;
         }
 
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
@@ -82,6 +88,8 @@ namespace DDPM.UI.Common.UserControls
             //    //_ivm.RightViewHeaderSelectedIndex = 0;
 
             //    RightFrame.Visibility = Visibility.Visible;
+            //System.Windows.MessageBox.Show("OnLeaveLandingMode");
+            LeftFrame.Width = viewModel.LeftFrameWidth;
         }
 
         private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
@@ -116,6 +124,8 @@ namespace DDPM.UI.Common.UserControls
         {
             if (LeftArrowClick != null)
                 LeftArrowClick(sender, e);
+
+            //System.Windows.MessageBox.Show("leftArrow_MouseLeftButtonDown");
         }
 
         //RightViewHeaderCtrl cannot notify SelectedIndex property changed to ViewModel.
@@ -180,6 +190,9 @@ namespace DDPM.UI.Common.UserControls
             {
                 _log.Info($"DeviceBasePage_Loaded, Elapsed {_stopwatch.Elapsed.TotalMilliseconds} msec.");
             }
+
+            LeftFrame.Width = this.ActualWidth - 20;
+            rightFrameSV.Height = RightGrid.Height;
         }
 
         private void bdLeftArrow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -240,5 +253,40 @@ namespace DDPM.UI.Common.UserControls
             return true;
         }
         #endregion
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _log.Info($"this.ActualWidth = {this.ActualWidth}");
+
+            //if (!isLandingMode && LeftFrame.ActualWidth <= 200)
+            if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints + 150)
+            {
+                ChangeToVerticalLayout();
+            }
+            else
+            {
+                ChangeToHorizontalLayout();
+            }
+
+            if (!viewModel.IsLandingMode)
+            {
+                RightGrid.Width = this.ActualWidth / 2;
+                LeftFrame.Width = this.ActualWidth / 2;
+            }
+        }
+
+        private void ChangeToVerticalLayout()
+        {
+            topStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
+            //vBar.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            rightFrameSV.Height = this.ActualHeight - LeftFrame.ActualHeight - 20;
+        }
+
+        private void ChangeToHorizontalLayout()
+        {
+            topStackPanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
+            //vBar.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+            rightFrameSV.Height = RightGrid.Height;
+        }
     }
 }
