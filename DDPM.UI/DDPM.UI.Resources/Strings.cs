@@ -581,6 +581,10 @@ namespace DDPM.UI.Common
         public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
         public static readonly string PairYourPen = "Pair your pen";
         public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
+
+        // Restore to default
+        public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
+        
         // Display Restore to Default
         public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
     }
