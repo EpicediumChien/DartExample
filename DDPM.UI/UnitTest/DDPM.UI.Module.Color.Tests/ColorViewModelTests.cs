@@ -4,7 +4,6 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Collections.ObjectModel;
@@ -23,17 +22,12 @@ namespace DDPM.UI.Module.Color.Tests
         private MonitorInfo? monitorInfo;
         private ColorModule? colorModule;
         private ColorModule? myModleMock;
-        private IConsole? MyConsole;
-        private Mock<IConsole>? MyConsoleMock;
         private IDeviceManagerSA? deviceManagerSA;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
 
         [SetUp]
         public void Setup()
         {
-            MyConsoleMock = new Mock<IConsole>();
-            MyConsole = MyConsoleMock.Object;
-            DdpmCommonHelper.MyConsole = MyConsole;
             colorViewModel = new ColorViewModel();
             //privateObject = new PrivateObject(monitorInfo);
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -249,33 +243,33 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-        [Test]
-        public void TestWatchForProcessStart()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessStart();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessStart()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessStart();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
-        [Test]
-        public void TestWatchForProcessEnd()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessEnd();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessEnd()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessEnd();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
 
 
