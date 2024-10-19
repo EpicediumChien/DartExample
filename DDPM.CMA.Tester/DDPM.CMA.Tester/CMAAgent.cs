@@ -36,6 +36,8 @@ namespace DDPM.CMA.Tester
         private const int TIMEOUT_IN_SECONDS = 60;
         private static int _exitcode = 0;
 
+
+        private static Boolean isresponse = false;
         #endregion
 
         #region Constructor
@@ -85,34 +87,84 @@ namespace DDPM.CMA.Tester
 
         private void RunManagement(string[] args, bool runMode)
         {
-            if (_CMAManagerPlugin == null)
-            {
-                Console.WriteLine("No CMA Manager be found");
-                _exitcode = 1;
-                return;
-            }
+            InitializeCMAManagerPlugin();
 
-            if(args.Length == 0)
+            if (_PluginAvailabilityTrigger_CMAManager.WaitOne(TimeSpan.FromSeconds(TIMEOUT_IN_SECONDS)))
             {
-                Console.WriteLine("No command line input");
-                _exitcode = 2;
-                return;
-            }
+                if (_CMAManagerPlugin == null)
+                {
+                    _exitcode = (int)CLI_ExitCode.null_cli_manager;
+                    return;
+                }
+                isresponse = false;
 
-            CMARequestArgs input = new CMARequestArgs();
-            input.cma_request = args[0];
-            
-            CMAResult result = _CMAManagerPlugin.PerformCMARequest(input).Result;
-            if (result != null)
-            {
-                Console.WriteLine("Detail: " + result.message);
-                Console.WriteLine("Detail: " + result.output_result);
-                Console.WriteLine($"ID: {result.cma_request_id}");
+                //_CMAManagerPlugin.Notify += Notification;
+
+                //Console.WriteLine("Reg");
+
+               // while (!isresponse) { }
+
+                runRequest(args);
+
+                
+
+                return;
             }
             else
             {
-                Console.WriteLine("CMA Manager return null result");
+                //Means timeout here
+                Console.WriteLine($"{"Device "} was not found after {TIMEOUT_IN_SECONDS}s.");
+
+                return;
             }
+            
+        }
+
+        private void runRequest(string[] args)
+        {
+            string json = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{""index"":""1"",""uod"":true,""updatesilent"":""""}}]}";
+            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{""index"":""1"",""uod"":true,""updatesilent"":""""}}]}";
+            string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{""index"":""1"",""uod"":true,""updatesilent"":""""}}]}";
+
+            string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""ConnectedDevices"",""options"":{}}]}";
+            string jsondevicedata = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
+            string jsondeviceconfig = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""set"",""devicetype"":""APP"",""command"":""DeviceConfiguration"",""options"":{}}]}";
+
+
+            CMARequestArgs cmarequest = new CMARequestArgs();
+
+            _CMAManagerPlugin.Notify += Notification;
+            Console.WriteLine("Reg");
+
+            // manager.Info(json);
+
+            if (args.Length > 0)
+            {
+                switch (args[0].ToLower())
+                {
+                    case "display":
+                        cmarequest.cma_request = jsonfwdisplay;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case "dock":
+                        cmarequest.cma_request = jsonfwdock;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    default:
+                        cmarequest.cma_request = json;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+                }
+            }
+            else
+            {
+                cmarequest.cma_request = jsondevicedata;
+                _CMAManagerPlugin.Info(cmarequest);
+            }
+
+            while (!isresponse) { }
         }
 
         private void InitializeCMAManagerPlugin()
@@ -159,10 +211,14 @@ namespace DDPM.CMA.Tester
 
         private void PluginsStarted(object sender, PluginsStartedEventArgs e)
         {
-            if (e?.ChangedPlugins == null)
+            if (e == null)
+                return;
+            if (e.ChangedPlugins == null)
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
+
+            Console.WriteLine($"{e.ChangedPlugins.GetType().Name}");
 
             if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
             {
@@ -175,6 +231,15 @@ namespace DDPM.CMA.Tester
             InitializeCMAManagerPlugin();
         }
 
+        private static void Notification(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA Notification Alert");
+            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventtype);
+            Console.WriteLine("CMA Notification Alert notification : " + e.notification);
+
+            //isresponse = true;
+        }
         #endregion
     }
 }
