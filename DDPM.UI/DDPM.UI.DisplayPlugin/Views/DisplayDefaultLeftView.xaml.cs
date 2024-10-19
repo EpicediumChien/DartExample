@@ -86,7 +86,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             if (txtRestore.IsEnabled == false)
                 return;
 
-            MessageModalDialog dlg = new MessageModalDialog("Restore to default", "Do you want to reset your monitor to factory settings now?", "Yes", "No");
+            MessageModalDialog dlg = new MessageModalDialog(Strings.RestoreToDefault, Strings.DisplayDefault0, Strings.Yes, Strings.No);
             Window parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
             {

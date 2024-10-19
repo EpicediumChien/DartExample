@@ -284,13 +284,31 @@ namespace DDPM.UI.Common.UserControls
         {
             get
             {
+                int eaid = 0;
+                List<CellJson> cells = new List<CellJson>();
+                if (ISplitCtrl != null)
+                {
+                    eaid = ISplitCtrl.EAID;
+                    foreach(CellObj objCell in ISplitCtrl.CellList)
+                    {
+                        CellJson cj = new CellJson();
+                        cj.Name = objCell.Name;
+                        cj.x = objCell.rcRatio.Left;
+                        cj.y = objCell.rcRatio.Top;
+                        cj.w = objCell.rcRatio.Width;
+                        cj.h = objCell.rcRatio.Height;
+                        cells.Add(cj);
+                    }
+                }
                 return new SA.Common.Display.SplitJson()
                 {
                     CellCount = CellCount,
                     SplitKey = SplitKey,
                     Settings = Settings,
                     CustomId = CustomId,
-                    CustomName = CustomName
+                    CustomName = CustomName,
+                    EAID = eaid,
+                    Cells = cells.ToArray()
                 };
             }
         }

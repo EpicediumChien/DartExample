@@ -2987,19 +2987,23 @@ namespace DDPM.UI.Module.Brightness
 
         private void Reset_Click(object sender, DoWorkEventArgs e)
         {
-            bool r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
-            if (r)
+            if (IsSynchronizeMonitor)
             {
-                ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
-                if (rb_10.result)
-                {
-                    Brightness_Value = (uint)((long)rb_10.value);
-                    Luminance_Value = BrightnessValue;
-                }
-                ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
-                if (rb_12.result)
-                    Contrast_Value = (uint)((long)rb_12.value);
+                foreach (HomeDevice hd in ModuleOwner.HomeDevices)
+                    _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x05, 1).Result;
             }
+            else
+                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
+
+            ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+            if (rb_10.result)
+            {
+                Brightness_Value = (uint)((long)rb_10.value);
+                Luminance_Value = BrightnessValue;
+            }
+            ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
+            if (rb_12.result)
+                Contrast_Value = (uint)((long)rb_12.value);
         }
 
         private void Reset_Click_finish(object sender, RunWorkerCompletedEventArgs e)

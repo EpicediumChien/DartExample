@@ -54,8 +54,8 @@
                         </Style>
                     </Border.Style>
                 </Border>
+                <!-- 
                 <local:CellBorder x:Name="cellBd_2b1" Grid.Row="0" CellName="2b1" Radius="6,6,0,0">
-                    <!-- 
                     <local:CellBorder.Style>
                         <Style TargetType="local:CellBorder" BasedOn="{StaticResource  CellBorderStyle2}">
                             <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -77,9 +77,10 @@
                             </Style.Triggers>
                         </Style>
                     </local:CellBorder.Style>
-                    -->
                     
                 </local:CellBorder>
+                    -->
+
                 <Border Name="cell_2b2" Grid.Row="2">
                     <Border.Style>
                         <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
@@ -102,8 +103,8 @@
                         </Style>
                     </Border.Style>
                 </Border>
+                <!-- 
                 <local:CellBorder x:Name="cellBd_2b2" Grid.Row="2" CellName="2b2" Radius="0,0,6,6">
-                    <!-- 
                     <local:CellBorder.Style>
                         <Style TargetType="local:CellBorder" BasedOn="{StaticResource  CellBorderStyle2}">
                             <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
@@ -125,8 +126,8 @@
                             </Style.Triggers>
                         </Style>
                     </local:CellBorder.Style>
-                    -->
                 </local:CellBorder>
+                    -->
 
                 <GridSplitter Name="h1" Grid.Row="1" Style="{StaticResource SplitterStyle_Horz}" />
             </Grid>
