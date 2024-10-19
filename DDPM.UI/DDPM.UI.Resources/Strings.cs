@@ -569,5 +569,8 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
         public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
         public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+
+        // Display Restore to Default
+        public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
     }
 }
