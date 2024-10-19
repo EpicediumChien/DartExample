@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,7 +29,7 @@ namespace DDPM.UI.Plugin.Common
         private const double CenterX = 200;
         private const double CenterY = 200;
 
-        private int SelectedMenuID = 2;
+        private int SelectedMenuID = 0;
         private int SelectedActionID = 0;
         private bool IsComboOpen = false;
         readonly SolidColorBrush NormalFillBrush = new();
@@ -46,7 +47,7 @@ namespace DDPM.UI.Plugin.Common
 
             DrawPieChart();
 
-            SelectedMenuID = 2;
+            SelectedMenuID = 0;
             SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
             txtTitleBar.Text = Strings.RadialMenu;
             txtFunction.Text = Strings.FunctionForSelectedRadial;
@@ -85,15 +86,15 @@ namespace DDPM.UI.Plugin.Common
 
             for (int i = 0; i < numberOfSections; i++)
             {
-                double startAngle = i * angleStep;
+                double startAngle = -22.5 - i * angleStep;
                 double endAngle = startAngle + angleStep;
 
                 // Create a path for each section
                 Path path = new Path
                 {
-                    Name = $"Path{i + 1}",
-                    Fill = (i == 1) ? FocusFillBrush : NormalFillBrush,
-                    Stroke = (i == 1) ? FocusBorderBrush : NormalBorderBrush,
+                    Name = $"Path{i}",
+                    Fill = (i == 0) ? FocusFillBrush : NormalFillBrush,
+                    Stroke = (i == 0) ? FocusBorderBrush : NormalBorderBrush,
                     StrokeThickness = 1
                 };
 
@@ -163,7 +164,7 @@ namespace DDPM.UI.Plugin.Common
 
             txtLabelText.Visibility = Visibility.Visible;
             var parameter = "";
-            if (id == 2)
+            if (id == 8)
             {
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
@@ -191,12 +192,12 @@ namespace DDPM.UI.Plugin.Common
                     return;
                 }
             }
-            else if (id == 3)
+            else if (id == 23)
             {
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -208,14 +209,16 @@ namespace DDPM.UI.Plugin.Common
                 modalDialog.Top = windowTop;
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    parameter = $"{modalDialog.Parameter}";
                     if (modalDialog.ID == 1)
                     {
                         PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
                     }
                     else
                     {
-                        PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                        //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                        PenActions.RadialLabels[SelectedMenuID] = parameter;
                     }
                     spLabel.Visibility = Visibility.Collapsed;
                 }
@@ -237,6 +240,7 @@ namespace DDPM.UI.Plugin.Common
             CloseActionCombo();
             PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
             PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
+            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID, parameter);
             ActionList.ExportActionList(PenActions, "PEN");
             RefreshAction();
         }
@@ -248,13 +252,14 @@ namespace DDPM.UI.Plugin.Common
             {
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
-                rb.Content = Actions.RadialMenuActions[id].Caption;
+                //rb.Content = Actions.RadialMenuActions[id].Caption;
+                rb.Content = _vm.ActionNames[id];
                 rb.IsChecked = id == SelectedActionID;
             }
             else if (sender is ActionButton btn)
             {
                 id = (int)((ActionButton)sender).DataContext;
-                if ((id == 2 || id == 3) && id == SelectedActionID)
+                if ((id == 8 || id == 23) && id == SelectedActionID)
                 {
                     btn.Name = $"btn{id}";
                     btn.Caption = Strings.Edit;
@@ -270,16 +275,18 @@ namespace DDPM.UI.Plugin.Common
 
         void RefreshAction(bool all = false)
         {
-            txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
+            //txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
+            txtMenu.Text = _vm.ActionNames[SelectedActionID];
             txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
             MenuItems.ItemsSource = null;
-            MenuItems.ItemsSource = Actions.RadialMenuActionsList;
+            //MenuItems.ItemsSource = Actions.RadialMenuActionsList;
+            MenuItems.ItemsSource = _vm.RadialMenuActions;
             if (SelectedActionID > 7)
             {
                 svMenu.ScrollToVerticalOffset(SelectedActionID * 29);
             }
             RefreshLabel(all);
-            if (SelectedActionID == 2 || SelectedActionID == 3)
+            if (SelectedActionID == 8 || SelectedActionID == 23)
             {
                 spLabel.Visibility = Visibility.Collapsed;
             }
@@ -292,7 +299,7 @@ namespace DDPM.UI.Plugin.Common
         {
             if (all)
             {
-                for (int i = 1; i < 9; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     var tb = (UXTextBlock)FindName($"Label{i}");
                     tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
@@ -308,8 +315,10 @@ namespace DDPM.UI.Plugin.Common
         {
             double width = id switch
             {
-                1 or 4 or 5 or 8 => 150,
-                2 or 3 or 6 or 7 => 110,
+                0 or 4 => 130,
+                1 or 3 or 5 or 7 => 136,
+                2 or 6 => 140,
+                _ => 0
             };
             var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
@@ -459,7 +468,7 @@ namespace DDPM.UI.Plugin.Common
         private void RestoreClick(object sender, MouseButtonEventArgs e)
         {
             PenActions.ResetRadialMenu();
-            ActionList.ExportActionList(PenActions, "PEN");
+            //ActionList.ExportActionList(PenActions, "PEN");
             SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
             RefreshAction(true);
         }
@@ -467,6 +476,8 @@ namespace DDPM.UI.Plugin.Common
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
             PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
+            //_vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID, parameter);
+            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
             ActionList.ExportActionList(PenActions, "PEN");
             RefreshLabel();
         }
@@ -498,7 +509,7 @@ namespace DDPM.UI.Plugin.Common
             if (sender is UXTextBlock tb)
             {
                 int id = int.Parse(tb.Name.Substring(5, 1));
-                var pa = (Path)canvas.Children[id - 1];
+                var pa = (Path)canvas.Children[id];
                 pa.Fill = FocusFillBrush;
                 pa.Stroke = FocusBorderBrush;
             }
@@ -519,7 +530,7 @@ namespace DDPM.UI.Plugin.Common
                 int id = int.Parse(tb.Name.Substring(5, 1));
                 if (id == SelectedMenuID)
                 { return; }
-                var pa = (Path)canvas.Children[id - 1];
+                var pa = (Path)canvas.Children[id];
                 pa.Fill = NormalFillBrush;
                 pa.Stroke = NormalBorderBrush;
             }
@@ -533,7 +544,7 @@ namespace DDPM.UI.Plugin.Common
                 if (id == SelectedMenuID)
                 { return; }
 
-                var pa = (Path)canvas.Children[SelectedMenuID - 1];
+                var pa = (Path)canvas.Children[SelectedMenuID];
                 pa.Fill = NormalFillBrush;
                 pa.Stroke = NormalBorderBrush;
 
@@ -548,11 +559,11 @@ namespace DDPM.UI.Plugin.Common
                 if (id == SelectedMenuID)
                 { return; }
 
-                var pa = (Path)canvas.Children[SelectedMenuID - 1];
+                var pa = (Path)canvas.Children[SelectedMenuID];
                 pa.Fill = NormalFillBrush;
                 pa.Stroke = NormalBorderBrush;
 
-                pa = (Path)canvas.Children[id - 1];
+                pa = (Path)canvas.Children[id];
                 pa.Fill = FocusFillBrush;
                 pa.Stroke = FocusBorderBrush;
 
