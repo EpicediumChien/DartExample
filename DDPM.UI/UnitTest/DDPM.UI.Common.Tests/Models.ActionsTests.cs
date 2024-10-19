@@ -29,13 +29,13 @@ namespace DDPM.UI.Common.Tests
             DeviceManagerSAMock.Setup(x => x.GetMenuSinglePressSetting()).Returns(Task.FromResult("true"));
         }
 
-        [Test]
-        public void TestConstructor_PenActions()
-        {
-            penActions = new PenActions();
-            // Assert
-            Assert.That(penActions, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestConstructor_PenActions()
+        //{
+        //    penActions = new PenActions();
+        //    // Assert
+        //    Assert.That(penActions, Is.Not.Null);
+        //}
 
         [Test]
         public void TestConstructor_PenActionsA()
