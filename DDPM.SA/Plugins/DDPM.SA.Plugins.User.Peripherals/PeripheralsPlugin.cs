@@ -435,20 +435,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        public void StartPairingPen()
-        {
-            if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
-            {
-                foreach (var device in _iDeviceManager.Devices)
-                {
-                    if (device is IPhysicalPenDevice _physicalPenDevice)
-                    {
-                        _physicalPenDevice.StartPairing();
-                    }
-                }
-            }
-        }
-
         public void StopPairing(Guid physicalDeviceId)
         {
             if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)

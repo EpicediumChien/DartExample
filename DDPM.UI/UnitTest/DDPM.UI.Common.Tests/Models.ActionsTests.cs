@@ -40,7 +40,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestConstructor_PenActionsA()
         {
-            var penActionsA = new PenActions(Strings.None);
+            var penActionsA = new PenActions();
             // Assert
             Assert.That(penActionsA, Is.Not.Null);
         }

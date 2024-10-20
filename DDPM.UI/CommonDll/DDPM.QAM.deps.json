@@ -11,21 +11,21 @@
           "DCF.UX.WPF": "2.2.4.1",
           "DDPM.SA.Common": "2.0.0.5",
           "DPeMPublic.Common": "1.7.6.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.44"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
         },
         "runtime": {
           "DDPM.QAM.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.44": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
-            "assemblyVersion": "10.0.19041.38",
-            "fileVersion": "10.0.19041.43"
+            "assemblyVersion": "10.0.19041.24",
+            "fileVersion": "10.0.19041.34"
           },
           "WinRT.Runtime.dll": {
-            "assemblyVersion": "2.1.0.0",
-            "fileVersion": "2.1.2.47512"
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.8.46841"
           }
         }
       },
@@ -79,7 +79,7 @@
           }
         }
       },
-      "Dell.RPC.Transport/1.5.1": {
+      "Dell.RPC.Transport/1.5.2.1": {
         "dependencies": {
           "DCF.Security": "2.4.2.1",
           "Microsoft.VisualStudio.Validation": "17.6.11"
@@ -87,7 +87,7 @@
         "runtime": {
           "lib/net8.0/Dell.RPC.Transport.dll": {
             "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.5.1.0"
+            "fileVersion": "1.5.2.1"
           }
         }
       },
@@ -401,7 +401,7 @@
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
           "DDPM.SA.Obfuscation": "1.0.0",
-          "Dell.RPC.Transport": "1.5.1",
+          "Dell.RPC.Transport": "1.5.2.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.11.2",
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
@@ -501,7 +501,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.44": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -534,12 +534,12 @@
       "path": "dcf.ux.wpf/2.2.4.1",
       "hashPath": "dcf.ux.wpf.2.2.4.1.nupkg.sha512"
     },
-    "Dell.RPC.Transport/1.5.1": {
+    "Dell.RPC.Transport/1.5.2.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OKqt8Kd3H/6a7BQ5WUsPRW7DKE4U5utvqBbgPCVHooLJo3yqJUkBkQ7Puy0byVMfnm7J+UH4Or04x0TbrMsi1Q==",
-      "path": "dell.rpc.transport/1.5.1",
-      "hashPath": "dell.rpc.transport.1.5.1.nupkg.sha512"
+      "sha512": "sha512-8n3Ue3DtfS+GsClAuzkMFhbow8sdVQ6meuh12U2m5QGRGbJJ8/IJarQklTLkXHNek+DiODDcJaiNYlYHX8P+RQ==",
+      "path": "dell.rpc.transport/1.5.2.1",
+      "hashPath": "dell.rpc.transport.1.5.2.1.nupkg.sha512"
     },
     "Dell.TechHub.Sdk.Common_NET/3.0.0.606-2e2db9-beta": {
       "type": "package",

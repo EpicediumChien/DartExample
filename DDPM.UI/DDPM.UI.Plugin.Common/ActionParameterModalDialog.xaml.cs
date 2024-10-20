@@ -136,7 +136,7 @@ namespace DDPM.UI.Plugin.Common
 
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                status += status == "" ? "Control" : " + Control";
+                status += status == "" ? "Ctrl" : " + Ctrl";
             }
             if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
             {
