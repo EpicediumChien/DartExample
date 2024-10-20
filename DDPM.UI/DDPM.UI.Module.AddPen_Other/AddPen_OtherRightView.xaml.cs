@@ -48,7 +48,8 @@ namespace DDPM.UI.Module.AddPen_Other
             stepsStackPanel.Orientation = Orientation.Vertical;
 
             //change Border size
-            stepsBorder1.Width = stepsBorder2.Width  = 400;
+            //stepsBorder1.Width = stepsBorder2.Width  = 400;
+            stepsBorder1.Width = stepsBorder2.Width = stepsStackPanel.Width - 10;
             stepsBorder1.Height = stepsBorder2.Height = 180;
 
             //change textBlock size
