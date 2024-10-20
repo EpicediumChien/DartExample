@@ -132,9 +132,9 @@ namespace DDPM.CMA.Tester
 
             string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""ConnectedDevices"",""options"":{}}]}";
             string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
-            string jsondeviceconfig = @"{""sid"":""1728380251"",""req"":[{""tid"":1,""active"":""set"",""devicetype"":""APP"",""command"":""DeviceConfiguration"",""value"":""display,C:\\Users\\WitsUser\\source\\2722de.json"",""options"":{}}]}";
+            string jsondeviceconfig = @"{""sid"":""1728380251"",""req"":[{""tid"":1,""active"":""set"",""devicetype"":""APP"",""command"":""DeviceConfiguration"",""value"":""display,C:\\Tepm\\ConfigSettings.json"",""options"":{}}]}";
 
-            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\Users\\WitsUser\\source"",""options"":{}}]}";
+            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\Temp\\"",""options"":{}}]}";
 
 
             CMARequestArgs cmarequest = new CMARequestArgs();
