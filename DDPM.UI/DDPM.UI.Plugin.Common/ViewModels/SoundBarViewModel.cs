@@ -49,7 +49,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void CheckAudioSettingsUI()
         {           
-            _isIntelligentMicNoiseCancellationStatus = _deviceManager.GetIsWiredAudioIMicNSEnableValue(CurrentDeviceInfo!.ID.ToString()).Result;//CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
+            _isIntelligentMicNoiseCancellationStatus = _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString()).Result;//CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
             _isMuteSoundNotificationStatus = _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceInfo!.ID.ToString()).Result;//CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
             _isVolumeAdjustmentToneMode = _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString()).Result;//CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
 
@@ -182,7 +182,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RestoreToDefault()
         {
-            _deviceManager.SetResetToDefaultValue(CurrentDeviceInfo!.ID.ToString(), true).Wait();
+            _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
             //IsRestoreEnable = false;
             //OnPropertyChanged(nameof(IsRestoreEnable));
         }
@@ -345,7 +345,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (_isIntelligentMicNoiseCancellationStatus != value)
                 {
-                    _deviceManager.SetIsWiredAudioIMicNSEnableValue(CurrentDeviceInfo!.ID.ToString(), value).Wait();
+                    _deviceManager.SetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString(), value).Wait();
                     //_deviceManager.SetWiredAudioIMicNSEnable(value, CurrentDeviceInfo!.ID).Wait();
                     _isIntelligentMicNoiseCancellationStatus = value;
                     OnPropertyChanged("IntelligentMicNoiseCancellation_String");
