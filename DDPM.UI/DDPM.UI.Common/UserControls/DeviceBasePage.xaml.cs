@@ -273,6 +273,8 @@ namespace DDPM.UI.Common.UserControls
                 RightGrid.Width = this.ActualWidth / 2;
                 LeftFrame.Width = this.ActualWidth / 2;
             }
+            else
+                LeftFrame.Width = this.ActualWidth - 20;
         }
 
         private void ChangeToVerticalLayout()
