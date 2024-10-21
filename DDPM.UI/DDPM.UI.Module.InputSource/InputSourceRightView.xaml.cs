@@ -31,11 +31,14 @@ namespace DDPM.UI.Module.InputSource
         {
             TextBox tb = sender as TextBox;
             InputSourceViewModel vm = (InputSourceViewModel)DataContext;
-            //vm.items[(int)tb.Tag].InputName = tb.Text;
-            vm.inputList[vm.items[(int)tb.Tag].InputType].InputName = tb.Text;
-            //DdpmCommonHelper.DeviceManagerSA.SetInputName(vm.items[(int)tb.Tag].InputType, vm.items[(int)tb.Tag].InputName);
-            bool b = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.InputSourceModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
-            vm.OnInputNameChange();
+            if (vm != null)
+            {
+                //vm.items[(int)tb.Tag].InputName = tb.Text;
+                vm.inputList[vm.items[(int)tb.Tag].InputType].InputName = tb.Text;
+                //DdpmCommonHelper.DeviceManagerSA.SetInputName(vm.items[(int)tb.Tag].InputType, vm.items[(int)tb.Tag].InputName);
+                bool b = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.InputSourceModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
+                vm.OnInputNameChange();
+            }
         }
 
         private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
