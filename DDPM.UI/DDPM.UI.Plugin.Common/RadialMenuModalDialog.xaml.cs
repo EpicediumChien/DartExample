@@ -278,12 +278,14 @@ namespace DDPM.UI.Plugin.Common
             //txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
             txtMenu.Text = _vm.ActionNames[SelectedActionID];
             txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
+            var index = _vm.RadialMenuActions.IndexOf(SelectedActionID);
             MenuItems.ItemsSource = null;
             //MenuItems.ItemsSource = Actions.RadialMenuActionsList;
             MenuItems.ItemsSource = _vm.RadialMenuActions;
-            if (SelectedActionID > 7)
+            //if (SelectedActionID > 7)
+            if (index > 6)
             {
-                svMenu.ScrollToVerticalOffset(SelectedActionID * 29);
+                svMenu.ScrollToVerticalOffset(index * 29);
             }
             RefreshLabel(all);
             if (SelectedActionID == 8 || SelectedActionID == 23)
