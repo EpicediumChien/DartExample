@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                 <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> 
+                 <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />--> 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
