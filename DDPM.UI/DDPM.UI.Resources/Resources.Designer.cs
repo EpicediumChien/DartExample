@@ -1438,6 +1438,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to reset your monitor to factory settings now?.
+        /// </summary>
+        internal static string DisplayDefault_0 {
+            get {
+                return ResourceManager.GetString("DisplayDefault.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Source.
         /// </summary>
         internal static string DisplayHotkeys_0 {
