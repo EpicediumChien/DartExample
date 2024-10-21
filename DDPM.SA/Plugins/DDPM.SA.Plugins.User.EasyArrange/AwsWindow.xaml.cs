@@ -376,7 +376,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     Rect rcIcon = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
                     SplitCtrl0B splitCtrl0B = (SplitCtrl0B)_vm.AwsIcon1;
-                    splitCtrl0B.ApplySettingsToCellList(new System.Drawing.Rectangle((int)rcIcon.Left, (int)rcIcon.Top, (int)rcIcon.Width, (int)rcIcon.Height));
+                    splitCtrl0B.ApplySettingsToCellList(new Rect(rcIcon.Left, rcIcon.Top, rcIcon.Width, rcIcon.Height));
                 }
 
                 _rcIcon2 = GetFrameworkElementRect(_vm.AwsIcon2.UC);
@@ -408,7 +408,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     if (!rcIcon.IsEmpty)
                     {
                         SplitCtrl0B splitCtrl0B = (SplitCtrl0B)_vm.AwsIcon2;
-                        splitCtrl0B.ApplySettingsToCellList(new System.Drawing.Rectangle((int)rcIcon.Left, (int)rcIcon.Top, (int)rcIcon.Width, (int)rcIcon.Height));
+                       // splitCtrl0B.ApplySettingsToCellList(new System.Drawing.Rectangle((int)rcIcon.Left, (int)rcIcon.Top, (int)rcIcon.Width, (int)rcIcon.Height));
                     }
                 }
 

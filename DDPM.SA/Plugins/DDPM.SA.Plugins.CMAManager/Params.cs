@@ -9,6 +9,19 @@ namespace DDPM.SA.Plugins.CMAManager
     public static class Params
     {
 
+        public static class EventType
+        {
+            public const int GET = 1;
+            public const int SET = 2;
+            public const int FW = 5;
+
+            public const int DISPLAY_CONNECT = 11;
+            public const int DISPLAY_DISCONNECT = 12;
+
+            public const int UNKNOW_ERROR = 99;
+        }
+
+
         public static class Active
         {
             public const string GET = "get";
@@ -30,9 +43,12 @@ namespace DDPM.SA.Plugins.CMAManager
             public const string DOCK = "DOCK";
         }
 
-        public static class Status
+        public static class Response
         {
-            public const int STATUS_FW_UPDATE_SUCCESSFULL = 100;
+            public const int STATUS_COMMAND_SUCCESS = 0;
+            public const int STATUS_COMMAND_TIMEOUT = 1;
+            public const int STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS = 11;
+
             public const int STATUS_FW_UPDATE_DEVICE_NOT_FOUND = 101;
             public const int STATUS_FW_UPDATE_PENDING = 102;
 
@@ -44,6 +60,7 @@ namespace DDPM.SA.Plugins.CMAManager
             public const int STATUS_FW_UPDATE_AT_LATEST = 109;
 
         }
+
 
         public static class Dock
         {

@@ -9,6 +9,7 @@ namespace DDPM.EABroker
 {
     public class EABroker
     {
+        private bool _isEaBrokerStarted = false;
         private AwsWindow _awsWindow;
         private EAEditWindow _editWindow;
         private SaveCustomWindow _saveCustomWindow;
@@ -39,6 +40,8 @@ namespace DDPM.EABroker
             _vm.InitWorkWindows();
             //Init AwsWindow
             _vm.InitAwsWindow();
+            _isEaBrokerStarted=true;
+
         }
 
         public void Stop()
