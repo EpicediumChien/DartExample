@@ -92,7 +92,7 @@ echo.>>%OutFile%
 :: This section is used to generate secret key and version info, test purpose
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{21A24609-08A2-423E-80DE-4D33A933F1A1}]>>%OutFile%
 echo "DisplayName"="Dell Display and Peripheral Manager">>%OutFile%
-echo "DisplayVersion"="2.0.0.41">>%OutFile%
+echo "DisplayVersion"="2.0.0.45">>%OutFile%
 echo "InstallLocation"="C:\\Program Files\\Dell\\Dell Display and Peripheral Manager">>%OutFile%
 echo.>>%OutFile%
 

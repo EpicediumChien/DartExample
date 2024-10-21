@@ -274,3 +274,4 @@ testcoverage/
 /DDPM.UI/CommonDll/DCF.Common.dll
 /DDPM.UI/CommonDll/DCF.Interfaces.dll
 /DDPM.UI/CommonDll/DdmLibrary.dll
+/DDPM.SA/dll/DDPM.Easy.Common.dll

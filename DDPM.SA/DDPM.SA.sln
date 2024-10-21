@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.Subagent", "DDPM.Subag
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Dll", "_Dll", "{33B44B15-E9A2-4AA6-8A1C-B2267A356C7A}"
 	ProjectSection(SolutionItems) = preProject
+		dll\DdmLibrary.dll = dll\DdmLibrary.dll
 		dll\DDPM.Easy.Common.dll = dll\DDPM.Easy.Common.dll
 		dll\DPeMClientBroker.dll = dll\DPeMClientBroker.dll
 		dll\DPeMClientRpcHelper.dll = dll\DPeMClientRpcHelper.dll
