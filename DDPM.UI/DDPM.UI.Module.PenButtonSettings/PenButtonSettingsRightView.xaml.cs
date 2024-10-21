@@ -110,15 +110,15 @@ namespace DDPM.UI.Module.PenButtonSettings
                 ProductivityPanel.MaxHeight = _vm.ProductivityActionsTopButton.Contains(_vm.SelectedActionID) ? 202 : 155;
                 WindowsPanel.Height = _vm.SelectedBehavior switch
                 {
-                    "ClickOnce" => ParentBorder.ActualHeight - 395,
-                    "DoubleClick" => ParentBorder.ActualHeight - 438,
+                    "ClickOnce" => _vm.WindowsActionsTopButton.Contains(_vm.SelectedActionID) && _vm.SelectedActionID != 73 ? ParentBorder.ActualHeight - 405 : ParentBorder.ActualHeight - 453,
+                    "DoubleClick" => _vm.WindowsActionsTopButton.Contains(_vm.SelectedActionID) && _vm.SelectedActionID != 90 ? ParentBorder.ActualHeight - 438 : ParentBorder.ActualHeight - 454,
                     _ => ParentBorder.ActualHeight - 481,
                 };
                 MultimediaPanel.Height = _vm.SelectedBehavior switch
                 {
                     "ClickOnce" => ParentBorder.ActualHeight - 466,
                     "DoubleClick" => ParentBorder.ActualHeight - 509,
-                    _ => ParentBorder.ActualHeight - 552,
+                    _ => ParentBorder.ActualHeight > 552 ? ParentBorder.ActualHeight - 552 : 0,
                 };
             }
             else
@@ -297,8 +297,9 @@ namespace DDPM.UI.Module.PenButtonSettings
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
                 //rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
-                rb.Content = Actions.PenActions[id].Caption;
-                if(rb.Tag.ToString() != "search")
+                //rb.Content = Actions.PenActions[id].Caption;
+                rb.Content = _vm.ActionNames[id];
+                if (rb.Tag.ToString() != "search")
                     rb.IsChecked = id == _vm.SelectedActionID;
             }
             else if (sender is ActionButton btn)
@@ -343,7 +344,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             //var section = GetActionSection(id);
             var parameter = "";
             AdvancedAction action;
-            if (id == 14)
+            if (id == 8)
             {
                 action = AdvancedAction.AssignKeystroke;
 
@@ -371,12 +372,12 @@ namespace DDPM.UI.Module.PenButtonSettings
                     return;
                 }
             }
-            else if (id == 53)
+            else if (id == 23)
             {
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -388,7 +389,8 @@ namespace DDPM.UI.Module.PenButtonSettings
                 modalDialog.Top = windowTop;
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    parameter = $"{modalDialog.Parameter}";
                 }
                 else
                 {
@@ -487,8 +489,9 @@ namespace DDPM.UI.Module.PenButtonSettings
             }
             else if (id == 23)
             {
-                var arr = parameter.Split('|');
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                //var arr = parameter.Split('|');
+                //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -498,9 +501,13 @@ namespace DDPM.UI.Module.PenButtonSettings
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
-                if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
+                //if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
+                //{
+                //    _vm.UpdateAction(_vm.SelectedActionID, $"{modalDialog.ID}|{modalDialog.Parameter}");
+                //}
+                if (modalDialog.ShowDialog()!.Value && $"{modalDialog.Parameter}" != parameter)
                 {
-                    _vm.UpdateAction(_vm.SelectedActionID, $"{modalDialog.ID}|{modalDialog.Parameter}");
+                    _vm.UpdateAction(_vm.SelectedActionID, $"{modalDialog.Parameter}");
                 }
             }
             else if (id == 41)
