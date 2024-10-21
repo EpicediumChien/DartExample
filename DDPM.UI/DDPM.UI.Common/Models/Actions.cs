@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Newtonsoft.Json.Linq;
 
 namespace DDPM.UI.Common
 {
@@ -35,7 +36,7 @@ namespace DDPM.UI.Common
             {
                 TopButtonDoubleClickAction.AssignedAction.ID = 64;
             }
-            else if(TopButtonDoubleClickAction.AssignedAction.ID == 23)
+            else if (TopButtonDoubleClickAction.AssignedAction.ID == 23)
             {
                 TopButtonDoubleClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
             }
@@ -138,7 +139,7 @@ namespace DDPM.UI.Common
             RadialActions.Add(6, new SelectedAction(81, new AssignedAction(81)));
             RadialActions.Add(7, new SelectedAction(84, new AssignedAction(84)));
             IsUseCenter = true;
-            foreach(var action in RadialActions)
+            foreach (var action in RadialActions)
             {
                 byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{action.Key},\"actionId\":{action.Value.DefaultActionID},\"actionName\":\"{RadialLabels[action.Key]}\"}}");
                 DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting("DellPeripheral.Pen.0", newValue);
@@ -258,7 +259,7 @@ namespace DDPM.UI.Common
         public MouseActions()
         { }
 
-        public MouseActions(string _model)
+        public MouseActions(string _model, string guid = "")
         {
             var model = _model.ToUpper();
             switch (model)
@@ -289,6 +290,25 @@ namespace DDPM.UI.Common
 
                 default:
                     break;
+            }
+
+            if (guid != "")
+            {
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseProgrammableKeys(guid);
+                var jArray = JArray.FromObject(task1.Result);
+                List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
+                foreach (var programbleKey in ProgrambleKeys)
+                {
+                    var btn = (MouseButtonName)programbleKey.Id;
+                    if (ButtonActions.ContainsKey(btn))
+                    {
+                        if (programbleKey.AssignedAction != null)
+                        {
+                            ButtonActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -367,7 +387,7 @@ namespace DDPM.UI.Common
             return false;
         }
 
-        public static object ImportActionList(eDeviceCategory type, string model, int instanceID = 0)
+        public static object ImportActionList(eDeviceCategory type, string model, string guid = "")
         {
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
@@ -385,7 +405,7 @@ namespace DDPM.UI.Common
                             jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
                         }
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString);// File.ReadAllText(filePath))!;
+                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
                     }
                     var ka = new KeyboardActions(model);
                     ExportActionList(ka, model);
@@ -400,9 +420,9 @@ namespace DDPM.UI.Common
                             jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
                         }
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<MouseActions>(jsonString); //File.ReadAllText(filePath))!;
+                            return JsonConvert.DeserializeObject<MouseActions>(jsonString)!; //File.ReadAllText(filePath))!;
                     }
-                    var ma = new MouseActions(model);
+                    var ma = new MouseActions(model, guid);
                     ExportActionList(ma, model);
                     return ma;
 
@@ -415,7 +435,7 @@ namespace DDPM.UI.Common
                             jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
                         }
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<PenActions>(jsonString); //File.ReadAllText(filePath))!;
+                            return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
                     }
                     //var pen = new PenActions(model);
                     var pen = new PenActions();
@@ -427,5 +447,23 @@ namespace DDPM.UI.Common
             }
             return new object();
         }
+    }
+
+    public class ProgrambleKey
+    {
+        public int Id;
+        public string Name = "";
+        public string ActionName = "";
+        public ProgrambleAction AssignedAction = new();
+        public List<ProgrambleAction> SuggestedActions = new();
+    }
+    public class ProgrambleAction
+    {
+        public string BaseGuid = "";
+        public string Id = "";
+        public string Name = "";
+        public string Category = "";
+        public List<int> ProgrammableKeys = new();
+
     }
 }

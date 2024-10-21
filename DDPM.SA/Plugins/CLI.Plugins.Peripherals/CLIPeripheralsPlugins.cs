@@ -187,7 +187,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     result.serialize_Json_response = json;
                     return result;
                 }
-                
+
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
                     Command = commandLineInput.Command,
@@ -261,7 +261,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
                         //if (_commandLineInput.TargetFeature == "HDR" || _commandLineInput.TargetFeature == "ANTIFLICKER" || _commandLineInput.TargetFeature == "AIAUTOFRAMING")
-                            GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                        GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         //else
                         //GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         go++;
@@ -296,14 +296,15 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
             return (int)CLI_ExitCode.success;
         }
-        
+
         private int SetPeripheralProperty()
         {
             SetResults.Clear();
             int val = 0;
             int retvalue = 0;
             bool bl = false;
-            string ItemId = string.Empty;
+            //string ItemId = string.Empty;
+            string GUID = string.Empty;
             bool retcode = false;
             bool retcode_ = false;
             //bool target = false;
@@ -328,7 +329,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
                         SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
-                        ItemId = x.ID.ToString();
+                        GUID = x.ID.ToString();
                         go++;
                     }
                 });
@@ -351,7 +352,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                         found = true;
-                        ItemId = x.ID.ToString();
+                        GUID = x.ID.ToString();
                     }
                 });
                         if (!found)
@@ -373,11 +374,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(ItemId, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(GUID, true)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
-                            //retcode_ = _devMgr.GetIsAutoFramingOnValueByDTP(ItemId).Result;
+                            //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
                             x.Value = "SUCCESS";
                             //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
                             x.Message = "N/A";
@@ -407,7 +408,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //value = op_value[0];
                     foreach (var value in op_value)
                     {
-                        Debug.WriteLine($"{value}, { _commandLineInput.Options[0].Option_Value}");
+                        Debug.WriteLine($"{value}, {_commandLineInput.Options[0].Option_Value}");
                         if (value == null) // if there is no option value
                         {
                             SetFailResults("no setting value");
@@ -487,7 +488,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     }
                             }
                         }
-                    }                                  
+                    }
                     break;
                 }
             }
@@ -504,49 +505,49 @@ namespace DDPM.CLI.Plugins.Peripherals
             switch (_commandLineInput.TargetFeature)
             {
                 case "BACKLIGHTINGCONTROLS":
-                        taskA = _devMgr.SetBackLightingControls;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetBackLightingControls;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "BACKLIGHTINGLEVEL":
-                        taskA = _devMgr.SetBackLightingLevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetBackLightingLevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONBLINKEFFECTENABLE":
-                        taskB = _devMgr.SetCollaborationBlinkEffectEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationBlinkEffectEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABCAMERAENABLE":
-                        taskB = _devMgr.SetCollaborationCameraEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationCameraEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABCHATENABLE":
-                        taskB = _devMgr.SetCollaborationChatEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationChatEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONDOUBLETAPENABLE":
-                        taskB = _devMgr.SetCollaborationDoubleTapEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationDoubleTapEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONKEYENABLE":
-                        taskB = _devMgr.SetCollaborationKeyEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationKeyEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABMICMUTE":
-                        taskB = _devMgr.SetCollaborationMicEnable;
-                        RunTaskB(!bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationMicEnable;
+                    RunTaskB(!bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABSCREENSHARE":
-                        taskB = _devMgr.SetCollaborationScreenShareEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationScreenShareEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "DPILEVEL":
-                        taskA = _devMgr.SetDPILevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetDPILevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "DPIVALUE":
-                        taskA = _devMgr.SetDPIValue;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetDPIValue;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "PRIMARYMOUSEBUTTON":
                     MouseButton button;
                     switch (value.ToUpper())
@@ -711,18 +712,18 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 case "HDR":
                     //ItemId = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyHDRSupportedByDTP(ItemId).Result)
+                    if (_devMgr.GetIsPropertyHDRSupported(GUID).Result)
                     {
-                        SetResults.ForEach(x =>
+                        SetResults.ForEach((Action<CLI_PeripheralRESPONSE>)(x =>
                         {
                             x.Value = "";
                             if (x.Result == "")
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsHDROnValueByDTP(ItemId, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsHDROn(GUID, bl)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _devMgr.GetIsHDROnValueByDTP(ItemId).Result;
+                                    retcode_ = _devMgr.GetIsHDROn(GUID).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
@@ -739,8 +740,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 retcode = (result == "0") ? true : false;
                             }
-                        });
-                        return (retcode)?(int)CLI_ExitCode.success: (int)CLI_ExitCode.functional_error;
+                        }));
+                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                     }
                     else
                     {
@@ -755,18 +756,18 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 case "ANTIFLICKER":
                     //ItemId = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(ItemId).Result)
+                    if (_devMgr.GetIsPropertyAntiFlickerSupported(GUID).Result)
                     {
                         SetResults.ForEach(x =>
                         {
                             x.Value = "";
                             if (x.Result == "")
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetAntiFlickerValueByDTP(ItemId, val)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(GUID, val)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(ItemId).Result;
+                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(GUID).Result;
                                     x.Value = retvalue.ToString();
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
@@ -799,18 +800,18 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 case "AIAUTOFRAMING":
                     //ItemId = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(ItemId).Result)
+                    if (_devMgr.GetIsPropertyAutoFramingSupported(GUID).Result)
                     {
                         SetResults.ForEach(x =>
                         {
                             x.Value = "";
                             if (x.Result == "")
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsAutoFramingOnValueByDTP(ItemId, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsAutoFramingOn(GUID, bl)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _devMgr.GetIsAutoFramingOnValueByDTP(ItemId).Result;
+                                    retcode_ = _devMgr.GetIsAutoFramingOn(GUID).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
@@ -847,11 +848,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(ItemId, bl)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(GUID, bl)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
-                                retcode_ = _devMgr.GetIsProximitySensorEnable(ItemId).Result;
+                                retcode_ = _devMgr.GetIsProximitySensorEnable(GUID).Result;
                                 x.Value = (retcode_) ? "ON" : "OFF";
                                 x.Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
                                 x.Message = "N/A";
@@ -873,21 +874,21 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 case "MICSWITCH":
                     //var ItemId_ = "DellPeripheral.Webcam.0";
-                    if (_deviceinfo.FirstOrDefault(x => x.ID.ToString() == ItemId)?.IsMicEnumerationSupported == true)
+                    if (_deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID)?.IsMicEnumerationSupported == true)
                     {
                         SetResults.ForEach(x =>
                         {
                             x.Value = "";
                             if (x.Result == "")
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(ItemId, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(GUID, bl)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == ItemId).IsMicEnumerationOn;
+                                    retcode_ = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID).IsMicEnumerationOn;
                                     x.Value = (retcode_) ? "ON" : "OFF";
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
-                                    x.Message = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == ItemId).IsMicEnumerationOn.ToString();
+                                    x.Message = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID).IsMicEnumerationOn.ToString();
                                 }
                                 else if (result == "1")
                                 {
@@ -1157,7 +1158,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 result.serialize_Json_response = fwupdate.result;
                                 ret = true;
                             }
-                            else if(ss_1[1].ToUpper().Equals("FORCEWITHNOTICE"))
+                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE"))
                             {
                                 isShowInfo = true;
                                 var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true);
@@ -1205,7 +1206,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             {
                                 somethingError = true;
                             }
-                            
+
                             if (somethingError)
                             {
                                 cLI_FWU_RESPONSE.Result = "FAIL";
@@ -1217,7 +1218,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 break;
                             }
 
-                            
+
                         }
                         else
                         {
@@ -1582,7 +1583,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 List<DeviceType> deviceTypes = new List<DeviceType>();
                 DeviceType deviceType = DeviceType.Unknown;
-                if(commandLineInput.Options.Count > 0)
+                if (commandLineInput.Options.Count > 0)
                 {
                     (deviceType, deviceTypes) = SetDevice(commandLineInput);
 
@@ -1592,7 +1593,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         return ((int)CLI_ExitCode.fail_NotSupport, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
                 }
-                
+
                 _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
@@ -1622,48 +1623,48 @@ namespace DDPM.CLI.Plugins.Peripherals
                 else
                 {
                     FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode).Result;
-                if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
-                {
-                    cli_FWU_RESPONSE.Message = "No updates available";
-                    return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
-                }
-                if (deviceType != DeviceType.Unknown)
-                {
-                    foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                    if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
-                        cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
-                        //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
-                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
+                        cli_FWU_RESPONSE.Message = "No updates available";
+                        return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
-                    cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);
-                    Task.Run(new Action(() =>
+                    if (deviceType != DeviceType.Unknown)
                     {
-                        do
+                        foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                         {
-                            Thread.Sleep(100);
-                        } while (retFWUpdateInfos == null);
-                        foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
-                        {
-                            cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
-                            if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
-                            {
-                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
-                            }
-                            else
-                            {
-                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
-                            }
+                            cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
+                            //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
                         }
-                        FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
-                        _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                        _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                    }));
-                    return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
-                }
-                else
-                {
-                    return ((int)CLI_ExitCode.fail_NotSupport, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
-                }
+                        cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);
+                        Task.Run(new Action(() =>
+                        {
+                            do
+                            {
+                                Thread.Sleep(100);
+                            } while (retFWUpdateInfos == null);
+                            foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                            {
+                                cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
+                                if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
+                                {
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                                }
+                                else
+                                {
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                                }
+                            }
+                            FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
+                            _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
+                            _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                        }));
+                        return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
+                    }
+                    else
+                    {
+                        return ((int)CLI_ExitCode.fail_NotSupport, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
+                    }
                 }
                 return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
 

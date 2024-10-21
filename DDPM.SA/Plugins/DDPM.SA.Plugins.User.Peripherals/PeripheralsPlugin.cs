@@ -1405,6 +1405,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _iDeviceManager_DeviceAddedEvent(device);
             }
             Console.WriteLine(_deviceHelper.ToString());
+            writelog(_deviceHelper.ToString());
         }
 
         private void ILogicalDevice_PairedHostNameChanged(ILogicalDevice3 arg1, int arg2, string arg3)
@@ -1414,7 +1415,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                 {
-                    Console.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
+                    Debug.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
+                    writelog($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
@@ -1426,7 +1428,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void Pen_PenSettingChanged(ILogicalDevicePen arg1, string arg2)
         {
-            Console.WriteLine(arg2);
+            Debug.WriteLine(arg2);
+            writelog(arg2);
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
@@ -1686,7 +1689,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _clientInfo.ServiceStatus = "Unknown";
                 _clientInfo.ApiVersion = "Unknown";
             }
-            Console.WriteLine(_clientInfo.ToString());
+            Debug.WriteLine(_clientInfo.ToString());
+            writelog(_clientInfo.ToString());
         }
 
         private void _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged(bool obj)
@@ -1801,17 +1805,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 LogicalDevicesPen.Remove(iLogicalDevice.Id);
             }
-            Console.WriteLine(_deviceHelper.ToString());
+            Debug.WriteLine(_deviceHelper.ToString());
+            writelog(_deviceHelper.ToString());
         }
 
         private void ILogicalDevice_DpiLevelChanged(ILogicalDevice2 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo == null)
                     return;
                 if (arg2 == 0)
@@ -1828,12 +1832,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_DpiValueChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.DpiValue = arg2.ToString();
@@ -1848,12 +1851,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_TouchScrollSensitivityLevelChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.TouchScrollSensitivityLevel = arg2;
@@ -1874,12 +1876,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BackLightingControlsChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.BackLightingControls = arg2;
@@ -1901,12 +1902,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BackLightingLevelChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.BackLightingLevel = arg2;
@@ -1922,12 +1922,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BatteryStatusChanged(ILogicalDevice arg1, BatteryStatus arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                     deviceInfo.BatteryStatus = arg2.ToString();
 
@@ -2319,7 +2318,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalDeviceDongle.Id.ToString());
-                Console.WriteLine(newValue.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.PairedDeviceCount = newValue;
@@ -2363,7 +2361,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void PhysicalAudioDeviceDongle_PairedDeviceCountChanged(IPhysicalAudioDeviceDongle arg1, int arg2)
         {
             //var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == arg1.Id.ToString());
-            Console.WriteLine(arg2.ToString());
 
             DeviceChangedEventArgs _EventArgs = new();
             _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -2383,7 +2380,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalPenDevice.Id.ToString());
-                Console.WriteLine(newValue);
                 if (deviceInfo != null)
                 {
                     deviceInfo.IsdDriverVersion = newValue;
@@ -2419,8 +2415,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
         {
-            Console.WriteLine(newValue.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDevice3.Id.ToString());
