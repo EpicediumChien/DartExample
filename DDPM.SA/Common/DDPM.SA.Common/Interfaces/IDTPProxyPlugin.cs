@@ -22,6 +22,23 @@ namespace DDPM.SA.Common
 
         Task SetDPIValue(string itemID, int newValue);
 
+        #region Mouse
+        Task<JArray> GetAppSpecificProfiles(string Guid);
+        Task SetMsAssignedAction(string Guid, string newValue);
+        Task SetMsAssignDialogAction(string Guid, string newValue);
+        Task SetMsAssignKeystrokeAction(string Guid, string newValue);
+
+        #endregion
+
+        #region Keyboard
+
+        Task SetKbAssignedAction(string Guid, string newValue);
+        Task SetKbAssignDialogAction(string Guid, string newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+
+        #endregion
+
+
         #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
 

@@ -534,7 +534,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid)
         {
-            //_itemID = new ItemId(Guid);
             if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
@@ -561,10 +560,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<int> GetAntiFlickerValue(string itemID)
+        public async Task<int> GetAntiFlickerValue(string Guid)
         {
-            //_itemID = new ItemId(Guid);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
             if (_webcamMethodInfo != null)
@@ -590,10 +588,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task SetAntiFlickerValue(string itemID, int newValue)
+        public async Task SetAntiFlickerValue(string Guid, int newValue)
         {
-            //_itemID = new ItemId(Guid);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return; }
 
             if (_webcamMethodInfo != null)
@@ -616,10 +613,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> CheckIsPropertyAutoFramingSupported(string itemID)
+        public async Task<bool> CheckIsPropertyAutoFramingSupported(string Guid)
         {
-            //_itemID = new ItemId(Guid);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)

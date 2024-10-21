@@ -522,4 +522,16 @@ namespace DDPM.UI.Common
             { 1 , new IndilogicAction("{025325C0-50CD-404A-B8EF-1412C02112C5}","Copilot") }//ok
         };
     }
+    public class IndilogicAction
+    {
+        public string ActionComment { get; set; }
+        public string ActionGuid { get; set; }
+
+        public IndilogicAction(string guid, string comment)
+        {
+            ActionComment = comment;
+            ActionGuid = guid;
+        }
+    }
+
 }
