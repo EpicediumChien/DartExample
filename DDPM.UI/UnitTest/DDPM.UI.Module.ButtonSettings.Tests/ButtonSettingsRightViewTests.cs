@@ -27,7 +27,7 @@ namespace DDPM.UI.Module.ButtonSettings.Test
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
-            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object, deviceManagerMock.Object);
+            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object);
             buttonSettingsRightView = new ButtonSettingsRightView(mouseViewModel);
             privateObject = new PrivateObject(buttonSettingsRightView);
         }
