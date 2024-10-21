@@ -95,7 +95,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             if (txtRestore.IsEnabled == false)
                 return;
 
-            MessageModalDialog dlg = new MessageModalDialog(Strings.RestoreToDefault, Strings.DisplayDefault0, Strings.Yes, Strings.No);
+            MessageModalDialog dlg = new MessageModalDialog(Strings.RestoreToDefault, Strings.DisplayDefault0, Strings.No, Strings.Yes);
             Window parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
             {
