@@ -3,7 +3,9 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +25,45 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting CameraSetting;
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
+        {
+            return ShowWindow(hWnd, nCmdShow);
+        }
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        private static bool _SetForegroundWindow(IntPtr hWnd)
+        {
+            return SetForegroundWindow(hWnd);
+        }
+        /// <summary>
+        /// NotificationFWupdate 呼叫DDPM UI事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowDDPM()
+        {
+            const int SW_SHOWNORMALSW_NORMAL = 1;
+            string processName = "DDPM";
+
+            if (OperatingSystem.IsWindows())
+            {
+                Process[] processes = Process.GetProcessesByName(processName);
+                if (processes.Length > 0)
+                {
+                    IntPtr mainWindowHandle = processes[0].MainWindowHandle;
+                    // 將窗口最大化
+                    _ShowWindow(mainWindowHandle, SW_SHOWNORMALSW_NORMAL);
+                    // 顯示到前景
+                    _SetForegroundWindow(mainWindowHandle);
+                }
+            }
+        }
         public QAMPage(IDeviceManagerSA deviceMangerPlugin)
         {
             InitializeComponent();
@@ -60,7 +101,8 @@ namespace DDPM.QAM
 
         private void CallDDPM_Click(object sender, MouseButtonEventArgs e)
         {
-
+            ShowDDPM();
+            Close_Click(this, null);
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
