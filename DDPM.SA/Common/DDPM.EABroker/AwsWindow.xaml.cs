@@ -69,33 +69,6 @@ namespace DDPM.EABroker
         }
         #endregion ctor / Init
 
-        #region VisibilityChanged event handler
-        private void HandleAwsWindowVisibilityChanged(object? sender, bool isVisible)
-        {
-            _vm.WriteLog($"@AwsWindow.HandleAwsWindowVisibilityChanged(isVisible={isVisible})");
-            if (!isVisible)
-                return;
-
-            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
-
-            _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
-            System.Windows.Point ptAws = CalculateAwsPosition();
-            _vm.xAwsWindow = ptAws.X;
-            _vm.yAwsWindow = ptAws.Y;
-
-            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
-
-            //Get current working screen
-            Screen? scr = _vm.GetScreenFromCursor();
-            if (scr != null)
-            {
-                ReloadRecentList(scr.DeviceName);
-            }
-
-
-        }
-        #endregion
-
         #region Position Functions
         /// <summary>
         /// Determin the (left,top) of AwsWindow based on cusor position (_vm.xCursor,_vm.yCursor)
@@ -156,6 +129,8 @@ namespace DDPM.EABroker
         #endregion
 
         #region Icons, RecentList
+        //AwsIcons are implemented in ArrangeVM
+
         public void ReloadRecentList(string screenDeviceName)
         {
             //Get the MonitorInfo
@@ -205,15 +180,16 @@ namespace DDPM.EABroker
         //Workaround flag to call RefreshCellRects() again, until this flag set true
         private bool _areCellRectsRefreshed = false;
 
-        public void RefreshCellRects()
+        public void RefreshCellRects(int flag=0)
         {
             this.Dispatcher.Invoke(() =>
             {
-                Dispatcher_RefreshCellRects();
+                Dispatcher_RefreshCellRects(flag);
             });
         }
 
-        private void Dispatcher_RefreshCellRects()
+
+        private void Dispatcher_RefreshCellRects(int flag=0)
         {
             _areCellRectsRefreshed = true;
             if (!_vm.AreAwsIconsLoaded)
@@ -357,18 +333,15 @@ namespace DDPM.EABroker
 
             if (!_areCellRectsRefreshed)
             {
-                //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                if (flag == 0)
+                {
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(1); }, null, 100, Timeout.Infinite);
+                }
             }
         }
 
-        //private void refreshCellRects_TimerCallback(object obj)
-        //{
-        //    RefreshCellRects();
-        //}
-
-        public CellObj? DetermineHoveringCellObj(int x, int y)
-        {
+         public CellObj? DetermineHoveringCellObj(int x, int y)
+         {
             bool isHandled = false;
             _vm.WriteLog($"@ DetermineHoveringCellObj({x},{y}), _areCellRectsRefreshed={_areCellRectsRefreshed}");
 
@@ -435,28 +408,6 @@ namespace DDPM.EABroker
             return null;
         }
 
-        private void HandleWorkScreenChanged(object? sender, Screen newScreen)
-        {
-            _vm.WriteLog($"@AwsWindow.HandleWorkScreenChanged(newScreen={newScreen.DeviceName})");
-
-            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
-
-            _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
-            System.Windows.Point ptAws = CalculateAwsPosition();
-            _vm.xAwsWindow = ptAws.X;
-            _vm.yAwsWindow = ptAws.Y;
-
-            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
-
-            //Get current working screen
-            Screen? scr = _vm.GetScreenFromCursor();
-            if (scr != null)
-            {
-                ReloadRecentList(scr.DeviceName);
-            }
-        }
-        #endregion
-
         public Screen HoveringScreen { get; set; }
         public Rect CalculateHoveringCellArrangeRect()
         {
@@ -478,5 +429,55 @@ namespace DDPM.EABroker
             rcOut.Height = _rcHoveringCell.Height / _rcHoveringIcon.Height * rcScreen.Height;
             return rcOut;
         }
+        #endregion
+
+        #region ViewModel Event Handlers
+        private void HandleAwsWindowVisibilityChanged(object? sender, bool isVisible)
+        {
+            _vm.WriteLog($"@AwsWindow.HandleAwsWindowVisibilityChanged(isVisible={isVisible})");
+            if (!isVisible)
+                return;
+
+            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
+
+            _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+            System.Windows.Point ptAws = CalculateAwsPosition();
+            _vm.xAwsWindow = ptAws.X;
+            _vm.yAwsWindow = ptAws.Y;
+
+            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
+
+            //Get current working screen
+            Screen? scr = _vm.GetScreenFromCursor();
+            if (scr != null)
+            {
+                ReloadRecentList(scr.DeviceName);
+            }
+
+
+        }
+
+        private void HandleWorkScreenChanged(object? sender, Screen newScreen)
+        {
+            _vm.WriteLog($"@AwsWindow.HandleWorkScreenChanged(newScreen={newScreen.DeviceName})");
+
+            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
+
+            _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+            System.Windows.Point ptAws = CalculateAwsPosition();
+            _vm.xAwsWindow = ptAws.X;
+            _vm.yAwsWindow = ptAws.Y;
+
+            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
+
+            //Get current working screen
+            Screen? scr = _vm.GetScreenFromCursor();
+            if (scr != null)
+            {
+                ReloadRecentList(scr.DeviceName);
+            }
+        }
+
+        #endregion ViewModel Event Handlers
     }
 }
