@@ -2449,8 +2449,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
-                writelog($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
+                Debug.WriteLine($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
+                writelog($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
                 return null;
             }
         }
@@ -2468,59 +2468,59 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
-                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
+                    //_mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
 
-                    if (_mouseInterfaceType != null)
-                    {
-                        _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                      .MakeGenericMethod(_mouseInterfaceType);
+                    //if (_mouseInterfaceType != null)
+                    //{
+                    //    _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                    //                                  .MakeGenericMethod(_mouseInterfaceType);
 
-                        writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                    //    writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
+                    //else
+                    //{
+                    //    writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
 
-                    writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
+                    //writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //_webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
 
-                    if (_webcamInterfaceType != null)
-                    {
-                        _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                        .MakeGenericMethod(_webcamInterfaceType);
-                        writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                    //if (_webcamInterfaceType != null)
+                    //{
+                    //    _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                    //                                    .MakeGenericMethod(_webcamInterfaceType);
+                    //    writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
+                    //else
+                    //{
+                    //    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
 
-                    writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
-                    if (_penInterfaceType != null)
-                    {
-                        _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_penInterfaceType);
-                        writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                    //writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //_penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
+                    //if (_penInterfaceType != null)
+                    //{
+                    //    _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                    //                                                .MakeGenericMethod(_penInterfaceType);
+                    //    writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
+                    //else
+                    //{
+                    //    writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
 
-                    writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    _headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
-                    if (_headsetInterfaceType != null)
-                    {
-                        _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                                    .MakeGenericMethod(_headsetInterfaceType);
-                        writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
-                    else
-                    {
-                        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-                    }
+                    //writelog($"Find IHeadsetCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //_headsetInterfaceType = FindCommodityInterfaceType("IHeadsetCommodity");
+                    //if (_headsetInterfaceType != null)
+                    //{
+                    //    _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                    //                                                .MakeGenericMethod(_headsetInterfaceType);
+                    //    writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
+                    //else
+                    //{
+                    //    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    //}
 
                     writelog($"Find ISpeakerCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     _speakerInterfaceType = FindCommodityInterfaceType("ISpeakerCommodity");
@@ -2550,40 +2550,40 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task RegisterEventAsync()
         {
-            writelog($"Register Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IMouseCommodity>(new ItemId("DellPeripheral.Mouse"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IMouseCommodity _mousecom)
-            {
-                try
-                {
-                    _mousecom.Connected += _comdity_Connected;
-                    _mousecom.Disconnected += _comdity_Disconnected;
-                    writelog($"Mouse Commodity event registered");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
-                }
-            }
+            //writelog($"Register Commodity event...");
+            //_comdity = await _commSdk.GetCommodityAsync<IMouseCommodity>(new ItemId("DellPeripheral.Mouse"), CancellationToken.None);
+            //if (_comdity is Dell.TechHub.Commodity.Peripheral.IMouseCommodity _mousecom)
+            //{
+            //    try
+            //    {
+            //        _mousecom.Connected += _comdity_Connected;
+            //        _mousecom.Disconnected += _comdity_Disconnected;
+            //        writelog($"Mouse Commodity event registered");
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+            //    }
+            //}
 
-            writelog($"Register Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
-            {
-                try
-                {
-                    _headsetcom.IsReadyChanged += _headsetcomdity_IsReadyChanged;
-                    _headsetcom.FirmwareVersionChanged += _headsetcomdity_FirmwareVersionChanged;
-                    //_headsetcom.AncModeChanged += _comdity_AncModeChange;
-                    //_headsetcom.Connected += _comdity_Connected;
-                    //_headsetcom.Disconnected += _comdity_Disconnected;
-                    writelog($"Headset Commodity event registered");
-                }
-                catch (Exception e)
-                {
-                    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
-                }
-            }
+            //writelog($"Register Commodity event...");
+            //_comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
+            //if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
+            //{
+            //    try
+            //    {
+            //        _headsetcom.IsReadyChanged += _headsetcomdity_IsReadyChanged;
+            //        _headsetcom.FirmwareVersionChanged += _headsetcomdity_FirmwareVersionChanged;
+            //        _headsetcom.AncModeChanged += _headsetcomdity_AncModeChange;
+            //        _headsetcom.Connected += _comdity_Connected;
+            //        _headsetcom.Disconnected += _comdity_Disconnected;
+            //        writelog($"Headset Commodity event registered");
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+            //    }
+            //}
 
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId("DellPeripheral.Speaker"), CancellationToken.None);
@@ -2591,9 +2591,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
-                    _speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
-                    _speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
+                    //_speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
+                    //_speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
+                    //_speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
+                    //_speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
+                    //EventHandler<MuteStatusChangedArgs> MuteStatusChanged;
+                    //AddMuteStatusChangedEventAsync
+                    _speakercom.Connected += _comdity_Connected;
+                    _speakercom.Disconnected += _comdity_Disconnected;
+                    _speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
                     writelog($"Speaker Commodity event registered");
                 }
                 catch (Exception e)
@@ -2696,30 +2702,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "IsReadyChanged";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"IsReadyChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "FirmwareVersionChanged";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"FirmwareVersionChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         private void _headsetcomdity_AncModeChange(object sender, AncModeChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "AncModeChange";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"AncModeChange Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         #endregion
 
@@ -2727,30 +2721,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void _speakercomdity_IsIMicNSEnabledChanged(object sender, IsIMicNSEnabledChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "IsIMicNSEnabledChanged";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"IsIMicNSEnabledChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Speaker] IsIMicNSEnabledChanged {e.IsIMicNSEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsIMicNSEnabledChanged {e.IsIMicNSEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void _speakercomdity_VolumeAdjustmentToneChanged(object sender, VolumeAdjustmentToneChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "VolumeAdjustmentToneChanged(";
-            Debug.WriteLine($"VolumeAdjustmentToneChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Speaker] VolumeAdjustmentToneChanged {e.VolumeAdjustmentTone} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] VolumeAdjustmentToneChanged {e.VolumeAdjustmentTone} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void _speakercomdity_IsMicMuteSoundEnabledChanged(object sender, IsMicMuteSoundEnabledChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "IsMicMuteSoundEnabledChanged(";
-            Debug.WriteLine($"IsMicMuteSoundEnabledChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Speaker] IsMicMuteSoundEnabledChanged {e.IsMicMuteSoundEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMicMuteSoundEnabledChanged {e.IsMicMuteSoundEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+        }
+
+        private void _speakercomdity_IsMuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.MuteStatus} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMuteStatusChanged {e.MuteStatus} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         #endregion
     }
