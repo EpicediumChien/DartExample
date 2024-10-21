@@ -38,7 +38,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 JObject jObject = JObject.Parse(json);
 
                 sid = _sid;
-                id = (int)jObject["id"];
+                tid = (int)jObject["tid"];
                 active = (string)jObject["active"];
                 devicetype = (string)jObject["devicetype"];
                 command = (string)jObject["command"];
@@ -48,7 +48,7 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
             public string sid { get; set; }
-            public int id { get; set; }
+            public int tid { get; set; }
             public string active { get; set; }
             public string devicetype { get; set; }
             public string command { get; set; }

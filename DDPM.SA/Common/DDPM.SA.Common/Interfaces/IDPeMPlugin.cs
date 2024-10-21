@@ -82,8 +82,6 @@ namespace DDPM.SA.Common
         void CheckForUpdate();
 
         void StartPairing(Guid physicalDeviceId);
-        void StartPairingPen();
-
         void StopPairing(Guid physicalDeviceId);
         void StopPairingPen();
 

@@ -60,7 +60,7 @@ namespace DDPM.UI.Module.AddHeadset_BL
                     UseShellExecute = true
                 });
             }
-#pragma warning restore CA1416
+            #pragma warning restore CA1416
         }
 
         // 10/13 Derek 需要根据breakpoints来调整布局
@@ -78,7 +78,9 @@ namespace DDPM.UI.Module.AddHeadset_BL
             stepsStackPanel.Orientation = Orientation.Vertical;
 
             //change Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
+            //stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
+            // Derek 10/19 縮到最小的時候效果會好一些
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsStackPanel.Width - 10;
             stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 180;
 
             //change textBlock size
