@@ -178,6 +178,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
+            Debug.Write($"GetMouseProgrammableKeys - Guid: {Guid}");
             if (!await GetItemIDAsync("Mouse", Guid))
             { return (JArray)""; }
 
@@ -1397,6 +1398,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             MethodInfo methodInfo = type switch
             {
+                "Mouse" => _mouseMethodInfo,
+                "KeyBoard" => _keyboardMethodInfo,
                 "Pen" => _penMethodInfo,
                 "Webcam" => _webcamMethodInfo,
                 "Headset" => _headsetMethodInfo,
@@ -1405,6 +1408,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             };
             Type interfaceType = type switch
             {
+                "Mouse" => _mouseInterfaceType,
+                "KeyBoard" => _keyboardInterfaceType,
                 "Pen" => _penInterfaceType,
                 "Webcam" => _webcamInterfaceType,
                 "Headset" => _headsetInterfaceType,
@@ -2525,10 +2530,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 _ = Task.Run(async () =>
                 {
-                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
-                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
 
+                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
                     if (_mouseInterfaceType != null)
                     {
                         _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
@@ -2539,6 +2544,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     else
                     {
                         writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
+                    writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
+                    if (_keyboardInterfaceType != null)
+                    {
+                        _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                        .MakeGenericMethod(_keyboardInterfaceType);
+                        writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
                     writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");

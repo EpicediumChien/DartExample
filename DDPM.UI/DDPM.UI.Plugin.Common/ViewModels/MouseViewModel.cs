@@ -273,7 +273,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
             //MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentInstanceID);
-            MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model);
+            MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentDeviceID.ToString());
 
             foreach (var kvp in MouseAction.ButtonActions)
             {
@@ -750,7 +750,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     SelectedMouseAction!.AssignedAction.ID = actionID;
                     SelectedMouseAction.AssignedAction.Parameter = parameter;
-                    byte[] newValue = Encoding.UTF8.GetBytes($"{{\"pkId\":{pkId},\"actionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
+                    byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
+                    DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
                 }
                 else
                 {

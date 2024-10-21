@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Newtonsoft.Json.Linq;
 
 namespace DDPM.UI.Common
 {
@@ -290,6 +291,25 @@ namespace DDPM.UI.Common
                 default:
                     break;
             }
+
+            if (guid != "")
+            {
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseProgrammableKeys(guid);
+                var jArray = JArray.FromObject(task1.Result);
+                List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
+                foreach (var programbleKey in ProgrambleKeys)
+                {
+                    var btn = (MouseButtonName)programbleKey.Id;
+                    if (ButtonActions.ContainsKey(btn))
+                    {
+                        if (programbleKey.AssignedAction != null)
+                        {
+                            ButtonActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -427,5 +447,23 @@ namespace DDPM.UI.Common
             }
             return new object();
         }
+    }
+
+    public class ProgrambleKey
+    {
+        public int Id;
+        public string Name = "";
+        public string ActionName = "";
+        public ProgrambleAction AssignedAction = new();
+        public List<ProgrambleAction> SuggestedActions = new();
+    }
+    public class ProgrambleAction
+    {
+        public string BaseGuid = "";
+        public string Id = "";
+        public string Name = "";
+        public string Category = "";
+        public List<int> ProgrammableKeys = new();
+
     }
 }
