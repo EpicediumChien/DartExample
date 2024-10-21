@@ -1060,11 +1060,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Display Service implementation
 
-        public Task Reset0x52TimerTick(int millisecond)
+        public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
+            writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + $" requested, process ID[{processID}]");
 
-            _DisplayManagerPlugin.Reset0x52TimerTick(millisecond);
+            _DisplayManagerPlugin.Reset0x52TimerTick(millisecond, processID);
 
             return Task.FromResult(Task.CompletedTask);
         }

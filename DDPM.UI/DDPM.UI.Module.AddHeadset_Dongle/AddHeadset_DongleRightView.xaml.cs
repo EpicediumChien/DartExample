@@ -51,7 +51,8 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
             stepsStackPanel.Orientation = Orientation.Vertical;
 
             //change Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
+            //stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsStackPanel.Width - 10;
             stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 180;
 
             //change textBlock size
