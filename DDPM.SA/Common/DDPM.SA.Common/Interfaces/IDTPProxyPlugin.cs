@@ -12,6 +12,7 @@
 
 using Dell.Client.Framework.Common;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -39,14 +40,17 @@ namespace DDPM.SA.Common
 
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue);
-        Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue);
+        Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
 
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
         Task<string> PairingPen();
+        Task UnPairPen(string Guid);
+        Task<JArray> GetPenDeviceItemsEx();
         Task<string> GetEraserDoublePressValues();
+        Task<string> GetEraserSinglePressValues();
+        Task<string> GetEraserLongPressValues();
         Task<string> GetSideSwitchSinglePressValues();
         Task<string> GetMenuSinglePressValues();
         Task<string> GetLaunchableAppValues();
@@ -68,8 +72,6 @@ namespace DDPM.SA.Common
         Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
-
-        Task SetBrightnessValue(string itemID, int newValue);
 
         Task<string> GetCameraFirmwareVersion(string itemID);
 

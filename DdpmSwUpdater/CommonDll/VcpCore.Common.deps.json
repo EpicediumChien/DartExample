@@ -9,21 +9,21 @@
       "VcpCore.Common/2.0.0.5": {
         "dependencies": {
           "DellClientFramework": "6.4.11.2",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
         },
         "runtime": {
           "VcpCore.Common.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.31"
+            "fileVersion": "10.0.19041.34"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.4.44211"
+            "fileVersion": "2.0.8.46841"
           }
         }
       },
@@ -179,14 +179,7 @@
           }
         }
       },
-      "System.Formats.Asn1/8.0.1": {
-        "runtime": {
-          "lib/net8.0/System.Formats.Asn1.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.724.31311"
-          }
-        }
-      },
+      "System.Formats.Asn1/8.0.1": {},
       "System.Management/8.0.0": {
         "dependencies": {
           "System.CodeDom": "8.0.0"
@@ -288,7 +281,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""

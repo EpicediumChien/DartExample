@@ -1,3 +1,4 @@
+using System.CodeDom;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,6 +29,12 @@ namespace DDPM.Easy.Common
             rc = new Rect();
         }
 
+        //For SplitCtrl0B
+        public CellObj(string name)
+        {
+            Name = name;
+            rc = new Rect();
+        }
         #endregion Ctor
     }
 }

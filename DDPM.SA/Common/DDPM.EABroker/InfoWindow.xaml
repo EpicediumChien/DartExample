@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.EABroker"
         mc:Ignorable="d"
-        Title="InfoWindow" Height="250" Width="640" 
+        Title="InfoWindow" Height="300" Width="840" 
         Left="-99999" Top="-9999"
         ShowInTaskbar="False"
         Loaded="Window_Loaded" Unloaded="Window_Unloaded">

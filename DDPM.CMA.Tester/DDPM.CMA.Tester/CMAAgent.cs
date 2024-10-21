@@ -36,6 +36,8 @@ namespace DDPM.CMA.Tester
         private const int TIMEOUT_IN_SECONDS = 60;
         private static int _exitcode = 0;
 
+
+        private static Boolean isresponse = false;
         #endregion
 
         #region Constructor
@@ -85,42 +87,160 @@ namespace DDPM.CMA.Tester
 
         private void RunManagement(string[] args, bool runMode)
         {
-            if (_CMAManagerPlugin == null)
-            {
-                Console.WriteLine("No CMA Manager be found");
-                _exitcode = 1;
-                return;
-            }
+            InitializeCMAManagerPlugin();
 
-            if(args.Length == 0)
+            if (_PluginAvailabilityTrigger_CMAManager.WaitOne(TimeSpan.FromSeconds(TIMEOUT_IN_SECONDS)))
             {
-                Console.WriteLine("No command line input");
-                _exitcode = 2;
-                return;
-            }
+                if (_CMAManagerPlugin == null)
+                {
+                    _exitcode = (int)CLI_ExitCode.null_cli_manager;
+                    return;
+                }
+                isresponse = false;
 
-            CMARequestArgs input = new CMARequestArgs();
-            input.cma_request = args[0];
-            
-            CMAResult result = _CMAManagerPlugin.PerformCMARequest(input).Result;
-            if (result != null)
-            {
-                Console.WriteLine("Detail: " + result.message);
-                Console.WriteLine("Detail: " + result.output_result);
-                Console.WriteLine($"ID: {result.cma_request_id}");
+                //_CMAManagerPlugin.Notify += Notification;
+
+                //Console.WriteLine("Reg");
+
+                // while (!isresponse) { }
+
+                runRequest(args);
+
+
+
+                return;
             }
             else
             {
-                Console.WriteLine("CMA Manager return null result");
+                //Means timeout here
+                Console.WriteLine($"{"Device "} was not found after {TIMEOUT_IN_SECONDS}s.");
+
+                return;
             }
+
+        }
+
+        private void runRequest(string[] args)
+        {
+            Boolean isRunning = true;
+
+            string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
+            string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
+
+            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
+            //string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
+
+            string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""ConnectedDevices"",""options"":{}}]}";
+            string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
+            string jsondeviceconfig = @"{""sid"":""1728380251"",""req"":[{""tid"":1,""active"":""set"",""devicetype"":""APP"",""command"":""DeviceConfiguration"",""value"":""display,C:\\Tepm\\ConfigSettings.json"",""options"":{}}]}";
+
+            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\Temp\\"",""options"":{}}]}";
+
+
+            CMARequestArgs cmarequest = new CMARequestArgs();
+
+            _CMAManagerPlugin.Notify += Notification;
+            Console.WriteLine("Reg Event Success");
+
+            // manager.Info(json);
+
+            while (isRunning)
+            {
+                Console.WriteLine("\nCMAManagerPlugin Demo: ");
+                Console.WriteLine("1. Show ConnectedDevices.");
+                Console.WriteLine("2. Show Display FWUpdate.");
+                Console.WriteLine("3. Show DeviceData.");
+                Console.WriteLine("4. Show DeviceConfiguration.");
+                Console.WriteLine("5. Show DiagnosticsReport.");
+                Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
+                Console.WriteLine("0. Exit.");
+
+                Console.WriteLine("Enter the number to run ?");
+                int sel = Convert.ToInt32(Console.ReadLine());
+
+                switch (sel)
+                {
+                    case 1:
+                        Console.WriteLine($"json String = {jsondevice}");
+                        cmarequest.cma_request = jsondevice;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 2:
+                        Console.WriteLine($"json String = {jsonfwdisplay}");
+                        cmarequest.cma_request = jsonfwdisplay;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 3:
+                        Console.WriteLine($"json String = {jsondevicedata}");
+                        cmarequest.cma_request = jsondevicedata;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 4:
+                        Console.WriteLine($"json String = {jsondeviceconfig}");
+                        cmarequest.cma_request = jsondeviceconfig;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 5:
+                        Console.WriteLine($"json String = {jsonreport}");
+                        cmarequest.cma_request = jsonreport;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 6:
+                        Console.WriteLine($"json String = {jsongetdisplaymulti}");
+                        cmarequest.cma_request = jsongetdisplaymulti;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    default:
+                        isRunning = false;
+                        break;
+
+
+                }
+
+                while (!isresponse) { }
+
+            }
+            /*
+                        if (args.Length > 0)
+                        {
+                            switch (args[0].ToLower())
+                            {
+                                case "display":
+                                    cmarequest.cma_request = jsonfwdisplay;
+                                    _CMAManagerPlugin.Info(cmarequest);
+                                    break;
+
+                                case "dock":
+                                    cmarequest.cma_request = jsonfwdock;
+                                    _CMAManagerPlugin.Info(cmarequest);
+                                    break;
+
+                                default:
+                                    cmarequest.cma_request = json;
+                                    _CMAManagerPlugin.Info(cmarequest);
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            cmarequest.cma_request = jsondevicedata;
+                            _CMAManagerPlugin.Info(cmarequest);
+                        }*/
+
+
         }
 
         private void InitializeCMAManagerPlugin()
         {
             if (_CMAManagerPlugin != null)
                 return;
-
-            _Log.Info($"{nameof(PluginsStarted)} arrived for {nameof(ICMAManagerIT)}");
+            Console.WriteLine($"{nameof(PluginsStarted)} arrived for {nameof(ICMAManagerIT)}");
 
             _CMAManagerPlugin = _Agent.PluginManager.FindPluginByType<ICMAManagerIT>(PluginResolution.Dynamic);
             if (_CMAManagerPlugin is IFrameworkPluginConditionNotification condition)
@@ -142,11 +262,11 @@ namespace DDPM.CMA.Tester
 
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        _Log.Info($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in an error condition");
+                        Console.WriteLine($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in an error condition");
                     }
                     else if (pluginCondition is PluginRunningCondition)//cross subagent
                     {
-                        _Log.Info($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in running condition");
+                        Console.WriteLine($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in running condition");
                         _PluginAvailabilityTrigger_CMAManager.Set();
                     }
                 }
@@ -159,10 +279,14 @@ namespace DDPM.CMA.Tester
 
         private void PluginsStarted(object sender, PluginsStartedEventArgs e)
         {
-            if (e?.ChangedPlugins == null)
+            if (e == null)
+                return;
+            if (e.ChangedPlugins == null)
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
+
+            Console.WriteLine($"{e.ChangedPlugins.GetType().Name}");
 
             if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
             {
@@ -175,6 +299,15 @@ namespace DDPM.CMA.Tester
             InitializeCMAManagerPlugin();
         }
 
+        private static void Notification(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA Notification Alert");
+            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventtype);
+            Console.WriteLine("CMA Notification Alert notification : " + e.notification);
+
+            isresponse = true;
+        }
         #endregion
     }
 }
