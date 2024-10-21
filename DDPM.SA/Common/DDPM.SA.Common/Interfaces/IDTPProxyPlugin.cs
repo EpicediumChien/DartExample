@@ -11,8 +11,10 @@
 #endregion
 
 using Dell.Client.Framework.Common;
+using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -143,10 +145,70 @@ namespace DDPM.SA.Common
 
         #region Headset
 
-        Task<bool> GetBusyLightAsync(string Guid);
+        Task SetMicNoiseCancellationAsync(string Guid, bool newValue);
+        Task SetSidetoneAsync(string Guid, bool newValue);
         Task SetBusyLightAsync(string Guid, bool newValue);
-        Task<string> GetFirmwareVersionAsync(string Guid);
+        Task SetVoiceGuidanceAsync(string Guid, bool newValue);
+        Task SetSelectedPresetAsync(string Guid, int newValue);
+        Task SetSidetoneLevelAsync(string Guid, int newValue);
+        Task SetBandsGainAsync(string Guid, byte[] newValue);
+        Task SetAncModeAsync(string Guid, int newValue);
+        Task SetAncGainAsync(string Guid, int newValue);
+        Task SetWearDetectionAsync(string Guid, int newValue);
+        Task SetMicNCIncomingAsync(string Guid, bool newValue);
+        Task SetUnPairAsync(string Guid, bool newValue);
         Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        //////////Headset Get//////////
+
+        Task<JArray> GetDeviceItemsExAsync(string Guid);
+        //Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
+        Task<string> GetDeviceNameAsync(string Guid);
+        Task<string> GetDeviceIdAsync(string Guid);
+        Task<string> GetPluginIdAsync(string Guid);
+        Task<int> GetODMIdAsync(string Guid);
+        Task<string> GetModelNumberAsync(string Guid);
+        Task<int> GetInstanceNumberAsync(string Guid);
+        Task<int> GetInstanceIdAsync(string Guid);
+        Task<string> GetFirmwareVersionAsync(string Guid);
+        Task<string> GetDeviceTypeAsync(string Guid);
+        Task<string> GetParentDeviceTypeAsync(string Guid);
+        Task<bool> GetIsBatteryLevelSupportedAsync(string Guid);
+        Task<int> GetBatteryLevelAsync(string Guid);
+        Task<string> GetDeviceBatteryStatusAsync(string Guid);
+        Task<string> GetPairingStatusAsync(string Guid);
+        Task<int> GetMaxPairingSlotsAsync(string Guid);
+        Task<int> GetPairedDeviceCountAsync(string Guid);
+        Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);
+        Task<string> GetSerialNumberAsync(string Guid);
+        Task<bool> GetIsReadyAsync(string Guid);
+        Task<bool> GetIsDirtyAsync(string Guid);
+        Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid);
+        Task<bool> GetIsSidetoneSupportedAsync(string Guid);
+        Task<bool> GetIsBusyLightSupportedAsync(string Guid);
+        Task<bool> GetIsVoiceGuidanceSupportedAsync(string Guid);
+        Task<bool> GetIsPresetsSupportedAsync(string Guid);
+        Task<bool> GetIsEqualizerSupportedAsync(string Guid);
+        //Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid);
+        Task<bool> GetIsANCSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string Guid);
+        Task<bool> GetMicNoiseCancellationAsync(string Guid);
+        Task<bool> GetMicNCIncomingAsync(string Guid);
+        Task<bool> GetSidetoneAsync(string Guid);
+        Task<bool> GetBusyLightAsync(string Guid);
+        Task<bool> GetVoiceGuidanceAsync(string Guid);
+        Task<int> GetSelectedPresetAsync(string Guid);
+        Task<int> GetSidetoneLevelAsync(string Guid);
+        Task<bool> GetMuteStatusAsync(string Guid);
+        Task<byte[]> GetBandsGainAsync(string Guid);
+        Task<int> GetAncModeAsync(string Guid);
+        Task<int> GetAncGainAsync(string Guid);
+        Task<int> GetWearDetectionAsync(string Guid);
+        Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
 
         #endregion
 
@@ -162,9 +224,9 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
         Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
-        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
+        Task SetIsWiredAudioIMicNSEnableAsync(string itemID, bool newValue);
         Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string itemID);
-        Task SetResetToDefaultValueAsync(string itemID, bool newValue);
+        Task SetResetToDefaultAsyncForSoundbar(string itemID, bool newValue);
 
         #endregion
     }

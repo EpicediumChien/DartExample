@@ -424,9 +424,11 @@ namespace DDPM.UI.Plugin.ViewModels
         public override bool SetCurrentDevice(string deviceID)
         {
             //deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
-
             if (!base.SetCurrentDevice(deviceID))
                 return false;
+            var fv = _deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result; //CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
+            //FirmwareVersion2 = $"Firmware Version {fv}";// {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
+            FirmwareVersion2 = Strings.FirmwareVersion + $"{fv}";
             //else
             //    _current_headset = deviceID;
             return true;
@@ -624,14 +626,22 @@ namespace DDPM.UI.Plugin.ViewModels
             // Simulate time-consuming operation
             Thread.Sleep(500);
             int sun = 0;
-            while (vm.FirmwareVersion == "0000")
-            {
-                _deviceManager.GetDevices();
-                Thread.Sleep(2000);
-                sun++;
-                if (sun >= 3)
-                    break;
-            }
+            //while (vm.FirmwareVersion == "0000")
+            //{
+            //    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... vm.FirmwareVersion == 0 ...");
+            //    Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+            //    vm!.FirmwareVersion2 = tsk.Result.deviceInfo[0].FirmwareVersion;
+            //    _deviceManager.GetDevices(true);
+            //    Thread.Sleep(1000);
+            //    sun++;
+            //    if (sun >= 3)
+            //        break;
+            //}
+            //if (vm.FirmwareVersion == "0000")
+            //{
+            //    vm.FirmwareVersion = _deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
+            //    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... vm.FirmwareVersion == {vm.FirmwareVersion} ...");
+            //}
             // Call DetectPageShow
             DetectPageShow(model);
         }
