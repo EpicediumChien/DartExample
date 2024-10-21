@@ -49,7 +49,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -92,11 +91,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ISchedulerManager _ScheduleManagerPlugin;
         private IDTPProxyPlugin _DTPProxyPlugin;
         private IEzMemoryPlugin _IEzMemoryPlugin;
+        private ITelementryScheduler _TelementryScheduler;
 
         private readonly object _FwUpdateLock = new object();
         private readonly object _DisplayChangedLock = new object();
         private readonly object _PluginConditionLock = new object();
-
         private readonly object _PluginConditionLock_Display = new object();
         private readonly object _PluginConditionLock_Peripherals = new object();
         private readonly object _PluginConditionLock_Settings = new object();
@@ -106,6 +105,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
         private readonly object _PluginConditionLock_EzMemory = new object();
+        private readonly object _PluginConditionLock_TelementryScheduler = new object();
+
         private DisplayChange displayChange;
 
         //private static Dell.Client.Framework.Common.Log _log;
@@ -212,6 +213,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             InitializeSettingsPlugin();
             InitializeDisplayManagerPlugin();
+            InitializeTelementrySchedulerPlugin();
             InitializeColorPresetPlugin();
             InitializePeripheralsPlugin();
             InitializeFWUpdatePlugin();
@@ -2007,6 +2009,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region Wired Audio
+
         public async Task<int> GetBassAsync(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(itemID));
@@ -2033,11 +2036,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(itemID));
         }
+
         public async Task SetTrebleAsync(string guid, int newValue)
         {
             _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
             //return Task.FromResult(true);
         }
+
         //-----------------------------------
         public Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
         {
@@ -2052,6 +2057,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID));
         }
+
         //-----------------------------------
         public Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
         {
@@ -2066,6 +2072,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID));
         }
+
         //-----------------------------------
         public Task SetIsWiredAudioIMicNSEnableValue(string guid, bool newValue)
         {
@@ -2080,6 +2087,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(itemID));
         }
+
         //-----------------------------------
         public Task SetResetToDefaultValue(string guid, bool newValue)
         {
@@ -2688,6 +2696,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"{nameof(SetServerURL)} done");
             return Task.FromResult(ret);
         }
+
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -3606,8 +3615,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
 
-
-
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
             if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
                 monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
@@ -3904,6 +3911,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Failed, return an empty array instead of null
             return Task.FromResult(new SplitJson[] { });
         }
+
         /// <summary>
         /// Write the EACustomList to current user's settings file
         /// </summary>
@@ -4919,72 +4927,89 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
         }
+
         public Task<string> PairingPen()
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.PairingPen();
         }
+
         public Task UnPairPen(string Guid)
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.UnPairPen(Guid);
         }
+
         public Task<string> GetEraserDoublePressValues()
         {
             return _DTPProxyPlugin.GetEraserDoublePressValues();
         }
+
         public Task<string> GetEraserSinglePressValues()
         {
             return _DTPProxyPlugin.GetEraserSinglePressValues();
         }
+
         public Task<string> GetEraserLongPressValues()
         {
             return _DTPProxyPlugin.GetEraserLongPressValues();
         }
+
         public Task<string> GetSideSwitchSinglePressValues()
         {
             return _DTPProxyPlugin.GetSideSwitchSinglePressValues();
         }
+
         public Task<string> GetMenuSinglePressValues()
         {
             return _DTPProxyPlugin.GetMenuSinglePressValues();
         }
+
         public Task<string> GetLaunchableAppValues()
         {
             return _DTPProxyPlugin.GetLaunchableAppValues();
         }
+
         public Task<string> GetEraserDoublePressSetting()
         {
             return _DTPProxyPlugin.GetEraserDoublePressSetting();
         }
+
         public Task<string> GetEraserSinglePressSetting()
         {
             return _DTPProxyPlugin.GetEraserSinglePressSetting();
         }
+
         public Task<string> GetEraserLongPressSetting()
         {
             return _DTPProxyPlugin.GetEraserLongPressSetting();
         }
+
         public Task<string> GetSideTopSwitchSinglePressSetting()
         {
             return _DTPProxyPlugin.GetSideTopSwitchSinglePressSetting();
         }
+
         public Task<string> GetSideBottomSwitchSinglePressSetting()
         {
             return _DTPProxyPlugin.GetSideBottomSwitchSinglePressSetting();
         }
+
         public Task<string> GetMenuSinglePressSetting()
         {
             return _DTPProxyPlugin.GetMenuSinglePressSetting();
         }
+
         public Task<bool> GetMenuCenterRightClickSetting()
         {
             return _DTPProxyPlugin.GetMenuCenterRightClickSetting();
         }
+
         public Task<bool> GetIsSideTopButtonHoverClick()
         {
             return _DTPProxyPlugin.GetIsSideTopButtonHoverClick();
         }
+
         public Task<bool> GetIsSideBottomButtonHoverClick()
         {
             return _DTPProxyPlugin.GetIsSideBottomButtonHoverClick();
@@ -5515,9 +5540,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-
         #endregion
-
 
         #endregion
 
@@ -5618,8 +5641,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 _GlobalSettingParam.isTelemetryConsentOn = isEnable;
+
+                if (_TelementryScheduler != null)
+                {
+                    writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                    _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                }
+                else writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " _TelementryScheduler is null");
+
                 ret = SaveGlobalSettingParam();
             }
+
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
@@ -5645,6 +5677,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _GlobalSettingParam.GlobalSetting_About.DriverVersion = "N/A";
                 }
             }
+
+            if (_GlobalSettingParam != null)
+            {
+                if (_TelementryScheduler != null)
+                {
+                    writelog(nameof(LoadGlobalSettingParam) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                    _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                }
+                else writelog(nameof(LoadGlobalSettingParam) + " _TelementryScheduler is null");
+            }
+            else writelog(nameof(LoadGlobalSettingParam) + " _GlobalSettingParam is null");
+
             return ret;
         }
 
@@ -6878,6 +6922,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        private void InitializeTelementrySchedulerPlugin()
+        {
+            if (_TelementryScheduler != null)
+                return;
+
+            _TelementryScheduler = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
+
+            if (_TelementryScheduler is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
+                GetCurrentTelementrySchedulerCondition();
+            }
+        }
+
         private void GetCurrentScheduleManagerCondition()
         {
             _ = Task.Run(async () =>
@@ -7491,6 +7549,43 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in a started condition");
+                    }
+                }
+            });
+        }
+
+        private void GetCurrentTelementrySchedulerCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_TelementryScheduler as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_TelementryScheduler)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
+
+                        if (_GlobalSettingParam != null)
+                        {
+                            writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                            _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                        }
+                        else writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
+
+                        if (_GlobalSettingParam != null)
+                        {
+                            writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                            _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                        }
+                        else writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
                     }
                 }
             });
@@ -9979,7 +10074,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                     }
-
                 }
             }
             catch (Exception ex)
@@ -10152,7 +10246,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 moinfo.edid.ModelName = ddmMonitorSettings.Model;
                 moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
 
-
                 //Will migrate Desktop[0] only
                 if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
                 {
@@ -10211,10 +10304,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     eaSettings.SelectedSplit = selJson;
                     eaSettings.RecentList = recentList.ToArray();
                     WriteEAMonitorSettings(moinfo, eaSettings);
-
                 }
             }
         }
+
         #endregion Migration
 
         #region Event Handler
@@ -10274,6 +10367,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GetCurrentEzMemoryPluginCondition();
         }
 
+        private void OnTelementrySchedulerConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentTelementrySchedulerCondition();
+        }
+
         //Bruce, 2024-08-09 add new event
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
@@ -10321,6 +10419,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (e.ChangedPlugins.OfType<IEzMemoryPlugin>().Any())
                 InitializeEzMemoryPlugin();
+
+            if (e.ChangedPlugins.OfType<ITelementryScheduler>().Any())
+                InitializeTelementrySchedulerPlugin();
         }
 
         //Jim, 2024-09-05 add new event

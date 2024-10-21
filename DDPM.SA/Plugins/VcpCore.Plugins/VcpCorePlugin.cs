@@ -191,22 +191,17 @@ namespace VcpCore.Plugins
 
             try
             {
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+
+                while (!_TaskQueue.IsEmpty())
+                {
+                    if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                    else _TaskQueue = new TaskLockQueue<ParameterType>();
+                }
 
                 var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(Token);
                 var NewToken = Cancellation.Token;
-
-                //while (_TaskQueueExecutor.IsBusy)
-                //_TaskQueueExecutor.CancelAsync();
-                while (!_TaskQueue.IsEmpty())
-                {
-                    _TaskQueueExecutor.CancelAsync();
-                    _AllInfoMonitors = new List<MonitorInfo_complex>();
-                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
-                }
 
                 InitializeMonitorsList(NewToken).Wait();
 
@@ -226,10 +221,8 @@ namespace VcpCore.Plugins
                 // Task was canceled before running.
                 // Cancelled due to timeout
 
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                 _logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors() cancellation happened...");
                 return Task.FromResult(new List<MonitorInfo>());
@@ -239,20 +232,16 @@ namespace VcpCore.Plugins
                 // Task was canceled while running.
                 // Cancelled due to timeout
 
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                 _logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors() cancellation happened...");
                 return Task.FromResult(new List<MonitorInfo>());
             }
             catch (Exception e)
             {
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                 _logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors Exception : " + e.Message);
                 return Task.FromResult(new List<MonitorInfo>());
@@ -682,7 +671,7 @@ namespace VcpCore.Plugins
                     {
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork TaskQueueExecutor Cancellation Occur...");
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue cleaning...");
-                        _TaskQueue.Clear();
+                        if (_TaskQueue != null) _TaskQueue.Clear();
                         _TaskQueue = new TaskLockQueue<ParameterType>();
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue.IsEmpty(): " + _TaskQueue.IsEmpty().ToString());
                         e.Cancel = true;
@@ -912,31 +901,37 @@ namespace VcpCore.Plugins
                     if (obj.ContainsKey("CapsDataMap"))
                     {
                         JObject capsDataMap = (JObject)obj["CapsDataMap"];
-                        JArray input = (JArray)capsDataMap["Input Select"];
+                        JArray input = new JArray();
 
-                        string T_strI = string.Empty;
-                        string T_strII = string.Empty;
-                        bool rc = false;
-                        for (int i = 0; i < input.Count; i++)
+                        if (capsDataMap.ContainsKey("Input Select"))
+                            input = (JArray)capsDataMap["Input Select"];
+
+                        if (input.HasValues)
                         {
-                            T_strI = System.Text.RegularExpressions.Regex.Replace(input[i].ToString(), @"\d", string.Empty);
-
-                            for (int j = 0; j < input.Count; j++)
+                            string T_strI = string.Empty;
+                            string T_strII = string.Empty;
+                            bool rc = false;
+                            for (int i = 0; i < input.Count; i++)
                             {
-                                if (i != j)
-                                {
-                                    T_strII = System.Text.RegularExpressions.Regex.Replace(input[j].ToString(), @"\d", string.Empty);
+                                T_strI = System.Text.RegularExpressions.Regex.Replace(input[i].ToString(), @"\d", string.Empty);
 
-                                    if (T_strI.Equals(T_strII))
+                                for (int j = 0; j < input.Count; j++)
+                                {
+                                    if (i != j)
                                     {
-                                        rc = true;
-                                        break;
+                                        T_strII = System.Text.RegularExpressions.Regex.Replace(input[j].ToString(), @"\d", string.Empty);
+
+                                        if (T_strI.Equals(T_strII))
+                                        {
+                                            rc = true;
+                                            break;
+                                        }
                                     }
                                 }
-                            }
 
-                            if (!rc)
-                                input[i] = T_strI;
+                                if (!rc)
+                                    input[i] = T_strI;
+                            }
                         }
                     }
 
@@ -1638,10 +1633,8 @@ namespace VcpCore.Plugins
         {
             try
             {
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                 try
                 {
@@ -1652,10 +1645,8 @@ namespace VcpCore.Plugins
                     // Task was canceled before running.
                     // Cancelled due to timeout
 
-                    if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                    else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                    if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                    else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                    _AllInfoMonitors = new List<MonitorInfo_complex>();
+                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
                     _cancellationTokenSource.Dispose();
                     _logs.DebugMsg("[VcpCorePlugin] InitializeMonitorsList cancellation happened...");
                 }
@@ -1664,19 +1655,15 @@ namespace VcpCore.Plugins
                     // Task was canceled while running.
                     // Cancelled due to timeout
 
-                    if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                    else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                    if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                    else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                    _AllInfoMonitors = new List<MonitorInfo_complex>();
+                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
                     _cancellationTokenSource.Dispose();
                     _logs.DebugMsg("[VcpCorePlugin] InitializeMonitorsList cancellation happened...");
                 }
                 catch (Exception e)
                 {
-                    if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                    else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                    if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                    else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                    _AllInfoMonitors = new List<MonitorInfo_complex>();
+                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
                     _cancellationTokenSource.Dispose();
                     // Failed to complete due to e exception
                     _logs.DebugMsg($"[VcpCorePlugin] InitializeMonitorsList...there is an exception-- ({e.Message})");
@@ -1776,10 +1763,8 @@ namespace VcpCore.Plugins
                             // Task was canceled before running.
                             // Cancelled due to timeout
 
-                            if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                            else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                            if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                            else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                            _AllInfoMonitors = new List<MonitorInfo_complex>();
+                            _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                             _logs.DebugMsg("[VcpCorePlugin] using Cancellation InitializeMonitorsList cancellation happened...");
                         }
@@ -1788,19 +1773,15 @@ namespace VcpCore.Plugins
                             // Task was canceled while running.
                             // Cancelled due to timeout
 
-                            if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                            else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                            if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                            else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                            _AllInfoMonitors = new List<MonitorInfo_complex>();
+                            _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                             _logs.DebugMsg("[VcpCorePlugin] using Cancellation InitializeMonitorsList cancellation happened...");
                         }
                         catch (Exception e)
                         {
-                            if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                            else _AllInfoMonitors = new List<MonitorInfo_complex>();
-                            if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                            else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                            _AllInfoMonitors = new List<MonitorInfo_complex>();
+                            _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                             // Failed to complete due to e exception
                             _logs.DebugMsg($"[VcpCorePlugin] using Cancellation InitializeMonitorsList there is an exception-- ({e.Message})");
@@ -1825,8 +1806,7 @@ namespace VcpCore.Plugins
 
                 if (_AllInfoMonitors.Count > 0)
                 {
-                    if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
-                    else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
                     InitializeCacheTable();
 
@@ -1895,8 +1875,7 @@ namespace VcpCore.Plugins
 
                 if (_AllInfoMonitors_Mix.Count > 0)
                 {
-                    if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                    else _AllInfoMonitors = new List<MonitorInfo_complex>();
+                    _AllInfoMonitors = new List<MonitorInfo_complex>();
 
                     foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                         _AllInfoMonitors.Add(x);
@@ -2747,7 +2726,6 @@ namespace VcpCore.Plugins
 
                     Trace.WriteLine("GetCurrentColorPreset()  valstring= " + valstring);
                     Trace.WriteLine("GetCurrentColorPreset()  rc= " + rc);
-
                 }
                 if (!string.IsNullOrWhiteSpace(rc))
                     return NodeFormatter.FormatVCP_E2(rc.ToLower());
