@@ -1166,7 +1166,7 @@ namespace NetworkKVM.Plugins
                 {
                     if (CallNKVMConnent().Result)
                     {
-                        StartAsync();
+                        StartAsync().Wait();
                     }
                     else
                     {
@@ -1214,7 +1214,7 @@ namespace NetworkKVM.Plugins
                 _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
                 if (CallNKVMConnent().Result)
                 {
-                    StartAsync();
+                    StartAsync().Wait();
                 }
                 else
                 {
