@@ -19,7 +19,7 @@ namespace VcpCore.Common
         public void DebugMsg(string DebugMsg)
         {
             if (Logg != null) // Elie, check if it's null or not.
-                Logg.Info("[VcpCore_DebugMsg][INFO] " + DebugMsg);
+                Logg.Info("[INFO] " + DebugMsg);
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + DebugMsg);
 #endif
@@ -53,7 +53,6 @@ namespace VcpCore.Common
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
 #endif
-
         }
     }
 }
