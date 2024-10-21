@@ -3612,14 +3612,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //--------------------------------------
         public async Task SetIsWiredAudioIMicNSEnableAsync(string Guid, bool newValue)
         {
-            Trace.WriteLine(" [Speaker] SetIsWiredAudioIMicNSEnableValue : " + Guid + " || " + newValue.ToString());
+            Trace.WriteLine(" [Speaker] SetIsWiredAudioIMicNSEnableAsync : " + Guid + " || " + newValue.ToString());
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable", newValue);
-                writelog(" [Speaker] SetIsWiredAudioIMicNSEnableValue Success ! ");
+                writelog(" [Speaker] SetIsWiredAudioIMicNSEnableAsync Success ! ");
             }
             else
             {
@@ -3651,14 +3651,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //--------------------------------------
         public async Task SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue)
         {
-            Trace.WriteLine(" [Speaker] SetResetToDefaultValueAsync : " + Guid);
+            Trace.WriteLine(" [Speaker] SetResetToDefaultAsyncForSoundbar : " + Guid);
             if (!await GetItemIDAsync("Speaker", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_speakerInterfaceType, commodity, "ResetToDefault", newValue);
-                writelog(" [Speaker] SetResetToDefaultValueAsync Success ! ");
+                writelog(" [Speaker] SetResetToDefaultAsyncForSoundbar Success ! ");
             }
             else
             {

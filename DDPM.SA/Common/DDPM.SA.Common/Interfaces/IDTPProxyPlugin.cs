@@ -238,9 +238,9 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid);
         Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue);
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
-        Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue);
+        Task SetIsWiredAudioIMicNSEnableAsync(string Guid, bool newValue);
         Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string Guid);
-        Task SetResetToDefaultValueAsync(string Guid, bool newValue);
+        Task SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue);
 
         #endregion
     }

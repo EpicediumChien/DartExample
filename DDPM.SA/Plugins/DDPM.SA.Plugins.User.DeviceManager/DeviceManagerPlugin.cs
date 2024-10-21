@@ -2372,8 +2372,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region Wired Audio
         public async Task<int> GetBassAsync(string Guid)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetBassAsync requested ... {itemID}");
-            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(itemID));
+            writelog($"[DeviceMangerPlugin] [Soundbar] received GetBassAsync requested ... {Guid}");
+            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(Guid));
         }
 
         public Task SetBassAsync(string guid, int newValue)
@@ -2391,8 +2391,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task SetMidRangeAsync(string Guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetMidRangeAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+            writelog($"[DeviceMangerPlugin] [Soundbar] received SetMidRangeAsync requested ... {Guid}" + " / " + $"{newValue}");
+            await _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
         }
 
         public Task<int> GetTrebleAsync(string itemID)
@@ -2402,8 +2402,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         public async Task SetTrebleAsync(string Guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetTrebleAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+            writelog($"[DeviceMangerPlugin] [Soundbar] received SetTrebleAsync requested ... {Guid}" + " / " + $"{newValue}");
+            await _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
         }
         //-----------------------------------
         public async Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
