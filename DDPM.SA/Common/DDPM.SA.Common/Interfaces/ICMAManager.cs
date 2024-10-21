@@ -1,6 +1,9 @@
 ﻿using Dell.Client.Framework.Common;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common
@@ -46,12 +49,20 @@ namespace DDPM.SA.Common
         public Guid cma_request_id;
         public string message;
     }
+
+    public class CMADeviceChanges
+    {
+        public string type = string.Empty; //display or peripheral (lower case)
+        public List<MonitorInfo> mos = null;
+        public List<DeviceInfo> devices = null;
+    }
     #endregion
 
     public interface ICMAManagerSA : IFrameworkPlugin
     {
         Task WriteResult(CMAResult result);
         event EventHandler<CMAEventArgs> CMARequestEvent;
+        Task Update_DeviceChanged(CMADeviceChanges data);
     }
 
     public interface ICMAManagerIT : IFrameworkPlugin
