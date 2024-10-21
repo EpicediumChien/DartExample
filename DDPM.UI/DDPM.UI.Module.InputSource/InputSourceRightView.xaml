@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+                 <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -41,7 +41,7 @@
                                 -->
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
                                           HorizontalAlignment="Right" VerticalAlignment="Center"
-                                          ItemsSource="{Binding InputsList}" Width="184"
+                                          ItemsSource="{Binding InputsList, Mode=TwoWay}" Width="184"
                                           SelectedItem="{Binding Items_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText" />
                             </Grid>

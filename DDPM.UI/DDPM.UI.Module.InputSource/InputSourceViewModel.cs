@@ -305,28 +305,20 @@ namespace DDPM.UI.Module.InputSource
         {
             //IsBusy = true;
             _inputsList.Clear();
+            _inputsList = new List<InputSourceList>();
             foreach (var item in inputList)
             {
-                _inputsList.Add(new InputSourceList()
-                {
+               _inputsList.Add(new InputSourceList()
+               {
                     inputSource = item.Key,
                     inputName = item.Value.InputName
-                });
+               });
             }
             InputsList = _inputsList;
             _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
-            OnPropertyChanged("InputsList");
             OnPropertyChanged("Items_Selected");
-            //IsBusy = false;
-            //int index = _inputsList.FindIndex(x => (x.inputSource == inputtype));
-            //if (index != -1)
-            //{
-            //    _inputsList[index].inputName = inputname;
-            //    InputsList = _inputsList;
-            //    InputSourceList item = InputsList[index];
-            //    _selectInput = item;
-            //    OnPropertyChanged("Items_Selected");
-            //}
+            OnPropertyChanged("InputsList");
+
             return Task.CompletedTask;
         }
         #endregion
