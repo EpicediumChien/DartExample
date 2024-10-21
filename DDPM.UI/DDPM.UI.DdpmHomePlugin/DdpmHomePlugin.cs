@@ -16,6 +16,7 @@ using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using NGA.ThickClient.Interfaces;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -116,6 +117,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _pluginManager = pluginManager;
             _log = console.CreateLog("DDPMHOME");
             _log.Info($"{nameof(DdpmHomePlugin)} - Constructed");
+            _log.Info($"current process ID: {Process.GetCurrentProcess().Id}");
 
             //DdpmCommonHelper.MyConsole = console;
 
@@ -208,7 +210,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Task.Run(async () => await GetDdpmDevicesAsync(_deviceManager));
 
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
-                            _deviceManager.Reset0x52TimerTick(2000);
+                            //Derek_Du, 2024-10-21 add send process ID to SA
+                            _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
                             await GetDdpmDevicesAsync(_deviceManager);
 
 
