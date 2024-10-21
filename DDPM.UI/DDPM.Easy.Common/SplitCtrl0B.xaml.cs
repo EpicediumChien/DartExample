@@ -146,23 +146,36 @@ namespace DDPM.Easy.Common
                 double left = settings[idxSettings] * xRatio;
                 double top =  settings[idxSettings + 1] * yRatio;
 
-                //Point  pt = PointFromScreen(new Point(left, top));
-                //left = pt.X; top = pt.Y;    
-
+                //Add Borders
+                //
                 Border border = new Border();
                 border.Name = $"Cb{idx}";
                 border.Style = FindResource("CellBorderStyle") as Style;
                 border.Width = settings[idxSettings + 2] * xRatio;
                 border.Height = settings[idxSettings + 3] * yRatio;
 
-                canvas.Children.Add(border);
-                Canvas.SetLeft(border, left);
-                Canvas.SetTop(border, top);
+               //canvas.Children.Add(border);
+                //Canvas.SetLeft(border, left);
+                //Canvas.SetTop(border, top);
 
                 CellObj cell = new CellObj(border.Name, border);
                 cell.rc = new Rect(left, top, border.Width, border.Height);
                 cellListH.Add(cell);
                 Trace.WriteLine($"Cell[{idx}]:({cell.rc.X},{cell.rc.Y})-({cell.rc.Right},{cell.rc.Bottom}){cell.rc.Width}x{cell.rc.Height}");
+
+                //Add CellBorders
+                //
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = $"Cb{idx}";
+                //cellBorder.Style = FindResource("CellBorder0B") as Style;
+                cellBorder.Width = settings[idxSettings + 2] * xRatio;
+                cellBorder.Height = settings[idxSettings + 3] * yRatio;
+
+                canvas.Children.Add(cellBorder);
+                Canvas.SetLeft(cellBorder, left);
+                Canvas.SetTop(cellBorder, top);
+
+                CellBorders.Add(cellBorder);
             }
 
             return true;
