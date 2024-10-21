@@ -1,9 +1,4 @@
-﻿using DDPM.SA.Common;
-using DDPM.SA.Plugin.CLIManager;
-using Dell.Client.Framework.Agent;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace DDPM.CMA.Tester

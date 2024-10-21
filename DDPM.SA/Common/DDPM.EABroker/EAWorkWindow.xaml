@@ -19,10 +19,9 @@
 
     </Window.Resources>  
     <Grid>
+        <!-- Robert_Lin, 2024-10-20 Set BorderThickness="1" can help engineer to check if the EAWworkWindow position is correct -->
         <Border BorderBrush="Red" BorderThickness="0">
             <Grid Name="splitGrid">
-
-
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Hidden"/>
