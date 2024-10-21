@@ -180,6 +180,7 @@ namespace DDPM.UI.Common
           { 36, new ActionItem(ActionCategory.ProductivityAction, Strings.Forward, false, true) },
           { 39, new ActionItem(ActionCategory.WindowsAction, Strings.SwitchApplication, false, true) },
           { 41, new ActionItem(ActionCategory.ProductivityAction, Strings.RadialMenu, false, true) },
+          { 64, new ActionItem(ActionCategory.WindowsAction, Strings.DefineBySystem, true, false) },
           { 66, new ActionItem(ActionCategory.ProductivityAction, Strings.Copy, false, true) },
           { 67, new ActionItem(ActionCategory.ProductivityAction, Strings.Paste, false, true) },
           { 68, new ActionItem(ActionCategory.ProductivityAction, Strings.Undo, false, true) },

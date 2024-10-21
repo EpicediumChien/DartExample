@@ -1,7 +1,12 @@
 ﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Net;
+using System.Reflection.Metadata;
+using System.Windows;
 using System.Windows.Controls;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DDPM.UI.Module.AddPen_Other
 {
@@ -48,7 +53,8 @@ namespace DDPM.UI.Module.AddPen_Other
             stepsStackPanel.Orientation = Orientation.Vertical;
 
             //change Border size
-            stepsBorder1.Width = stepsBorder2.Width  = 400;
+            //stepsBorder1.Width = stepsBorder2.Width  = 400;
+            stepsBorder1.Width = stepsBorder2.Width = stepsStackPanel.Width - 10;
             stepsBorder1.Height = stepsBorder2.Height = 180;
 
             //change textBlock size
@@ -65,6 +71,31 @@ namespace DDPM.UI.Module.AddPen_Other
 
             //restore textBlock size
             txtStep1.Width = txtStep2.Width = textBlockWidth;
+        }
+
+        private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
+        {
+            MessageModalDialog messageModalDialog;
+            Window parentWindow = Window.GetWindow(this);
+            if (_vm.IsPandoraPaired)
+            {
+                messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
+                if (parentWindow != null)
+                {
+                    messageModalDialog.Owner = parentWindow;
+                }
+                messageModalDialog.ShowDialog();
+                return;
+            }
+            messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
+            if (parentWindow != null)
+            {
+                messageModalDialog.Owner = parentWindow;
+            }
+            if (messageModalDialog.ShowDialog()!.Value)
+            {
+                _vm.StartPairingPen();
+            }
         }
     }
 }

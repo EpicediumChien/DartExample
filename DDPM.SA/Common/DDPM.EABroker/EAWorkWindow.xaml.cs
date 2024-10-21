@@ -31,15 +31,16 @@ namespace DDPM.EABroker
         private bool _isVertical = false;
         private ISplitCtrl? _workingSplit = null;
         private bool _isSplitCtrl0A = false;
-
+        private readonly bool _isAwsBuddy;
         #endregion
 
         #region Init
-        public EAWorkWindow(ArrangeVM vm)
+        public EAWorkWindow(ArrangeVM vm, bool isAwsBuddy=false)
         {
             InitializeComponent();
             _vm = vm;
             DataContext = _vm;
+            _isAwsBuddy = isAwsBuddy;
 
             Left = -99999;
             Top = -99999;
@@ -114,6 +115,8 @@ namespace DDPM.EABroker
         {
             this.Dispatcher.Invoke(() =>
             {
+                Rect rcScreen = new Rect();
+
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
                     _workingSplit = null;
@@ -134,7 +137,7 @@ namespace DDPM.EABroker
                         _workingSplit.Settings = new List<double>(settings);
 
                     Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
-                    Rect rcScreen = new Rect();
+                    //Rect rcScreen = new Rect();
                     rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
                     rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
                     rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
@@ -165,6 +168,14 @@ namespace DDPM.EABroker
                 {
                     splitCtrl.Content = null;
                 }
+
+                //AwsBuddy Window do not support FadeOut
+                if (_isAwsBuddy)
+                {
+
+                    return;
+                }
+
                 ISplitCtrl? fadeSplit = ISplitCtrl.Create(cellCount, splitKey);
                 if (fadeSplit != null)
                 {
@@ -177,7 +188,7 @@ namespace DDPM.EABroker
                     if ((cellCount == 0) && (splitKey == 'B'))
                     {
                         SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
-                        sp0b.ApplySettingsToCellList(ArrangeVM.RectFromRectangle(_workScreen.Bounds));
+                        sp0b.ApplySettingsToCellList(rcScreen);
                     }
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = _isVertical;
@@ -243,7 +254,7 @@ namespace DDPM.EABroker
 
             sb.Completed += (o, s) =>
             {
-                _vm.RefreshCellRects();
+                _vm.RefreshCellRects(true);
                 this.IsFading = false;
                 fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
@@ -330,6 +341,9 @@ namespace DDPM.EABroker
             if (_workingSplit.IsAddedCustomLayout)
             {
                 CellObj? hoverCell = null;
+                //Detect from CellList
+                //
+                
                 foreach (CellObj objCell in _workingSplit.CellList)
                 {
                     string tag = "N";
@@ -344,13 +358,42 @@ namespace DDPM.EABroker
                         }
                     }
 
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        objCell.bd.Tag = tag;
-                    });
+                    //this.Dispatcher.Invoke(() =>
+                    //{
+                    //    objCell.bd.Tag = tag;
+                    //});
 
                 }
-                return hoverCell; ;
+                if (_workingSplit.IsAddedCustomLayout)
+                {
+                    SplitCtrl0B sp0B = (SplitCtrl0B)_workingSplit;
+                    foreach (CellBorder cellBd in sp0B.CellBorders)
+                    {
+                        //if (cellBd.rect.Contains(x, y))
+                        //{
+                        //    cellBd.IsHover = true;
+                        //    //Convert to CellObj
+                        //    hoverCell = new CellObj(cellBd.Name, cellBd.Border);
+                        //    hoverCell.rc = cellBd.rect;
+                        //}
+                        //else
+                        //    cellBd.IsHover = false;
+                        if (hoverCell != null)
+                        {
+                            if (cellBd.CellName.Equals(hoverCell.Name))
+                                cellBd.Dispatcher_SetIsHover(true);
+                            else
+                                cellBd.Dispatcher_SetIsHover(false);
+                        }
+                        else
+                        {
+                            cellBd.Dispatcher_SetIsHover(false);
+                        }
+                    }
+                 }
+
+                //Detect from CellBorders
+                 return hoverCell; ;
             }
 
             /*
@@ -401,6 +444,7 @@ namespace DDPM.EABroker
 
             this.Dispatcher.Invoke(() =>
             {
+                bool _areCellRectsRefreshed = true;
                 /*
                 if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
                 {
@@ -418,21 +462,51 @@ namespace DDPM.EABroker
                         cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
                     }
                 }
+
                 */
-                //foreach (CellBorder cellBd in _workingSplit.CellBorders)
-                //{
-                //    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
-                //}
-
-                foreach (CellObj objCell in _workingSplit.CellList)
+                if (_workingSplit.IsAddedCustomLayout)
                 {
-                    if (objCell.bd == null)
-                        continue;
+                    SplitCtrl0B sp0B = (SplitCtrl0B)_workingSplit;
+                    foreach (CellBorder cellBd in _workingSplit.CellBorders)
+                    {
+                        cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
 
-                    objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
+                        CellObj? cellObj = _workingSplit.CellList.Find(x => x.Name.Equals(cellBd.CellName));
+                        if (cellObj != null)
+                        {
+                            cellObj.rc = cellBd.rect;
 
-                    Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+                            if (cellObj.rc.IsEmpty)
+                                _areCellRectsRefreshed = false;
+                        }
+                    }
                 }
+                else
+                {
+                    foreach (CellObj objCell in _workingSplit.CellList)
+                    {
+                        if (objCell.bd == null)
+                            continue;
+
+                        objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
+
+                        Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+
+                        if (objCell.rc.IsEmpty)
+                            _areCellRectsRefreshed = false;
+                    }
+
+                }
+                if (!_areCellRectsRefreshed)
+                {
+                    //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                }
+                else
+                {
+                    string d = "";
+                }
+
             });
         }
 

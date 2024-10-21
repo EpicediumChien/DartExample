@@ -112,12 +112,21 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         public void OnShown(string parameter)
         {
             ConfigureServices();
+            GetPeripheralsAsync();
             GetRFDongleAsync();
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
             Mouse.OverrideCursor = null;
         }
 
         #endregion Interface IConsolePluginSupportsActivations
+
+        private void GetPeripheralsAsync()
+        {
+            _log.Debug($"GetPeripherals is invoked");
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+
+            _viewModel?.CheckPandora(task.Result.deviceInfo);
+        }
 
         private void DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
@@ -134,7 +143,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                     //  _viewModel.GotoNewDevice();
                 }
-                if (e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio)
+                if (e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalPen)
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     _viewModel.GotoNewDevice();

@@ -8,6 +8,7 @@
              d:Background="Black"
              d:DesignHeight="60" d:DesignWidth="80"
              d:DataContext="{DynamicResource vmDesign}"
+             Name="uc"
              >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -17,7 +18,7 @@
             <SolidColorBrush x:Key="BkFillBrush" Color="#FF132F54"/>
             <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Icon"
                                IsEditable="False" HoveringCell="2A1" />
-            <!-- CellBorder -->
+            <!-- CellBorder = Border -->
             <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Normal" Color="#FFE6AC28" />
             <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Hover" Color="#FF0672CB" />
 
@@ -44,6 +45,29 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
                         <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            
+            <!-- CellBorder = CellBorder -->
+            <Style x:Key="CellBoder0B" TargetType="{x:Type local:CellBorder}">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}" />
+                <Setter Property="BorderThickness" Value="6"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsWorkMode}" Value="True"/>
+                            <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
+                    </MultiDataTrigger>
+                    <DataTrigger Binding="{Binding IsHover, ElementName=uc}" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
+                    </DataTrigger>
+                   <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                        <Setter Property="BorderThickness" Value="1.5"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -93,7 +117,11 @@
         </Grid>
 
         <!-- Work Mode -->
-        <Canvas Name="canvas"/>
+        <Canvas Name="canvas">
+            <Canvas.Resources>
+                <Style TargetType="local:CellBorder" BasedOn="{StaticResource CellBoder0B}"/>
+            </Canvas.Resources>
+        </Canvas>
     </Grid>
 
 </UserControl>
