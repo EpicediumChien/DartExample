@@ -17,6 +17,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
             public const int DISPLAY_CONNECT = 11;
             public const int DISPLAY_DISCONNECT = 12;
+
+            public const int UNKNOW_ERROR = 99;
         }
 
 

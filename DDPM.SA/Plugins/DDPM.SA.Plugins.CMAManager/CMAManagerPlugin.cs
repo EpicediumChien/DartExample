@@ -16,6 +16,7 @@ using Microsoft.VisualBasic.Logging;
 using StreamJsonRpc;
 using Newtonsoft.Json.Linq;
 using static DDPM.SA.Plugins.CMAManager.Params;
+using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
@@ -189,6 +190,7 @@ namespace DDPM.SA.Plugins.CMAManager
             CmaCommand cmd = new CmaCommand(guid, request);
 
             List<CmaCommand.CmaTask> tasks = new List<CmaCommand.CmaTask>();
+
             foreach (var s in cmd.req)
             {
                 //Console.WriteLine(s.ToString());
@@ -197,24 +199,27 @@ namespace DDPM.SA.Plugins.CMAManager
 
             foreach (CmaCommand.CmaTask task in tasks)
             {
-
                 string command = "";
                 int eventtype = 0;
 
+                //Console.WriteLine("task.options = " + task.options);
+
                 if ("get".Equals(task.active))
                 {
-                    eventtype = Params.EventType.GET;
+
+                    eventtype = 1;
                     command = command + ("get ");
                     command = command + (task.devicetype + "=" + task.command);
-                    if ((command.ToLower()).Equals(Params.App.ConnectedDevices.ToLower()))
+
+                    if (task.value != null && task.value.Length > 0)
                     {
-                        command = command + ("value=display");
+                        command = command + (" value=" + task.value);
                     }
                 }
 
                 if ("set".Equals(task.active))
                 {
-                    eventtype = Params.EventType.SET;
+                    eventtype = 2;
                     command = command + ("set ");
                     command = command + (task.devicetype + "=" + task.command);
                     command = command + (" value=" + task.value);
@@ -222,14 +227,40 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if ("fw".Equals(task.active))
                 {
-                    eventtype = Params.EventType.FW;
+                    eventtype = 5;
                     command = command + ("set ");
                     command = command + ("app=firmwareupdate");
-                    if (!Params.DeviceType.DISPLAY.Equals(task.devicetype))
-                    {
-                        command = command + (" value=" + task.devicetype);
-                    }
+                    command = command + (" value=" + task.devicetype + ",forcewithnotice");
                 }
+                //Console.WriteLine("task.options = " + task.options.Length);
+
+                List<CmaCommand.CmaTaskOption> options = new List<CmaCommand.CmaTaskOption>();
+                foreach (var s in task.options)
+                {
+                    //Console.WriteLine(s.ToString());
+                    options.Add(new CmaCommand.CmaTaskOption(s.ToString()));
+                }
+
+                foreach (CmaCommand.CmaTaskOption option in options)
+                {
+
+                    if (option.index != null && option.index.Length > 0)
+                    {
+                        command = command + (" index=" + option.index);
+                    }
+
+                    if (option.servicetag != null && option.servicetag.Length > 0)
+                    {
+                        command = command + (" servicetag=" + option.servicetag);
+                    }
+
+                    if (option.modelname != null && option.modelname.Length > 0)
+                    {
+                        command = command + (" model=" + option.modelname);
+                    }
+
+                }
+
 
                 commandinputs.Add(command);
 
@@ -240,45 +271,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 taskinfo.eventtype = eventtype;
                 taskinfo.command = command; 
 
+                Console.WriteLine("command = " + command);
+
                 taskInfos.Add(taskinfo);
-
-
-                /*if (null != _CliManagerPlugin)
-                {
-                    ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                    CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(command.Split(' '));
-
-                    //_CliManagerPlugin.PerformCommandLineRelay
-                    CLIEventResult cliResult = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-
-                    JObject jObject = JObject.Parse(cliResult.serialize_Json_response);
-
-                    string responseMsg = (string)jObject["Message"];
-                    string responseResult = (string)jObject["Result"];
-
-                    Boolean isSuccess = false;
-                    if (responseResult.Equals("Success"))
-                    {
-                        isSuccess = true;
-                    }
-
-
-                    NotifyArgs args = new NotifyArgs();
-                    args.eventtype = eventtype.ToString();
-                    //args.notification = cliResult.serialize_Json_response;
-                    //args.notification = "{\r\n   \"sid\": \"" + task.sid + "\",\r\n   \"gid\": \"" + guid + "\",\r\n   \"response\": [\r\n      \r\n      {\r\n         \"id\": " + task.tid + ",\r\n         \"result\": 0,\r\n         \"msg\": \"\",\r\n         \"data\": [\r\n            " + cliResult.serialize_Json_response + "\r\n         ]\r\n      }\r\n   ]\r\n}";
-                    if (isSuccess)
-                    {
-                        args.notification = "{\"sid\": \"" + task.sid + "\",\"gid\": \"" + guid + "\",\"response\": [{\"tid\": " + task.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
-
-                    }
-                    else
-                    {
-                        args.notification = "{\"sid\": \"" + task.sid + "\",\"gid\": \"" + guid + "\",\"response\": [{\"tid\": " + task.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": []}]}";
-
-                    }
-                    OnEventNotify(args);
-                }*/
 
             }
 
@@ -295,34 +290,61 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
                 CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskinfo.command.Split(' '));
+                commandLineInput.isCliRunAdmin = true;
+
+                Console.WriteLine("runCommandTask taskinfo.command = " + taskinfo.command);
 
                 //_CliManagerPlugin.PerformCommandLineRelay
                 CLIEventResult cliResult = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-
-                JObject jObject = JObject.Parse(cliResult.serialize_Json_response);
-
-                string responseMsg = (string)jObject["Message"];
-                string responseResult = (string)jObject["Result"];
-
                 Boolean isSuccess = false;
-                if (responseResult.Equals("Success"))
-                {
-                    isSuccess = true;
-                }
 
+                string responseMsg = String.Empty;
+
+                string responseResult = String.Empty;
 
                 NotifyArgs args = new NotifyArgs();
                 args.eventtype = taskinfo.eventtype.ToString();
-                //args.notification = cliResult.serialize_Json_response;
-                //args.notification = "{\r\n   \"sid\": \"" + task.sid + "\",\r\n   \"gid\": \"" + guid + "\",\r\n   \"response\": [\r\n      \r\n      {\r\n         \"id\": " + task.tid + ",\r\n         \"result\": 0,\r\n         \"msg\": \"\",\r\n         \"data\": [\r\n            " + cliResult.serialize_Json_response + "\r\n         ]\r\n      }\r\n   ]\r\n}";
-                if (isSuccess)
+
+
+                try
                 {
+
+                    JObject jObject = JObject.Parse(cliResult.serialize_Json_response);
+
+                    responseMsg = (string)jObject["Message"];
+                    responseResult = (string)jObject["Result"];
+
+                    if (responseResult.Equals("Success"))
+                    {
+                        isSuccess = true;
+                    }
+
+                    if (responseResult.Equals("PASS"))
+                    {
+                        isSuccess = true;
+                    }
+
+                    if (isSuccess)
+                    {
+                        args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                    }
+                    else
+                    {
+                        args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                    }
+                }
+                catch
+                {
+                    responseMsg = "Exception: Unknow Result";
                     args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
                 }
-                else
-                {
-                    args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": []}]}";
-                }
+                
+
+
+                
+                //args.notification = cliResult.serialize_Json_response;
+                //args.notification = "{\r\n   \"sid\": \"" + task.sid + "\",\r\n   \"gid\": \"" + guid + "\",\r\n   \"response\": [\r\n      \r\n      {\r\n         \"id\": " + task.tid + ",\r\n         \"result\": 0,\r\n         \"msg\": \"\",\r\n         \"data\": [\r\n            " + cliResult.serialize_Json_response + "\r\n         ]\r\n      }\r\n   ]\r\n}";
+                
                 OnEventNotify(args);
             }
         }
@@ -345,7 +367,17 @@ namespace DDPM.SA.Plugins.CMAManager
                 return Task.FromResult(result);
             }
 
-            initCommandTask(uniqueAgentGuid.ToString(), request.cma_request);
+            try
+            {
+                initCommandTask(uniqueAgentGuid.ToString(), request.cma_request);
+            }
+            catch (Exception e) {
+
+                NotifyArgs args = new NotifyArgs();
+                args.eventtype = Params.EventType.UNKNOW_ERROR.ToString();
+                args.notification = e.ToString() + "; " + request.cma_request;
+                OnEventNotify(args);
+            }
 
             /*foreach (string input in commandinputs) 
             {
