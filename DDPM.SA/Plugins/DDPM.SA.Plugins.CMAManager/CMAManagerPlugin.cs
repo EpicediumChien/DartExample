@@ -17,6 +17,9 @@ using StreamJsonRpc;
 using Newtonsoft.Json.Linq;
 using static DDPM.SA.Plugins.CMAManager.Params;
 using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
+using Dell.Client.Framework.UX.WPF;
+using VcpCore.Common;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
@@ -73,7 +76,7 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
-            Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
             PluginCondition = new PluginStartedCondition();
             WriteLog("[CMA Manager plugin] report started");
@@ -140,18 +143,6 @@ namespace DDPM.SA.Plugins.CMAManager
                 WriteLog("[Info]  CLI Manager plugin with ICliManagerIT started.");
                 InitializeCliManagerPlugin();
             }
-        }
-
-        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
-        {
-            Console.WriteLine("[CMA] SystemEvents_DisplaySettingsChanged " + DateTime.Now);
-
-           // Thread.Sleep(10000);
-
-/*            NotifyArgs args = new NotifyArgs();
-            args.eventtype = Params.EventType.DISPLAY_CONNECT.ToString();
-            args.notification = "DisplaySettingsChanged";
-            OnEventNotify(args);*/
         }
         #endregion
 
@@ -558,10 +549,17 @@ namespace DDPM.SA.Plugins.CMAManager
         }
 
         public event EventHandler<CMAEventArgs> CMARequestEvent;
+
+        public Task Update_DeviceChanged(CMADeviceChanges data)
+        {
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed");
+            
+            return Task.CompletedTask;
+        }
         #endregion
 
 
-        private void OnEventNotify(NotifyArgs e)
+                private void OnEventNotify(NotifyArgs e)
         {
             EventHandler<NotifyArgs> Handler = Notify;
             if (Handler != null)
