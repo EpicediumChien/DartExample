@@ -104,9 +104,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             OnNotify(new DeviceChangedEventArgs());
         }
 
-        public async Task<int> GetDpiValue(string itemID)
+        public async Task<int> GetDpiValue(string Guid)
         {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return -1; }
 
             if (_mouseMethodInfo != null)
             {
@@ -131,9 +132,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task SetDPIValue(string itemID, int newValue)
+        public async Task SetDpiValue(string Guid, int newValue)
         {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
 
             if (_mouseMethodInfo != null)
             {
@@ -154,6 +156,163 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+
+        #region mouse
+        public async Task<JArray> GetMouseAssignableActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return (JArray)""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
+                Debug.WriteLine($"{value}");
+                return (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return (JArray)"";
+            }
+        }
+        public async Task<JArray> GetMouseProgrammableKeys(string Guid)
+        {
+            Debug.Write($"GetMouseProgrammableKeys - Guid: {Guid}");
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return (JArray)""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProgrammableKeys");
+                Debug.WriteLine($"{value}");
+                return (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return (JArray)"";
+            }
+        }
+        public async Task<JArray> GetAppSpecificProfiles(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return (JArray)""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
+                Debug.WriteLine($"{value}");
+                return (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return (JArray)"";
+            }
+        }
+
+        public async Task SetMsAssignKeystrokeAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignKeystrokeAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task SetMsAssignDialogAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignDialogAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task SetMouseAction(string Guid, byte[] newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignedAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+            }
+        }
+        #endregion
+
+        #region keyboard
+        public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("KeyBoard", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task SetKbAssignDialogAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("KeyBoard", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", Encoding.UTF8.GetBytes(newValue));
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task SetKbAssignedAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("KeyBoard", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", Encoding.UTF8.GetBytes(newValue));
+
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+        #endregion
 
         #region Webcam
         public async Task<JArray> GetPresetProfiles(string Guid)
@@ -246,9 +405,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetCameraFirmwareVersion(string itemID)
+        public async Task<string> GetCameraFirmwareVersion(string Guid)
         {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return string.Empty; }
 
             if (_webcamMethodInfo != null)
             {
@@ -273,10 +433,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> CheckIsPropertyFOVSupported(string itemID)
+        public async Task<bool> GetIsPropertyFOVSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -302,10 +461,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<int> GetFieldOfViewValue(string itemID)
+        public async Task<int> GetFieldOfView(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
             if (_webcamMethodInfo != null)
@@ -331,10 +489,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> CheckIsPropertyHDRSupported(string itemID)
+        public async Task<bool> GetIsPropertyHDRSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -360,10 +517,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> GetIsHDROnValue(string itemID)
+        public async Task<bool> GetIsHDROn(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -375,8 +531,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"[GetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[GetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[GetIsHDROn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsHDROn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
@@ -389,36 +545,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task SetIsHDROnValue(string itemID, bool newValue)
+        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
-            { return; }
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "IsHDROn", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetIsHDROnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetIsHDROnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-            }
-
-        }
-
-        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID)
-        {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -444,10 +573,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<int> GetAntiFlickerValue(string itemID)
+        public async Task<int> GetAntiFlicker(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
             if (_webcamMethodInfo != null)
@@ -473,36 +601,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task SetAntiFlickerValue(string itemID, int newValue)
+        public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
-            { return; }
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-            }
-
-        }
-
-        public async Task<bool> CheckIsPropertyAutoFramingSupported(string itemID)
-        {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -528,10 +629,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> GetIsAutoFramingOnValue(string itemID)
+        public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -553,32 +653,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
-            }
-
-        }
-
-        public async Task SetIsAutoFramingOnValue(string itemID, bool newValue)
-        {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
-            { return; }
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
             }
 
         }
@@ -1324,6 +1398,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             MethodInfo methodInfo = type switch
             {
+                "Mouse" => _mouseMethodInfo,
+                "KeyBoard" => _keyboardMethodInfo,
                 "Pen" => _penMethodInfo,
                 "Webcam" => _webcamMethodInfo,
                 "Headset" => _headsetMethodInfo,
@@ -1332,6 +1408,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             };
             Type interfaceType = type switch
             {
+                "Mouse" => _mouseInterfaceType,
+                "KeyBoard" => _keyboardInterfaceType,
                 "Pen" => _penInterfaceType,
                 "Webcam" => _webcamInterfaceType,
                 "Headset" => _headsetInterfaceType,
@@ -2452,10 +2530,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 _ = Task.Run(async () =>
                 {
-                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
-                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
 
+                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
                     if (_mouseInterfaceType != null)
                     {
                         _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
@@ -2466,6 +2544,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     else
                     {
                         writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
+                    writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
+                    if (_keyboardInterfaceType != null)
+                    {
+                        _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                        .MakeGenericMethod(_keyboardInterfaceType);
+                        writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
                     writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");

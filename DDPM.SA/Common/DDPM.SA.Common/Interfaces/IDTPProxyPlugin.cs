@@ -12,16 +12,36 @@
 
 using Dell.Client.Framework.Common;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
-        Task<int> GetDpiValue(string itemID);
 
-        Task SetDPIValue(string itemID, int newValue);
+        #region Mouse
+
+        Task<int> GetDpiValue(string Guid);
+        Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<JArray> GetMouseProgrammableKeys(string Guid);
+        Task<JArray> GetAppSpecificProfiles(string Guid);
+
+
+        Task SetDpiValue(string Guid, int newValue);
+        Task SetMouseAction(string Guid, byte[] newValue);
+        Task SetMsAssignDialogAction(string Guid, string newValue);
+        Task SetMsAssignKeystrokeAction(string Guid, string newValue);
+
+        #endregion
+
+        #region Keyboard
+
+        Task SetKbAssignedAction(string Guid, string newValue);
+        Task SetKbAssignDialogAction(string Guid, string newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+
+        #endregion
+
 
         #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
@@ -73,29 +93,24 @@ namespace DDPM.SA.Common
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
-        Task<string> GetCameraFirmwareVersion(string itemID);
+        Task<string> GetCameraFirmwareVersion(string Guid);
 
-        Task<bool> CheckIsPropertyFOVSupported(string itemID);
+        Task<bool> GetIsPropertyFOVSupported(string Guid);
 
-        Task<int> GetFieldOfViewValue(string itemID);
+        Task<int> GetFieldOfView(string Guid);
 
-        Task<bool> CheckIsPropertyHDRSupported(string itemID);
+        Task<bool> GetIsPropertyHDRSupported(string Guid);
 
-        Task<bool> GetIsHDROnValue(string itemID);
+        Task<bool> GetIsHDROn(string Guid);
 
-        Task SetIsHDROnValue(string itemID, bool newValue);
+        Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid);
 
-        Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID);
+        Task<int> GetAntiFlicker(string Guid);
 
-        Task<int> GetAntiFlickerValue(string itemID);
+        Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
 
-        Task SetAntiFlickerValue(string itemID, int newValue);
+        Task<bool> GetIsAutoFramingOn(string Guid);
 
-        Task<bool> CheckIsPropertyAutoFramingSupported(string itemID);
-
-        Task<bool> GetIsAutoFramingOnValue(string itemID);
-
-        Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
         Task SetProfileName(string Guid, string newValue);
@@ -149,19 +164,19 @@ namespace DDPM.SA.Common
 
         #region Wired Audio
 
-        Task<int> GetBassAsync(string guid);
-        Task SetBassAsync(string guid, int newValue);
-        Task<int> GetMidRangeAsync(string guid);
-        Task SetMidRangeAsync(string guid, int newValue);
-        Task<int> GetTrebleAsync(string guid);
-        Task SetTrebleAsync(string guid, int newValue);
-        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
-        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
-        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
-        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
-        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
-        Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string itemID);
-        Task SetResetToDefaultValueAsync(string itemID, bool newValue);
+        Task<int> GetBassAsync(string Guid);
+        Task SetBassAsync(string Guid, int newValue);
+        Task<int> GetMidRangeAsync(string Guid);
+        Task SetMidRangeAsync(string Guid, int newValue);
+        Task<int> GetTrebleAsync(string Guid);
+        Task SetTrebleAsync(string Guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
+        Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue);
+        Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string Guid);
+        Task SetResetToDefaultValueAsync(string Guid, bool newValue);
 
         #endregion
     }
