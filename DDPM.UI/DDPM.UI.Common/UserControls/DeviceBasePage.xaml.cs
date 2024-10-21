@@ -256,7 +256,7 @@ namespace DDPM.UI.Common.UserControls
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            _log.Info($"this.ActualWidth = {this.ActualWidth}");
+            //_log.Info($"this.ActualWidth = {this.ActualWidth}");
 
             //if (!isLandingMode && LeftFrame.ActualWidth <= 200)
             if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints + 150)
@@ -274,7 +274,9 @@ namespace DDPM.UI.Common.UserControls
                 LeftFrame.Width = this.ActualWidth / 2;
             }
             else
+            {
                 LeftFrame.Width = this.ActualWidth - 20;
+            }
         }
 
         private void ChangeToVerticalLayout()

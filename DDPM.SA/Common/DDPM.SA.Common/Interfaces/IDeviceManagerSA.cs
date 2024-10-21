@@ -116,7 +116,7 @@ namespace DDPM.SA.Common
 
         #region public for Displays
 
-        Task Reset0x52TimerTick(int millisecond);
+        Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 
         Task<List<MonitorInfo>> GetMonitors();
 

@@ -110,6 +110,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private string Display_FWU_URL = $"https://clientperipherals.dell.com/DDPM/";
         private string Display_FWU_URL_Folder = $"/Windows/Display/Firmware/";
 
+        //Derek 2024/10/21
+        private Process uiProcess = null;
+
         #endregion
 
         #region Public Members
@@ -183,13 +186,46 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_CacheTable);
         }
 
-        public Task Reset0x52TimerTick(int millisecond)
+        public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " + 
+                millisecond.ToString() + $" requested, process ID[{processID}]");
+
+            if (-0xFF != processID)
+                CreateProcessExitEvent(processID);
 
             _VcpCorePlugin.Reset0x52TimerTick(millisecond);
 
             return Task.FromResult(Task.CompletedTask);
+        }
+
+        private Task<bool> CreateProcessExitEvent(int processID)
+        { 
+            bool result = true;
+
+            try
+            {
+                uiProcess = Process.GetProcessById(processID);
+                uiProcess.EnableRaisingEvents = true;
+                uiProcess.Exited += new EventHandler(Process_Exited);
+
+                //_logs.DebugMsg($"Process Name: {uiProcess.ProcessName}");
+                //_logs.DebugMsg($"Process ID: {uiProcess.Id}");
+            }
+            catch (ArgumentException ex)
+            {
+                result = false;
+                _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+            }
+
+            return Task.FromResult(result); 
+        }
+
+        private async void Process_Exited(object sender, EventArgs e)
+        {
+            uiProcess = null;
+
+            await _VcpCorePlugin.Reset0x52TimerTick(8000);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
