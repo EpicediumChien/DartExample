@@ -414,7 +414,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                         }
-                        else if (commandLineInput.TargetFeature == "INAPPEXPORTSETTINGS")
+                        else if (commandLineInput.TargetFeature == "INAPPEXPORTIMPORT")
                         {
 
                             DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
@@ -483,7 +483,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //_DevManagerPlugin.OnUIUpdateNotify(no);
                             //}
                             break;
-                        //case "INAPPEXPORTSETTINGS":
+                        //case "INAPPEXPORTIMPORT":
                         //    //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                         //    DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
                         //    cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
