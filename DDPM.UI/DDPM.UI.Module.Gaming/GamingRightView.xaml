@@ -1,8 +1,16 @@
-﻿<UserControl x:Class="DDPM.UI.Module.Gaming.GamingRightView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:DDPM.UI.Module.Gaming" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
+﻿<UserControl x:Class="DDPM.UI.Module.Gaming.GamingRightView" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Module.Gaming" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -43,7 +51,9 @@
                                                       LostFocus="tbDarkStabilizerToggle_LostFocus"
                                                       ContextMenuOpening="tbDarkStabilizerToggle_ContextMenuOpening"
                                                       ContextMenu="{x:Null}"
-                                                      Text="{Binding DarkStabilizerToggleKey,Mode=TwoWay}" />
+                                                      Text="{Binding DarkStabilizerToggleKey,Mode=TwoWay}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DualResolution}">
                                 <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Dual Resolution" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
@@ -60,7 +70,9 @@
                                                       LostFocus="tbDualResolutionToggle_LostFocus"
                                                       ContextMenuOpening="tbDualResolutionToggle_ContextMenuOpening"
                                                       ContextMenu="{x:Null}"
-                                                      Text="{Binding DualResolutionToggleKey,Mode=TwoWay}" />
+                                                      Text="{Binding DualResolutionToggleKey,Mode=TwoWay}" 
+                                                      InputLanguageManager.InputLanguage="en-US"
+                                                      InputLanguageManager.RestoreInputLanguage="True"/>
                             </Grid>
                             <Grid Height="40" Margin="0,8" IsEnabled="{Binding HDRType_IsEnable}" Opacity="{Binding HDRType_Opacity}" Visibility="{Binding IsGameSeries}">
                                 <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Smart HDR" TextBlockSemanticColorType="Light" TextBlockType="Caption" />

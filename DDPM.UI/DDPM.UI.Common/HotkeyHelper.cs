@@ -105,19 +105,121 @@ namespace DDPM.UI.Common
             }
             return result;
         }
+        public static HotkeyInfo getUXTextBoxHotkeyInfo(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, HotkeyType hotkeyType)
+        {
+            VirtualKey thisVirtualKey;
+            VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.SystemKey);
+            if (thisVirtualKey_system != VirtualKey.None)
+            {
+                thisVirtualKey = thisVirtualKey_system;
+            }
+            else
+            {
+                thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
+            }
+            if (thisVirtualKey == VirtualKey.LeftControl || thisVirtualKey == VirtualKey.RightControl)
+            {
+                thisVirtualKey = VirtualKey.Control;
+            }
+            else if (thisVirtualKey == VirtualKey.LeftShift || thisVirtualKey == VirtualKey.RightShift)
+            {
+                thisVirtualKey = VirtualKey.Shift;
+            }
+            else if (thisVirtualKey == VirtualKey.LeftMenu || thisVirtualKey == VirtualKey.RightMenu)
+            {
+                thisVirtualKey = VirtualKey.Menu;
+            }
+            if (newKeys.Contains(thisVirtualKey)) newKeys.Remove(thisVirtualKey);
+            if (newKeys.Count == 0)
+            {
+                var texbox = sender as UXTextBox;
+                if (texbox != null)
+                {
+                    string keyText = texbox.Text;
+                    string[] strings = keyText.Split("+");
+                    List<VirtualKey> keyList = new List<VirtualKey>();
+                    foreach (string s in strings)
+                    {
+                        string keyStr = string.Empty;
+                        switch (s.Trim())
+                        {
+                            case "Ctrl":
+                                keyStr = "Control";
+                                break;
+                            case "Alt":
+                                keyStr = "Menu";
+                                break;
+                            case "Shift":
+                                keyStr = "Shift";
+                                break;
+                            case "0":
+                                keyStr = "Number0";
+                                break;
+                            case "1":
+                                keyStr = "Number1";
+                                break;
+                            case "2":
+                                keyStr = "Number2";
+                                break;
+                            case "3":
+                                keyStr = "Number3";
+                                break;
+                            case "4":
+                                keyStr = "Number4";
+                                break;
+                            case "5":
+                                keyStr = "Number5";
+                                break;
+                            case "6":
+                                keyStr = "Number6";
+                                break;
+                            case "7":
+                                keyStr = "Number7";
+                                break;
+                            case "8":
+                                keyStr = "Number8";
+                                break;
+                            case "9":
+                                keyStr = "Number9";
+                                break;
+                            default:
+                                keyStr = s;
+                                break;
+                        }
+                        if (!string.IsNullOrEmpty(keyStr))
+                            keyList.Add((VirtualKey)Enum.Parse(typeof(VirtualKey), keyStr));
+                    }
+                    HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                    hotkeyInfo.Job = hotkeyType;
+                    hotkeyInfo.Description = hotkeyType.ToString();
 
+                    hotkeyInfo.Hotkey = keyList;
+                    return hotkeyInfo;
+                }
+            }
+            return new HotkeyInfo();
+        }
+
+        public static bool onlyContainModifyKeys(List<VirtualKey> keys)
+        {
+            List<VirtualKey> tmp = new List<VirtualKey>();
+            tmp.AddRange(keys);
+            if (tmp.Contains(VirtualKey.Control)) tmp.Remove(VirtualKey.Control);
+            if (tmp.Contains(VirtualKey.Menu)) tmp.Remove(VirtualKey.Menu);
+            if (tmp.Contains(VirtualKey.Shift)) tmp.Remove(VirtualKey.Shift);
+            return !(tmp.Count > 0);
+        }
         public static void setUXTextBoxPreviewKey(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, ref List<VirtualKey> BundleNewKeys, ref bool alphabetKey)
         {
             e.Handled = true;
-            var texBox = (sender as UXTextBox);
-            if (texBox == null) return;
-            var texBoxName = texBox?.Name;
-            if (string.IsNullOrEmpty(texBoxName)) return;
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown-newKeys.Count---{newKeys.Count}");
             if (e.IsRepeat) return;
             newKeys = newKeys.Distinct().ToList();
             BundleNewKeys = BundleNewKeys.Distinct().ToList();
             if (newKeys.Count >= 4) return;
+            var texBox = (sender as UXTextBox);
+            if (texBox == null) return;
+            var texBoxName = texBox?.Name;
+            if (string.IsNullOrEmpty(texBoxName)) return;
             Debug.WriteLine($"{texBoxName}_PreviewKeyDown---Key---{e.Key}");
             Debug.WriteLine($"{texBoxName}_PreviewKeyDown---SystemKey---{e.SystemKey}");
             VirtualKey thisVirtualKey;
@@ -184,13 +286,13 @@ namespace DDPM.UI.Common
             {
                 int i = newKeys.FindIndex(x => x >= VirtualKey.A && x <= VirtualKey.Z);
                 //remove exist key and then update new alphabetKey
-                if(i>=0)
+                if (i >= 0)
                     newKeys.RemoveAt(i);
                 //return;
             }
             if (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z)
             {
-                alphabetKey = true;                
+                alphabetKey = true;
             }
 
             /*  if (!alphabetKey)
@@ -207,8 +309,8 @@ namespace DDPM.UI.Common
                 if ((thisVirtualKey == VirtualKey.Menu) ||
                     (thisVirtualKey == VirtualKey.Control) ||
                     (thisVirtualKey == VirtualKey.Shift) ||
-                    (thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.Number9) ||
-                    (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z))
+                    (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z) ||
+                    (thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.Number9))
                 {
                     newKeys.Add(thisVirtualKey);
                 }
@@ -224,32 +326,16 @@ namespace DDPM.UI.Common
             //string swHortcutText = string.Empty;
             if (newKeys.Count == 0) return;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
+            Debug.WriteLine($"shotcutText:{swHortcutText}: length: {swHortcutText.Length}");
+            if (swHortcutText.Length > 30)
+            {
+                //if lenght gt 30,reset to default
+                return;
+            }
             texBox.Text = swHortcutText;
             texBox.Select(swHortcutText.Length, 1);
             BundleNewKeys.AddRange(newKeys);
-            Debug.WriteLine($"{texBoxName}-->swHortcutText--{swHortcutText}");
-            /*switch (texBoxName)
-            {
-                case "tbToggleInputSource":
-                    ToggleInputSourceNewKeys.AddRange(newKeys);
-                    break;
 
-                case "tbFavoriteInputSource":
-                    FavoriteInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbSwitchInputSource":
-                    SwitchInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbSwapPIPPBPInputSource":
-                    SwapPIPPBPInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbChangePIPPosition":
-                    ChangePIPPositionNewKeys.AddRange(newKeys);
-                    break;
-            }*/
         }
         public static void ReSetHotKeyText(ref string strShortCutText, ref List<VirtualKey> newHotKeys)
         {

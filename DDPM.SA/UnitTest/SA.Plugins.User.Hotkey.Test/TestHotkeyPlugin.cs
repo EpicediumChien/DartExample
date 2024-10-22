@@ -11,12 +11,12 @@ using System.Threading;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies;
+//using WinCopies;
 using Windows.Media.AppBroadcasting;
 using Windows.UI.ViewManagement;
 using static VcpCore.Common.User32;
 using DDPM.SA.Plugins.User.DisplayProperties;
-using WinCopies.Util;
+//using WinCopies.Util;
 using static DDPM.SA.Plugins.User.Hotkey.HotkeyPlugin;
 using System.Reflection.Emit;
 using System.Windows.Forms;
@@ -24,7 +24,7 @@ using System.Windows.Input;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using DDPM.SA.Plugins.User.EasyArrange;
 using System.Diagnostics;
-using Microsoft.WindowsAPICodePack.Win32Native.Shell.WindowsAndMessages;
+//using Microsoft.WindowsAPICodePack.Win32Native.Shell.WindowsAndMessages;
 
 namespace DDPM.SA.Plugins.User.Hotkey.Test
 {
@@ -39,7 +39,7 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
-            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(VcpCore.Common.IDs.Display_Manager_PLUGIN_ID)));
+            DisplayMangerAgent.Setup(x => x.PluginManager.FindPluginByGuid(Guid.Parse(DDPM.SA.Common.IDs.Display_Manager_PLUGIN_ID)));
 
             return new DisplayMangerPlugin(DisplayMangerAgent.Object);
         }

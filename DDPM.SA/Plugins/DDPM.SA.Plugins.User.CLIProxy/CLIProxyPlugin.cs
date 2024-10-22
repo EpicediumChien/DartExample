@@ -414,6 +414,12 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                         }
+                        else if (commandLineInput.TargetFeature == "INAPPEXPORTIMPORT")
+                        {
+
+                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        }
                         else
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                     }
@@ -429,13 +435,19 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (_CLIPeripherals != null)
                     {
-                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && commandLineInput.Options.Count == 0)
+                        {
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
                         {
                             DDPMSettings data_restorefactorydefault = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data_restorefactorydefault, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                         }
                         else
+                        {
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                        }
                     }
                     else
                     {
@@ -471,11 +483,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //_DevManagerPlugin.OnUIUpdateNotify(no);
                             //}
                             break;
-                        case "INAPPEXPORTSETTINGS":
-                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
-                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            break;
+                        //case "INAPPEXPORTIMPORT":
+                        //    //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                        //    DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                        //    cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        //    break;
 
                         case "INAPPRESTOREDEFAULTS":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
@@ -486,13 +498,23 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "DEVICECONFIGURATION":
                         case "CONNECTEDDEVICES":
                         case "SCREENNOTIFICATION":
+                        case "DIAGNOSTICSREPORT":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;
                         case "FIRMWAREUPDATE":
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                            break;
 
+                            // add @ stephen
+                            //DDPMSettings data_fwupdate = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            //cliEventResult = CLIHandlerApp.CLI_FW_Update(Log, data_fwupdate, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "DISABLECA":
+                            cliEventResult = CLIHandlerApp.CLI_Common_DisableCA(Log, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "UPDATE":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;

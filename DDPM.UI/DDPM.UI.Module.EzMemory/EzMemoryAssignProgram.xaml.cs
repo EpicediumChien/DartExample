@@ -3,6 +3,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -41,14 +42,14 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly SplitListView _splitListView;
+        private HomeDevice _selecthomeDevice;
         #endregion Private Members
-        public EzMemoryAssignProgram(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
+        public EzMemoryAssignProgram(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
-            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
+            _selecthomeDevice = _homeDeviceSelect;
             _log = vmDisplay.Console.CreateLog("EzMemoryAssignProgram");
             _log.Info($"{nameof(EzMemoryAssignProgram)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
@@ -59,22 +60,25 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;
+            DataContext = vm;
 
             //Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             //_vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             InitializePage();
-
         }
+
+        /// <summary>
+        /// Initialize Page, get Split window count, set string
+        /// </summary>
         public void InitializePage()
         {
             //這裡加入分割視窗的個數
             if (_vm.SelectedSplitItem.CellCount == 2)
             {
                 _vm.IsRightGridPage2Visible = true;
-                _vm.SelectedValue = 3;
+                _vm.SelectedValue = 2;
             }
             else
             {
@@ -90,6 +94,47 @@ namespace DDPM.UI.Module.EzMemory
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
             }
+
+            //編輯模式但不是由AddPage返回才執行
+            if (_vm.IsEditProfile && !_vm.IsAddPageBack)
+            {
+                SyncEditStatusForAssignPage();
+            }
+        }
+
+        /// <summary>
+        /// Sync Edit Status 回填App Name
+        /// </summary>
+        public void SyncEditStatusForAssignPage()
+        {
+            _vm._sortApps.Clear();
+
+            int loopCount = Math.Min(_vm.SelectedValue, _vm.currentEditprofile.AppInfos.Count);
+
+            for (int i = 0; i < loopCount; i++)
+            {
+                var appInfo = _vm.currentEditprofile.AppInfos[i];
+
+                Bind_AddFullPage_AppCollectionData newApp = new Bind_AddFullPage_AppCollectionData
+                {
+                    AppName = appInfo.Name,
+                    AppPath = appInfo.Path,
+                    AppUserModelID = appInfo.AppUserModelID,
+                    AppType = appInfo.IsUWP ? "True" : "False",
+                    InstalledDate = DateTime.Now,
+                    AppIcon = "Assets/palette.png"
+                };
+
+                string buttonName = "AddButton" + (i + 1).ToString();
+
+                if (_vm.SelectedValue <= 2)
+                {
+                    buttonName = "AddButton2_" + (i + 1).ToString();
+                }
+
+                _vm.UpdateTextBlockAppName(buttonName, appInfo.Name);
+                _vm._sortApps.Add(buttonName, newApp);
+            }
         }
 
         /// <summary>
@@ -97,8 +142,10 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         public void NextPage()
         {
+            //前進 AddPage 前設False
+            _vm.IsAddPageBack = false;
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
             //UpdatePageContent();
         }
@@ -114,6 +161,7 @@ namespace DDPM.UI.Module.EzMemory
                 UpdatePageContent();
             }
         }
+
         /// <summary>
         /// Update Page Content
         /// </summary>
@@ -126,24 +174,36 @@ namespace DDPM.UI.Module.EzMemory
             var pageData = _vm.ezPages["EzMemory"][_vm._currentPageIndex];
             MainText.Text = pageData.MainText!;
             SubText.Text = pageData.SubText!;
-            ControlPageGrid(_vm._currentPageIndex);
         }
-        public void ControlPageGrid(int _currentPageIndex)
-        {
 
-        }
+        /// <summary>
+        /// Back
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay, _splitListView);
+            EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezMemoryFirst);
         }
+
+        /// <summary>
+        /// Next
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm._currentPageIndex++;
-            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _splitListView);
+            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
         }
 
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
@@ -151,7 +211,10 @@ namespace DDPM.UI.Module.EzMemory
             return;
         }
 
-
+        /// <summary>
+        /// Do Progress Animation
+        /// </summary>
+        /// <param name="isForward"></param>
         private void DoProgressAnimation(bool isForward)
         {
             double newProgressValue;
@@ -180,14 +243,23 @@ namespace DDPM.UI.Module.EzMemory
             _vm.ProgressValue = newProgressValue;
         }
 
+        /// <summary>
+        /// Add application Button1 Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddButton1_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
             _vm.ButtonName = button.Name;
-            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _splitListView);
+            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
         }
     }
+
+    /// <summary>
+    /// Binding change value
+    /// </summary>
     public class WindowGridVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -44,16 +45,16 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly SplitListView _splitListView;
+        private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        public EzMemoryFirst(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
+        public EzMemoryFirst(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
-            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
+            _selecthomeDevice = _homeDeviceSelect;
             _log = vmDisplay.Console.CreateLog("EzMemoryFirst");
             _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
@@ -62,10 +63,10 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
-            DataContext = _homeDevice.vmEzArrange;
+            _vm = vm;// _homeDevice.vmEzArrange;
+            DataContext = vm;// _homeDevice.vmEzArrange;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
 
@@ -100,12 +101,24 @@ namespace DDPM.UI.Module.EzMemory
             //InitRecentListView();
             InitListViewItems();
 
-            customListTooltipText.Text = _vm.CustomListTooltipText;
+            customListTooltipText.Text = Strings.CustomListTooltipText;
 
             InitializePage();
-            CheckInputText();
+
+            if(!_vm.IsEditProfile)
+            {
+                CheckInputText();
+            }
+            else
+            {
+                SyncEditStatusForFirstPage();
+            }
+            
         }
 
+        /// <summary>
+        /// Initialize Page
+        /// </summary>
         public void InitializePage()
         {
             _vm._currentTotalPage = 0;
@@ -122,6 +135,21 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// Sync Edit Status
+        /// </summary>
+        public void SyncEditStatusForFirstPage()
+        {
+            //Need to auto select
+            _vm.InputText = _vm.currentEditprofile.Name;
+            SplitItem profilwSplitItem = splitListView_Recent.FindSplitItem(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
+            profilwSplitItem.IsSelected = true;
+            OnListViewItemClicked(profilwSplitItem);
+        }
+
+        /// <summary>
+        /// Check Input Text, the default is set to "Profile", automatically numbered from 1 to 9, and cannot exceed 9 entries.
+        /// </summary>
         public void CheckInputText()
         {
             try
@@ -181,7 +209,7 @@ namespace DDPM.UI.Module.EzMemory
         public void NextPage()
         {
             _vm._currentPageIndex++;
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
@@ -196,6 +224,7 @@ namespace DDPM.UI.Module.EzMemory
                 UpdatePageContent();
             }
         }
+
         /// <summary>
         /// Update Page Content
         /// </summary>
@@ -210,8 +239,16 @@ namespace DDPM.UI.Module.EzMemory
             SubText.Text = pageData.SubText!;
         }
 
+        /// <summary>
+        /// Back
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
+            // Need to Re-set Edit Profile status
+            _vm.IsEditProfile = false;
+            _vm.ClearTextBlockAppName();
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -220,22 +257,32 @@ namespace DDPM.UI.Module.EzMemory
             PreviousPage();
             DoProgressAnimation(false);
         }
+
+        /// <summary>
+        /// Next
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             if (_vm.SelectedSplitItem.CellCount < 2)
             {
                 return;
             }
-            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
-            if (checkEAProfileDDPM != null)
+            if (!_vm.IsEditProfile)
             {
-                if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (checkEAProfileDDPM != null)
                 {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    return;
+                    if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Thickness headMargin = new Thickness(24, 30, 45, 24);
+                        Thickness subMargin = new Thickness(24, -16, 24, 8);
+                        DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                        return;
+                    }
                 }
             }
 
@@ -243,6 +290,11 @@ namespace DDPM.UI.Module.EzMemory
             DoProgressAnimation(true);
         }
 
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
@@ -250,7 +302,10 @@ namespace DDPM.UI.Module.EzMemory
             return;
         }
 
-
+        /// <summary>
+        /// Do Progressbar Animation
+        /// </summary>
+        /// <param name="isForward"></param>
         private void DoProgressAnimation(bool isForward)
         {
             double newProgressValue;
@@ -279,6 +334,7 @@ namespace DDPM.UI.Module.EzMemory
             _vm.ProgressValue = newProgressValue;
         }
 
+
         #region Init SplitListView and SplitItems
         private void InitListViewItems()
         {
@@ -286,12 +342,12 @@ namespace DDPM.UI.Module.EzMemory
             //
             if (_deviceManagerSA == null) return;
 
-            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_selecthomeDevice.MonitorInfo).Result;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
+            DisplayOrientation orient = GetDisplayOrientation(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
 
             //Update IsVertical to listViews
@@ -337,44 +393,43 @@ namespace DDPM.UI.Module.EzMemory
 
             //B Load CustomList from settings file
             //
-            if (eaSettings != null)
+            //Robert_Lin, 2024-10-12 modify due to CustomList has move into UserSettings from MonitorSettings, 
+            SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+            if (customList != null)
             {
-                if (eaSettings.CustomList != null)
-                {
                     //Add saved custom list to custom list view
-                    foreach (SplitJson spj in eaSettings.CustomList)
+                foreach (SplitJson spj in customList)
+                {
+                    //Validate settings
+                    //1 CustomId must > 0
+                    if (spj.CustomId == 0)
                     {
-                        //Validate settings
-                        //1 CustomId must > 0
-                        if (spj.CustomId == 0)
-                        {
-                            //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                            continue;
-                        }
-                        //2 CustomName cannot be empty
-                        if (String.IsNullOrWhiteSpace(spj.CustomName))
-                        {
-                            //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
-                            continue;
-                        }
-                        //3 CustomName length
-                        if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
-                        {
-                            //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
-                            continue;
-                        }
-
-                        ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                        if (spCtrl == null)
-                            continue;
-                        spCtrl.Settings = new List<double>(spj.Settings);
-                        spCtrl.SplitMode = eSplitModes.Icon;
-                        spCtrl.FriendlyName = spj.CustomName;
-
-                        SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
-                        itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-                        itemCustom.CustomId = (int)spj.CustomId;
+                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                        continue;
                     }
+                    //2 CustomName cannot be empty
+                    if (String.IsNullOrWhiteSpace(spj.CustomName))
+                    {
+                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
+                        continue;
+                    }
+                    //3 CustomName length
+                    if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                    {
+                        //_vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
+                        continue;
+                    }
+
+                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                    if (spCtrl == null)
+                        continue;
+                    spCtrl.Settings = new List<double>(spj.Settings);
+                    spCtrl.SplitMode = eSplitModes.Icon;
+                    spCtrl.FriendlyName = spj.CustomName;
+
+                    SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
+                    itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+                    itemCustom.CustomId = (int)spj.CustomId;
                 }
             } //if (eaSettings != null)
 
@@ -664,6 +719,9 @@ namespace DDPM.UI.Module.EzMemory
                 //SaveEaSettings();
                 //_deviceManagerSA.WriteEasyArrangeSettings()
             }
+
+            //If Edit，need to recoerd
+            _vm.CurrentSelectspItem = spItem;
         }
         #endregion SplitItem Selection
         #region Edit Layout
@@ -797,6 +855,7 @@ namespace DDPM.UI.Module.EzMemory
         }
         #endregion
 
+        #region For security
         private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
@@ -827,5 +886,6 @@ namespace DDPM.UI.Module.EzMemory
                 e.Handled = true;
             }
         }
+        #endregion
     }
 }

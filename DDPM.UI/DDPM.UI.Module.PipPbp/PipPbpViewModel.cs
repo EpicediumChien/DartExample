@@ -8,6 +8,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using System.ComponentModel;
 using System.Windows.Input;
 using VcpCore.Common;
@@ -175,7 +176,7 @@ namespace DDPM.UI.Module.PipPbp
                 //MainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
                 _mainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
                 OnPropertyChanged("MainInputSource");
-                if ( _mainInputSource == null ) 
+                if (_mainInputSource == null)
                 {
                     LogInfo("  Set MainInputSource=null}");
                 }
@@ -422,6 +423,9 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
+            //    IShowPluginManager? _showPluginManager = DDPM.UI.Plugin.DisplayPlugin.PluginIoc.GetService<IShowPluginManager>();
+            //    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
+            DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
         }
 
         public void OnPipLargeClicked(SplitItem spItem)
@@ -445,6 +449,7 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
+            DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
         }
 
         public void OnPbpItemClicked(SplitItem spItem)
@@ -469,6 +474,7 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
+            DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
         }
 
         #endregion ClickCommand default Handlers
@@ -489,9 +495,9 @@ namespace DDPM.UI.Module.PipPbp
         /// <returns></returns>
         private int SplitCountFromPxpMode(UInt16 pxpMode)
         {
-            switch(pxpMode)
+            switch (pxpMode)
             {
-                case PipMode_Off: 
+                case PipMode_Off:
                     return 1;
                 case PipMode_Small:
                 case PipMode_Large:

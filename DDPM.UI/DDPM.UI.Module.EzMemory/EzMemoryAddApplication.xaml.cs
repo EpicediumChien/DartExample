@@ -41,22 +41,18 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly SplitListView _splitListView;
+        private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
         private ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps { get; set; } = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
-
         private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
-
-        public ObservableCollection<ApplicationItem> InstalledApplications { get; set; } = new ObservableCollection<ApplicationItem>();
-        //public ObservableCollection<ApplicationItem> InstalledApplications { get; set; }
-        public EzMemoryAddApplication(DisplayViewModel vmDisplay, SplitListView EzMsplitListView)
+        public EzMemoryAddApplication(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
-            _splitListView = EzMsplitListView;
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
+            _selecthomeDevice = _homeDeviceSelect;
             _log = vmDisplay.Console.CreateLog("EzMemoryAddApplication");
             _log.Info($"{nameof(EzMemoryAddApplication)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
@@ -67,12 +63,17 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzArrange;
+            _vm = vm;
 
-            DataContext = _homeDevice.vmEzArrange;
+            DataContext = vm;
 
-            //InitializeComponent();
         }
+
+        /// <summary>
+        /// "Search field control code
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             List<Bind_AddFullPage_AppCollectionData> TempFiltered;
@@ -96,6 +97,11 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// SortbyName Ascending
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSortbyName_Ascending_Click(object sender, EventArgs e)
         {
             //btnSortbyName_Ascending.Visibility = System.Windows.Visibility.Collapsed;
@@ -116,6 +122,11 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// SortbyName Descending
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSortbyName_Descending_Click(object sender, EventArgs e)
         {
             //btnSortbyName_Descending.Visibility = System.Windows.Visibility.Collapsed;
@@ -136,6 +147,11 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// SortbyDate Ascending
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSortbyDate_Ascending_Click(object sender, EventArgs e)
         {
             //btnSortbyDate_Ascending.Visibility = System.Windows.Visibility.Collapsed;
@@ -156,6 +172,11 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// SortbyDate Descending
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSortbyDate_Descending_Click(object sender, EventArgs e)
         {
             //btnSortbyDate_Descending.Visibility = System.Windows.Visibility.Collapsed;
@@ -176,12 +197,13 @@ namespace DDPM.UI.Module.EzMemory
             }
         }
 
+        /// <summary>
+        /// UserControl Loaded, Get application list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //AppsCollectShell appshell = new AppsCollectShell();
-            //Dictionary<string, InstalledAppInfo> data = appshell.FindAppsbyShellForEzMemoryFullPathKey();
-
-            //Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
             Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
 
 
@@ -213,22 +235,26 @@ namespace DDPM.UI.Module.EzMemory
                 _bind_apps.Add(new_Appdata);
                 _apps_all.Add(new_Appdata);
 
-                ApplicationItem newAdd = new ApplicationItem();
-                newAdd.AppName = new_Appdata.AppName;
-                newAdd.AppIcon = new_Appdata.AppIcon;
-                newAdd.AppPath = new_Appdata.AppPath;
-                InstalledApplications.Add(newAdd);
             }
             lb_Installed_App.ItemsSource = _bind_apps;
-            //lb_Installed_App.ItemsSource = InstalledApplications;
         }
 
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
+        /// <summary>
+        /// Add app
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
             if (lb_Installed_App.SelectedItems.Count == 0)
@@ -243,7 +269,7 @@ namespace DDPM.UI.Module.EzMemory
             {
                 Thickness headMargin = new Thickness(24, 30, 45, 24);
                 Thickness subMargin = new Thickness(24, -16, 24, 8);
-                DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
                 return;
             }
 
@@ -257,10 +283,20 @@ namespace DDPM.UI.Module.EzMemory
 
             _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
 
-            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+            if (_vm.IsEditProfile)
+            {
+                _vm.IsAddPageBack = true;
+            }
+
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
 
+        /// <summary>
+        /// Select, open dialog to select app or file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSelect_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -287,7 +323,7 @@ namespace DDPM.UI.Module.EzMemory
                     {
                         Thickness headMargin = new Thickness(24, 30, 45, 24);
                         Thickness subMargin = new Thickness(24, -16, 24, 8);
-                        DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                        DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
                         return;
                     }
 
@@ -313,7 +349,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     _vm.UpdateTextBlockAppName(_vm.ButtonName, fileName);
 
-                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _splitListView);
+                    EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
                     DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
                 }
             }

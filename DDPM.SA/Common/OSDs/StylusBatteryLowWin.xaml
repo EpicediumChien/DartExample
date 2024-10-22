@@ -7,7 +7,6 @@
     AllowsTransparency="True"
     Background="Transparent"
     Loaded="Window_Loaded"
-    MouseDown="Window_MouseDown"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     Topmost="True"

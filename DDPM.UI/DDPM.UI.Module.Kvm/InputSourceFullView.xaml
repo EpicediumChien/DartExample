@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
@@ -44,7 +44,7 @@
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel>
-            <Grid Margin="24">
+            <Grid Margin="24" x:Name="splitGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="552" />
                     <ColumnDefinition Width="Auto" />

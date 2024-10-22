@@ -119,6 +119,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private bool _isDebuggingOnWindowStartMoving = true;
+        private int _isRefresCellsCountAfterStartMoving = 0;
 
         private void OnWindowStartMovingProc(IntPtr hWnd)
         {
@@ -130,6 +131,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _vmArrange.hWndForeground = hWnd;
 
+            //Step_1, determine the moving window is allowed to move
+            //
             Process process;
             string msg;
             if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
@@ -172,6 +175,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 _vmArrange.LogInfo($"@OnWindowStartMovingProc, {_vmArrange.StartMovingMsg}");
             }
 
+            //Step_2, Set flags to show windows
+            //
+
             _vmArrange.RefreshScreenScale();
             Trace.WriteLine($"ScreenScale={_vmArrange.ScreenScale}");
             _vmArrange.IsMoving = true;
@@ -190,6 +196,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //_vmArrange.DetermineWorkWindowVisibility();
 
             _vmArrange.RefreshCellRects();
+            _isRefresCellsCountAfterStartMoving = 0;
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
@@ -247,6 +254,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             if (!_vmArrange.IsWorkUIShowing)
                 return;
+
+            if (_isRefresCellsCountAfterStartMoving <= 20)
+            {
+                _isRefresCellsCountAfterStartMoving++;
+                _vmArrange.RefreshCellRects();
+            }
 
             CellObj orgCell = _vmArrange.HoveringCellObj;
             CellObj? newCell = _vmArrange.DetermineHoveringCellObj(x, y);

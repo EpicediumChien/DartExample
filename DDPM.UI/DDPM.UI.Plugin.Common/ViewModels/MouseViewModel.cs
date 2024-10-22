@@ -7,6 +7,7 @@ using Microsoft;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using MouseButton = DPeMPublic.Common.Enums.MouseButton;
@@ -17,7 +18,6 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
         private Collection<string> _buttonCollection = new();
         private int _primaryButtonIndex = 0;
         private int _touchScrollSensitivityLevel = -1;
@@ -46,13 +46,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public MouseViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public MouseViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
-            _deviceManager = deviceManager;
 
             Hz125ClickedCommand = new RelayCommand(OnHz125Clicked);
             Hz133ClickedCommand = new RelayCommand(OnHz133Clicked);
@@ -63,42 +62,42 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void OnHz125Clicked()
         {
-            if(_pollingRateSelectedIndex == 0)
+            if (_pollingRateSelectedIndex == 0)
             { return; }
             _pollingRateSelectedIndex = 0;
             SwitchPollingRate(0, 125, true);
         }
         private void OnHz2501Clicked()
         {
-            if(_pollingRateSelectedIndex == 1)
+            if (_pollingRateSelectedIndex == 1)
             { return; }
             _pollingRateSelectedIndex = 1;
             SwitchPollingRate(1, 250, true);
         }
         private void OnHz333Clicked()
         {
-            if(_pollingRateSelectedIndex == 2)
+            if (_pollingRateSelectedIndex == 2)
             { return; }
             _pollingRateSelectedIndex = 2;
             SwitchPollingRate(2, 333, true);
         }
         private void OnHz133Clicked()
         {
-            if(_pollingRateSelectedIndex == 3)
+            if (_pollingRateSelectedIndex == 3)
             { return; }
             _pollingRateSelectedIndex = 3;
             SwitchPollingRate(3, 133, true);
         }
         private void OnHz2502Clicked()
         {
-            if(_pollingRateSelectedIndex == 4)
+            if (_pollingRateSelectedIndex == 4)
             { return; }
             _pollingRateSelectedIndex = 4;
             SwitchPollingRate(4, 250, true);
         }
         private void SwitchPollingRate(int index, int hz = 0, bool NeedSetting = false)
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     Hz125Focused = true;
@@ -142,7 +141,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(Hz250Focused));
                     break;
             }
-            if(NeedSetting)
+            if (NeedSetting)
             {
                 //_deviceManager.SetBackLightingControls(hz, CurrentDeviceInfo.ID);
             }
@@ -155,9 +154,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
             DeviceInfos.Clear();
-            foreach(DeviceInfo deviceInfo in deviceInfos)
+            foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if(deviceInfo.LogicalDeviceType.Contains("Mouse"))
+                if (deviceInfo.LogicalDeviceType.Contains("Mouse"))
                 {
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
@@ -165,12 +164,12 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public override bool SetCurrentDevice(string deviceID)
         {
-            if(!base.SetCurrentDevice(deviceID))
+            if (!base.SetCurrentDevice(deviceID))
                 return false;
 
             IsTouchScrollSensitivitySupported = CurrentDeviceInfo!.IsTouchScrollSensitivitySupported;
             //IsTouchScrollSensitivitySupported = true;
-            if(IsTouchScrollSensitivitySupported)
+            if (IsTouchScrollSensitivitySupported)
             {
                 TouchScrollSensitivityLevel = CurrentDeviceInfo.TouchScrollSensitivityLevel;
             }
@@ -178,7 +177,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             IsDPIValueSupported = CurrentDeviceInfo.IsDPIValueSupported;
             //IsDPIValueSupported = false;
-            if(IsDPIValueSupported && !EOLList.Contains(Model))
+            if (IsDPIValueSupported && !EOLList.Contains(Model))
             {
                 DPIMax = CurrentDeviceInfo.DpiMax;
                 DPIMin = CurrentDeviceInfo.DpiMin;
@@ -194,9 +193,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
             IsReportRateSupported = CurrentDeviceInfo.IsReportRateSupported || Model == "MS355";
             //IsReportRateSupported = true;
-            if(IsReportRateSupported)
+            if (IsReportRateSupported)
             {
-                switch(CurrentDeviceInfo.ReportRate)
+                switch (CurrentDeviceInfo.ReportRate)
                 {
                     case 125:
                         _pollingRateSelectedIndex = 0;
@@ -218,13 +217,13 @@ namespace DDPM.UI.Plugin.ViewModels
                         _pollingRateSelectedIndex = -1;
                         break;
                 }
-                if(ConnectionType == "Bluetooth")
+                if (ConnectionType == "Bluetooth")
                 {
                     _pollingRateSelectedIndex = 3;
                     PollingRateInfoTip = Strings.PollingRateInfoTip2;
                     IsDongleRateVisible = false;
                     IsBluetoothRateVisible = true;
-                    if(_pollingRateSelectedIndex == 1)
+                    if (_pollingRateSelectedIndex == 1)
                     {
                         _pollingRateSelectedIndex = 4;
                     }
@@ -239,7 +238,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(IsDongleRateVisible));
                 OnPropertyChanged(nameof(IsBluetoothRateVisible));
 
-                if(_pollingRateSelectedIndex != -1)
+                if (_pollingRateSelectedIndex != -1)
                 {
                     SwitchPollingRate(_pollingRateSelectedIndex);
                 }
@@ -274,28 +273,28 @@ namespace DDPM.UI.Plugin.ViewModels
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
             //MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentInstanceID);
-            MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model);
+            MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentDeviceID.ToString());
 
-            foreach(var kvp in MouseAction.ButtonActions)
+            foreach (var kvp in MouseAction.ButtonActions)
             {
-                if(kvp.Value.AssignedAction.ID > 400)
+                if (kvp.Value.AssignedAction.ID > 400)
                 {
-                    if(OutlookVisibility == Visibility.Collapsed)
+                    if (OutlookVisibility == Visibility.Collapsed)
                     { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
                 }
-                else if(kvp.Value.AssignedAction.ID > 300)
+                else if (kvp.Value.AssignedAction.ID > 300)
                 {
-                    if(PowerPointVisibility == Visibility.Collapsed)
+                    if (PowerPointVisibility == Visibility.Collapsed)
                     { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
                 }
-                else if(kvp.Value.AssignedAction.ID > 200)
+                else if (kvp.Value.AssignedAction.ID > 200)
                 {
-                    if(ExcelVisibility == Visibility.Collapsed)
+                    if (ExcelVisibility == Visibility.Collapsed)
                     { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
                 }
-                else if(kvp.Value.AssignedAction.ID > 100)
+                else if (kvp.Value.AssignedAction.ID > 100)
                 {
-                    if(WordVisibility == Visibility.Collapsed)
+                    if (WordVisibility == Visibility.Collapsed)
                     { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
                 }
                 RefreshButtonImageFile(kvp.Key.ToString());
@@ -313,16 +312,16 @@ namespace DDPM.UI.Plugin.ViewModels
         public void CheckRestoreStatus()
         {
             IsRestoreEnable = false;
-            foreach(var btnAction in MouseAction.ButtonActions.Values)
+            foreach (var btnAction in MouseAction.ButtonActions.Values)
             {
-                if(btnAction.DefaultActionID != btnAction.AssignedAction.ID)
+                if (btnAction.DefaultActionID != btnAction.AssignedAction.ID)
                 {
                     IsRestoreEnable = true;
                     break;
                 }
-                foreach(var kvp in btnAction.OfficeActions)
+                foreach (var kvp in btnAction.OfficeActions)
                 {
-                    if(kvp.Value != -1)
+                    if (kvp.Value != -1)
                     {
                         IsRestoreEnable = true;
                         break;
@@ -345,16 +344,16 @@ namespace DDPM.UI.Plugin.ViewModels
             };
 
             var action = MouseAction.ButtonActions[_btnName];
-            if((SelectedApp == "AllApp" && action.AssignedAction.ID == action.DefaultActionID)
+            if ((SelectedApp == "AllApp" && action.AssignedAction.ID == action.DefaultActionID)
               || (SelectedApp != "AllApp" && action.OfficeActions[SelectedApp] == -1))
             {
-                if(IsSelected)
+                if (IsSelected)
                 {
                     property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}5.png");
                 }
                 else
                 {
-                    if(IsHover)
+                    if (IsHover)
                     {
                         property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}2.png");
                     }
@@ -366,13 +365,13 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             else
             {
-                if(IsSelected)
+                if (IsSelected)
                 {
                     property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}6.png");
                 }
                 else
                 {
-                    if(IsHover)
+                    if (IsHover)
                     {
                         property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}4.png");
                     }
@@ -390,10 +389,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             base.HandleNotification(changeType, di, property);
 
-            switch(changeType)
+            switch (changeType)
             {
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if(DeviceInfos.ContainsKey(di.ID))
+                    if (DeviceInfos.ContainsKey(di.ID))
                     {
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
@@ -402,10 +401,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         return;
                     }
-                    if(di.ID == CurrentDeviceID)
+                    if (di.ID == CurrentDeviceID)
                     {
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                        switch(property)
+                        switch (property)
                         {
                             case "MousePrimaryButtonChanged":
                                 PrimaryButtonIndex = (int)di.MousePrimaryButton;
@@ -444,15 +443,15 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _touchScrollSensitivityLevel;
             set
             {
-                if(_touchScrollSensitivityLevel != value)
+                if (_touchScrollSensitivityLevel != value)
                 {
                     _touchScrollSensitivityLevel = value;
-                    if(value == 1)
+                    if (value == 1)
                         IsMediumVisible = 1;
                     else
                         IsMediumVisible = 0;
 
-                    if(!IsSliderDragging)
+                    if (!IsSliderDragging)
                         SetTouchScrollSensitivityLevel();
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsMediumVisible));
@@ -461,8 +460,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTouchScrollSensitivityLevel()
         {
-            if(_touchScrollSensitivityLevel != CurrentDeviceInfo!.TouchScrollSensitivityLevel)
-                _deviceManager.SetTouchScrollSensitivityLevel(_touchScrollSensitivityLevel, CurrentDeviceInfo.ID);
+            if (_touchScrollSensitivityLevel != CurrentDeviceInfo!.TouchScrollSensitivityLevel)
+                DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(_touchScrollSensitivityLevel, CurrentDeviceInfo.ID);
         }
 
         public bool IsTouchScrollSensitivitySupported { get; set; }
@@ -472,12 +471,12 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _primaryButtonIndex;
             set
             {
-                if(_primaryButtonIndex != value)
+                if (_primaryButtonIndex != value)
                 {
                     _primaryButtonIndex = value;
                     OnPropertyChanged();
                     MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
-                    _deviceManager.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
+                    DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
                 }
             }
         }
@@ -493,14 +492,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 var digit = (int)Math.Log10(value);
                 DPITextMargin = new double[] { (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5, 0, 0, 1 };//SDL, change to use new
                 DPIValueText = value.ToString();
-                if(value == DPIMax || value == DPIMin || value == -1)
+                if (value == DPIMax || value == DPIMin || value == -1)
                 {
                     DPIValueText = "";
                 }
-                if(_DPIValue != value)
+                if (_DPIValue != value)
                 {
                     _DPIValue = value;
-                    if(!IsSliderDragging)
+                    if (!IsSliderDragging)
                         SetDPIValue();
                     OnPropertyChanged();
                 }
@@ -512,8 +511,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public double[] DPITextMargin { get; set; } = { 0 };//SDL, change to use array
         public void SetDPIValue()
         {
-            if(_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue))
-                _deviceManager.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);
+            if (_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue))
+                DdpmCommonHelper.DeviceManagerSA!.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);
         }
         public bool IsReportRateSupported { get; set; }
         public bool IsDongleRateVisible { get; set; }
@@ -547,7 +546,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isAllButtonsVisible;
             set
             {
-                if(_isAllButtonsVisible != value)
+                if (_isAllButtonsVisible != value)
                 {
                     _isAllButtonsVisible = value;
                     OnPropertyChanged(nameof(IsScrollWheelClickVisible));
@@ -563,7 +562,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollWheelClick);
@@ -577,7 +576,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltLeft);
@@ -591,7 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltRight);
@@ -605,7 +604,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonForward);
@@ -619,7 +618,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonBack);
@@ -669,31 +668,31 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RefreshButtonInfo()
         {
-            if(MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollWheelClick))
+            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollWheelClick))
             {
                 RefreshButtonImageFile(MouseButtonName.ScrollWheelClick.ToString(), false, MouseButtonName.ScrollWheelClick.ToString() == SelectedButton);
                 OnPropertyChanged(nameof(ScrollWheelClickTooltip));
                 OnPropertyChanged(nameof(ScrollWheelClickImageFile));
             }
-            if(MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltLeft))
+            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltLeft))
             {
                 RefreshButtonImageFile(MouseButtonName.ScrollTiltLeft.ToString(), false, MouseButtonName.ScrollTiltLeft.ToString() == SelectedButton);
                 OnPropertyChanged(nameof(ScrollTiltLeftTooltip));
                 OnPropertyChanged(nameof(ScrollTiltLeftImageFile));
             }
-            if(MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltRight))
+            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltRight))
             {
                 RefreshButtonImageFile(MouseButtonName.ScrollTiltRight.ToString(), false, MouseButtonName.ScrollTiltRight.ToString() == SelectedButton);
                 OnPropertyChanged(nameof(ScrollTiltRightTooltip));
                 OnPropertyChanged(nameof(ScrollTiltRightImageFile));
             }
-            if(MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonForward))
+            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonForward))
             {
                 RefreshButtonImageFile(MouseButtonName.SideButtonForward.ToString(), false, MouseButtonName.SideButtonForward.ToString() == SelectedButton);
                 OnPropertyChanged(nameof(SideButtonForwardTooltip));
                 OnPropertyChanged(nameof(SideButtonForwardImageFile));
             }
-            if(MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonBack))
+            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonBack))
             {
                 RefreshButtonImageFile(MouseButtonName.SideButtonBack.ToString(), false, MouseButtonName.SideButtonBack.ToString() == SelectedButton);
                 OnPropertyChanged(nameof(SideButtonBackTooltip));
@@ -705,11 +704,11 @@ namespace DDPM.UI.Plugin.ViewModels
             var action = MouseAction.ButtonActions[btnName];
             ActionItem actionItem;
             var parameter = "";
-            if(SelectedApp == "AllApp")
+            if (SelectedApp == "AllApp")
             {
-                if(action.AssignedAction.ID == -1)
+                if (action.AssignedAction.ID == -1)
                 {
-                    if(action.DefaultActionID == -1)
+                    if (action.DefaultActionID == -1)
                     {
                         return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
                     }
@@ -721,14 +720,14 @@ namespace DDPM.UI.Plugin.ViewModels
                     parameter = action.AssignedAction.Parameter;
                 }
                 string tooltip = actionItem.Caption!;
-                if(parameter != "")
+                if (parameter != "")
                     tooltip += " : " + parameter;
                 return tooltip;
             }
             else
             {
                 var actionID = action.OfficeActions[SelectedApp];
-                if(actionID == -1)
+                if (actionID == -1)
                 { return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2; }
                 else
                     return Actions.OfficeActions[actionID].Caption;
@@ -744,12 +743,15 @@ namespace DDPM.UI.Plugin.ViewModels
         public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions);
         public void UpdateAction(int actionID, string parameter = "")
         {
-            if(SelectedButton != "")
+            if (SelectedButton != "")
             {
-                if(SelectedApp == "AllApp")
+                int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
+                if (SelectedApp == "AllApp")
                 {
                     SelectedMouseAction!.AssignedAction.ID = actionID;
                     SelectedMouseAction.AssignedAction.Parameter = parameter;
+                    byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
+                    DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
                 }
                 else
                 {
@@ -759,13 +761,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 //RefreshButtonImageFile(SelectedButton, false, true);
                 RefreshButtonInfo();
                 CheckRestoreStatus();
-                //ActionList.ExportActionList(MouseAction, Model, CurrentInstanceID);
                 ActionList.ExportActionList(MouseAction, Model);
             }
         }
         public void ClearSelectedButton()
         {
-            if(SelectedButton != "")
+            if (SelectedButton != "")
             {
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";

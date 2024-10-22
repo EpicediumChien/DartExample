@@ -3,6 +3,8 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -17,7 +19,6 @@ namespace DDPM.UI.Plugin.ViewModels
         #region Variables
 
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
 
         private int _tipSensitivity = 0;
         private int _tiltSensitivity = 0;
@@ -25,20 +26,30 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private string _selectedButton = "";
 
+        private bool IsActionItemsReady = false;
+        private Dictionary<int, string> _EraserActions = new();
+        private Dictionary<int, string> _SideSwitchActions = new();
+        private Dictionary<int, string> _MenuActions = new();
+        //private Dictionary<int, string> LaunchableAppValues = new();
+
         #endregion Variables
+
+        public PenActions PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
+        public Dictionary<int, string> ActionNames = new();
+        public List<string> LaunchableAppValues = new();
+        public List<int> RadialMenuActions = new();
 
         public int AppSelectedIndex { get; set; } = 0;
         public string TopButtonBackground { get; set; } = "";
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public PenViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public PenViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
-            _deviceManager = deviceManager;
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -65,22 +76,57 @@ namespace DDPM.UI.Plugin.ViewModels
 
             TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 2 : 1);
             TipSensitivity = CurrentDeviceInfo.TipSensitivity;
-            PrepareAction();
+
+            if (!IsActionItemsReady)
+                PrepareActionItems();
+
             InitializeButton();
             return true;
         }
 
-        void PrepareAction()
+        void PrepareActionItems()
         {
-            JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues));
-            JsonElement jsonObject2 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideTopSwitchSinglePressSetting));
+            //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
+            Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
+            JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
             foreach (var jo in jsonObject.EnumerateArray())
             {
-
+                _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
             }
-        }
 
-        public PenActions PenAction = new();
+            task = DdpmCommonHelper.DeviceManagerSA!.GetSideSwitchSinglePressValues();
+            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+            foreach (var jo in jsonObject.EnumerateArray())
+            {
+                //var id = jo.GetProperty("actionId").GetInt32();
+                //if (id != 63)
+                _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
+            }
+
+            task = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressValues();
+            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+            foreach (var jo in jsonObject.EnumerateArray())
+            {
+                var id = jo.GetProperty("actionId").GetInt32();
+                if (id != 63)
+                    _MenuActions.Add(id, jo.GetProperty("actionName").GetString()!);
+            }
+
+            task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
+            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+            //var i = 1;
+            //LaunchableAppValues.Add(Strings.Browse);
+            foreach (var jo in jsonObject.EnumerateArray())
+            {
+                //LaunchableAppValues.Add(i, jo.GetString()!);
+                //i++;
+                LaunchableAppValues.Add(jo.GetString()!);
+            }
+            LaunchableAppValues.Sort();
+            ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
+            IsActionItemsReady = true;
+        }
 
         private void InitializeButton()
         {
@@ -88,8 +134,6 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "PN9315A";
             //Model = "PN5122W";
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
-
-            PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
 
             RefreshButtonImageFile(PenButtonName.TopButton.ToString());
             RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
@@ -267,9 +311,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTipSensitivity()
         {
             if (_tipSensitivity != CurrentDeviceInfo!.TipSensitivity)
-                _deviceManager.SetTipSensitivity(itemID, _tipSensitivity);
+                DdpmCommonHelper.DeviceManagerSA!.SetTipSensitivity(itemID, _tipSensitivity);
         }
-
 
         public int TiltSensitivity
         {
@@ -290,7 +333,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTiltSensitivity()
         {
             if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
-                _deviceManager.SetTiltSensitivity(itemID, _tiltSensitivity);
+                DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity);
         }
 
         public string SelectedButton
@@ -399,8 +442,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //var tp1 = "";
-                string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
+                string tooltip1 = _EraserActions[PenAction.TopButtonClickAction.AssignedAction.ID];
                 string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
                 if (parameter1 != "")
                 {
@@ -409,11 +452,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (id == 1)
                         {
-                            tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            //tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            tooltip1 = $"{tooltip1} : {LaunchableAppValues[id]} \"{arr[1]}\"";
                         }
                         else
                         {
-                            tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]}";
+                            //tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]}";
+                            tooltip1 = $"{tooltip1} : {LaunchableAppValues[id]}";
                         }
                     }
                     else
@@ -424,7 +469,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                     return $"{Strings.PenButtonClickOnce}: {tooltip1}";
 
-                string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
+                //string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
+                var id2 = PenAction.TopButtonDoubleClickAction.AssignedAction.ID;
+                string tooltip2 = _EraserActions[id2];
                 string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
                 if (parameter2 != "")
                 {
@@ -433,11 +480,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (id == 1)
                         {
-                            tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            //tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            tooltip2 = $"{tooltip2} : {LaunchableAppValues[id]} \"{arr[1]}\"";
                         }
                         else
                         {
-                            tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]}";
+                            //tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]}";
+                            tooltip2 = $"{tooltip2} : {LaunchableAppValues[id]}";
                         }
                     }
                     else
@@ -448,7 +497,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                     return $"{Strings.PenButtonDoubleClick}: {tooltip2}";
 
-                string tooltip3 = Actions.PenActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
+                //string tooltip3 = Actions.PenActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
+                string tooltip3 = _EraserActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID];
                 string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
                 if (parameter3 != "")
                 {
@@ -457,11 +507,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (id == 1)
                         {
-                            tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            //tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            tooltip3 = $"{tooltip3} : {LaunchableAppValues[id]} \"{arr[1]}\"";
                         }
                         else
                         {
-                            tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]}";
+                            //tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]}";
+                            tooltip3 = $"{tooltip3} : {LaunchableAppValues[id]}";
                         }
                     }
                     else
@@ -479,7 +531,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
+                string tooltip = _SideSwitchActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
                 if (parameter != "")
                 {
@@ -488,7 +541,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (id == 1)
                         {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            //return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            return $"{tooltip} : {LaunchableAppValues[id]} \"{arr[1]}\"";
                         }
                         else
                         {
@@ -507,7 +561,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
+                string tooltip = _SideSwitchActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
                 if (parameter != "")
                 {
@@ -516,11 +571,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (id == 1)
                         {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            //return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                            return $"{tooltip} : {LaunchableAppValues[id]} \"{arr[1]}\"";
                         }
                         else
                         {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]}";
+                            //return $"{tooltip} : {Actions.OpenRunActions[id]}";
+                            return $"{tooltip} : {LaunchableAppValues[id]}";
                         }
                     }
                     else
@@ -541,12 +598,12 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RestoreToDefault()
         {
-            PenAction = new PenActions(Model);
-            ActionList.ExportActionList(PenAction, "PEN");
+            PenAction.RestoreToDefault();
             RefreshButtonInfo();
             IsRestoreEnable = false;
             OnPropertyChanged(nameof(IsRestoreEnable));
         }
+
         public void RefreshButtonInfo()
         {
             RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
@@ -567,40 +624,47 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedAction.AssignedAction.Parameter = parameter;
                 RefreshButtonInfo();
                 CheckRestoreStatus();
+                var actionName = actionID == 8 || actionID == 23 ? parameter : "";
                 switch (SelectedButton)
                 {
                     case "TopButton":
+                        //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
+                        if (string.IsNullOrEmpty(actionName))
+                        { actionName = _EraserActions[actionID]; }
+
+                        byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":{actionID},\"actionName\":\"{actionName}\"}}");
                         if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                         {
-                            var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
-                            byte[] newValue = Encoding.UTF8.GetBytes(value);
-                            _deviceManager.SetEraserSinglePressSetting(itemID, newValue);
+                            DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
                         }
                         else if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                         {
-                            var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
-                            byte[] newValue = Encoding.UTF8.GetBytes(value);
-                            _deviceManager.SetEraserDoublePressSetting(itemID, newValue);
+                            if (actionID == 64)
+                            {
+                                newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":65,\"actionName\":\"{actionName}\"}}");
+                            }
+                            DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(itemID, newValue);
                         }
                         else
                         {
-                            var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
-                            byte[] newValue = Encoding.UTF8.GetBytes(value);
-                            _deviceManager.SetEraserLongPressSetting(itemID, newValue);
+                            if (actionID == 64)
+                            {
+                                newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":77,\"actionName\":\"{actionName}\"}}");
+                            }
+                            DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(itemID, newValue);
                         }
                         break;
                     case "TopBarrelButton":
-                        //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\",\"IsHoverEnabled\":true}}";
-                        var value4 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
-                        byte[] newValue4 = Encoding.UTF8.GetBytes(value4);
-                        _deviceManager.SetSideTopSwitchSinglePressSetting1(itemID, newValue4);
-                        //_deviceManager.SetSideTopSwitchSinglePressSetting2(itemID, value4);
-                        //_deviceManager.SetSideTopSwitchSinglePressSetting3(newValue4, CurrentDeviceInfo!.ID);
+                        //var value2 = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
+                        var value2 = $"{{\"actionId\":{actionID},\"actionName\":\"{_SideSwitchActions[actionID]}\"}}";
+                        byte[] newValue2 = Encoding.UTF8.GetBytes(value2);
+                        DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
                         break;
                     case "BottomBarrelButton":
-                        var value5 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
-                        byte[] newValue5 = Encoding.UTF8.GetBytes(value5);
-                        _deviceManager.SetSideBottomSwitchSinglePressSetting(itemID, newValue5);
+                        //var value3 = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
+                        var value3 = $"{{\"actionId\":{actionID},\"actionName\":\"{_SideSwitchActions[actionID]}\"}}";
+                        byte[] newValue3 = Encoding.UTF8.GetBytes(value3);
+                        DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(itemID, newValue3);
                         break;
                 }
                 ActionList.ExportActionList(PenAction, "PEN");
@@ -621,13 +685,13 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
                 {
-                    _deviceManager.SetIsSideTopButtonHoverClick(itemID, value);
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsSideTopButtonHoverClick(itemID, value);
                     PenAction.IsTopBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
                 if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
                 {
-                    _deviceManager.SetIsSideBottomButtonHoverClick(itemID, value);
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsSideBottomButtonHoverClick(itemID, value);
                     PenAction.IsBottomBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
@@ -643,15 +707,21 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
 
-        public void UpdateRadialMenu(int index)
+        public void UpdateRadialMenu(int index, int id, string parameter = "")
         {
-            var value = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"menuIndex\":{index}}}";
-            byte[] newValue = Encoding.UTF8.GetBytes(value);
-            _deviceManager.SetMenuSinglePressSetting(itemID, newValue);
+            //byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{PenAction.RadialLabels[index]}\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
         }
         public void UpdateRadialMenuRightClick(bool value)
         {
-            _deviceManager.SetMenuCenterRightClickSetting(itemID, value);
+            DdpmCommonHelper.DeviceManagerSA!.SetMenuCenterRightClickSetting(itemID, value);
+        }
+
+        public void UnpairPen()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.UnPairPen(CurrentDeviceID.ToString());
+            OnGoBackClicked();
         }
     }
 }

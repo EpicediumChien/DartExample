@@ -25,11 +25,19 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+            if (string.IsNullOrEmpty(ProfileName))
+            {
+                info = $"InputValidation: ProfileName NULL";
+                return false;
+            }
+            
             int len = ProfileName.Length;
             if (len < 1 || len > 30)
             {
                 info = $"InputValidation:  ({ProfileName}) length does not match";
+#if DEBUG
                 Console.WriteLine(" Fail " + info);
+#endif
                 return false;
             }
 
@@ -53,10 +61,14 @@ namespace DDPM.SA.Common.Security
             if (!bResult)
             {
                 info = $"InputValidation:  ({ProfileName}) does not match";
+#if DEBUG
                 Console.WriteLine("InputValidation_ProfileName: Fail " + ProfileName);
+#endif
                 return false;
             }
+#if DEBUG
             Console.WriteLine("InputValidation_ProfileName: Pass");
+#endif
             return true;
         }
 
@@ -67,6 +79,12 @@ namespace DDPM.SA.Common.Security
             if (ImportExistFileTrue == false)
             {
                 opt = PathCheckOption.IgnoreFileExists;
+            }
+
+            if (string.IsNullOrEmpty(filePathFileName))
+            {
+                info = $"InputValidation: filePathFileName NULL";
+                return false;
             }
 
             if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
@@ -85,8 +103,8 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
 
-            string filename = System.IO.Path.GetFileName(filePathFileName);
-            if (filename == null || string.IsNullOrEmpty(filename))
+            string filename = System.IO.Path.GetFileNameWithoutExtension(filePathFileName);
+            if ( string.IsNullOrEmpty(filename))
             {
                 info = "File name - Invalid.";
                 return false;
@@ -115,12 +133,38 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+
+            if (string.IsNullOrEmpty(strURL))
+            {
+                info = $"InputValidation: URL NULL";
+                return false;
+            }
+
             int len = strURL.Length;
             if (len < 1 || len > 8000)
             {
                 info = $"InputValidation:  ({strURL}) length does not match";
+#if DEBUG
                 Console.WriteLine(" Fail " + info);
+#endif
                 return false;
+            }
+            Uri absUri;
+            if (!Uri.TryCreate(strURL, UriKind.Absolute, out absUri))
+            {
+                info = $"Only Absolute URL allowed.";
+                return false;
+#if DEBUG
+                Console.WriteLine("fail " + absUri);
+#endif
+            }
+            else
+            {
+                if(!((absUri.Scheme == Uri.UriSchemeHttp) || (absUri.Scheme == Uri.UriSchemeHttps )) )
+                {
+                    info = $"Only HTTP HTTPs URL allowed.";
+                    return false;
+                }
             }
 
             for (int idx = 0; idx < len; idx++)
@@ -153,10 +197,14 @@ namespace DDPM.SA.Common.Security
             if (!bResult)
             {
                 info = $"InputValidation:  ({strURL}) does not match";
+#if DEBUG
                 Console.WriteLine("InputValidation_ProfileName: Fail " + strURL);
+#endif
                 return false;
             }
+#if DEBUG
             Console.WriteLine("InputValidation_WebURL: Pass");
+#endif
             return true;
         }
 
@@ -164,11 +212,20 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+
+            if (string.IsNullOrEmpty(strData))
+            {
+                info = $"InputValidation: WLAN PWD NULL";
+                return false;
+            }
+
             int len = strData.Length;
             if (len < 1 || len > 63)
             {
                 info = $"InputValidation:  ({strData}) length does not match";
+#if DEBUG
                 Console.WriteLine(" Fail " + info);
+#endif
                 return false;
             }
 
@@ -204,10 +261,14 @@ namespace DDPM.SA.Common.Security
             if (!bResult)
             {
                 info = $"InputValidation:  ({strData}) does not match";
+#if DEBUG
                 Console.WriteLine("InputValidation_ProfileName: Fail " + strData);
+#endif
                 return false;
             }
+#if DEBUG
             Console.WriteLine("InputValidation_WirelessPWD: Pass");
+#endif
             return true;
         }
     }

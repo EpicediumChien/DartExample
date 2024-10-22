@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
 {
@@ -26,6 +27,8 @@ namespace DDPM.Easy.Common
         public int CellCount => 2;
         public char SplitKey => 'D';
         public UserControl UC => this;
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 4;
 
         #endregion ISplitCtrl Native Members
 
@@ -71,12 +74,12 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("2d1", cell_2d1));
-            cellListH.Add(new CellObj("2d2", cell_2d2));
+            cellListH.Add(new CellObj("2d1", cell_2d1) { rcRatio = new Rect(0, 0, 0.3, 1) });
+            cellListH.Add(new CellObj("2d2", cell_2d2) { rcRatio = new Rect(0.3, 0, 0.7, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("2D1", cell_2D1));
-            cellListV.Add(new CellObj("2D2", cell_2D2));
+            cellListV.Add(new CellObj("2D1", cell_2D1) { rcRatio = new Rect(0, 0, 1, 0.3) });
+            cellListV.Add(new CellObj("2D2", cell_2D2) { rcRatio = new Rect(0, 0.3, 1, 0.7) });
         }
 
         #endregion Cell List

@@ -1,4 +1,5 @@
-﻿namespace DDPM.SA.Plugins.User.FWUpdate
+﻿#define IL_NotReady
+namespace DDPM.SA.Plugins.User.FWUpdate
 {
     using DDPM.SA.Common.Security;
     using System;
@@ -6,6 +7,7 @@
     using System.Diagnostics;
     using System.IO.Pipes;
     using System.Text;
+
 
     public class NamedPipeStreamServer : NamedPipeStreamBase
     {
@@ -41,8 +43,10 @@
                     {
                         Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
                         IsNamedPipeServerIsNoSafe = true;
+#if IL_Ready
                         asyncState.Disconnect();
                         return;
+#endif
                     }
                     NamedPipeStreamConnection item = new NamedPipeStreamConnection(asyncState, base.PipeName);
                     item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);

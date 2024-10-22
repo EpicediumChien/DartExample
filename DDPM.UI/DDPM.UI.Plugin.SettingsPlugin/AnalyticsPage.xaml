@@ -7,7 +7,8 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Margin="5,4,60,120"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             SizeChanged="UserControl_SizeChanged">
     <Grid>
         <Border Background="#99132F54" CornerRadius="13">
             <Grid>

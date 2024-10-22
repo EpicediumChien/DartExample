@@ -24,6 +24,8 @@
 	  <None Remove="Resources\Icons\MyDell_Blue.ico" />
 	  <None Remove="Resources\Images\BACKGROUND.png" />
 	  <None Remove="Resources\Images\BackgroundKB.png" />
+	  <None Remove="Resources\Images\Background_Dark.png" />
+	  <None Remove="Resources\Images\Background_Light.png" />
 	  <None Remove="Resources\Images\Masthead_Add_Icon.png" />
 	  <None Remove="Resources\Images\Masthead_Gear_Icon.png" />
 	  <None Remove="Resources\Images\splash-round.png" />
@@ -44,6 +46,8 @@
 	  <Resource Include="Resources\Icons\MyDell_Blue.ico" />
 	  <Resource Include="Resources\Images\BACKGROUND.png" />
 	  <Resource Include="Resources\Images\BackgroundKB.png" />
+	  <Resource Include="Resources\Images\Background_Dark.png" />
+	  <Resource Include="Resources\Images\Background_Light.png" />
 	  <Resource Include="Resources\Images\Masthead_Add_Icon.png" />
 	  <Resource Include="Resources\Images\Masthead_Gear_Icon.png" />
 	  <Resource Include="Resources\Images\splash-round.png" />

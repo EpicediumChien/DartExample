@@ -39,5 +39,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget_Reminder(vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder);
             vm.RefreshUI();
         }
+
+        // 10/12/2024   Derek  for RWD  -- not tested yet
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            activateTextBlock.Width = borderContent.ActualWidth - 100;
+            enableShortcutTextBlock.Width = borderContent.ActualWidth - 100;
+        }
     }
 }

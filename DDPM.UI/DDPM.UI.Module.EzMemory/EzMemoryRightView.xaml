@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="UXTextBlock_Caption" TargetType="UXControls:UXTextBlock">
@@ -75,14 +75,14 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="170,0,10,10"/>
+                                <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="170,0,10,10" Text="{Binding [EazyMemory.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
                                 <UXControls:UXTextBlock x:Name="AutomaticStartupValueTextBlock" Grid.Row="0" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AutomaticStartupValue}" />
 
-                                <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="190,0,10,10"/>
+                                <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="190,0,10,10" Text="{Binding [EazyMemory.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
                                 <UXControls:UXTextBlock x:Name="LaunchByTimeValueTextBlock" Grid.Row="1" Grid.Column="1" Margin="16,0,10,10" Text="{Binding LaunchByTimeValue}" />
 
-                                <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="190,0,10,10"/>
-                                <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Width="135" TextWrapping="Wrap" Text="{Binding AppDocumentValue}" />
+                                <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="190,0,10,10" Text="{Binding [EazyMemory.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
+                                <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Width="220" TextWrapping="Wrap" Text="{Binding AppDocumentValue}" />
                             </Grid>
                         </UXControls:UXScrollViewer >
                     </StackPanel>
@@ -97,8 +97,7 @@
 
 
                             <commonCtrl:SplitListView Name="splitListView_RecentForEzM" Grid.Row="0" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
-                            <UXControls:UXButton x:Name="AddNewButton" Grid.Row="0" Style="{StaticResource TransparentButtonStyle}" HorizontalAlignment="Left" Margin="60,8,16,0" Click="AddNewButton_Click"/>
-                            <UXControls:UXButton x:Name="applybtn" Grid.Row="2" Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
+                            <UXControls:UXButton x:Name="applybtn" Grid.Row="2" Width="99" Height="40" Content="{Binding [EazyMemory.3], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

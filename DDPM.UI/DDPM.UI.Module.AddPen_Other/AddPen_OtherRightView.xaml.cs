@@ -1,7 +1,12 @@
 ﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Net;
+using System.Reflection.Metadata;
+using System.Windows;
 using System.Windows.Controls;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DDPM.UI.Module.AddPen_Other
 {
@@ -16,14 +21,81 @@ namespace DDPM.UI.Module.AddPen_Other
         //private readonly string Step1 = "Touch your pen tip to the screen";
         private readonly string Step1 = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.1"];
 
+        // 10/15 Derek for RWD
+        private readonly Int16 breakPoints = 537;
+        private readonly int textBlockWidth = 420;
+        private readonly int textBlockWidthRWD = 400;
+
         public AddPen_OtherRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            //txtCaption.Text = Caption;
+            txtOther.Text = Strings.AddDeviceTypeOther;
+            txtCaption.Text = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.5"];
             txtStep1.Text = string.Format(Step1, Dns.GetHostName());
             //txtStep2.Text = Step2;
+
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                breakPoints = width;
+        }
+
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (this.ActualWidth <= breakPoints)
+                ChangeToVerticalLayout();
+            else
+                ChangeToHorizontalLayout();
+        }
+
+        private void ChangeToVerticalLayout()
+        {
+            stepsStackPanel.Orientation = Orientation.Vertical;
+
+            //change Border size
+            //stepsBorder1.Width = stepsBorder2.Width  = 400;
+            stepsBorder1.Width = stepsBorder2.Width = stepsStackPanel.Width - 10;
+            stepsBorder1.Height = stepsBorder2.Height = 180;
+
+            //change textBlock size
+            txtStep1.Width = txtStep2.Width = textBlockWidthRWD;
+        }
+
+        private void ChangeToHorizontalLayout()
+        {
+            stepsStackPanel.Orientation = Orientation.Horizontal;
+
+            //restore Border size
+            stepsBorder1.Width = stepsBorder2.Width = 303;
+            stepsBorder1.Height = stepsBorder2.Height = 262;
+
+            //restore textBlock size
+            txtStep1.Width = txtStep2.Width = textBlockWidth;
+        }
+
+        private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
+        {
+            MessageModalDialog messageModalDialog;
+            Window parentWindow = Window.GetWindow(this);
+            if (_vm.IsPandoraPaired)
+            {
+                messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
+                if (parentWindow != null)
+                {
+                    messageModalDialog.Owner = parentWindow;
+                }
+                messageModalDialog.ShowDialog();
+                return;
+            }
+            messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
+            if (parentWindow != null)
+            {
+                messageModalDialog.Owner = parentWindow;
+            }
+            if (messageModalDialog.ShowDialog()!.Value)
+            {
+                _vm.StartPairingPen();
+            }
         }
     }
 }

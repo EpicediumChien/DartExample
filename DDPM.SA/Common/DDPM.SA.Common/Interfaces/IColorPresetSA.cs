@@ -43,7 +43,7 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, InstalledAppInfo>> GetInstalledAppsList(bool isReload = false);
 
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, string savelPath = "");
 
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
@@ -56,6 +56,8 @@ namespace DDPM.SA.Common
         Task<string> GetColorPresetName(int Color_VCPCore_E2);
 
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
+
+        Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
 
         Task<bool> Migration(DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration, string Model, string ServiceTag, ISettingsManagerDev _SettingsPlugin, int ColorForManual_VCPE2Code_value =0);
 

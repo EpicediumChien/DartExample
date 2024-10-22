@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
                 <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -31,7 +31,7 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Style="{StaticResource RightGroupBorderStyle}">
+            <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
                 <Grid>
                     <StackPanel>
                         <!-- Row 0: Hotkey: Recent -->
@@ -81,7 +81,10 @@
                                               Background="#141D28" Foreground="White" Width="230"
                                               BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                               HorizontalAlignment="Center" VerticalContentAlignment="Center"
-                                              AcceptsReturn="True" ContextMenu="{x:Null}" PreviewKeyDown="tbRecentHotkey_PreviewKeyDown" PreviewKeyUp="tbRecentHotkey_PreviewKeyUp" GotFocus="tbRecentHotkey_GotFocus" LostFocus="tbRecentHotkey_LostFocus" ContextMenuOpening="tbRecentHotkey_ContextMenuOpening" />
+                                              AcceptsReturn="True" ContextMenu="{x:Null}" PreviewKeyDown="tbRecentHotkey_PreviewKeyDown" 
+                                              PreviewKeyUp="tbRecentHotkey_PreviewKeyUp" GotFocus="tbRecentHotkey_GotFocus" 
+                                              LostFocus="tbRecentHotkey_LostFocus" ContextMenuOpening="tbRecentHotkey_ContextMenuOpening" 
+                                              InputLanguageManager.InputLanguage="en-US" InputLanguageManager.RestoreInputLanguage="True"/>
                         </Grid>
 
                         <!-- Row 1: Allow app to split side by side without gap -->

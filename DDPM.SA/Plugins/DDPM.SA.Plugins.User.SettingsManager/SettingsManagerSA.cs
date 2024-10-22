@@ -22,6 +22,7 @@ using DdmLibrary.Utility;
 using System.Linq.Expressions;
 using Windows.Devices.Bluetooth.Background;
 using Windows.Web.Http;
+using DDPM.SA.Obfuscation;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -124,6 +125,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _GlobalSetting_path { get; set; } = string.Empty;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
         public event EventHandler SettingReadyEvent;
+
+        private static DDPMITConfig _DDPMITConfig {  get; set; } = new DDPMITConfig();
 
         #endregion Private Members
 
@@ -294,6 +297,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
+
+            updateITandGlobalSetting();
+
             SettingReadyEvent?.Invoke(this, new EventArgs());
         }
 
@@ -352,6 +358,35 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion Private methods
 
+        private void updateITandGlobalSetting()
+        {
+            if (_SysSettingsPlugin == null)
+                return;
+
+            DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs().Result;
+            if (tmp != null)
+            {
+                _DDPMITConfig = tmp;
+                if (tmp.global_setting != null)
+                {
+                    _GlobalSettingParam = _DDPMITConfig.global_setting;
+                }
+            }
+
+            if (_DDPMITConfig == null)
+                _DDPMITConfig = new DDPMITConfig();
+
+            if (_GlobalSettingParam == null)
+            {
+                if (_DDPMITConfig == null)
+                    _GlobalSettingParam = new GlobalSettingParam();
+                else if(_DDPMITConfig.global_setting == null)
+                    _GlobalSettingParam = new GlobalSettingParam();
+                else
+                    _GlobalSettingParam = _DDPMITConfig.global_setting;
+            }
+        }
+
         #region ISettingManagerDev implementation
 
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
@@ -361,6 +396,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
                 return;
+
+            updateITandGlobalSetting();
+
 
             EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
             if (Handler != null)
@@ -472,7 +510,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
                 }
                 else
+                {
+                    //Robert_Lin, 2024-10-20 add log to trace the user settings file can not be loaded at starting up
+                    WriteLog($"@ReloadAppConfigData({force_reload}): _settings_path is empty, return default settings.");
                     _settings = new DDPMSettings(ddpm_app, ddpm_user, ddpm_it);
+                }
 
                 if (_settings != null)
                 {
@@ -480,6 +522,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_SysSettingsPlugin != null)
                     {
                         DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs(force_reload).Result;
+                        _DDPMITConfig = tmp;
                         if (tmp != null)
                             _settings.LockSettings = tmp;
                     }
@@ -819,7 +862,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(true);*/
             bool result = WriteSettings_Common(powerNapSettings, "powernap");
 
-            return Task.FromResult(false);
+            return Task.FromResult(result);
         }
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
@@ -867,86 +910,88 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion powerNap settings
 
-        #region EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
+        //#region EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
 
-        public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
-        {
-            ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
-            //string dir = GetEaUserSettingsDir();
-            ////Filename: EA-{MonitorModel}_{SerialNumber}.json
-            //string fileName = eaMonitorSettings.GetFileName();
-            //string pathName = Path.Combine(dir, fileName);
+        //Robert_Lin, 2024-10-10, remove unused method
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
+        //{
+        ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
+        //string dir = GetEaUserSettingsDir();
+        ////Filename: EA-{MonitorModel}_{SerialNumber}.json
+        //string fileName = eaMonitorSettings.GetFileName();
+        //string pathName = Path.Combine(dir, fileName);
 
-            //string jsonString = JsonConvert.SerializeObject(eaMonitorSettings);
+        //string jsonString = JsonConvert.SerializeObject(eaMonitorSettings);
 
-            //try
-            //{
-            //    using (StreamWriter writer = new StreamWriter(pathName))
-            //    {
-            //        writer.Write(jsonString);
-            //    }
-            //}
-            //catch (Exception e1)
-            //{
-            //    return Task.FromResult("EXCEPTION: " + e1.Message);
-            //}
+        //try
+        //{
+        //    using (StreamWriter writer = new StreamWriter(pathName))
+        //    {
+        //        writer.Write(jsonString);
+        //    }
+        //}
+        //catch (Exception e1)
+        //{
+        //    return Task.FromResult("EXCEPTION: " + e1.Message);
+        //}
 
-            return Task.FromResult("OK");
-        }
+        //return Task.FromResult("OK");
+        //}
 
-        public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
-        {
-            ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
-            //string dir = GetEaUserSettingsDir();
-            ////Filename: EA-{MonitorModel}_{SerialNumber}.json
-            //string fileName = EAMonitorSettings.GetFileName(monitorModel, serialNumber);
-            //string pathName = Path.Combine(dir, fileName);
+        //Robert_Lin, 2024-10-10, remove unused method
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
+        //{
+        ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
+        //string dir = GetEaUserSettingsDir();
+        ////Filename: EA-{MonitorModel}_{SerialNumber}.json
+        //string fileName = EAMonitorSettings.GetFileName(monitorModel, serialNumber);
+        //string pathName = Path.Combine(dir, fileName);
 
-            //if (string.IsNullOrWhiteSpace(pathName))
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName is empty.");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
+        //if (string.IsNullOrWhiteSpace(pathName))
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName is empty.");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-            //if (!File.Exists(pathName))
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName({pathName}) not exist.");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
+        //if (!File.Exists(pathName))
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) pathName({pathName}) not exist.");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-            //EAMonitorSettings? eaSettings;
-            //try
-            //{
-            //    string jsonString = String.Empty;
-            //    using (var reader = new StreamReader(pathName))
-            //    {
-            //        jsonString = reader.ReadToEnd();
-            //    }
-            //    if (String.IsNullOrEmpty(jsonString))
-            //    {
-            //        WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) read file error, file is empty.");
-            //        return Task.FromResult<EAMonitorSettings>(null);
-            //    }
+        //EAMonitorSettings? eaSettings;
+        //try
+        //{
+        //    string jsonString = String.Empty;
+        //    using (var reader = new StreamReader(pathName))
+        //    {
+        //        jsonString = reader.ReadToEnd();
+        //    }
+        //    if (String.IsNullOrEmpty(jsonString))
+        //    {
+        //        WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) read file error, file is empty.");
+        //        return Task.FromResult<EAMonitorSettings>(null);
+        //    }
 
-            //    eaSettings = JsonConvert.DeserializeObject<EAMonitorSettings>(jsonString);
-            //}
-            //catch (Exception e1)
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) EXCEPTION: {e1.Message}");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
+        //    eaSettings = JsonConvert.DeserializeObject<EAMonitorSettings>(jsonString);
+        //}
+        //catch (Exception e1)
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) EXCEPTION: {e1.Message}");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-            //if (eaSettings != null)
-            //    return Task.FromResult<EAMonitorSettings>(eaSettings);
-            //else
-            //{
-            //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) Deserialize return null.");
-            //    return Task.FromResult<EAMonitorSettings>(null);
-            //}
-            return Task.FromResult<EAMonitorSettings>(null);
-        }
+        //if (eaSettings != null)
+        //    return Task.FromResult<EAMonitorSettings>(eaSettings);
+        //else
+        //{
+        //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) Deserialize return null.");
+        //    return Task.FromResult<EAMonitorSettings>(null);
+        //}
+        //return Task.FromResult<EAMonitorSettings>(null);
+        //}
 
-        #endregion EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
+        //#endregion EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
 
         #region DisplayImpExpSettings
 
@@ -961,8 +1006,25 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             DDPMSettings settings = ReloadAppConfigData().Result;
             if (settings != null)
             {
-                impexpSettings.AppSettings = settings.AppSettings;
+                //impexpSettings.AppSettings = settings.AppSettings;
                 impexpSettings.UserSettings = settings.UserSettings;
+                List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
+                hotkeySettings = ReadHotkeySettings().Result;
+                if (hotkeySettings != null)
+                {
+                    if (hotkeySettings.Count == 1)
+                    {
+                        impexpSettings.UserSettings.HotkeySettings = hotkeySettings[0];
+                    }
+                    else
+                    {
+                        WriteLog("[ExportSettingsFile] hotkeySettings count is " + hotkeySettings.Count.ToString());
+                    }
+                }
+                else
+                {
+                    WriteLog("[ExportSettingsFile] hotkeySettings is null ");
+                }
 
                 List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
 
@@ -1026,65 +1088,97 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //List<VCPCode> vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
-                DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
-                monitorSettings = ImpExpSettings.MonitorSettings;
-                WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
-                string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
-                WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
-                if (File.Exists(monitorSettings_path))
+                if (ImpExpSettings.UserSettings != null)
                 {
-                    monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
-                    if (monitorSettingsList != null)
+                    DDPMUserSettings userSettings = new DDPMUserSettings();
+                    userSettings = ImpExpSettings.UserSettings;
+                    List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
+                    hotkeySettings.Add(userSettings.HotkeySettings);
+                    WriteHotkeySettings(hotkeySettings);
+                    DDPMSettings settings = ReloadAppConfigData().Result;
+                    if (settings != null)
                     {
-                        if (monitorSettingsList.Count != 0)
+                        settings.UserSettings = userSettings;
+                        if (SetAppConfigData(settings).Result)
                         {
-                            foreach (DDPMMonitorSettings settings in monitorSettingsList)
-                            {
-                                if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
-                                {
-                                    settings.Input = monitorSettings.Input;
-                                    settings.KVM = monitorSettings.KVM;
-                                    settings.VCPs = monitorSettings.VCPs;
-                                    settings.EA = monitorSettings.EA;
-                                    settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
-                                    settings.scheduleInfo = monitorSettings.scheduleInfo;
-                                    if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
-                                    {
-                                        //vcps = monitorSettings.VCPs;
-                                        if (!isSameModel)
-                                        {
-                                            return Task.FromResult<bool>(true);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
-                                        WriteLog("[DisplayImportSettings] Import settings Fail...");
-                                        if (!isSameModel)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            if (isSameModel)
-                            {
-                                return Task.FromResult(true);
-                            }
+                            WriteLog("[DisplayImportSettings] SetAppConfigData is success ");
                         }
                         else
                         {
-                            WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                            WriteLog("[DisplayImportSettings] SetAppConfigData is fail ");
                         }
                     }
                     else
                     {
-                        WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
+                        WriteLog("[DisplayImportSettings] DDPMSettings is null ");
                     }
                 }
                 else
                 {
-                    WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
+                    WriteLog("[DisplayImportSettings] UserSettings is null ");
+                }
+                if (ImpExpSettings.MonitorSettings != null)
+                {
+                    DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                    monitorSettings = ImpExpSettings.MonitorSettings;
+                    WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
+                    string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
+                    WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
+                    if (File.Exists(monitorSettings_path))
+                    {
+                        monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
+                        if (monitorSettingsList != null)
+                        {
+                            if (monitorSettingsList.Count != 0)
+                            {
+                                foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                                {
+                                    if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                                    {
+                                        settings.Input = monitorSettings.Input;
+                                        settings.KVM = monitorSettings.KVM;
+                                        settings.VCPs = monitorSettings.VCPs;
+                                        settings.EA = monitorSettings.EA;
+                                        settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
+                                        settings.scheduleInfo = monitorSettings.scheduleInfo;
+                                        if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                                        {
+                                            //vcps = monitorSettings.VCPs;
+                                            if (!isSameModel)
+                                            {
+                                                return Task.FromResult<bool>(true);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
+                                            WriteLog("[DisplayImportSettings] Import settings Fail...");
+                                            if (!isSameModel)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (isSameModel)
+                                {
+                                    return Task.FromResult(true);
+                                }
+                            }
+                            else
+                            {
+                                WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                            }
+                        }
+                        else
+                        {
+                            WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
+                        }
+                    }
+                    else
+                    {
+                        WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
+                    }
                 }
             }
             else
@@ -1711,28 +1805,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam)
         {
-            /*if (globalSettingParam == null)
-            {
-                return Task.FromResult(false);
-            }
-            //string temp = RunSerializeObject(globalSettingParam);
-            string info;
-            bool result = false;
-            JToken token = JToken.FromObject(globalSettingParam);
-            if (token.Type == JTokenType.Object)
-            {
-                JObject obj = (JObject)token;
-                // Handle object
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _GlobalSetting_path, out info);
-            }
-            else if (token.Type == JTokenType.Array)
-            {
-                JArray array = (JArray)token;
-                // Handle array
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _GlobalSetting_path, out info);
-            }*/
-
             bool result = WriteSettings_Common(globalSettingParam, "global");
+            
+            //apply setting to system IT config
+            if (_GlobalSettingParam != null && result)
+            {
+                if (_SysSettingsPlugin != null)
+                {
+                    result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
+                    WriteLog("Call sys plugin to write global setting failed.");
+                }
+            }
 
             return Task.FromResult(result);
         }
@@ -2465,6 +2548,32 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[WriteSerializedContentToFile] failed with ({info})");
             }
             return Task.FromResult(result);
+        }
+        #endregion
+
+        #region Info Key
+        public Task AddInfo(string info)
+        {
+            if(_SysSettingsPlugin != null)
+            {
+                _SysSettingsPlugin.AddInfo(info);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<List<string>> GetInfos(bool force_reload = false)
+        {
+            List<string> infos = new List<string>();
+            if (_SysSettingsPlugin != null)
+            {
+                infos = _SysSettingsPlugin.GetInfos(force_reload).Result;
+            }
+            if(infos == null || infos.Count == 0)
+            {
+                infos = new List<string>();
+                infos.Add(InfoHash.Info_Hash);
+            }
+            return Task.FromResult(infos);
         }
         #endregion
     }

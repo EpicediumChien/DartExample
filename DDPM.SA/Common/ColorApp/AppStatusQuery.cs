@@ -28,7 +28,7 @@ namespace DDPM.ColorApp
     {
         #region Native Win32 APIs
 
-        [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
+        [DllImport("USER32.DLL", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
 
@@ -163,7 +163,7 @@ namespace DDPM.ColorApp
         public static int GetWindowProcessId(IntPtr hwnd)
         {
             uint pid;
-            GetWindowThreadProcessId(hwnd, out pid);
+            _GetWindowThreadProcessId(hwnd, out pid);
             return (int)pid;
         }
 

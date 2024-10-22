@@ -27,7 +27,9 @@ using System.Runtime;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using VcpCore.Common;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.PeripheralsPlugin
 {
@@ -55,7 +57,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private UpdateHelper _updateHelper;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
-
+        private static Logs _logs;
         #endregion
 
         #region Private Members
@@ -95,6 +97,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         public PeripheralsPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+            _logs ??= new Logs(Log, PluginLogId);
             IndiLogic.DPeM.Broker.Client.StatusEvent += Client_StatusEvent;
             IndiLogic.DPeM.Broker.Client.StartImpersonator();
         }
@@ -127,16 +130,28 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceHelper> GetDevices()
+        public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
-            //ScanDevices();
+            if (Rescan)
+                ScanDevices();
+
             if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);
             }
             return new DeviceHelper();
         }
+        public Task<DeviceHelper> GetDevices_WithoutAwait(bool Rescan = false)
+        {
+            if (Rescan)
+                ScanDevices();
 
+            if (_deviceHelper != null)
+            {
+                return Task.FromResult(_deviceHelper);
+            }
+            return Task.FromResult(new DeviceHelper());
+        }
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
         {
             var CTKMessageHelper = new CTKMessageHelper();
@@ -436,6 +451,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void StopPairingPen()
+        {
+            if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
+            {
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    if (device is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.StopPairing();
+                    }
+                }
+            }
+        }
+
         public void UnPair(Guid logicalDeviceId)
         {
             foreach (var device in _iDeviceManager.Devices)
@@ -451,6 +480,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     else if (logicalDevice.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _logicalAudioDeviceDongle)
                     {
                         _logicalAudioDeviceDongle.UnPair(logicalDeviceId.ToString());
+                        break;
+                    }
+                    else if (logicalDevice.ParentPhysicalDevice is IPhysicalPenDevice _physicalPenDevice)
+                    {
+                        _physicalPenDevice.UnPair(logicalDeviceId.ToString());
                         break;
                     }
                 }
@@ -812,6 +846,174 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetWALTime(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.WALTime = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.WALTime = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSnooze(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.Snooze = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.Snooze = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetSnoozeLength(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.SnoozeLength = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.SnoozeLength = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsProximitySensorEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsProximitySensorEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsWakeonApproachEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsWakeonApproachEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsWakeonApproachEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void SetIsWalkAwayLockEnable(bool newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    _iLogicalDeviceWebcam.IsWalkAwayLockEnable = newValue;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.IsWalkAwayLockEnable = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public int GetSnooze(Guid deviceId)
+        {
+            int nRes = -1;
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    //Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
+                    nRes = _iLogicalDeviceWebcam.Snooze;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        //_deviceInfo.WALTime = newValue;
+                        nRes = _deviceInfo.Snooze;
+                        break;
+                    }
+                }
+            }
+            return nRes;
+        }
+
+        public int GetSnoozeLength(Guid deviceId)
+        {
+            int nRes = -1;
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    //Debug.WriteLine($"{newValue}");
+                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
+                    nRes = _iLogicalDeviceWebcam.SnoozeLength;
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        //_deviceInfo.WALTime = newValue;
+                        nRes = _deviceInfo.SnoozeLength;
+                        break;
+                    }
+                }
+            }
+            return nRes;
+        }
+
         #endregion
 
         #region Overriding methods
@@ -874,6 +1076,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                 foreach (var item in device.Devices)
                 {
+                    _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... Name " + item.Name);
+                    _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... ModelNumber " + item.ModelNumber);
+                    _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... BatteryLevel " + item.BatteryLevel);
+                    _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
+                    _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... PhysicalDeviceFirmwareVersion " + item.ParentPhysicalDevice.FirmwareVersion.ToString("X4"));
                     DeviceInfo info = new()
                     {
                         ID = item.Id,
@@ -1015,7 +1222,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     if (item is ILogicalWiredAudio _logicalWiredAudio)
                     {
-                        //info.MuteStatus = _logicalWiredAudio.MuteStatus;
+                        info.MuteStatus = _logicalWiredAudio.MuteStatus;
                         //info.IsWiredAudioIMicNSEnable = _logicalWiredAudio.IsWiredAudioIMicNSEnable();
                         //info.IsWiredAudioMicMuteSoundEnable = _logicalWiredAudio.IsWiredAudioMicMuteSoundEnable();
                         //info.WiredAudioVolumeAdjustmentTone = _logicalWiredAudio.GetWiredAudioVolumeAdjustmentTone();
@@ -1087,10 +1294,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.ZoomMin = _iLogicalDeviceWebcam.ZoomMin;
                         info.ZoomSteppingDelta = _iLogicalDeviceWebcam.ZoomSteppingDelta;
                         _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
+
+                        // webcam presence detection
+                        info.Snooze = _iLogicalDeviceWebcam.Snooze;
+                        info.SnoozeLength = _iLogicalDeviceWebcam.SnoozeLength;
+                        info.IsProximitySensorEnable = _iLogicalDeviceWebcam.IsProximitySensorEnable;
+                        info.IsWakeonApproachEnable = _iLogicalDeviceWebcam.IsWakeonApproachEnable;
+                        info.IsWalkAwayLockEnable = _iLogicalDeviceWebcam.IsWalkAwayLockEnable;
+                        info.WALTime = _iLogicalDeviceWebcam.WALTime;
+
                     }
 
                     if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
                     {
+                        _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalDeviceHeadset ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
+                        info.FirmwareVersion = item.FirmwareVersion.ToString("X4");
                         info.IsReady = _logicalDeviceHeadset.IsReady;
                         info.IsDirty = _logicalDeviceHeadset.IsDirty;
                         info.IsMicNoiseCancellationSupported = _logicalDeviceHeadset.IsMicNoiseCancellationSupported;
@@ -1187,6 +1405,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _iDeviceManager_DeviceAddedEvent(device);
             }
             Console.WriteLine(_deviceHelper.ToString());
+            writelog(_deviceHelper.ToString());
         }
 
         private void ILogicalDevice_PairedHostNameChanged(ILogicalDevice3 arg1, int arg2, string arg3)
@@ -1196,7 +1415,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                 {
-                    Console.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
+                    Debug.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
+                    writelog($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
@@ -1208,7 +1428,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void Pen_PenSettingChanged(ILogicalDevicePen arg1, string arg2)
         {
-            Console.WriteLine(arg2);
+            Debug.WriteLine(arg2);
+            writelog(arg2);
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
@@ -1468,7 +1689,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _clientInfo.ServiceStatus = "Unknown";
                 _clientInfo.ApiVersion = "Unknown";
             }
-            Console.WriteLine(_clientInfo.ToString());
+            Debug.WriteLine(_clientInfo.ToString());
+            writelog(_clientInfo.ToString());
         }
 
         private void _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged(bool obj)
@@ -1583,17 +1805,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 LogicalDevicesPen.Remove(iLogicalDevice.Id);
             }
-            Console.WriteLine(_deviceHelper.ToString());
+            Debug.WriteLine(_deviceHelper.ToString());
+            writelog(_deviceHelper.ToString());
         }
 
         private void ILogicalDevice_DpiLevelChanged(ILogicalDevice2 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo == null)
                     return;
                 if (arg2 == 0)
@@ -1610,12 +1832,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_DpiValueChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.DpiValue = arg2.ToString();
@@ -1630,12 +1851,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_TouchScrollSensitivityLevelChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.TouchScrollSensitivityLevel = arg2;
@@ -1656,12 +1876,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BackLightingControlsChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.BackLightingControls = arg2;
@@ -1683,12 +1902,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BackLightingLevelChanged(ILogicalDevice3 arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.BackLightingLevel = arg2;
@@ -1704,12 +1922,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BatteryStatusChanged(ILogicalDevice arg1, BatteryStatus arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Console.WriteLine(arg2.ToString());
+                Debug.WriteLine(arg2.ToString());
+                writelog(arg2.ToString());
                 if (deviceInfo != null)
                     deviceInfo.BatteryStatus = arg2.ToString();
 
@@ -1767,7 +1984,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void ILogicalWiredAudio_MuteStatusChanged(ILogicalWiredAudio arg1, bool newMuteStatus)
         {
             Console.WriteLine(newMuteStatus.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... in " + newMuteStatus.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
@@ -1779,17 +1996,19 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... out " + newMuteStatus.ToString() + " , OSD in");
                 if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
                 {
                     Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
                 }
+                _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... OSD out ");
             }
         }
 
         private void _logicalDeviceHeadset_IsReadyChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_IsReadyChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1801,13 +2020,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "IsReadyChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_IsReadyChanged ... out " + newValue.ToString() + ", " + deviceInfo.FirmwareVersion);
             }
         }
 
         private void _logicalDeviceHeadset_IsDirtyChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_IsDirtyChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1819,13 +2039,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "IsDirtyChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_IsDirtyChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_MicNoiseCancellationChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MicNoiseCancellationChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1837,13 +2058,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MicNoiseCancellationChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MicNoiseCancellationChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_MicNCIncomingChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MicNCIncomingChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1855,13 +2077,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MicNCIncomingChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MicNCIncomingChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_BusyLightChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_BusyLightChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1873,13 +2096,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "BusyLightChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_BusyLightChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_VoiceGuidanceChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_VoiceGuidanceChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1891,13 +2115,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "VoiceGuidanceChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_VoiceGuidanceChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_MuteStatusChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1909,17 +2134,19 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged ... out " + newValue.ToString() + " , OSD in ...");
                 if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
                 {
                     Task.Run(async () => _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newValue));
                 }
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged OSD ... out ");
             }
         }
 
         private void _logicalDeviceHeadset_SidetoneChanged(ILogicalDeviceHeadset logicalDeviceHeadset, bool newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_SidetoneChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1931,13 +2158,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "SidetoneChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_SidetoneChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_SelectedPresetChanged(ILogicalDeviceHeadset logicalDeviceHeadset, int newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_SelectedPresetChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1949,13 +2177,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "SelectedPresetChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_SelectedPresetChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_SidetoneLevelChanged(ILogicalDeviceHeadset logicalDeviceHeadset, int newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_SidetoneLevelChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1967,13 +2196,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "SidetoneLevelChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_SidetoneLevelChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_BandsGainChanged(ILogicalDeviceHeadset logicalDeviceHeadset, byte[] newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_BandsGainChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -1986,13 +2216,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "BandsGainChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_BandsGainChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_AncModeChanged(ILogicalDeviceHeadset logicalDeviceHeadset, int newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_AncModeChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -2004,13 +2235,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "AncModeChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_AncModeChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_AncGainChanged(ILogicalDeviceHeadset logicalDeviceHeadset, int newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_AncGainChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -2022,13 +2254,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "AncGainChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_AncGainChanged ... out " + newValue.ToString());
             }
         }
 
         private void _logicalDeviceHeadset_WearDetectionChanged(ILogicalDeviceHeadset logicalDeviceHeadset, int newValue)
         {
             Console.WriteLine(newValue.ToString());
-
+            _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_WearDetectionChanged ... in " + newValue.ToString());
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
@@ -2040,6 +2273,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "WearDetectionChanged";
                 OnNotify(_EventArgs);
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_WearDetectionChanged ... out " + newValue.ToString());
             }
         }
 
@@ -2065,7 +2299,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _updateItems.Priority = updateItem.Priority;
                 _updateItems.ServerPath = updateItem.ServerPath;
                 _updateItems.SupplierID = updateItem.SupplierID;
-                _updateItems.SHA512 = updateItem.SHA512;
+                //_updateItems.SHA512 = updateItem.SHA512;
                 _updateItems.Thumbprint = updateItem.Thumbprint;
 
 
@@ -2084,7 +2318,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalDeviceDongle.Id.ToString());
-                Console.WriteLine(newValue.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.PairedDeviceCount = newValue;
@@ -2128,7 +2361,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void PhysicalAudioDeviceDongle_PairedDeviceCountChanged(IPhysicalAudioDeviceDongle arg1, int arg2)
         {
             //var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == arg1.Id.ToString());
-            Console.WriteLine(arg2.ToString());
 
             DeviceChangedEventArgs _EventArgs = new();
             _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -2148,7 +2380,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalPenDevice.Id.ToString());
-                Console.WriteLine(newValue);
                 if (deviceInfo != null)
                 {
                     deviceInfo.IsdDriverVersion = newValue;
@@ -2184,8 +2415,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
         {
-            Console.WriteLine(newValue.ToString());
-
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDevice3.Id.ToString());
@@ -2237,6 +2466,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         #endregion
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[PeripheralsPlugin] " + text;
             Console.WriteLine(text);
             if (Log != null)

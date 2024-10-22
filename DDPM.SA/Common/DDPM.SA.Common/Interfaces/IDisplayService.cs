@@ -2,6 +2,7 @@
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -9,11 +10,11 @@ namespace DDPM.SA.Common
 {
     public interface IDisplayService : IFrameworkPlugin, IInputSource
     {
-        Task Reset0x52TimerTick(int millisecond);
+        Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 
-        Task<List<MonitorInfo>> GetMonitors(bool renew = false);
+        Task<List<MonitorInfo>> GetMonitors();
 
-        Task<List<MonitorInfo>> Re_GetMonitors();
+        Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token);
 
         Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
 
@@ -126,6 +127,8 @@ namespace DDPM.SA.Common
 
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
+        public event EventHandler<EAArgs> EASettingsChanged;
+
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -171,7 +174,7 @@ namespace DDPM.SA.Common
         #endregion
         #region Display FWU Metadata
     
-        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA);
+        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
         #endregion
     }
 }

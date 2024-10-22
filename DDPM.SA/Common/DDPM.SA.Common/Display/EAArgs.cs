@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using DDPM.SA.Common.Display;
+using System.Collections.Generic;
 
 namespace DDPM.SA.Common
 {
     //2024-7-18 Robert_Lin added for EasyArrange commands/events
     public class EAArgs
     {
-        //"EditCommand","EditError", "EditCancel","
+        //"EditCommand","EditError", "EditCancel"
         public string Command { get; set; }
+
+        //Robert_Lin, 2024-10-13 Merge properties into SplitJson
+        public SplitJson SplitJson { get; set; }
 
         public int CellCount { get; set; }
         public char SplitKey { get; set; }

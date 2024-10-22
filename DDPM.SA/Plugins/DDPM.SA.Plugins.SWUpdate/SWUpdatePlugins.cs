@@ -33,7 +33,7 @@ namespace DDPM.SA.Plugins.SWUpdate
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ISWUpdateService) })]
-    [DependencyKnownTypes(new[] { typeof(ISWUpdateService) })]
+    [DependencyKnownTypes(new[] { typeof(ISWUpdateService), typeof(ISettingsManagerSA) })]
     public class SWUpdatePlugins : BaseAgentPlugin, ISWUpdateService
     {
         #region Private Members
@@ -54,6 +54,8 @@ namespace DDPM.SA.Plugins.SWUpdate
         private Logs _logs;
 
         static bool _IsSkipCA = false;
+        private ISettingsManagerSA _SettingsPlugin;
+        private readonly object _PluginConditionLock_Settings = new object();
 
         /// <summary>
         /// 現在正在進行下載或安裝流程的裝置資訊
@@ -111,6 +113,8 @@ namespace DDPM.SA.Plugins.SWUpdate
         {
             _agent = agent;
             _logs ??= new Logs(Log, PluginLogId);
+            _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
+            InitializeSettingsPlugin();
             SystemEvents.PowerModeChanged += OnPowerModeChanged;
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _checkUpdateScheduleTimer = new Timer();
@@ -159,10 +163,8 @@ namespace DDPM.SA.Plugins.SWUpdate
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            if (e.ChangedPlugins.OfType<IFWUpdateService>().Any())
-            {
-                Console.WriteLine("ISWUpdateService plugin started.");
-            }
+            if (e.ChangedPlugins.OfType<ISettingsManagerSA>().Any())
+                InitializeSettingsPlugin();
         }
 
         #endregion Event Handler
@@ -223,45 +225,52 @@ namespace DDPM.SA.Plugins.SWUpdate
         public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion)
         {
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
-            _SWUpdateInfoPackage = new SWUpdateInfoPackage();
-            _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
-            _IsShowNotify = isShowNotify;
-            if (string.IsNullOrEmpty(currentVersion))
+            if (_SettingsPlugin != null)
             {
-                return Task.FromResult(new List<SWUpdateInfo>());
-            }
-            if (currentVersion.Contains("."))
-            {
-                currentVersion = currentVersion.Replace(".", "");
-            }
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo);
-            _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
-            if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
-            {
-                for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
+                _SWUpdateInfoPackage = new SWUpdateInfoPackage();
+                _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
+                _IsShowNotify = isShowNotify;
+                if (string.IsNullOrEmpty(currentVersion))
                 {
-                    SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
-                    {
-                        TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
-                        SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
-                        NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
-                        ServerPath = swUpdateHelper.Softwares[i].MiniInstallerServer_path,
-                        SHA256 = swUpdateHelper.Softwares[i].MiniInstaller_SHA256,
-                        SHA512 = swUpdateHelper.Softwares[i].MiniInstaller_SHA512,
-                        Thumbprint = swUpdateHelper.Softwares[i].MiniInstaller_Thumbprint,
-                        SoftwareName = "DDPM",
-                        FileSavepath = swUpdateHelper.Softwares[i].InstallPath
-                    };
-                    if (SWUpdateInfo.NeedUpdated)
-                    {
-                        _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
-                    }
+                    return Task.FromResult(new List<SWUpdateInfo>());
                 }
-                HandleUpdateInfo();
-                _IsShowNotify = true;
-                _isDefer = false;
-                _isForce = false;
-                _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
+                if (currentVersion.Contains("."))
+                {
+                    currentVersion = currentVersion.Replace(".", "");
+                }
+                SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo, _SettingsPlugin, null);
+                _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
+                if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
+                {
+                    for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
+                    {
+                        SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
+                        {
+                            TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
+                            SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
+                            NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
+                            ServerPath = swUpdateHelper.Softwares[i].DdpmSwUpdaterServer_path,
+                            SHA256 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA256,
+                            SHA512 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA512,
+                            Thumbprint = swUpdateHelper.Softwares[i].DdpmSwUpdater_Thumbprint,
+                            SoftwareName = "DDPM",
+                            FileSavepath = swUpdateHelper.Softwares[i].InstallPath
+                        };
+                        if (SWUpdateInfo.NeedUpdated)
+                        {
+                            _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
+                        }
+                    }
+                    HandleUpdateInfo();
+                    _IsShowNotify = true;
+                    _isDefer = false;
+                    _isForce = false;
+                    _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg_1(nameof(CheckUpdate) + " done but _SettingsPlugin is null");
             }
             return Task.FromResult(new List<SWUpdateInfo>());
         }
@@ -340,7 +349,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
                 string saveFolderName = Guid.NewGuid().ToString();
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck();
+                CertificateCheck caCheck = new CertificateCheck(_logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 if (string.IsNullOrEmpty(installPath))
                 {
@@ -597,7 +606,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
             if (sWUpdateInfoPackage != null)
             {
-                List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo; 
+                List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
                 if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
                 {
                     DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
@@ -696,7 +705,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         }
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
@@ -729,9 +738,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                         if (!string.IsNullOrEmpty(exeFilePath))
                         {
                             _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck();
+                            CertificateCheck certificateCheck = new CertificateCheck(_logs);
                             if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                             {
+                                ret = true;
                                 _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check done.");
                             }
                             else
@@ -759,7 +769,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 if (CheckSHA(filePath, out FileCAInfo))
                 {
                     _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                    CertificateCheck certificateCheck = new CertificateCheck();
+                    CertificateCheck certificateCheck = new CertificateCheck(_logs);
                     if (certificateCheck.CheckFile_Thumbprint(filePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                     {
                         ret = true;
@@ -780,6 +790,48 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} {nameof(Unzip)} done");
             return ret;
+        }
+        private void InitializeSettingsPlugin()
+        {
+            _logs.DebugMsg_1(nameof(InitializeSettingsPlugin) + " start");
+            if (_SettingsPlugin != null)
+                return;
+            _logs.DebugMsg_1(nameof(InitializeSettingsPlugin) + " FindPluginByType");
+            _SettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerSA>(PluginResolution.Dynamic);
+
+            if (_SettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnSettingsPluginConditionChangeHandler;
+                GetCurrentSettingsPluginCondition();
+            }
+        }
+        private void OnSettingsPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentSettingsPluginCondition();
+        }
+        private void GetCurrentSettingsPluginCondition()
+        {
+            _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - start");
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                //PluginCondition _SettingsPluginCondition;
+                lock (_PluginConditionLock_Settings)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
+                    {
+                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in unknow condition: {pluginCondition}");
+                    }
+                }
+            });
         }
     }
 }

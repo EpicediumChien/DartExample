@@ -55,16 +55,21 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '0A'
 
+        //Robert_Lin, 2024-10-12 move to UserSerrings
         /// <summary>
         /// Custom layout items (up to 5 items), Default is empty.
         /// </summary>
-        public List<SplitJson> CustomList { get; set; }
+        //public List<SplitJson> CustomList { get; set; }
 
+        //Robert_Lin, 2024-10-10, dont provide default list in a get/set property, it would cause double items issue
+        // https://stackoverflow.com/questions/13394401/json-net-deserializing-list-gives-duplicate-items
+        //In , if we found that RecentList is empty, then return the default list.
         /// <summary>
         /// The Recent list, the first item should be the SelectedSplit.
         /// So the SelectedSplit could be removed.
         /// </summary>
-        public List<SplitJson> RecentList { get; set; } = SplitJson.DefaultRecentList;
+        //public List<SplitJson> RecentList { get; set; } //= SplitJson.DefaultRecentList;
+        public SplitJson[] RecentList { get; set; }
 
         //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
         /*
@@ -110,9 +115,16 @@ namespace DDPM.SA.Common.Settings
         public ColorPresetSettings ColorPreset { get; set; } = new ColorPresetSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
         public HotkeySettings hotkeySettings { get; set; }
-        public List<InputSourceObj> HotkeyData { get; set; } = new List<InputSourceObj>();//1006 add for input source hotkey settings per monitor
+        public List<HotkeyData> hotkeyData { get; set; } = new List<HotkeyData>();//1006 add for input source hotkey settings per monitor
         public scheduleInfo scheduleInfo { get; set; }
         public ImpExpSettings ImpExpSettings { get; set; }
         public EasyArrangementDDPM easyArrangementDDPM { get; set; }
+        public uint ALSConfig { get; set; }
+    }
+
+    public class HotkeyData
+    {
+        public HotkeyType hotkeyType = HotkeyType.None;
+        public List<InputSourceObj> inputSource { get; set; } = new List<InputSourceObj>();
     }
 }

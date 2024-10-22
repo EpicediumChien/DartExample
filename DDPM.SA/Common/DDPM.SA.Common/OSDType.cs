@@ -11,6 +11,7 @@
         Mute,
         WalkAwayLock,
         StartRecording,
+        EasyMemory,
     }
 
     public enum OSDType_Device

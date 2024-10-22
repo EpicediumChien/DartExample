@@ -29,9 +29,9 @@
   <ItemGroup>
     <ReferencePath Include="C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.7\ref\net8.0\Accessibility.dll" />
     <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\communitytoolkit.mvvm\8.2.2\lib\net6.0\CommunityToolkit.Mvvm.dll" />
-    <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dellclientframework\6.4.5.1\lib\net8.0\DCF.Agent.dll" />
-    <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dellclientframework\6.4.5.1\lib\net8.0\DCF.Common.dll" />
-    <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dellclientframework\6.4.5.1\lib\net8.0\DCF.Interfaces.dll" />
+    <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dellclientframework\6.4.11.2\lib\net8.0\DCF.Agent.dll" />
+    <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dellclientframework\6.4.11.2\lib\net8.0\DCF.Common.dll" />
+    <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dellclientframework\6.4.11.2\lib\net8.0\DCF.Interfaces.dll" />
     <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dcf.ux.wpf\2.2.4.1\lib\net8.0-windows10.0.17763.0\DCF.UX.WPF.dll" />
     <ReferencePath Include="D:\DDPM\DDPM.SA\bin\CommonDll\Debug\net8.0-windows10.0.19041.0\DDPM.SA.Common.dll" />
     <ReferencePath Include="C:\Users\Diablo16\.nuget\packages\dcf.security\2.4.1\lib\net8.0\Dell.Client.Framework.Security.dll" />

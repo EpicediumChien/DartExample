@@ -120,13 +120,13 @@ echo *************************************
 
 
 
-echo Clean Mini installer
-dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\MiniInstaller\MiniInstaller.sln"
+echo Clean DdpmSwUpdater
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DdpmSwUpdater\DdpmSwUpdater.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln  /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorUI
 :: pause
 echo Build UI
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\MiniInstaller\MiniInstaller.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DdpmSwUpdater\DdpmSwUpdater.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorUI
 echo *************************************
@@ -224,7 +224,7 @@ pause
 
 :FileCopy
 echo copy support list.
-xcopy /E /i ".\DDPM.SA\dll\SupportEncrypted.txt" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\" /Y
+xcopy /E /i ".\DDPM.SA\dll\LSTDDPM" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\" /Y
 
 echo Del SA all *.pdb 
 del /S ".\DDPM.SA\bin\*.pdb"

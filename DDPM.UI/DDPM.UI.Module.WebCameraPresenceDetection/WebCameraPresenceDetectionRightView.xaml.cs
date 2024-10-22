@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
+using DDPM.SA.Common;
 
 namespace DDPM.UI.Module.WebCameraPresenceDetection
 {
@@ -20,6 +21,85 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {
             InitializeComponent();
             _vm = vm;
+
+            //_vm.UPD_Visibility = Visibility.Visible;
+            //_vm.MPS_Setting_Visibility = Visibility.Collapsed;
+            //_vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+            _vm.Delay_ItemsCollection = new List<UI_Delay_WalkAwayLock>();
+            
+            _vm.Delay_ItemsCollection.Add(new UI_Delay_WalkAwayLock
+            {
+                Delay = 30
+            });
+            _vm.Delay_ItemsCollection.Add(new UI_Delay_WalkAwayLock
+            {
+                Delay = 60
+            });
+            _vm.Delay_ItemsCollection.Add(new UI_Delay_WalkAwayLock
+            {
+                Delay = 120
+            });
+
+            _vm.SnoozeLength_ItemsCollection = new List<UI_SnoozeLength>();
+
+            _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
+            {
+                SnoozeLength = 30
+            });
+
+            _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
+            {
+                SnoozeLength = 60
+            });
+
+            _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
+            {
+                SnoozeLength = 90
+            });
+
+            _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
+            {
+                SnoozeLength = 120
+            });
+
+           
+            bool blRes = false;
+
+            blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsProximitySensorEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            _vm.IsChecked_ProximitySensor = blRes;
+
+            blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsWakeonApproachEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            _vm.IsChecked_WakeOnApproach = blRes;
+
+            blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsWalkAwayLockEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            _vm.IsChecked_WalkAwayLock = blRes;
+
+            int nRes = -1;
+          
+            nRes = DdpmCommonHelper.DeviceManagerSA!.GetWALTime(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            if (nRes != 30 && nRes != 60 && nRes != 120)
+                nRes = 60;
+
+            _vm.SelectedDelay = _vm.Delay_ItemsCollection.Find(x => (x.Delay == nRes));
+
+            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
+
+            if (nRes > 0)
+                _vm.IsChecked_Snooze = true;
+            else
+                _vm.IsChecked_Snooze = false;
+
+            nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID).Result;
+
+            if (nRes != 30 && nRes != 60 && nRes != 90 && nRes != 120)
+                nRes = 60;
+
+             _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
+
 
             //lock/unlock init, 9/23 add lock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -133,6 +213,21 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             psi.UseShellExecute = true;
 
             System.Diagnostics.Process.Start(psi);
+        }
+
+        private void CallPresenceSensor_Click(object sender, RoutedEventArgs e)
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo();
+
+            psi.FileName = "ms-settings:signinoptions-launchfaceenrollment";
+            psi.UseShellExecute = true;
+
+            System.Diagnostics.Process.Start(psi);
+        }
+
+        private void CallUpcdateMPSFW_Click(object sender, RoutedEventArgs e)
+        {
+           
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

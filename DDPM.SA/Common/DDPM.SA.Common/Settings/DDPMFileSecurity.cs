@@ -1,4 +1,6 @@
+using DDPM.SA.Common.Method;
 using DDPM.SA.Obfuscation;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
@@ -15,6 +18,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Common.Settings
@@ -34,7 +38,19 @@ namespace DDPM.SA.Common.Settings
 
     public class DDPMFileSecurity
     {
-        //private static Log _log;
+        private static void WriteLog(ILog log, string message, bool isError = false)
+        {
+#if DEBUG
+            Console.WriteLine(message);
+#endif
+            if (log == null)
+                return;
+            if (!isError)
+                log.Info(message);
+            else
+                log.Error(message);
+        }
+
         /// <summary>
         /// Using DPAPI to protect data
         /// </summary>
@@ -48,8 +64,10 @@ namespace DDPM.SA.Common.Settings
             }
             catch (CryptographicException e)
             {
+#if DEBUG 
                 Console.WriteLine("Data was not encrypted. An error occurred.");
                 Console.WriteLine(e.ToString());
+#endif
                 return null;
             }
         }
@@ -67,8 +85,10 @@ namespace DDPM.SA.Common.Settings
             }
             catch (CryptographicException e)
             {
+#if DEBUG 
                 Console.WriteLine("Data was not decrypted. An error occurred.");
                 Console.WriteLine(e.ToString());
+#endif
                 return null;
             }
         }
@@ -189,7 +209,15 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             //4. Write to target file
-            File.WriteAllText(target_file, write_string);
+            try
+            {
+                File.WriteAllText(target_file, write_string);
+            }
+            catch (Exception ex2)
+            {
+                info = $"Write serialized string to file failed. ({ex2.Message})";
+                return false;
+            }
             return true;
         }
 
@@ -216,8 +244,22 @@ namespace DDPM.SA.Common.Settings
                 info = "DDPM AccessInfo value is abnormal";
                 return string.Empty;
             }
-            //1. Read json content
-            string json_content = File.ReadAllText(filePath);
+
+            string json_content = string.Empty;
+            try
+            {
+                using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                {
+                    //1. Read json content
+                    json_content = File.ReadAllText(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "FileLock/ReadFile fail: " + ex.Message;
+                return string.Empty;
+            }
+
             if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
@@ -647,12 +689,25 @@ namespace DDPM.SA.Common.Settings
             if (!File.Exists(public_key))
             {
 #if DEBUG 
-                Console.WriteLine($"Please check if public keys exists");
+                Console.WriteLine($"Please check if file exists. " + public_key);
 #endif
                 return false;
             }
-            //Read json content
-            string json_content = File.ReadAllText(json_file);
+
+            string json_content = string.Empty;
+            try
+            {
+                using (FileLock fileLock = new FileLock(json_file, PathCheckOption.None, lockNow: true))
+                {
+                    //Read json content
+                    json_content = File.ReadAllText(json_file);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "FileLock/ReadFile fail: " + ex.Message;
+                return false;
+            }
 
             // Parse the JSON string into a JObject
             JObject jObject = JObject.Parse(json_content);
@@ -689,34 +744,24 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        public static bool LoadFileToVerifyJson_2(string jsonfilepath, List<string> InfoPkey, out string strJson)
+        public static bool LoadFileToVerifyJson_2(ILog log, string json_content, List<string> InfoPkey, out string strJson)
         {
             //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
             //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
-            string json_file = jsonfilepath;
+            //string json_file = jsonfilepath;
             string info = string.Empty;
             strJson = string.Empty;
 
-            if (!DDPMFileSecurity.CheckFileACL(json_file, out info, true))
-            {
-#if DEBUG
-                Console.WriteLine($"File: {json_file}\nFail with [{info}]");
-#endif
-                return false;
-            }
             if (InfoPkey.Count <= 0)
             {
-#if DEBUG
-                Console.WriteLine($"Please check if Info keys exists");
-#endif
+                WriteLog(log, $"Please check if Info keys exists", true);
                 return false;
             }
             //Read json content
-            string json_content = File.ReadAllText(json_file);
+            //string json_content = File.ReadAllText(json_file);
 
             // Parse the JSON string into a JObject
             JObject jObject = JObject.Parse(json_content);
-            string modifiedJson;
             string signature;
             try
             {
@@ -724,51 +769,35 @@ namespace DDPM.SA.Common.Settings
                 // Remove the "age" property
                 jObject.Remove("Signature");
                 // Convert the modified JObject back to a JSON string
-                modifiedJson = jObject.ToString();
-                strJson = modifiedJson;
+                strJson = jObject.ToString();
             }
             catch (Exception ex)
             {
-#if DEBUG
-                Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
-#endif
+                WriteLog(log, "Try to get Signature from json fail.\nReason: " + ex.ToString(), true);
+                strJson = string.Empty;
                 return false;
             }
 
-            bool bRet = false;
-            if (signature == null)
+            if (string.IsNullOrEmpty(signature))
             {
-                bRet = false;
-#if DEBUG
-                Console.WriteLine("No signature found. we should return fail here." + json_file);
-                bRet = true;    // (1/2) Temp for develop mode.  Currently NO json file with signature from server.
-#endif
-                if (bRet == false)
-                    return true;// (2/2) Temp for Normal Mode. Currently NO json file with signature from server.
+                WriteLog(log, "Null signature in json content", true);
+                strJson = string.Empty;
+                return false;// No signature so fail
             }
 
-            for (int i = 0; i < InfoPkey.Count; i++)
+            foreach(string key in InfoPkey)
             {
                 //use signature to verify json
-                if (!DDPMFileSecurity.IsJsonContentValid_2(modifiedJson, signature, InfoPkey[i], HashAlgorithmName.SHA512, out info))
+                if (DDPMFileSecurity.IsJsonContentValid_2(strJson, signature, key, HashAlgorithmName.SHA512, out info))
                 {
-#if DEBUG
-                    Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
-#endif
-                    return false;
-                }
-                else
-                {
-                    i = InfoPkey.Count + 1;
+                    WriteLog(log, "operation complete");
+                    return true;
                 }
             }
-#if DEBUG
-            Console.WriteLine("Operation completed");
-#endif
-            return true;
-
+            WriteLog(log, "Json content got no info matched to signature", true);
+            strJson = string.Empty;
+            return false;
         }
-
 
         public static uint GetCheckSum(byte[] content, int count)
         {
@@ -803,62 +832,6 @@ namespace DDPM.SA.Common.Settings
         {
             return array1.SequenceEqual(array2);
         }
-        /*
-        /// <summary>
-        /// Encrypt bytes content with RSA key
-        /// </summary>
-        /// <param name="dataToEncrypt"></param>
-        /// <param name="outputFilePath">if null or empty then do not write to file</param>
-        /// <param name="publicKey"></param>
-        /// <returns></returns>
-        public static byte[] RsaEncryptByteArrayOverRsa(byte[] dataToEncrypt, string outputFilePath, string publicKey)
-        {
-            //byte[] dataToEncrypt = File.ReadAllBytes(inputFilePath);
-            try
-            {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
-                {
-                    rsa.FromXmlString(publicKey);
-                    byte[] encryptedData = rsa.Encrypt(dataToEncrypt, true);
-                    if (!string.IsNullOrEmpty(outputFilePath))
-                        File.WriteAllBytes(outputFilePath, encryptedData);
-
-                    return encryptedData;
-                }
-            }
-            catch (Exception)// ex)
-            {
-            }
-            return null;
-        }*/
-        /*
-        /// <summary>
-        /// Decrypt bytes content with RSA key
-        /// </summary>
-        /// <param name="dataToDecrypt"></param>
-        /// <param name="outputFilePath">if null or empty then do not write to file</param>
-        /// <param name="privateKey"></param>
-        /// <returns></returns>
-        public static byte[] RsaDecryptByteArrayOverRsa(byte[] dataToDecrypt, string outputFilePath, string privateKey)
-        {
-            //byte[] dataToDecrypt = File.ReadAllBytes(inputFilePath);
-            try
-            {
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
-                {
-                    rsa.FromXmlString(privateKey);
-                    byte[] decryptedData = rsa.Decrypt(dataToDecrypt, true);
-                    if (!string.IsNullOrEmpty(outputFilePath))
-                        File.WriteAllBytes(outputFilePath, dataToDecrypt);
-
-                    return decryptedData;
-                }
-            }
-            catch (Exception)// ex)
-            {
-            }
-            return null;
-        }*/
 
         public static bool IsFilePathValid(string filePath, out string info)
         {
@@ -1600,8 +1573,21 @@ namespace DDPM.SA.Common.Settings
         {
             info = "unknow error";
 
-            // Read the base64-encoded public key from a text file
-            string publicKeyBase64 = File.ReadAllText(public_key_file);
+            string publicKeyBase64 = string.Empty;
+            try
+            {
+                using (FileLock fileLock = new FileLock(public_key_file, PathCheckOption.None, lockNow: true))
+                {
+                    // Read the base64-encoded public key from a text file
+                    publicKeyBase64 = File.ReadAllText(public_key_file);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "FileLock/ReadFile fail: " + ex.Message;
+                return false;
+            }
+
 
             // Convert the base64 string to bytes
             byte[] publicKeyBytes = Convert.FromBase64String(publicKeyBase64);
@@ -2112,6 +2098,13 @@ namespace DDPM.SA.Common.Settings
             pathSymbolicLinInfo = "Error";
             int count = 0;
             bool folderValid = false;
+
+            if(string.IsNullOrEmpty(folderPath))
+            {
+                folderInfo = "CheckFold - folder path NULL";
+                return folderValid;
+            }
+
             do
             {
                 folderInfo = string.Empty;
@@ -2132,5 +2125,84 @@ namespace DDPM.SA.Common.Settings
             return folderValid;
         }
 
+        public static bool VerifyDDPMMetadata(ILog log, string filePath, List<string> InfoPkey, out string inline_info, out string strJson)
+        {
+            // (for debugging) .json: with signature 
+            //filePath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+            //filePath = "D:\\DDPM\\test\\metaadata_display_test_info_sign.json";            
+
+            string msg = string.Empty;
+            inline_info = string.Empty;
+            strJson = string.Empty;
+            string json_read = string.Empty;
+            try
+            {
+                if (!IsFilePathValid(filePath, out msg))
+                {
+                    WriteLog(log, msg, true);
+                    return false;
+                }
+                using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                {
+                    json_read = File.ReadAllText(filePath);
+                    if (string.IsNullOrEmpty(json_read))
+                    {
+                        WriteLog(log, "Read file without any content", true);
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(log, $"Read file failed: ({ex.Message})", true);
+                return false;
+            }
+            strJson = VerifyDDPMMetadata(log, json_read, InfoPkey, out inline_info);
+            return !string.IsNullOrEmpty(strJson);
+        }
+
+        //check json content to remove signature and info then output for caller
+        public static string VerifyDDPMMetadata(ILog log, string fileContent, List<string> InfoPkey, out string inline_info)
+        {
+            bool ret = false;
+            inline_info = string.Empty;
+            string strJson = string.Empty; 
+            //Pass json metadata to security check and try to output serialized json string
+            // the output json string will remove signature
+            ret = LoadFileToVerifyJson_2(log, fileContent, InfoPkey, out strJson);
+
+            //
+            //if the content has no info and signature, return data directly here
+            //inline_info = InfoHash.Info_Hash; //debug purpose
+            //return strJson;
+
+            // Handle "Info" section
+            if (ret && !string.IsNullOrEmpty(strJson))
+            {
+                JObject jObject = JObject.Parse(strJson);
+                string szInfo;
+                try
+                {
+                    szInfo = (string)jObject["Info"];
+                    if (!string.IsNullOrEmpty(szInfo))
+                    {
+                        jObject.Remove("Info");
+                        inline_info = szInfo;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteLog(log, "Try to get info key from json fail.\nReason: " + ex.ToString(), true);
+                }
+                // Convert the modified JObject back to a JSON string                
+                strJson = jObject.ToString();
+            }
+            else
+            {
+                WriteLog(log, "[Metadata check] metadata is invalid", true);
+            }
+
+            return strJson;
+        }
     }
 }

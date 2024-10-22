@@ -178,7 +178,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 selectedTab = newSelId;
             }
 
-            if(newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 4))
+            if(newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 3 || _vm!.DeviceBarSelectedIndex == 4))
             {
                 StartPairing();
             }
@@ -216,6 +216,8 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     _vm!.StartPairing(_vm!.AudioDongleInfos.Keys.First());
                 }
             }
+            //if(_vm!.DeviceBarSelectedIndex == 3)
+            //    _vm!.StartPairingPen();
         }
 
         private void ShowMessage(string caption, string text, string button1Caption, string button2Caption = "")

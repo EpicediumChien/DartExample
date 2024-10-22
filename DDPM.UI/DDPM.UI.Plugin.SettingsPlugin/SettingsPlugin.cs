@@ -2,6 +2,8 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Interfaces;
+using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.UX.WPF;
@@ -34,6 +36,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IShowPluginManager _showPluginManager;
+        private SettingsPageViewModel? _viewModel;
 
         private bool _isConfigured;
 
@@ -80,13 +83,24 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
         }
-        public void OnShown()
+        public void OnShown(string showPage)
         {
             ConfigureServices();
             PrepareHomeDevices();
-      Mouse.OverrideCursor = null;
-    }
-    private void ConfigureServices()
+            if (_viewModel != null)
+            {
+                if (string.IsNullOrEmpty(showPage))
+                {
+                    showPage = "0";
+                }
+                if (int.TryParse(showPage, out int page))
+                {
+                    _viewModel.SetSelected(page);
+                }
+            }
+            Mouse.OverrideCursor = null;
+        }
+        private void ConfigureServices()
         {
             if (_isConfigured)
                 return;
@@ -96,6 +110,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 .AddSingleton(_log)
                 .AddSingleton<ISettingsPageViewModel, SettingsPageViewModel>()
                 .BuildServiceProvider());
+
+            _viewModel = (SettingsPageViewModel?)PluginIoc.GetService<ISettingsPageViewModel>();
             _isConfigured = true;
         }
         /// <summary>

@@ -13,7 +13,6 @@
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
-             Loaded="LaunchView_Loaded"
              Unloaded="LaunchView_Unloaded">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -55,6 +54,13 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="#324255" />
       </Style>
+      <Style x:Key="BorderFocused" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#283547" />
+        <Setter Property="Border.CornerRadius" Value="4" />
+        <Setter Property="Width" Value="184" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#FF0000" />
+      </Style>
       <Style x:Key="TextBlockStyle1" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -74,6 +80,39 @@
             </MultiBinding>
           </Setter.Value>
         </Setter>
+      </Style>
+      <Style x:Key="CancelButtonStyle" TargetType="common:ActionButton">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Background" Value="#0D121A" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#F5F6F7" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="BorderBrush" Value="#A3A3A3" />
+            <Setter Property="Foreground" Value="#6E6E6E" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+      <Style x:Key="SaveButtonStyle" TargetType="common:ActionButton">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Background" Value="#0672CB" />
+        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="Background" Value="#333941" />
+            <Setter Property="Foreground" Value="#818488" />
+          </Trigger>
+        </Style.Triggers>
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -180,7 +219,7 @@
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
               </Image.InputBindings>
             </Image>
-            <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
+            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
                                                 Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
           </StackPanel>
           <StackPanel Orientation="Horizontal">
@@ -201,7 +240,7 @@
         </StackPanel>
       </Grid>
       <!--Battery-->
-      <Grid VerticalAlignment="Bottom">
+      <Grid x:Name="gdBattery" VerticalAlignment="Bottom">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
           <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
@@ -256,7 +295,7 @@
                             <Grid Height="30" Margin="0,5,0,0">
                               <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
                                 <UXControls:UXTextBlock Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
-                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset">
+                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}">
                                   <Image.ToolTip>
                                     <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                                       <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
@@ -276,7 +315,7 @@
                   </DockPanel>
                 </Border>
                 <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
-                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
                 </Border>
               </StackPanel>
               <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click">
@@ -307,6 +346,23 @@
       <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
         <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
                                 VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,118" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
+      </Grid>
+      <!--Add Profile-->
+      <Grid Name="gdAddProfile" VerticalAlignment="Bottom" Visibility="Hidden">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,70">
+          <UXControls:UXTextBlock Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
+          <StackPanel Orientation="Vertical">
+            <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
+              <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="50" FontSize="14"
+                                HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" 
+                                TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
+
+            </Border>
+            <UXControls:UXTextBlock Name="txtMsg" Margin="16,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" Visibility="Collapsed" />
+          </StackPanel>
+          <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="16,0,7,0" MouseDown="CancelClick" Width="107" />
+          <common:ActionButton Name="btnSave" Style="{StaticResource SaveButtonStyle}" MouseDown="SaveClick" IsEnabled="False" Width="94" />
+        </StackPanel>
       </Grid>
     </Grid>
   </Grid>

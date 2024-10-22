@@ -128,7 +128,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     else
                         _workingSplit.Settings = new List<double>(settings);
 
-                    sp0B.ApplySettingsToCellList(_screen.Bounds);
+                   // sp0B.ApplySettingsToCellList(_screen.Bounds);
 
                     _workingSplit.IsEditable = false;
                     _workingSplit.IsVertical = IsVertical;
@@ -165,7 +165,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     if ((cellCount == 0) && (splitKey == 'B'))
                     {
                         SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
-                        sp0b.ApplySettingsToCellList(_screen.Bounds);
+                     //   sp0b.ApplySettingsToCellList(_screen.Bounds);
                     }
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = IsVertical;
@@ -212,6 +212,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //{
             //    Border border = new Border();
             //}
+        }
+
+        public bool IsSameWorkSplit(ISplitCtrl? splitCtrl)
+        {
+            if (_workingSplit == null)
+                return false;
+            if (splitCtrl == null)
+                return false;
+
+            if ((_workingSplit.CellCount == splitCtrl.CellCount) && (_workingSplit.SplitKey == splitCtrl.SplitKey)
+                && (_workingSplit.Settings.SequenceEqual(splitCtrl.Settings)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void SetWorkSplitHoveringCellName(string cellName)
+        {
+            if (_workingSplit == null)
+                return;
+            _workingSplit.HoveringCell = cellName;
         }
 
         #endregion [Input] Working SplitCtrl
@@ -339,10 +361,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                 }
                 */
-                foreach(CellBorder cellBd in _workingSplit.CellBorders)
-                {
-                    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
-                }
+                //foreach(CellBorder cellBd in _workingSplit.CellBorders)
+                //{
+                //    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                //}
 
                 foreach (CellObj objCell in _workingSplit.CellList)
                 {
@@ -466,27 +488,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return hoverCell; ;
             }
 
-            foreach(CellBorder cellBd in _workingSplit.CellBorders)
-            {
-                if (isHandled)
-                {
-                    cellBd.IsHover = false;
-                    continue;
-                }
-
-                if (cellBd.rect.Contains(x, y))
-                {
-                    _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                    cellBd.IsHover = true;
-                    isHandled = true;
-                }
-                else
-                {
-                    cellBd.IsHover = false;
-                }
-            }
-
-            //For other layouts
+             //For other layouts
             foreach (CellObj objCell in _workingSplit.CellList)
             {
                 if (objCell.rc.Contains(x, y))

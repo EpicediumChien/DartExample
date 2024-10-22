@@ -1,0 +1,1437 @@
+{
+  "Alienware Monitors": [
+    {
+      "ModelName": "AW2521HF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2521HFA",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2521HFL",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2521HFLA",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2523HF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2524HF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2720HF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2720HFA",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2723DF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2724DM",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2724HF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW2725DF",
+      "MarketingName": "",
+      "ImageFileName": "AW2725DF"
+    },
+    {
+      "ModelName": "AW2725QF",
+      "MarketingName": "",
+      "ImageFileName": "AW2725DF"
+    },
+    {
+      "ModelName": "AW3225QF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW3423DWF",
+      "MarketingName": "",
+      "ImageFileName": "AW2521HF"
+    },
+    {
+      "ModelName": "AW5520QF",
+      "MarketingName": "",
+      "ImageFileName": "AW5520QF"
+    }
+  ],
+  "Dell Gaming Monitors": [
+    {
+      "ModelName": "G2422HS",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G2524H",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G2722HS",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G2723H",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G2723HN",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G2724D",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G3223D",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    },
+    {
+      "ModelName": "G3223Q",
+      "MarketingName": "",
+      "ImageFileName": "G2422HS"
+    }
+  ],
+  "Dell C Series Displays": [
+    {
+      "ModelName": "C2422HE",
+      "MarketingName": "",
+      "ImageFileName": "U3223QZ"
+    },
+    {
+      "ModelName": "C2423H",
+      "MarketingName": "",
+      "ImageFileName": "U3223QZ"
+    },
+    {
+      "ModelName": "C2722DE",
+      "MarketingName": "",
+      "ImageFileName": "U3223QZ"
+    },
+    {
+      "ModelName": "C2723H",
+      "MarketingName": "",
+      "ImageFileName": "U3223QZ"
+    },
+    {
+      "ModelName": "C3422WE",
+      "MarketingName": "",
+      "ImageFileName": "C3422WE"
+    },
+    {
+      "ModelName": "C5519Q",
+      "MarketingName": "",
+      "ImageFileName": "C5519Q"
+    },
+    {
+      "ModelName": "C5519QA",
+      "MarketingName": "",
+      "ImageFileName": "C5519Q"
+    },
+    {
+      "ModelName": "C5522QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    },
+    {
+      "ModelName": "C6522QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    },
+    {
+      "ModelName": "C7520QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    },
+    {
+      "ModelName": "C8621QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    }
+  ],
+  "Dell SE Series Monitors": [
+    {
+      "ModelName": "SE2219H",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2219HX",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2222H",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2222HV",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2419H",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2419HR",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2419HX",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2422H",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2422HM",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2422HR",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2422HX",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2423DS",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2719H",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2719HR",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2719HX",
+      "MarketingName": "",
+      "ImageFileName": "SE2219H"
+    },
+    {
+      "ModelName": "SE2722H",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2722HR",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2722HX",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE2723DS",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    },
+    {
+      "ModelName": "SE3223Q",
+      "MarketingName": "",
+      "ImageFileName": "SE2222H"
+    }
+  ],
+  "Dell P Series Monitors": [
+    {
+      "ModelName": "P1424H",
+      "MarketingName": "",
+      "ImageFileName": "P1424H"
+    },
+    {
+      "ModelName": "P1425",
+      "MarketingName": "Dell Pro 14 Plus Portable Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P1917S",
+      "MarketingName": "",
+      "ImageFileName": "P1917S"
+    },
+    {
+      "ModelName": "P2219H",
+      "MarketingName": "",
+      "ImageFileName": "P2219H"
+    },
+    {
+      "ModelName": "P2219HC",
+      "MarketingName": "",
+      "ImageFileName": "P2219H"
+    },
+    {
+      "ModelName": "P2222H",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2223HC",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2225H",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2319H",
+      "MarketingName": "",
+      "ImageFileName": "P2219H"
+    },
+    {
+      "ModelName": "P2418HT",
+      "MarketingName": "",
+      "ImageFileName": "P2418HT"
+    },
+    {
+      "ModelName": "P2419H",
+      "MarketingName": "",
+      "ImageFileName": "P2219H"
+    },
+    {
+      "ModelName": "P2419HC",
+      "MarketingName": "",
+      "ImageFileName": "P2219H"
+    },
+    {
+      "ModelName": "P2421",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2421D",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2421DC",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2422H",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2422HE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2423",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2423D",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2423DE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2424HEB",
+      "MarketingName": "",
+      "ImageFileName": "P2424HEB"
+    },
+    {
+      "ModelName": "P2424HT",
+      "MarketingName": "",
+      "ImageFileName": "P2424HT"
+    },
+    {
+      "ModelName": "P2425",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2425D",
+      "MarketingName": "Dell Pro 24 Plus QHD Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P2425DE",
+      "MarketingName": "Dell Pro 24 Plus QHD USB-C® Hub Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P2425E",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2425H",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2425HE",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2719H",
+      "MarketingName": "",
+      "ImageFileName": "U4320Q"
+    },
+    {
+      "ModelName": "P2719HC",
+      "MarketingName": "",
+      "ImageFileName": "U4320Q"
+    },
+    {
+      "ModelName": "P2720D",
+      "MarketingName": "",
+      "ImageFileName": "U4320Q"
+    },
+    {
+      "ModelName": "P2720DC",
+      "MarketingName": "",
+      "ImageFileName": "U4320Q"
+    },
+    {
+      "ModelName": "P2721Q",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2722H",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2722HE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2723D",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2723DE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2723QE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P2724DEB",
+      "MarketingName": "",
+      "ImageFileName": "P2724DEB"
+    },
+    {
+      "ModelName": "P2725D",
+      "MarketingName": "Dell Pro 27 Plus QHD Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P2725DE",
+      "MarketingName": "Dell Pro 27 Plus QHD USB-C® Hub Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P2725H",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2725HE",
+      "MarketingName": "",
+      "ImageFileName": "P2225H"
+    },
+    {
+      "ModelName": "P2725QE",
+      "MarketingName": "Dell Pro 27 Plus 4K USB-C® Hub monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P3221D",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P3222QE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P3223DE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P3223QE",
+      "MarketingName": "",
+      "ImageFileName": "P2222H"
+    },
+    {
+      "ModelName": "P3225DE",
+      "MarketingName": "Dell Pro 32 Plus QHD USB-C® Hub Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P3225QE",
+      "MarketingName": "Dell Pro 32 Plus 4K USB-C® Hub Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P3421W",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    },
+    {
+      "ModelName": "P3424WE",
+      "MarketingName": "",
+      "ImageFileName": "U3425WE"
+    },
+    {
+      "ModelName": "P3424WEB",
+      "MarketingName": "",
+      "ImageFileName": "P2424HEB"
+    },
+    {
+      "ModelName": "P3425WE",
+      "MarketingName": "Dell Pro 34 Plus USB-C® Hub Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P5524Q",
+      "MarketingName": "",
+      "ImageFileName": "C5519Q"
+    },
+    {
+      "ModelName": "P5524QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    },
+    {
+      "ModelName": "P5525QC",
+      "MarketingName": "",
+      "ImageFileName": "P5525QC"
+    },
+    {
+      "ModelName": "P6524QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    },
+    {
+      "ModelName": "P7524QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    },
+    {
+      "ModelName": "P7525QT",
+      "MarketingName": "Dell Pro 75 Plus 4K Touch Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "P8624QT",
+      "MarketingName": "",
+      "ImageFileName": "C5522QT"
+    }
+  ],
+  "Dell S Series Monitors": [
+    {
+      "ModelName": "S2319H",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2319HN",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2319HS",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2319NX",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2419H",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2419HGF",
+      "MarketingName": "",
+      "ImageFileName": "S2419HGF"
+    },
+    {
+      "ModelName": "S2419HM",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2419HN",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2419NX",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2421H",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2421HGF",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2421HN",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2421HS",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2421HSX",
+      "MarketingName": "",
+      "ImageFileName": "S2421HSX"
+    },
+    {
+      "ModelName": "S2421NX",
+      "MarketingName": "",
+      "ImageFileName": "S2421HSX"
+    },
+    {
+      "ModelName": "S2422HG",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2422HGA",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2422HGF",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2422HGFA",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2422HZ",
+      "MarketingName": "",
+      "ImageFileName": "S2422HZ"
+    },
+    {
+      "ModelName": "S2425H",
+      "MarketingName": "",
+      "ImageFileName": "S3423DWC"
+    },
+    {
+      "ModelName": "S2425HS",
+      "MarketingName": "",
+      "ImageFileName": "S3423DWC"
+    },
+    {
+      "ModelName": "S2522HG",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719DC",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719DGF",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719DM",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719H",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719HN",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719HS",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2719NX",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2721D",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721DGF",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2721DGFA",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2721DS",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721H",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721HGF",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2721HGFA",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2721HN",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721HS",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721HSX",
+      "MarketingName": "",
+      "ImageFileName": "S2721NX"
+    },
+    {
+      "ModelName": "S2721NX",
+      "MarketingName": "",
+      "ImageFileName": "S2721NX"
+    },
+    {
+      "ModelName": "S2721Q",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721QS",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2721QSA",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2722DC",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2722DGM",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2722DZ",
+      "MarketingName": "",
+      "ImageFileName": "S2422HZ"
+    },
+    {
+      "ModelName": "S2722QC",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2723HC",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S2725DS",
+      "MarketingName": "",
+      "ImageFileName": "S3423DWC"
+    },
+    {
+      "ModelName": "S2725H",
+      "MarketingName": "",
+      "ImageFileName": "S3423DWC"
+    },
+    {
+      "ModelName": "S2725HS",
+      "MarketingName": "",
+      "ImageFileName": "S3423DWC"
+    },
+    {
+      "ModelName": "S2725QC",
+      "MarketingName": "Dell 27 Plus 4K USB-C® Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S2725QS",
+      "MarketingName": "Dell 27 Plus 4K Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3219D",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3220DGF",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3221QS",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3221QSA",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3222DGM",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3222HG",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3222HN",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S3222HS",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S3225QC",
+      "MarketingName": "Dell 32 Plus 4K QD-OLED Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3225QS",
+      "MarketingName": "Dell 32 Plus 4K Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3422DW",
+      "MarketingName": "",
+      "ImageFileName": "S2421H"
+    },
+    {
+      "ModelName": "S3422DWG",
+      "MarketingName": "",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "S3423DWC",
+      "MarketingName": "",
+      "ImageFileName": "S3423DWC"
+    },
+    {
+      "ModelName": "S3425DW",
+      "MarketingName": "Dell 34 Plus USB-C® Monitor",
+      "ImageFileName": "LINEART"
+    }
+  ],
+  "Dell E Series Monitors": [
+    {
+      "ModelName": "E1715S",
+      "MarketingName": "",
+      "ImageFileName": "E1715S"
+    },
+    {
+      "ModelName": "E1916HV",
+      "MarketingName": "",
+      "ImageFileName": "E1916HV"
+    },
+    {
+      "ModelName": "E1920H",
+      "MarketingName": "",
+      "ImageFileName": "E1916HV"
+    },
+    {
+      "ModelName": "E2016HV",
+      "MarketingName": "",
+      "ImageFileName": "E1916HV"
+    },
+    {
+      "ModelName": "E2020H",
+      "MarketingName": "",
+      "ImageFileName": "E1916HV"
+    },
+    {
+      "ModelName": "E2219HN",
+      "MarketingName": "",
+      "ImageFileName": "E1916HV"
+    },
+    {
+      "ModelName": "E2220H",
+      "MarketingName": "",
+      "ImageFileName": "E2220H"
+    },
+    {
+      "ModelName": "E2221HN",
+      "MarketingName": "",
+      "ImageFileName": "E2220H"
+    },
+    {
+      "ModelName": "E2222H",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2222HS",
+      "MarketingName": "",
+      "ImageFileName": "E2222HS"
+    },
+    {
+      "ModelName": "E2223HN",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2223HV",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2225H",
+      "MarketingName": "",
+      "ImageFileName": "E2225H"
+    },
+    {
+      "ModelName": "E2225HM",
+      "MarketingName": "Dell Pro 22 Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "E2225HS",
+      "MarketingName": "",
+      "ImageFileName": "E2225HS"
+    },
+    {
+      "ModelName": "E2225HSM",
+      "MarketingName": "Dell Pro 22 Adjustable Stand Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "E2420H",
+      "MarketingName": "",
+      "ImageFileName": "E2220H"
+    },
+    {
+      "ModelName": "E2420HS",
+      "MarketingName": "",
+      "ImageFileName": "E2420HS"
+    },
+    {
+      "ModelName": "E2421HN",
+      "MarketingName": "",
+      "ImageFileName": "E2220H"
+    },
+    {
+      "ModelName": "E2422H",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2422HN",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2422HS",
+      "MarketingName": "",
+      "ImageFileName": "E2222HS"
+    },
+    {
+      "ModelName": "E2423H",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2423HN",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2424HS",
+      "MarketingName": "",
+      "ImageFileName": "E2724HS"
+    },
+    {
+      "ModelName": "E2425H",
+      "MarketingName": "",
+      "ImageFileName": "E2425H"
+    },
+    {
+      "ModelName": "E2425HM",
+      "MarketingName": "Dell Pro 24 Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "E2425HS",
+      "MarketingName": "",
+      "ImageFileName": "E2425HS"
+    },
+    {
+      "ModelName": "E2425HSM",
+      "MarketingName": "Dell Pro 24 Adjustable Stand Monitor",
+      "ImageFileName": "LINEART"
+    },
+    {
+      "ModelName": "E2720H",
+      "MarketingName": "",
+      "ImageFileName": "E2220H"
+    },
+    {
+      "ModelName": "E2720HS",
+      "MarketingName": "",
+      "ImageFileName": "E2420HS"
+    },
+    {
+      "ModelName": "E2722H",
+      "MarketingName": "",
+      "ImageFileName": "E2222H"
+    },
+    {
+      "ModelName": "E2722HS",
+      "MarketingName": "",
+      "ImageFileName": "E2222HS"
+    },
+    {
+      "ModelName": "E2723H",
+      "MarketingName": "",
+      "ImageFileName": "E2723H"
+    },
+    {
+      "ModelName": "E2723HN",
+      "MarketingName": "",
+      "ImageFileName": "E2723H"
+    },
+    {
+      "ModelName": "E2724HN",
+      "MarketingName": "",
+      "ImageFileName": "E2723H"
+    },
+    {
+      "ModelName": "E2724HS",
+      "MarketingName": "",
+      "ImageFileName": "E2724HS"
+    },
+    {
+      "ModelName": "E2725H",
+      "MarketingName": "",
+      "ImageFileName": "E2725H"
+    },
+    {
+      "ModelName": "E2725HM",
+      "MarketingName": "Dell Pro 27 Monitor",
+      "ImageFileName": "LINEART"
+    }
+  ],
+  "Dell UltraSharp (U) Series Monitors": [
+    {
+      "ModelName": "U2419H",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2419HC",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2419HS",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2419HX",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2421E",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2421HE",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2422H",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2422HE",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2422HX",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2424H",
+      "MarketingName": "",
+      "ImageFileName": "U2424H"
+    },
+    {
+      "ModelName": "U2424HE",
+      "MarketingName": "",
+      "ImageFileName": "U2424H"
+    },
+    {
+      "ModelName": "U2520D",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2520DR",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2719D",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2719DC",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2719DS",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2719DX",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2720Q",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2720QM",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2721DE",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U2722D",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2722DE",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2722DX",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2723QE",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2723QX",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U2724D",
+      "MarketingName": "",
+      "ImageFileName": "U2724DE"
+    },
+    {
+      "ModelName": "U2724DE",
+      "MarketingName": "",
+      "ImageFileName": "U2724DE"
+    },
+    {
+      "ModelName": "U2725QE",
+      "MarketingName": "Dell UltraSharp 27 4K Thunderbolt™ Hub Monitor",
+      "ImageFileName": "U2725QE"
+    },
+    {
+      "ModelName": "U3023E",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U3219Q",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U3223QE",
+      "MarketingName": "",
+      "ImageFileName": "U2422H"
+    },
+    {
+      "ModelName": "U3223QZ",
+      "MarketingName": "",
+      "ImageFileName": "U3223QZ"
+    },
+    {
+      "ModelName": "U3224KB",
+      "MarketingName": "",
+      "ImageFileName": "U3224KB"
+    },
+    {
+      "ModelName": "U3224KBA",
+      "MarketingName": "",
+      "ImageFileName": "U2724DE"
+    },
+    {
+      "ModelName": "U3225QE",
+      "MarketingName": "Dell UltraSharp 32 4K Thunderbolt™ Hub Monitor",
+      "ImageFileName": "U3225QE"
+    },
+    {
+      "ModelName": "U3419W",
+      "MarketingName": "",
+      "ImageFileName": "U2419H"
+    },
+    {
+      "ModelName": "U3421WE",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    },
+    {
+      "ModelName": "U3423WE",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    },
+    {
+      "ModelName": "U3425WE",
+      "MarketingName": "",
+      "ImageFileName": "U3425WE"
+    },
+    {
+      "ModelName": "U3821DW",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    },
+    {
+      "ModelName": "U3824DW",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    },
+    {
+      "ModelName": "U4021QW",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    },
+    {
+      "ModelName": "U4025QW",
+      "MarketingName": "",
+      "ImageFileName": "U3425WE"
+    },
+    {
+      "ModelName": "U4320Q",
+      "MarketingName": "",
+      "ImageFileName": "U4320Q"
+    },
+    {
+      "ModelName": "U4323QE",
+      "MarketingName": "",
+      "ImageFileName": "U4323QE"
+    },
+    {
+      "ModelName": "U4919DW",
+      "MarketingName": "",
+      "ImageFileName": "U4919DW"
+    },
+    {
+      "ModelName": "U4924DW",
+      "MarketingName": "",
+      "ImageFileName": "U4021QW"
+    }
+  ],
+  "Dell Ultrasharp Premier Color (UP) Series Monitors": [
+    {
+      "ModelName": "UP2720Q",
+      "MarketingName": "",
+      "ImageFileName": "UP2720Q"
+    },
+    {
+      "ModelName": "UP2720QA",
+      "MarketingName": "",
+      "ImageFileName": "UP2720Q"
+    },
+    {
+      "ModelName": "UP3218K",
+      "MarketingName": "",
+      "ImageFileName": "UP3218K"
+    },
+    {
+      "ModelName": "UP3218KA",
+      "MarketingName": "",
+      "ImageFileName": "UP3218K"
+    },
+    {
+      "ModelName": "UP3221Q",
+      "MarketingName": "",
+      "ImageFileName": "UP3221Q"
+    }
+  ],
+  "DDPM Excluded Monitors": [
+    {
+      "ModelName": "AW3420DW",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "AW2521H",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "AW3821DW",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "AW2721D",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "AW3423DW",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "AW2524H",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "P2314H",
+      "MarketingName": "",
+      "ImageFileName": ""
+    },
+    {
+      "ModelName": "C1422",
+      "MarketingName": "",
+      "ImageFileName": ""
+    }
+  ]
+}

@@ -123,15 +123,15 @@ namespace DDPM.SA.Common
         public string SHA256 { get; set; }
         public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
-        public string MiniInstallerServer_path { get; set; }
-        [JsonPropertyName("minimumSoftware")]
-        public string MiniInstaller_SHA256 { get; set; }
-        public string MiniInstaller_SHA512 { get; set; }
-        public string MiniInstaller_Thumbprint { get; set; }
+        public string DdpmSwUpdaterServer_path { get; set; }
+        public string DdpmSwUpdater_SHA256 { get; set; }
+        public string DdpmSwUpdater_SHA512 { get; set; }
+        public string DdpmSwUpdater_Thumbprint { get; set; }
         [JsonPropertyName("install_path")]
         public string InstallPath { get; set; }
         [JsonPropertyName("supportedOS")]
         public List<string> SupportedOS { get; set; }
+        [JsonPropertyName("minimumSoftware")]
         public string MinimumSoftware { get; set; }
     }
     /// <summary>
@@ -140,7 +140,7 @@ namespace DDPM.SA.Common
     public class SWUpdateHelper
     {
         [JsonPropertyName("version")]
-        public int Version { get; set; }
+        public string Version { get; set; }
         public ChangeLog ChangeLog { get; set; }
         public List<Software> Softwares { get; set; }
     }

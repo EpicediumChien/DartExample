@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -8,6 +9,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
@@ -37,8 +39,6 @@ namespace DDPM.UI.Plugin.PenPlugin
         private PenViewModel? _viewModel;
 
         private bool _isConfigured;
-        private IDeviceManagerSA _deviceManagerPlugin;
-        private IFrameworkPluginConditionNotification? _deviceManagerPluginCondition;
         private CancellationTokenSource StartupCancellationTokenSource { get; } = new();
         private CancellationToken CancellationToken { get; }
         private readonly SemaphoreSlim _lock = new(1, 1);
@@ -54,49 +54,6 @@ namespace DDPM.UI.Plugin.PenPlugin
             _console = console;
             _log = console.CreateLog("Pen");
             _log.Info($"{nameof(LaunchView)} - Constructed");
-
-            var addDevicetGearItem = new GearMenuItem("Pen", new RelayCommand(ShowAddDeviceView));
-            gearMenu.AddGearMenuItem(addDevicetGearItem, 4);
-
-            CancellationToken = StartupCancellationTokenSource.Token;
-            _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
-        }
-
-        private void ShowAddDeviceView()
-        {
-            _console.ShowPluginById(PluginId);
-        }
-
-        private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
-        {
-            _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
-            try
-            {
-                _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-
-                if (_deviceManagerPlugin == null)
-                {
-                    _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
-                    return;
-                }
-
-                // Manager Peripheralslugin Condition
-                _deviceManagerPluginCondition = _deviceManagerPlugin as IFrameworkPluginConditionNotification;
-
-                if (_deviceManagerPluginCondition == null)
-                    return;
-
-                // Subscribe to plugin changes
-                _deviceManagerPluginCondition.PluginConditionChangeHandler += _peripheralsPluginCondition_PluginConditionChangeHandler;
-
-                // Get current condition
-                _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
-                _log.Error(ex, message);
-            }
         }
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -107,62 +64,14 @@ namespace DDPM.UI.Plugin.PenPlugin
             }
         }
 
-        private void PeripheralsPlugin_UpdateNotify(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void _peripheralsPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
-        {
-            _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-        }
-
-        private async Task GetCurrentPeripheralsPluginCondition()
-        {
-            await _lock.WaitAsync(CancellationToken);
-            _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
-            try
-            {
-                if (_deviceManagerPluginCondition == null)
-                    return;
-
-                var pluginCondition = await _deviceManagerPluginCondition.CurrentConditionAsync();
-
-                if (pluginCondition is PluginErrorCondition)
-                {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
-                }
-                else if (pluginCondition is PluginRunningCondition)
-                {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
-                }
-            }
-            catch (Exception ex)
-            {
-                var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
-                _log.Error(ex, message);
-                //throw new NotificationPluginException(message);
-            }
-            finally
-            {
-                _lock.Release();
-                _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} unlock");
-            }
-        }
-
         private void GetPeripheralsAsync()
         {
-            if (!SpinWait.SpinUntil(() =>
-            _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
-            {
-                Console.WriteLine("Could not establish communication with DDPM!!");
-                return;
-            }
             _log.Debug($"GetPeripherals is invoked");
-            //_deviceHelper = await peripheralsPlugin.GetDevices();
-            Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
+            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPenDeviceItemsEx();
+            //var jArray = JArray.FromObject(task2.Result);
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
         }
 
@@ -180,7 +89,6 @@ namespace DDPM.UI.Plugin.PenPlugin
             PluginIoc.ConfigureServices(new ServiceCollection()
                 .AddSingleton(_console)
                 .AddSingleton(_log)
-                .AddSingleton(_deviceManagerPlugin)
                 .AddSingleton<IPeripheralViewModel, PenViewModel>()
                 .BuildServiceProvider());
 
@@ -196,16 +104,14 @@ namespace DDPM.UI.Plugin.PenPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
@@ -221,7 +127,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         ~Penplugin()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }

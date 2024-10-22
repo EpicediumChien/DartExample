@@ -92,5 +92,10 @@ namespace DDPM.UI.Common
             get => vm.IsSelected;
             set => vm.IsSelected = value;
         }
+        public Visibility TooltipVisibility
+        {
+            get => vm.TooltipVisibility;
+            set => vm.TooltipVisibility = value;
+        }
     }
 }

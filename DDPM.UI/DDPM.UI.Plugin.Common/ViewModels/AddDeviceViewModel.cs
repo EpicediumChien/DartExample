@@ -21,7 +21,6 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         private readonly IConsole _console;
         private readonly IShowPluginManager _showPluginManager;
-        private readonly IDeviceManagerSA _peripheralPlugin;
         private readonly ILog _log;
 
         private int _groupSelIdx = -1;
@@ -33,18 +32,17 @@ namespace DDPM.UI.Plugin.ViewModels
         private readonly string noDongleAlertKnM = Strings.AddDeviceKnMnoDongleAlertKnM;
         private readonly string noDongleAlertHeadset = Strings.AddDeviceKnMnoDongleAlertHeadset;
 
-        //public AddDeviceViewModel(IConsole console, ILog log, IDPeMPlugin peripheralPlugin) {
-        public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA peripheralPlugin)
+        public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
-            Requires.NotNull(peripheralPlugin, nameof(peripheralPlugin));
 
             _showPluginManager = showPluginManager;
             _console = console;
             _log = log;
-            _peripheralPlugin = peripheralPlugin;
         }
+
+        public bool IsPandoraPaired = false; 
 
         public List<ModuleGroup> _moduleGroups = new();
 
@@ -260,6 +258,19 @@ namespace DDPM.UI.Plugin.ViewModels
         public string AlertText { get; set; } = "";
         public Visibility AlertVisibility { get; set; } = Visibility.Collapsed;
 
+        public void CheckPandora(List<DeviceInfo> DeviceInfos)
+        {
+            foreach (var info in DeviceInfos)
+            {
+                if (info.ModelNumber == "PN5122W")
+                {
+                    IsPandoraPaired = true;
+                    return;
+                }
+            }
+            IsPandoraPaired = false;
+        }
+
         public void PrepareDongleInfo(List<DongleInfo> dongleInfos)
         {
             DongleInfos.Clear();
@@ -338,11 +349,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 CurrentDongle = DongleInfos.Values.First();
                 StartPairing(CurrentDongle.ID);
             }
-            if(DeviceBarSelectedIndex == 4 && DongleAlertHeadsetVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
+            if (DeviceBarSelectedIndex == 4 && DongleAlertHeadsetVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
             {
                 CurrentDongle = AudioDongleInfos.Values.First();
                 StartPairing(CurrentDongle.ID);
             }
+            //if (DeviceBarSelectedIndex == 3 && RightViewHeaderSelectedIndex == 1)
+            //{
+            //    StartPairingPen();
+            //}
         }
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -409,15 +424,27 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void StartPairing(Guid guid)
         {
-            _peripheralPlugin.StartPairing(guid);
+            DdpmCommonHelper.DeviceManagerSA!.StartPairing(guid);
             IsPairing = true;
+        }
+        public void StartPairingPen()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.PairingPen();
         }
 
         public void StopPairing()
         {
-            if(IsPairing && CurrentDongle != null)
+            if (IsPairing && CurrentDongle != null)
             {
-                _peripheralPlugin.StopPairing(CurrentDongle.ID);
+                DdpmCommonHelper.DeviceManagerSA!.StopPairing(CurrentDongle.ID);
+            }
+            IsPairing = false;
+        }
+        public void StopPairingPen()
+        {
+            if (IsPairing)
+            {
+                //DdpmCommonHelper.DeviceManagerSA!.StopPairingPen();
             }
             IsPairing = false;
         }
@@ -443,6 +470,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 case "LOGICALWIREDAUDIO":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
+                    break;
+                case "LOGICALPEN":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, NewDevice.ID.ToString());
                     break;
             }
             NewDevice = null;

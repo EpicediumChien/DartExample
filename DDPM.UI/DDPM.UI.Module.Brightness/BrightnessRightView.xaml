@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
             <!--<local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />-->
@@ -962,7 +962,10 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                    Text="{Binding PR1Name}" />
+                                                    KeyDown="KeyDown_KeyDown"
+                                                    MaxLength="30"
+                                                    Text="{Binding PR1Name}"
+                                                    TextChanged="PR1Name_TextChanged" />
                                             </Grid>
 
                                             <Grid Grid.Column="1" />
@@ -1281,7 +1284,10 @@
                                                     FontSize="14"
                                                     Foreground="White"
                                                     IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
-                                                    Text="{Binding PR2Name}" />
+                                                    KeyDown="KeyDown_KeyDown"
+                                                    MaxLength="30"
+                                                    Text="{Binding PR2Name}"
+                                                    TextChanged="PR2Name_TextChanged" />
                                             </Grid>
 
                                             <Grid Grid.Column="1" />

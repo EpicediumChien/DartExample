@@ -8,19 +8,40 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography.Xml;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
 using static System.Net.Mime.MediaTypeNames;
+using DDPM.SA.Common.Display;
+using System.Diagnostics.Eventing.Reader;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
     public class ArrangeVM : ObservableObject
     {
+        #region Private members
         private readonly object _lockObject = new();
+        private readonly object _lockScreenMgr = new();
         private IDisplayService? _displayManagerPlugin;
         private IDeviceManagerSA? _deviceManagerPlugin;
+
+        private bool _isMoving = false; //true when a window is moving
+        //Cursor position to VirtualScreen
+        private int _xCursor = 0;
+        private int _yCursor = 0;
+
+        private Screen _workingScreen; //when (_isMoving==true), will update the Screen of current cursor
+        #endregion
+
+        #region Events
+        //Invoked,when (_isMoving==true) and cursor position cross screen boundary
+        public EventHandler<Screen> WorkingScreenChanged;
+
+        //Invoked when AWS Window visibility changed
+        public EventHandler<bool> AwsWindowVisibilityChanged;
+        #endregion
 
         #region Enabled flag
 
@@ -40,7 +61,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region Option flags
 
         private bool _isWorkUIEnabled = true;
-        private bool _isMoving = false;
 
         public bool IsWorkUIShowing
         {
@@ -53,7 +73,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
                 {
-                    LogInfo($"@ ArrangeVM.IsWorkUIShowing: IsShiftPressed={IsShiftPressed}");
+                    //LogInfo($"@ ArrangeVM.IsWorkUIShowing: IsShiftPressed={IsShiftPressed}");
                     return IsShiftPressed;
                 }
                 return true;
@@ -116,14 +136,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Option flags
 
         #region Cursor position
-
         /// <summary>
-        /// Cursor position (xCursor, yCursor) will be updated by (OnLocationChanged handler).
+        /// Cursor position (xCursor, yCursor) will be updated by InfoWindow (OnLocationChanged handler).
         /// and then use it to determine if the custor is inside a CellBorder.
         /// </summary>
-        //xCursor
-        private int _xCursor = 0;
-
         public int xCursor
         {
             get { return _xCursor; }
@@ -133,10 +149,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 OnPropertyChanged("xCursor");
             }
         }
-
-        //yCursor
-        private int _yCursor = 0;
-
         public int yCursor
         {
             get { return _yCursor; }
@@ -146,7 +158,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 OnPropertyChanged("yCursor");
             }
         }
-
         #endregion Cursor position
 
         #region Screen Scale
@@ -173,6 +184,25 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return ScreenScale;
         }
         #endregion Screen Scale
+
+        #region WorkingScreen
+        //Will be updated by InfoWindow
+        public Screen WorkingScreen
+        {
+            get { return _workingScreen; }
+            set
+            {
+                if (value != _workingScreen)
+                {
+                    _workingScreen = value;
+                    if (WorkingScreenChanged != null)
+                    {
+                        Task.Run(() => WorkingScreenChanged.Invoke(this, _workingScreen));
+                    }
+                }
+            }
+        }
+        #endregion WorkingScreen
 
         #region Hovering Cell
 
@@ -205,6 +235,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
+            CellObj? hoveringCell = null;
 
             if (IsAwsWindowVisible)
             {
@@ -216,6 +247,29 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         HoveringScreen = AwsWindow.ScreenDeviceName;
                         HoveringWindow = "aws";
                         HoveringCellObj = cellObj;
+                        HoveringSplit = AwsWindow.HoveringSplit;
+
+                        hoveringCell = cellObj;
+                        foreach (EAWorkWindow workWin in _workWindows2)
+                        {
+                            if (!workWin.IsUsed)
+                                continue;
+                            if (workWin.ScreenDeviceName.Equals(HoveringScreen))
+                            {
+                                if (workWin.IsSameWorkSplit(HoveringSplit))
+                                {
+                                    workWin.SetWorkSplitHoveringCellName(hoveringCell.Name);
+                                }
+                                else
+                                {
+                                    workWin.SetWorkSplitHoveringCellName("");
+                                }
+                            }
+                            else
+                            {
+                                workWin.SetWorkSplitHoveringCellName("");
+                            }
+                        }
                         return cellObj;
                     }
                 }
@@ -260,6 +314,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #endregion HoveringScreen
+
+        #region HoveringSplit
+        private ISplitCtrl _hoveringSplit;
+        public ISplitCtrl HoveringSplit
+        {
+            get { return _hoveringSplit; }
+            private set
+            {
+                _hoveringSplit = value;
+            }
+        }
+        #endregion HoveringSplit
 
         #region Hovering Window
         //Values:
@@ -725,9 +791,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     int cellCount = eaSettings.SelectedSplit.CellCount;
                     char splitKey = eaSettings.SelectedSplit.SplitKey;
                     List<double> settings = eaSettings.SelectedSplit.Settings;
-                    LogInfo($"  * SetWorkSplit: {eaSettings.SelectedSplit.ToString()}");
+
+                    //Debug, force using non-default layout
+                    //cellCount = 4;
+                    //splitKey = 'A';
                     workWin.SetWorkingSplit(cellCount, splitKey, settings);
 
+                    LogInfo($"  * SetWorkSplit: {eaSettings.SelectedSplit.ToString()}");
 
                 }
 
@@ -1124,6 +1194,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Trace.WriteLine($"ctrlActual={ele.ActualWidth}x{ele.ActualHeight}; Scale={_vm.ScreenScale} => {w}x{h}");
             return new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
+
+        public static ISplitCtrl? SplitCtrlFromSplitJson(SplitJson spJson, eSplitModes splitMode)
+        {
+            ISplitCtrl? splitCtrl = ISplitCtrl.Create(spJson.CellCount, spJson.SplitKey);
+            if (splitCtrl == null)
+                return null;
+            if (spJson.Settings != null)
+            {
+                splitCtrl.Settings = new List<double>(spJson.Settings);
+            }
+            splitCtrl.FriendlyName = spJson.CustomName;
+
+            splitCtrl.SplitMode = splitMode;
+            if ((spJson.CellCount == 0) && (spJson.SplitKey == 'B'))
+            {
+                if (splitMode == eSplitModes.AWS)
+                {
+                    splitMode = eSplitModes.Work;
+                }
+            }
+           return splitCtrl;
+        }
         #endregion Helper Functions
 
         #region DDPM.SA Interfaces
@@ -1193,6 +1285,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private double _xAws = 0;
         private double _yAws = 0;
 
+        //The last Visibility state of AwsWindow
+        private bool _isAwsWindowVisible = false;
+
         public bool IsAwsEnabled
         {
             get
@@ -1211,17 +1306,37 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             get
             {
-                if (!IsMoving)
-                    return false;
-                if (!IsAwsEnabled) 
-                    return false;
+                bool newValue = _isAwsWindowVisible;
 
-                if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
+                if (!IsMoving)
                 {
-                    //LogInfo($"@ ArrangeVM.IsWorkUIShowing: IsShiftPressed={IsShiftPressed}");
-                    return IsShiftPressed;
+                    newValue = false;
                 }
-                return true;
+                else
+                {
+                    if (!IsAwsEnabled)
+                        newValue = false;
+                    else
+                    {
+                        if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
+                        {
+                            newValue = IsShiftPressed;
+                        }
+                        else
+                        {
+                            newValue = true;
+                        }
+                    }
+                }
+                if (newValue != _isAwsWindowVisible)
+                {
+                    _isAwsWindowVisible = newValue;
+                    if (AwsWindowVisibilityChanged != null)
+                    {
+                        Task.Run(() => AwsWindowVisibilityChanged.Invoke(this, newValue));
+                    }
+                }
+                return _isAwsWindowVisible;
             }
         }
 
@@ -1294,6 +1409,46 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
         #endregion AWS Icons
 
+
+        #region Screen Manager
+        private List<EAScreen> _EAScreens = new List<EAScreen>();
+
+        /// <summary>
+        /// Rebuild the Screen list from Forms.Screen.AllScreens, and find their attached MonitorInfos from DisplayManager
+        /// </summary>
+        public void RefreshEAScreens()
+        {
+            if (_displayManagerPlugin == null)
+                return;
+
+            lock (_lockScreenMgr)
+            {
+                List<MonitorInfo>? dellMonitors = GetMonitors();
+                List<EAScreen> tempScreens = new List<EAScreen>();
+
+                foreach (Screen scr in System.Windows.Forms.Screen.AllScreens)
+                {
+                    List<MonitorInfo> attachedMonitors = dellMonitors.FindAll(x => x.DisplayName.Equals(scr.DeviceName, StringComparison.OrdinalIgnoreCase));
+                    EAScreen eaScr = new EAScreen(scr, attachedMonitors);
+                    tempScreens.Add(eaScr);
+                } //foreach Screen
+                _EAScreens.Clear();
+                _EAScreens = tempScreens;
+            }
+        }
+
+        public List<MonitorInfo>? GetMonitorsFromDeviceName(string deviceName)
+        {
+            List<MonitorInfo>? allMonitors = GetMonitors();
+            if (allMonitors == null)
+            {
+                Trace.WriteLine($"@ GetMonitorsFromDeviceName({deviceName}): GetMonitors() return null");
+                return null;
+            }
+            Trace.WriteLine($"@ GetMonitorsFromDeviceName({deviceName}): Monitors.Count={allMonitors.Count}");
+            return allMonitors.FindAll(x => x.DisplayName.Equals(deviceName, StringComparison.OrdinalIgnoreCase));
+        }
+        #endregion
         public void DetermineWorkWindowVisibility()
         {
             //foreach (EAWorkWindow workWin in _workWindows2)
@@ -1306,6 +1461,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #region EzSettings
+        //EzSettings should be updated with assign a new object, for example
+        //  (ArrangeVM) vm.EzSettings = new EzSettings() { xxx=xxxx, ...}
         private EzSettings _ezSettings = new EzSettings() { /*IsOnlyAllowWhenShiftKeyPressed = false*/ };
         public EzSettings EzSettings 
         {
@@ -1357,6 +1514,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return false;
         }
 
+        public void TraceSplitJsonList(List<SplitJson> splitJsonList, int maxCount = 5)
+        {
+            int idx = 0;
+            foreach (SplitJson splitJson in splitJsonList)
+            {
+                Trace.WriteLine($"[{idx}] {splitJson.ToString()}");
+                idx++;
+            }
+        }
  
     }
 }

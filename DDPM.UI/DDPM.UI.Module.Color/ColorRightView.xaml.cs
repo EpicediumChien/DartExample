@@ -32,20 +32,20 @@ namespace DDPM.UI.Module.Color
         //  Jim remove 20240604
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ColorViewModel vm = (ColorViewModel)DataContext;
-            vm.WatchForProcessStart();
-            vm.WatchForProcessEnd();
+            //ColorViewModel vm = (ColorViewModel)DataContext;
+            //vm.WatchForProcessStart();
+            //vm.WatchForProcessEnd();
 
             //Lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
             try
             {
-                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data == null)
-                    return;
-                if (data.LockSettings == null)
-                    return;
+                //DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                //if (data == null)
+                //    return;
+                //if (data.LockSettings == null)
+                //    return;
 
                 /*vm.ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
                 vm.isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
@@ -56,7 +56,7 @@ namespace DDPM.UI.Module.Color
                     vm.TabNavigation = "Cycle";
 
                 vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;*/
-                PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
+                //PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 //DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotifyEvent;

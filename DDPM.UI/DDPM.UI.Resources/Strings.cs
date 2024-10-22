@@ -417,12 +417,172 @@ namespace DDPM.UI.Common
 
         //Camera
         public static readonly string Preset = "Preset";
+        public static readonly string EditPreset = "Edit preset";
         public static readonly string Smooth = "Smooth";
         public static readonly string Vibrant = "Vibrant";
         public static readonly string Warm = "Warm";
+        public static readonly string Name = "Name";
+        public static readonly string NameIsTaken = "This name is taken";
         public static readonly string DefaultProfileTooltip = "Default Profile Tooltip";
         public static readonly string SmoothProfileTooltip = "Smooth Profile Tooltip";
         public static readonly string VibrantProfileTooltip = "Vibrant Profile Tooltip";
         public static readonly string WarmProfileTooltip = "Warm Profile Tooltip";
+
+        //EazyMemory
+        public static readonly string Yes = GetString("Yes");
+        public static readonly string No = GetString("No");
+        public static readonly string ProfileTitleTextBlockForRightViewUI = GetString("EazyMemory.6");
+        public static readonly string AutomaticStartupTextBlockForRightViewUI = GetString("EazyMemory.0");
+        public static readonly string LaunchByTimeTextBlockForRightViewUI = GetString("EazyMemory.1");
+        public static readonly string AppDocumentTextBlockForRightViewUI = GetString("EazyMemory.2");
+        public static readonly string applybtnForRightViewUI = GetString("EazyMemory.3");
+        public static readonly string NATextForRightViewUI = GetString("EazyMemory.4");
+        public static readonly string msgboxTitle = GetString("EazyMemory.5");
+        public static readonly string subTitle = GetString("EazyMemory.8");
+        public static readonly string msgboxTitleForFirstPage = GetString("EazyMemory.7");
+        public static readonly string subTitleForFirstPage = GetString("EazyMemory.9");
+        public static readonly string CustomListTooltipText = GetString("EazyMemory.10");
+        public static readonly string ezMemoryStartupErrorTitleStringForLaunchOptionPage = GetString("EazyMemory.5");
+        public static readonly string ezMemoryStartupErrorStringForLaunchOptionPage = GetString("EazyMemory.11");
+        public static readonly string TitleTBForLaunchOptionPage = GetString("EazyMemory.12");
+        public static readonly string StartupCBContentForLaunchOptionPage = GetString("EazyMemory.13");
+        public static readonly string ManulRBContentForLaunchOptionPage = GetString("EazyMemory.14");
+        public static readonly string AutoRBContentForLaunchOptionPage = GetString("EazyMemory.15");
+        public static readonly string FirstPageMainText = GetString("EasyMemory");
+        public static readonly string FirstPageSubText = GetString("EazyMemory.36");
+        public static readonly string AssignPageMainText = GetString("EazyMemory.34");
+        public static readonly string AssignPageSubText = GetString("EazyMemory.37");
+        public static readonly string LaunchOptionPageMainText = GetString("EazyMemory.35");
+        public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
+
+        //WalkThrough
+        public static readonly string WalkThroughDDPM_Main0 = GetString("WalkThroughDDPM_Main.0");
+        public static readonly string WalkThroughDDPM_Sub0 = GetString("WalkThroughDDPM_Sub.0");
+        public static readonly string WalkThroughDDPM_Main1 = GetString("WalkThroughDDPM_Main.1");
+        public static readonly string WalkThroughDDPM_Sub1 = GetString("WalkThroughDDPM_Sub.1");
+        public static readonly string WalkThroughDDPM_Main2 = GetString("WalkThroughDDPM_Main.2");
+        public static readonly string WalkThroughDDPM_Sub2 = GetString("WalkThroughDDPM_Sub.2");
+        public static readonly string WalkThroughDDPM_Main3 = GetString("WalkThroughDDPM_Main.3");
+        public static readonly string WalkThroughDDPM_Sub3 = GetString("WalkThroughDDPM_Sub.3");
+        public static readonly string WalkThroughDDPM_Main4 = GetString("WalkThroughDDPM_Main.4");
+        public static readonly string WalkThroughDDPM_Sub4 = GetString("WalkThroughDDPM_Sub.4");
+        public static readonly string WalkThroughDDPM_Main5 = GetString("WalkThroughDDPM_Main.5");
+        public static readonly string WalkThroughDDPM_Sub5 = GetString("WalkThroughDDPM_Sub.5");
+        public static readonly string WalkThroughDisplay_Main0 = GetString("WalkThroughDisplay_Main.0");
+        public static readonly string WalkThroughDisplay_Sub0 = GetString("WalkThroughDisplay_Sub.0");
+        public static readonly string WalkThroughDisplay_Main1 = GetString("WalkThroughDisplay_Main.1");
+        public static readonly string WalkThroughDisplay_Sub1 = GetString("WalkThroughDisplay_Sub.1");
+        public static readonly string WalkThroughDisplay_Main2 = GetString("WalkThroughDisplay_Main.2");
+        public static readonly string WalkThroughDisplay_Sub2 = GetString("WalkThroughDisplay_Sub.2");
+        public static readonly string WalkThroughKB525C_Main1 = GetString("WalkThroughKB525C_Main.1");
+        public static readonly string WalkThroughKB525C_Sub1 = GetString("WalkThroughKB525C_Sub.1");
+        public static readonly string WalkThroughKB525C_Main0 = GetString("WalkThroughKB525C_Main.0");
+        public static readonly string WalkThroughKB525C_Sub0 = GetString("WalkThroughKB525C_Sub.0");
+        public static readonly string WalkThroughKB_Main2 = GetString("WalkThroughKB_Main.2");
+        public static readonly string WalkThroughKB_Sub2 = GetString("WalkThroughKB_Sub.2");
+        public static readonly string WalkThroughMouse_Main0 = GetString("WalkThroughMouse_Main.0");
+        public static readonly string WalkThroughMouse_Sub0 = GetString("WalkThroughMouse_Sub.0");
+        public static readonly string WalkThroughMouse_Main1 = GetString("WalkThroughMouse_Main.1");
+        public static readonly string WalkThroughMouse_Sub1 = GetString("WalkThroughMouse_Sub.1");
+        public static readonly string WalkThroughMouseMS355_Main0 = GetString("WalkThroughMouseMS355_Main.0");
+        public static readonly string WalkThroughMouseMS355_Sub0 = GetString("WalkThroughMouseMS355_Sub.0");
+        public static readonly string WalkThroughMouseMS355_Main1 = GetString("WalkThroughMouseMS355_Main.1");
+        public static readonly string WalkThroughMouseMS355_Sub1 = GetString("WalkThroughMouseMS355_Sub.1");
+        public static readonly string WalkThroughMouseMS900_Main2 = GetString("WalkThroughMouseMS900_Main.2");
+        public static readonly string WalkThroughMouseMS355_Sub2 = GetString("WalkThroughMouseMS355_Sub.2");
+        public static readonly string WalkThroughMouseMS900_Main0 = GetString("WalkThroughMouseMS900_Main.0");
+        public static readonly string WalkThroughMouseMS900_Sub0 = GetString("WalkThroughMouseMS900_Sub.0");
+        public static readonly string WalkThroughMouseMS900_Sub1 = GetString("WalkThroughMouseMS900_Sub.1");
+        public static readonly string WalkThroughPen_Main0 = GetString("WalkThroughPen_Main.0");
+        public static readonly string WalkThroughPen_Sub0 = GetString("WalkThroughPen_Sub.0");
+        public static readonly string WalkThroughPen_Main1 = GetString("WalkThroughPen_Main.1");
+        public static readonly string WalkThroughPen_Sub1 = GetString("WalkThroughPen_Sub.1");
+        public static readonly string WalkThroughPen_Main2 = GetString("WalkThroughPen_Main.2");
+        public static readonly string WalkThroughPen_Sub2 = GetString("WalkThroughPen_Sub.2");
+        public static readonly string WalkThroughWebCamWB3023_Main0 = GetString("WalkThroughWebCamWB3023_Main.0");
+        public static readonly string WalkThroughWebCamWB3023_Sub0 = GetString("WalkThroughWebCamWB3023_Sub.0");
+        public static readonly string WalkThroughWebCamWB3023_Main1 = GetString("WalkThroughWebCamWB3023_Main.1");
+        public static readonly string WalkThroughWebCamWB3023_Sub1 = GetString("WalkThroughWebCamWB3023_Sub.1");
+        public static readonly string WalkThroughWebCamWB3023_Main2 = GetString("WalkThroughWebCamWB3023_Main.2");
+        public static readonly string WalkThroughWebCamWB3023_Sub2 = GetString("WalkThroughWebCamWB3023_Sub.2");
+        public static readonly string WalkThroughWebCam_Main2 = GetString("WalkThroughWebCam_Main.2");
+        public static readonly string WalkThroughWebCam_Sub2 = GetString("WalkThroughWebCam_Sub.2");
+        public static readonly string WalkThroughWebCam_Sub3 = GetString("WalkThroughWebCam_Sub.3");
+        public static readonly string WalkThroughWebCam_Main4 = GetString("WalkThroughWebCam_Main.4");
+        public static readonly string WalkThroughWebCam_Sub4 = GetString("WalkThroughWebCam_Sub.4");
+        public static readonly string WalkThroughHeadsetWH5024_Main1 = GetString("WalkThroughHeadsetWH5024_Main.1");
+        public static readonly string WalkThroughHeadsetWH5024_Sub1 = GetString("WalkThroughHeadsetWH5024_Sub.1");
+        public static readonly string WalkThroughHeadsetWL7024_Main1 = GetString("WalkThroughHeadsetWL7024_Main.1");
+        public static readonly string WalkThroughHeadsetWL5024_Sub1 = GetString("WalkThroughHeadsetWL5024_Sub.1");
+        public static readonly string WalkThroughHeadsetWH3024_Sub0 = GetString("WalkThroughHeadsetWH3024_Sub.0");
+        public static readonly string WalkThroughHeadsetWL7024_Main2 = GetString("WalkThroughHeadsetWL7024_Main.2");
+        public static readonly string WalkThroughHeadsetWL7024_Sub2 = GetString("WalkThroughHeadsetWL7024_Sub.2");
+        public static readonly string WalkThroughHeadsetWH5024_Sub0 = GetString("WalkThroughHeadsetWH5024_Sub.0");
+        public static readonly string WalkThroughHeadsetWL7024_Main0 = GetString("WalkThroughHeadsetWL7024_Main.0");
+        public static readonly string WalkThroughHeadsetWL7024_Sub0 = GetString("WalkThroughHeadsetWL7024_Sub.0");
+        public static readonly string WalkThroughHeadsetWL7024_Sub1 = GetString("WalkThroughHeadsetWL7024_Sub.1");
+        public static readonly string WalkThroughHeadsetWL7024_Main3 = GetString("WalkThroughHeadsetWL7024_Main.3");
+        public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
+
+
+        //OpenAction
+        public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
+        public static readonly string OpenFileDesc = "Click the browse button to select a file";
+        public static readonly string OpenFolderDesc = "Click the browse button to select a folder";
+        public static readonly string OpenWebPageDesc = "Type the URL to the web page in the box below";
+        public static readonly string OpenFileWaterMark = "File Name";
+        public static readonly string OpenFolderWaterMark = "Folder Name";
+
+        //Headset
+        public static readonly string HeadsetAudioSettingsToolTip_1 = GetString("HeadsetAudioSettings.20");
+        public static readonly string HeadsetAudioSettingsToolTip_2 = GetString("HeadsetAudioSettings.21");
+        public static readonly string HeadsetAudioSettingsToolTip_3 = GetString("HeadsetAudioSettings.22");
+        public static readonly string HeadsetAudioSettingsToolTip_4 = GetString("HeadsetAudioSettings.23");
+        public static readonly string HeadsetAudioSettingsToolTip_5 = GetString("HeadsetAudioSettings.24");
+        public static readonly string HeadsetAudioSettingsToolTip_6 = GetString("HeadsetAudioSettings.25");
+        public static readonly string HeadsetAudioSettingsToolTip_7 = GetString("HeadsetAudioSettings.26");
+        public static readonly string HeadsetAudioSettingsToolTip_8 = GetString("HeadsetAudioSettings.27");
+        public static readonly string HeadsetAudioSettingsToolTip_9 = GetString("HeadsetAudioSettings.28");
+
+        public static readonly string HeadsetAutomatedActionsToolTip_1 = GetString("HeadsetAutomatedActions.9");
+        public static readonly string HeadsetAutomatedActionsToolTip_2 = GetString("HeadsetAutomatedActions.10");
+        public static readonly string HeadsetAutomatedActionsToolTip_3 = GetString("HeadsetAutomatedActions.11");
+        public static readonly string HeadsetAutomatedActionsToolTip_4 = GetString("HeadsetAutomatedActions.12");
+        public static readonly string HeadsetAutomatedActionsToolTip_5 = GetString("HeadsetAutomatedActions.13");
+
+        public static readonly string HeadsetDeviceSettingsToolTip_1 = GetString("HeadsetDeviceSettings.7");
+        public static readonly string HeadsetDeviceSettingsToolTip_2 = GetString("HeadsetDeviceSettings.8");
+
+        //Speaker
+        public static readonly string SpeakerToolTip_1 = GetString("SpeakerToolTip.0");
+        public static readonly string SpeakerToolTip_2 = GetString("SpeakerToolTip.1");
+        public static readonly string SpeakerToolTip_3 = GetString("SpeakerToolTip.2");
+
+        //Import/Export
+        public static readonly string ImpExp_Success = GetString("Success");
+        public static readonly string ImpExp_Warning = GetString("Warning");
+        public static readonly string ImpExp_Continue = GetString("Continue");
+        public static readonly string ImpExp_Cancel = GetString("Cancel");
+        public static readonly string ImpExp_Restart = GetString("RestartNeeded");
+        public static readonly string ImpExp_RestartMsg0 = GetString("ImpExp_RestartMsg.0");
+        public static readonly string ImpExp_SuccessMsg0 = GetString("ImpExp_SuccessMsg.0");
+        public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
+        public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
+        public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+        // Pair/Unpair
+        public static readonly string Caption = "Are you sure?";
+        public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";
+        public static readonly string MessageKeyboard = "Unpairing your keyboard can limit your ability to use this computer. Make sure you have an alternative keyboard setup before unpairing.";
+        public static readonly string MessagePen = "Unpairing your pen can limit your ability to use this computer. Make sure you have an alternative pen setup before unpairing.";
+        public static readonly string MessageHeadset = "This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of [NAME] .";
+        public static readonly string Continue = "Continue";
+        public static readonly string Imcompatible = "This device is not compatible with";
+        public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
+        public static readonly string PairYourPen = "Pair your pen";
+        public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
+        
+        // Display Restore to Default
+        public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
+        public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
     }
 }
