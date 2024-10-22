@@ -285,7 +285,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             response.Value = data_IT.Lock_Settings_Updates ? "Lock" : "Unlock";
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             response.Value = data_IT.Lock_Display_ExportSettings ? "Lock" : "Unlock";
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -365,7 +365,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_IT.Lock_Settings_Updates = true;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_IT.Lock_Display_ExportSettings = true;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -419,7 +419,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_user.LockSettings.Lock_Settings_Updates = true;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_user.LockSettings.Lock_Display_ExportSettings = true;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -476,7 +476,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_IT.Lock_Settings_Updates = false;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_IT.Lock_Display_ExportSettings = false;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -530,7 +530,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_user.LockSettings.Lock_Settings_Updates = false;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_user.LockSettings.Lock_Display_ExportSettings = false;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -594,7 +594,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Settings_Updates" }).Result;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ExportSettings" }).Result;
                             break;
                         case "RESTOREFACTORYDEFAULTS":

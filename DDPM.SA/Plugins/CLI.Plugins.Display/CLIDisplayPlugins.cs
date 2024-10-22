@@ -9499,25 +9499,36 @@ namespace DDPM.CLI.Plugins.Display
             else
             {
                 //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                string info = string.Empty;
-                string filename = ss_1[1];
                 if (commandLineInput.Options.Count == 1)
                 {
 
-                    //if (!File.Exists(filename))
-                    if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                    if (commandLineInput.Options[0].Option_Value.Contains(","))
+                    {
+                        string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                        string info = string.Empty;
+                        string filename = ss_1[1];
+                        if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                        {
+                            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                            cli_Response.Command = commandLineInput.Command;
+                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "file.json is not exist.";
+                            return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                        }
+                        else
+                        {
+                            return ApplyConfiguration(devMgr, commandLineInput).Result;
+                        }
+                    }
+                    else
                     {
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
                         cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file.json is not exist.";
+                        cli_Response.Message = "Invalid command line syntax.";
                         return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-                    }
-                    else
-                    {
-                        return ApplyConfiguration(devMgr, commandLineInput).Result;
                     }
                 }
                 else
@@ -9651,7 +9662,7 @@ namespace DDPM.CLI.Plugins.Display
                     else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
                     writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
 
-                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
+                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(devicedata.ActiveInputSource.ToUpper()).ToString())).Result;
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
                     writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
@@ -9801,7 +9812,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         ApplyConfiguration.Result = "FAIL";
-                        ApplyConfiguration.Message = "Sometings fail!";
+                        ApplyConfiguration.Message = "Somethings fail!";
                     }
                     System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
@@ -10000,15 +10011,15 @@ namespace DDPM.CLI.Plugins.Display
                 case "Component video (YPrPb/YCrCb) 1": return "0x0c";
                 case "Component video (YPrPb/YCrCb) 2": return "0x0d";
                 case "Component video (YPrPb/YCrCb) 3": return "0x0e";
-                case "DisplayPort-1": return "0x0f";
+                case "DISPLAYPORT-1": return "0x0f";
                 case "Mini DisplayPort-1": return "0x10";
                 case "HDMI-1": return "0x11";
                 case "HDMI-2": return "0x12";
-                case "DisplayPort-2": return "0x13";
+                case "DISPLAYPORT-2": return "0x13";
                 case "Mini DisplayPort-2": return "0x14";
                 case "HDMI3": return "0x15";
                 case "HDMI4": return "0x16";
-                case "DisplayPort-3": return "0x17";
+                case "DISPLAYPORT-3": return "0x17";
                 case "Mini DisplayPort-3": return "0x18";
                 case "Thunderbolt-1": return "0x19";
                 case "Thunderbolt-2": return "0x1a";
@@ -11625,9 +11636,10 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
+                    CLIActionEvent += OnCLINKVMv2;
                     await devMgr.GetNKVMStatus();
                     Sleep(10000);
-                    CLIActionEvent += OnCLINKVMv2;
+                    
 
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
@@ -12877,7 +12889,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "SET")
+            if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "IMPORTSETTINGS")
             {
                 List<int> _monitorIndeies = new List<int>();
 
@@ -12905,7 +12917,7 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
-            if (commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "GET" && commandLineInput.TargetFeature == "EXPORTSETTINGS")
             {
                 List<int> _monitorIndeies = new List<int>();
                 if (_AllInfoMonitors == null)
@@ -12924,7 +12936,7 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    //retcode = devMgr.DisplayExportSettings(monitor, filepath).Result;
+                    retcode = devMgr.DisplayExportSettings(monitor, filepath).Result;
 
                     cli_Response.Result = retcode == true ? "PASS" : "FAIL";
 
