@@ -146,7 +146,6 @@ namespace NetworkKVM.Plugins
                 }
                 Disconnect();
                 _ = Task.Run(async () => await NamedPipeServer(token));
-                //CreateNamedPipe_init();
                 _AllInfoMonitors.Clear();
             }
             else
@@ -173,11 +172,6 @@ namespace NetworkKVM.Plugins
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
-                            //CreateNamedPipe_init();
-                            //if (pipeServer.IsConnected)
-                            //{
-                            //    MonitorPlug();
-                            //}
                         }
                     }
                     //}
@@ -201,14 +195,9 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             Disconnect();
-                            //CreateNamedPipe_init();
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
-                            //if (pipeServer.IsConnected)
-                            //{
-                            //    MonitorPlug();
-                            //}
                         }
                     }
                     List<MonitorInfo> plugin = monitorInfos
@@ -228,14 +217,9 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             Disconnect();
-                            //CreateNamedPipe_init();
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
-                            //if (pipeServer.IsConnected)
-                            //{
-                            //    MonitorPlug();
-                            //}
                         }
                     }
 
@@ -423,6 +407,10 @@ namespace NetworkKVM.Plugins
                             return Task.FromResult(true);
                         }
                     }
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM]No C6....");
                 }
             }
 
@@ -1160,6 +1148,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("NKVM NamedPipeServer is go...");
                 Trace.WriteLine("NKVM NamedPipeServer is go...");
+                int i = 0;
                 while (_runloop)
                 {
                     if (CancellationToken.IsCancellationRequested)
@@ -1198,9 +1187,13 @@ namespace NetworkKVM.Plugins
                     }
                     else
                     {
-                        break;
-                    //    Disconnect();
-                    //    CreateNamedPipe_init();
+                        if (i > 2)
+                        {
+                            break;
+                        }
+                        i++;
+                        //    Disconnect();
+                        //    CreateNamedPipe_init();
                     }
                 }
             }
@@ -1219,6 +1212,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
                 Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
+                int i = 0;
                 while (_runloop)
                 {
                     if (CancellationToken.IsCancellationRequested)
@@ -1251,13 +1245,17 @@ namespace NetworkKVM.Plugins
                             {
                                 //throw;
                                 Disconnect();
-                                CreateNamedPipe_init();
+                                CreateNamedPipe();
                             }
                         }
                     }
                     else
                     {
-                        break;
+                        if (i > 2)
+                        {
+                            break;
+                        }
+                        i++;
                         //    Disconnect();
                         //    CreateNamedPipe_init();
                     }
