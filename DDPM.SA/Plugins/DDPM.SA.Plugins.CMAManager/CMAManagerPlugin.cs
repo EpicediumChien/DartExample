@@ -20,6 +20,8 @@ using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
 using Dell.Client.Framework.UX.WPF;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
+using DDPM.SA.Common.Interfaces;
+using DDPM.RemoteManagement.Common.Interfaces;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
@@ -27,10 +29,10 @@ namespace DDPM.SA.Plugins.CMAManager
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ICMAManagerSA) })] //for DeviceManager of user subagent
-    [PublishedInterface(new[] { typeof(ICMAManagerIT) })] //for CLI subagent
-    public class CMAManagerPlugin : BaseAgentPlugin, IDisposableObservable, ICMAManagerSA, ICMAManagerIT
+    [PublishedInterface(new[] { typeof(IRemoteManagement) })] //for CLI subagent
+    public class CMAManagerPlugin : BaseAgentPlugin, IDisposableObservable, ICMAManagerSA, IRemoteManagement
     {
-        private static List<CMAResult> _result_list = new List<CMAResult>();
+        private static List<RemoteManagementResult> _result_list = new List<RemoteManagementResult>();
         private readonly object _resultLock = new object();
 
         #region Basic code for plugin
@@ -163,6 +165,8 @@ namespace DDPM.SA.Plugins.CMAManager
         }
         #endregion
         #endregion
+
+        #region IRemoteManagement implementation
         internal struct TaskInfo {
             public string sid;
             public string gid;
@@ -170,9 +174,6 @@ namespace DDPM.SA.Plugins.CMAManager
             public int eventtype;
             public string command;
         }
-
-        //private List<TaskInfo> taskInfos = new List<TaskInfo>();
-        //
 
         private void initCommandTask(String guid, String request)
         {
@@ -294,7 +295,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 string responseResult = String.Empty;
 
                 NotifyArgs args = new NotifyArgs();
-                args.eventtype = taskinfo.eventtype.ToString();
+                args.eventType = taskinfo.eventtype.ToString();
 
 
                 try
@@ -339,16 +340,15 @@ namespace DDPM.SA.Plugins.CMAManager
                 OnEventNotify(args);
             }
         }
-
-        #region ICMAManagerIT implementation
-        public Task<CMAResult> Info(CMARequestArgs request)
+        
+        public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
         {
             // 
             Guid uniqueAgentGuid = Guid.NewGuid();
-            
+
 
             //Assign request ID per call
-            CMAResult result = new CMAResult();
+            RemoteManagementResult result = new RemoteManagementResult();
             result.cma_request_id = uniqueAgentGuid;
 
             if (request == null)
@@ -360,124 +360,32 @@ namespace DDPM.SA.Plugins.CMAManager
 
             try
             {
-                initCommandTask(uniqueAgentGuid.ToString(), request.cma_request);
+                initCommandTask(uniqueAgentGuid.ToString(), request.remote_request);
             }
             catch (Exception e) {
 
                 NotifyArgs args = new NotifyArgs();
-                args.eventtype = Params.EventType.UNKNOW_ERROR.ToString();
-                args.notification = e.ToString() + "; " + request.cma_request;
+                args.eventType = Params.EventType.UNKNOW_ERROR.ToString();
+                args.notification = e.ToString() + "; " + request.remote_request;
                 OnEventNotify(args);
             }
 
-            /*foreach (string input in commandinputs) 
-            {
-                if (null != _CliManagerPlugin)
-                {
-                    ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                    CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(input.Split(' '));
-
-                    //_CliManagerPlugin.PerformCommandLineRelay
-                    CLIEventResult cliResult = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-
-*//*                    NotifyArgs args = new NotifyArgs();
-                    args.eventtype = e.ExitCode.ToString();
-                    args.notification = e.response;
-                    OnEventNotify(args);*//*
-                }
-            }*/
-
-            /*CmaCommand cmd = new CmaCommand(uniqueAgentGuid.ToString(), request.cma_request);
-
-            List<CmaCommand.CmaTask> tasks = new List<CmaCommand.CmaTask>();
-            foreach (var s in cmd.req)
-            {
-                //Console.WriteLine(s.ToString());
-                tasks.Add(new CmaCommand.CmaTask(cmd.sid, s.ToString()));
-            }
-
-            foreach (CmaCommand.CmaTask task in tasks)
-            {
-
-                string command = "";
-
-                if ("get".Equals(task.active))
-                {
-                    command = command + ("get ");
-                    command = command + (task.devicetype + "=" + task.command);
-                }
-
-                if ("set".Equals(task.active))
-                {
-                    command = command + ("set ");
-                    command = command + (task.devicetype + "=" + task.command);
-                }
-
-                if ("fw".Equals(task.active))
-                {
-                    command = command + ("set ");
-                    command = command + ("display=firmwareupdate");
-                    if (!Params.DeviceType.DISPLAY.Equals(task.devicetype))
-                    {
-                        command = command + (" value=" + task.devicetype);
-                    }
-                }
-
-                commandinputs.Add(command);
-
-                if (null != _CliManagerPlugin)
-                {
-                    ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                    CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(command.Split(' '));
-
-                    //_CliManagerPlugin.PerformCommandLineRelay
-                    CLIEventResult cliResult = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-
-                    NotifyArgs args = new NotifyArgs();
-                    args.eventtype = cliResult.ExitCode.ToString();
-                    args.notification = cliResult.serialize_Json_response;
-                    args.notification = "{\r\n   \"sid\": \"" + task.sid + "\",\r\n   \"gid\": \"" + uniqueAgentGuid + "\",\r\n   \"response\": [\r\n      \r\n      {\r\n         \"id\": \"" + task.tid + "\",\r\n         \"result\": 0,\r\n         \"msg\": \"\",\r\n         \"data\": [\r\n            " + cliResult.serialize_Json_response + "\r\n         ]\r\n      }\r\n   ]\r\n}";
-                    OnEventNotify(args);
-                }
-
-            }*/
             result.message = "Request Got";
             result.output_result = "Executing";
 
             return Task.FromResult(result);
-
-
-            /*OnInvokeCMARequestEvent(request, result.cma_request_id);
-            int time = 0;
-            while(true)
-            {
-                Thread.Sleep(1000);
-                time++;
-                lock(_resultLock)
-                {
-                    int idx = _result_list.FindIndex(x => x.cma_request_id.Equals(result.cma_request_id));
-                    if(idx >= 0)
-                    {
-                        result.message = _result_list[idx].message;
-                        result.output_result = _result_list[idx].output_result;
-                        return Task.FromResult(result);
-                    }
-                }
-                if (time > 60)//use 60 sec as default
-                    return Task.FromResult(response_timeout(result.cma_request_id));
-            }*/
         }
 
-        private CMAResult response_timeout(Guid id)
+        private RemoteManagementResult response_timeout(Guid id)
         {
-            CMAResult result = new CMAResult();
+            RemoteManagementResult result = new RemoteManagementResult();
             result.cma_request_id = id;
             result.message = "Wait for result timeout";
             result.output_result = "FAIL";
             return result;
         }
 
-        private void OnInvokeCMARequestEvent(CMARequestArgs request, Guid id)
+        private void OnInvokeCMARequestEvent(RemoteRequestArgs request, Guid id)
         {
             EventHandler<CMAEventArgs> Handler = CMARequestEvent;
             if (Handler != null)
@@ -489,7 +397,6 @@ namespace DDPM.SA.Plugins.CMAManager
                 Handler.Invoke(this, input);
             }
         }
-
         #endregion
 
 
@@ -539,7 +446,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
 
         #region ICMAManagerSA implementation
-        public Task WriteResult(CMAResult result)
+        public Task WriteResult(RemoteManagementResult result)
         {
             lock(_resultLock)
             {
@@ -559,7 +466,7 @@ namespace DDPM.SA.Plugins.CMAManager
         #endregion
 
 
-                private void OnEventNotify(NotifyArgs e)
+        private void OnEventNotify(NotifyArgs e)
         {
             EventHandler<NotifyArgs> Handler = Notify;
             if (Handler != null)
