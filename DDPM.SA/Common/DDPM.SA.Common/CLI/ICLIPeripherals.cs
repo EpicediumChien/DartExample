@@ -50,9 +50,9 @@ namespace DDPM.SA.Common
             {
                 case "FIELDOFVIEW":
                     Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyFOVSupportedByDTP(Guid).Result)
+                    if (_devMgr.GetIsPropertyFOVSupportedByDTP(Guid).Result)
                     {
-                        retvalue = _devMgr.GetFieldOfViewValueByDTP(Guid).Result;
+                        retvalue = _devMgr.GetFieldOfView(Guid).Result;
                         Value = retvalue.ToString();
                         Result = "PASS";
                         Message = "N/A";
@@ -67,9 +67,9 @@ namespace DDPM.SA.Common
                     return;
                 case "HDR":
                     Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
+                    if (_devMgr.GetIsPropertyHDRSupported(Guid).Result)
                     {
-                        retcode = _devMgr.GetIsHDROnValueByDTP(Guid).Result;
+                        retcode = _devMgr.GetIsHDROn(Guid).Result;
                         Value = (retcode) ? "ON" : "OFF";
                         Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                         Result = "PASS";
@@ -85,7 +85,7 @@ namespace DDPM.SA.Common
                     return;
                 case "ANTIFLICKER":
                     Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(Guid).Result)
+                    if (_devMgr.GetIsPropertyAntiFlickerSupported(Guid).Result)
                     {
                         retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
                         Value = retvalue.ToString();
@@ -103,9 +103,9 @@ namespace DDPM.SA.Common
                     return;
                 case "AIAUTOFRAMING":
                     Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(Guid).Result)
+                    if (_devMgr.GetIsPropertyAutoFramingSupported(Guid).Result)
                     {
-                        retcode = _devMgr.GetIsAutoFramingOnValueByDTP(Guid).Result;
+                        retcode = _devMgr.GetIsAutoFramingOn(Guid).Result;
                         Value = (retcode) ? "ON" : "OFF";
                         Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                         Result = "PASS";

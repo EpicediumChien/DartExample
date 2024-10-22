@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Module.InputSource;
 using DDPM.UI.Plugin.Common;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.Windows;
@@ -16,10 +17,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
     {
         private readonly string Restore = Strings.RestoreToDefault;// "Restore to default";
 
+        //private ILog? _log;
+
         public DisplayDefaultLeftView()
         {
             InitializeComponent();
             txtRestore.Text = Restore;
+
+            //if (DdpmCommonHelper.MyConsole != null)
+            //{
+            //    _log = DdpmCommonHelper.MyConsole.CreateLog("DisplayDefaultLeftView");
+            //    _log.Info("DisplayDefaultLeftView ctor");
+            //}
 
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -86,7 +95,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             if (txtRestore.IsEnabled == false)
                 return;
 
-            MessageModalDialog dlg = new MessageModalDialog(Strings.RestoreToDefault, Strings.DisplayDefault0, Strings.Yes, Strings.No);
+            MessageModalDialog dlg = new MessageModalDialog(Strings.RestoreToDefault, Strings.DisplayDefault0, Strings.No, Strings.Yes);
             Window parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
             {
@@ -135,6 +144,14 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //MessageBox.Show("OK button was clicked");
             }
             */
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //devImg.Width = this.ActualWidth / 2 + 40;
+            devImg.Width = this.ActualWidth - 30;
+
+            //_log.Info($"this.ActualWidth = {this.ActualWidth}");
         }
     }
 }

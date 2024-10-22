@@ -743,7 +743,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             _DisplayManagerPluginMock.Setup(x => x.GetInputSourcelist(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new Dictionary<string, InputInfo>() { { "A", new InputInfo() { InputName = "A1", USBUpstream = "A2" } } }));
             result = deviceMangerPlugin.GetInputSourcelist(monitorInfo).Result;
-            Assert.Greater(result.Count, 0);
+            Assert.That(result.Count, Is.EqualTo(0));  // GetInputSourcelist method update
 
             //monitorSetting != null,monitorSetting.Input != null
             string strInputSourceLista = "{\"input\": { \"InputName\":\"InputSourceA\",\"USBUpstream\":\"bbb\"}}";
