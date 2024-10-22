@@ -8,12 +8,14 @@
              mc:Ignorable="d"
              Margin="5,4,60,120"
              d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignWidth="800"
+             SizeChanged="UserControl_SizeChanged">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -26,10 +28,11 @@
                         <UXControls:UXTextBlock Text="Widget Settings"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
-                                                Style="{StaticResource ModuleCaptionStyle}" />
+                                                Style="{StaticResource ModuleCaptionStyle}" 
+                                                TextWrapping="WrapWithOverflow"/>
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <Border Background="#132F54"
+                        <Border Background="#132F54" x:Name="borderContent"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,15,0">
@@ -38,15 +41,16 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Grid.Column="0"
+                                    
+                                    <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock"
                                                             Text="Activate Quick Access widget during Zoom conference calls"
                                                             FontSize="16"
                                                             Foreground="White"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
-                                                            VerticalAlignment="Center"
-                                                            HorizontalAlignment="Left" />
-                                    <UXControls:UXToggleSwitch Grid.Column="1"
+                                                            TextWrapping="WrapWithOverflow"/>
+
+                                    <UXControls:UXToggleSwitch Grid.Column="1" Height="Auto"
                                                                IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}"
                                                                ContentTextVisibility="True"
                                                                Content="{Binding Path=EnableQuickAccessWidget_String}"
@@ -60,23 +64,21 @@
                                                         Foreground="White"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left" />
+                                                        TextWrapping="WrapWithOverflow"/>
                                 <Grid Height="40"
                                       Margin="0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Grid.Column="0"
+                                    <UXControls:UXTextBlock Grid.Column="0" x:Name="enableShortcutTextBlock"
                                                             Text="Enable shortcut reminder for Quick Accesswidget"
                                                             FontSize="16"
                                                             Foreground="White"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
-                                                            VerticalAlignment="Center"
-                                                            Width="362"
-                                                            HorizontalAlignment="Left" />
+                                                            TextWrapping="WrapWithOverflow"/>
+                                    
                                     <UXControls:UXToggleSwitch Grid.Column="1"
                                                                IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}"
                                                                ContentTextVisibility="True"

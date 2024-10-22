@@ -36,9 +36,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vm = vm;
             InitializeComponent();
             DataContext = _vm;
-
+            _vm.AwsWindowVisibilityChanged += HandleAwsWindowVisibilityChanged;
         }
-
         #endregion ctor
 
         #region Working Screen/Monitor
@@ -124,6 +123,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             */
 
+            return;
 
 
             //Calcuate the show-up position (xAws, yAws)
@@ -372,7 +372,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                     //Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
                 }
-
+                if (_vm.AwsIcon1.IsAddedCustomLayout)
+                {
+                    Rect rcIcon = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
+                    SplitCtrl0B splitCtrl0B = (SplitCtrl0B)_vm.AwsIcon1;
+                    splitCtrl0B.ApplySettingsToCellList(new Rect(rcIcon.Left, rcIcon.Top, rcIcon.Width, rcIcon.Height));
+                }
 
                 _rcIcon2 = GetFrameworkElementRect(_vm.AwsIcon2.UC);
                 _vm.LogInfo($"@ RefreshCellRects() - Icon2: {ArrangeVM.FormatRect(_rcIcon2)}");
@@ -395,6 +400,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     {
                         _isCellRectInited = true;
                         HoveringSplit = _vm.AwsIcon2;
+                    }
+                }
+                if (_vm.AwsIcon2.IsAddedCustomLayout)
+                {
+                    Rect rcIcon = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
+                    if (!rcIcon.IsEmpty)
+                    {
+                        SplitCtrl0B splitCtrl0B = (SplitCtrl0B)_vm.AwsIcon2;
+                       // splitCtrl0B.ApplySettingsToCellList(new System.Drawing.Rectangle((int)rcIcon.Left, (int)rcIcon.Top, (int)rcIcon.Width, (int)rcIcon.Height));
                     }
                 }
 
@@ -499,6 +513,72 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             rcOut.Width = _rcHoveringCell.Width / _rcHoveringIcon.Width * HoveringScreen.WorkingArea.Width;
             rcOut.Height = _rcHoveringCell.Height / _rcHoveringIcon.Height * HoveringScreen.WorkingArea.Height;
             return rcOut;
+        }
+
+        private void HandleAwsWindowVisibilityChanged(object? sender, bool isVisible)
+        {
+            if (!isVisible) 
+                return;
+
+            _vm.LogInfo($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+            System.Windows.Point ptAws = CalculateAwsPosition();
+            _vm.xAws = ptAws.X;
+            _vm.yAws = ptAws.Y;
+
+            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
+
+        }
+
+        private System.Windows.Point CalculateAwsPosition()
+        {
+            //Calculate normal position
+            double xCur = (double)_vm.xCursor;
+            double yCur = (double)_vm.yCursor;
+
+            xCur /= _vm.ScreenScale;
+            yCur /= _vm.ScreenScale;
+
+            double left = xCur - _vm.cxAws / 2;
+            double top = yCur - ArrangeVM.dyAwsShow - _vm.cyAws;
+
+            //Get current working screen
+            Screen? scr = _vm.GetScreenFromCursor();
+            if (scr == null)
+            {
+                _vm.LogInfo("  * GetScreenFromCursor() return null, cannot get Screen from Cusoro positon.");
+                left /= _vm.ScreenScale;
+                top /= _vm.ScreenScale;
+                return new System.Windows.Point(left, top);
+            }
+
+            //Fix left if it crosss screen boundary
+            //
+            if (left < (scr.Bounds.Left + leftMargin))
+            {
+                left = scr.Bounds.Left + leftMargin;
+                Trace.WriteLine("Fix left side");
+            }
+
+            double rightBound = scr.Bounds.Right / _vm.ScreenScale - rightMargin - _vm.cxAws;
+            //rightMargin = rightBound / _vm.ScreenScale;
+            if (left > rightBound)
+            {
+                left = rightBound;
+                Trace.WriteLine("Fix right side");
+            }
+
+            return new System.Windows.Point(left, top);
+        }
+
+        private void Dispatcher_MoveWindow(double x, double y)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                //this.Visibility = Visibility.Visible;
+                Left = x;
+                Top = y;
+                Topmost = true;
+            });
         }
     }
 }

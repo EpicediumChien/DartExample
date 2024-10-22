@@ -18,9 +18,30 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
-        Task<int> GetDpiValue(string itemID);
 
-        Task SetDPIValue(string itemID, int newValue);
+        #region Mouse
+
+        Task<int> GetDpiValue(string Guid);
+        Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<JArray> GetMouseProgrammableKeys(string Guid);
+        Task<JArray> GetAppSpecificProfiles(string Guid);
+
+
+        Task SetDpiValue(string Guid, int newValue);
+        Task SetMouseAction(string Guid, byte[] newValue);
+        Task SetMsAssignDialogAction(string Guid, string newValue);
+        Task SetMsAssignKeystrokeAction(string Guid, string newValue);
+
+        #endregion
+
+        #region Keyboard
+
+        Task SetKbAssignedAction(string Guid, string newValue);
+        Task SetKbAssignDialogAction(string Guid, string newValue);
+        Task SetKbAssignKeystrokeAction(string Guid, string newValue);
+
+        #endregion
+
 
         #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
@@ -39,14 +60,17 @@ namespace DDPM.SA.Common
 
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue);
-        Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue);
+        Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
 
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
         Task<string> PairingPen();
+        Task UnPairPen(string Guid);
+        Task<JArray> GetPenDeviceItemsEx();
         Task<string> GetEraserDoublePressValues();
+        Task<string> GetEraserSinglePressValues();
+        Task<string> GetEraserLongPressValues();
         Task<string> GetSideSwitchSinglePressValues();
         Task<string> GetMenuSinglePressValues();
         Task<string> GetLaunchableAppValues();
@@ -69,31 +93,24 @@ namespace DDPM.SA.Common
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
-        Task SetBrightnessValue(string itemID, int newValue);
+        Task<string> GetCameraFirmwareVersion(string Guid);
 
-        Task<string> GetCameraFirmwareVersion(string itemID);
+        Task<bool> GetIsPropertyFOVSupported(string Guid);
 
-        Task<bool> CheckIsPropertyFOVSupported(string itemID);
+        Task<int> GetFieldOfView(string Guid);
 
-        Task<int> GetFieldOfViewValue(string itemID);
+        Task<bool> GetIsPropertyHDRSupported(string Guid);
 
-        Task<bool> CheckIsPropertyHDRSupported(string itemID);
+        Task<bool> GetIsHDROn(string Guid);
 
-        Task<bool> GetIsHDROnValue(string itemID);
+        Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid);
 
-        Task SetIsHDROnValue(string itemID, bool newValue);
+        Task<int> GetAntiFlicker(string Guid);
 
-        Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID);
+        Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
 
-        Task<int> GetAntiFlickerValue(string itemID);
+        Task<bool> GetIsAutoFramingOn(string Guid);
 
-        Task SetAntiFlickerValue(string itemID, int newValue);
-
-        Task<bool> CheckIsPropertyAutoFramingSupported(string itemID);
-
-        Task<bool> GetIsAutoFramingOnValue(string itemID);
-
-        Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
         Task SetProfileName(string Guid, string newValue);
@@ -126,6 +143,8 @@ namespace DDPM.SA.Common
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+        Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
+        Task ResetToDefault_webcam(string Guid, bool newValue);
 
         Task<int> GetWALTime(string Guid);
         Task<int> GetSnooze(string Guid);
@@ -133,6 +152,32 @@ namespace DDPM.SA.Common
         Task<bool> GetIsProximitySensorEnable(string Guid);
         Task<bool> GetIsWakeonApproachEnable(string Guid);
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
+        Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+
+        #endregion
+
+        #region Headset
+
+        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Wired Audio
+
+        Task<int> GetBassAsync(string Guid);
+        Task SetBassAsync(string Guid, int newValue);
+        Task<int> GetMidRangeAsync(string Guid);
+        Task SetMidRangeAsync(string Guid, int newValue);
+        Task<int> GetTrebleAsync(string Guid);
+        Task SetTrebleAsync(string Guid, int newValue);
+        Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid);
+        Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
+        Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue);
+        Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string Guid);
+        Task SetResetToDefaultValueAsync(string Guid, bool newValue);
+
         #endregion
     }
 }

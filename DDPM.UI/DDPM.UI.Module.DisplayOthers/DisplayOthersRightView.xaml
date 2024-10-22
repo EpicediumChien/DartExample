@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -110,7 +110,7 @@
                                                             Foreground="#F5F6F7" FontSize="16" LineHeight="28"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption"
                                                             IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
-                                                            HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                                            TextWrapping="WrapWithOverflow" />
                                     <Grid Grid.Row="1" Margin="16,0" IsEnabled="{Binding PowerNap_Enable}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -177,7 +177,6 @@
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [DisplayOthers.6], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption"
-                                                            HorizontalAlignment="Left" VerticalAlignment="Center"
                                                             FontSize="20" LineHeight="28" />
                                     <Grid Grid.Column="1" Margin="8,0"
                                           HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">
@@ -226,21 +225,21 @@
                                 <Grid Grid.Column="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXButton Grid.Column="1" Margin="8" ButtonType="Secondary" ButtonSize="Medium"
-                                                         Content="Import" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                                         Content="{Binding [Import], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Right" VerticalAlignment="Center" 
                                                          IsEnabled="{Binding isSettingsEnable}" Opacity="{Binding Settings_Opacity}"
                                                          Foreground="#F5F6F7" FontSize="14" BorderBrush="#F5F6F7" Name="import" Click="import_Click" />
                                     <UXControls:UXButton Grid.Column="2" Margin="8" ButtonType="Secondary" ButtonSize="Medium"
-                                                         Content="Export" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                                         Content="{Binding [Export], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Right" VerticalAlignment="Center" 
                                                          IsEnabled="{Binding isSettingsEnable}" Opacity="{Binding Settings_Opacity}"
                                                          Foreground="#F5F6F7" FontSize="14" BorderBrush="#F5F6F7" Name="export" Click="export_Click" />
                                 </Grid>
                             </Grid>
                             <UXControls:UXCheckBox Grid.Row="1" Margin="24, 8, 8, 0" CheckBoxSize="Large"
-                                                   Content="Automatically apply the settings when the same model is detected"
+                                                   Content="{Binding [ImpExp_Message.0], Source={x:Static lang:LangHelper.Instance}}"
                                                    HorizontalAlignment="Left" FontSize="14" Foreground="White"
                                                    IsEnabled="{Binding isSettingsEnable}" Opacity="{Binding Settings_Opacity}"
                                                    IsChecked="{Binding AutoApply_Checked}" />

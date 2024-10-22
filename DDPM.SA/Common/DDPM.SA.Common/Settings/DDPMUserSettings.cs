@@ -1,4 +1,5 @@
 ﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using System;
 using System.Collections.Generic;
 
@@ -60,7 +61,7 @@ namespace DDPM.SA.Common.Settings
 
         //USBKVM
         //public string strUSBKVMPCsList { get; set; }
-        public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
+        //public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
 
         //FW Update
         public bool LockFWU_UI { get; set; }
@@ -79,6 +80,9 @@ namespace DDPM.SA.Common.Settings
         #region EzSettings
         //Recent Hotkey settings: will save to Hotkey settings, implemented by Gavin Liu
 
+        //Robert_Lin, 2024-10-11 EasyArrange Custom Layouts, move from MonitorSettings
+        public SplitJson[] EACustomList { get; set; }
+
         public EzSettings EzSettings { get; set; } = new EzSettings();
 
         #endregion EzSettings
@@ -89,5 +93,6 @@ namespace DDPM.SA.Common.Settings
 
         #endregion EasyMemory
 
+        public HotkeySettings HotkeySettings { get; set; } = new HotkeySettings();
     }
 }

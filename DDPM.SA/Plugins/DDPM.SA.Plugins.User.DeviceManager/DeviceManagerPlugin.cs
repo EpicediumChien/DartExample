@@ -49,6 +49,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -439,7 +440,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         // 20240619 jim modify
-        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0)
+        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true)
         {
             writelog("DeviceManagerPlugin received WriteColorPreset requested ...");
 
@@ -466,8 +467,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Thread.Sleep(100);
             //}
 
+            Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
+            Trace.WriteLine("reqKey (showOSD) = " + showOSD);
+
             // Jim add 20240925
-            if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory)
+            if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory && showOSD)
             {
                 //show OSD over colorpreset plugin
                 _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
@@ -896,6 +900,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(temp);
         }
 
+        public Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name)
+        {
+            writelog("DeviceManagerPlugin received Sync_ColorPresetName requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - Sync_ColorPresetName]");
+                return Task.FromResult(string.Empty);
+            }
+
+            var temp = _ColorPresetPlugin.Sync_ColorPresetName(monitorInfo, ColorPreset_Name).Result;
+
+            return Task.FromResult(temp);
+        }
+
         #endregion
 
         #region Schedule Manger implementation
@@ -1041,11 +1060,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Display Service implementation
 
-        public Task Reset0x52TimerTick(int millisecond)
+        public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
+            writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + $" requested, process ID[{processID}]");
 
-            _DisplayManagerPlugin.Reset0x52TimerTick(millisecond);
+            _DisplayManagerPlugin.Reset0x52TimerTick(millisecond, processID);
 
             return Task.FromResult(Task.CompletedTask);
         }
@@ -1057,8 +1076,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("DeviceMangerPlugin received GetMonitors requested ...");
                 //if (_AllInfoMonitorsRecord.Count == 0)
                 //{
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                if (_AllInfoMonitors != null)
+                    _AllInfoMonitors.Clear();
+                else
+                    _AllInfoMonitors = new List<MonitorInfo>();
 
                 if (_DisplayManagerPlugin == null)
                 {
@@ -1117,8 +1138,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                if (_AllInfoMonitors != null)
+                    _AllInfoMonitors.Clear();
+                else
+                    _AllInfoMonitors = new List<MonitorInfo>();
 
                 if (_DisplayManagerPlugin == null)
                 {
@@ -1351,9 +1374,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </returns>
         public Task<Dictionary<string, InputInfo>> GetInputSourcelist(MonitorInfo monitorInfo)
         {
+            writelog("[DeviceMangerPlugin] GetInputSourcelist ...");
             //_inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
             //DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
             Dictionary<string, InputInfo> inputSourcelist = new Dictionary<string, InputInfo>();
+            Dictionary<string, InputInfo> copyinputlist = new Dictionary<string, InputInfo>();
             Dictionary<string, InputInfo> readinputlist = new Dictionary<string, InputInfo>();
             //get monitor settings
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
@@ -1363,25 +1388,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
                 if (monitorSetting == null)
                 {
-                    inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                    //if (DDMinputlist != null)
-                    //{
-                    //    if (DDMinputlist.Count != 0)
-                    //    {
-                    //        foreach (var DDPMinput in inputSourcelist)
-                    //        {
-                    //            foreach (var DDMinput in DDMinputlist)
-                    //            {
-                    //                if (DDPMinput.Value.Code == DDMinput.Value.Code)
-                    //                {
-                    //                    DDPMinput.Value.InputName = DDMinput.Value.InputName;
-                    //                    break;
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                    //inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                    //bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                    writelog("[DeviceMangerPlugin] monitorSetting is null ...");
                 }
                 else
                 {
@@ -1389,39 +1398,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         if (monitorSetting.Input != null)
                         {
-                            if (monitorSetting.Input.strInputSourceList != null && monitorSetting.Input.strInputSourceList != string.Empty)
+                            if (!String.IsNullOrEmpty(monitorSetting.Input.strInputSourceList)/* != null && monitorSetting.Input.strInputSourceList != string.Empty*/)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
-                                foreach (var input in inputSourcelist)
+                                if (inputSourcelist != null)
                                 {
-                                    //Maybe Migration...
-                                    if (input.Value.USBUpstream == string.Empty)
+                                    if (inputSourcelist.Count != 0)
                                     {
-                                        readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                        break;
-                                    }
-                                }
-                                if (readinputlist != null)
-                                {
-                                    if (readinputlist.Count != 0)
-                                    {
-                                        foreach (var input in readinputlist)
+                                        copyinputlist = inputSourcelist;
+                                        foreach (var input in inputSourcelist)
                                         {
-                                            foreach (var input2 in inputSourcelist)
+                                            //Maybe Migration...
+                                            if (input.Value.USBUpstream == string.Empty)
                                             {
-                                                if (input.Value.Code == input2.Value.Code)
+                                                readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                                if (readinputlist != null)
                                                 {
-                                                    input.Value.InputName = input2.Value.InputName;
-                                                    break;
+                                                    if (readinputlist.Count != 0)
+                                                    {
+                                                        foreach (var readinput in readinputlist)
+                                                        {
+                                                            foreach (var copyinput in copyinputlist)
+                                                            {
+                                                                if (readinput.Value.Code == copyinput.Value.Code)
+                                                                {
+                                                                    readinput.Value.InputName = copyinput.Value.InputName;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                                        return Task.FromResult(readinputlist);
+                                                    }
                                                 }
+                                                break;
                                             }
                                         }
-                                        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
-                                        return Task.FromResult(readinputlist);
+                                        return Task.FromResult(inputSourcelist);
                                     }
                                 }
-                                return Task.FromResult(inputSourcelist);
                             }
+                        }
+                        else
+                        {
+                            writelog("[DeviceMangerPlugin] monitorSetting.Input is null ...");
                         }
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                         bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
@@ -1445,26 +1465,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <returns></returns>
         public Task<bool> SetInputSourcelist(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputlist)
         {
+            writelog("[DeviceMangerPlugin] SetInputSourcelist ...");
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null && inputlist != null)
             {
-                foreach (DDPMMonitorSettings monitorSettings in settings)
+                if (inputlist.Count != 0)
                 {
-                    if (monitorSettings != null)
+                    foreach (DDPMMonitorSettings monitorSettings in settings)
                     {
-                        if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+                        if (monitorSettings != null)
                         {
-                            string strinputlist = string.Empty;
-                            strinputlist = InputSourceListSerialize(inputlist);
-                            monitorSettings.Input.strInputSourceList = strinputlist;
-                            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+                            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
                             {
-                                return Task.FromResult(true);
+                                string strinputlist = string.Empty;
+                                strinputlist = InputSourceListSerialize(inputlist);
+                                monitorSettings.Input.strInputSourceList = strinputlist;
+                                if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+                                {
+                                    return Task.FromResult(true);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
+                else
+                {
+                    writelog("[DeviceMangerPlugin] inputlist count is 0 ...");
+                }
+            }
+            else
+            {
+                writelog("[DeviceMangerPlugin] settings or inputlist is null ...");
             }
             return Task.FromResult(false);
         }
@@ -1506,7 +1538,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (inputSourceList.TryGetValue(input, out outinput))
                 {
                     inputSourceList[input].InputName = name;
-                    string strInputList = InputSourceListSerialize(inputSourceList);
+                    //string strInputList = InputSourceListSerialize(inputSourceList);
                     if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                     {
                         return Task.FromResult(true);
@@ -1549,7 +1581,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (inputSourceList.TryGetValue(inputsource, out outinput))
                     {
                         inputSourceList[inputsource].USBUpstream = upstream;
-                        string strInputList = InputSourceListSerialize(inputSourceList);
+                        //string strInputList = InputSourceListSerialize(inputSourceList);
                         if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                         {
                             return Task.FromResult(true);
@@ -1570,7 +1602,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     inputSourceList[inputsource1].USBUpstream = upstream1;
                     inputSourceList[inputsource2].USBUpstream = upstream2;
-                    string strInputList = InputSourceListSerialize(inputSourceList);
+                    //string strInputList = InputSourceListSerialize(inputSourceList);
                     if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                     {
                         return Task.FromResult(true);
@@ -1747,13 +1779,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task StartPairingPen()
-        {
-            writelog("DeviceMangerPlugin received StartPairingPen requested ...");
-            _PeripheralsPlugin.StartPairingPen();
-            return Task.FromResult(true);
-        }
-
         public Task StopPairing(Guid deviceId)
         {
             writelog("DeviceMangerPlugin received StopPairing requested ...");
@@ -1904,15 +1929,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetSideTopSwitchSinglePressSetting3(byte[] newValue, Guid deviceId)
-        {
-            writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
-            writelog($"Target Guid is {deviceId}");
-            writelog($"Target Value is {newValue}");
-            _PeripheralsPlugin.SetSideTopSwitchSinglePressSetting(newValue, deviceId);
-            return Task.FromResult(true);
-        }
-
         public Task SetWALTime(int newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetWALTime requested ...");
@@ -1977,6 +1993,105 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             int nRes;
             nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
             return Task.FromResult(nRes);
+        }
+
+        #endregion
+
+        #region Headset
+
+        public Task SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
+        #region Wired Audio
+        public async Task<int> GetBassAsync(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(Guid));
+        }
+
+        public async Task SetBassAsync(string Guid, int newValue)
+        {
+            _DTPProxyPlugin.SetBassAsync(Guid, newValue);
+            //return Task.FromResult(true);
+        }
+
+        public async Task<int> GetMidRangeAsync(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMidRangeAsync(Guid));
+        }
+
+        public async Task SetMidRangeAsync(string Guid, int newValue)
+        {
+            _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
+            //return Task.FromResult(true);
+        }
+
+        public async Task<int> GetTrebleAsync(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(Guid));
+        }
+        public async Task SetTrebleAsync(string Guid, int newValue)
+        {
+            _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
+            //return Task.FromResult(true);
+        }
+        //-----------------------------------
+        public Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioMicMuteSoundEnableAsync requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(Guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(Guid));
+        }
+        //-----------------------------------
+        public Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetWiredAudioVolumeAdjustmentToneAsync requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(Guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(Guid));
+        }
+        //-----------------------------------
+        public Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableValue(Guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableValue(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(Guid));
+        }
+        //-----------------------------------
+        public Task SetResetToDefaultValue(string Guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetResetToDefaultValue requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetResetToDefaultValueAsync(Guid, newValue);
+            return Task.FromResult(true);
         }
 
         #endregion
@@ -2444,8 +2559,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                if (updateHelper == null || updateHelper.UpdateItems == null)
+                {
+                    updateHelper = new UpdateHelper();
+                    updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                }
+                DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
+                {
+                    displayUpdateHelper = new DisplayUpdateHelper();
+                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
+                }
+
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result, isOnlyDisplay).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2464,13 +2591,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(tmpFWUpdateInfos);
         }
 
-        public Task<FWUErrorCode> Install(string installPath)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
         {
             FWUErrorCode ret = FWUErrorCode.Unknow;
-            if (_UpdateProgress != null)
-            {
-                ret = _FWUpdatePlugin.Install(installPath).Result;
-            }
+            //if (_UpdateProgress != null)
+            //{
+            ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+            //}
             return Task.FromResult(ret);
         }
 
@@ -2583,27 +2710,65 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin == null)
                 return Task.FromResult(false);
-            UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+            UpdateHelper updateHelper;
+            DisplayUpdateHelper displayUpdateHelper;
+            try
+            {
+                updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                if (updateHelper == null || updateHelper.UpdateItems == null)
+                {
+                    updateHelper = new UpdateHelper();
+                    updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(CheckUpdate)} GetFWUpdateInfo Error:{ex.Message}");
+                return Task.FromResult(false);
+            }
             if (_DisplayManagerPlugin == null)
                 return Task.FromResult(false);
             if (_SettingsPlugin == null)
             {
                 return Task.FromResult(false);
             }
-            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
-            if (_FWUpdatePlugin == null)
-                return Task.FromResult(false);
-            SetDelayFWUpdateInfoPackage();
-            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
-            bool b = true;
-            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+            try
             {
-                if (fwUpdateInfo.FWUErrorCode != FWUErrorCode.NoError)
+                displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
-                    b = false;
+                    displayUpdateHelper = new DisplayUpdateHelper();
+                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
                 }
             }
-            return Task.FromResult(b);
+            catch (Exception ex)
+            {
+                writelog($"{nameof(CheckUpdate)} GetDisplayFWUpdate Error:{ex.Message}");
+                return Task.FromResult(false);
+            }
+
+            if (_FWUpdatePlugin == null)
+                return Task.FromResult(false);
+
+            try
+            {
+                SetDelayFWUpdateInfoPackage();
+                List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
+                bool b = true;
+                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                {
+                    if (fwUpdateInfo.FWUErrorCode != FWUErrorCode.NoError)
+                    {
+                        b = false;
+                    }
+                }
+                return Task.FromResult(b);
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(CheckUpdate)} _FWUpdatePlugin.CheckUpdate Error:{ex.Message}");
+                return Task.FromResult(false);
+            }
         }
 
         private Task<bool> GetDeviceinfos()
@@ -2822,18 +2987,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
                                 {
                                     USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-                                    if (USBKVMPCsList == null)
+                                    if (USBKVMPCsList != null)
                                     {
-                                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                    }
-                                    else
-                                    {
-                                        foreach (var pc in USBKVMPCsList)
+                                        if (USBKVMPCsList.Count != 0)
                                         {
-                                            if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                            foreach (var pc in USBKVMPCsList)
                                             {
-                                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                                break;
+                                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                                {
+                                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
@@ -3380,13 +3544,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        //Robert_Lin, 2024-10-12 Note that CustomList has been moved to UserSettings
+        //New added method: ReadEACustomList()
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo)
         {
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
             //Robert_Lin, 2024-10-10 to fix defaule list will return double items when deserialize json
             defaultOutput.RecentList = SplitJson.DefaultRecentList.ToArray();
-            _dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
 
             if (_SettingsPlugin == null)
             {
@@ -3415,11 +3581,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
+            //Robert_Lin, 2024-10-13, If the settings are migrated from DDM, some of SplitJson,
+            //1 CustomLayouts:
+            //2 PresetLayouts: containts EAID only
+
+            //Need to refernce to CustomLayouts
+            SplitJson[] customArray = ReadEACustomList().Result;
+            List<SplitJson> customList = new List<SplitJson>();
+            if ((customArray != null) && (customArray.Length > 0))
+                customList = new List<SplitJson>(customArray);
+
+            //Convert SelectedSplit
+            if (monitorSetting.EA.SelectedSplit.CellCount < 0)
+            {
+                //It's a settings migrated from DDM
+
+                //If it's a custom layout
+                if (monitorSetting.EA.SelectedSplit.EAID >= 1000)
+                {
+                    monitorSetting.EA.SelectedSplit = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                    if (monitorSetting.EA.SelectedSplit == null)
+                        monitorSetting.EA.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
+                }
+                else
+                {
+                    //It's a preset layout
+                    monitorSetting.EA.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                }
+            }
+
+
+
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
             if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
                 monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+            else
+            {
+                //Convert RecentList
+                List<SplitJson> migratedRecentList = new List<SplitJson>();
+                foreach (SplitJson recentJson in monitorSetting.EA.RecentList)
+                {
+                    if (recentJson.CellCount < 0)
+                    {
+                        //If it's a custom layout
+                        if (recentJson.EAID >= 1000)
+                        {
+                            SplitJson? custJson = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                            if (custJson != null)
+                            {
+                                migratedRecentList.Add(custJson);
+                            }
+                        }
+                        else
+                        {
+                            //It's a preset layout
+                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                            if (presetJson != null)
+                            {
+                                migratedRecentList.Add(presetJson);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        migratedRecentList.Add(recentJson);
+                    }
+                }
+                monitorSetting.EA.RecentList = migratedRecentList.ToArray();
+            }
 
-            _dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
+            //_dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
@@ -3651,6 +3882,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
             }
+        }
+
+        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        /// <summary>
+        /// Read the EACustomList for current user
+        /// </summary>
+        /// <returns></returns>
+        public Task<SplitJson[]> ReadEACustomList()
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                //Don't return null, return empty array instead
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        if (appSettings.UserSettings.EACustomList != null)
+                            return Task.FromResult(appSettings.UserSettings.EACustomList);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(new SplitJson[] { });
+        }
+        /// <summary>
+        /// Write the EACustomList to current user's settings file
+        /// </summary>
+        /// <param name="customList"></param>
+        /// <returns></returns>
+        public Task<bool> WriteEACustomList(SplitJson[] customList)
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
+                        //Writeback to app settings
+                        _SettingsPlugin.SetAppConfigData(appSettings);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(false);
         }
 
         #endregion EasyArrage
@@ -4165,6 +4445,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
+            writelog("[DisplayExportSettings]Export Settings");
             //need test, but need other function
             //if vcp code is null, get vcp code
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
@@ -4177,34 +4458,59 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
                         {
-                            Dictionary<object, object> cacheTable = new Dictionary<object, object>();
-                            cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
-                            monitorSettings.DisplayPropertiesInfo = Export_DisplayProperties(monitorInfo);
-                            if (_ColorPresetPlugin != null)
+                            try
                             {
-                                monitorSettings.ColorPreset = _ColorPresetPlugin.Export(monitorInfo, _SettingsPlugin).Result;
-                            }
-                            foreach (VCPCode vcp in monitorSettings.VCPs)
-                            {
-                                if (vcp.Value != null)
+                                writelog("[DisplayExportSettings]Export FindVCPTable");
+                                Dictionary<object, object> cacheTable = new Dictionary<object, object>();
+                                cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
+                                writelog("[DisplayExportSettings]Export DisplayProperties");
+                                monitorSettings.DisplayPropertiesInfo = Export_DisplayProperties(monitorInfo);
+                                writelog("[DisplayExportSettings]Export ColorPreset");
+                                if (_ColorPresetPlugin != null)
                                 {
-                                    byte b_vcpcode = Convert.ToByte(vcp.Code);
-                                    //object value = cacheTable[b_vcpcode];
-                                    ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
-                                    if (objGet.result && vcp.Value.FindIndex(x => x == (int)(uint)objGet.value) == -1)
+                                    monitorSettings.ColorPreset = _ColorPresetPlugin.Export(monitorInfo, _SettingsPlugin).Result;
+                                }
+                                writelog("[DisplayExportSettings]Export ALS");
+                                List<ALSConfig> aLSConfigs = new List<ALSConfig>();
+                                aLSConfigs = GetAllExistAlsConfig().Result;
+                                if (aLSConfigs != null)
+                                {
+                                    ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
+                                    monitorSettings.ALSConfig = aLSConfig.AllValue;
+                                }
+                                writelog("[DisplayExportSettings]Export VCPs");
+                                foreach (VCPCode vcp in monitorSettings.VCPs)
+                                {
+                                    if (vcp.Value != null)
                                     {
-                                        writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
-                                        vcp.Value.Add((int)(uint)objGet.value);
+                                        vcp.Value.Clear();
+                                        byte b_vcpcode = Convert.ToByte(vcp.Code);
+                                        //object value = cacheTable[b_vcpcode];
+                                        ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
+                                        if (objGet.result && vcp.Value.FindIndex(x => x == (int)(uint)objGet.value) == -1)
+                                        {
+                                            writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
+                                            vcp.Value.Add((int)(uint)objGet.value);
+                                        }
+                                        //if (value != null)
+                                        //{
+                                        //    Console.WriteLine("VCP code : " + vcp.Code.ToString());
+                                        //    Console.WriteLine("VCP value : " + value.ToString());
+                                        //    vcp.Value.Add((int)value);
+                                        //}
                                     }
-                                    //if (value != null)
-                                    //{
-                                    //    Console.WriteLine("VCP code : " + vcp.Code.ToString());
-                                    //    Console.WriteLine("VCP value : " + value.ToString());
-                                    //    vcp.Value.Add((int)value);
-                                    //}
                                 }
                             }
+                            catch
+                            {
+                                writelog("[DisplayExportSettings]Export is fail");
+                                return Task.FromResult(false);
+                            }
                         }
+                    }
+                    else
+                    {
+                        writelog("[DisplayExportSettings]monitorSettings is null");
                     }
                 }
             }
@@ -4213,66 +4519,112 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DisplayExportSettings]settings is null");
             }
 
-            //expot settings
-            if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
+            try
             {
-                return Task.FromResult(true);
+                //expot settings
+                if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
+                {
+                    writelog("[DisplayExportSettings]Export is Success");
+                    return Task.FromResult(true);
+                }
+                else
+                {
+                    writelog("[DisplayExportSettings]Export is fail");
+                }
+            }
+            catch
+            {
+                writelog("[DisplayExportSettings]Export catch is fail");
+                return Task.FromResult(false);
             }
             return Task.FromResult(false);
         }
 
         public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
+            writelog("[DisplayImportSettings] Import Settings");
             ImportVCP importVCP = new ImportVCP();
+            ImpVCPSequence impVCPSequence = new ImpVCPSequence();
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
                 if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
-                    vcps = ImpExpSettings.MonitorSettings.VCPs;
-                    if (_ColorPresetPlugin != null)
+                    if (ImpExpSettings != null)
                     {
-                        bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
-                    }
-                    if (vcps != null)
-                    {
-                        if (vcps.Count > 0)
+                        if (ImpExpSettings.MonitorSettings != null)
                         {
-                            //set ImportVCPSequence
-                            SetVCPSequence(monitorInfo, vcps);
-                            foreach (VCPCode code in vcps)
+                            try
                             {
-                                writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                                if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                    importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                vcps = ImpExpSettings.MonitorSettings.VCPs;
+                                writelog("[DisplayImportSettings] Import DisplayProperties");
+                                if (Import_DisplayProperties(monitorInfo, ImpExpSettings.MonitorSettings.DisplayPropertiesInfo))
                                 {
-                                    bool b = false;
-                                    ObjGetVCP objGetVCP = new ObjGetVCP();
-                                    //SHR on/off need load settings
-                                    //if (code.Code == 0xF0)
-                                    //{
-                                    //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                    //}
-                                    //get vcp code
-                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                    if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                    writelog("[DisplayImportSettings] Import_DisplayProperties");
+                                }
+                                writelog("[DisplayImportSettings] Import ColorPreset");
+                                if (_ColorPresetPlugin != null)
+                                {
+                                    bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
+                                }
+                                writelog("[DisplayImportSettings]Import VCP");
+                                if (vcps != null)
+                                {
+                                    if (vcps.Count > 0)
                                     {
-                                        //set vcp code
-                                        writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                        //set ImportVCPSequence
+                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
+                                        SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                        foreach (VCPCode code in vcps)
+                                        {
+                                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                            {
+                                                bool b = false;
+                                                ObjGetVCP objGetVCP = new ObjGetVCP();
+                                                //SHR on/off need load settings
+                                                //if (code.Code == 0xF0)
+                                                //{
+                                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                                //}
+                                                //get vcp code
+                                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                                {
+                                                    //set vcp code
+                                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                                }
+                                            }
+                                        }
+                                        writelog("[DisplayImportSettings] Import Success");
+                                        return Task.FromResult(true);
+                                    }
+                                    else
+                                    {
+                                        writelog("[DisplayImportSettings] VCPs List count is 0");
                                     }
                                 }
+                                else
+                                {
+                                    writelog("[DisplayImportSettings] VCPs List is null");
+                                }
                             }
-                            return Task.FromResult(true);
+                            catch
+                            {
+                                writelog("[DisplayImportSettings] Import Fail");
+                                return Task.FromResult(false);
+                            }
                         }
                         else
                         {
-                            writelog("[DisplayImportSettings] VCPs List count is 0");
+                            writelog("[DisplayImportSettings] ImpExpSettings.MonitorSettings is null");
                         }
                     }
                     else
                     {
-                        writelog("[DisplayImportSettings] VCPs List is null");
+                        writelog("[DisplayImportSettings] ImpExpSettings is null");
                     }
                 }
                 else
@@ -4282,42 +4634,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     impSettings = _SettingsPlugin.ReadDDMImpSettingsFile(path).Result;
                     if (impSettings != null)
                     {
-                        DDMtoDDPM_Input(impSettings.MonitorSettings);
-                        DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
-                        displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
-                        if (Import_DisplayProperties(displayCurrentPropertiesInfo))
+                        if (impSettings.MonitorSettings != null)
                         {
-                            writelog("[DisplayImportSettings] Import_DisplayProperties");
-                        }
-                        List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-                        monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                        int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
-                        vcps = monitorSettingsList[index].VCPs;
-                        SetVCPSequence(monitorInfo, vcps);
-                        foreach (VCPCode code in vcps)
-                        {
-                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                            try
                             {
-                                bool b = false;
-                                ObjGetVCP objGetVCP = new ObjGetVCP();
-                                //SHR on/off need load settings
-                                //if (code.Code == 0xF0)
-                                //{
-                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                //}
-                                //get vcp code
-                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                writelog("[DisplayImportSettings] Import DDM Input");
+                                DDMtoDDPM_Input(impSettings.MonitorSettings);
+                                writelog("[DisplayImportSettings] Import DDM DisplayProperties");
+                                DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
+                                displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
+                                if (Import_DisplayProperties(monitorInfo, displayCurrentPropertiesInfo))
                                 {
-                                    //set vcp code
-                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                    writelog("[DisplayImportSettings] Import_DisplayProperties Success");
+                                }
+                                List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+                                monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                                if (monitorSettingsList != null)
+                                {
+                                    if (monitorSettingsList.Count > 0)
+                                    {
+                                        writelog("[DisplayImportSettings] Import DDM VCP");
+                                        int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
+                                        vcps = monitorSettingsList[index].VCPs;
+                                        SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                        foreach (VCPCode code in vcps)
+                                        {
+                                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                            {
+                                                bool b = false;
+                                                ObjGetVCP objGetVCP = new ObjGetVCP();
+                                                //SHR on/off need load settings
+                                                //if (code.Code == 0xF0)
+                                                //{
+                                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                                //}
+                                                //get vcp code
+                                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                                {
+                                                    //set vcp code
+                                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                                }
+                                            }
+                                        }
+                                        writelog("[DisplayImportSettings]import is Success");
+                                        return Task.FromResult(true);
+                                    }
+                                    else
+                                    {
+                                        writelog("[DisplayImportSettings]monitorSettingsList count is 0");
+                                    }
+                                }
+                                else
+                                {
+                                    writelog("[DisplayImportSettings]monitorSettingsList is null");
                                 }
                             }
+                            catch
+                            {
+                                writelog("[DisplayImportSettings]import is Fail");
+                                return Task.FromResult(false);
+                            }
                         }
-                        return Task.FromResult(true);
                     }
                     else
                     {
@@ -4330,6 +4711,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel)
         {
+            writelog("[SetSameModel]SetSameModel");
             if (_SettingsPlugin != null)
             {
                 List<DDPMMonitorSettings> monitorSettingslist = new List<DDPMMonitorSettings>();
@@ -4355,6 +4737,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> GetSameModel(MonitorInfo monitorInfo)
         {
+            writelog("[GetSameModel]GetSameModel");
             if (_SettingsPlugin != null)
             {
                 List<DDPMMonitorSettings> monitorSettingslist = new List<DDPMMonitorSettings>();
@@ -4520,30 +4903,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
-        public async Task<int> GetDpiValueByDTP(string itemID)
+        #region Mouse
+
+        public async Task<int> GetDpiValue(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(Guid));
+        }
+        public async Task<JArray> GetMouseAssignableActions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
+        }
+        public async Task<JArray> GetMouseProgrammableKeys(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMouseProgrammableKeys(Guid));
+        }
+        public async Task<JArray> GetAppSpecificProfiles(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
 
-        public Task SetDPIValueByDTP(string itemID, int newValue)
+        public Task SetDPIValue(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetDPIValueByDTP requested ...");
-            writelog($"Target itemID is {itemID}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target DPI Value is {newValue}");
-            _DTPProxyPlugin.SetDPIValue(itemID, newValue);
+            _DTPProxyPlugin.SetDpiValue(Guid, newValue);
             return Task.FromResult(true);
         }
 
+        public Task SetMouseAction(string Guid, byte[] newValue)
+        {
+            writelog("DeviceMangerPlugin received SetMouseAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetMouseAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
         #region Pen
 
+        public async Task<JArray> GetPenDeviceItemsEx()
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
+        }
         public Task<string> PairingPen()
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.PairingPen();
         }
+        public Task UnPairPen(string Guid)
+        {
+            writelog("DeviceMangerPlugin received PairingPen requested ...");
+            return _DTPProxyPlugin.UnPairPen(Guid);
+        }
         public Task<string> GetEraserDoublePressValues()
         {
             return _DTPProxyPlugin.GetEraserDoublePressValues();
+        }
+        public Task<string> GetEraserSinglePressValues()
+        {
+            return _DTPProxyPlugin.GetEraserSinglePressValues();
+        }
+        public Task<string> GetEraserLongPressValues()
+        {
+            return _DTPProxyPlugin.GetEraserLongPressValues();
         }
         public Task<string> GetSideSwitchSinglePressValues()
         {
@@ -4666,21 +5091,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue)
+        public Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
         {
             writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
             writelog($"Target itemID is {itemID}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting1(itemID, newValue);
-            return Task.FromResult(true);
-        }
-
-        public Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue)
-        {
-            writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
-            writelog($"Target itemID is {itemID}");
-            writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting2(itemID, newValue);
+            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting(itemID, newValue);
             return Task.FromResult(true);
         }
 
@@ -4726,90 +5142,54 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
         }
 
-        public async Task<int> GetBrightness(string itemID)
+        public async Task<int> GetBrightness(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetBrightness(Guid));
         }
 
-        public Task SetBrightnessValueByDTP(string itemID, int newValue)
+        public async Task<string> GetCameraFirmwareVersionByDTP(string Guid)
         {
-            writelog("DeviceMangerPlugin received SetBrightnessValueByDTP requested ...");
-            writelog($"Target itemID is {itemID}");
-            writelog($"Target Brightness Value is {newValue}");
-            _DTPProxyPlugin.SetBrightnessValue(itemID, newValue);
-            return Task.FromResult(true);
+            return await Task.Run(() => _DTPProxyPlugin.GetCameraFirmwareVersion(Guid));
         }
 
-        public async Task<string> GetCameraFirmwareVersionByDTP(string itemID)
+        public async Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetCameraFirmwareVersion(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyFOVSupported(Guid));
         }
 
-        public async Task<bool> CheckIsPropertyFOVSupportedByDTP(string itemID)
+        public async Task<int> GetFieldOfView(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyFOVSupported(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetFieldOfView(Guid));
         }
 
-        public async Task<int> GetFieldOfViewValueByDTP(string itemID)
+        public async Task<bool> GetIsPropertyHDRSupported(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetFieldOfViewValue(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyHDRSupported(Guid));
         }
 
-        public async Task<bool> CheckIsPropertyHDRSupportedByDTP(string itemID)
+        public async Task<bool> GetIsHDROn(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyHDRSupported(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsHDROn(Guid));
         }
 
-        public async Task<bool> GetIsHDROnValueByDTP(string itemID)
+        public async Task<bool> GetIsPropertyAntiFlickerSupported(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsHDROnValue(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyAntiFlickerSupported(Guid));
         }
 
-        public Task SetIsHDROnValueByDTP(string itemID, bool newValue)
+        public async Task<int> GetAntiFlickerValueByDTP(string Guid)
         {
-            writelog("DeviceMangerPlugin received SetIsHDROnValueByDTP requested ...");
-            writelog($"Target itemID is {itemID}");
-            writelog($"Target IsHDROn Value is {newValue}");
-            _DTPProxyPlugin.SetIsHDROnValue(itemID, newValue);
-            return Task.FromResult(true);
+            return await Task.Run(() => _DTPProxyPlugin.GetAntiFlicker(Guid));
         }
 
-        public async Task<bool> CheckIsPropertyAntiFlickerSupportedByDTP(string itemID)
+        public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyAntiFlickerSupported(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyAutoFramingSupported(Guid));
         }
 
-        public async Task<int> GetAntiFlickerValueByDTP(string itemID)
+        public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetAntiFlickerValue(itemID));
-        }
-
-        public Task SetAntiFlickerValueByDTP(string itemID, int newValue)
-        {
-            writelog("DeviceMangerPlugin received SetAntiFlickerValueByDTP requested ...");
-            writelog($"Target itemID is {itemID}");
-            writelog($"Target AntiFlicker Value is {newValue}");
-            _DTPProxyPlugin.SetAntiFlickerValue(itemID, newValue);
-            return Task.FromResult(true);
-        }
-
-        public async Task<bool> CheckIsPropertyAutoFramingSupportedByDTP(string itemID)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyAutoFramingSupported(itemID));
-        }
-
-        public async Task<bool> GetIsAutoFramingOnValueByDTP(string itemID)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOnValue(itemID));
-        }
-
-        public Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue)
-        {
-            writelog("DeviceMangerPlugin received SetIsAutoFramingOnValueByDTP requested ...");
-            writelog($"Target itemID is {itemID}");
-            writelog($"Target IsAutoFramingOn Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoFramingOnValue(itemID, newValue);
-            return Task.FromResult(true);
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)
@@ -5019,6 +5399,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetIsPrioritizeExternalWebcam(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsPrioritizeExternalWebcam requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task ResetToDefault_webcam(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received ResetToDefault_webcam requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.ResetToDefault_webcam(guid, newValue);
+            return Task.FromResult(true);
+        }
+
         public Task SetBrightness(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetBrightness requested ...");
@@ -5112,7 +5510,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
         }
 
+        public async Task<bool> GetIsPrioritizeExternalWebcam(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
+        }
+
         #endregion
+
+
+        #endregion
+
 
         #endregion
 
@@ -5207,6 +5614,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
+        public Task<bool> Set_GlobalSetting_EnableTelemetryConsent(bool isEnable)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.isTelemetryConsentOn = isEnable;
+                ret = SaveGlobalSettingParam();
+            }
+            GlobalSettingChangeEvent?.Invoke(this, null);
+            return Task.FromResult(ret);
+        }
+
         private bool LoadGlobalSettingParam()
         {
             bool ret = false;
@@ -5276,10 +5695,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SaveLogFile(string saveFolderPath)
+        public Task<bool> SaveLogFile(string saveFolderPath = "")
         {
             writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
+            if (string.IsNullOrEmpty(saveFolderPath))
+            {
+                saveFolderPath = @$"C:\temp\Log";
+            }
             if (_DisplayManagerPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
             {
                 // 確保資料夾存在
@@ -5697,8 +6120,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        #endregion
-
         #region Private Methods
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
@@ -5706,8 +6127,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Receive DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
             if (displayInOut)
             {
-                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                else _AllInfoMonitors = new List<MonitorInfo>();
+                if (_AllInfoMonitors != null)
+                    _AllInfoMonitors.Clear();
+                else
+                    _AllInfoMonitors = new List<MonitorInfo>();
 
                 try
                 {
@@ -5782,8 +6205,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
                                         //Call VCP to catch updated monitor info
-                                        if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-                                        else _AllInfoMonitors = new List<MonitorInfo>();
+                                        if (_AllInfoMonitors != null)
+                                            _AllInfoMonitors.Clear();
+                                        else
+                                            _AllInfoMonitors = new List<MonitorInfo>();
                                         _AllInfoMonitors.AddRange((_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList());
 
                                         List<MonitorInfo> new_mo = new List<MonitorInfo>();
@@ -6088,7 +6513,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    _NKVMPlugin.MonitorPlug();
                     //    SupportedNKVMMonitors();
                     //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors);
+                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
                     SupportedNKVMMonitors();
                 }
             }
@@ -6276,6 +6701,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[DeviceManager] " + text;
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + text);
 
@@ -7773,7 +8201,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             int idxRecent = 0;
-            if ( eaSettings.RecentList == null)
+            if (eaSettings.RecentList == null)
             {
                 writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
                 return;
@@ -8112,23 +8540,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //[Dean] remove WinCopies utilties and fix code conflict
                 foreach (var input in inputList)
                 {
-                    allInputs.Add(new InputSourceObj(input.Value.InputName));
+                    allInputs.Add(new InputSourceObj((ushort)input.Value.Code, input.Value.InputName));
                 }
                 //debug
+                int idx = 0;
                 foreach (var s in subInputs)
                 {
-                    Debug.WriteLine($"subInputs ==> {s.Name}");
+                    Debug.WriteLine($"subInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    idx++;
                 }
+                idx = 0;
                 foreach (var s in allInputs)
                 {
-                    Debug.WriteLine($"allInputs ==> {s.Name}");
+                    Debug.WriteLine($"allInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    idx++;
                 }
+                //Robert_Lin, 2024-10-16, changed
                 //debug end
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
+                //OLD:
+                //List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
+                //NEW:
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
                 {
                     return;
                 }
+                Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
                 bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
                 writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
                 /*if (subInputs != null && subInputs.Count > 0)
@@ -8447,7 +8884,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
                 if (obBrightness.result)
                 {
-                    uint brightnessValue = ((uint)obBrightness.value) <= 1 ? 0 : (uint)obBrightness.value - 1;
+                    uint brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
                     bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
                     writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
                 }
@@ -8461,7 +8898,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
                 if (obBrightness.result)
                 {
-                    uint brightnessValue = ((uint)obBrightness.value) + 1 >= 100 ? 100 : (uint)obBrightness.value + 1;
+                    uint brightnessValue = (((uint)obBrightness.value) + 5) >= 100 ? 100 : ((uint)obBrightness.value + 5);
                     bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
                     writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
                 }
@@ -9084,39 +9521,54 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return vcps;
         }
 
-        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCPCode> vcps)
+        private void SetVCPSequence(MonitorInfo monitorInfo, ImpVCPSequence impVCPSequence, List<VCPCode> vcps)
         {
-            if (vcps.Count != 0)
+            if (impVCPSequence != null)
             {
-                foreach (var item in vcps)
+                if (vcps.Count != 0)
                 {
-                    Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
-                }
-
-                ImportVCP importVCP = new ImportVCP();
-                foreach (int code in importVCP.ImportVCPSequence)
-                {
-                    if (vcps.Exists(x => x.Code == code))
+                    foreach (var item in vcps)
                     {
-                        VCPCode vcp = vcps.Find(x => x.Code == code);
-                        writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
-                        ObjGetVCP objGetVCP = new ObjGetVCP();
-                        objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
-                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                        Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
+                    }
+
+                    ImportVCP importVCP = new ImportVCP();
+                    foreach (int code in importVCP.ImportVCPSequence)
+                    {
+                        if (vcps.Exists(x => x.Code == code))
                         {
-                            writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
-                            bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                            VCPCode vcp = vcps.Find(x => x.Code == code);
+                            writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
+                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                            objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                            {
+                                writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                                if (code == 0x66)
+                                {
+                                    writelog("[SetVCPSequence] ALS");
+                                    bool b = SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result;
+                                }
+                                else
+                                {
+                                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
                         }
                     }
-                    else
-                    {
-                        writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
-                    }
+                }
+                else
+                {
+                    writelog("[SetVCPSequence] vcps count = 0");
                 }
             }
             else
             {
-                writelog("[SetVCPSequence] vcps count = 0");
+                writelog("[SetVCPSequence] ImpExpSettings is null");
             }
         }
 
@@ -9142,7 +9594,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             settings.VCPs = GetAllVCPcode(m);
                             settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
                             settings.EA = new EAMonitorSettings();
+                            settings.easyArrangementDDPM = new EasyArrangementDDPM();
                             settings.ImpExpSettings = new ImpExpSettings();
+                            settings.hotkeyData = new List<HotkeyData>();
+                            settings.scheduleInfo = new scheduleInfo();
+                            settings.ALSConfig = 0;
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                         }
@@ -9207,52 +9663,96 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     foreach (var dDMuserProfile in dDMUserSettings.Profiles)
                     {
-                        var currentProfile = userEAProfileDDPMList.FirstOrDefault(p => p.ID == dDMuserProfile.ID);
+                        EAProfileDDPM eaProfileDDPM = new EAProfileDDPM(dDMuserProfile.ID, dDMuserProfile.Name, dDMuserProfile.Layout, dDMuserProfile.AppInfos.ConvertAll
+                                              (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
 
-                        if (currentProfile != null)
-                        {
-                            // 將更新後的 currentProfile 寫入
-                            result = WriteUserEAProfileDDPM(currentProfile).Result;
-                        }
+                        // 將更新後的 currentProfile 寫入
+                        result = WriteUserEAProfileDDPM(eaProfileDDPM).Result;
                     }
+                    if (result)
+                        writelog($"@ DDMtoDDPM_EzMemory: UserSettings PASS");
+                    else
+                        writelog($"@ DDMtoDDPM_EzMemory: UserSettings Fail");
                 }
 
                 //DDMMonitorSettings
                 if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null)
                 {
-                    //WriteMonitorEasyArrangement(dDMMonitorSettings);
                     MonitorInfo moinfo = new MonitorInfo();
+                    EDID edid = new EDID();
+                    moinfo.edid = edid;
                     moinfo.modelName = dDMMonitorSettings.Model;
                     moinfo.edid.ModelName = dDMMonitorSettings.Model;
                     moinfo.edid.ServiceTag = dDMMonitorSettings.ServiceTag;
 
-                    EasyArrangementDDPM easyArrangementDDPM = ReadMonitorEasyArrangement(moinfo).Result;
+                    EasyArrangementDDPM easyArrangementDDPM = new EasyArrangementDDPM();
+                    easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 
-                    foreach (var desktop in dDMMonitorSettings.EasyArrangement.Desktops)
+                    // 新增 DesktopDDPM 物件
+                    easyArrangementDDPM.Desktops.Add(new DesktopDDPM(dDMMonitorSettings.EasyArrangement.Desktops[0].ID, dDMMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout));
+
+                    // 設定 DesktopDDPM 的屬性
+                    easyArrangementDDPM.Desktops[0].ID = dDMMonitorSettings.EasyArrangement.Desktops[0].ID;
+                    easyArrangementDDPM.Desktops[0].Index = dDMMonitorSettings.EasyArrangement.Desktops[0].Index;
+                    easyArrangementDDPM.Desktops[0].ActiveLayout = dDMMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+
+                    List<int> layoutMRU = new List<int>();
+                    layoutMRU = dDMMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU;
+                    easyArrangementDDPM.Desktops[0].LayoutMRU = layoutMRU;
+
+                    List<int> profileMRU = new List<int>();
+                    profileMRU = dDMMonitorSettings.EasyArrangement.Desktops[0].ProfileMRU;
+                    easyArrangementDDPM.Desktops[0].ProfileMRU = profileMRU;
+
+                    // Profiles
+                    easyArrangementDDPM.Desktops[0].Profiles = new List<EzProfileDDPM>();
+                    foreach (var profile in dDMMonitorSettings.EasyArrangement.Desktops[0].Profiles)
                     {
-                        DesktopDDPM newDesktop = new DesktopDDPM(desktop.ID, desktop.ActiveLayout)
-                        {
-                            LayoutMRU = new List<int>(desktop.LayoutMRU),
-                            ProfileMRU = new List<int>(desktop.ProfileMRU),
-                            Profiles = new List<EzProfileDDPM>(),
-                            ProfileSettings = new List<EzProfileSettingDDPM>()
-                        };
+                        var newProfile = new EzProfileDDPM(
+                            profile.ID,
+                            profile.Name,
+                            profile.Layout,
+                            profile.Auto,
+                            profile.AutoStartTime ?? 0,
+                            profile.StartUpLaunch,
+                            new List<EAAppInfoDDPM>()
+                        );
 
-                        foreach (var profileSetting in desktop.ProfileSettings)
+                        // AppInfos
+                        foreach (var app in profile.AppInfos)
                         {
-                            EzProfileSettingDDPM newProfileSetting = new EzProfileSettingDDPM(
-                                profileSetting.ID,
-                                profileSetting.Auto,
-                                profileSetting.AutoStartTime ?? 0,
-                                profileSetting.StartUpLaunch
+                            var newAppInfo = new EAAppInfoDDPM(
+                                app.Name,
+                                app.Path,
+                                app.IsUWP,
+                                app.AppUserModelID,
+                                app.Param
                             );
+                            newProfile.AppInfos.Add(newAppInfo);
                         }
-                        // 將轉換後的 Desktop 加入到 EasyArrangementDDPM
-                        easyArrangementDDPM.Desktops.Add(newDesktop);
+
+                        easyArrangementDDPM.Desktops[0].Profiles.Add(newProfile);
+                    }
+
+                    // ProfileSettings
+                    easyArrangementDDPM.Desktops[0].ProfileSettings = new List<EzProfileSettingDDPM>();
+                    foreach (var setting in dDMMonitorSettings.EasyArrangement.Desktops[0].ProfileSettings)
+                    {
+                        var newSetting = new EzProfileSettingDDPM(
+                            setting.ID,
+                            setting.Auto,
+                            setting.AutoStartTime ?? 0,
+                            setting.StartUpLaunch
+                        );
+
+                        easyArrangementDDPM.Desktops[0].ProfileSettings.Add(newSetting);
                     }
                     result = WriteMonitorEasyArrangement(moinfo, easyArrangementDDPM).Result;
                 }
-                writelog($"@ DDMtoDDPM_EzMemory: PASS");
+                if (result)
+                    writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings PASS");
+                else
+                    writelog($"@ DDMtoDDPM_EzMemory: MonitorSettings Fail");
             }
             catch (Exception ex)
             {
@@ -9364,12 +9864,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
             }
+            //EA
+            DDMtoDDPM_EzArrange(DDMmonitorsettings, DDMusersettings);
             //EM
-            //DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
+            DDMtoDDPM_EzMemory(DDMmonitorsettings, DDMusersettings);
             //Schedule
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
-            //DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
+            DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
         }
 
         private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings, DDMMonitorSettings ddmMonitorSettings)
@@ -9432,6 +9934,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         hotkeySettingList.Add(hotkeySettings);
+                                        bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                                     }
                                 }
                             }
@@ -9477,11 +9980,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         hotkeyData.inputSource = inputSourceObjs;
                                         monitorSettings.hotkeyData.Add(hotkeyData);
                                     }
+                                    bool bh = _SettingsPlugin.WriteMonitorSettings(ddmMonitorSettings.Model, monitorSettingList).Result;
                                 }
                             }
                         }
                     }
-                    bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
+
                 }
             }
             catch (Exception ex)
@@ -9509,14 +10013,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private bool Import_DisplayProperties(DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo)
+        private bool Import_DisplayProperties(MonitorInfo monitorInfo, DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo)
         {
             bool ret = false;
             try
             {
-                MonitorInfo monitorInfo = new MonitorInfo();
+                //MonitorInfo monitorInfo = new MonitorInfo();
                 ret = SetDisplayPropertiest(monitorInfo, displayCurrentPropertiesInfo.CurrentProperties, displayCurrentPropertiesInfo.CurrentOrientation).Result;
                 ret = SetHDRStatus(monitorInfo, displayCurrentPropertiesInfo.isHDREnable).Result && ret;
+                if (displayCurrentPropertiesInfo.USBCPrioritizationType != USBCPrioritizationType.Unknow)
+                {
+                    ret = SetUSBCPrioritizationType(monitorInfo, displayCurrentPropertiesInfo.USBCPrioritizationType).Result && ret;
+                }
                 ret = true;
             }
             catch
@@ -9569,6 +10077,150 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return false;
         }
 
+        //Robert_Lin, 2024-10-11, added
+        private void DDMtoDDPM_EzArrange(DDMMonitorSettings ddmMonitorSettings, DDMUserSettings ddmUserSettings)
+        {
+            if (_SettingsPlugin == null)
+                return;
+
+            //Migration UserSettings
+            //
+            //1 Convert DDMUserSettings.CustLayouts to ddpmCustomList
+            //
+            List<SplitJson> ddpmCustomList = new List<SplitJson>();
+            if (ddmUserSettings.CustLayouts != null)
+            {
+                foreach (CustLayout custLayout in ddmUserSettings.CustLayouts)
+                {
+                    SplitJson spJson = new SplitJson();
+                    spJson.CellCount = 0;
+                    spJson.SplitKey = 'B';
+
+                    List<double> settings = new List<double>();
+                    //Format: settings[0] : BorderCount
+                    settings.Add((double)custLayout.Rects.Count);
+                    //settings[1] : screenScale
+                    settings.Add((double)1.000);
+                    //settings[2] : screenWidth
+                    settings.Add((double)1.000);
+                    //settings[3] : screenHeight
+                    settings.Add((double)1.000);
+
+                    //Settings[4 ~] : Rects
+                    int idxRect = 0;
+                    foreach (EARect eARect in custLayout.Rects)
+                    {
+                        //settings[4 + idxRect + 0] : left
+                        settings.Add(eARect.x);
+                        //settings[4 + idxRect + 1] : top
+                        settings.Add(eARect.y);
+                        //settings[4 + idxRect + 2] : width
+                        settings.Add(eARect.w);
+                        //settings[4 + idxRect + 3] : height
+                        settings.Add(eARect.h);
+                        idxRect++;
+                    }
+                    spJson.Settings = settings;
+                    spJson.CustomName = custLayout.Name;
+                    spJson.CustomId = custLayout.ID;
+                    spJson.EAID = custLayout.ID;
+
+                    ddpmCustomList.Add(spJson);
+                }
+            }
+
+            //2 Convert EasyArrange Per-user settings (EzSettings)
+            //
+            EzSettings ezSettings = new EzSettings();
+
+            ezSettings.IsWidthoutGap = ddmUserSettings.EAWithoutGap;
+            ezSettings.IsOnlyAllowWhenShiftKeyPressed = ddmUserSettings.EAWithShiftKey;
+            ezSettings.IsSpanAcrossMultiMonitors = ddmUserSettings.EASpan;
+            ezSettings.IsAwsEnabled = ddmUserSettings.SnapEnable;
+
+            //3 Save to DDPMUserSettings
+            //
+            DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (appSettings != null)
+            {
+                appSettings.UserSettings.EACustomList = ddpmCustomList.ToArray();
+                appSettings.UserSettings.EzSettings = ezSettings;
+
+                _SettingsPlugin.SetAppConfigData(appSettings);
+            }
+
+            //Migration MonitorSettings
+            //
+            if ((ddmMonitorSettings != null) || (ddmMonitorSettings.EasyArrangement != null))
+            {
+                MonitorInfo moinfo = new MonitorInfo();
+                moinfo.modelName = ddmMonitorSettings.Model;
+                moinfo.edid.ModelName = ddmMonitorSettings.Model;
+                moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
+
+
+                //Will migrate Desktop[0] only
+                if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
+                {
+                    //Convert ActiveLayout to SelectedSplit
+                    //
+                    int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
+                    SplitJson? selJson = null;
+                    //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
+                    if (activeLayout >= 1000)
+                    {
+                        //Find the CustomLayout by EAID
+                        selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
+                        if (selJson != null)
+                        {
+                        }
+                    }
+                    else
+                    {
+                        //Preset layout
+                        selJson = new SplitJson()
+                        {
+                            CellCount = -1,
+                            CustomId = 0,
+                            EAID = activeLayout
+                        };
+                    }
+
+                    //Convert RecentList
+                    List<SplitJson> recentList = new List<SplitJson>();
+                    foreach (int eaidRecent in ddmMonitorSettings.EasyArrangement.Desktops[0].LayoutMRU)
+                    {
+                        if (activeLayout >= 1000) //Custom Layout
+                        {
+                            //Find the CustomLayout by EAID
+                            SplitJson? cusJson = ddpmCustomList.Find(x => x.EAID == eaidRecent);
+                            if (cusJson != null)
+                            {
+                                recentList.Add(cusJson.Clone());
+                            }
+                        }
+                        else
+                        {
+                            //Preset layout
+                            SplitJson presetJson = new SplitJson()
+                            {
+                                CellCount = -1,
+                                CustomId = 0,
+                                EAID = eaidRecent
+                            };
+                            recentList.Add(presetJson);
+                        }
+                    }
+
+                    //Save to EAMonitorSettings
+                    EAMonitorSettings eaSettings = ReadEAMonitorSettings(moinfo).Result;
+                    eaSettings.SelectedSplit = selJson;
+                    eaSettings.RecentList = recentList.ToArray();
+                    WriteEAMonitorSettings(moinfo, eaSettings);
+
+                }
+            }
+        }
         #endregion Migration
 
         #region Event Handler
@@ -9703,6 +10355,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static ScrollLockOnWin ScrollLockOnWinx = null;
         private static StartRecordingWin StartRecordingWinx = null;
         private static WalkAwayLockWin WalkAwayLockWinx = null;
+        private static EasyMemoryWin EasyMemoryWinx = null;
 
         public Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content)
         {
@@ -9711,34 +10364,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
+                    {
+                        if (Device is OSDType_Device.Headset)
                         {
-                            if (Device is OSDType_Device.Headset)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
-                                else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Keyboard)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                                else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Mouse)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                                else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
                             else
-                                return Task.CompletedTask;
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
                         }
+                        else if (Device is OSDType_Device.Keyboard)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Mouse)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else
+                            return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -9754,13 +10407,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        if (!string.IsNullOrWhiteSpace(Content))
+                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                        else
+                            writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -9776,20 +10429,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                        {
-                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.NumLock:
-                        {
-                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.CapsLock:
-                        {
-                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -9804,26 +10457,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 switch (type)
                 {
+                    case OSDType.EasyMemory:
+                    {
+                        _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.Fingerprint:
-                        {
-                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.DisplayChanged:
-                        {
-                            _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.WalkAwayLock:
-                        {
-                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                        return Task.CompletedTask;
+                    }
                     case OSDType.StartRecording:
-                        {
-                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -9892,414 +10550,441 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
+                                            if (MuteWinx != null)
+                                                MuteWinx.CloseWindow();
+
+                                            MuteWinx = new MuteWin(Content);
+
+                                            try
                                             {
-                                                if (MuteWinx != null)
-                                                    MuteWinx.CloseWindow();
-
-                                                MuteWinx = new MuteWin(Content);
-
-                                                try
-                                                {
-                                                    MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MuteWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                                    //MuteWinx.Top = sreen.WorkingArea.Top;
-                                                    //MuteWinx.Left = sreen.WorkingArea.Left;
-                                                    //MuteWinx.ShowWindow();
-                                                }
-                                                finally
-                                                {
-                                                    MuteWinx = null;
-                                                }
+                                                MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                MuteWinx.ShowWindow();
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                if (UnMuteWinx != null)
-                                                    UnMuteWinx.CloseWindow();
-
-                                                UnMuteWinx = new UnMuteWin(Content);
-
-                                                try
-                                                {
-                                                    UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    UnMuteWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                                    //UnMuteWinx.Top = sreen.WorkingArea.Top;
-                                                    //UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                    //UnMuteWinx.ShowWindow();
-                                                }
-                                                finally
-                                                {
-                                                    UnMuteWinx = null;
-                                                }
+                                                writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                //MuteWinx.Top = sreen.WorkingArea.Top;
+                                                //MuteWinx.Left = sreen.WorkingArea.Left;
+                                                //MuteWinx.ShowWindow();
+                                            }
+                                            finally
+                                            {
+                                                MuteWinx = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (UnMuteWinx != null)
+                                                UnMuteWinx.CloseWindow();
+
+                                            UnMuteWinx = new UnMuteWin(Content);
+
+                                            try
+                                            {
+                                                UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                UnMuteWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                //UnMuteWinx.Top = sreen.WorkingArea.Top;
+                                                //UnMuteWinx.Left = sreen.WorkingArea.Left;
+                                                //UnMuteWinx.ShowWindow();
+                                            }
+                                            finally
+                                            {
+                                                UnMuteWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.BatteryLow:
+                                    {
+                                        if (_DeviceType is OSDType_Device.Headset)
                                         {
-                                            if (_DeviceType is OSDType_Device.Headset)
+                                            if (HeadsetBatteryLowIWinx != null)
+                                                HeadsetBatteryLowIWinx.CloseWindow();
+
+                                            HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
+
+                                            try
                                             {
-                                                if (HeadsetBatteryLowIWinx != null)
-                                                    HeadsetBatteryLowIWinx.CloseWindow();
-
-                                                HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
-
-                                                try
-                                                {
-                                                    HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    HeadsetBatteryLowIWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    //HeadsetBatteryLowIWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
-                                                }
-                                                finally
-                                                {
-                                                    HeadsetBatteryLowIWinx = null;
-                                                }
+                                                HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                HeadsetBatteryLowIWinx.ShowWindow();
                                             }
-                                            else if (_DeviceType is OSDType_Device.Keyboard)
+                                            catch (Exception ex)
                                             {
-                                                if (KeybordBatteryLowIWinx != null)
-                                                    KeybordBatteryLowIWinx.CloseWindow();
-
-                                                KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
-
-                                                try
-                                                {
-                                                    KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    KeybordBatteryLowIWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    //KeybordBatteryLowIWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
-                                                }
-                                                finally
-                                                {
-                                                    KeybordBatteryLowIWinx = null;
-                                                }
+                                                //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                //HeadsetBatteryLowIWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
                                             }
-                                            else if (_DeviceType is OSDType_Device.Mouse)
+                                            finally
                                             {
-                                                if (MouseBatteryLowIWinx != null)
-                                                    MouseBatteryLowIWinx.CloseWindow();
-
-                                                MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
-
-                                                try
-                                                {
-                                                    MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MouseBatteryLowIWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    //MouseBatteryLowIWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                                }
-                                                finally
-                                                {
-                                                    MouseBatteryLowIWinx = null;
-                                                }
+                                                HeadsetBatteryLowIWinx = null;
                                             }
                                         }
-                                        break;
+                                        else if (_DeviceType is OSDType_Device.Keyboard)
+                                        {
+                                            if (KeybordBatteryLowIWinx != null)
+                                                KeybordBatteryLowIWinx.CloseWindow();
+
+                                            KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
+
+                                            try
+                                            {
+                                                KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                KeybordBatteryLowIWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                //KeybordBatteryLowIWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                KeybordBatteryLowIWinx = null;
+                                            }
+                                        }
+                                        else if (_DeviceType is OSDType_Device.Mouse)
+                                        {
+                                            if (MouseBatteryLowIWinx != null)
+                                                MouseBatteryLowIWinx.CloseWindow();
+
+                                            MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
+
+                                            try
+                                            {
+                                                MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                MouseBatteryLowIWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                //MouseBatteryLowIWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                MouseBatteryLowIWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.StartRecording:
+                                    {
+                                        if (StartRecordingWinx != null)
+                                            StartRecordingWinx.CloseWindow();
+
+                                        StartRecordingWinx = new StartRecordingWin(Content);
+
+                                        try
                                         {
-                                            if (StartRecordingWinx != null)
-                                                StartRecordingWinx.CloseWindow();
-
-                                            StartRecordingWinx = new StartRecordingWin(Content);
-
-                                            try
-                                            {
-                                                StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                StartRecordingWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //StartRecordingWinx.Top = sreen.WorkingArea.Top;
-                                                //StartRecordingWinx.Left = sreen.WorkingArea.Left;
-                                                //StartRecordingWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                StartRecordingWinx = null;
-                                            }
+                                            StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            StartRecordingWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //StartRecordingWinx.Top = sreen.WorkingArea.Top;
+                                            //StartRecordingWinx.Left = sreen.WorkingArea.Left;
+                                            //StartRecordingWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            StartRecordingWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.DisplayChanged:
+                                    {
+                                        if (DisplayChangedWinx != null)
+                                            DisplayChangedWinx.CloseWindow();
+
+                                        DisplayChangedWinx = new DisplayChangedWin(Content);
+
+                                        try
                                         {
-                                            if (DisplayChangedWinx != null)
-                                                DisplayChangedWinx.CloseWindow();
-
-                                            DisplayChangedWinx = new DisplayChangedWin(Content);
-
-                                            try
-                                            {
-                                                DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                DisplayChangedWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
-                                                //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
-                                                //DisplayChangedWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                DisplayChangedWinx = null;
-                                            }
+                                            DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            DisplayChangedWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
+                                            //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
+                                            //DisplayChangedWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            DisplayChangedWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.WalkAwayLock:
+                                    {
+                                        if (WalkAwayLockWinx != null)
+                                            WalkAwayLockWinx.CloseWindow();
+
+                                        WalkAwayLockWinx = new WalkAwayLockWin(Content);
+
+                                        try
                                         {
-                                            if (WalkAwayLockWinx != null)
-                                                WalkAwayLockWinx.CloseWindow();
-
-                                            WalkAwayLockWinx = new WalkAwayLockWin(Content);
-
-                                            try
-                                            {
-                                                WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                WalkAwayLockWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
-                                                //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
-                                                //WalkAwayLockWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                WalkAwayLockWinx = null;
-                                            }
+                                            WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            WalkAwayLockWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
+                                            //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
+                                            //WalkAwayLockWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            WalkAwayLockWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.ScrollLock:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
-                                            {
-                                                if (ScrollLockOnWinx != null)
-                                                    ScrollLockOnWinx.CloseWindow();
+                                            if (ScrollLockOnWinx != null)
+                                                ScrollLockOnWinx.CloseWindow();
 
-                                                ScrollLockOnWinx = new ScrollLockOnWin();
-
-                                                try
-                                                {
-                                                    ScrollLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    ScrollLockOnWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //ScrollLockOnWinx.ShowWindow();
-
-                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    ScrollLockOnWinx = null;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (ScrollLockOffWinx != null)
-                                                    ScrollLockOffWinx.CloseWindow();
-
-                                                ScrollLockOffWinx = new ScrollLockOffWin();
-
-                                                try
-                                                {
-                                                    ScrollLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    ScrollLockOffWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //ScrollLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    ScrollLockOffWinx = null;
-                                                }
-                                            }
-                                        }
-                                        break;
-
-                                    case OSDType.NumLock:
-                                        {
-                                            if (State)
-                                            {
-                                                if (NumLockOnWinx != null)
-                                                    NumLockOnWinx.CloseWindow();
-
-                                                NumLockOnWinx = new NumLockOnWin();
-
-                                                try
-                                                {
-                                                    NumLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    NumLockOnWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //NumLockOnWinx.ShowWindow();
-
-                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    NumLockOnWinx = null;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (NumLockOffWinx != null)
-                                                    NumLockOffWinx.CloseWindow();
-
-                                                NumLockOffWinx = new NumLockOffWin();
-
-                                                try
-                                                {
-                                                    NumLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    NumLockOffWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //NumLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    NumLockOffWinx = null;
-                                                }
-                                            }
-                                        }
-                                        break;
-
-                                    case OSDType.CapsLock:
-                                        {
-                                            if (State)
-                                            {
-                                                if (CapsLockOnWinx != null)
-                                                    CapsLockOnWinx.CloseWindow();
-
-                                                CapsLockOnWinx = new CapsLockOnWin();
-
-                                                try
-                                                {
-                                                    CapsLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    CapsLockOnWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //CapsLockOnWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    CapsLockOnWinx = null;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (CapsLockOffWinx != null)
-                                                    CapsLockOffWinx.CloseWindow();
-
-                                                CapsLockOffWinx = new CapsLockOffWin();
-
-                                                try
-                                                {
-                                                    CapsLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    CapsLockOffWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //CapsLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    CapsLockOffWinx = null;
-                                                }
-                                            }
-                                        }
-                                        break;
-
-                                    case OSDType.Fingerprint:
-                                        {
-                                            if (FingerprintWinx != null)
-                                                FingerprintWinx.CloseWindow();
-
-                                            FingerprintWinx = new FingerprintWin();
+                                            ScrollLockOnWinx = new ScrollLockOnWin();
 
                                             try
                                             {
-                                                FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                FingerprintWinx.ShowWindow();
+                                                ScrollLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                ScrollLockOnWinx.ShowWindow();
                                             }
                                             catch (Exception ex)
                                             {
-                                                //FingerprintWinx.Top = sreen.WorkingArea.Top;
-                                                //FingerprintWinx.Left = sreen.WorkingArea.Left;
-                                                //FingerprintWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
+                                                //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //ScrollLockOnWinx.ShowWindow();
+
+                                                writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
                                             }
                                             finally
                                             {
-                                                FingerprintWinx = null;
+                                                ScrollLockOnWinx = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (ScrollLockOffWinx != null)
+                                                ScrollLockOffWinx.CloseWindow();
+
+                                            ScrollLockOffWinx = new ScrollLockOffWin();
+
+                                            try
+                                            {
+                                                ScrollLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                ScrollLockOffWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //ScrollLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                ScrollLockOffWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                    case OSDType.NumLock:
+                                    {
+                                        if (State)
+                                        {
+                                            if (NumLockOnWinx != null)
+                                                NumLockOnWinx.CloseWindow();
+
+                                            NumLockOnWinx = new NumLockOnWin();
+
+                                            try
+                                            {
+                                                NumLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                NumLockOnWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //NumLockOnWinx.ShowWindow();
+
+                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                NumLockOnWinx = null;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (NumLockOffWinx != null)
+                                                NumLockOffWinx.CloseWindow();
+
+                                            NumLockOffWinx = new NumLockOffWin();
+
+                                            try
+                                            {
+                                                NumLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                NumLockOffWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //NumLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                NumLockOffWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                    case OSDType.CapsLock:
+                                    {
+                                        if (State)
+                                        {
+                                            if (CapsLockOnWinx != null)
+                                                CapsLockOnWinx.CloseWindow();
+
+                                            CapsLockOnWinx = new CapsLockOnWin();
+
+                                            try
+                                            {
+                                                CapsLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                CapsLockOnWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //CapsLockOnWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                CapsLockOnWinx = null;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (CapsLockOffWinx != null)
+                                                CapsLockOffWinx.CloseWindow();
+
+                                            CapsLockOffWinx = new CapsLockOffWin();
+
+                                            try
+                                            {
+                                                CapsLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                CapsLockOffWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //CapsLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                CapsLockOffWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                    case OSDType.Fingerprint:
+                                    {
+                                        if (FingerprintWinx != null)
+                                            FingerprintWinx.CloseWindow();
+
+                                        FingerprintWinx = new FingerprintWin();
+
+                                        try
+                                        {
+                                            FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            FingerprintWinx.ShowWindow();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            //FingerprintWinx.Top = sreen.WorkingArea.Top;
+                                            //FingerprintWinx.Left = sreen.WorkingArea.Left;
+                                            //FingerprintWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            FingerprintWinx = null;
+                                        }
+                                    }
+                                    break;
+
+                                    case OSDType.EasyMemory:
+                                    {
+                                        if (EasyMemoryWinx != null)
+                                            EasyMemoryWinx.CloseWindow();
+
+                                        EasyMemoryWinx = new EasyMemoryWin();
+
+                                        try
+                                        {
+                                            EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            EasyMemoryWinx.ShowWindow();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
+                                            //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
+                                            //EasyMemoryWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            EasyMemoryWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     default:
                                         break;

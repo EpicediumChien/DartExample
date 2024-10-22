@@ -19,11 +19,15 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using IDs = DDPM.SA.Common.IDs;
+using String = string;
 
 namespace DDPM.SA.Plugins.User.PipPbpManger
 {
@@ -352,12 +356,35 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
             {
                 return Task.FromResult<List<InputSourceObj>>(null);
             }
-
+            //Robert_Lin, 2024-10-16, fix the InputSourceObj.Name contains "-1", "_2",... not matched with InputInfo.Name
+            //OLD: query Name from code with InputSourceObj => but the Name include "-1"
             List<InputSourceObj> listOut = new List<InputSourceObj>();
-            foreach (UInt16 code in subList)
+            //foreach (UInt16 code in subList)
+            //{
+            //    listOut.Add(new InputSourceObj(code));
+            //}
+            //NEW: Query Name from InputSourceList <InputInfo>
+            ObjGetVCP objGet = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, "inputsourcelist").Result;
+            if (objGet.result)
             {
-                listOut.Add(new InputSourceObj(code));
+                List<InputSourceObject> inputSourceList = (List<InputSourceObject>)objGet.value;
+                foreach (UInt16 code in subList)
+                {
+                    InputSourceObject? inputObj = inputSourceList.Find(x => x.value == code);
+                    if (inputObj != null)
+                    {
+                        string inputName = inputObj.Name;
+                        Trace.WriteLine($"+SubInput({code}, {inputName})");
+                        listOut.Add(new InputSourceObj(code, inputName));
+                    }
+                    else
+                    {
+                        listOut.Add(new InputSourceObj(code));
+                    }
+                }
+
             }
+
             return Task.FromResult<List<InputSourceObj>>(listOut);
         }
 

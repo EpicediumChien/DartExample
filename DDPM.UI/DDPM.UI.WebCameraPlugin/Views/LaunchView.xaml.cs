@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Method;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.WebCameraCapture;
 using DDPM.UI.Module.WebCameraColorImage;
@@ -13,6 +14,7 @@ using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -312,7 +314,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
             _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
             _vm.WebcamSettingChanged -= WebcamSettingChanged;
-            await CleanupMediaCaptureAsync();
+            try
+            {
+                await CleanupMediaCaptureAsync();
+            }
+            catch
+            { }
             //await _vm.CleanupMediaCapture();
         }
 
@@ -342,8 +349,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(ColorandImage, new WebCameraColorImageModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB")
+
+            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
             {
+                bool blRet = true;
+
+                blRet = CheckPresenceDetection_UI();
+
                 moduleGroup = new ModuleGroup()
                 {
                     GroupName = PresenceDetection,
@@ -957,7 +969,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void NameTextChanged(object sender, TextChangedEventArgs e)
         {
             var txt = txbName.Text.Trim();
-            if(string.IsNullOrEmpty(txt))
+            if (string.IsNullOrEmpty(txt))
             {
                 btnSave.IsEnabled = false;
                 return;
@@ -1040,6 +1052,106 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.ClearUndo();
             _vm.EnableVBar();
             _vm.TooltipVisibility = Visibility.Collapsed;
+        }
+
+        private bool CheckPresenceDetection_UI()
+        {
+            bool blWebcamFW_UPD = false;
+            bool blSystemcompatibility_MPS = false;
+
+            int nFirmwareVersion = int.TryParse(_vm.FirmwareVersion, out var fw) ? fw : 0;
+
+            if (nFirmwareVersion % 2 == 0 || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
+            {
+                //is even, is UPD FW
+                blWebcamFW_UPD = true;
+            }
+            else
+            {
+                //is odd , is MPS FW
+                blWebcamFW_UPD = false;
+            }
+
+            if (WinVersion.GetVersion(out var info))
+            {
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+                    blSystemcompatibility_MPS = true;
+                else
+                    blSystemcompatibility_MPS = false;
+            }
+
+            string strComputerManufacturer = string.Empty;
+
+            strComputerManufacturer = WinVersion.GetComputerManufacturer();
+
+            bool blDellComputer = false;
+
+            if (strComputerManufacturer.Contains("Dell", StringComparison.OrdinalIgnoreCase))
+                blDellComputer = true;
+            else
+                blDellComputer = false;
+
+            if (blWebcamFW_UPD && blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+            {
+                _vm.UPD_Visibility = Visibility.Visible;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return true;
+            }
+
+            if (blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+            {
+                return false;
+            }
+
+            if (blWebcamFW_UPD && blSystemcompatibility_MPS && blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return true;
+            }
+
+            if (blWebcamFW_UPD && blSystemcompatibility_MPS && !blDellComputer && info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return true;
+            }
+
+            if (!blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            {
+                return false;
+            }
+
+            if (!blWebcamFW_UPD && blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                return true;
+            }
+
+            if (!blWebcamFW_UPD && !blSystemcompatibility_MPS && !blDellComputer && info.BuildNum < (uint)(BuildNumber.Windows_11_22H2))
+            {
+                return false;
+            }
+
+            if (!blWebcamFW_UPD && blSystemcompatibility_MPS && info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+            {
+                _vm.UPD_Visibility = Visibility.Collapsed;
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

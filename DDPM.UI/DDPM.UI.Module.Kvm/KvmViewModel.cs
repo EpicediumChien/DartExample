@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.IO;
 using VcpCore.Common;
 using Windows.System;
 
@@ -185,8 +186,8 @@ namespace DDPM.UI.Module.Kvm
         public Visibility Border2Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border3Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border4Visibility { get; set; } = Visibility.Collapsed;
-        public Visibility SupportUSBKVM { get; set; } = Visibility.Visible;
-        public Visibility SupportNKVM { get; set; } = Visibility.Visible;
+        public Visibility SupportUSBKVM { get; set; } = Visibility.Collapsed;
+        public Visibility SupportNKVM { get; set; } = Visibility.Collapsed;
         public Visibility SetInput { get; set; } = Visibility.Visible;
         public Visibility SetPXP { get; set; } = Visibility.Visible;
         public Visibility EditInput { get; set; } = Visibility.Collapsed;
@@ -580,15 +581,27 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
                 MonitorInfo mi = selHomeDevice.MonitorInfo;
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result == false)
+                if (mi == null)
                 {
-                    SupportNKVM = Visibility.Collapsed;
+                    e.Result = "MonitorInfo is null";
+                    return;
+                }
+
+                var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
+                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
+                {
+                    SupportNKVM = Visibility.Visible;
                 }
 
                 USBKVMisON = KvmModule.isUSBKVM;//DdpmCommonHelper.DeviceManagerSA.GetOnNKVM().Result;
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
+                    SupportUSBKVM = Visibility.Visible;
                     isUSBKVMButton = true;
                     USBKVMButtonOpacity = 1;
                     //_isUSBKVM = KvmModule.isUSBKVM;
@@ -824,13 +837,15 @@ namespace DDPM.UI.Module.Kvm
                     //OnPropertyChanged("NoBattery");
                     //OnPropertyChanged("Text1");
                 }
-                else
-                {
-                    SupportUSBKVM = Visibility.Collapsed;
-                }
+                //else
+                //{
+                //    SupportUSBKVM = Visibility.Collapsed;
+                //}
             }
             catch (Exception)
             {
+                //SupportUSBKVM = Visibility.Collapsed;
+                //SupportNKVM = Visibility.Collapsed;
                 ;
             }
         }

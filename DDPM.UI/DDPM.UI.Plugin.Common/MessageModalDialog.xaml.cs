@@ -48,5 +48,10 @@ namespace DDPM.UI.Plugin.Common
             DialogResult = false;
             Close();
         }
+
+        public void CloseByCaller()
+        {
+            Close();
+        }
     }
 }

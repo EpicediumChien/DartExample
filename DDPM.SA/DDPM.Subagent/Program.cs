@@ -103,6 +103,7 @@ namespace DDPM.Subagent
                     new Guid(IDs.SWUpdate_PLUGIN_ID),
                     new Guid(IDs.FWUPDATE_PLUGIN_ID),
                     new Guid(IDs.PlatinumSDK_Plugin),
+                    new Guid(IDs.CMA_Manager_Plugin),
                 },
                 /*
                  * This is the name used in the log file

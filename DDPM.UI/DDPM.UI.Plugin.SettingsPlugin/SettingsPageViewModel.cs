@@ -9,6 +9,7 @@ using DPeMPublic.Common.Enums;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -252,7 +253,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Optional_UpdateList_UI?.Count <= 0) ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public Visibility NoNetwork { get => Visibility.Collapsed; }
+        public Visibility NoNetwork { get; set; } = Visibility.Collapsed;
         public Visibility Critical_UpdateList { get => Critical_UpdateList_UI?.Count >= 1 ? Visibility.Visible : Visibility.Collapsed; }
         public Visibility Recommended_UpdateList { get => Recommended_UpdateList_UI?.Count >= 1 ? Visibility.Visible : Visibility.Collapsed; }
         public Visibility Optional_UpdateList { get => Optional_UpdateList_UI?.Count >= 1 ? Visibility.Visible : Visibility.Collapsed; }
@@ -289,30 +290,38 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             Critical_UpdateList_UI = new List<UIUpdateInfo>();
             Recommended_UpdateList_UI = new List<UIUpdateInfo>();
             Optional_UpdateList_UI = new List<UIUpdateInfo>();
-            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+            if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
-                if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
-                {
-                    Critical_UpdateList_UI.Add(uiUpdateInfo);
-                }
-                else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
-                {
-                    Recommended_UpdateList_UI.Add(uiUpdateInfo);
-                }
-                else//剩下的為選用更新
-                {
-                    Optional_UpdateList_UI.Add(uiUpdateInfo);
-                }
+                NoNetwork = Visibility.Visible;
             }
-            foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
+            else
             {
-                UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
-                if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
+                NoNetwork = Visibility.Collapsed;
+                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
-                    Critical_UpdateList_UI.Add(uiUpdateInfo);
+                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
+                    if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
+                    {
+                        Critical_UpdateList_UI.Add(uiUpdateInfo);
+                    }
+                    else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
+                    {
+                        Recommended_UpdateList_UI.Add(uiUpdateInfo);
+                    }
+                    else//剩下的為選用更新
+                    {
+                        Optional_UpdateList_UI.Add(uiUpdateInfo);
+                    }
                 }
-            }
+                foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
+                {
+                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
+                    if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
+                    {
+                        Critical_UpdateList_UI.Add(uiUpdateInfo);
+                    }
+                }
+            } 
         }
 
         public bool IsCanUpdate()
@@ -601,6 +610,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = false;
             UXAlertItemVisibility = Visibility.Collapsed;
+            UXAlertItemVisibility_2 = Visibility.Collapsed;
             UpdateInfo = $"Software update {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
         }
     }

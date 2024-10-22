@@ -36,6 +36,8 @@ namespace DDPM.Easy.Common
         public int CellCount => 3;
         public char SplitKey => 'C';
         public UserControl UC => this;
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 7;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -75,14 +77,14 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("3c1", cell_3c1));
-            cellListH.Add(new CellObj("3c2", cell_3c2));
-            cellListH.Add(new CellObj("3c3", cell_3c3));
+            cellListH.Add(new CellObj("3c1", cell_3c1) { rcRatio = new Rect(0, 0, 0.3, 1) });
+            cellListH.Add(new CellObj("3c2", cell_3c2) { rcRatio = new Rect(0.3, 0, 0.4, 1) });
+            cellListH.Add(new CellObj("3c3", cell_3c3) { rcRatio = new Rect(0.7, 0, 0.3, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("3C1", cell_3C1));
-            cellListV.Add(new CellObj("3C2", cell_3C2));
-            cellListV.Add(new CellObj("3C3", cell_3C3));
+            cellListV.Add(new CellObj("3C1", cell_3C1) { rcRatio = new Rect(0, 0, 1, 0.3) });
+            cellListV.Add(new CellObj("3C2", cell_3C2) { rcRatio = new Rect(0, 0.3, 1, 0.4) });
+            cellListV.Add(new CellObj("3C3", cell_3C3) { rcRatio = new Rect(0, 0.7, 1, 0.3) });
         }
         #endregion Cell List
 

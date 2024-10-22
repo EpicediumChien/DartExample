@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using DDPM.UI.Common;
 
 namespace DDPM.UI.Plugin.Common
 {
@@ -8,19 +9,15 @@ namespace DDPM.UI.Plugin.Common
     /// </summary>
     public partial class RestoreModalDialog : Window
     {
-        private readonly string Caption = "Restore to default";
-        private readonly string Message = "Do you want to reset your monitor to factory settings now?";
-        private readonly string Yes = "Yes";
-        private readonly string No = "No";
 
         public RestoreModalDialog()
         {
             InitializeComponent();
 
-            txtCaption.Text = Caption;
-            txtMessage.Text = Message;
-            txtYes.Text = Yes;
-            txtNo.Text = No;
+            txtCaption.Text = Strings.RestoreToDefault;
+            txtMessage.Text = Strings.RestoreToDefalutText;
+            txtYes.Text = Strings.Yes;
+            txtNo.Text = Strings.No;
         }
 
         private void Yes_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

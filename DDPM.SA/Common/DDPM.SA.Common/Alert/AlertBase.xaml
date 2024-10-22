@@ -38,7 +38,7 @@
                     </Grid>
                 </Grid>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock x:Name="MessageTextBlock" Foreground="White" FontSize="13" Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                    <TextBlock x:Name="MessageTextBlock" TextWrapping="WrapWithOverflow" Margin="0, 5, 0, 5" Foreground="White" FontSize="13" Text="{Binding Message, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 </StackPanel>
             </Grid>
         </Border>

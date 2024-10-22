@@ -10,12 +10,12 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:SoundBarViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="655" d:DesignWidth="470" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="655" d:DesignWidth="470">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
             <ImageBrush x:Key="UnselectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" />

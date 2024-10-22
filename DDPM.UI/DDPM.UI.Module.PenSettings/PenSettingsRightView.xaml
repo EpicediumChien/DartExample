@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=plugin:PenViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
-             d:DesignHeight="675" d:DesignWidth="520" VerticalAlignment="Top" HorizontalAlignment="Left">
+             d:DesignHeight="675" d:DesignWidth="520">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

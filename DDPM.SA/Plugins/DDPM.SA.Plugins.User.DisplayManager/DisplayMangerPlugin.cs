@@ -37,6 +37,7 @@ using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -99,8 +100,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ["1001"] = "USB-C2",
             ["1010"] = "USB-C3",
             ["1011"] = "USB-C4",
-            ["1100"] = "Thunderbolt-1",
-            ["1101"] = "Thunderbolt-2"
+            ["1100"] = "Thunderbolt1",
+            ["1101"] = "Thunderbolt2"
         };
 
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
@@ -108,6 +109,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
         private string Display_FWU_URL = $"https://clientperipherals.dell.com/DDPM/";
         private string Display_FWU_URL_Folder = $"/Windows/Display/Firmware/";
+
+        //Derek 2024/10/21
+        private Process uiProcess = null;
 
         #endregion
 
@@ -182,13 +186,46 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_CacheTable);
         }
 
-        public Task Reset0x52TimerTick(int millisecond)
+        public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " + 
+                millisecond.ToString() + $" requested, process ID[{processID}]");
+
+            if (-0xFF != processID)
+                CreateProcessExitEvent(processID);
 
             _VcpCorePlugin.Reset0x52TimerTick(millisecond);
 
             return Task.FromResult(Task.CompletedTask);
+        }
+
+        private Task<bool> CreateProcessExitEvent(int processID)
+        { 
+            bool result = true;
+
+            try
+            {
+                uiProcess = Process.GetProcessById(processID);
+                uiProcess.EnableRaisingEvents = true;
+                uiProcess.Exited += new EventHandler(Process_Exited);
+
+                //_logs.DebugMsg($"Process Name: {uiProcess.ProcessName}");
+                //_logs.DebugMsg($"Process ID: {uiProcess.Id}");
+            }
+            catch (ArgumentException ex)
+            {
+                result = false;
+                _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+            }
+
+            return Task.FromResult(result); 
+        }
+
+        private async void Process_Exited(object sender, EventArgs e)
+        {
+            uiProcess = null;
+
+            await _VcpCorePlugin.Reset0x52TimerTick(8000);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -422,6 +459,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo)
         {
+            InputTypeString inputTypeString = new InputTypeString();
             ObjGetVCP objGetVCPEE = new ObjGetVCP();
             usbUpstreamList = new List<string>()
                 /*{ "Thunderbolt", "USB-C" }*/;
@@ -447,6 +485,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 _usbUpstreamList.Add(outUSB);
                             }
                         }
+                        _usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                     USBUpstream.Clear();
                     string str = string.Empty;
@@ -499,12 +538,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         usbUpstreamList.Add(_usbUpstreamList[3]);
                                     }
                                 }
+                                //usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
                             }
                         }
                     }
                     catch
                     {
                         usbUpstreamList = _usbUpstreamList;
+                        //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                     }
                 }
             }
@@ -1925,6 +1966,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (_DisplayPropertiesPlugin != null)
             {
                 ret = _DisplayPropertiesPlugin.GetCurrentDisplayProperties(monitorInfo).Result;
+                string setParam = "USB-C Prioritization";
+                string capabilityString = monitorInfo.CapabilityString;
+                USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
+                bool supportedHDR = IsSupportHDR(capabilityString), supportedUSBC = IsSupportUSBCPrioritization(capabilityString);
+                if (supportedHDR)
+                {
+                    ret.isHDREnable = _DisplayPropertiesPlugin.GetHDRStatus(monitorInfo.edid).Result;
+                }
+                if (supportedUSBC)
+                {
+                    int count = 0;
+                    ObjGetVCP ObjGetVCP;
+                    do
+                    {
+                        ObjGetVCP = GetVCPCapability(monitorInfo, setParam).Result;
+                        count++;
+                    } while (ObjGetVCP.result != true && count < 3);
+                    if (ObjGetVCP.result == true)
+                    {
+                        PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                    }
+                    ret.USBCPrioritizationType = PrioritizationType;
+                }
             }
             return Task.FromResult(ret);
         }
@@ -1932,28 +1996,40 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
         {
-            //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
-            isSWSetOrientation = true;
-            SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
-            isSWSetOrientation = false;
+            bool ret = false;
+            if (monitorInfos != null && properties != null)
+            {
+                //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
+                isSWSetOrientation = true;
+                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
+                ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+                isSWSetOrientation = false;
+            }
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
-            isSWSetOrientation = true;
-            bool ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
-            isSWSetOrientation = false;
+            bool ret = false;
+            if (monitorInfos != null && properties != null)
+            {
+                isSWSetOrientation = true;
+                ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
+                isSWSetOrientation = false;
+            }
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
-            isSWSetOrientation = true;
-            SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
-            isSWSetOrientation = false;
+            bool ret = false;
+            if (monitorInfos != null)
+            {
+                isSWSetOrientation = true;
+                SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
+                ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
+                isSWSetOrientation = false;
+            }
             return Task.FromResult(ret);
         }
 
@@ -2090,16 +2166,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
-            if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
+            if (monitorInfo != null && !string.IsNullOrEmpty(orientation))
             {
-                for (int i = 1; i < OrientationString.Length; i++)
+                if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
                 {
-                    if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                    for (int i = 1; i < OrientationString.Length; i++)
                     {
-                        return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
+                        if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                        {
+                            return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
+                        }
                     }
+                    return Task.FromResult<bool?>(false);
                 }
-                return Task.FromResult<bool?>(false);
             }
             return Task.FromResult<bool?>(null);
         }
@@ -2188,7 +2267,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             try
             {
-                if (s == "" || s.Length < 10)
+                if (string.IsNullOrEmpty(s) || s.Length < 10)
                 {
                     return false;
                 }
@@ -3457,6 +3536,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     string szInfo = string.Empty;
                     string jsonString = string.Empty;
                     _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
+                    Debug.WriteLine(jsonContent);
                     jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
                     if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
                     {
@@ -3519,7 +3599,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             break;
                                         }
                                     }
-                                    if (newVersion > oldVersion)
+                                    if (newVersion >= oldVersion)
                                     {
                                         ret.Firmwares.Add(firmwares_item);
                                     }

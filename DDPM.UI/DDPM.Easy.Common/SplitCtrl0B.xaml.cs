@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -44,6 +46,8 @@ namespace DDPM.Easy.Common
         }
         public char SplitKey => 'B';
         public UserControl UC => this;
+        //SplitCtrl0B is used fro OnScreen custom layout, EAID should be [1000~1004], no defualt value
+        public int EAID { get; set; }
 
         #endregion ISplitCtrl Native Members
 
@@ -97,7 +101,7 @@ namespace DDPM.Easy.Common
             //cellListV.Add(new CellObj("2B2", cell_2B2));
         }
 
-        public bool ApplySettingsToCellList(System.Drawing.Rectangle rcScreen)
+        public bool ApplySettingsToCellList(Rect rcView)
         {
             List<double> settings = VM.Settings_Double;
             if (settings == null)
@@ -114,12 +118,22 @@ namespace DDPM.Easy.Common
             if (settings.Count != ((borderCount + 1) * 4))
                 return false;
 
+            Trace.WriteLine($"rcView:({rcView.X},{rcView.Y})-({rcView.Right},{rcView.Bottom}){rcView.Width}x{rcView.Height}");
+          
             //settings[1] is screenScale
             double orgScreenScale = settings[1];
-            //settings[1] is screenWidth
+            //settings[2] is screenWidth
             double orgWidth = settings[2];
-            //settings[2] is screenHeight
+            //settings[3] is screenHeight
             double orgHeight = settings[3];
+
+            if (orgWidth <= 0)
+                orgWidth = 1;
+            if (orgHeight <= 0)
+                orgHeight = 1;
+
+            double xRatio = rcView.Width / orgWidth;
+            double yRatio = rcView.Height / orgHeight;
 
 
             int idxSettings = 0;
@@ -129,27 +143,114 @@ namespace DDPM.Easy.Common
                 if ((idxSettings + 4) > settings.Count)
                     break;
 
-                double left = settings[idxSettings];
-                double top = settings[idxSettings + 1];
+                double left = settings[idxSettings] * xRatio;
+                double top =  settings[idxSettings + 1] * yRatio;
 
+                //Add Borders
+                //
                 Border border = new Border();
                 border.Name = $"Cb{idx}";
                 border.Style = FindResource("CellBorderStyle") as Style;
-                border.Width = settings[idxSettings + 2];
-                border.Height = settings[idxSettings + 3];
+                border.Width = settings[idxSettings + 2] * xRatio;
+                border.Height = settings[idxSettings + 3] * yRatio;
 
-                canvas.Children.Add(border);
-                Canvas.SetLeft(border, left);
-                Canvas.SetTop(border, top);
+               //canvas.Children.Add(border);
+                //Canvas.SetLeft(border, left);
+                //Canvas.SetTop(border, top);
 
                 CellObj cell = new CellObj(border.Name, border);
                 cell.rc = new Rect(left, top, border.Width, border.Height);
                 cellListH.Add(cell);
+                Trace.WriteLine($"Cell[{idx}]:({cell.rc.X},{cell.rc.Y})-({cell.rc.Right},{cell.rc.Bottom}){cell.rc.Width}x{cell.rc.Height}");
+
+                //Add CellBorders
+                //
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = $"Cb{idx}";
+                //cellBorder.Style = FindResource("CellBorder0B") as Style;
+                cellBorder.Width = settings[idxSettings + 2] * xRatio;
+                cellBorder.Height = settings[idxSettings + 3] * yRatio;
+
+                canvas.Children.Add(cellBorder);
+                Canvas.SetLeft(cellBorder, left);
+                Canvas.SetTop(cellBorder, top);
+
+                CellBorders.Add(cellBorder);
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to list of Rects, all these Rect are the layout in a 1x1 View
+        /// </summary>
+        public void UpdateToCellListFromSettings()
+        //public List<Rect> ConvertSettingsToRatioRects(Rect rcDest, bool isVertical = false)
+        {
+            //SplitCtrl0B has no default CellList, so we will create new and replace
+            //Always apply to Horz CellList now
+
+            List<Rect> listOut = new List<Rect>();
+
+            List<double> settings = VM.Settings_Double;
+            if (settings == null)
+                return;// listOut;
+            if (settings.Count == 0)
+                return;// listOut;
+
+            //settings[0] is BorderCount
+            int borderCount = (int)settings[0];
+            if (borderCount <= 0)
+                return;// listOut;
+
+            //Check the settings.Count should be (borderCount*4 + 4)
+            if (settings.Count != ((borderCount + 1) * 4))
+                return; // listOut;
+
+            //settings[1] is screenScale
+            double orgScreenScale = settings[1];
+            //settings[2] is screenWidth
+            double orgWidth = settings[2];
+            //settings[3] is screenHeight
+            double orgHeight = settings[3];
+
+            if (orgWidth <= 0)
+                orgWidth = 1;
+            if (orgHeight <= 0)
+                orgHeight = 1;
+
+            Rect rcDest = new Rect(0,0,1,1);
+            double xRatio = rcDest.Width / orgWidth;
+            double yRatio = rcDest.Height / orgHeight;
+
+            int idxSettings = 0;
+            for (int idx = 0; idx < borderCount; idx++)
+            {
+                idxSettings += 4;
+                if ((idxSettings + 4) > settings.Count)
+                    break;
+
+                double left = rcDest.Left + settings[idxSettings] * xRatio;
+                double top = rcDest.Top + settings[idxSettings + 1] * yRatio;
+
+                double width = settings[idxSettings + 2] * xRatio;
+                double height = settings[idxSettings + 3] * yRatio;
+
+                Rect rect = new Rect(left, top, width, height);
+                listOut.Add(rect);
+            }
+
+            cellListH.Clear();
+            int idxCell = 0;
+            foreach(Rect rcRatio in listOut)
+            {
+                CellObj cellObj = new CellObj($"Cb{idxCell}");
+                cellObj.rcRatio = rcRatio;
+                cellListH.Add(cellObj);
+                idxCell++;
+            }
+            
+        }
         #endregion Cell List
 
         #region CellBorders
@@ -168,6 +269,7 @@ namespace DDPM.Easy.Common
             set { }
         }
         #endregion
+
         #region Splitter List
 
         public List<GridSplitter> VSplitterList { get; set; } = new List<GridSplitter>();

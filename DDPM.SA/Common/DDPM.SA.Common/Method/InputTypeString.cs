@@ -10,29 +10,32 @@ namespace DDPM.SA.Common.Method
     {
         public List<string> SubInputType(List<string> stringList)
         {
-            string T_strI = string.Empty;
-            string T_strII = string.Empty;
-            bool rc = false;
-            for (int i = 0; i < stringList.Count; i++)
+            if (stringList != null)
             {
-                T_strI = System.Text.RegularExpressions.Regex.Replace(stringList[i].ToString(), @"\d", string.Empty);
-
-                for (int j = 0; j < stringList.Count; j++)
+                string T_strI = string.Empty;
+                string T_strII = string.Empty;
+                bool rc = false;
+                for (int i = 0; i < stringList.Count; i++)
                 {
-                    if (i != j)
-                    {
-                        T_strII = System.Text.RegularExpressions.Regex.Replace(stringList[j].ToString(), @"\d", string.Empty);
+                    T_strI = System.Text.RegularExpressions.Regex.Replace(stringList[i].ToString(), @"\d", string.Empty);
 
-                        if (T_strI.Equals(T_strII))
+                    for (int j = 0; j < stringList.Count; j++)
+                    {
+                        if (i != j)
                         {
-                            rc = true;
-                            break;
+                            T_strII = System.Text.RegularExpressions.Regex.Replace(stringList[j].ToString(), @"\d", string.Empty);
+
+                            if (T_strI.Equals(T_strII))
+                            {
+                                rc = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (!rc)
-                    stringList[i] = T_strI;
+                    if (!rc)
+                        stringList[i] = T_strI;
+                }
             }
 
             return stringList;

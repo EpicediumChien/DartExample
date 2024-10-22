@@ -1,12 +1,18 @@
 ﻿using Newtonsoft.Json;
+using System.Buffers;
+using System;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Newtonsoft.Json.Linq;
 
 namespace DDPM.UI.Common
 {
     public class PenActions
     {
+        private const string ItemID = "DellPeripheral.Pen.0";
+
         public SelectedAction TopButtonClickAction = new(73, new AssignedAction(73));
         public SelectedAction TopButtonDoubleClickAction = new(90, new AssignedAction(90));
         public SelectedAction TopButtonPressHoldAction = new(75, new AssignedAction(75));
@@ -22,25 +28,54 @@ namespace DDPM.UI.Common
 
         public PenActions()
         {
+
             Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             TopButtonDoubleClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+            if (TopButtonDoubleClickAction.AssignedAction.ID == 65)
+            {
+                TopButtonDoubleClickAction.AssignedAction.ID = 64;
+            }
+            else if (TopButtonDoubleClickAction.AssignedAction.ID == 23)
+            {
+                TopButtonDoubleClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+            }
 
             task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressSetting();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             TopButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+            if (TopButtonClickAction.AssignedAction.ID == 23)
+            {
+                TopButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+            }
 
             task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserLongPressSetting();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             TopButtonPressHoldAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+            if (TopButtonPressHoldAction.AssignedAction.ID == 77)
+            {
+                TopButtonPressHoldAction.AssignedAction.ID = 64;
+            }
+            else if (TopButtonPressHoldAction.AssignedAction.ID == 23)
+            {
+                TopButtonPressHoldAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+            }
 
             task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideTopSwitchSinglePressSetting();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             TopBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+            if (TopBarrelButtonClickAction.AssignedAction.ID == 23)
+            {
+                TopBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+            }
 
             task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideBottomSwitchSinglePressSetting();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             BottomBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+            if (BottomBarrelButtonClickAction.AssignedAction.ID == 23)
+            {
+                BottomBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+            }
 
             task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
             jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
@@ -60,48 +95,56 @@ namespace DDPM.UI.Common
             ResetRadialMenu();
         }
 
-        public PenActions(string _model)
+        public void RestoreToDefault()
         {
-            //var model = _model.ToUpper();
-            //switch (model)
-            //{
-            //    case "PN7522W":
-            //    case "PN9315A":
-            //        Buttons.Add(PenButtonName.TopButton);
-            //        Buttons.Add(PenButtonName.TopBarrelButton);
-            //        Buttons.Add(PenButtonName.BottomBarrelButton);
-            //        break;
+            TopButtonClickAction = new(73, new AssignedAction(73));
+            TopButtonDoubleClickAction = new(90, new AssignedAction(90));
+            TopButtonPressHoldAction = new(75, new AssignedAction(75));
+            TopBarrelButtonClickAction = new(27, new AssignedAction(27));
+            BottomBarrelButtonClickAction = new(26, new AssignedAction(26));
 
-            //    default:
-            //        Buttons.Add(PenButtonName.TopBarrelButton);
-            //        Buttons.Add(PenButtonName.BottomBarrelButton);
-            //        break;
-            //}
+            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":73,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":90,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":75,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":27,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(ItemID, newValue);
+            newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
+            DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(ItemID, newValue);
+
             ResetRadialMenu();
         }
 
         public void ResetRadialMenu()
         {
             RadialLabels = new() {
-                { 1, Strings.VolumeUp },
-                { 2, Strings.PlayPause },
-                { 3, Strings.VolumeDown },
+                { 0, Strings.NextTrack },
+                { 1, Strings.WebBrowser },
+                { 2, Strings.Mute },
+                { 3, Strings.EMail },
                 { 4, Strings.PreviousTrack },
-                { 5, Strings.EMail },
-                { 6, Strings.Mute },
-                { 7, Strings.WebBrowser },
-                { 8, Strings.NextTrack },
+                { 5, Strings.VolumeDown },
+                { 6, Strings.PlayPause },
+                { 7, Strings.VolumeUp },
             };
             RadialActions.Clear();
-            RadialActions.Add(1, new SelectedAction(84, new AssignedAction(84)));
-            RadialActions.Add(2, new SelectedAction(81, new AssignedAction(81)));
-            RadialActions.Add(3, new SelectedAction(85, new AssignedAction(85)));
+            RadialActions.Add(0, new SelectedAction(82, new AssignedAction(82)));
+            RadialActions.Add(1, new SelectedAction(79, new AssignedAction(79)));
+            RadialActions.Add(2, new SelectedAction(86, new AssignedAction(86)));
+            RadialActions.Add(3, new SelectedAction(80, new AssignedAction(80)));
             RadialActions.Add(4, new SelectedAction(83, new AssignedAction(83)));
-            RadialActions.Add(5, new SelectedAction(80, new AssignedAction(80)));
-            RadialActions.Add(6, new SelectedAction(86, new AssignedAction(86)));
-            RadialActions.Add(7, new SelectedAction(79, new AssignedAction(79)));
-            RadialActions.Add(8, new SelectedAction(82, new AssignedAction(82)));
+            RadialActions.Add(5, new SelectedAction(85, new AssignedAction(85)));
+            RadialActions.Add(6, new SelectedAction(81, new AssignedAction(81)));
+            RadialActions.Add(7, new SelectedAction(84, new AssignedAction(84)));
             IsUseCenter = true;
+            foreach (var action in RadialActions)
+            {
+                byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{action.Key},\"actionId\":{action.Value.DefaultActionID},\"actionName\":\"{RadialLabels[action.Key]}\"}}");
+                DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting("DellPeripheral.Pen.0", newValue);
+            }
+            ActionList.ExportActionList(this, "PEN");
         }
 
         public class RadialLabel
@@ -216,7 +259,7 @@ namespace DDPM.UI.Common
         public MouseActions()
         { }
 
-        public MouseActions(string _model)
+        public MouseActions(string _model, string guid = "")
         {
             var model = _model.ToUpper();
             switch (model)
@@ -247,6 +290,25 @@ namespace DDPM.UI.Common
 
                 default:
                     break;
+            }
+
+            if (guid != "")
+            {
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseProgrammableKeys(guid);
+                var jArray = JArray.FromObject(task1.Result);
+                List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
+                foreach (var programbleKey in ProgrambleKeys)
+                {
+                    var btn = (MouseButtonName)programbleKey.Id;
+                    if (ButtonActions.ContainsKey(btn))
+                    {
+                        if (programbleKey.AssignedAction != null)
+                        {
+                            ButtonActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
+                        }
+                    }
+                }
+
             }
         }
     }
@@ -325,7 +387,7 @@ namespace DDPM.UI.Common
             return false;
         }
 
-        public static object ImportActionList(eDeviceCategory type, string model, int instanceID = 0)
+        public static object ImportActionList(eDeviceCategory type, string model, string guid = "")
         {
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
@@ -343,7 +405,7 @@ namespace DDPM.UI.Common
                             jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
                         }
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString);// File.ReadAllText(filePath))!;
+                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
                     }
                     var ka = new KeyboardActions(model);
                     ExportActionList(ka, model);
@@ -358,9 +420,9 @@ namespace DDPM.UI.Common
                             jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
                         }
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<MouseActions>(jsonString); //File.ReadAllText(filePath))!;
+                            return JsonConvert.DeserializeObject<MouseActions>(jsonString)!; //File.ReadAllText(filePath))!;
                     }
-                    var ma = new MouseActions(model);
+                    var ma = new MouseActions(model, guid);
                     ExportActionList(ma, model);
                     return ma;
 
@@ -373,7 +435,7 @@ namespace DDPM.UI.Common
                             jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
                         }
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<PenActions>(jsonString); //File.ReadAllText(filePath))!;
+                            return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
                     }
                     //var pen = new PenActions(model);
                     var pen = new PenActions();
@@ -385,5 +447,23 @@ namespace DDPM.UI.Common
             }
             return new object();
         }
+    }
+
+    public class ProgrambleKey
+    {
+        public int Id;
+        public string Name = "";
+        public string ActionName = "";
+        public ProgrambleAction AssignedAction = new();
+        public List<ProgrambleAction> SuggestedActions = new();
+    }
+    public class ProgrambleAction
+    {
+        public string BaseGuid = "";
+        public string Id = "";
+        public string Name = "";
+        public string Category = "";
+        public List<int> ProgrammableKeys = new();
+
     }
 }

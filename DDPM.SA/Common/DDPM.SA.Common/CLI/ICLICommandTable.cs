@@ -49,7 +49,7 @@ namespace DDPM.SA.Common
             "EASYARRANGELAYOUT",        //EasyArrangeLayout         DDPMW-1350
             "INAPPCOLORPRESET",         //InAppColorPreset          DDPMW-1351/1352
             "POWERNAP",                 //PowerNap                  DDPMW-1361
-            "INAPPEXPORTSETTINGS",      //InAppExportSettings       DDPMW-1335
+            "INAPPEXPORTIMPORT",        //INAPPEXPORTIMPORT       DDPMW-1335
             "COLLABSCREENSHARE",        //CollabScreenShare         DDPMW-1843
             "HDR",                      //hdr                       DDPMW-1729
             "ANTIFLICKER",              //AntiFlicker               DDPMW-1735
