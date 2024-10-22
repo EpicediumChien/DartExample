@@ -370,6 +370,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _isDefer = isDefer;
             _isForce = isForce;
             _DeviceTypeList = deviceTypeList;
+            _IsUITrigger = isUItrigger;
             if (reScan)
             {
                 _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay).Result;
@@ -505,7 +506,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
-                    HandleUpdateInfo();
+                    if (!_IsUITrigger)
+                    {
+                        HandleUpdateInfo();
+                    }
                     _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
                 }
                 else
@@ -520,6 +524,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _IsShowNotify = true;
             _isDefer = false;
             _isForce = false;
+            _IsUITrigger = false;
             return Task.FromResult(new List<FWUpdateInfo>());
         }
 
@@ -1328,7 +1333,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (_DelayFWUpdateInfoPackage != null && _updateErrorCode == FWUErrorCode.NoError)
                 {
-                    _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.DevicePath == fwUpdateInfo.DevicePath);
+                    if (fwUpdateInfo.IsDisplay)
+                    {
+
+                        _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => (obj.ServiceTag == fwUpdateInfo.ServiceTag && obj.Model == fwUpdateInfo.Model));
+                    }
+                    else
+                    {
+                        _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.DevicePath == fwUpdateInfo.DevicePath);
+                    }
                 }
                 _logs.DebugMsg_1($"{_notificationStr}");
                 return _updateErrorCode;

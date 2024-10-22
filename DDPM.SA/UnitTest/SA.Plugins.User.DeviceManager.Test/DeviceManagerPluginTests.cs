@@ -1640,7 +1640,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(),It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), ""), $"DownloadAndInstall() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(),false, ""), $"DownloadAndInstall() returns null");
         }
 
         [Test]

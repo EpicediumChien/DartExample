@@ -2582,10 +2582,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(new FWUpdateInfoPackage());
         }
 
-        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isShowNotify = false, string installPath = "")
+        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "")
         {
             _UpdateProgress = null;
-            if (isShowNotify)
+            SetDelayFWUpdateInfoPackage();
+            if (isUITrigger)
             {
                 CallUpdateProgressUI().Wait();
             }
@@ -2602,6 +2603,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
         {
             FWUErrorCode ret = FWUErrorCode.Unknow;
+            SetDelayFWUpdateInfoPackage();
             //if (_UpdateProgress != null)
             //{
             ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
@@ -5747,6 +5749,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ToNKVM_initHotKeys();
             DeleteDdpmSwUpdaterFolder();
             GetSkipCA().Wait();
+            SetDelayFWUpdateInfoPackage();
+            CheckUODFWUInfoPackage();
             //hook keyboard
             //if (_HotkeyPlugin != null)
             //{
@@ -7320,8 +7324,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //0812 check required plugins before init
                             DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
-                            SetDelayFWUpdateInfoPackage();
-                            CheckUODFWUInfoPackage();
+                            //SetDelayFWUpdateInfoPackage();
+                            //CheckUODFWUInfoPackage();
                             //load hotkeysetting
                             //ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();

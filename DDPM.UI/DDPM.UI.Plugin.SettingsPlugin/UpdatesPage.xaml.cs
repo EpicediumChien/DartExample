@@ -55,7 +55,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CallFWU(SettingsPageViewModel vm)
         {
-            List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo).Result;
+            List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
             bool b = false;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
             {
