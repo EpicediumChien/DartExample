@@ -36,16 +36,16 @@ namespace DDPM.SA.Plugins.CMAManager
         private readonly object _resultLock = new object();
 
         #region Basic code for plugin
-        public const string PluginLogId = "CMAManager";
+        public const string PluginLogId = "DDPMRemoteManager";
 
         #region Private Members
 
-        private const string pluginName = "CMAManagerPlugin";
+        private const string pluginName = "DDPMRemoteManagerPlugin";
         private const string pluginVersion = "1.0.0";
-        private const string pluginDescription = "This plugin implements CMA Manager Plugin.";
+        private const string pluginDescription = "This plugin implements Remote Manager Plugin.";
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
-        private const string publisherSupport = "This plugin implements CMA Manager Plugin.";
+        private const string publisherSupport = "This plugin implements Remote Manager Plugin.";
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
