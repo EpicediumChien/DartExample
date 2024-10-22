@@ -292,7 +292,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             //Model = "MS355";
             //Model = "MS700";
-            Model = "MS900";
+            //Model = "MS900";
             //Model = "MS7421W";
             //Model = "MS300";
             //Model = "MS5120W";
@@ -300,7 +300,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "MS5320W";
             //Model = "MS3320W";
             //Model = "WM126";
-            ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
+            //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
             //MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentInstanceID);
             MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentDeviceID.ToString());
