@@ -46,10 +46,10 @@ namespace DDPM.EABroker
         private Screen? _workScreen = null;
 
         //EzSettings
-        private bool _isOnlyShift = false; //EzSettings.IsOnlyAllowWhenShiftKeyPressed
-        private bool _isAwsEnabled = true; //EzSettings.IsAwsEnabled
-        private bool _isWithoutGap = true; //EzSettings.IsWidthoutGap
-        private bool _isSpanMultiMonitors = false; //EzSettings.IsSpanAcrossMultiMonitors
+        private bool _isOnlyShift = EzSettings.Default_IsOnlyAllowWhenShiftKeyPressed;
+        private bool _isAwsEnabled = EzSettings.Default_IsAwsEnabled;
+        private bool _isWithoutGap = EzSettings.Default_IsWidthoutGap;
+        private bool _isSpanMultiMonitors = EzSettings.Default_IsSpanAcrossMultiMonitors;
         private bool _isShiftPressed = false;
 
         //Hovering
@@ -65,6 +65,7 @@ namespace DDPM.EABroker
         private double _yAwsWindow = 0;
 
         //AWS Icons
+        private SplitCtrl0B _awsIcon0;
         private ISplitCtrl _awsIcon1;
         private ISplitCtrl _awsIcon2;
         private ISplitCtrl _awsIcon3;
@@ -490,8 +491,8 @@ namespace DDPM.EABroker
                     IsWithoutGap = ezSettings.IsWidthoutGap;
                     IsSpanMultiMonitors = ezSettings.IsSpanAcrossMultiMonitors;
 
-                    //Robert_Lin, 2024-10-20 Debug purpose, need to comment out in release build
-                    IsAwsEnabled = true;
+                    ////Robert_Lin, 2024-10-20 Debug purpose, need to comment out in release build
+                    //IsAwsEnabled = true;
 
                     WriteLog($"@ArrangeVM.ReloadEzSettingsFromUserSettingsFile(): IsOnlyShift={IsOnlyShift}, IsAwsEnabled={IsAwsEnabled}, IsWithoutGap={IsWithoutGap}, IsSpanMultiMonitors={IsSpanMultiMonitors}");
                     return true;
@@ -734,6 +735,7 @@ namespace DDPM.EABroker
                         _awsBuddyWindow = new AwsBuddyWindow(this);
                         _awsBuddyWindow.Show();
 
+                        _awsIcon0 = new SplitCtrl0B();
                     }
                     catch (Exception eA)
                     {
@@ -938,13 +940,24 @@ namespace DDPM.EABroker
             return splitCtrl;
         }
 
+        public void OnPropertyChanged_AwsIconInfos()
+        {
+            OnPropertyChanged("AwsIcon1Info");
+            OnPropertyChanged("AwsIcon2Info");
+            OnPropertyChanged("AwsIcon3Info");
+            OnPropertyChanged("AwsIcon4Info");
+        }
+
         public string AwsIcon1Info
         {
             get
             {
                 if (_awsIcon1 == null)
                     return "(null)";
-                return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
+                if (_awsIcon1.IsAddedCustomLayout)
+                    return $"{_awsIcon1.FriendlyName}, Cells: {CellBordersText(_awsIcon1.CellBorders)}";
+                else
+                    return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
             }
         }
         public string AwsIcon2Info
@@ -953,7 +966,10 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon2 == null)
                     return "(null)";
-                return $"{_awsIcon2.FriendlyName}, Cells: {CellListText(_awsIcon2.CellList)}";
+                if (_awsIcon2.IsAddedCustomLayout)
+                    return $"{_awsIcon2.FriendlyName}, Cells: {CellBordersText(_awsIcon2.CellBorders)}";
+                else
+                    return $"{_awsIcon2.FriendlyName}, Cells: {CellListText(_awsIcon2.CellList)}";
             }
         }
         public string AwsIcon3Info
@@ -962,7 +978,10 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon3 == null)
                     return "(null)";
-                return $"{_awsIcon3.FriendlyName}, Cells: {CellListText(_awsIcon3.CellList)}";
+                if (_awsIcon3.IsAddedCustomLayout)
+                    return $"{_awsIcon3.FriendlyName}, Cells: {CellBordersText(_awsIcon3.CellBorders)}";
+                else
+                    return $"{_awsIcon3.FriendlyName}, Cells: {CellListText(_awsIcon3.CellList)}";
             }
         }
         public string AwsIcon4Info
@@ -971,7 +990,10 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon4 == null)
                     return "(null)";
-                return $"{_awsIcon4.FriendlyName}, Cells: {CellListText(_awsIcon4.CellList)}";
+                if (_awsIcon4.IsAddedCustomLayout)
+                    return $"{_awsIcon4.FriendlyName}, Cells: {CellBordersText(_awsIcon4.CellBorders)}";
+                else
+                    return $"{_awsIcon4.FriendlyName}, Cells: {CellListText(_awsIcon4.CellList)}";
             }
         }
 
@@ -990,6 +1012,26 @@ namespace DDPM.EABroker
                 else
                 {
                     outString += $"{{\"{objCell.Name}\":{ArrangeVM.FormatRect(objCell.rc)}}} ";
+                }
+            }
+            outString += "]";
+            return outString;
+        }
+        private string CellBordersText(List<CellBorder> cbList)
+        {
+            string outString = "[";
+            int idx = 0;
+            foreach (CellBorder cb in cbList)
+            {
+                if (idx > 0)
+                    outString += ",";
+                if (cb.rect == Rect.Empty)
+                {
+                    outString += $"{{\"{cb.CellName}\": EMPTY}} ";
+                }
+                else
+                {
+                    outString += $"{{\"{cb.CellName}\":{ArrangeVM.FormatRect(cb.rect)}}} ";
                 }
             }
             outString += "]";
