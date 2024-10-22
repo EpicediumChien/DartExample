@@ -81,6 +81,7 @@ namespace DDPM.EABroker
                         if (addCount >= EAEMConstants.MaxCustomItems)
                             break;
                     }
+                    cbNames.SelectedItem = selectedName;
                 }
                 else //CustomNames is empty
                 {
@@ -185,5 +186,13 @@ namespace DDPM.EABroker
         }
         #endregion
 
+        private void closeGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CancelButtonClick != null)
+            {
+                CancelButtonClick(this, "");
+            }
+            Hide();
+        }
     }
 }

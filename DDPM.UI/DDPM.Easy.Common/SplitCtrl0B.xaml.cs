@@ -46,7 +46,7 @@ namespace DDPM.Easy.Common
         }
         public char SplitKey => 'B';
         public UserControl UC => this;
-        //SplitCtrl0B is used fro OnScreen custom layout, EAID should be [1000~1004], no defualt value
+        //SplitCtrl0B is used fro OnScreen custom layout, EAID should be [1000~1004], no default value
         public int EAID { get; set; }
 
         #endregion ISplitCtrl Native Members
@@ -135,6 +135,7 @@ namespace DDPM.Easy.Common
             double xRatio = rcView.Width / orgWidth;
             double yRatio = rcView.Height / orgHeight;
 
+            canvas.Children.Clear();
 
             int idxSettings = 0;
             for (int idx = 0; idx < borderCount; idx++)
