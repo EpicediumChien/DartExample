@@ -2164,281 +2164,474 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Headset
-
-        public async Task SetMicNoiseCancellationAsync(string Guid, bool newValue)
+        public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
         {
-            Trace.WriteLine(" [Headset] SetMicNoiseCancellationAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
+            Trace.WriteLine(" [Headset] SetMicNoiseCancellationAsync : " + guidString + " || " + newValue.ToString());
 
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            if (!await GetItemIDAsync("Headset", guidString))
             {
-                SetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation", newValue);
-                writelog(" [Headset] SetMicNoiseCancellationAsync Success ! ");
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
             }
-            else
+
+            try
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation", newValue);
+                    writelog(" [Headset] SetMicNoiseCancellationAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetMicNoiseCancellationAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetSidetoneAsync(string guidString, bool newValue)
+        {
+            Trace.WriteLine(" [Headset] SetSidetoneAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Sidetone", newValue);
+                    writelog(" [Headset] SetSidetoneAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetSidetoneAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetBusyLightAsync(string guidString, bool newValue)
+        {
+            Trace.WriteLine(" [Headset] SetBusyLightAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BusyLight", newValue);
+                    writelog(" [Headset] SetBusyLightAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBusyLightAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetVoiceGuidanceAsync(string guidString, bool newValue)
+        {
+            Trace.WriteLine(" [Headset] SetVoiceGuidanceAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance", newValue);
+                    writelog(" [Headset] SetVoiceGuidanceAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetVoiceGuidanceAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetSelectedPresetAsync(string guidString, int newValue)
+        {
+            Trace.WriteLine(" [Headset] SetSelectedPresetAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset", newValue);
+                    writelog(" [Headset] SetSelectedPresetAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetSelectedPresetAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetSidetoneLevelAsync(string guidString, int newValue)
+        {
+            Trace.WriteLine(" [Headset] SetSidetoneLevelAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel", newValue);
+                    writelog(" [Headset] SetSidetoneLevelAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetSidetoneLevelAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetBandsGainAsync(string guidString, byte[] newValue)
+        {
+            Trace.WriteLine(" [Headset] SetBandsGainAsync : " + guidString + " || " + BitConverter.ToString(newValue));
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BandsGain", newValue);
+                    writelog(" [Headset] SetBandsGainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBandsGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetAncModeAsync(string guidString, int newValue)
+        {
+            Trace.WriteLine(" [Headset] SetAncModeAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "AncMode", newValue);
+                    writelog(" [Headset] SetAncModeAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetAncModeAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetAncGainAsync(string guidString, int newValue)
+        {
+            Trace.WriteLine(" [Headset] SetAncGainAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "AncGain", newValue);
+                    writelog(" [Headset] SetAncGainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetAncGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetWearDetectionAsync(string guidString, int newValue)
+        {
+            Trace.WriteLine(" [Headset] SetWearDetectionAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "WearDetection", newValue);
+                    writelog(" [Headset] SetWearDetectionAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetWearDetectionAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetMicNCIncomingAsync(string guidString, bool newValue)
+        {
+            Trace.WriteLine(" [Headset] SetMicNCIncomingAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming", newValue);
+                    writelog(" [Headset] SetMicNCIncomingAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetMicNCIncomingAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetUnPairAsync(string guidString, bool newValue)
+        {
+            Trace.WriteLine(" [Headset] SetUnPairAsync : " + guidString + " || " + newValue.ToString());
+
+            if (!await GetItemIDAsync("Headset", guidString))
+            {
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
+            }
+
+            try
+            {
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "UnPair", newValue);
+                    writelog(" [Headset] SetUnPairAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetUnPairAsync failed: {ex.Message}");
+                return false;
             }
         }
 
-        public async Task SetSidetoneAsync(string Guid, bool newValue)
+        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guidString, bool newValue)
         {
-            Trace.WriteLine(" [Headset] SetSidetoneAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
+            Trace.WriteLine(" [Headset] SetFactoryResetAsyncValueForHeadset : " + guidString);
 
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            if (!await GetItemIDAsync("Headset", guidString))
             {
-                SetPropertyValue(_headsetInterfaceType, commodity, "Sidetone", newValue);
-                writelog(" [Headset] SetSidetoneAsync Success ! ");
+                writelog(" [Headset] Failed to get Item ID for the specified GUID.");
+                return false;
             }
-            else
+
+            try
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) as ICommodity;
+                if (commodity != null)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                    writelog(" [Headset] SetFactoryResetAsyncValueForHeadset Success !");
+                    return true;
+                }
+                else
+                {
+                    writelog($" [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetFactoryResetAsyncValueForHeadset failed: {ex.Message}");
+                return false;
             }
         }
-
-        public async Task SetBusyLightAsync(string Guid, bool newValue)
-        {
-            Trace.WriteLine(" [Headset] SetBusyLightAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "BusyLight", newValue);
-                writelog(" [Headset] SetBusyLightAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetVoiceGuidanceAsync(string Guid, bool newValue)
-        {
-            Trace.WriteLine(" [Headset] SetVoiceGuidanceAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance", newValue);
-                writelog(" [Headset] SetVoiceGuidanceAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetSelectedPresetAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine(" [Headset] SetSelectedPresetAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset", newValue);
-                writelog(" [Headset] SetSelectedPresetAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetSidetoneLevelAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine(" [Headset] SetSidetoneLevelAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel", newValue);
-                writelog(" [Headset] SetSidetoneLevelAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetBandsGainAsync(string Guid, byte[] newValue)
-        {
-            Trace.WriteLine(" [Headset] SetBandsGainAsync : " + Guid + " || " + BitConverter.ToString(newValue));
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "BandsGain", newValue);
-                writelog(" [Headset] SetBandsGainAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetAncModeAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine(" [Headset] SetAncModeAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "AncMode", newValue);
-                writelog(" [Headset] SetAncModeAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetAncGainAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine(" [Headset] SetAncGainAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "AncGain", newValue);
-                writelog(" [Headset] SetAncGainAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetWearDetectionAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine(" [Headset] SetWearDetectionAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "WearDetection", newValue);
-                writelog(" [Headset] SetWearDetectionAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetMicNCIncomingAsync(string Guid, bool newValue)
-        {
-            Trace.WriteLine(" [Headset] SetMicNCIncomingAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming", newValue);
-                writelog(" [Headset] SetMicNCIncomingAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetUnPairAsync(string Guid, bool newValue)
-        {
-            Trace.WriteLine(" [Headset] SetUnPairAsync : " + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "UnPair", newValue);
-                writelog(" [Headset] SetUnPairAsync Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
-        {
-            Trace.WriteLine(" [Headset] SetFactoryResetAsyncValueForHeadset : " + Guid);
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
-                writelog(" [Headset] SetFactoryResetAsyncValueForHeadset Success ! ");
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-            }
-        }
-
 
         //////////////////////Get Methods////////////////////////
 
         public async Task<JArray> GetDeviceItemsExAsync(string Guid)
         {
-            Trace.WriteLine(" [Headset] GetDeviceItemsExAsync : " + Guid);
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+            try
             {
+                Trace.WriteLine(" [Headset] GetDeviceItemsExAsync : " + Guid);
+                if (!await GetItemIDAsync("Headset", Guid))
+                {
+                    writelog($"[Headset] Failed to get ItemID for Guid: {Guid}");
+                    return null;
+                }
+
+                var commodityInstance = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (!(commodityInstance is ICommodity commodity))
+                {
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item (Guid: {Guid}).");
+                    return null;
+                }
+
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceItemsEx");
-                Trace.WriteLine(" [Headset] GetDeviceItemsExAsync Success !");
-                writelog(" [Headset] GetDeviceItemsExAsync Success !");
+                if (value == null)
+                {
+                    writelog($"[Headset] GetDeviceItemsExAsync - Property 'DeviceItemsEx' returned null for Guid: {Guid}");
+                    return null;
+                }
+
+                writelog(" [Headset] GetDeviceItemsExAsync Success!");
                 return (JArray)value;
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"[Headset] GetDeviceItemsExAsync encountered an error: {ex.Message}");
+                writelog($"[Headset] GetDeviceItemsExAsync encountered an error: {ex.Message}");
                 return null;
             }
         }
-
         //public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid)
         //{
         //    Trace.WriteLine(" [Headset] GetInterfaceTypeAsync : " + Guid);
         //    if (!await GetItemIDAsync("Headset", Guid))
-        //    { return default; }
+        //    {
+        //        writelog(" [Headset] Failed to retrieve ItemID.");
+        //        return default;
+        //    }
 
         //    if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
         //    {
         //        var value = GetPropertyValue(_headsetInterfaceType, commodity, "InterfaceType");
-        //        Trace.WriteLine(" [Headset] GetInterfaceTypeAsync Success !");
-        //        writelog(" [Headset] GetInterfaceTypeAsync Success !");
-        //        return (DeviceInterfaceType)value;
+        //        if (value != null)
+        //        {
+        //            Trace.WriteLine(" [Headset] GetInterfaceTypeAsync Success!");
+        //            writelog(" [Headset] GetInterfaceTypeAsync Success!");
+        //            return (DeviceInterfaceType)value;
+        //        }
+        //        else
+        //        {
+        //            writelog(" [Headset] Property InterfaceType returned null.");
+        //            return default;
+        //        }
         //    }
         //    else
         //    {
-        //        Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
         //        writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
         //        return default;
         //    }
@@ -2448,18 +2641,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetDeviceNameAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceName");
-                Trace.WriteLine(" [Headset] GetDeviceNameAsync Success !");
-                writelog(" [Headset] GetDeviceNameAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetDeviceNameAsync Success!");
+                    writelog(" [Headset] GetDeviceNameAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property DeviceName returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
@@ -2469,18 +2672,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetDeviceIdAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceId");
-                Trace.WriteLine(" [Headset] GetDeviceIdAsync Success !");
-                writelog(" [Headset] GetDeviceIdAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetDeviceIdAsync Success!");
+                    writelog(" [Headset] GetDeviceIdAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property DeviceId returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
@@ -2490,18 +2703,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetPluginIdAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "PluginId");
-                Trace.WriteLine(" [Headset] GetPluginIdAsync Success !");
-                writelog(" [Headset] GetPluginIdAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetPluginIdAsync Success!");
+                    writelog(" [Headset] GetPluginIdAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property PluginId returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
@@ -2511,18 +2734,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetODMIdAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "ODMId");
-                Trace.WriteLine(" [Headset] GetODMIdAsync Success !");
-                writelog(" [Headset] GetODMIdAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetODMIdAsync Success!");
+                    writelog(" [Headset] GetODMIdAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property ODMId returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
@@ -2532,18 +2765,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetModelNumberAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "ModelNumber");
-                Trace.WriteLine(" [Headset] GetModelNumberAsync Success !");
-                writelog(" [Headset] GetModelNumberAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetModelNumberAsync Success!");
+                    writelog(" [Headset] GetModelNumberAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property ModelNumber returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
@@ -2553,18 +2796,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetInstanceNumberAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "InstanceNumber");
-                Trace.WriteLine(" [Headset] GetInstanceNumberAsync Success !");
-                writelog(" [Headset] GetInstanceNumberAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetInstanceNumberAsync Success!");
+                    writelog(" [Headset] GetInstanceNumberAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property InstanceNumber returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
@@ -2574,18 +2827,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetInstanceIdAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "InstanceId");
-                Trace.WriteLine(" [Headset] GetInstanceIdAsync Success !");
-                writelog(" [Headset] GetInstanceIdAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetInstanceIdAsync Success!");
+                    writelog(" [Headset] GetInstanceIdAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property InstanceId returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
@@ -2595,19 +2858,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetFirmwareVersionAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "FirmwareVersion");
-                Trace.WriteLine(" [Headset] GetFirmwareVersionAsync Success !");
-                writelog(" [Headset] GetFirmwareVersionAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetFirmwareVersionAsync Success!");
+                    writelog(" [Headset] GetFirmwareVersionAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property FirmwareVersion returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetFirmwareVersionAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetFirmwareVersionAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -2616,19 +2889,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetDeviceTypeAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceType");
-                Trace.WriteLine(" [Headset] GetDeviceTypeAsync Success !");
-                writelog(" [Headset] GetDeviceTypeAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetDeviceTypeAsync Success!");
+                    writelog(" [Headset] GetDeviceTypeAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property DeviceType returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetDeviceTypeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetDeviceTypeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -2637,19 +2920,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetParentDeviceTypeAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "ParentDeviceType");
-                Trace.WriteLine(" [Headset] GetParentDeviceTypeAsync Success !");
-                writelog(" [Headset] GetParentDeviceTypeAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetParentDeviceTypeAsync Success!");
+                    writelog(" [Headset] GetParentDeviceTypeAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property ParentDeviceType returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetParentDeviceTypeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetParentDeviceTypeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -2658,19 +2951,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsBatteryLevelSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBatteryLevelSupported");
-                Trace.WriteLine(" [Headset] GetIsBatteryLevelSupportedAsync Success !");
-                writelog(" [Headset] GetIsBatteryLevelSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsBatteryLevelSupportedAsync Success!");
+                    writelog(" [Headset] GetIsBatteryLevelSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsBatteryLevelSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsBatteryLevelSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsBatteryLevelSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2679,19 +2982,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetBatteryLevelAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "BatteryLevel");
-                Trace.WriteLine(" [Headset] GetBatteryLevelAsync Success !");
-                writelog(" [Headset] GetBatteryLevelAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetBatteryLevelAsync Success!");
+                    writelog(" [Headset] GetBatteryLevelAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property BatteryLevel returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetBatteryLevelAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetBatteryLevelAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -2700,19 +3013,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetDeviceBatteryStatusAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceBatteryStatus");
-                Trace.WriteLine(" [Headset] GetDeviceBatteryStatusAsync Success !");
-                writelog(" [Headset] GetDeviceBatteryStatusAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetDeviceBatteryStatusAsync Success!");
+                    writelog(" [Headset] GetDeviceBatteryStatusAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property DeviceBatteryStatus returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetDeviceBatteryStatusAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetDeviceBatteryStatusAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -2721,19 +3044,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetPairingStatusAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairingStatus");
-                Trace.WriteLine(" [Headset] GetPairingStatusAsync Success !");
-                writelog(" [Headset] GetPairingStatusAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetPairingStatusAsync Success!");
+                    writelog(" [Headset] GetPairingStatusAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property PairingStatus returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetPairingStatusAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetPairingStatusAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -2742,19 +3075,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetMaxPairingSlotsAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "MaxPairingSlots");
-                Trace.WriteLine(" [Headset] GetMaxPairingSlotsAsync Success !");
-                writelog(" [Headset] GetMaxPairingSlotsAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetMaxPairingSlotsAsync Success!");
+                    writelog(" [Headset] GetMaxPairingSlotsAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property MaxPairingSlots returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetMaxPairingSlotsAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetMaxPairingSlotsAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -2763,19 +3106,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetPairedDeviceCountAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedDeviceCount");
-                Trace.WriteLine(" [Headset] GetPairedDeviceCountAsync Success !");
-                writelog(" [Headset] GetPairedDeviceCountAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetPairedDeviceCountAsync Success!");
+                    writelog(" [Headset] GetPairedDeviceCountAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property PairedDeviceCount returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetPairedDeviceCountAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetPairedDeviceCountAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -2784,19 +3137,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetTotalNumberOfPairedHostNameAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "TotalNumberOfPairedHostName");
-                Trace.WriteLine(" [Headset] GetTotalNumberOfPairedHostNameAsync Success !");
-                writelog(" [Headset] GetTotalNumberOfPairedHostNameAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetTotalNumberOfPairedHostNameAsync Success!");
+                    writelog(" [Headset] GetTotalNumberOfPairedHostNameAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property TotalNumberOfPairedHostName returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetTotalNumberOfPairedHostNameAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetTotalNumberOfPairedHostNameAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -2805,19 +3168,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetSerialNumberAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "SerialNumber");
-                Trace.WriteLine(" [Headset] GetSerialNumberAsync Success !");
-                writelog(" [Headset] GetSerialNumberAsync Success !");
-                return (string)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetSerialNumberAsync Success!");
+                    writelog(" [Headset] GetSerialNumberAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property SerialNumber returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetSerialNumberAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetSerialNumberAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -2826,19 +3199,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsReadyAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsReady");
-                Trace.WriteLine(" [Headset] GetIsReadyAsync Success !");
-                writelog(" [Headset] GetIsReadyAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsReadyAsync Success!");
+                    writelog(" [Headset] GetIsReadyAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsReady returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsReadyAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsReadyAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2847,19 +3230,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsDirtyAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsDirty");
-                Trace.WriteLine(" [Headset] GetIsDirtyAsync Success !");
-                writelog(" [Headset] GetIsDirtyAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsDirtyAsync Success!");
+                    writelog(" [Headset] GetIsDirtyAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsDirty returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsDirtyAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsDirtyAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2868,19 +3261,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsMicNoiseCancellationSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsMicNoiseCancellationSupported");
-                Trace.WriteLine(" [Headset] GetIsMicNoiseCancellationSupportedAsync Success !");
-                writelog(" [Headset] GetIsMicNoiseCancellationSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsMicNoiseCancellationSupportedAsync Success!");
+                    writelog(" [Headset] GetIsMicNoiseCancellationSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsMicNoiseCancellationSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsMicNoiseCancellationSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsMicNoiseCancellationSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2889,19 +3292,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsSidetoneSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsSidetoneSupported");
-                Trace.WriteLine(" [Headset] GetIsSidetoneSupportedAsync Success !");
-                writelog(" [Headset] GetIsSidetoneSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsSidetoneSupportedAsync Success!");
+                    writelog(" [Headset] GetIsSidetoneSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsSidetoneSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsSidetoneSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsSidetoneSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2910,19 +3323,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsBusyLightSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBusyLightSupported");
-                Trace.WriteLine(" [Headset] GetIsBusyLightSupportedAsync Success !");
-                writelog(" [Headset] GetIsBusyLightSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsBusyLightSupportedAsync Success!");
+                    writelog(" [Headset] GetIsBusyLightSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsBusyLightSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsBusyLightSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsBusyLightSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2931,19 +3354,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsVoiceGuidanceSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsVoiceGuidanceSupported");
-                Trace.WriteLine(" [Headset] GetIsVoiceGuidanceSupportedAsync Success !");
-                writelog(" [Headset] GetIsVoiceGuidanceSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsVoiceGuidanceSupportedAsync Success!");
+                    writelog(" [Headset] GetIsVoiceGuidanceSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsVoiceGuidanceSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsVoiceGuidanceSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsVoiceGuidanceSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2952,19 +3385,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsPresetsSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsPresetsSupported");
-                Trace.WriteLine(" [Headset] GetIsPresetsSupportedAsync Success !");
-                writelog(" [Headset] GetIsPresetsSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsPresetsSupportedAsync Success!");
+                    writelog(" [Headset] GetIsPresetsSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsPresetsSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsPresetsSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsPresetsSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -2973,61 +3416,93 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsEqualizerSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsEqualizerSupported");
-                Trace.WriteLine(" [Headset] GetIsEqualizerSupportedAsync Success !");
-                writelog(" [Headset] GetIsEqualizerSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsEqualizerSupportedAsync Success!");
+                    writelog(" [Headset] GetIsEqualizerSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsEqualizerSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsEqualizerSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsEqualizerSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
 
         //public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid)
         //{
-        //    Trace.WriteLine(" [Headset] GetConnectionTypeAsync : " + Guid);
+        //    Trace.WriteLine($"[Headset] GetConnectionTypeAsync : {Guid}");
+
         //    if (!await GetItemIDAsync("Headset", Guid))
-        //    { return HeadsetConnectionType.Unknown; }
+        //    {
+        //        writelog($"[Headset] Failed to retrieve ItemID for Guid: {Guid}.");
+        //        return HeadsetConnectionType.Unknown;
+        //    }
 
         //    if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
         //    {
         //        var value = GetPropertyValue(_headsetInterfaceType, commodity, "ConnectionType");
-        //        Trace.WriteLine(" [Headset] GetConnectionTypeAsync Success !");
-        //        writelog(" [Headset] GetConnectionTypeAsync Success !");
-        //        return (HeadsetConnectionType)value;
+        //        if (value != null)
+        //        {
+        //            Trace.WriteLine("[Headset] GetConnectionTypeAsync Success!");
+        //            writelog("[Headset] GetConnectionTypeAsync Success!");
+        //            return (HeadsetConnectionType)value;
+        //        }
+        //        else
+        //        {
+        //            writelog("[Headset] Property ConnectionType returned null.");
+        //            return HeadsetConnectionType.Unknown;
+        //        }
         //    }
         //    else
         //    {
-        //        Debug.WriteLine($"[GetConnectionTypeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
         //        writelog($"[GetConnectionTypeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
         //        return HeadsetConnectionType.Unknown;
         //    }
         //}
 
+
         public async Task<bool> GetIsANCSupportedAsync(string Guid)
         {
             Trace.WriteLine(" [Headset] GetIsANCSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsANCSupported");
-                Trace.WriteLine(" [Headset] GetIsANCSupportedAsync Success !");
-                writelog(" [Headset] GetIsANCSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsANCSupportedAsync Success!");
+                    writelog(" [Headset] GetIsANCSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsANCSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsANCSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsANCSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3036,19 +3511,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsWearDetectionSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionSupported");
-                Trace.WriteLine(" [Headset] GetIsWearDetectionSupportedAsync Success !");
-                writelog(" [Headset] GetIsWearDetectionSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsWearDetectionSupportedAsync Success!");
+                    writelog(" [Headset] GetIsWearDetectionSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsWearDetectionSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsWearDetectionSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWearDetectionSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3057,19 +3542,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsWearDetectionSensitivitySupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionSensitivitySupported");
-                Trace.WriteLine(" [Headset] GetIsWearDetectionSensitivitySupportedAsync Success !");
-                writelog(" [Headset] GetIsWearDetectionSensitivitySupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsWearDetectionSensitivitySupportedAsync Success!");
+                    writelog(" [Headset] GetIsWearDetectionSensitivitySupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsWearDetectionSensitivitySupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsWearDetectionSensitivitySupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWearDetectionSensitivitySupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3078,19 +3573,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsWearDetectionPauseMusicSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionPauseMusicSupported");
-                Trace.WriteLine(" [Headset] GetIsWearDetectionPauseMusicSupportedAsync Success !");
-                writelog(" [Headset] GetIsWearDetectionPauseMusicSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsWearDetectionPauseMusicSupportedAsync Success!");
+                    writelog(" [Headset] GetIsWearDetectionPauseMusicSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsWearDetectionPauseMusicSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsWearDetectionPauseMusicSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWearDetectionPauseMusicSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3099,19 +3604,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsWearDetectionMuteMicSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionMuteMicSupported");
-                Trace.WriteLine(" [Headset] GetIsWearDetectionMuteMicSupportedAsync Success !");
-                writelog(" [Headset] GetIsWearDetectionMuteMicSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsWearDetectionMuteMicSupportedAsync Success!");
+                    writelog(" [Headset] GetIsWearDetectionMuteMicSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsWearDetectionMuteMicSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsWearDetectionMuteMicSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWearDetectionMuteMicSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3120,19 +3635,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsWearDetectionQuickPauseSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
-                Trace.WriteLine(" [Headset] GetIsWearDetectionQuickPauseSupportedAsync Success !");
-                writelog(" [Headset] GetIsWearDetectionQuickPauseSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsWearDetectionQuickPauseSupportedAsync Success!");
+                    writelog(" [Headset] GetIsWearDetectionQuickPauseSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsWearDetectionQuickPauseSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsWearDetectionQuickPauseSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWearDetectionQuickPauseSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3141,19 +3666,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetMicNoiseCancellationAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation");
-                Trace.WriteLine(" [Headset] GetMicNoiseCancellationAsync Success !");
-                writelog(" [Headset] GetMicNoiseCancellationAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetMicNoiseCancellationAsync Success!");
+                    writelog(" [Headset] GetMicNoiseCancellationAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property MicNoiseCancellation returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetMicNoiseCancellationAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetMicNoiseCancellationAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3162,19 +3697,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetMicNCIncomingAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming");
-                Trace.WriteLine(" [Headset] GetMicNCIncomingAsync Success !");
-                writelog(" [Headset] GetMicNCIncomingAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetMicNCIncomingAsync Success!");
+                    writelog(" [Headset] GetMicNCIncomingAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property MicNCIncoming returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetMicNCIncomingAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetMicNCIncomingAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3183,19 +3728,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetSidetoneAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "Sidetone");
-                Trace.WriteLine(" [Headset] GetSidetoneAsync Success !");
-                writelog(" [Headset] GetSidetoneAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetSidetoneAsync Success!");
+                    writelog(" [Headset] GetSidetoneAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property Sidetone returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetSidetoneAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetSidetoneAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3204,19 +3759,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetBusyLightAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "BusyLight");
-                Trace.WriteLine(" [Headset] GetBusyLightAsync Success !");
-                writelog(" [Headset] GetBusyLightAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetBusyLightAsync Success!");
+                    writelog(" [Headset] GetBusyLightAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property BusyLight returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetBusyLightAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetBusyLightAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3225,19 +3790,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetVoiceGuidanceAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance");
-                Trace.WriteLine(" [Headset] GetVoiceGuidanceAsync Success !");
-                writelog(" [Headset] GetVoiceGuidanceAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetVoiceGuidanceAsync Success!");
+                    writelog(" [Headset] GetVoiceGuidanceAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property VoiceGuidance returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetVoiceGuidanceAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetVoiceGuidanceAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3246,19 +3821,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetSelectedPresetAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset");
-                Trace.WriteLine(" [Headset] GetSelectedPresetAsync Success !");
-                writelog(" [Headset] GetSelectedPresetAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetSelectedPresetAsync Success!");
+                    writelog(" [Headset] GetSelectedPresetAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property SelectedPreset returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetSelectedPresetAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetSelectedPresetAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -3267,19 +3852,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetSidetoneLevelAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel");
-                Trace.WriteLine(" [Headset] GetSidetoneLevelAsync Success !");
-                writelog(" [Headset] GetSidetoneLevelAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetSidetoneLevelAsync Success!");
+                    writelog(" [Headset] GetSidetoneLevelAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property SidetoneLevel returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetSidetoneLevelAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetSidetoneLevelAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -3288,19 +3883,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetMuteStatusAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "MuteStatus");
-                Trace.WriteLine(" [Headset] GetMuteStatusAsync Success !");
-                writelog(" [Headset] GetMuteStatusAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetMuteStatusAsync Success!");
+                    writelog(" [Headset] GetMuteStatusAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property MuteStatus returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetMuteStatusAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetMuteStatusAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
@@ -3309,19 +3914,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetBandsGainAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return null; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return null;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "BandsGain");
-                Trace.WriteLine(" [Headset] GetBandsGainAsync Success !");
-                writelog(" [Headset] GetBandsGainAsync Success !");
-                return (byte[])value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetBandsGainAsync Success!");
+                    writelog(" [Headset] GetBandsGainAsync Success!");
+                    return (byte[])value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property BandsGain returned null.");
+                    return null;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetBandsGainAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetBandsGainAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return null;
             }
         }
@@ -3330,19 +3945,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetAncModeAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "AncMode");
-                Trace.WriteLine(" [Headset] GetAncModeAsync Success !");
-                writelog(" [Headset] GetAncModeAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetAncModeAsync Success!");
+                    writelog(" [Headset] GetAncModeAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property AncMode returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetAncModeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetAncModeAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -3351,19 +3976,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetAncGainAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "AncGain");
-                Trace.WriteLine(" [Headset] GetAncGainAsync Success !");
-                writelog(" [Headset] GetAncGainAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetAncGainAsync Success!");
+                    writelog(" [Headset] GetAncGainAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property AncGain returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetAncGainAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetAncGainAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -3372,19 +4007,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetWearDetectionAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return -1; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return -1;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "WearDetection");
-                Trace.WriteLine(" [Headset] GetWearDetectionAsync Success !");
-                writelog(" [Headset] GetWearDetectionAsync Success !");
-                return (int)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetWearDetectionAsync Success!");
+                    writelog(" [Headset] GetWearDetectionAsync Success!");
+                    return (int)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property WearDetection returned null.");
+                    return -1;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetWearDetectionAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetWearDetectionAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return -1;
             }
         }
@@ -3393,22 +4038,33 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Trace.WriteLine(" [Headset] GetIsMicNCIncomingSupportedAsync : " + Guid);
             if (!await GetItemIDAsync("Headset", Guid))
-            { return false; }
+            {
+                writelog(" [Headset] Failed to retrieve ItemID.");
+                return false;
+            }
 
             if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsMicNCIncomingSupported");
-                Trace.WriteLine(" [Headset] GetIsMicNCIncomingSupportedAsync Success !");
-                writelog(" [Headset] GetIsMicNCIncomingSupportedAsync Success !");
-                return (bool)value;
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Headset] GetIsMicNCIncomingSupportedAsync Success!");
+                    writelog(" [Headset] GetIsMicNCIncomingSupportedAsync Success!");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog(" [Headset] Property IsMicNCIncomingSupported returned null.");
+                    return false;
+                }
             }
             else
             {
-                Debug.WriteLine($"[GetIsMicNCIncomingSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsMicNCIncomingSupportedAsync] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
                 return false;
             }
         }
+
 
         #endregion
 

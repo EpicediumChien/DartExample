@@ -159,19 +159,19 @@ namespace DDPM.SA.Common
 
         #region Headset
 
-        Task SetMicNoiseCancellationAsync(string Guid, bool newValue);
-        Task SetSidetoneAsync(string Guid, bool newValue);
-        Task SetBusyLightAsync(string Guid, bool newValue);
-        Task SetVoiceGuidanceAsync(string Guid, bool newValue);
-        Task SetSelectedPresetAsync(string Guid, int newValue);
-        Task SetSidetoneLevelAsync(string Guid, int newValue);
-        Task SetBandsGainAsync(string Guid, byte[] newValue);
-        Task SetAncModeAsync(string Guid, int newValue);
-        Task SetAncGainAsync(string Guid, int newValue);
-        Task SetWearDetectionAsync(string Guid, int newValue);
-        Task SetMicNCIncomingAsync(string Guid, bool newValue);
-        Task SetUnPairAsync(string Guid, bool newValue);
-        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+        Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue);
+        Task<bool> SetSidetoneAsync(string Guid, bool newValue);
+        Task<bool> SetBusyLightAsync(string Guid, bool newValue);
+        Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue);
+        Task<bool> SetSelectedPresetAsync(string Guid, int newValue);
+        Task<bool> SetSidetoneLevelAsync(string Guid, int newValue);
+        Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
+        Task<bool> SetAncModeAsync(string Guid, int newValue);
+        Task<bool> SetAncGainAsync(string Guid, int newValue);
+        Task<bool> SetWearDetectionAsync(string Guid, int newValue);
+        Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
+        Task<bool> SetUnPairAsync(string Guid, bool newValue);
+        Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
 
         //////////Headset Get//////////
 
