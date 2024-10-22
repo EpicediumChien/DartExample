@@ -1,10 +1,10 @@
-﻿using Dell.Client.Framework.Agent;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
 using System.Diagnostics;
 using System.Reflection;
 using Dell.UnifiedAgent.Common;
-using DDPM.RemoteManagement.Common.Interfaces;
+using Dell.Client.Framework.Agent;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.PluginConditions;
 
 namespace DDPM.CMA.Tester
 {
