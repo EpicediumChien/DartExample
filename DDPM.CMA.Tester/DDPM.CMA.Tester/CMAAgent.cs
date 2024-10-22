@@ -118,18 +118,23 @@ namespace DDPM.CMA.Tester
         {
             Boolean isRunning = true;
 
+            string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
+
             string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
             string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
 
             string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
             //string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
 
-            string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""ConnectedDevices"",""options"":{}}]}";
+            string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""ConnectedDevices"",""options"":{}}]}";
             string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
-            string jsondeviceconfig = @"{""sid"":""1728380251"",""req"":[{""tid"":1,""active"":""set"",""devicetype"":""APP"",""command"":""DeviceConfiguration"",""value"":""display,C:\\Tepm\\ConfigSettings.json"",""options"":{}}]}";
 
-            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\Temp\\"",""options"":{}}]}";
 
+            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\temp"",""options"":{}}]}";
+
+
+            string jsondeviceconfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
+            string config = "";
 
             RemoteRequestArgs cmarequest = new RemoteRequestArgs();
 
@@ -173,8 +178,8 @@ namespace DDPM.CMA.Tester
                         break;
 
                     case 4:
-                        Console.WriteLine($"json String = {jsondeviceconfig}");
-                        cmarequest.remote_request = jsondeviceconfig;
+                        Console.WriteLine($"json String = {jsondeviceconfig2}");
+                        cmarequest.remote_request = jsondeviceconfig2;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
@@ -200,32 +205,6 @@ namespace DDPM.CMA.Tester
                 while (!isresponse) { }
 
             }
-            /*
-                        if (args.Length > 0)
-                        {
-                            switch (args[0].ToLower())
-                            {
-                                case "display":
-                                    cmarequest.cma_request = jsonfwdisplay;
-                                    _CMAManagerPlugin.Info(cmarequest);
-                                    break;
-
-                                case "dock":
-                                    cmarequest.cma_request = jsonfwdock;
-                                    _CMAManagerPlugin.Info(cmarequest);
-                                    break;
-
-                                default:
-                                    cmarequest.cma_request = json;
-                                    _CMAManagerPlugin.Info(cmarequest);
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            cmarequest.cma_request = jsondevicedata;
-                            _CMAManagerPlugin.Info(cmarequest);
-                        }*/
 
 
         }
@@ -305,3 +284,4 @@ namespace DDPM.CMA.Tester
         #endregion
     }
 }
+cd 
