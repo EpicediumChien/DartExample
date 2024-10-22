@@ -84,7 +84,7 @@ namespace DDPM.UI.Plugin.ViewModels
             return true;
         }
 
-        void PrepareActionItems()
+        private void PrepareActionItems()
         {
             //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
             Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
