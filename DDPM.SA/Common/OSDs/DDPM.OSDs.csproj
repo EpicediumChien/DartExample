@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="OSDType.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Display.png" />
     <None Remove="Img\Battery.png" />
     <None Remove="Img\CapsLock Off.png" />
