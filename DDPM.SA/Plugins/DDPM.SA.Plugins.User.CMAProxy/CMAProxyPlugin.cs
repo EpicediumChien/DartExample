@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
+using DDPM.SA.Common;
 using DDPM.SA.Common.CLI;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -243,7 +244,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 if (_DevManagerPlugin == null)
                 {
                     WriteLog("[Command line event] null Device Manager object!");
-                    CMAResult result = new CMAResult();
+                    RemoteManagementResult result = new RemoteManagementResult();
                     result.cma_request_id = e.cma_request_id;
                     result.output_result = "FAIL";
                     result.message = "Can't connect to DDPM device manager";
@@ -255,7 +256,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 if (e == null || string.IsNullOrEmpty(e.input_param))
                 {
                     WriteLog("[Command line event] Got Empty CMAEventArgs!");
-                    CMAResult result = new CMAResult();
+                    RemoteManagementResult result = new RemoteManagementResult();
                     result.cma_request_id = e.cma_request_id;
                     result.output_result = "FAIL";
                     result.message = "CMA Proxy got null event argument";
