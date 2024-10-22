@@ -21,7 +21,10 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-        </Border.Style>
+        </Border.Style> 
         -->
+        <TextBlock Foreground="Red" FontSize="9"
+                   Text="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}">
+        </TextBlock>
     </Border>
 </UserControl>

@@ -15,9 +15,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Work"
+                               IsEditable="False"/>
+            
             <SolidColorBrush x:Key="BkFillBrush" Color="#FF132F54"/>
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Icon"
-                               IsEditable="False" HoveringCell="2A1" />
             <!-- CellBorder = Border -->
             <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Normal" Color="#FFE6AC28" />
             <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Hover" Color="#FF0672CB" />
@@ -56,19 +58,33 @@
                 <Setter Property="CornerRadius" Value="4"/>
                 <Style.Triggers>
                     <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
+                        <!--<MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding IsWorkMode}" Value="True"/>
                             <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}" Value="True"/>
                         </MultiDataTrigger.Conditions>
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
-                    </MultiDataTrigger>
-                    <DataTrigger Binding="{Binding IsHover, ElementName=uc}" Value="True">
+                    </MultiDataTrigger>-->
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsWorkMode}" Value="True"/>
+                            <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource Self}}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
-                    </DataTrigger>
+                    </MultiDataTrigger>
+
+                    <!--<DataTrigger Binding="{Binding IsHover, ElementName=uc}" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
+                    </DataTrigger>-->
                    <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
                         <Setter Property="BorderThickness" Value="1.5"/>
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
                     </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsAwsMode}" Value="True"/>
+                            <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="BkBrush" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+                    </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>

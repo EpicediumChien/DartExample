@@ -942,7 +942,7 @@ namespace DDPM.UI.Module.EzArrange
 
             //Step C. Add remaining names
             //C1. SelectedIndex <- the first available index
-            selectedIndex = listOut.Count;
+            selectedIndex = listOut.Count-1;
             //C2. Generate unused names
             for (int i = selectedIndex; i < MaxCustomItems; i++)
             {
@@ -1037,6 +1037,10 @@ namespace DDPM.UI.Module.EzArrange
             {
                 int selectedIndex = 0;
                 List<string> friendlyNameList = GenerateCustomNames(out selectedIndex);
+                if ((selectedIndex < 0) || (selectedIndex >= friendlyNameList.Count))
+                {
+                    selectedIndex = 0;
+                }
                 //Create a defulte EAArgs, for pre-defined layout
                 EAArgs args = new EAArgs()
                 {
