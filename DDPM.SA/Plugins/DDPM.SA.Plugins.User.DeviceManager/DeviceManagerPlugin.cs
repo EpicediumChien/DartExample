@@ -51,6 +51,10 @@ using VcpCore.Common;
 using Windows.System;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
+using System.IO.Compression;
+using Microsoft.Toolkit.Uwp.Notifications;
+using System.Runtime;
+//using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using Point = System.Windows.Point;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -226,6 +230,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManager plugin started");
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            ToastNotificationManagerCompat.OnActivated += CheckInput;//Bruce 0924 add Popup Event
             //displayChange = new DisplayChange(Log);
             //Task.Run(() =>
             //{
@@ -2550,33 +2555,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update implementation
 
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false)
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
-                UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
-                if (updateHelper == null || updateHelper.UpdateItems == null)
+                UpdateHelper updateHelper = null;
+                DisplayUpdateHelper displayUpdateHelper = null;
+                if (reScan)
                 {
-                    updateHelper = new UpdateHelper();
-                    updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                    updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                    if (updateHelper == null || updateHelper.UpdateItems == null)
+                    {
+                        updateHelper = new UpdateHelper();
+                        updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                    }
+                    displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                    if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
+                    {
+                        displayUpdateHelper = new DisplayUpdateHelper();
+                        displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
+                    }
                 }
-                DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
-                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
-                {
-                    displayUpdateHelper = new DisplayUpdateHelper();
-                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
-                }
-
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
 
-        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "")
+        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isShowNotify = false, string installPath = "")
         {
             _UpdateProgress = null;
-            CallUpdateProgressUI().Wait();
+            if (isShowNotify)
+            {
+                CallUpdateProgressUI().Wait();
+            }
             List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, installPath).Result;
             if (_UpdateProgress != null)
             {
@@ -2745,20 +2757,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
-
             try
             {
                 SetDelayFWUpdateInfoPackage();
-                List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper, false).Result;
-                bool b = true;
-                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                {
-                    if (fwUpdateInfo.FWUErrorCode != FWUErrorCode.NoError)
-                    {
-                        b = false;
-                    }
-                }
-                return Task.FromResult(b);
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, false, false, false, null, false, displayUpdateHelper, false, true, true).Result;
+                return Task.FromResult(true);
             }
             catch (Exception ex)
             {
@@ -2847,9 +2850,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.Start();
             return tcs.Task;
         }
-
+        private void CallOSD(object o, (string, string, bool) args)
+        {
+            ErrorWin errorWin = new ErrorWin(args.Item1, args.Item2, args.Item3);
+            errorWin.ShowWindow();
+        }
         private void CallPopup(object o, PopupContentPackage popupContentPackage)
         {
+            // 將 popupContentPackage.Object 轉換成 JSON 字串
+            string json = JsonConvert.SerializeObject(popupContentPackage.Object);
+            //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+            //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            //// 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
+            //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
+            string title = popupContentPackage.Title;
+            string info = popupContentPackage.Info;
+            bool isInfo = popupContentPackage.IsInfo;
+            bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
+            if (!string.IsNullOrEmpty(json))
+            {
+                Task.Run(async () =>
+                {
+                    ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                    ToastNotificationManagerCompat.OnActivated += toastArgs =>
+                    {
+                        CheckInput(toastArgs);
+                    };
+                    // 將物件序列化為 JSON 字串
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(json);
+                    if (!isInfo)
+                    {
+                        toastContentBuilder.AddArgument(title);
+                        toastContentBuilder.AddText(title);
+                        toastContentBuilder.AddText(info);
+                        if (!isOnlyUpdate)
+                        {
+                            toastContentBuilder.AddButton("Update now", ToastActivationType.Background, "Update " + json);
+                            toastContentBuilder.AddButton("Defer", ToastActivationType.Background, "Delay");
+                        }
+                        else
+                        {
+                            toastContentBuilder.AddButton("Ok", ToastActivationType.Background, "Update");
+                        }
+                    }
+                    else
+                    {
+                        toastContentBuilder.AddArgument(title);
+                        toastContentBuilder.AddText(title);
+                        toastContentBuilder.AddText(info);
+
+                    }
+                    toastContentBuilder.Show(); // 顯示Toast通知
+                    if (!isInfo)
+                    {
+                        if (!isOnlyUpdate)
+                        {
+                            DelayEvent(this, json);
+                        }
+                        else
+                        {
+                            UpdateEvent(this, json);
+                        }
+                    }
+                });
+            }
+            /*自訂Popup通知
             // 將 popupContentPackage.Object 轉換成 JSON 字串
             string json = JsonConvert.SerializeObject(popupContentPackage.Object);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
@@ -2893,17 +2958,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         popupBaseManage.FWU_Show(title, info, "Update", "Delay", ob, stayOpen, timeout);
                     }
                 });
+            }*/
+        }
+        void CheckInput(ToastNotificationActivatedEventArgsCompat e)
+        {
+            string[] ret = e.Argument.Split(" ");
+            if (ret.Length >= 2)
+            {
+                if (e.Argument.StartsWith("Update"))
+                {
+                    UpdateEvent(this, ret[1]);
+                }
+                else if (e.Argument.StartsWith("Delay"))
+                {
+                    Debug.WriteLine(ret[1]);
+                    DelayEvent(this, ret[1]);
+                }
             }
         }
-
         private void UpdateEvent(object o, object ob)
         {
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(ob);
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(ob);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
             // 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
+            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
             if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
             {
                 if (_SWUpdatePlugin != null)
@@ -2922,12 +3002,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void DelayEvent(object o, object ob)
         {
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(ob);
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(ob);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
             // 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
+            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
             if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
             {
                 if (_SWUpdatePlugin != null)
@@ -6483,7 +6563,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //0909 Bruce move to add and remove
                 var thread = new Thread(() =>
                 {
-                    CheckUpdate();
+                    //CheckUpdate();
                     CheckUODFWUInfoPackage(true);
                     CheckDocks();
                 });
@@ -7327,6 +7407,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CheckUODFWUInfoPackage();
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
                         _FWUpdatePlugin.CallPopup += CallPopup;
+                        _FWUpdatePlugin.CallOSD += CallOSD;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -7344,6 +7425,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         CheckUODFWUInfoPackage();
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
                         _FWUpdatePlugin.CallPopup += CallPopup;
+                        _FWUpdatePlugin.CallOSD += CallOSD;
                     }
                 }
             });
@@ -9628,6 +9710,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+                    ToastNotificationManagerCompat.OnActivated -= CheckInput;//Bruce 0924 add Popup Event
                     //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;

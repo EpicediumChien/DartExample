@@ -131,6 +131,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private bool _IsShowNotify = true;
         private bool _isDefer = false;
         private bool _isForce = false;
+        private bool _IsUITrigger = false;
 
         /// <summary>
         /// 用於倒數次數計算
@@ -183,6 +184,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// 呼叫Popup通知
         /// </summary>
         public event EventHandler<PopupContentPackage> CallPopup;
+        public event EventHandler<(string, string, bool)> CallOSD;
 
         #endregion Events
 
@@ -363,12 +365,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, bool reScan, bool isUItrigger)
         {
             _isDefer = isDefer;
             _isForce = isForce;
             _DeviceTypeList = deviceTypeList;
-            _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay).Result;
+            if (reScan)
+            {
+                _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay).Result;
+            }
             return Task.FromResult(_fWUpdateInfoPackage);
         }
 
@@ -378,7 +383,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        public Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay)
+        private Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay)
         {
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
@@ -386,11 +391,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _fWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
-                if (updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
+                if (updateHelper != null && updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
                 {
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
-                        //0614 Bruce 因版本號為16進制，可能為字母故新增轉換並判斷
                         string newVer = updateHelper.UpdateItems[i].NewVersion;
                         if (!int.TryParse(newVer, out _))
                         {
@@ -475,7 +479,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     }
                 }
-                if (displayUpdateHelper != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
+                if (displayUpdateHelper != null && displayUpdateHelper.Firmwares != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
                 {
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
@@ -934,6 +938,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     Object = _fWUpdateInfoPackage
                 };
                 CallPopup?.AsyncFireAndForget(this, popupContentPackage, System.Threading.CancellationToken.None);
+                ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                ToastNotificationManagerCompat.OnActivated += toastArgs =>
+                {
+                    CheckInput(toastArgs);
+                };
+                toastContentBuilder.AddArgument(title);
+                toastContentBuilder.AddText(title);
+                toastContentBuilder.AddText(info);
+                toastContentBuilder.AddButton("Update", ToastActivationType.Background, "Update");
+                toastContentBuilder.AddButton("Delay", ToastActivationType.Background, "Delay");
+
                 //Task.Run(() =>
                 //{
                 //    PopupBaseManage popupBaseManage = new PopupBaseManage();
@@ -1007,59 +1022,70 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public void DelayEvent(object e)
         {
             _logs.DebugMsg_1(nameof(DelayEvent));
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(e);
-            // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
-            if (fWUpdateInfoPackage != null)
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(e);
+            try
             {
-                if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                if (e != null && !string.IsNullOrEmpty(e.ToString()))
                 {
-                    foreach (FWUpdateInfo newFWUpdateInfo in fWUpdateInfoPackage.FWUpdateInfo)
+                    // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+                    FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
+                    if (fWUpdateInfoPackage != null)
                     {
-                        if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(newFWUpdateInfo)))
+                        if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                         {
-                            newFWUpdateInfo.ServerPath = "";
-                            newFWUpdateInfo.SHA256 = "";
-                            //newFWUpdateInfo.SHA512 = "";
-                            newFWUpdateInfo.Thumbprint = "";
-                            if (newFWUpdateInfo.Thumbprint_List == null)
+                            foreach (FWUpdateInfo newFWUpdateInfo in fWUpdateInfoPackage.FWUpdateInfo)
                             {
-                                newFWUpdateInfo.Thumbprint_List = new List<string>();
+                                if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(newFWUpdateInfo)))
+                                {
+                                    newFWUpdateInfo.ServerPath = "";
+                                    newFWUpdateInfo.SHA256 = "";
+                                    //newFWUpdateInfo.SHA512 = "";
+                                    newFWUpdateInfo.Thumbprint = "";
+                                    if (newFWUpdateInfo.Thumbprint_List == null)
+                                    {
+                                        newFWUpdateInfo.Thumbprint_List = new List<string>();
+                                    }
+                                    else
+                                    {
+                                        newFWUpdateInfo.Thumbprint_List.Clear();
+                                    }
+                                    _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(newFWUpdateInfo);
+                                }
                             }
-                            else
+                            _DelayFWUpdateInfoPackage.DelayTimesAvailable--;
+                            CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
+                        }
+                        else if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime == null)
+                        {
+                            _DelayFWUpdateInfoPackage = _fWUpdateInfoPackage;
+                            foreach (FWUpdateInfo newFWUpdateInfo in _DelayFWUpdateInfoPackage.FWUpdateInfo)
                             {
-                                newFWUpdateInfo.Thumbprint_List.Clear();
+                                newFWUpdateInfo.ServerPath = "";
+                                newFWUpdateInfo.SHA256 = "";
+                                //newFWUpdateInfo.SHA512 = "";
+                                newFWUpdateInfo.Thumbprint = "";
+                                if (newFWUpdateInfo.Thumbprint_List == null)
+                                {
+                                    newFWUpdateInfo.Thumbprint_List = new List<string>();
+                                }
+                                else
+                                {
+                                    newFWUpdateInfo.Thumbprint_List.Clear();
+                                }
                             }
-                            _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(newFWUpdateInfo);
+                            _DelayFWUpdateInfoPackage.DelayTimesAvailable = 2;
+                            _DelayFWUpdateInfoPackage.SaveTime = DateTime.Now;
+                            CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
                         }
                     }
-                    _DelayFWUpdateInfoPackage.DelayTimesAvailable--;
-                    CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
-                }
-                else if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime == null)
-                {
-                    _DelayFWUpdateInfoPackage = _fWUpdateInfoPackage;
-                    foreach (FWUpdateInfo newFWUpdateInfo in _DelayFWUpdateInfoPackage.FWUpdateInfo)
-                    {
-                        newFWUpdateInfo.ServerPath = "";
-                        newFWUpdateInfo.SHA256 = "";
-                        //newFWUpdateInfo.SHA512 = "";
-                        newFWUpdateInfo.Thumbprint = "";
-                        if (newFWUpdateInfo.Thumbprint_List == null)
-                        {
-                            newFWUpdateInfo.Thumbprint_List = new List<string>();
-                        }
-                        else
-                        {
-                            newFWUpdateInfo.Thumbprint_List.Clear();
-                        }
-                    }
-                    _DelayFWUpdateInfoPackage.DelayTimesAvailable = 2;
-                    _DelayFWUpdateInfoPackage.SaveTime = DateTime.Now;
-                    CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
                 }
             }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(DelayEvent)} Error:{ex.Message}");
+            }
+            _logs.DebugMsg_1($"{nameof(DelayEvent)} done");
         }
 
         /// <summary>
@@ -1070,18 +1096,29 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public void UpdateEvent(object e)
         {
             _logs.DebugMsg_1(nameof(UpdateEvent));
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(e);
-            // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
-            if (fWUpdateInfoPackage != null)
+            try
             {
-                List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
-                if (fWUpdateInfo != null && fWUpdateInfo.Count > 0)
+                //// 將 e 轉換成 JSON 字串
+                //string json = JsonConvert.SerializeObject(e);
+                if (e != null && string.IsNullOrEmpty(e.ToString()))
                 {
-                    DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+                    // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+                    FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
+                    if (fWUpdateInfoPackage != null)
+                    {
+                        List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
+                        if (fWUpdateInfo != null && fWUpdateInfo.Count > 0)
+                        {
+                            DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(DelayEvent)} Error:{ex.Message}");
+            }
+            _logs.DebugMsg_1($"{nameof(DelayEvent)} done");
         }
         public void SetSkipCA(bool isSkipCA)
         {

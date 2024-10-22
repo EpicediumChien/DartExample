@@ -550,6 +550,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     break;
 
                 case DeviceType.LogicalDock:
+                case DeviceType.PhysicalWiredDock:
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Ensure only one dock is connected to your system. Devices connected to dock may not be available during update.";
                     UXAlertItemVisibility_2 = Visibility.Visible;
@@ -557,12 +558,20 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     break;
 
                 case DeviceType.PhysicalPen:
+                case DeviceType.LogicalPen:
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Battery level on the device is low. Replace/recharge battery to enable this update.";
+                    break;
+                case DeviceType.LogicalWebcam:
+                case DeviceType.PhysicalWebcam:
+                    UXAlertItemVisibility = Visibility.Visible;
+                    UXAlertItemMessage = "This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher";
                     break;
                 default:
                     UXAlertItemVisibility = Visibility.Collapsed;
                     UXAlertItemMessage = "";
+                    UXAlertItemVisibility_2 = Visibility.Collapsed;
+                    UXAlertItemMessage_2 = "";
                     break;
             }
             foreach (DeviceType s in CriticalUpdates)

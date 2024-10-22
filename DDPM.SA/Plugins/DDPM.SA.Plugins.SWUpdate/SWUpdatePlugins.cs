@@ -554,41 +554,45 @@ namespace DDPM.SA.Plugins.SWUpdate
         public void DelayEvent(object e)
         {
             _logs.DebugMsg_1(nameof(DelayEvent));
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(e);
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
-            if (sWUpdateInfoPackage != null)
+            if (e != null && string.IsNullOrEmpty(e.ToString()))
             {
-                if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime != null && _DelaySWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+                SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(e.ToString());
+                if (sWUpdateInfoPackage != null)
                 {
-                    foreach (SWUpdateInfo newSWUpdateInfo in sWUpdateInfoPackage.SWUpdateInfo)
+                    Debug.WriteLine(sWUpdateInfoPackage);
+                    if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime != null && _DelaySWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                     {
-                        if (!_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(newSWUpdateInfo)))
+                        foreach (SWUpdateInfo newSWUpdateInfo in sWUpdateInfoPackage.SWUpdateInfo)
+                        {
+                            if (!_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(newSWUpdateInfo)))
+                            {
+                                newSWUpdateInfo.ServerPath = "";
+                                newSWUpdateInfo.SHA256 = "";
+                                newSWUpdateInfo.SHA512 = "";
+                                newSWUpdateInfo.Thumbprint = "";
+                                _DelaySWUpdateInfoPackage.SWUpdateInfo.Add(newSWUpdateInfo);
+                            }
+                        }
+                        _DelaySWUpdateInfoPackage.DelayTimesAvailable--;
+                        CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
+                    }
+                    else if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime == null)
+                    {
+                        _DelaySWUpdateInfoPackage = _SWUpdateInfoPackage;
+                        foreach (SWUpdateInfo newSWUpdateInfo in _DelaySWUpdateInfoPackage.SWUpdateInfo)
                         {
                             newSWUpdateInfo.ServerPath = "";
                             newSWUpdateInfo.SHA256 = "";
                             newSWUpdateInfo.SHA512 = "";
                             newSWUpdateInfo.Thumbprint = "";
-                            _DelaySWUpdateInfoPackage.SWUpdateInfo.Add(newSWUpdateInfo);
                         }
+                        _DelaySWUpdateInfoPackage.DelayTimesAvailable = 2;
+                        _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
+                        CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                     }
-                    _DelaySWUpdateInfoPackage.DelayTimesAvailable--;
-                    CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
-                }
-                else if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime == null)
-                {
-                    _DelaySWUpdateInfoPackage = _SWUpdateInfoPackage;
-                    foreach (SWUpdateInfo newSWUpdateInfo in _DelaySWUpdateInfoPackage.SWUpdateInfo)
-                    {
-                        newSWUpdateInfo.ServerPath = "";
-                        newSWUpdateInfo.SHA256 = "";
-                        newSWUpdateInfo.SHA512 = "";
-                        newSWUpdateInfo.Thumbprint = "";
-                    }
-                    _DelaySWUpdateInfoPackage.DelayTimesAvailable = 2;
-                    _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
-                    CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                 }
             }
         }
@@ -600,16 +604,19 @@ namespace DDPM.SA.Plugins.SWUpdate
         public void UpdateEvent(object e)
         {
             _logs.DebugMsg_1(nameof(UpdateEvent));
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(e);
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
-            if (sWUpdateInfoPackage != null)
+            if (e != null && string.IsNullOrEmpty(e.ToString()))
             {
-                List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
-                if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
+                SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(e.ToString());
+                if (sWUpdateInfoPackage != null)
                 {
-                    DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+                    List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
+                    if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
+                    {
+                        DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
+                    }
                 }
             }
         }
