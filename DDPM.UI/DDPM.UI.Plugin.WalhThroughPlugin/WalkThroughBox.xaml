@@ -11,7 +11,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="NoResize"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         mc:Ignorable="d"
         ShowInTaskbar="False"

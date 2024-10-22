@@ -388,6 +388,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _fWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
                 if (updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
                 {
+                    _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
                         //0614 Bruce 因版本號為16進制，可能為字母故新增轉換並判斷
@@ -477,6 +478,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (displayUpdateHelper != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
                 {
+                    _logs.DebugMsg_1($"{nameof(displayUpdateHelper.Firmwares.Count)} = {displayUpdateHelper.Firmwares.Count}");
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
