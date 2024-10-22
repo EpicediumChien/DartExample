@@ -4921,6 +4921,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
+        public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
+        }
 
         public Task SetDPIValue(string Guid, int newValue)
         {
@@ -4937,6 +4941,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetMouseAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetMouseAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task DeleteMouseAssignedAction(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received DeleteAssignedAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.DeleteMouseAssignedAction(Guid, newValue);
             return Task.FromResult(true);
         }
 

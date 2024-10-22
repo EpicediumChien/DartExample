@@ -26,6 +26,7 @@ namespace DDPM.UI.Common
         public static readonly string On = GetString("On");
         public static readonly string Off = GetString("Off");
         public static readonly string RestoreToDefault = GetString("RestoreToDefault");
+        public static readonly string RestoreToDefaultActions = GetString("RestoreToDefaultActions");
         public static readonly string Unpair = GetString("Unpair");
         public static readonly string PollingRateInfoTip1 = GetString("Mouse.13");
         public static readonly string PollingRateInfoTip2 = GetString("Mouse.14");
@@ -112,7 +113,7 @@ namespace DDPM.UI.Common
         public static readonly string FirmwareVersion = GetString("FirmwareVersion"); //"Firmware Version"
         public static readonly string ServiceTag = GetString("ServiceTag"); //"Service Tag"
         public static readonly string ManufactureMonth = GetString("ManufactureMonth"); //"Manufactured"
-        public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
+        //public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
 
         //strings for Action
         public static readonly string None = GetString("None");//None
@@ -580,7 +581,7 @@ namespace DDPM.UI.Common
         public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
         public static readonly string PairYourPen = "Pair your pen";
         public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
-        
+
         // Display Restore to Default
         public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
         public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
