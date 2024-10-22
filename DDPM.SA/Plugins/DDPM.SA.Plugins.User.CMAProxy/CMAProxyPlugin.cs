@@ -1,10 +1,16 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
+using DDPM.SA.Common;
 using DDPM.SA.Common.CLI;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
+using VcpCore.Common;
+using static Dell.Client.Framework.Common.Platform;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.CMAProxy
 {
@@ -227,6 +233,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 return;
             }
             _CMAManagerPlugin.CMARequestEvent += _CMAManagerPlugin_CMARequestEvent;
+            _DevManagerPlugin.DeviceChanged += _deviceManager_DeviceChanged;
             relay_registered = true;
         }
 
@@ -237,7 +244,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 if (_DevManagerPlugin == null)
                 {
                     WriteLog("[Command line event] null Device Manager object!");
-                    CMAResult result = new CMAResult();
+                    RemoteManagementResult result = new RemoteManagementResult();
                     result.cma_request_id = e.cma_request_id;
                     result.output_result = "FAIL";
                     result.message = "Can't connect to DDPM device manager";
@@ -249,7 +256,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 if (e == null || string.IsNullOrEmpty(e.input_param))
                 {
                     WriteLog("[Command line event] Got Empty CMAEventArgs!");
-                    CMAResult result = new CMAResult();
+                    RemoteManagementResult result = new RemoteManagementResult();
                     result.cma_request_id = e.cma_request_id;
                     result.output_result = "FAIL";
                     result.message = "CMA Proxy got null event argument";
@@ -260,6 +267,85 @@ namespace DDPM.SA.Plugins.User.CMAProxy
 
                 //Do calculation here
             });
+        }
+
+        private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        {
+            WriteLog("_deviceManager_DeviceChanged() executed");
+
+            if ((e != null) && !string.IsNullOrEmpty(e.changedProperty))
+            {
+                WriteLog($"@ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
+                if (e.device_peripherals != null)
+                {
+                    WriteLog($"@DeviceName=[{e.device_peripherals.Name}]");
+                }
+
+                if (e.changedProperty.ToLower().Contains("remove") ||
+                    (e.changedProperty.ToLower().Contains("add")) ||
+                    (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
+                    (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
+                    ((string.Compare(e.changedProperty, "DisplayChanged", true) == 0)))
+                {
+                    GetDdpmDevices(e.changedProperty.ToLower());
+                }
+                else
+                {
+                    WriteLog($"skip : [{e.changedProperty.ToString()}]");
+                }
+            }
+            else
+            {
+                if ((e == null))
+                {
+                    WriteLog("skip : e == null");
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(e.changedProperty))
+                        WriteLog("skip : e.changedProperty == null");
+                    else
+                        WriteLog($"skip : e.changedProperty : {e.changedProperty}");
+                }
+            }
+        }
+
+        private void GetDdpmDevices(string condition = "all")
+        {
+            if (_DevManagerPlugin == null)
+            {
+                WriteLog("Could not establish communication with DeviceManager plugin!!");
+                return;
+            }
+            WriteLog("GetDdpmDevices is invoked");
+
+            if (condition.Equals("all") || condition.Equals("displaychanged"))
+            {
+                List<MonitorInfo> mos = _DevManagerPlugin.GetMonitors().Result;
+                WriteLog($"Monitor count is ${mos.Count}");
+                if (_CMAManagerPlugin != null)
+                {
+                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null});
+                }
+                else
+                    WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
+            }
+            if (condition.Equals("all") || !condition.Equals("displaychanged"))
+            {
+                DeviceHelper deviceHelper = _DevManagerPlugin.GetDevices().Result;
+                List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
+                if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                {
+                    _deviceInfos = deviceHelper.deviceInfo;
+                    if (_CMAManagerPlugin != null)
+                    {
+                        _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "peripheral", mos = null, devices = _deviceInfos });
+                    }
+                    else
+                        WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
+                }
+                WriteLog($"Peripheral count is ${_deviceInfos.Count}");
+            }
         }
         #endregion
 

@@ -1,6 +1,8 @@
 ﻿using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
@@ -13,11 +15,22 @@ namespace DDPM.UI.Common
     public partial class AddDeviceHeaderCtrl : UserControl
     {
         private RightViewHeaderCtrlViewModel vm = new();
+        //private ILog _log;
 
         public AddDeviceHeaderCtrl()
         {
             InitializeComponent();
             DataContext = vm;
+
+            //if (DdpmCommonHelper.MyConsole != null)
+            //{
+                //_log = DdpmCommonHelper.MyConsole.CreateLog("AddDeviceHeaderCtrl");
+                //_log.Info("AddDeviceHeaderCtrl ctor");
+
+                //_log.Info($"header1Text.Width = {header1Text.ActualWidth}");
+                //_log.Info($"header1SP.Width = {header1SP.ActualWidth}");
+                //_log.Info($"header1Border.Width = {header1Border.ActualWidth}");
+            //}
         }
 
         #region Items
@@ -145,5 +158,15 @@ namespace DDPM.UI.Common
         }
 
         #endregion Selection Changed
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //_log.Info($"header1Text.Width = {header1Text.ActualWidth}");
+            //_log.Info($"header1SP.Width = {header1SP.ActualWidth}");
+            //_log.Info($"header1Border.Width = {header1Border.ActualWidth}");
+
+            if (header1Text.ActualWidth <= 150)
+                header1Text.Width = header1Border.ActualWidth - 40;
+        }
     }
 }

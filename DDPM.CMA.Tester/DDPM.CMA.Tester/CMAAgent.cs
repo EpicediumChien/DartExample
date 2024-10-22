@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dell.Client.Framework.Agent;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
-using DDPM.SA.Common;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
 using System.Diagnostics;
 using System.Reflection;
 using Dell.UnifiedAgent.Common;
+using Dell.Client.Framework.Agent;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.PluginConditions;
 
 namespace DDPM.CMA.Tester
 {
@@ -26,8 +21,7 @@ namespace DDPM.CMA.Tester
         private Agent _Agent;
         private ILog _Log;
 
-        //DDPM.Subagent
-        private ICMAManagerIT _CMAManagerPlugin;
+        private IRemoteManagement _CMAManagerPlugin;
 
         private readonly AutoResetEvent _PluginAvailabilityTrigger_CMAManager = new(true);
         private readonly object _pluginConditionLock_CMAManager = new object();
@@ -93,7 +87,7 @@ namespace DDPM.CMA.Tester
             {
                 if (_CMAManagerPlugin == null)
                 {
-                    _exitcode = (int)CLI_ExitCode.null_cli_manager;
+                    _exitcode = 123;//Editable field //(int)CLI_ExitCode.null_cli_manager;
                     return;
                 }
                 isresponse = false;
@@ -137,7 +131,7 @@ namespace DDPM.CMA.Tester
             string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\Temp\\"",""options"":{}}]}";
 
 
-            CMARequestArgs cmarequest = new CMARequestArgs();
+            RemoteRequestArgs cmarequest = new RemoteRequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
             Console.WriteLine("Reg Event Success");
@@ -162,37 +156,37 @@ namespace DDPM.CMA.Tester
                 {
                     case 1:
                         Console.WriteLine($"json String = {jsondevice}");
-                        cmarequest.cma_request = jsondevice;
+                        cmarequest.remote_request = jsondevice;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
                     case 2:
                         Console.WriteLine($"json String = {jsonfwdisplay}");
-                        cmarequest.cma_request = jsonfwdisplay;
+                        cmarequest.remote_request = jsonfwdisplay;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
                     case 3:
                         Console.WriteLine($"json String = {jsondevicedata}");
-                        cmarequest.cma_request = jsondevicedata;
+                        cmarequest.remote_request = jsondevicedata;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
                     case 4:
                         Console.WriteLine($"json String = {jsondeviceconfig}");
-                        cmarequest.cma_request = jsondeviceconfig;
+                        cmarequest.remote_request = jsondeviceconfig;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
                     case 5:
                         Console.WriteLine($"json String = {jsonreport}");
-                        cmarequest.cma_request = jsonreport;
+                        cmarequest.remote_request = jsonreport;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
                     case 6:
                         Console.WriteLine($"json String = {jsongetdisplaymulti}");
-                        cmarequest.cma_request = jsongetdisplaymulti;
+                        cmarequest.remote_request = jsongetdisplaymulti;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
@@ -240,9 +234,9 @@ namespace DDPM.CMA.Tester
         {
             if (_CMAManagerPlugin != null)
                 return;
-            Console.WriteLine($"{nameof(PluginsStarted)} arrived for {nameof(ICMAManagerIT)}");
+            Console.WriteLine($"{nameof(PluginsStarted)} arrived for {nameof(IRemoteManagement)}");
 
-            _CMAManagerPlugin = _Agent.PluginManager.FindPluginByType<ICMAManagerIT>(PluginResolution.Dynamic);
+            _CMAManagerPlugin = _Agent.PluginManager.FindPluginByType<IRemoteManagement>(PluginResolution.Dynamic);
             if (_CMAManagerPlugin is IFrameworkPluginConditionNotification condition)
             {
                 condition.PluginConditionChangeHandler += OnCMAManagerPluginConditionChangeHandler;
@@ -288,7 +282,7 @@ namespace DDPM.CMA.Tester
 
             Console.WriteLine($"{e.ChangedPlugins.GetType().Name}");
 
-            if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
+            if (e.ChangedPlugins.OfType<IRemoteManagement>().Any())
             {
                 InitializeCMAManagerPlugin();
             }
@@ -303,7 +297,7 @@ namespace DDPM.CMA.Tester
         {
 
             Console.WriteLine("CMA Notification Alert");
-            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventtype);
+            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventType);
             Console.WriteLine("CMA Notification Alert notification : " + e.notification);
 
             isresponse = true;

@@ -370,7 +370,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
                     //break;
-                case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
+                case "INAPPEXPORTIMPORT":      //INAPPEXPORTIMPORT       DDPMW-1335
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else

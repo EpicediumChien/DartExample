@@ -71,7 +71,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int colorPresetRunType = 0, bool showOSD = true);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -116,7 +116,7 @@ namespace DDPM.SA.Common
 
         #region public for Displays
 
-        Task Reset0x52TimerTick(int millisecond);
+        Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 
         Task<List<MonitorInfo>> GetMonitors();
 
@@ -640,9 +640,17 @@ namespace DDPM.SA.Common
 
         #region public for DTPProxy
 
-        Task<int> GetDpiValueByDTP(string itemID);
+        #region Mouse
 
-        Task SetDPIValueByDTP(string itemID, int newValue);
+        Task<int> GetDpiValue(string Guid);
+        Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<JArray> GetMouseProgrammableKeys(string Guid);
+        Task<JArray> GetAppSpecificProfiles(string Guid);
+
+        Task SetDPIValue(string Guid, int newValue);
+        Task SetMouseAction(string Guid, byte[] newValue);
+
+        #endregion
 
         #region Pen
         Task<JArray> GetPenDeviceItemsEx();
@@ -700,29 +708,23 @@ namespace DDPM.SA.Common
 
         Task<int> GetBrightness(string Guid);
 
-        Task<string> GetCameraFirmwareVersionByDTP(string itemID);
+        Task<string> GetCameraFirmwareVersionByDTP(string Guid);
 
-        Task<bool> CheckIsPropertyFOVSupportedByDTP(string itemID);
+        Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
 
-        Task<int> GetFieldOfViewValueByDTP(string itemID);
+        Task<int> GetFieldOfView(string Guid);
 
-        Task<bool> CheckIsPropertyHDRSupportedByDTP(string itemID);
+        Task<bool> GetIsPropertyHDRSupported(string Guid);
 
-        Task<bool> GetIsHDROnValueByDTP(string itemID);
+        Task<bool> GetIsHDROn(string Guid);
 
-        Task SetIsHDROnValueByDTP(string itemID, bool newValue);
+        Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
 
-        Task<bool> CheckIsPropertyAntiFlickerSupportedByDTP(string itemID);
+        Task<int> GetAntiFlickerValueByDTP(string Guid);
 
-        Task<int> GetAntiFlickerValueByDTP(string itemID);
+        Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
 
-        Task SetAntiFlickerValueByDTP(string itemID, int newValue);
-
-        Task<bool> CheckIsPropertyAutoFramingSupportedByDTP(string itemID);
-
-        Task<bool> GetIsAutoFramingOnValueByDTP(string itemID);
-
-        Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
+        Task<bool> GetIsAutoFramingOn(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
@@ -805,10 +807,77 @@ namespace DDPM.SA.Common
 
         #endregion Webcam
 
-
-
         #region Headset
-        Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #region Headset Set
+        Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue);
+        Task<bool> SetSidetoneAsync(string Guid, bool newValue);
+        Task<bool> SetBusyLightAsync(string Guid, bool newValue);
+        Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue);
+        Task<bool> SetSelectedPresetAsync(string Guid, int newValue);
+        Task<bool> SetSidetoneLevelAsync(string Guid, int newValue);
+        Task<bool> SetBandsGainAsync(string Guid, byte[] newValue);
+        Task<bool> SetAncModeAsync(string Guid, int newValue);
+        Task<bool> SetAncGainAsync(string Guid, int newValue);
+        Task<bool> SetWearDetectionAsync(string Guid, int newValue);
+        Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
+        Task<bool> SetUnPairAsync(string Guid, bool newValue);
+        Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        #endregion
+
+        #region Headset Get
+
+        Task<JArray> GetDeviceItemsExAsync(string Guid);
+        //Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
+        Task<string> GetDeviceNameAsync(string Guid);
+        Task<string> GetDeviceIdAsync(string Guid);
+        Task<string> GetPluginIdAsync(string Guid);
+        Task<int> GetODMIdAsync(string Guid);
+        Task<string> GetModelNumberAsync(string Guid);
+        Task<int> GetInstanceNumberAsync(string Guid);
+        Task<int> GetInstanceIdAsync(string Guid);
+        Task<string> GetFirmwareVersionAsync(string Guid);
+        Task<string> GetDeviceTypeAsync(string Guid);
+        Task<string> GetParentDeviceTypeAsync(string Guid);
+        Task<bool> GetIsBatteryLevelSupportedAsync(string Guid);
+        Task<int> GetBatteryLevelAsync(string Guid);
+        Task<string> GetDeviceBatteryStatusAsync(string Guid);
+        Task<string> GetPairingStatusAsync(string Guid);
+        Task<int> GetMaxPairingSlotsAsync(string Guid);
+        Task<int> GetPairedDeviceCountAsync(string Guid);
+        Task<int> GetTotalNumberOfPairedHostNameAsync(string Guid);
+        Task<string> GetSerialNumberAsync(string Guid);
+        Task<bool> GetIsReadyAsync(string Guid);
+        Task<bool> GetIsDirtyAsync(string Guid);
+        Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid);
+        Task<bool> GetIsSidetoneSupportedAsync(string Guid);
+        Task<bool> GetIsBusyLightSupportedAsync(string Guid);
+        Task<bool> GetIsVoiceGuidanceSupportedAsync(string Guid);
+        Task<bool> GetIsPresetsSupportedAsync(string Guid);
+        Task<bool> GetIsEqualizerSupportedAsync(string Guid);
+        //Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid);
+        Task<bool> GetIsANCSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string Guid);
+        Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string Guid);
+        Task<bool> GetMicNoiseCancellationAsync(string Guid);
+        Task<bool> GetMicNCIncomingAsync(string Guid);
+        Task<bool> GetSidetoneAsync(string Guid);
+        Task<bool> GetBusyLightAsync(string Guid);
+        Task<bool> GetVoiceGuidanceAsync(string Guid);
+        Task<int> GetSelectedPresetAsync(string Guid);
+        Task<int> GetSidetoneLevelAsync(string Guid);
+        Task<bool> GetMuteStatusAsync(string Guid);
+        Task<byte[]> GetBandsGainAsync(string Guid);
+        Task<int> GetAncModeAsync(string Guid);
+        Task<int> GetAncGainAsync(string Guid);
+        Task<int> GetWearDetectionAsync(string Guid);
+        Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid);
+
+        #endregion
 
         #endregion
 
@@ -824,9 +893,9 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
         Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
-        Task<bool> GetIsWiredAudioIMicNSEnableValue(string itemID);
-        Task SetIsWiredAudioIMicNSEnableValue(string itemID, bool newValue);
-        Task SetResetToDefaultValue(string itemID, bool newValue);
+        Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID);
+        Task SetIsWiredAudioIMicNSEnableAsync(string itemID, bool newValue);
+        Task SetResetToDefaultAsyncForSoundbar(string itemID, bool newValue);
 
         #endregion
 

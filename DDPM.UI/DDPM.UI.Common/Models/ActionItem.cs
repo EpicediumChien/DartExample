@@ -100,7 +100,7 @@ namespace DDPM.UI.Common
           { 106, new ActionItem(ActionCategory.WordAction, Strings.NextComment, false, false) },
           { 107, new ActionItem(ActionCategory.WordAction, Strings.PasteAndKeepSourceFormatting, false, false) },
           { 108, new ActionItem(ActionCategory.WordAction, Strings.PasteAndKeepTextOnly, false, false) },
-          { 109, new ActionItem(ActionCategory.WordAction, Strings.PasteAndMatchFormatting, false, false) },
+          //{ 109, new ActionItem(ActionCategory.WordAction, Strings.PasteAndMatchFormatting, false, false) }, //IL not support
           { 110, new ActionItem(ActionCategory.WordAction, Strings.PasteAndMergeFormatting, false, false) },
           { 111, new ActionItem(ActionCategory.WordAction, Strings.PreviousChange, false, false) },
           { 112, new ActionItem(ActionCategory.WordAction, Strings.PreviousComment, false, false) },
@@ -470,5 +470,120 @@ namespace DDPM.UI.Common
         public static readonly ImmutableList<int> AdvancedActions = ImmutableList.Create(new int[] { 14, 25, 26, 28 });
 
         public static readonly ImmutableList<int> AdvancedActionsPen = ImmutableList.Create(new int[] { 8, 23, 41 });
+
+        //public static readonly Dictionary<int, IndilogicAction> ActionIdMAP = new Dictionary<int, IndilogicAction>() {
+        //    { 21 , new IndilogicAction("{820BFCA2-201E-4AD7-A531-D8353E0FB534}","Forward") },
+        //    { 15 , new IndilogicAction("{A156B2AE-706A-46A8-8105-12EC278AAC85}","Back") },
+        //    { 22 , new IndilogicAction("{D4CCAFAC-5AD5-42ED-BF8C-4E96C9BA524D}","Maximize Window") },
+        //    { 17 , new IndilogicAction("{59C2D7E4-D546-4804-85F5-B0C76FA7CB43}","Close Window") },
+        //    { 30 , new IndilogicAction("{966D97AD-2548-4C46-B62F-1025E434E821}","Zoom In") },
+        //    { 31 , new IndilogicAction("{804F3C4C-4157-4B13-A1C6-2817A49D988D}","Zoom Out") },
+        //    { 32 , new IndilogicAction("{9D034453-81D2-4971-A4F8-79A7437DDDB1}","Zoom Reset") },
+        //    { 14 , new IndilogicAction("{972768F6-0B38-4086-AA36-6136EC1AE3F5}","") },
+        //    { 19 , new IndilogicAction("{03D40DB1-6D3D-4150-9F16-A98A2AFE343C}","Cut") },
+        //    { 18 , new IndilogicAction("{7960DA9C-5502-4165-8250-4165F12FE58A}","Copy") },
+        //    { 29 , new IndilogicAction("{1ADBF5D9-00E0-4CCB-B859-B0B4EBB0643F}","Paste") },
+        //    { 16 , new IndilogicAction("{F4DD6D77-AEB4-4732-BCAF-15C7F45A36F0}","Calculator") },
+        //    { 4 , new IndilogicAction("{35529178-47BB-4858-8881-B0EA7D54B0A5}","Notification Center") },
+        //    { 40 , new IndilogicAction("{2F3F87AE-19F3-48BC-A054-3C1F6EDF8BA0}","Volume Up") },
+        //    { 38 , new IndilogicAction("{C944AAFD-6668-4674-AF7D-1212293ED150}","Volume Down") },
+        //    { 11 , new IndilogicAction("{8EA6E624-2142-416D-8718-CF2FC299F4E6}","Sleep") },
+        //    { 9 , new IndilogicAction("{E4D7F3B0-B28C-4F67-9C0A-DA21230FCE4C}","Shut Down") },
+        //    { 10 , new IndilogicAction("{AD58B546-D7BA-4CC7-B542-9F6E9749891E}","Sign Out") },
+        //    { 20 , new IndilogicAction("{B976DFA9-4F0A-4876-845C-A13D52FEC792}","Documents") },
+        //    { 37 , new IndilogicAction("{59689227-69D6-43AB-ABC4-E9BA291BFB64}","Pictures") },
+        //    { 36 , new IndilogicAction("{9ACB1DF8-4A45-4F10-B2D0-235BAB88C16F}","Music") },
+        //    { 8 , new IndilogicAction("{36D97440-7BC5-4F52-9DB6-A15F62E0DD9D}","Show/Hide Desktop") },
+        //    { 2 , new IndilogicAction("{FBE45760-F8D5-45B2-BA51-967621D19850}","Devices") },
+        //    { 7 , new IndilogicAction("{AC14A070-E472-4FF2-8401-9A2BB4A1292C}","Settings") },
+        //    { 25 , new IndilogicAction("{E6305556-7F78-4274-9DC7-14FA69278574}","Open File") },
+        //    { 26 , new IndilogicAction("{BE925104-C9AD-4AF7-AA66-DBC8D9694E79}","Open Folder") },
+        //    { 0 , new IndilogicAction("{1BA1FA13-1D52-4B31-8303-ACBC4B49B41D}","None") },
+        //    { 39 , new IndilogicAction("{6A093339-849A-439E-9A9F-D2FF9D0F6610}","Volume Mute") },
+        //    { 35 , new IndilogicAction("{B3892026-CA01-45CB-8F56-A78AEE732C05}","Media Previous Track") },
+        //    { 33 , new IndilogicAction("{A825068D-A738-4208-8FD0-EE2BF4455B6F}","Media Next Track") },
+        //    { 34 , new IndilogicAction("{CEBC44E6-8AEA-4B8A-B3B6-6D0052752FC8}","Media Play/Pause") },
+        //    { 6 , new IndilogicAction("{06568D8C-E720-40D5-8EDB-C979AEDFF153}","Search") },
+        //    { 24 , new IndilogicAction("{AE9FA2F1-9D63-43C8-9E6C-8E84C4592825}","My Home") },
+        //    { 3 , new IndilogicAction("{95159634-4D8D-47A4-9631-1734D60EEDB6}","Lock") },
+        //    { 5 , new IndilogicAction("{C84CBAFD-BEB0-430E-839A-B0E25B2DF251}","Screen Snip") },
+        //    { 41 , new IndilogicAction("{53DC555C-E0AF-4F89-AF1E-04E13F821CE8}","Print Screen") },
+        //    { 44 , new IndilogicAction("{A3C2C2E8-02BB-453A-A32F-57864FF770D6}","Home") },
+        //    { 45 , new IndilogicAction("{FBEDA3CC-AEAF-4A44-8AEF-7B027DC127D4}","End") },
+        //    { 13 , new IndilogicAction("{5E845D14-6893-484B-80F5-7B1888DAF433}","Task View") },
+        //    { 23 , new IndilogicAction("{C8AD0782-6BEE-415D-BD9F-88A10C89E53D}","Minimize Window") },
+        //    { 27 , new IndilogicAction("{C18E855B-7AC9-4A69-BF2D-989A9E9E1E0D}","Open New Browser Tab") },
+        //    { 12 , new IndilogicAction("{DA046FF0-36F1-4BDC-9FCD-DEBA537DD3D6}","Switch Applications") },
+        //    { 28 , new IndilogicAction("{D8642FB9-1B1F-45D5-8D70-B0C54B651098}","Open Web Page") },
+        //    { 42 , new IndilogicAction("{0C3D7789-650C-4005-B683-7AE960B8F1A4}","Scroll Lock") },
+        //    { 43 , new IndilogicAction("{F15E185A-0C79-484E-B9EA-84ABFC2B8EAD}","Pause Break") },
+        //    { 46 , new IndilogicAction("{7DC923FB-9805-41EF-B2C5-D8059CCA35FD}","Page Up") },
+        //    { 47 , new IndilogicAction("{CC0A31FB-8125-4037-9B87-CF4971D41D6A}","Page Down") },
+        //    { 1 , new IndilogicAction("{025325C0-50CD-404A-B8EF-1412C02112C5}","Copilot") }//ok
+        //};
+
+        public static readonly Dictionary<int, string> ActionIdToGuid = new()
+        {
+            { 0, "{1BA1FA13-1D52-4B31-8303-ACBC4B49B41D}" },
+            { 1, "{025325C0-50CD-404A-B8EF-1412C02112C5}" },
+            { 2, "{FBE45760-F8D5-45B2-BA51-967621D19850}" },
+            { 3, "{95159634-4D8D-47A4-9631-1734D60EEDB6}" },
+            { 4, "{35529178-47BB-4858-8881-B0EA7D54B0A5}" },
+            { 5, "{C84CBAFD-BEB0-430E-839A-B0E25B2DF251}" },
+            { 6, "{06568D8C-E720-40D5-8EDB-C979AEDFF153}" },
+            { 7, "{AC14A070-E472-4FF2-8401-9A2BB4A1292C}" },
+            { 8, "{36D97440-7BC5-4F52-9DB6-A15F62E0DD9D}" },
+            { 9, "{E4D7F3B0-B28C-4F67-9C0A-DA21230FCE4C}" },
+            { 10, "{AD58B546-D7BA-4CC7-B542-9F6E9749891E}" },
+            { 11, "{8EA6E624-2142-416D-8718-CF2FC299F4E6}" },
+            { 12, "{DA046FF0-36F1-4BDC-9FCD-DEBA537DD3D6}" },
+            { 13, "{5E845D14-6893-484B-80F5-7B1888DAF433}" },
+            { 14, "{972768F6-0B38-4086-AA36-6136EC1AE3F5}" },
+            { 15, "{A156B2AE-706A-46A8-8105-12EC278AAC85}" },
+            { 16, "{F4DD6D77-AEB4-4732-BCAF-15C7F45A36F0}" },
+            { 17, "{59C2D7E4-D546-4804-85F5-B0C76FA7CB43}" },
+            { 18, "{7960DA9C-5502-4165-8250-4165F12FE58A}" },
+            { 19, "{03D40DB1-6D3D-4150-9F16-A98A2AFE343C}" },
+            { 20, "{B976DFA9-4F0A-4876-845C-A13D52FEC792}" },
+            { 21, "{820BFCA2-201E-4AD7-A531-D8353E0FB534}" },
+            { 22, "{D4CCAFAC-5AD5-42ED-BF8C-4E96C9BA524D}" },
+            { 23, "{C8AD0782-6BEE-415D-BD9F-88A10C89E53D}" },
+            { 24, "{AE9FA2F1-9D63-43C8-9E6C-8E84C4592825}" },
+            { 25, "{E6305556-7F78-4274-9DC7-14FA69278574}" },
+            { 26, "{BE925104-C9AD-4AF7-AA66-DBC8D9694E79}" },
+            { 27, "{C18E855B-7AC9-4A69-BF2D-989A9E9E1E0D}" },
+            { 28, "{D8642FB9-1B1F-45D5-8D70-B0C54B651098}" },
+            { 29, "{1ADBF5D9-00E0-4CCB-B859-B0B4EBB0643F}" },
+            { 30, "{966D97AD-2548-4C46-B62F-1025E434E821}" },
+            { 31, "{804F3C4C-4157-4B13-A1C6-2817A49D988D}" },
+            { 32, "{9D034453-81D2-4971-A4F8-79A7437DDDB1}" },
+            { 33, "{A825068D-A738-4208-8FD0-EE2BF4455B6F}" },
+            { 34, "{CEBC44E6-8AEA-4B8A-B3B6-6D0052752FC8}" },
+            { 35, "{B3892026-CA01-45CB-8F56-A78AEE732C05}" },
+            { 36, "{9ACB1DF8-4A45-4F10-B2D0-235BAB88C16F}" },
+            { 37, "{59689227-69D6-43AB-ABC4-E9BA291BFB64}" },
+            { 38, "{C944AAFD-6668-4674-AF7D-1212293ED150}" },
+            { 39, "{6A093339-849A-439E-9A9F-D2FF9D0F6610}" },
+            { 40, "{2F3F87AE-19F3-48BC-A054-3C1F6EDF8BA0}" },
+            { 41, "{53DC555C-E0AF-4F89-AF1E-04E13F821CE8}" },
+            { 42, "{0C3D7789-650C-4005-B683-7AE960B8F1A4}" },
+            { 43, "{F15E185A-0C79-484E-B9EA-84ABFC2B8EAD}" },
+            { 44, "{A3C2C2E8-02BB-453A-A32F-57864FF770D6}" },
+            { 45, "{FBEDA3CC-AEAF-4A44-8AEF-7B027DC127D4}" },
+            { 46, "{7DC923FB-9805-41EF-B2C5-D8059CCA35FD}" },
+            { 47, "{CC0A31FB-8125-4037-9B87-CF4971D41D6A}" },
+        };
+
+        //    public class IndilogicAction
+        //{
+        //    public string ActionComment { get; set; }
+        //    public string ActionGuid { get; set; }
+
+        //    public IndilogicAction(string guid, string comment)
+        //    {
+        //        ActionComment = comment;
+        //        ActionGuid = guid;
+        //    }
+        //}
     }
 }

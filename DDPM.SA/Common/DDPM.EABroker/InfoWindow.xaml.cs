@@ -229,26 +229,29 @@ namespace DDPM.EABroker
                 return;
             }
             _vm.xCursor = x; _vm.yCursor = y;
-            Screen? cursorScreen = _vm.GetScreenFromCursor();
+            //Screen? cursorScreen = _vm.GetScreenFromCursor();
+            Screen? cursorScreen = Screen.FromPoint(new System.Drawing.Point(x, y));
             _vm.WorkScreen = cursorScreen;
 
             if (!_vm.IsMoving)
                 return;
 
+            this.Dispatcher.Invoke(() =>
+            {
 
 
+                //if (!_vmArrange.IsWorkUIShowing)
+                //    return;
 
-            //if (!_vmArrange.IsWorkUIShowing)
-            //    return;
+                //if (_isRefresCellsCountAfterStartMoving <= 20)
+                //{
+                //    _isRefresCellsCountAfterStartMoving++;
+                //    _vmArrange.RefreshCellRects();
+                //}
 
-            //if (_isRefresCellsCountAfterStartMoving <= 20)
-            //{
-            //    _isRefresCellsCountAfterStartMoving++;
-            //    _vmArrange.RefreshCellRects();
-            //}
-
-            CellObj orgCell = _vm.HoveringCellObj;
-            CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
+                CellObj orgCell = _vm.HoveringCellObj;
+             CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
+            //CellObj? newCell = null; // _vm.DetermineHoveringCellObj(x, y);
 
             if (orgCell != _vm.HoveringCellObj)
             {
@@ -261,18 +264,21 @@ namespace DDPM.EABroker
 
                 Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
             }
-            //if (_vm.HoveringCellObj != null)
-            //{
-            //    _vm.HoveringCell = _vm.HoveringCellObj.Name;
-            //}
-            //else
-            //{
-            //    _vmArrange.HoveringCell = "";
-            //}
-            //if (_workingSplit != null)
-            //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
+                //if (_vm.HoveringCellObj != null)
+                //{
+                //    _vm.HoveringCell = _vm.HoveringCellObj.Name;
+                //}
+                //else
+                //{
+                //    _vmArrange.HoveringCell = "";
+                //}
+                //if (_workingSplit != null)
+                //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
 
-            //Set WorkWins to topmost
+                //Set WorkWins to topmost
+
+            });
+
         }
 
         #endregion Window Event Handlers
