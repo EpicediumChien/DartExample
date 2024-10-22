@@ -10,7 +10,7 @@ namespace DDPM.SA.Common
 {
     public interface IDisplayService : IFrameworkPlugin, IInputSource
     {
-        Task Reset0x52TimerTick(int millisecond);
+        Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 
         Task<List<MonitorInfo>> GetMonitors();
 

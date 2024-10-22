@@ -71,7 +71,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int colorPresetRunType = 0, bool showOSD = true);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -116,7 +116,7 @@ namespace DDPM.SA.Common
 
         #region public for Displays
 
-        Task Reset0x52TimerTick(int millisecond);
+        Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 
         Task<List<MonitorInfo>> GetMonitors();
 
@@ -640,9 +640,17 @@ namespace DDPM.SA.Common
 
         #region public for DTPProxy
 
-        Task<int> GetDpiValueByDTP(string itemID);
+        #region Mouse
 
-        Task SetDPIValueByDTP(string itemID, int newValue);
+        Task<int> GetDpiValue(string Guid);
+        Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<JArray> GetMouseProgrammableKeys(string Guid);
+        Task<JArray> GetAppSpecificProfiles(string Guid);
+
+        Task SetDPIValue(string Guid, int newValue);
+        Task SetMouseAction(string Guid, byte[] newValue);
+
+        #endregion
 
         #region Pen
         Task<JArray> GetPenDeviceItemsEx();
@@ -700,29 +708,23 @@ namespace DDPM.SA.Common
 
         Task<int> GetBrightness(string Guid);
 
-        Task<string> GetCameraFirmwareVersionByDTP(string itemID);
+        Task<string> GetCameraFirmwareVersionByDTP(string Guid);
 
-        Task<bool> CheckIsPropertyFOVSupportedByDTP(string itemID);
+        Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
 
-        Task<int> GetFieldOfViewValueByDTP(string itemID);
+        Task<int> GetFieldOfView(string Guid);
 
-        Task<bool> CheckIsPropertyHDRSupportedByDTP(string itemID);
+        Task<bool> GetIsPropertyHDRSupported(string Guid);
 
-        Task<bool> GetIsHDROnValueByDTP(string itemID);
+        Task<bool> GetIsHDROn(string Guid);
 
-        Task SetIsHDROnValueByDTP(string itemID, bool newValue);
+        Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
 
-        Task<bool> CheckIsPropertyAntiFlickerSupportedByDTP(string itemID);
+        Task<int> GetAntiFlickerValueByDTP(string Guid);
 
-        Task<int> GetAntiFlickerValueByDTP(string itemID);
+        Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
 
-        Task SetAntiFlickerValueByDTP(string itemID, int newValue);
-
-        Task<bool> CheckIsPropertyAutoFramingSupportedByDTP(string itemID);
-
-        Task<bool> GetIsAutoFramingOnValueByDTP(string itemID);
-
-        Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
+        Task<bool> GetIsAutoFramingOn(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
@@ -804,8 +806,6 @@ namespace DDPM.SA.Common
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
         #endregion Webcam
-
-
 
         #region Headset
         Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
