@@ -1108,6 +1108,34 @@ namespace DDPM.UI.Module.Kvm
 
         #endregion VideoSwap control and content
 
+        private double _fromprogressValue = 0;
+        public double FromProgressValue
+        {
+            get
+            {
+                return _fromprogressValue;
+            }
+            set
+            {
+                _fromprogressValue = value;
+                OnPropertyChanged(nameof(FromProgressValue));
+            }
+        }
+
+        private double _toprogressValue = 1;
+        public double ToProgressValue
+        {
+            get
+            {
+                return _toprogressValue;
+            }
+            set
+            {
+                _toprogressValue = value;
+                OnPropertyChanged(nameof(ToProgressValue));
+            }
+        }
+
         public void PC1Click()
         {
             Border1Visibility = Visibility.Visible;

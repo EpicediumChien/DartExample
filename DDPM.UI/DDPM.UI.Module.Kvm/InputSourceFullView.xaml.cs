@@ -29,11 +29,15 @@ namespace DDPM.UI.Module.Kvm
             ConnectMKFullView connectMKFullView = new ConnectMKFullView();
             connectMKFullView.DataContext = vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(connectMKFullView);
+            vm.FromProgressValue = vm.ToProgressValue;
+            vm.ToProgressValue = vm.ToProgressValue + 1;
         }
 
         private void CloseUSBKVM(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
+            vm.FromProgressValue = 0;
+            vm.ToProgressValue = 1;
         }
 
         private void SaveInput(object sender, RoutedEventArgs e)
