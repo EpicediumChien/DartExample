@@ -125,7 +125,27 @@ namespace DDPM.Easy.Common
         #endregion Settings
 
         #region FriendlyName
-        public string FriendlyName { get; set; }
+        private string _friendlyName = string.Empty;
+        private string _defaultHorzName = "Option 3.3 3 columns, 30 40 30 percent splits.";
+        private string _defaultVertName = "Option 3.3 3 rows, 30 40 30 percent splits.";
+        public string FriendlyName
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_friendlyName))
+                {
+                    if (VM.IsVertical)
+                        return _defaultVertName;
+                    else
+                        return _defaultHorzName;
+                }
+                return _friendlyName;
+            }
+            set
+            {
+                _friendlyName = value;
+            }
+        }
         #endregion FriendlyName
 
     }

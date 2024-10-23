@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dell.Client.Framework.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,17 @@ namespace DDPM.SA.Common.Display
         public double y { get; set; }
         public double w { get; set; }
         public double h { get; set; }
+
+        public CellJson Clone()
+        {
+            return new CellJson()
+            {
+                Name = this.Name,
+                x = this.x,
+                y = this.y,
+                w = this.w,
+                h = this.h
+            };
+        }
     }
 }

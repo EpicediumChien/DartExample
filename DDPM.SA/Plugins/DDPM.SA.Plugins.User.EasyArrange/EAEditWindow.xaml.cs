@@ -10,6 +10,7 @@ using System.Windows.Controls;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
+    //Robert_Lin, 2024-10-23 to be deleted
     /// <summary>
     /// Interaction logic for EAEditWindow.xaml
     /// </summary>

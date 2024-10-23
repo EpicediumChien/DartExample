@@ -10,6 +10,7 @@
         Topmost="True" ShowInTaskbar="False" AllowsTransparency="True"
         Loaded="Window_Loaded">
 
+    <!-- Robert_Lin, 2024-10-23 To be deleted -->
     <Grid>
         <ContentControl Name="splitCtrl" />
         <Canvas Name="canvas"/>
