@@ -213,6 +213,70 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return (JArray)"";
             }
         }
+        public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "DeleteAllAssignedActions");
+                Debug.WriteLine($"{value}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+
+        public async Task SetMouseAction(string Guid, byte[] newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignedAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "CurrentSelectedAppSpecificProfile", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task DeleteMouseAssignedAction(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "DeleteAssignedAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+            }
+        }
 
         public async Task SetMsAssignKeystrokeAction(string Guid, string newValue)
         {
@@ -238,22 +302,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_mouseInterfaceType, commodity, "AssignDialogAction", newValue);
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task SetMouseAction(string Guid, byte[] newValue)
-        {
-            if (!await GetItemIDAsync("Mouse", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_mouseInterfaceType, commodity, "AssignedAction", newValue);
             }
             else
             {

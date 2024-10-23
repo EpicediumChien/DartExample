@@ -26,11 +26,13 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -45,6 +47,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
@@ -5971,6 +5974,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
+        public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
+        }
 
         public Task SetDPIValue(string Guid, int newValue)
         {
@@ -5987,6 +5994,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetMouseAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetMouseAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task DeleteMouseAssignedAction(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received DeleteAssignedAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.DeleteMouseAssignedAction(Guid, newValue);
             return Task.FromResult(true);
         }
 
@@ -9741,6 +9764,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"Switch_InputSource InputSource count is 0");
                     return;
                 }
+                Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
+                //for magration that hotkeyInfo that inputsource name is empty
+                if (list.Any(x => string.IsNullOrEmpty(x.Name)))
+                {
+                    List<InputSourceObj> inputSourceObjs = list.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
+                    {
+                        Name = b.InputName,
+                        Code = a.Code,
+                    }).ToList();
+
+                    foreach (var item in inputSourceObjs)
+                    {
+                        Debug.WriteLine($"inputSourceObjs: {item.Name}={item.Code}");
+                    }
+                    if (inputSourceObjs == null || list.Count == 0)
+                    {
+                        //hotkey.InputSource Count must not 0. 
+                        Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
+                        writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],migration hotkeyInfo:inputsoure is empty or can't convert ");
+                        return;
+                    }
+                    else
+                    {
+                        list.Clear();
+                        list.AddRange(inputSourceObjs);
+                        //update settings
+                        GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, HotkeyType.FavoriteInputSource, inputSourceObjs);
+                    }
+                }
                 string crtInput = monitorInfo.inputSource;
                 Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}] crtInput is [{crtInput}]");
                 //InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
@@ -9760,11 +9812,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 HotkeyInfo hotkey = (HotkeyInfo)param[0];
                 List<InputSourceObj> list = (List<InputSourceObj>)param[1];
-                InputSourceObj changeInput = list[0];// hotkey.InputSource[0];
-                Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput.Name}");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
+                //for magration that hotkeyInfo that inputsource name is empty
+                string changeInput = string.Empty;// hotkey.InputSource[0];
+                if (list.Any(x => string.IsNullOrEmpty(x.Name)))
+                {
+                    Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
+                    InputInfo inputInfo = inputList.Values.SingleOrDefault(x => x.Code.Equals(list[0].Code));
+                    if (inputInfo != null)
+                        changeInput = inputInfo.InputName;
+                    //update settings
+                    List<InputSourceObj> inputSources = new List<InputSourceObj>();
+                    inputSources.Add(new InputSourceObj((UInt16)inputInfo.Code, inputInfo.InputName));
+                    GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, HotkeyType.FavoriteInputSource, inputSources);
+                }
+                else
+                {
+                    changeInput = list[0].Name;
+                }
+                Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput}");
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput).Result;
                 Debug.WriteLine($"Favorite_InputSource => {setNextInput}");
-                writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
+                writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput}]" + (setNextInput ? "success" : "fail"));
             }
         }
 

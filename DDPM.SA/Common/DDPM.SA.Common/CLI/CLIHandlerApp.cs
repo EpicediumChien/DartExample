@@ -245,7 +245,7 @@ namespace DDPM.SA.Common.CLI
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();
+            APP_RESPONSE response = new APP_RESPONSE();
             response.Command = commandLineInput.Command;
             response.TargetFeature = commandLineInput.TargetFeature;
 
@@ -673,7 +673,7 @@ namespace DDPM.SA.Common.CLI
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();
+            APP_RESPONSE response = new APP_RESPONSE();
             response.Command = commandLineInput.Command;
             response.TargetFeature = commandLineInput.TargetFeature;
 
