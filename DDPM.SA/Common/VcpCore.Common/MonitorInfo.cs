@@ -23,6 +23,7 @@ namespace VcpCore.Common
         public string ImageFileName { get; set; }
         public string SupplierID { get; set; }
         public string D_Ctrl { get; set; }
+        public double scalingFactor { get; set; }
 
         public override bool Equals(object obj)
         {
