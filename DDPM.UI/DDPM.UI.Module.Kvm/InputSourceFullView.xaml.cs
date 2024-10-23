@@ -29,6 +29,10 @@ namespace DDPM.UI.Module.Kvm
             ConnectMKFullView connectMKFullView = new ConnectMKFullView();
             connectMKFullView.DataContext = vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(connectMKFullView);
+            if (vm.ToProgressValue > 3 || vm.ToProgressValue < 0)
+            {
+                vm.ToProgressValue = 1;
+            }
             vm.FromProgressValue = vm.ToProgressValue;
             vm.ToProgressValue = vm.ToProgressValue + 1;
         }

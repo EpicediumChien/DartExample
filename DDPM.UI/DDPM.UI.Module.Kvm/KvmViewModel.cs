@@ -259,7 +259,7 @@ namespace DDPM.UI.Module.Kvm
                     if (_isNKVM)
                     {
                         _isNKVM = false;
-                        isOnNKVM(false);
+                        //isOnNKVM(false);
                     }
                 }
             }
@@ -276,7 +276,7 @@ namespace DDPM.UI.Module.Kvm
                     if (_isNKVM)
                     {
                         _isNKVM = false;
-                        isOnNKVM(false);
+                        //isOnNKVM(false);
                     }
                     _isNoKVM = false;
                 }
