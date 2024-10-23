@@ -5463,6 +5463,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
                                     monitorSettings.ALSConfig = aLSConfig.AllValue;
                                 }
+                                writelog("[DisplayExportSettings]Export Gaming");
+                                GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+                                gamingDisplayPropertiesInfo = GetGamingProperties_SupportedList(monitorInfo).Result;
+                                if (gamingDisplayPropertiesInfo != null)
+                                {
+                                    if (gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode && gamingDisplayPropertiesInfo.Current_GameEnhancementMode != null)
+                                    {
+                                        monitorSettings.Gaming.Current_GameEnhancementMode = (Gaming_GameEnhancementMode)gamingDisplayPropertiesInfo.Current_GameEnhancementMode;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_ResponseTime && gamingDisplayPropertiesInfo.Current_ResponseTime != null)
+                                    {
+                                        monitorSettings.Gaming.Current_ResponseTime = (Gaming_ResponseTime)gamingDisplayPropertiesInfo.Current_ResponseTime;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer && gamingDisplayPropertiesInfo.Current_DarkStabilizer != null)
+                                    {
+                                        monitorSettings.Gaming.Current_DarkStabilizer = (Gaming_DarkStabilizer)gamingDisplayPropertiesInfo.Current_DarkStabilizer;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_HDRType && gamingDisplayPropertiesInfo.Current_HDRType != null)
+                                    {
+                                        monitorSettings.Gaming.Current_HDRType = (Gaming_HDRType)gamingDisplayPropertiesInfo.Current_HDRType;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_DualResolutionType && gamingDisplayPropertiesInfo.Current_DualResolutionType != null)
+                                    {
+                                        monitorSettings.Gaming.Current_DualResolutionType = (Gaming_DualResolutionType)gamingDisplayPropertiesInfo.Current_DualResolutionType;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_VisionEngineType && gamingDisplayPropertiesInfo.IsEnable_VisionEngineType != null)
+                                    {
+                                        monitorSettings.Gaming.IsEnable_VisionEngineType = gamingDisplayPropertiesInfo.IsEnable_VisionEngineType;
+                                    }
+                                }
                                 writelog("[DisplayExportSettings]Export VCPs");
                                 foreach (VCPCode vcp in monitorSettings.VCPs)
                                 {
@@ -5552,6 +5582,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                                 }
+                                if (ImpExpSettings.MonitorSettings.Gaming != null)
+                                {
+                                    Gaming gaming = ImpExpSettings.MonitorSettings.Gaming;
+                                    if (gaming.Current_GameEnhancementMode != 0)
+                                    {
+                                        bool bge = SetGameEnhancementMode(monitorInfo, gaming.Current_GameEnhancementMode).Result;
+                                    }
+                                    if (gaming.Current_ResponseTime != 0)
+                                    {
+                                        bool bgr = SetGaming_ResponseTime(monitorInfo, gaming.Current_ResponseTime).Result;
+                                    }
+                                    if (gaming.Current_DarkStabilizer != 0)
+                                    {
+                                        bool bgd = SetGaming_DarkStabilizer(monitorInfo, gaming.Current_DarkStabilizer).Result;
+                                    }
+                                    if (gaming.Current_HDRType != 0)
+                                    {
+                                        bool bgh = SetGaming_HDRType(monitorInfo, gaming.Current_HDRType).Result;
+                                    }
+                                    if (gaming.Current_DualResolutionType != 0)
+                                    {
+                                        bool bgdr = SetGaming_DualResolutionType(monitorInfo, gaming.Current_DualResolutionType).Result;
+                                    }
+                                    if (gaming.IsEnable_VisionEngineType != null)
+                                    {
+                                        if (gaming.IsEnable_VisionEngineType.Length > 0)
+                                        {
+                                            bool bgv = SetGaming_VisionEngineEnableType(monitorInfo, gaming.IsEnable_VisionEngineType).Result;
+                                        }
+                                    }
+                                }
                                 writelog("[DisplayImportSettings]Import VCP");
                                 if (vcps != null)
                                 {
@@ -5573,6 +5634,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 //{
                                                 //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
                                                 //}
+                                                if (ImpExpSettings.MonitorSettings.Gaming.Current_DualResolutionType != 0 && code.Code == 0xEA)
+                                                {
+                                                    continue;
+                                                }
                                                 //get vcp code
                                                 objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
                                                 if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
