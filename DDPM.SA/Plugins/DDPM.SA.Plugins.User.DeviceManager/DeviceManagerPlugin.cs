@@ -2234,21 +2234,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        //public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
-        //{
-        //    writelog($"[DeviceManagerPlugin] [Headset] received GetInterfaceTypeAsync requested ... {guid}");
-        //    try
-        //    {
-        //        var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded for {guid}");
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
-        //        return default(DeviceInterfaceType);
-        //    }
-        //}
+        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetInterfaceTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return default(DeviceInterfaceType);
+            }
+        }
 
         public async Task<string> GetDeviceNameAsync(string guid)
         {
@@ -2666,21 +2666,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        //public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
-        //{
-        //    writelog($"[DeviceManagerPlugin] [Headset] received GetConnectionTypeAsync requested ... {guid}");
-        //    try
-        //    {
-        //        var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded for {guid}");
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
-        //        return HeadsetConnectionType.Unknown;
-        //    }
-        //}
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetConnectionTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+        }
 
         public async Task<bool> GetIsANCSupportedAsync(string guid)
         {
@@ -2990,86 +2990,233 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion Headset
 
         #region Wired Audio
-        public async Task<int> GetBassAsync(string Guid)
+
+        //////////////////////////////////Set///////////////////////////////////
+
+        public async Task<bool> SetBassAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetBassAsync requested ... {Guid}");
-            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(Guid));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetBassAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetBassAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetBassAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task SetBassAsync(string guid, int newValue)
+        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetBassAsync requested ... {guid}" + " / " + $"{newValue}");
-            _DTPProxyPlugin.SetBassAsync(guid, newValue);
-            return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetMidRangeAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetMidRangeAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<int> GetMidRangeAsync(string itemID)
+        public async Task<bool> SetTrebleAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetMidRangeAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetMidRangeAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetTrebleAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetTrebleAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task SetMidRangeAsync(string Guid, int newValue)
+        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetMidRangeAsync requested ... {Guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetProfileForSpeaker requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetProfileForSpeaker(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetProfileForSpeaker succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetProfileForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<int> GetTrebleAsync(string itemID)
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetTrebleAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(itemID));
-        }
-        public async Task SetTrebleAsync(string Guid, int newValue)
-        {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetTrebleAsync requested ... {Guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
-        }
-
-        //-----------------------------------
-        public async Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
-        {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);           
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioMicMuteSoundEnableAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetWiredAudioVolumeAdjustmentToneAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetWiredAudioVolumeAdjustmentToneAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        //-----------------------------------
-        public async Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetWiredAudioVolumeAdjustmentToneAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetIsWiredAudioIMicNSEnableAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioIMicNSEnableAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetResetToDefaultAsyncForSoundbar requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetResetToDefaultAsyncForSoundbar succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetResetToDefaultAsyncForSoundbar failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        //-----------------------------------
-        public async Task SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
+
+        //////////////////////////////////Get///////////////////////////////////
+        public async Task<int> GetBassAsync(string guid)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetIsWiredAudioIMicNSEnableAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetBassAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBassAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetBassAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return -1; // Returning -1 as a failure indicator
+            }
         }
 
-        public Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID)
+        public async Task<int> GetMidRangeAsync(string itemID)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetIsWiredAudioIMicNSEnableAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetMidRangeAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMidRangeAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetMidRangeAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetMidRangeAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
         }
 
-        //-----------------------------------
-        public async Task SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
+        public async Task<int> GetTrebleAsync(string itemID)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetResetToDefaultAsyncForSoundbar requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetTrebleAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetTrebleAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetTrebleAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetTrebleAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioMicMuteSoundEnableAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioMicMuteSoundEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetWiredAudioVolumeAdjustmentToneAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetWiredAudioVolumeAdjustmentToneAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetIsWiredAudioIMicNSEnableAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioIMicNSEnableAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioIMicNSEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
         #endregion
@@ -7749,7 +7896,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 text = "";
 
             text = "[DeviceManager] " + text;
-            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + text);
+            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + text);
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
