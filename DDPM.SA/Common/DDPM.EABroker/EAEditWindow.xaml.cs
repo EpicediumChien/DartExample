@@ -47,8 +47,8 @@ namespace DDPM.EABroker
         }
         #endregion ctor & Init
 
-        #region Close
-        public void Dispatcher_Close()
+        #region Hide
+        public void Dispatcher_Hide()
         {
             this.Dispatcher.Invoke(() =>
             {
@@ -173,10 +173,10 @@ namespace DDPM.EABroker
         private void UI_ShowAndEdit_PredefinedCustom(EAArgs args, Screen scr)
         {
             //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
-            ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.CellCount, args.SplitKey);
+            ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
             if (ispCtrl == null)
             {
-                //Invalidd CellCount+SplitKey, make the error messgae
+                //Invalid CellCount+SplitKey, make the error message
                 WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
                 return;// false;
             }
@@ -185,12 +185,12 @@ namespace DDPM.EABroker
             inputSplitCtrl.SplitMode = eSplitModes.Edit;
             inputSplitCtrl.IsVertical = (scr.Bounds.Width < scr.Bounds.Height);
 
-            if (args.Settings != null)
+            if (args.SplitJson.Settings != null)
             {
-                inputSplitCtrl.Settings = args.Settings;
+                inputSplitCtrl.Settings = args.SplitJson.Settings;
             }
 
-            _orgFriendlyName = args.CustomName;
+            _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
             double dpiX = 1.000;

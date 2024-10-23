@@ -123,7 +123,7 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
 
-        public string FriendlyName { get; set; }
+        public string FriendlyName { get; set; } = "Empty Layout";
 
         #endregion FriendlyName
 
