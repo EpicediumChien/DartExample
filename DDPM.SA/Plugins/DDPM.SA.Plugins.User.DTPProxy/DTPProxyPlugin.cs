@@ -4119,6 +4119,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region WiredAudio
+
+
         public async Task<bool> SetBassAsync(string guid, int newValue)
         {
             Trace.WriteLine($"[Speaker] SetBassAsync : {guid} || {newValue}");
@@ -4345,6 +4347,37 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         /////////////////////////Get////////////////////////////////
 
+        public async Task<string> GetProfileAsync(string Guid)
+        {
+            Trace.WriteLine(" [Speaker] GetProfileAsync : " + Guid);
+            if (!await GetItemIDAsync("Speaker", Guid))
+            {
+                writelog(" [Speaker] Failed to retrieve ItemID.");
+                return null;
+            }
+
+            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_speakerInterfaceType, commodity, "Profile");
+                if (value != null)
+                {
+                    Trace.WriteLine(" [Speaker] GetProfileAsync Success!");
+                    writelog(" [Speaker] GetProfileAsync Success!");
+                    return (string)value;
+                }
+                else
+                {
+                    writelog(" [Speaker] Property GetProfileAsync returned null.");
+                    return null;
+                }
+            }
+            else
+            {
+                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                return null;
+            }
+        }
+
         public async Task<int> GetBassAsync(string guid)
         {
             writelog($"[DeviceManagerPlugin] [Speaker] received GetBassAsync requested ... {guid}");
@@ -4491,6 +4524,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Speaker] received GetIsAudioEqualizerSupportedAsync requested ... {guid}");
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid)) return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsAudioEqualizerSupported");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }

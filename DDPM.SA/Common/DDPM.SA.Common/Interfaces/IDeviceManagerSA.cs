@@ -6,6 +6,7 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -1003,6 +1004,7 @@ namespace DDPM.SA.Common
 
         ////////////////////////////////Get////////////////////////////////
 
+        Task<string> GetProfileAsync(string item);
         Task<int> GetBassAsync(string Guid);
 
         Task<int> GetMidRangeAsync(string Guid);
@@ -1014,6 +1016,7 @@ namespace DDPM.SA.Common
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
 
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
+        Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion Wires Audio
 
