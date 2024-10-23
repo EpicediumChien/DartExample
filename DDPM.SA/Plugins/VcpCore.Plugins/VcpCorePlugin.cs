@@ -29,10 +29,13 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.dxva2;
@@ -1164,6 +1167,7 @@ namespace VcpCore.Plugins
                                     ImageFileName = monitorInfoX.ImageFileName,
                                     SupplierID = monitorInfoX.SupplierID,
                                     D_Ctrl = monitorInfoX.D_Ctrl,
+                                    scalingFactor = monitorInfoX.scalingFactor,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1220,6 +1224,7 @@ namespace VcpCore.Plugins
                                     ImageFileName = monitorInfoX.ImageFileName,
                                     SupplierID = monitorInfoX.SupplierID,
                                     D_Ctrl = monitorInfoX.D_Ctrl,
+                                    scalingFactor = monitorInfoX.scalingFactor,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1258,6 +1263,7 @@ namespace VcpCore.Plugins
                                     ImageFileName = monitorInfoX.ImageFileName,
                                     SupplierID = monitorInfoX.SupplierID,
                                     D_Ctrl = monitorInfoX.D_Ctrl,
+                                    scalingFactor = monitorInfoX.scalingFactor,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1399,6 +1405,7 @@ namespace VcpCore.Plugins
                                                 ImageFileName = monitorInfoX.ImageFileName,
                                                 SupplierID = monitorInfoX.SupplierID,
                                                 D_Ctrl = monitorInfoX.D_Ctrl,
+                                                scalingFactor = monitorInfoX.scalingFactor,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgs);
                                         }
@@ -1480,6 +1487,7 @@ namespace VcpCore.Plugins
                                                 ImageFileName = monitorInfoX.ImageFileName,
                                                 SupplierID = monitorInfoX.SupplierID,
                                                 D_Ctrl = monitorInfoX.D_Ctrl,
+                                                scalingFactor = monitorInfoX.scalingFactor,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgsII);
 
@@ -1507,6 +1515,7 @@ namespace VcpCore.Plugins
                                             //    ImageFileName = monitorInfoX.ImageFileName,
                                             //    SupplierID = monitorInfoX.SupplierID,
                                             //    D_Ctrl = monitorInfoX.D_Ctrl,
+                                            //    scalingFactor = monitorInfoX.scalingFactor,
                                             //};
                                             //OnVCPchanged(_VCPchangedEventArgIIs);
                                         }
@@ -1537,6 +1546,7 @@ namespace VcpCore.Plugins
                                             ImageFileName = monitorInfoX.ImageFileName,
                                             SupplierID = monitorInfoX.SupplierID,
                                             D_Ctrl = monitorInfoX.D_Ctrl,
+                                            scalingFactor = monitorInfoX.scalingFactor,
                                         };
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
@@ -1749,6 +1759,7 @@ namespace VcpCore.Plugins
                                                     ImageFileName = monitorInfoX.ImageFileName,
                                                     SupplierID = monitorInfoX.SupplierID,
                                                     D_Ctrl = monitorInfoX.D_Ctrl,
+                                                    scalingFactor = monitorInfoX.scalingFactor,
                                                 };
                                                 _tmp.Add(minfo);
                                             }
@@ -1852,6 +1863,7 @@ namespace VcpCore.Plugins
                             ImageFileName = MonitorInfoX.ImageFileName,
                             SupplierID = MonitorInfoX.SupplierID,
                             D_Ctrl = MonitorInfoX.D_Ctrl,
+                            scalingFactor = MonitorInfoX.scalingFactor,
                         };
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
 
@@ -1884,6 +1896,9 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] Show*** series : " + monitorInfo.series);
                         _logs.DebugMsg("[VcpCorePlugin] Show*** MarketingName : " + monitorInfo.MarketingName);
                         _logs.DebugMsg("[VcpCorePlugin] Show*** ImageFileName : " + monitorInfo.ImageFileName);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** SupplierID : " + monitorInfo.SupplierID);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** D_Ctrl : " + monitorInfo.D_Ctrl);
+                        _logs.DebugMsg("[VcpCorePlugin] Show*** scalingFactor : " + monitorInfo.scalingFactor.ToString());
                         _logs.DebugMsg("//----------------Show END------------//");
                         //--------------------------------------------------------------
                     }
@@ -2090,6 +2105,7 @@ namespace VcpCore.Plugins
 
                         System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
                         watch.Start();
+                        Screen[] screenList = Screen.AllScreens;
                         var info = new MonitorInfoEx();
                         _GetMonitorInfo(new HandleRef(null, hMonitor), info);
                         string DeviceName = new string(info.szDevice).Trim('\0');
@@ -2112,6 +2128,7 @@ namespace VcpCore.Plugins
                             realindex++;
 
                             DEVMODE devmode = new DEVMODE();
+                            devmode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
                             bool success = _EnumDisplaySettings(DeviceName, ENUM_CURRENT_SETTINGS, ref devmode);
                             MonitorInfo_complex _TargetMonitor = new MonitorInfo_complex();
 
@@ -2233,6 +2250,16 @@ namespace VcpCore.Plugins
 
                                     nRetryCount++;
                                 } while (_TargetMonitor.IsDellMonitor && (nRetryCount <= 2));
+
+                                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                                var varX = (int)dpiXProperty.GetValue(null, null);
+                                double dpiX = (double)varX / (double)96;
+                                foreach (Screen screen in screenList)
+                                {
+                                    token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
+                                    if (screen.DeviceName.ToUpper().Equals(DeviceName.ToUpper(), StringComparison.OrdinalIgnoreCase))
+                                        _TargetMonitor.scalingFactor = dpiX * Decimal.ToDouble(Math.Round(Decimal.Divide(devmode.dmPelsWidth, screen.Bounds.Width), 2));
+                                }
 
                                 ITokenizer tokenizer = new CapabilitiesTokenizer();
                                 IParser parser = new CapabilitiesParser();
@@ -2597,6 +2624,7 @@ namespace VcpCore.Plugins
                         ImageFileName = monitorInfoX.ImageFileName,
                         SupplierID = monitorInfoX.SupplierID,
                         D_Ctrl = monitorInfoX.D_Ctrl,
+                        scalingFactor = monitorInfoX.scalingFactor,
                     };
                     OnVCPchanged(_VCPchangedEventArgs);
 
