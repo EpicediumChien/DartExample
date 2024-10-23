@@ -46,7 +46,7 @@
             <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
                 <!-- LeftFrame -->
                 <Grid>
-                    <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="12" />
+                    <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="20"/>
 
                     <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
                     <Grid Name="markeyNameWidthGrid">
@@ -213,7 +213,7 @@
                                     </Image.ToolTip>
                                 </Image>
 
-                                <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,0" VerticalAlignment="Center">
+                                <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,10" VerticalAlignment="Center">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
                                       Fill="#FFB6B6B6" />
@@ -251,7 +251,7 @@
                         </Grid>
 
                         <!-- Vbar -->
-                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,0,10,0" x:Name="vBar">
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" x:Name="vBar">
                             <ItemsControl Name="vbarList" Margin="12,10,0,0"
                                   HorizontalAlignment="Right" ItemsSource="{Binding VbarItems}">
                                 <ItemsControl.ItemTemplate>
@@ -273,9 +273,8 @@
 
                 <UXControls:UXScrollViewer x:Name="rightFrameSV">
                     <!-- RightFrame -->
-                    <Grid>
-                        <Border CornerRadius="13" Padding="16,24" Background="{StaticResource RightBaseBkColor}" 
-                            x:Name="RightGrid">
+                    <Grid x:Name="RightGrid">
+                        <Border CornerRadius="13" Padding="16,24" Background="{StaticResource RightBaseBkColor}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
