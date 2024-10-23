@@ -865,8 +865,9 @@ namespace DDPM.SA.Common
 
         #region Headset Get
 
+        //Peripheral Common Properties Get
         Task<JArray> GetDeviceItemsExAsync(string Guid);
-        //Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
+        Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
         Task<string> GetDeviceNameAsync(string Guid);
         Task<string> GetDeviceIdAsync(string Guid);
         Task<string> GetPluginIdAsync(string Guid);
@@ -876,6 +877,8 @@ namespace DDPM.SA.Common
         Task<int> GetInstanceIdAsync(string Guid);
         Task<string> GetFirmwareVersionAsync(string Guid);
         Task<string> GetDeviceTypeAsync(string Guid);
+
+        //Headset Get
         Task<string> GetParentDeviceTypeAsync(string Guid);
         Task<bool> GetIsBatteryLevelSupportedAsync(string Guid);
         Task<int> GetBatteryLevelAsync(string Guid);
@@ -893,7 +896,7 @@ namespace DDPM.SA.Common
         Task<bool> GetIsVoiceGuidanceSupportedAsync(string Guid);
         Task<bool> GetIsPresetsSupportedAsync(string Guid);
         Task<bool> GetIsEqualizerSupportedAsync(string Guid);
-        //Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid);
+        Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid);
         Task<bool> GetIsANCSupportedAsync(string Guid);
         Task<bool> GetIsWearDetectionSupportedAsync(string Guid);
         Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string Guid);
@@ -920,28 +923,23 @@ namespace DDPM.SA.Common
 
         #region Wires Audio
 
-        Task<int> GetBassAsync(string guid);
+        Task<bool> SetBassAsync(string Guid, int newValue);
+        Task<bool> SetMidRangeAsync(string Guid, int newValue);
+        Task<bool> SetTrebleAsync(string Guid, int newValue);
+        Task<bool> SetProfileForSpeaker(string Guid, string newValue);
+        Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue);
+        Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue);
+        Task<bool> SetIsWiredAudioIMicNSEnableAsync(string Guid, bool newValue);
+        Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue);
 
-        Task SetBassAsync(string guid, int newValue);
+        ////////////////////////////////Get////////////////////////////////
 
-        Task<int> GetMidRangeAsync(string guid);
-
-        Task SetMidRangeAsync(string guid, int newValue);
-
-        Task<int> GetTrebleAsync(string guid);
-
-        Task SetTrebleAsync(string guid, int newValue);
-
-        Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
-
-        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
-
-        Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
-
-        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
-        Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID);
-        Task SetIsWiredAudioIMicNSEnableAsync(string itemID, bool newValue);
-        Task SetResetToDefaultAsyncForSoundbar(string itemID, bool newValue);
+        Task<int> GetBassAsync(string Guid);
+        Task<int> GetMidRangeAsync(string Guid);
+        Task<int> GetTrebleAsync(string Guid);
+        Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid);
+        Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
+        Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
 
         #endregion Wires Audio
 
