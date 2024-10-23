@@ -73,8 +73,8 @@ namespace DDPM.UI.Common
 
     public enum MouseButtonName
     {
-        SideButtonBack = 65,
-        SideButtonForward,
+        SideButtonForward = 65,
+        SideButtonBack,
         ScrollWheelClick,
         ScrollTiltLeft,
         ScrollTiltRight
