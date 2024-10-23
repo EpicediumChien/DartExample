@@ -74,6 +74,15 @@ namespace DDPM.SA.Common.Security
 
         public static bool InputValidation_FilePathFileName(string filePathFileName, bool ImportExistFileTrue, out string info)
         {
+			
+			// add start @ 20241022 stephen: pass check
+            if ((@$"x:\config.json").ToLower().Equals(filePathFileName.ToLower()))
+            {
+                info = $"x:\\config.json is a special case to pass checking.";
+                return true;
+            }
+            // add end
+			
             info = "Valid";
             PathCheckOption opt = PathCheckOption.None;
             if (ImportExistFileTrue == false)
