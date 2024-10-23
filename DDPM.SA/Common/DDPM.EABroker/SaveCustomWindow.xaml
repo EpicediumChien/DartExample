@@ -47,7 +47,7 @@
                     </StackPanel>
                 </StackPanel>
                 <Grid Name="closeGrid" Width="14" Height="14" Margin="0,20,17,0" 
-                      HorizontalAlignment="Right" VerticalAlignment="Top" MouseLeftButtonUp="closeGrid_MouseLeftButtonUp">
+                      HorizontalAlignment="Right" VerticalAlignment="Top" MouseLeftButtonDown="closeGrid_MouseLeftButtonDown">
                     <Grid.Style>
                         <Style TargetType="Grid">
                             <Setter Property="Background" Value="{StaticResource FakeTransparent}" />

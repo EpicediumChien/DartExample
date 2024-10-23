@@ -33,7 +33,7 @@
     </UserControl.Resources>
 
     <Grid KeyboardNavigation.DirectionalNavigation="{Binding TabSTOP}" KeyboardNavigation.TabNavigation="{Binding TabSTOP}">
-        <UXControls:UXScrollViewer>
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden">
             <Grid>
                 <StackPanel>
                     <Grid>

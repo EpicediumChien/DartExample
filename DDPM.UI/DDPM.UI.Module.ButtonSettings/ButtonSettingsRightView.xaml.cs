@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.ButtonSettings
             ButtonCaptions.Add(MouseButtonName.SideButtonBack.ToString(), Strings.SideButtonBCaption);
 
             txtMessage.Text = Strings.ButtonCustomizeMessage;
-            txtRestore.Text = Strings.ButtonCustomizeRestoreCaption;
+            //txtRestore.Text = _vm.SelectedApp == "AllApp" ? Strings.RestoreToDefaultActions : Strings.ButtonCustomizeRestoreCaption;
             txtSuggestedActions.Text = Strings.SuggestedActionsCaption;
             txtProductivityActions.Text = Strings.ProductivityActionsCaption;
             txtWindowsActions.Text = Strings.WindowsActionsCaption;
@@ -88,7 +88,8 @@ namespace DDPM.UI.Module.ButtonSettings
                 {
                     RefreshAction("Suggested");
                     var sections = GetActionSection(_vm.SelectedActionID);
-                    if (sections.Length > 1) { RefreshAction(sections[1]); }
+                    if (sections.Length > 1)
+                    { RefreshAction(sections[1]); }
                     if (ActiveActionSection != "Suggested")
                         OpenSectionPanel("SuggestedPanel", true);
 
@@ -160,7 +161,8 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtSearchText.Text.Trim() == "") { txtSearchText.Text = ""; }
+            if (txtSearchText.Text.Trim() == "")
+            { txtSearchText.Text = ""; }
             if (txtSearchText.Text == "")
             {
                 if (_vm.SelectedApp == "AllApp")
@@ -215,18 +217,19 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void btnRestoreClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
-            {
-                restoreModalDialog.Owner = parentWindow;
-            }
+            //RestoreModalDialog restoreModalDialog = new();
+            //Window parentWindow = Window.GetWindow(this);
+            //if (parentWindow != null)
+            //{
+            //    restoreModalDialog.Owner = parentWindow;
+            //}
 
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
-            {
-                _vm!.RestoreToDefault();
-            }
+            //bool? dialogResult = restoreModalDialog.ShowDialog();
+            //if (dialogResult == true)
+            //{
+            //    _vm!.RestoreToDefault();
+            //}
+            _vm!.RestoreToDefault();
         }
 
         private void UnfocusSearchBox(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -239,7 +242,8 @@ namespace DDPM.UI.Module.ButtonSettings
             txtCaption.Focus();
             if (sender is Border border)
             {
-                if (border.ActualHeight > 60) { return; }
+                if (border.ActualHeight > 60)
+                { return; }
 
                 var section = border.Name.Replace("bdr", "");
                 if (ActiveActionSection != section)
@@ -268,7 +272,8 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", "").Replace("_A", ""));
-            if (id == _vm.SelectedActionID) { return; }
+            if (id == _vm.SelectedActionID)
+            { return; }
 
             var section = GetActionSection(id);
             var parameter = "";
@@ -455,7 +460,8 @@ namespace DDPM.UI.Module.ButtonSettings
                 To = 1,
                 Duration = new Duration(TimeSpan.FromSeconds(0.3))
             };
-            if (isFromKeyClick) { visibilityAnimation.Completed += SectionOpened; }
+            if (isFromKeyClick)
+            { visibilityAnimation.Completed += SectionOpened; }
 
             AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
 
@@ -487,7 +493,8 @@ namespace DDPM.UI.Module.ButtonSettings
             //visibilityAnimation.Completed += SectionOpened;
             //AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
             AnimatedPanel!.Visibility = Visibility.Collapsed;
-            if (isAuto) { ScrollAction(section, 0); }
+            if (isAuto)
+            { ScrollAction(section, 0); }
 
             var img = (Image)FindName($"img{section}");
             img.RenderTransform = new RotateTransform();
@@ -508,7 +515,8 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void ScrollAction(string section = "", double offset = -1)
         {
-            if (section == "") { section = ActiveActionSection; }
+            if (section == "")
+            { section = ActiveActionSection; }
             if (offset == -1)
             {
                 int index = 0;
@@ -556,7 +564,8 @@ namespace DDPM.UI.Module.ButtonSettings
             var img = (System.Windows.Controls.Image)sender;
             var section = img.Name.Replace("img", "");
             txtCaption.Focus();
-            if (section != ActiveActionSection) { return; }
+            if (section != ActiveActionSection)
+            { return; }
 
             DoubleAnimation rotateAnimation;
             if (ActiveActionSection == "")

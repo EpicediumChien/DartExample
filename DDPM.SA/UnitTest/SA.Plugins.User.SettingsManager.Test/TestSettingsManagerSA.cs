@@ -279,6 +279,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(_hotkeySettings, Is.EqualTo(ReadHotkeySettingssResult1)); //run finnish will create hotkeysettings_path1_
             }
             File.WriteAllText(hotkeysettings_path1_, jsonData);
+            string hotkeysettings_path2_ = Environment.CurrentDirectory + "\\" + hotkeysettings_path1_;
+            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", hotkeysettings_path2_);
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (File.Exists(hotkeysettings_path1_))
             {
                 var ReadHotkeySettingssResult2 = SettingsManagerSAPlugin.ReadHotkeySettings().Result;
@@ -374,6 +378,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(_GlobalSettingParam, Is.EqualTo(ReadGlobalSettingsResult1)); //run finnish will create path1_
             }
             File.WriteAllText(GlobalSettings_path1_, jsonData);
+            string GlobalSettings_path2_ = Environment.CurrentDirectory + "\\" + GlobalSettings_path1_;
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", GlobalSettings_path2_);
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
             if (File.Exists(GlobalSettings_path1_))
             {
                 var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;

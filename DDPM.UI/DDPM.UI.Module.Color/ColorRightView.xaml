@@ -19,7 +19,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <UXControls:UXScrollViewer>
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Disabled">
             <Grid>
                 <StackPanel>
 

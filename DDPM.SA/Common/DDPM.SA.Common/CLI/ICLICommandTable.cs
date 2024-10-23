@@ -173,6 +173,9 @@ namespace DDPM.SA.Common
             // rather than null commandLineInput
             public bool isCliCommandsProcessCompleted { get; set; } = false;
 
+            // 2024-10-22 Stephen: Add jsonDeviceConfig for CMA while using DeviceConfiguration and pass json string 
+            public string jsonDeviceConfig { get; set; }    =   String.Empty;
+
             public CommandLineInput()
             {
                 Options = new List<CommandType_Option>(); //others optional input

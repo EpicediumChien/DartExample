@@ -1024,7 +1024,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     _vmArrange.EzSettings = new EzSettings()
                     {
                         //IsOnlyAllowWhenShiftKeyPressed = true,
-                        IsAwsEnabled = true
+                        //IsAwsEnabled = true
                     };
                 }
 
