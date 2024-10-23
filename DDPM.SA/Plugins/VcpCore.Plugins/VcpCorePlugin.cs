@@ -1162,6 +1162,8 @@ namespace VcpCore.Plugins
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
                                     ImageFileName = monitorInfoX.ImageFileName,
+                                    SupplierID = monitorInfoX.SupplierID,
+                                    D_Ctrl = monitorInfoX.D_Ctrl,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1216,6 +1218,8 @@ namespace VcpCore.Plugins
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
                                     ImageFileName = monitorInfoX.ImageFileName,
+                                    SupplierID = monitorInfoX.SupplierID,
+                                    D_Ctrl = monitorInfoX.D_Ctrl,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1252,6 +1256,8 @@ namespace VcpCore.Plugins
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
                                     ImageFileName = monitorInfoX.ImageFileName,
+                                    SupplierID = monitorInfoX.SupplierID,
+                                    D_Ctrl = monitorInfoX.D_Ctrl,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1391,6 +1397,8 @@ namespace VcpCore.Plugins
                                                 series = monitorInfoX.series,
                                                 MarketingName = monitorInfoX.MarketingName,
                                                 ImageFileName = monitorInfoX.ImageFileName,
+                                                SupplierID = monitorInfoX.SupplierID,
+                                                D_Ctrl = monitorInfoX.D_Ctrl,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgs);
                                         }
@@ -1470,6 +1478,8 @@ namespace VcpCore.Plugins
                                                 series = monitorInfoX.series,
                                                 MarketingName = monitorInfoX.MarketingName,
                                                 ImageFileName = monitorInfoX.ImageFileName,
+                                                SupplierID = monitorInfoX.SupplierID,
+                                                D_Ctrl = monitorInfoX.D_Ctrl,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgsII);
 
@@ -1495,6 +1505,8 @@ namespace VcpCore.Plugins
                                             //    series = monitorInfoX.series,
                                             //    MarketingName = monitorInfoX.MarketingName,
                                             //    ImageFileName = monitorInfoX.ImageFileName,
+                                            //    SupplierID = monitorInfoX.SupplierID,
+                                            //    D_Ctrl = monitorInfoX.D_Ctrl,
                                             //};
                                             //OnVCPchanged(_VCPchangedEventArgIIs);
                                         }
@@ -1523,6 +1535,8 @@ namespace VcpCore.Plugins
                                             series = monitorInfoX.series,
                                             MarketingName = monitorInfoX.MarketingName,
                                             ImageFileName = monitorInfoX.ImageFileName,
+                                            SupplierID = monitorInfoX.SupplierID,
+                                            D_Ctrl = monitorInfoX.D_Ctrl,
                                         };
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
@@ -1714,25 +1728,27 @@ namespace VcpCore.Plugins
                                             //----//
                                             List<MonitorInfo> _tmp = new List<MonitorInfo>();
                                             //_tmp.Clear();//Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
-                                            foreach (var m in _AllInfoMonitors)
+                                            foreach (var monitorInfoX in _AllInfoMonitors)
                                             {
                                                 MonitorInfo minfo = new MonitorInfo()
                                                 {
-                                                    AliasDeviceName = m.AliasDeviceName,
-                                                    IsDellMonitor = m.IsDellMonitor,
-                                                    Index = m.Index,
-                                                    CapabilityString = m.CapabilityString,
-                                                    DDCisON = m.DDCisON,
-                                                    DisplayName = m.DisplayName,
-                                                    edid = m.edid,
-                                                    FwVersion = m.FwVersion,
-                                                    inputSource = m.inputSource,
-                                                    inputCable = m.inputCable,
-                                                    CapabilityDic = m.CapabilityDic,
-                                                    modelName = m.modelName,
-                                                    series = m.series,
-                                                    MarketingName = m.MarketingName,
-                                                    ImageFileName = m.ImageFileName,
+                                                    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                                    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                                    Index = monitorInfoX.Index,
+                                                    CapabilityString = monitorInfoX.CapabilityString,
+                                                    DDCisON = monitorInfoX.DDCisON,
+                                                    DisplayName = monitorInfoX.DisplayName,
+                                                    edid = monitorInfoX.edid,
+                                                    FwVersion = monitorInfoX.FwVersion,
+                                                    inputSource = monitorInfoX.inputSource,
+                                                    inputCable = monitorInfoX.inputCable,
+                                                    CapabilityDic = monitorInfoX.CapabilityDic,
+                                                    modelName = monitorInfoX.modelName,
+                                                    series = monitorInfoX.series,
+                                                    MarketingName = monitorInfoX.MarketingName,
+                                                    ImageFileName = monitorInfoX.ImageFileName,
+                                                    SupplierID = monitorInfoX.SupplierID,
+                                                    D_Ctrl = monitorInfoX.D_Ctrl,
                                                 };
                                                 _tmp.Add(minfo);
                                             }
@@ -1817,22 +1833,26 @@ namespace VcpCore.Plugins
                         MonitorInfoX.inputSource = tmp.Item2;
                         MonitorInfoX.inputCable = tmp.Item1;
 
-                        MonitorInfo monitorInfo = new MonitorInfo();
-                        monitorInfo.AliasDeviceName = MonitorInfoX.AliasDeviceName;
-                        monitorInfo.IsDellMonitor = MonitorInfoX.IsDellMonitor;
-                        monitorInfo.Index = MonitorInfoX.Index;
-                        monitorInfo.CapabilityString = MonitorInfoX.CapabilityString;
-                        monitorInfo.DDCisON = MonitorInfoX.DDCisON;
-                        monitorInfo.DisplayName = MonitorInfoX.DisplayName;
-                        monitorInfo.edid = MonitorInfoX.edid;
-                        monitorInfo.FwVersion = MonitorInfoX.FwVersion;
-                        monitorInfo.inputSource = MonitorInfoX.inputSource;
-                        monitorInfo.inputCable = MonitorInfoX.inputCable;
-                        monitorInfo.CapabilityDic = MonitorInfoX.CapabilityDic;
-                        monitorInfo.modelName = MonitorInfoX.modelName;
-                        monitorInfo.series = MonitorInfoX.series;
-                        monitorInfo.MarketingName = MonitorInfoX.MarketingName;
-                        monitorInfo.ImageFileName = MonitorInfoX.ImageFileName;
+                        MonitorInfo monitorInfo = new MonitorInfo()
+                        {
+                            AliasDeviceName = MonitorInfoX.AliasDeviceName,
+                            IsDellMonitor = MonitorInfoX.IsDellMonitor,
+                            Index = MonitorInfoX.Index,
+                            CapabilityString = MonitorInfoX.CapabilityString,
+                            DDCisON = MonitorInfoX.DDCisON,
+                            DisplayName = MonitorInfoX.DisplayName,
+                            edid = MonitorInfoX.edid,
+                            FwVersion = MonitorInfoX.FwVersion,
+                            inputSource = MonitorInfoX.inputSource,
+                            inputCable = MonitorInfoX.inputCable,
+                            CapabilityDic = MonitorInfoX.CapabilityDic,
+                            modelName = MonitorInfoX.modelName,
+                            series = MonitorInfoX.series,
+                            MarketingName = MonitorInfoX.MarketingName,
+                            ImageFileName = MonitorInfoX.ImageFileName,
+                            SupplierID = MonitorInfoX.SupplierID,
+                            D_Ctrl = MonitorInfoX.D_Ctrl,
+                        };
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
 
                         //--------------------------------------------------------------
@@ -2362,9 +2382,14 @@ namespace VcpCore.Plugins
                             }
 
                             _TargetMonitor.Index = MoIndexCounter;
-                            _TargetMonitor.FwVersion = FwVersion(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName);
+
                             if ((!string.IsNullOrWhiteSpace(_TargetMonitor.series)) && (!string.IsNullOrWhiteSpace(_TargetMonitor.CapabilityString)))
                             {
+                                var FwTmp = FwVersion(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName);
+                                _TargetMonitor.FwVersion = FwTmp.Item1;
+                                _TargetMonitor.D_Ctrl = FwTmp.Item2;
+                                _TargetMonitor.SupplierID = FwTmp.Item3;
+
                                 monitors.Add(_TargetMonitor);
                                 MoIndexCounter++;
                             }
@@ -2570,6 +2595,8 @@ namespace VcpCore.Plugins
                         series = monitorInfoX.series,
                         MarketingName = monitorInfoX.MarketingName,
                         ImageFileName = monitorInfoX.ImageFileName,
+                        SupplierID = monitorInfoX.SupplierID,
+                        D_Ctrl = monitorInfoX.D_Ctrl,
                     };
                     OnVCPchanged(_VCPchangedEventArgs);
 
@@ -3471,10 +3498,10 @@ namespace VcpCore.Plugins
             }
         }
 
-        private string FwVersion(IntPtr hPhyMonitor, string modelName)
+        private (string, string, string) FwVersion(IntPtr hPhyMonitor, string modelName)
         {
             int count = 0;
-            string Version = string.Empty;
+            var Version = (string.Empty, string.Empty, string.Empty);
             object OFWstring = null;
             object ScalarICID = null;
             object OEMID = null;
@@ -3491,12 +3518,12 @@ namespace VcpCore.Plugins
                 {
                     Version = FormatFwVersion(Convert.ToUInt32(OFWstring), Convert.ToUInt32(ScalarICID), Convert.ToUInt32(OEMID), WhichCase(modelName));
 
-                    if (!string.IsNullOrWhiteSpace(Version))
+                    if (!string.IsNullOrWhiteSpace(Version.Item1))
                     {
                         _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC8 : 0X" + Convert.ToUInt32(ScalarICID).ToString("X"));
                         _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC9 : 0X" + Convert.ToUInt32(OFWstring).ToString("X"));
                         _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XFD : 0X" + Convert.ToUInt32(OEMID).ToString("X"));
-                        _logs.DebugMsg("[VcpCorePlugin] FwVersion : " + Version);
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion : " + Version.Item1);
                         return Version;
                     }
                 }
@@ -3510,7 +3537,7 @@ namespace VcpCore.Plugins
             return Version;
         }
 
-        private string FormatFwVersion(uint fwVersion, uint ScalarICID, uint OEMID, int _Case)
+        private (string, string, string) FormatFwVersion(uint fwVersion, uint ScalarICID, uint OEMID, int _Case)
         {
             string str_fwVersion = string.Empty;
             string str_ScalarICID = (ScalarICID & 0xff).ToString("X2");
@@ -3578,6 +3605,34 @@ namespace VcpCore.Plugins
             _logs.DebugMsg("[VcpCorePlugin] FwVersion str_ScalarICID is " + str_ScalarICID);
             _logs.DebugMsg("[VcpCorePlugin] FwVersion str_OEMID is " + str_OEMID);
 
+            string SupplierID = string.Empty;
+            switch (str_OEMID)
+            {
+                case "C":
+                    SupplierID = "TPV";
+                    break;
+
+                case "B":
+                    SupplierID = "Qisda";
+                    break;
+
+                case "T":
+                    SupplierID = "Wistron";
+                    break;
+
+                case "F":
+                    SupplierID = "Foxconn";
+                    break;
+
+                case "O":
+                    SupplierID = "BOE";
+                    break;
+
+                default:
+                    break;
+            }
+
+            string D_Ctrl = string.Empty;
             string hexValue = str_ScalarICID;
             int nLen = hexValue.Length;
             if (nLen > 0)
@@ -3585,30 +3640,37 @@ namespace VcpCore.Plugins
                 switch (hexValue.ToLower())
                 {
                     case "05":
+                        D_Ctrl = "Mediatek";
                         str_ScalarICID = "2";
                         break;
 
                     case "09":
+                        D_Ctrl = "Realtek";
                         str_ScalarICID = "3";
                         break;
 
                     case "0d":
+                        D_Ctrl = "STM";
                         str_ScalarICID = "1";
                         break;
 
                     case "12":
+                        D_Ctrl = "Novatek";
                         str_ScalarICID = "4";
                         break;
 
                     case "ff":
+                        D_Ctrl = "Nvidia";
                         str_ScalarICID = "0";
                         break;
 
                     case "00":
+                        D_Ctrl = "Nvidia";
                         str_ScalarICID = "0";
                         break;
 
                     default:
+                        D_Ctrl = "Realtek";
                         str_ScalarICID = "3";
                         break;
                 }
@@ -3658,7 +3720,7 @@ namespace VcpCore.Plugins
                 }
             }
 
-            return str_fwVersion;
+            return (str_fwVersion, D_Ctrl, SupplierID);
         }
 
         private int WhichCase(string Model)

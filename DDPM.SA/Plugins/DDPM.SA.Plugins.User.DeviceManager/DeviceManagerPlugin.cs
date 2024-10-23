@@ -1325,6 +1325,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
+            switch (code)
+            {
+                case 0x10:
+                    var TelemetryDta_Brightness = new Displaysettings_Brightness();
+                    TelemetryDta_Brightness.Brightness = val;
+                    TelemetryDta_Brightness.CommunicationPath = "Video";
+                    TelemetryDta_Brightness.GraphicCardName = string.Empty;
+                    TelemetryDta_Brightness.MonitorName = monitorInfo.AliasDeviceName;
+                    TelemetryDta_Brightness.D_Ctrl = monitorInfo.D_Ctrl;
+                    TelemetryDta_Brightness.SupplierID = monitorInfo.SupplierID;
+                    TelemetryDta_Brightness.FirmwareVersion = monitorInfo.FwVersion;
+                    TelemetryDta_Brightness.DisplayModelname = monitorInfo.modelName;
+                    TelemetryDta_Brightness.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                    TelemetryDta_Brightness.DsiplayResolution = string.Empty;
+                    TelemetryDta_Brightness.MaxDisplayResolution = string.Empty;
+                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Brightness.ToJson(), Telementry_Frequency.RealTime);
+                    break;
+
+                case 0x12:
+                    var TelemetryDta_Contrast = new Displaysettings_Contrast();
+                    TelemetryDta_Contrast.Contrast = val;
+                    TelemetryDta_Contrast.CommunicationPath = "Video";
+                    TelemetryDta_Contrast.GraphicCardName = string.Empty;
+                    TelemetryDta_Contrast.MonitorName = monitorInfo.AliasDeviceName;
+                    TelemetryDta_Contrast.D_Ctrl = monitorInfo.D_Ctrl;
+                    TelemetryDta_Contrast.SupplierID = monitorInfo.SupplierID;
+                    TelemetryDta_Contrast.FirmwareVersion = monitorInfo.FwVersion;
+                    TelemetryDta_Contrast.DisplayModelname = monitorInfo.modelName;
+                    TelemetryDta_Contrast.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                    TelemetryDta_Contrast.DsiplayResolution = string.Empty;
+                    TelemetryDta_Contrast.MaxDisplayResolution = string.Empty;
+                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Contrast.ToJson(), Telementry_Frequency.RealTime);
+                    break;
+
+                default:
+                    break;
+            }
+
             return Task.FromResult(r);
         }
 
@@ -2990,6 +3028,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion Headset
 
         #region Wired Audio
+
         public async Task<int> GetBassAsync(string Guid)
         {
             writelog($"[DeviceMangerPlugin] [Soundbar] received GetBassAsync requested ... {Guid}");
@@ -3020,6 +3059,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"[DeviceMangerPlugin] [Soundbar] received GetTrebleAsync requested ... {itemID}");
             return Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(itemID));
         }
+
         public async Task SetTrebleAsync(string Guid, int newValue)
         {
             writelog($"[DeviceMangerPlugin] [Soundbar] received SetTrebleAsync requested ... {Guid}" + " / " + $"{newValue}");
@@ -5897,14 +5937,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(Guid));
         }
+
         public async Task<JArray> GetMouseAssignableActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseProgrammableKeys(Guid));
         }
+
         public async Task<JArray> GetAppSpecificProfiles(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
@@ -12210,6 +12253,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(result);
+        }
+
+        #endregion
+
+        #region TelemetryScheduler
+
+        public Task StartTelemetrySchedulerManger(bool IsStart)
+        {
+            if (_TelementryScheduler != null)
+                _TelementryScheduler.StartTelemetrySchedulerManger(IsStart);
+
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
+        {
+            var r = false;
+            if (_TelementryScheduler != null)
+                r = _TelementryScheduler.ReceiveTelemetryInfo(EventTag, EventValue, Frequency).Result;
+
+            return Task.FromResult(r);
         }
 
         #endregion

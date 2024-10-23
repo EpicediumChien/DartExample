@@ -38,6 +38,14 @@ namespace DDPM.SA.Common
 
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
+        #region TelemetryScheduler
+
+        Task StartTelemetrySchedulerManger(bool IsStart);
+
+        Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
+
+        #endregion TelemetryScheduler
+
         #region EaM
 
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
@@ -268,9 +276,12 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+
         //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
         public Task<SplitJson[]> ReadEACustomList();
+
         public Task<bool> WriteEACustomList(SplitJson[] customList);
+
         #endregion EasyArrange
 
         #region EasyMemory
@@ -503,6 +514,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false);
+
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
@@ -643,36 +655,58 @@ namespace DDPM.SA.Common
         #region Mouse
 
         Task<int> GetDpiValue(string Guid);
+
         Task<JArray> GetMouseAssignableActions(string Guid);
+
         Task<JArray> GetMouseProgrammableKeys(string Guid);
+
         Task<JArray> GetAppSpecificProfiles(string Guid);
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
+
         Task SetMouseAction(string Guid, byte[] newValue);
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
         Task DeleteMouseAssignedAction(string Guid, int newValue);
 
-        #endregion
+        #endregion Mouse
 
         #region Pen
+
         Task<JArray> GetPenDeviceItemsEx();
+
         Task<string> GetEraserDoublePressValues();
+
         Task<string> GetEraserSinglePressValues();
+
         Task<string> GetEraserLongPressValues();
+
         Task<string> GetSideSwitchSinglePressValues();
+
         Task<string> GetMenuSinglePressValues();
+
         Task<string> GetLaunchableAppValues();
+
         Task<string> GetEraserDoublePressSetting();
+
         Task<string> GetEraserSinglePressSetting();
+
         Task<string> GetEraserLongPressSetting();
+
         Task<string> GetSideTopSwitchSinglePressSetting();
+
         Task<string> GetSideBottomSwitchSinglePressSetting();
+
         Task<string> GetMenuSinglePressSetting();
+
         Task<bool> GetMenuCenterRightClickSetting();
+
         Task<bool> GetIsSideTopButtonHoverClick();
+
         Task<bool> GetIsSideBottomButtonHoverClick();
+
         Task<string> PairingPen();
+
         Task UnPairPen(string Guid);
 
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
@@ -882,25 +916,34 @@ namespace DDPM.SA.Common
 
         #endregion
 
-        #endregion
+        #endregion Headset
 
         #region Wires Audio
 
         Task<int> GetBassAsync(string guid);
+
         Task SetBassAsync(string guid, int newValue);
+
         Task<int> GetMidRangeAsync(string guid);
+
         Task SetMidRangeAsync(string guid, int newValue);
+
         Task<int> GetTrebleAsync(string guid);
+
         Task SetTrebleAsync(string guid, int newValue);
+
         Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue);
+
         Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID);
+
         Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue);
+
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID);
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID);
         Task SetIsWiredAudioIMicNSEnableAsync(string itemID, bool newValue);
         Task SetResetToDefaultAsyncForSoundbar(string itemID, bool newValue);
 
-        #endregion
+        #endregion Wires Audio
 
         #endregion public for DTPProxy
 
