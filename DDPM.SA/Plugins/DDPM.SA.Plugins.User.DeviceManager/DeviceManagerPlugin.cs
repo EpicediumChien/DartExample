@@ -26,19 +26,15 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-
-//using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
@@ -47,7 +43,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
@@ -192,6 +187,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
+        private static bool _isSubagentActive = true;
         #endregion
 
         #region Constructor
@@ -204,6 +200,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Enabled = true;
 
             writelog("DeviceManagerPlugin constructor ...");
+
+            _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
         }
 
         #endregion
@@ -1325,6 +1323,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
+            switch (code)
+            {
+                case 0x10:
+                    var TelemetryDta_Brightness = new Displaysettings_Brightness();
+                    TelemetryDta_Brightness.Brightness = val;
+                    TelemetryDta_Brightness.CommunicationPath = "Video";
+                    TelemetryDta_Brightness.GraphicCardName = string.Empty;
+                    TelemetryDta_Brightness.MonitorName = monitorInfo.AliasDeviceName;
+                    TelemetryDta_Brightness.D_Ctrl = monitorInfo.D_Ctrl;
+                    TelemetryDta_Brightness.SupplierID = monitorInfo.SupplierID;
+                    TelemetryDta_Brightness.FirmwareVersion = monitorInfo.FwVersion;
+                    TelemetryDta_Brightness.DisplayModelname = monitorInfo.modelName;
+                    TelemetryDta_Brightness.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                    TelemetryDta_Brightness.DsiplayResolution = string.Empty;
+                    TelemetryDta_Brightness.MaxDisplayResolution = string.Empty;
+                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Brightness.ToJson(), Telementry_Frequency.RealTime);
+                    break;
+
+                case 0x12:
+                    var TelemetryDta_Contrast = new Displaysettings_Contrast();
+                    TelemetryDta_Contrast.Contrast = val;
+                    TelemetryDta_Contrast.CommunicationPath = "Video";
+                    TelemetryDta_Contrast.GraphicCardName = string.Empty;
+                    TelemetryDta_Contrast.MonitorName = monitorInfo.AliasDeviceName;
+                    TelemetryDta_Contrast.D_Ctrl = monitorInfo.D_Ctrl;
+                    TelemetryDta_Contrast.SupplierID = monitorInfo.SupplierID;
+                    TelemetryDta_Contrast.FirmwareVersion = monitorInfo.FwVersion;
+                    TelemetryDta_Contrast.DisplayModelname = monitorInfo.modelName;
+                    TelemetryDta_Contrast.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                    TelemetryDta_Contrast.DsiplayResolution = string.Empty;
+                    TelemetryDta_Contrast.MaxDisplayResolution = string.Empty;
+                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Contrast.ToJson(), Telementry_Frequency.RealTime);
+                    break;
+
+                default:
+                    break;
+            }
+
             return Task.FromResult(r);
         }
 
@@ -2022,6 +2058,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetSidetoneAsync(string guid, bool newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync requested for GUID: {guid} with value: {newValue}");
@@ -2038,6 +2075,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetBusyLightAsync(string guid, bool newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync requested for GUID: {guid} with value: {newValue}");
@@ -2054,6 +2092,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetVoiceGuidanceAsync(string guid, bool newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync requested for GUID: {guid} with value: {newValue}");
@@ -2070,6 +2109,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetSelectedPresetAsync(string guid, int newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync requested for GUID: {guid} with value: {newValue}");
@@ -2086,6 +2126,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetSidetoneLevelAsync(string guid, int newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync requested for GUID: {guid} with value: {newValue}");
@@ -2102,6 +2143,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetBandsGainAsync(string guid, byte[] newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync requested for GUID: {guid} with value: {BitConverter.ToString(newValue)}");
@@ -2118,6 +2160,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetAncModeAsync(string guid, int newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync requested for GUID: {guid} with value: {newValue}");
@@ -2134,6 +2177,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetAncGainAsync(string guid, int newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync requested for GUID: {guid} with value: {newValue}");
@@ -2150,6 +2194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetWearDetectionAsync(string guid, int newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync requested for GUID: {guid} with value: {newValue}");
@@ -2166,6 +2211,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetMicNCIncomingAsync(string guid, bool newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync requested for GUID: {guid} with value: {newValue}");
@@ -2182,6 +2228,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetUnPairAsync(string guid, bool newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync requested for GUID: {guid} with value: {newValue}");
@@ -2198,6 +2245,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
         {
             writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync requested for GUID: {guid} with value: {newValue}");
@@ -2234,21 +2282,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        //public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
-        //{
-        //    writelog($"[DeviceManagerPlugin] [Headset] received GetInterfaceTypeAsync requested ... {guid}");
-        //    try
-        //    {
-        //        var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded for {guid}");
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
-        //        return default(DeviceInterfaceType);
-        //    }
-        //}
+        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetInterfaceTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return default(DeviceInterfaceType);
+            }
+        }
 
         public async Task<string> GetDeviceNameAsync(string guid)
         {
@@ -2666,21 +2714,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        //public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
-        //{
-        //    writelog($"[DeviceManagerPlugin] [Headset] received GetConnectionTypeAsync requested ... {guid}");
-        //    try
-        //    {
-        //        var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded for {guid}");
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
-        //        return HeadsetConnectionType.Unknown;
-        //    }
-        //}
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetConnectionTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+        }
 
         public async Task<bool> GetIsANCSupportedAsync(string guid)
         {
@@ -2986,90 +3034,235 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-
         #endregion Headset
 
         #region Wired Audio
-        public async Task<int> GetBassAsync(string Guid)
+
+        //////////////////////////////////Set///////////////////////////////////
+
+        public async Task<bool> SetBassAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetBassAsync requested ... {Guid}");
-            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(Guid));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetBassAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetBassAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetBassAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task SetBassAsync(string guid, int newValue)
+        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetBassAsync requested ... {guid}" + " / " + $"{newValue}");
-            _DTPProxyPlugin.SetBassAsync(guid, newValue);
-            return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetMidRangeAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetMidRangeAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<int> GetMidRangeAsync(string itemID)
+        public async Task<bool> SetTrebleAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetMidRangeAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetMidRangeAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetTrebleAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetTrebleAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task SetMidRangeAsync(string Guid, int newValue)
+        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetMidRangeAsync requested ... {Guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetProfileForSpeaker requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetProfileForSpeaker(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetProfileForSpeaker succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetProfileForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<int> GetTrebleAsync(string itemID)
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetTrebleAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(itemID));
-        }
-        public async Task SetTrebleAsync(string Guid, int newValue)
-        {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetTrebleAsync requested ... {Guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
-        }
-
-        //-----------------------------------
-        public async Task SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
-        {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioMicMuteSoundEnableAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetWiredAudioVolumeAdjustmentToneAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetWiredAudioVolumeAdjustmentToneAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        //-----------------------------------
-        public async Task SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetWiredAudioVolumeAdjustmentToneAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetIsWiredAudioIMicNSEnableAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioIMicNSEnableAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetResetToDefaultAsyncForSoundbar requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetResetToDefaultAsyncForSoundbar succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetResetToDefaultAsyncForSoundbar failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        //-----------------------------------
-        public async Task SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
+        //////////////////////////////////Get///////////////////////////////////
+        public async Task<int> GetBassAsync(string guid)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetIsWiredAudioIMicNSEnableAsync requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetBassAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBassAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetBassAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return -1; // Returning -1 as a failure indicator
+            }
         }
 
-        public Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID)
+        public async Task<int> GetMidRangeAsync(string itemID)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received GetIsWiredAudioIMicNSEnableAsync requested ... {itemID}");
-            return Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(itemID));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetMidRangeAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMidRangeAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetMidRangeAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetMidRangeAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
         }
 
-        //-----------------------------------
-        public async Task SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
+        public async Task<int> GetTrebleAsync(string itemID)
         {
-            writelog($"[DeviceMangerPlugin] [Soundbar] received SetResetToDefaultAsyncForSoundbar requested ... {guid}" + " / " + $"{newValue}");
-            await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetTrebleAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetTrebleAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetTrebleAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetTrebleAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioMicMuteSoundEnableAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioMicMuteSoundEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetWiredAudioVolumeAdjustmentToneAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetWiredAudioVolumeAdjustmentToneAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetIsWiredAudioIMicNSEnableAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioIMicNSEnableAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioIMicNSEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
         #endregion
@@ -5466,6 +5659,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
                                     monitorSettings.ALSConfig = aLSConfig.AllValue;
                                 }
+                                writelog("[DisplayExportSettings]Export Gaming");
+                                GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+                                gamingDisplayPropertiesInfo = GetGamingProperties_SupportedList(monitorInfo).Result;
+                                if (gamingDisplayPropertiesInfo != null)
+                                {
+                                    if (gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode && gamingDisplayPropertiesInfo.Current_GameEnhancementMode != null)
+                                    {
+                                        monitorSettings.Gaming.Current_GameEnhancementMode = (Gaming_GameEnhancementMode)gamingDisplayPropertiesInfo.Current_GameEnhancementMode;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_ResponseTime && gamingDisplayPropertiesInfo.Current_ResponseTime != null)
+                                    {
+                                        monitorSettings.Gaming.Current_ResponseTime = (Gaming_ResponseTime)gamingDisplayPropertiesInfo.Current_ResponseTime;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer && gamingDisplayPropertiesInfo.Current_DarkStabilizer != null)
+                                    {
+                                        monitorSettings.Gaming.Current_DarkStabilizer = (Gaming_DarkStabilizer)gamingDisplayPropertiesInfo.Current_DarkStabilizer;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_HDRType && gamingDisplayPropertiesInfo.Current_HDRType != null)
+                                    {
+                                        monitorSettings.Gaming.Current_HDRType = (Gaming_HDRType)gamingDisplayPropertiesInfo.Current_HDRType;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_DualResolutionType && gamingDisplayPropertiesInfo.Current_DualResolutionType != null)
+                                    {
+                                        monitorSettings.Gaming.Current_DualResolutionType = (Gaming_DualResolutionType)gamingDisplayPropertiesInfo.Current_DualResolutionType;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_VisionEngineType && gamingDisplayPropertiesInfo.IsEnable_VisionEngineType != null)
+                                    {
+                                        monitorSettings.Gaming.IsEnable_VisionEngineType = gamingDisplayPropertiesInfo.IsEnable_VisionEngineType;
+                                    }
+                                }
                                 writelog("[DisplayExportSettings]Export VCPs");
                                 foreach (VCPCode vcp in monitorSettings.VCPs)
                                 {
@@ -5555,6 +5778,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                                 }
+                                if (ImpExpSettings.MonitorSettings.Gaming != null)
+                                {
+                                    Gaming gaming = ImpExpSettings.MonitorSettings.Gaming;
+                                    if (gaming.Current_GameEnhancementMode != 0)
+                                    {
+                                        bool bge = SetGameEnhancementMode(monitorInfo, gaming.Current_GameEnhancementMode).Result;
+                                    }
+                                    if (gaming.Current_ResponseTime != 0)
+                                    {
+                                        bool bgr = SetGaming_ResponseTime(monitorInfo, gaming.Current_ResponseTime).Result;
+                                    }
+                                    if (gaming.Current_DarkStabilizer != 0)
+                                    {
+                                        bool bgd = SetGaming_DarkStabilizer(monitorInfo, gaming.Current_DarkStabilizer).Result;
+                                    }
+                                    if (gaming.Current_HDRType != 0)
+                                    {
+                                        bool bgh = SetGaming_HDRType(monitorInfo, gaming.Current_HDRType).Result;
+                                    }
+                                    if (gaming.Current_DualResolutionType != 0)
+                                    {
+                                        bool bgdr = SetGaming_DualResolutionType(monitorInfo, gaming.Current_DualResolutionType).Result;
+                                    }
+                                    if (gaming.IsEnable_VisionEngineType != null)
+                                    {
+                                        if (gaming.IsEnable_VisionEngineType.Length > 0)
+                                        {
+                                            bool bgv = SetGaming_VisionEngineEnableType(monitorInfo, gaming.IsEnable_VisionEngineType).Result;
+                                        }
+                                    }
+                                }
                                 writelog("[DisplayImportSettings]Import VCP");
                                 if (vcps != null)
                                 {
@@ -5576,6 +5830,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 //{
                                                 //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
                                                 //}
+                                                if (ImpExpSettings.MonitorSettings.Gaming.Current_DualResolutionType != 0 && code.Code == 0xEA)
+                                                {
+                                                    continue;
+                                                }
                                                 //get vcp code
                                                 objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
                                                 if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
@@ -5897,18 +6155,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(Guid));
         }
+
         public async Task<JArray> GetMouseAssignableActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseProgrammableKeys(Guid));
         }
+
         public async Task<JArray> GetAppSpecificProfiles(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
+
         public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
@@ -5931,6 +6193,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetMouseAction(Guid, newValue);
             return Task.FromResult(true);
         }
+
         public Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received SetMouseAction requested ...");
@@ -5939,6 +6202,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid, newValue);
             return Task.FromResult(true);
         }
+
         public Task DeleteMouseAssignedAction(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received DeleteAssignedAction requested ...");
@@ -7344,7 +7608,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
 
                                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                                        {
+                                            displayInOut = false;
                                             _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                            displayInOut = true;
+                                        }
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -7431,7 +7699,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    handler.Invoke(this, e);
             if (_DisplayManagerPlugin != null)
             {
+                displayInOut = false;
                 _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
+                displayInOut = true;
             }
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
@@ -7809,7 +8079,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 text = "";
 
             text = "[DeviceManager] " + text;
-            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + text);
+            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + text);
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
@@ -9777,7 +10047,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (inputSourceObjs == null || list.Count == 0)
                     {
-                        //hotkey.InputSource Count must not 0. 
+                        //hotkey.InputSource Count must not 0.
                         Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
                         writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],migration hotkeyInfo:inputsoure is empty or can't convert ");
                         return;
@@ -12272,6 +12542,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(result);
+        }
+
+        #endregion
+
+        #region TelemetryScheduler
+
+        public Task StartTelemetrySchedulerManger(bool IsStart)
+        {
+            if (_TelementryScheduler != null)
+                _TelementryScheduler.StartTelemetrySchedulerManger(IsStart);
+
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
+        {
+            var r = false;
+            if (_TelementryScheduler != null)
+                r = _TelementryScheduler.ReceiveTelemetryInfo(EventTag, EventValue, Frequency).Result;
+
+            return Task.FromResult(r);
         }
 
         #endregion
