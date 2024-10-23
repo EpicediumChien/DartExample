@@ -4,11 +4,14 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Text;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -1113,6 +1116,23 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (SelectedKey != "")
             {
+                int pkId = (int)(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true);
+                JObject json_obj = new JObject();
+                json_obj.Add("PkId", pkId);
+                json_obj.Add("ActionId", Actions.ActionIdToGuid[actionID]);
+                json_obj.Add("Command", parameter);
+                JObject json_obj2 = new JObject();
+                json_obj2.Add("PkId", 67);
+                json_obj2.Add("ActionId", Actions.ActionIdToGuid[actionID]);
+                json_obj2.Add("Command", parameter);
+
+                string json_str = JsonConvert.SerializeObject(json_obj);
+                string json_str2 = JsonConvert.SerializeObject(json_obj2);
+                //DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction("2551b8a2-79fb-4bc0-836c-4ff3f3576dc6", Encoding.UTF8.GetBytes(json_str2));
+
+                DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+
+
                 SelectedAction!.AssignedAction.ID = actionID;
                 SelectedAction!.AssignedAction.Parameter = parameter;
                 OnPropertyChanged($"{SelectedKey}Tooltip");

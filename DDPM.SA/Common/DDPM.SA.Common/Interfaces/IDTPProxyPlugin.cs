@@ -26,27 +26,29 @@ namespace DDPM.SA.Common
         Task<JArray> GetMouseProgrammableKeys(string Guid);
         Task<JArray> GetAppSpecificProfiles(string Guid);
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
-
         Task<JArray> GetMouseAssignableActions(string Guid);
-
 
         Task SetDpiValue(string Guid, int newValue);
         Task SetMouseAction(string Guid, byte[] newValue);
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
         Task DeleteMouseAssignedAction(string Guid, int newValue);
+        Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
+        Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
 
-        Task SetMsAssignDialogAction(string Guid, string newValue);
-        Task SetMsAssignKeystrokeAction(string Guid, string newValue);
 
         #endregion
 
         #region Keyboard
 
+        Task SetKbDeleteAssignedAction(string Guid, int newValue);
+        Task<JArray> GetKbProgrammableKeys(string Guid);
+        Task<JArray> GetKbAssignableActions(string Guid);
         Task SetKbAssignedAction(string Guid, string newValue);
         Task SetKbAssignDialogAction(string Guid, string newValue);
         Task SetKbAssignKeystrokeAction(string Guid, string newValue);
 
         #endregion
+
 
 
         #region Pen

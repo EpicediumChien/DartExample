@@ -809,8 +809,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 else
                 {
-                    byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
-                    DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                    if (parameter == "")
+                    {
+                        byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
+                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                    }
+                    else
+                    {
+                        byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\",\"Command\":\"{parameter}\"}}");
+                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                    }
                 }
                 //OnPropertyChanged($"{SelectedButton}Tooltip");
                 //RefreshButtonImageFile(SelectedButton, false, true);
