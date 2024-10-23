@@ -479,14 +479,26 @@ namespace DDPM.EABroker
             if (_vm.AwsIcon1.IsAddedCustomLayout)
             {
                 SplitCtrl0B sp0B = (SplitCtrl0B)_vm.AwsIcon1;
-                foreach(CellBorder cb in sp0B.CellBorders)
+                foreach (CellBorder cb in sp0B.CellBorders)
                 {
                     if (hoverCell == null)
                     {
-                        if (cb.CellName.Equals(hoverCell.Name))
+                        if (cb.rect.Contains(x, y))
+                        {
                             cb.Dispatcher_SetIsHover(true);
+
+                            hoverCell = new CellObj(cb.CellName);
+                            hoverCell.rc = cb.rect;
+
+                            _vm.AwsIcon1.HoveringCell = cb.CellName;
+                            _vm.HoveringAwsIcon = _vm.AwsIcon1;
+                            _rcHoveringIcon = _rcIcon1;
+                            _rcHoveringCell = cb.rect;
+                        }
                         else
+                        {
                             cb.Dispatcher_SetIsHover(false);
+                        }
                     }
                     else
                     {
@@ -513,10 +525,22 @@ namespace DDPM.EABroker
                 {
                     if (hoverCell == null)
                     {
-                        if (cb.CellName.Equals(hoverCell.Name))
+                        if (cb.rect.Contains(x, y))
+                        {
                             cb.Dispatcher_SetIsHover(true);
+
+                            hoverCell = new CellObj(cb.CellName);
+                            hoverCell.rc = cb.rect;
+
+                            _vm.AwsIcon2.HoveringCell = cb.CellName;
+                            _vm.HoveringAwsIcon = _vm.AwsIcon2;
+                            _rcHoveringIcon = _rcIcon2;
+                            _rcHoveringCell = cb.rect;
+                        }
                         else
+                        {
                             cb.Dispatcher_SetIsHover(false);
+                        }
                     }
                     else
                     {
@@ -542,10 +566,22 @@ namespace DDPM.EABroker
                 {
                     if (hoverCell == null)
                     {
-                        if (cb.CellName.Equals(hoverCell.Name))
+                        if (cb.rect.Contains(x, y))
+                        {
                             cb.Dispatcher_SetIsHover(true);
+
+                            hoverCell = new CellObj(cb.CellName);
+                            hoverCell.rc = cb.rect;
+
+                            _vm.AwsIcon3.HoveringCell = cb.CellName;
+                            _vm.HoveringAwsIcon = _vm.AwsIcon3;
+                            _rcHoveringIcon = _rcIcon3;
+                            _rcHoveringCell = cb.rect;
+                        }
                         else
+                        {
                             cb.Dispatcher_SetIsHover(false);
+                        }
                     }
                     else
                     {
@@ -571,10 +607,22 @@ namespace DDPM.EABroker
                 {
                     if (hoverCell == null)
                     {
-                        if (cb.CellName.Equals(hoverCell.Name))
+                        if (cb.rect.Contains(x, y))
+                        {
                             cb.Dispatcher_SetIsHover(true);
+
+                            hoverCell = new CellObj(cb.CellName);
+                            hoverCell.rc = cb.rect;
+
+                            _vm.AwsIcon4.HoveringCell = cb.CellName;
+                            _vm.HoveringAwsIcon = _vm.AwsIcon4;
+                            _rcHoveringIcon = _rcIcon4;
+                            _rcHoveringCell = cb.rect;
+                        }
                         else
+                        {
                             cb.Dispatcher_SetIsHover(false);
+                        }
                     }
                     else
                     {
@@ -582,8 +630,9 @@ namespace DDPM.EABroker
                     }
                 }
             }
-            _vm.HoveringAwsIcon = null;
-            return null;
+            if (hoverCell == null)
+                _vm.HoveringAwsIcon = null;
+            return hoverCell;
         }
 
         public Screen HoveringScreen { get; set; }
@@ -633,7 +682,8 @@ namespace DDPM.EABroker
             }
             RefreshAwsIconRects();
             RefreshCellBordersInAwsIcons();
-
+            RefreshCellRects();
+            RefreshIcon0();
         }
 
         private void HandleWorkScreenChanged(object? sender, Screen newScreen)
@@ -660,9 +710,86 @@ namespace DDPM.EABroker
         #endregion ViewModel Event Handlers
 
         #region Icon0 - Monitors
-        private void Init_MonitorsIcon()
+        private void RefreshIcon0()
         {
-            
+            this.Dispatcher.Invoke(() =>
+            {
+                if (icon0Canvas.ActualWidth == 0)
+                    return;
+
+                System.Drawing.Rectangle rcVirtualScreen = SystemInformation.VirtualScreen;
+                double cxView = 1.000;
+                double cyView = 1.000;
+                double ratioX = icon0Canvas.ActualWidth / (double)rcVirtualScreen.Width;
+                double ratioY = icon0Canvas.ActualHeight / (double)rcVirtualScreen.Height;
+                bool isHorzFit = (ratioX < ratioY);
+                double ratio = ratioX; //Default is top-down
+                double ratioBorder;
+                if (isHorzFit)
+                {
+                    ratio = ratioY; //Left-right
+                    icon0Canvas.Height = rcVirtualScreen.Height * icon0Canvas.ActualWidth / rcVirtualScreen.Width;
+                    ratioBorder = icon0Canvas.ActualWidth / rcVirtualScreen.Width;
+                }
+                else
+                {
+                    ratio = ratioX; //top-down
+                    icon0Canvas.Width = rcVirtualScreen.Width * icon0Canvas.ActualHeight / rcVirtualScreen.Height; ;
+                    ratioBorder = icon0Canvas.ActualHeight / rcVirtualScreen.Height;
+                }
+
+                icon0Canvas.Children.Clear();
+                int idxScr = 0;
+
+                foreach (Screen scr in Screen.AllScreens)
+                {
+                    //AddMsg($"[{idxScr}] {scr.DeviceName} {(scr.Primary ? "Primary" : "")}");
+                    //AddMsg($"   {FormatRecttangle(scr.Bounds)}");
+
+                    //Border bd = new Border();
+                    //bd.Width = scr.Bounds.Width * ratioBorder;
+                    //bd.Height = scr.Bounds.Height * ratioBorder;
+                    //bd.Style = FindResource("CellBorderStyle") as Style;
+
+                    CellBorder cellBd = new CellBorder();
+                    cellBd.Width = scr.Bounds.Width * ratioBorder;
+                    cellBd.Height = scr.Bounds.Height * ratioBorder;
+
+                    TextBlock text = new TextBlock();
+                    text.Text = $"{idxScr + 1}";
+                    text.Style = FindResource("MonitorIdTextStyle") as Style;
+                    cellBd.AddChild(text);
+
+                    double left = (scr.Bounds.Left - rcVirtualScreen.Left) * ratioBorder;
+                    double top = (scr.Bounds.Top - rcVirtualScreen.Top) * ratioBorder;
+
+                    //AddMsg($"    Border at ({left},{top}) {bd.Width}x{bd.Height}");
+
+                    System.Windows.Point topLeft = new System.Windows.Point(left, top);
+                    topLeft = icon0Canvas.PointToScreen(topLeft);
+                    cellBd.rect = new Rect(topLeft.X, topLeft.Y, cellBd.Width, cellBd.Height);
+
+                    icon0Canvas.Children.Add(cellBd);
+                    Canvas.SetLeft(cellBd, left);
+                    Canvas.SetTop(cellBd, top);
+
+                    if (isHorzFit)
+                    {
+                        icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+                        icon0Canvas.VerticalAlignment = VerticalAlignment.Center;
+                    }
+                    else
+                    {
+                        icon0Canvas.VerticalAlignment = VerticalAlignment.Stretch;
+                        icon0Canvas.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    }
+
+
+                    idxScr++;
+                }
+            });
+
+
         }
         #endregion
     }
