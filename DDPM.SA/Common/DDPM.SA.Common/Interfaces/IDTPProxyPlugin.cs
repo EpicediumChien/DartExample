@@ -13,6 +13,7 @@
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -245,12 +246,14 @@ namespace DDPM.SA.Common
 
         ////////////////////////////////Get////////////////////////////////
 
+        Task<string> GetProfileAsync(string item);
         Task<int> GetBassAsync(string Guid);
         Task<int> GetMidRangeAsync(string Guid);
         Task<int> GetTrebleAsync(string Guid);  
         Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid);
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
+        Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion
     }
