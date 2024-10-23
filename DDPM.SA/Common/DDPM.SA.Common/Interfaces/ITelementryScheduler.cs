@@ -7,7 +7,7 @@ namespace DDPM.SA.Common
     {
         Task StartTelemetrySchedulerManger(bool IsStart);
 
-        Task ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
+        Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
 
         Task GetGlobalsetting_IsTelemetryConsentOn(bool value);
     }

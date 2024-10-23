@@ -21,6 +21,9 @@ namespace VcpCore.Common
         public string series { get; set; }
         public string MarketingName { get; set; }
         public string ImageFileName { get; set; }
+        public string SupplierID { get; set; }
+        public string D_Ctrl { get; set; }
+        public double scalingFactor { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -61,6 +64,8 @@ namespace VcpCore.Common
                    (series == other.series) &&
                    (MarketingName == other.MarketingName) &&
                    (ImageFileName == other.ImageFileName) &&
+                   (SupplierID == other.SupplierID) &&
+                   (D_Ctrl == other.D_Ctrl) &&
                    (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
         }
 
