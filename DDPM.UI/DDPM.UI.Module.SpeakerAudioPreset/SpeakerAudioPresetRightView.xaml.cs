@@ -92,9 +92,9 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             currentNode.CaptureMouse();
 
             // 儲存初始位置
-            initialPositionNode1 = new Point(Canvas.GetLeft(Node1), Canvas.GetTop(Node1));
-            initialPositionNode2 = new Point(Canvas.GetLeft(Node2), Canvas.GetTop(Node2));
-            initialPositionNode3 = new Point(Canvas.GetLeft(Node3), Canvas.GetTop(Node3));
+            //initialPositionNode1 = new Point(Canvas.GetLeft(Node1), Canvas.GetTop(Node1));
+            //initialPositionNode2 = new Point(Canvas.GetLeft(Node2), Canvas.GetTop(Node2));
+            //initialPositionNode3 = new Point(Canvas.GetLeft(Node3), Canvas.GetTop(Node3));
 
             // 更換選取後的圖片
             currentNode.Source = new BitmapImage(new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png"));
@@ -252,9 +252,17 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
 
             CurvePathFigure.StartPoint = node1Position;
 
-            Segment1.Point1 = new Point((initialPositionNode1.X + node2Position.X) / 2, node1Position.Y);
-            Segment1.Point2 = new Point((initialPositionNode1.X + node2Position.X) / 2, node2Position.Y);
+            //Segment1.Point1 = new Point((initialPositionNode1.X + node2Position.X) / 2, node1Position.Y);
+            //Segment1.Point2 = new Point((initialPositionNode1.X + node2Position.X) / 2, node2Position.Y);
+            //Segment1.Point3 = node2Position;
+
+            Segment1.Point1 = new Point((node1Position.X + node2Position.X) / 2, node1Position.Y);
+            Segment1.Point2 = new Point((node1Position.X + node2Position.X) / 2, node2Position.Y);
             Segment1.Point3 = node2Position;
+
+            //Segment2.Point1 = new Point((node2Position.X + node3Position.X) / 2, node2Position.Y);
+            //Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);
+            //Segment2.Point3 = node3Position;
 
             Segment2.Point1 = new Point((node2Position.X + node3Position.X) / 2, node2Position.Y);
             Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);

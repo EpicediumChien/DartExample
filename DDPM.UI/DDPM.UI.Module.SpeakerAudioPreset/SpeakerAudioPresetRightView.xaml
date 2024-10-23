@@ -218,7 +218,7 @@
                         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
                             <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
                                 <!-- 中間橫線 -->
-                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line1.png" Canvas.Left="40" Canvas.Top="-8" Width="371" Height="150" />
+                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line1.png" Canvas.Left="40" Canvas.Top="8" Width="371" Height="150" />
                                 <!-- 垂直線條 -->
                                 <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="90" Canvas.Top="0" Width="5" Height="159.18" />
 
@@ -252,7 +252,7 @@
                                     <TextBlock x:Name="Node3Text" Text="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
 
-                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="20,58,0,0">
+                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="12,74,0,0">
                                     <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="White" FontSize="12" />
                                 </StackPanel>
 
