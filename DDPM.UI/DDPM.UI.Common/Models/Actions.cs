@@ -161,7 +161,7 @@ namespace DDPM.UI.Common
         public KeyboardActions()
         { }
 
-        public KeyboardActions(string _model)
+        public KeyboardActions(string _model, string guid = "")
         {
             var model = _model.ToUpper();
             KeyActions.Add(KeyName.F1, new SelectedAction(39, new AssignedAction(39)));
@@ -248,6 +248,24 @@ namespace DDPM.UI.Common
                 KeyActions.Add(KeyName.F10, new SelectedAction(13, new AssignedAction(13)));
                 KeyActions.Add(KeyName.F11, new SelectedAction(8, new AssignedAction(8)));
                 KeyActions.Add(KeyName.F12, new SelectedAction(6, new AssignedAction(6)));
+            }
+
+            if (guid != "")
+            {
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetKbProgrammableKeys(guid);
+                var jArray = JArray.FromObject(task1.Result);
+                List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
+                foreach (var programbleKey in ProgrambleKeys)
+                {
+                    var btn = (KeyName)programbleKey.Id;
+                    if (KeyActions.ContainsKey(btn))
+                    {
+                        if (programbleKey.AssignedAction != null)
+                        {
+                            KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
+                        }
+                    }
+                }
             }
         }
     }
@@ -407,6 +425,7 @@ namespace DDPM.UI.Common
                             return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
                     }
                     var ka = new KeyboardActions(model);
+                    //var ka = new KeyboardActions(model, guid);
                     ExportActionList(ka, model);
                     return ka;
 

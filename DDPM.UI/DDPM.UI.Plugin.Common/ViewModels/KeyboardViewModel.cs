@@ -614,8 +614,8 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "KM714";
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-            //KeyboardActions = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model, CurrentInstanceID);
-            KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model);
+            //KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model);
+            KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model, CurrentDeviceID.ToString());
 
             //foreach(var keyAction in KeyboardActions.KeyActions.Values) {
             //  keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID + 1);
@@ -1120,18 +1120,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 JObject json_obj = new JObject();
                 json_obj.Add("PkId", pkId);
                 json_obj.Add("ActionId", Actions.ActionIdToGuid[actionID]);
-                json_obj.Add("Command", parameter);
-                JObject json_obj2 = new JObject();
-                json_obj2.Add("PkId", 67);
-                json_obj2.Add("ActionId", Actions.ActionIdToGuid[actionID]);
-                json_obj2.Add("Command", parameter);
-
                 string json_str = JsonConvert.SerializeObject(json_obj);
-                string json_str2 = JsonConvert.SerializeObject(json_obj2);
-                //DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction("2551b8a2-79fb-4bc0-836c-4ff3f3576dc6", Encoding.UTF8.GetBytes(json_str2));
-
-                DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceInfo!.ID.ToString(), json_str);
-
+                if (parameter == "")
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+                }
+                else
+                {
+                    json_obj.Add("Command", parameter);
+                    json_str = JsonConvert.SerializeObject(json_obj);
+                    DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+                }
 
                 SelectedAction!.AssignedAction.ID = actionID;
                 SelectedAction!.AssignedAction.Parameter = parameter;

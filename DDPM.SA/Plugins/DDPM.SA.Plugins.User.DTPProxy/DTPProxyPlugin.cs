@@ -74,6 +74,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private ICommodity _comdity;
         private const string PenItemID = "DellPeripheral.Pen";
         private const string PenItemID0 = "DellPeripheral.Pen.0";
+        private const string KeyboardItemID = "DellPeripheral.Keyboard";
+        private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
 
         public const string PluginLogId = "DTPProxy";
 
@@ -333,19 +335,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         //ProgrammableKeys
         public async Task<JArray> GetKbProgrammableKeys(string Guid)
         {
-            if (!await GetItemIDAsync("KeyBoard", Guid))
+            if (!await GetItemIDAsync("Keyboard", Guid))
             { return (JArray)""; }
 
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProgrammableKeys");
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ProgrammableKeys");
                 Debug.WriteLine($"{value}");
                 return (JArray)value;
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
                 return (JArray)"";
             }
         }
@@ -368,6 +370,33 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return (JArray)"";
             }
         }
+        public async Task<JArray> GetKeyboardDeviceItemsEx()
+        {
+            _itemID = new ItemId(KeyboardItemID);
+
+            if (_keyboardMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_keyboardInterfaceType, commodity, "DeviceItemsEx");
+                    return (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                    return (JArray)"";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return (JArray)"";
+            }
+
+        }
+
 
         public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
         {
@@ -1504,7 +1533,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             MethodInfo methodInfo = type switch
             {
                 "Mouse" => _mouseMethodInfo,
-                "KeyBoard" => _keyboardMethodInfo,
+                "Keyboard" => _keyboardMethodInfo,
                 "Pen" => _penMethodInfo,
                 "Webcam" => _webcamMethodInfo,
                 "Headset" => _headsetMethodInfo,
@@ -1514,7 +1543,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             Type interfaceType = type switch
             {
                 "Mouse" => _mouseInterfaceType,
-                "KeyBoard" => _keyboardInterfaceType,
+                "Keyboard" => _keyboardInterfaceType,
                 "Pen" => _penInterfaceType,
                 "Webcam" => _webcamInterfaceType,
                 "Headset" => _headsetInterfaceType,
@@ -4731,7 +4760,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                Debug.WriteLine($"{commodity.GetType().Name}");
+                Debug.WriteLine($"commodity: {commodity.GetType().Name} Property: {property}");
                 return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
             }
             catch (Exception ex)

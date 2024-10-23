@@ -6163,6 +6163,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region keyboard
 
+        public async Task<JArray> GetKeyboardDeviceItemsEx()
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetKeyboardDeviceItemsEx());
+        }
         public Task SetKbDeleteAssignedAction(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetKbAssignKeystrokeAction requested ...");
