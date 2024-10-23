@@ -192,6 +192,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
+        private static bool _isSubagentActive = true;
         #endregion
 
         #region Constructor
@@ -204,6 +205,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Enabled = true;
 
             writelog("DeviceManagerPlugin constructor ...");
+
+            _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
         }
 
         #endregion
