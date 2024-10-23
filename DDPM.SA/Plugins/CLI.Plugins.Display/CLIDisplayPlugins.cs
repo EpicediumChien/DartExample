@@ -9900,6 +9900,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"PowerNap={ApplyConfiguration.PowerNap}");
 
                     retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(devicedata.OSD_language).ToString()).Result;
+                    writelog($"OSD_language={GetOSDLanguage_index(devicedata.OSD_language).ToString()}");
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.OSD_language = devicedata.OSD_language;
                     writelog($"OSD_language={ApplyConfiguration.OSD_language}");
@@ -10410,9 +10411,10 @@ namespace DDPM.CLI.Plugins.Display
 
                                     case "OSD_language":
                                         writelog($"OSD_language entry");
-                                        if (monitor.CapabilityDic.ContainsKey("E4"))
+                                        if (monitor.CapabilityDic.ContainsKey("CC"))
                                         {
                                             retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                            writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
                                             if (!retcode) ispass = false;
                                             else ApplyConfiguration.OSD_language = property.Value.ToString();
                                             writelog($"OSD_language={ApplyConfiguration.OSD_language}");
