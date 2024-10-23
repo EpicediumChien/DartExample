@@ -3,11 +3,14 @@ using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
+using Dell.TechHub.Sdk.Common;
 using Microsoft.Win32;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Json;
@@ -393,7 +396,7 @@ namespace DDPM.SA.Common.Settings
                 return string.Empty;
             }
         }
-
+        /*
         public static bool Json_ExportSettingsToFileWithCheckSum(string path, DisplaySettings settings, out string info)
         {
             info = "Success";
@@ -743,6 +746,7 @@ namespace DDPM.SA.Common.Settings
 #endif
             return true;
         }
+        */
 
         public static bool LoadFileToVerifyJson_2(ILog log, string json_content, List<string> InfoPkey, out string strJson)
         {
@@ -1273,7 +1277,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }*/
-
+        /*
         private static X509Certificate2 GetCertificate(string filePath)
         {
             X509Certificate2? cert = null;
@@ -1308,7 +1312,7 @@ namespace DDPM.SA.Common.Settings
 
             return cert;
         }
-
+        */
         //Hard code for test
         //private static string _Sha256SubjectPublicKeyInfoHash = "1d58d1d2bbebc4f3c8169c17c75086b38348e1bcfe0210b21518d32e1301d763";
 
@@ -2203,6 +2207,242 @@ namespace DDPM.SA.Common.Settings
             }
 
             return strJson;
+        }
+
+        //Make sure "needCheckThumbprintInbox" and "givenThumbprintCheck" do not active at the same time
+        private static bool IsProcessInfoValid(
+            ILog log, string filePath, 
+            string fileHash = "", 
+            string hashType = "SHA512", 
+            bool needCheckThumbprintInbox = false,
+            string givenThumbprintCheck = "")
+        {
+            string info = string.Empty;
+            FileInfo fi = new FileInfo(filePath);
+            if (fi == null)
+            {
+                if (log != null)
+                    log.Error("[IsProcessInfoValid] create FileInfo from path got null object");
+                return false;
+            }
+            if (!IsFilePathValid(filePath, out info))
+            {
+                if (log != null)
+                    log.Info($"[IsProcessInfoValid] IsFilePathValid: {info}");
+                return false;
+            }
+            if (!string.IsNullOrEmpty(fileHash) && fileHash.Length > 0)
+            {
+                bool ret = false;
+                if (hashType.ToLower().Equals("sha512"))
+                    ret = GetFileSHA_512(filePath, out info).ToLower().Equals(fileHash.ToLower());
+                else if (hashType.ToLower().Equals("sha256"))
+                    ret = GetFileSHA_256(filePath, out info).ToLower().Equals(fileHash.ToLower());
+                else
+                    info = $"un-support file hash type: {hashType}";
+
+                if (!ret)
+                {
+                    if (log != null)
+                        log.Error($"[IsProcessInfoValid] file hash check failed: {info}");
+                    return false;
+                }
+            }
+            if (needCheckThumbprintInbox)
+            {
+                if (!VerifyFileCertWithThumbprint(filePath, out info))
+                {
+                    if (log != null)
+                        log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
+                    return false;
+                }
+            }
+            if (!string.IsNullOrEmpty(givenThumbprintCheck) && givenThumbprintCheck.Length > 0)
+            {
+                if (!VerifyFileCertWithThumbprint(filePath, givenThumbprintCheck, out info))
+                {
+                    if (log != null)
+                        log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        //Make sure that startInfo and filePath should not exist at the same time
+        private static bool StartProcessByOptions( ILog log,
+            ProcessStartInfo startInfo = null, 
+            string filePath = "",
+            string arguments = "",
+            bool isLockNeeded = false,
+            bool isWaitExitCode = false)
+        {
+            if (startInfo == null && string.IsNullOrEmpty(filePath))
+            {
+                if (log != null)
+                    log.Error("[StartProcessByOptions] startInfo and filePath are empty at the same time");
+                return false;
+            }
+            if (startInfo != null && !string.IsNullOrEmpty(filePath) && filePath.Length > 0)
+            {
+                if (log != null)
+                    log.Error("[StartProcessByOptions] startInfo and filePath should not exist at the same time");
+                return false;
+            }
+            if (startInfo == null)
+            {
+                startInfo = new ProcessStartInfo(filePath, arguments);
+            }
+            bool result = true;
+            if (isLockNeeded)
+            {                
+                using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
+                {                    
+                    // start process
+                    using (Process process = Process.Start(startInfo))
+                    {
+                        if (isWaitExitCode)
+                        {
+                            string output = process.StandardOutput.ReadToEnd();
+                            string error = process.StandardError.ReadToEnd();
+
+                            // Wait result
+                            process.WaitForExit();
+
+                            // Get result
+                            if (process.ExitCode == 0)
+                            {
+                                if (log != null)
+                                    log.Info("[StartProcessSafely] Events have been exported successfully.");
+                                result = true;
+                            }
+                            else
+                            {
+                                if (log != null)
+                                    log.Info($"[StartProcessSafely] Error exporting events: {error}");
+                                result = false;
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                // start process
+                using (Process process = Process.Start(startInfo))
+                {
+                    if (isWaitExitCode)
+                    {
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+
+                        // Wait result
+                        process.WaitForExit();
+
+                        // Get result
+                        if (process.ExitCode == 0)
+                        {
+                            if (log != null)
+                                log.Info("[StartProcessSafely] Events have been exported successfully.");
+                            result = true;
+                        }
+                        else
+                        {
+                            if (log != null)
+                                log.Info($"[StartProcessSafely] Error exporting events: {error}");
+                            result = false;
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
+        //hashType: SHA256 / SHA512
+        public static bool StartProcessSafely(
+            ILog log, string filePath,
+            string arguments = "",
+            bool needCheckThumbprintInbox = false,
+            string fileHash = "",
+            string hashType = "SHA512",
+            bool isLockNeeded = false)
+        {
+            string info = string.Empty;
+            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, needCheckThumbprintInbox))
+                return false;
+
+            StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
+            return true;
+        }
+
+        //hashType: SHA256 / SHA512
+        public static bool StartProcessSafely(
+            ILog log, string filePath,
+            string arguments = "",
+            string fileHash = "",
+            string hashType = "SHA512",
+            bool isLockNeeded = false,
+            string givenThumbprintCheck = "")
+        {
+            string info = string.Empty;
+            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
+                return false;
+
+            StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
+            return true;
+        }
+
+        //hashType: SHA256 / SHA512
+        public static bool StartProcessSafely(
+            ILog log,
+            ProcessStartInfo startInfo,
+            bool needCheckThumbprintInbox = false,
+            string fileHash = "", 
+            string hashType = "SHA512",
+            bool isWaitExitCode = false,
+            bool isLockNeeded = false)
+        {
+            string info = string.Empty;
+            if(startInfo == null)
+            {
+                if (log != null)
+                    log.Error("[StartProcessSafely] null process StartInfo");
+                return false;
+            }
+
+            string filePath = startInfo.FileName;
+
+            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, needCheckThumbprintInbox))
+                return false;
+
+            return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        }
+
+        //hashType: SHA256 / SHA512
+        public static bool StartProcessSafely(
+            ILog log,
+            ProcessStartInfo startInfo,
+            string fileHash = "",
+            string hashType = "SHA512",
+            bool isWaitExitCode = false,
+            bool isLockNeeded = false,
+            string givenThumbprintCheck = "")
+        {
+            string info = string.Empty;
+            if (startInfo == null)
+            {
+                if (log != null)
+                    log.Error("[StartProcessSafely] null process StartInfo");
+                return false;
+            }
+
+            string filePath = startInfo.FileName;
+
+            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, false, givenThumbprintCheck))
+                return false;
+
+            return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
         }
     }
 }
