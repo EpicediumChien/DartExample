@@ -35,8 +35,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-
-//using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
@@ -3166,7 +3164,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
-
 
         //////////////////////////////////Get///////////////////////////////////
         public async Task<int> GetBassAsync(string guid)
