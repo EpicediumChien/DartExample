@@ -11209,5 +11209,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        #region TelemetryScheduler
+
+        public Task StartTelemetrySchedulerManger(bool IsStart)
+        {
+            if (_TelementryScheduler != null)
+                _TelementryScheduler.StartTelemetrySchedulerManger(IsStart);
+
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
+        {
+            var r = false;
+            if (_TelementryScheduler != null)
+                r = _TelementryScheduler.ReceiveTelemetryInfo(EventTag, EventValue, Frequency).Result;
+
+            return Task.FromResult(r);
+        }
+
+        #endregion
     }
 }
