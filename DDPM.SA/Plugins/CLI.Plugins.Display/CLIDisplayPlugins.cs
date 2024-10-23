@@ -9575,9 +9575,27 @@ namespace DDPM.CLI.Plugins.Display
             Trace.WriteLine(ss_1[0]);
             Trace.WriteLine(ss_1[1]);
 
-            StreamReader r = new StreamReader(ss_1[1]);
-            string jsonString = r.ReadToEnd();
-            r.Close();
+            /*StreamReader r = new StreamReader(ss_1[1]);
+            string jsonString = r.ReadToEnd();;
+            r.Close();*/
+
+            // modify start @ 20241022 stephen: modify for CMA input config as json string
+            // x:\\config.json
+
+            string jsonString = String.Empty;
+
+            if ((@$"x:\config.json").ToLower().Equals(ss_1[1].ToLower()))
+            {
+                jsonString = commandLineInput.jsonDeviceConfig.ToString();
+            }
+            else
+            {
+                StreamReader r = new StreamReader(ss_1[1]);
+                jsonString = r.ReadToEnd();
+                r.Close();
+            }
+            // modiffy end @ 20241022
+
             string[] jsonString_2 = jsonString.Split("\"Device\":");
             int i = 0;
             int count = jsonString.Split("Index").Length - 1;
