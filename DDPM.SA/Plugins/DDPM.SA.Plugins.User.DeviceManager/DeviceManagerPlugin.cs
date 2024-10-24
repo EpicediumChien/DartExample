@@ -10968,14 +10968,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SetNKVMHotkey(NKVMSetHotkey e)
         {
             writelog("[SetNKVMHotkey] SetNKVMHotkey");
-            bool b = SaveHotkeySetting(null, e.HotkeyInfo).Result;
-            if (b)
+            bool b = false;
+            if (_AllInfoMonitors != null)
             {
-                writelog("[SetNKVMHotkey] SetNKVMHotkey is success");
+                if (_AllInfoMonitors.Count > 0)
+                {
+                    b = SaveHotkeySetting(_AllInfoMonitors[0], e.HotkeyInfo).Result;
+                    if (b)
+                    {
+                        writelog("[SetNKVMHotkey] SetNKVMHotkey is success");
+                    }
+                    else
+                    {
+                        writelog("[SetNKVMHotkey] SetNKVMHotkey is fail");
+                    }
+                }
+                else
+                {
+                    writelog("[SetNKVMHotkey] _AllInfoMonitors count is 0");
+                }
             }
             else
             {
-                writelog("[SetNKVMHotkey] SetNKVMHotkey is fail");
+                writelog("[SetNKVMHotkey] _AllInfoMonitors is null");
             }
             if (_NKVMPlugin != null)
             {
