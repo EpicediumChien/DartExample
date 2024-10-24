@@ -29,5 +29,8 @@ namespace DDPM.RemoteManagement.Common.Interfaces
         Task<RemoteManagementResult> Info(RemoteRequestArgs request);
         event EventHandler<NotifyArgs> Notify;
 
+        event EventHandler<NotifyArgs> DisplayConnected;
+        event EventHandler<NotifyArgs> DisplayDisconnected;
+
     }
 }
