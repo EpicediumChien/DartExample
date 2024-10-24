@@ -164,7 +164,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<JArray> GetMouseAssignableActions(string Guid)
         {
             if (!await GetItemIDAsync("Mouse", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
@@ -176,14 +176,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
             Debug.Write($"GetMouseProgrammableKeys - Guid: {Guid}");
             if (!await GetItemIDAsync("Mouse", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
@@ -195,13 +195,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
         public async Task<JArray> GetAppSpecificProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Mouse", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
@@ -213,7 +213,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
         public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
@@ -337,7 +337,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<JArray> GetKbProgrammableKeys(string Guid)
         {
             if (!await GetItemIDAsync("Keyboard", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
@@ -349,26 +349,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
                 writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
 
         public async Task<JArray> GetKbAssignableActions(string Guid)
         {
             if (!await GetItemIDAsync("KeyBoard", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
         public async Task<JArray> GetKeyboardDeviceItemsEx()
@@ -386,14 +386,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
                     writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
-                    return (JArray)"";
+                    return new JArray();
                 }
             }
             else
             {
                 Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                return (JArray)"";
+                return new JArray();
             }
 
         }
@@ -453,7 +453,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
@@ -465,13 +465,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
         public async Task<JArray> GetCustomProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
@@ -483,7 +483,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
 
@@ -1641,14 +1641,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                     writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    return (JArray)"";
+                    return new JArray();
                 }
             }
             else
             {
                 Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                return (JArray)"";
+                return new JArray();
             }
 
         }
@@ -4436,7 +4436,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"[DeviceManagerPlugin] [Speaker] received GetBassAsync requested ... {guid}");
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return -1;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
@@ -4461,7 +4462,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"[DeviceManagerPlugin] [Speaker] received GetMidRangeAsync requested ... {guid}");
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return -1;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
@@ -4486,7 +4488,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"[DeviceManagerPlugin] [Speaker] received GetTrebleAsync requested ... {guid}");
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return -1;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
@@ -4511,7 +4514,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"[DeviceManagerPlugin] [Speaker] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid}");
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return false;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
@@ -4536,7 +4540,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"[DeviceManagerPlugin] [Speaker] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {guid}");
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return -1;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
@@ -4561,7 +4566,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"[DeviceManagerPlugin] [Speaker] received GetIsWiredAudioIMicNSEnableAsync requested ... {guid}");
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return false;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
