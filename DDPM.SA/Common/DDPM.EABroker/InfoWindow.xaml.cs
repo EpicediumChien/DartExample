@@ -95,7 +95,6 @@ namespace DDPM.EABroker
         {
             _vm.hWndForeground = hWnd;
             _vm.RefreshScreenScale();
-            _vm.RefreshWorkScreen();
 
             //Step_1, determine the moving window is allowed to move
             //
@@ -143,6 +142,8 @@ namespace DDPM.EABroker
                 _vm.StartMovingMsg = $"GetProcessFromWindowHandle err: {msg}";
                 _vm.WriteLog($"@OnWindowStartMovingProc, {_vm.StartMovingMsg}");
             }
+
+            _vm.RefreshWorkScreen();
 
             //Step_2, Set flags to show windows
             //

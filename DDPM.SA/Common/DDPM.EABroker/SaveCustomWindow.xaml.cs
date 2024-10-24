@@ -63,10 +63,10 @@ namespace DDPM.EABroker
         {
             this.Dispatcher.Invoke(() =>
             {
-                Trace.WriteLine($"  * EAArgs.CustomName=[{arg.CustomName}]");
+                Trace.WriteLine($"  * EAArgs.CustomName=[{arg.SplitJson.CustomName}]");
 
                 cbNames.Items.Clear();
-                string selectedName = arg.CustomName;
+                string selectedName = arg.SplitJson.CustomName;
                 if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
                 {
                     int addCount = 0;

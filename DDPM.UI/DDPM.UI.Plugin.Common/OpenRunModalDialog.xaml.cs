@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,7 +14,8 @@ namespace DDPM.UI.Plugin.Common
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
 
         public string Parameter { get; private set; } = "";
-        public int ID { get; private set; } = 0;
+        //public int ID { get; private set; } = 0;
+        private int id;
 
         List<string> OpenRunApps;
 
@@ -25,13 +27,14 @@ namespace DDPM.UI.Plugin.Common
             //ID = id;
             Parameter = parameter;
             OpenRunApps = openRunApps;
-            var id = OpenRunApps.IndexOf(parameter);
-            //if (id == 1)
-            //{
-            //    spOpen.Visibility = Visibility.Visible;
-            //    btnBrowse.Visibility = Visibility.Collapsed;
-            //    FilePath.Visibility = Visibility.Visible;
-            //}
+            id = OpenRunApps.IndexOf(parameter);
+            if (parameter.Contains('\\'))
+            {
+                spOpen.Visibility = Visibility.Visible;
+                btnBrowse.Visibility = Visibility.Collapsed;
+                FilePath.Visibility = Visibility.Visible;
+                txtBrowse.Text = $"{Strings.SelectedFile} : \"{parameter}\"";
+            }
             if (id > 6)
             {
                 svAction.ScrollToVerticalOffset(id * 32);
@@ -40,7 +43,6 @@ namespace DDPM.UI.Plugin.Common
             txtTitleBar.Text = Strings.OpenRun;
             txtCaption.Text = Strings.OpenRun;
             txtDescription.Text = Strings.OpenRunDesc;
-            txtBrowse.Text = $"{Strings.SelectedFile} : \"{parameter}\"";
             openFileDialog = new();
             openFileDialog.FileName = parameter;
             btnCancel.Caption = Strings.Cancel;
@@ -94,10 +96,10 @@ namespace DDPM.UI.Plugin.Common
             { return; }
 
             //ID = id;
-            if (name == Strings.Browse)
+            if (name.Length > 2 && name.Substring(name.Length - 3, 3) == "...")
             {
                 spOpen.Visibility = Visibility.Visible;
-                if (Parameter == "")
+                if (id == 0 || 0==0)
                 {
                     btnSave.IsEnabled = false;
                     btnBrowse.Visibility = Visibility.Visible;
@@ -121,6 +123,7 @@ namespace DDPM.UI.Plugin.Common
             }
         }
 
+        private int idx = 0;
         private void ActionButtonLoaded(object sender, RoutedEventArgs e)
         {
             int id;
@@ -133,8 +136,9 @@ namespace DDPM.UI.Plugin.Common
                 var name = ((UXRadioButton)sender).DataContext.ToString();
                 //rb.Name = $"{name}";
                 rb.Content = name;
-                rb.IsChecked = name == Parameter;
+                rb.IsChecked = name == Parameter || (idx == 0 && Parameter.Contains('\\'));
             }
+            idx++;
         }
     }
 }

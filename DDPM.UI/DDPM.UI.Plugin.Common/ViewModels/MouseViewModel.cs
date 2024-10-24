@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
@@ -793,7 +794,6 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (SelectedButton != "")
             {
-                int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
                 if (SelectedApp == "AllApp")
                 {
                     SelectedMouseAction!.AssignedAction.ID = actionID;
@@ -803,14 +803,31 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     SelectedMouseAction!.OfficeActions[SelectedApp] = actionID;
                 }
+
+                int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
                 if (actionID == -1)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAssignedAction(CurrentDeviceID.ToString(), pkId);
                 }
                 else
                 {
-                    byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
-                    DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                    JObject jobj = new()
+                    {
+                        { "PkId", pkId },
+                        { "ActionId", Actions.ActionIdToGuid[actionID] }
+                    };
+
+                    if (parameter == "")
+                    {
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                    }
+                    else
+                    {
+                        jobj.Add("Command", parameter);
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                    }
                 }
                 //OnPropertyChanged($"{SelectedButton}Tooltip");
                 //RefreshButtonImageFile(SelectedButton, false, true);
