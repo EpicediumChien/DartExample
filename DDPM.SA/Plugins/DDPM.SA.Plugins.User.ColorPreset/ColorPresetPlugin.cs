@@ -705,7 +705,18 @@ namespace ColorPreset.Plugins
             writelog("ColorPresetPlugin OnRegChanged_ICC requested ...");
 
             string Key_Profile_Name = string.Empty;
-            Key_Profile_Name = MonitorProfile.GetMonitorProfile(Active_monitorInfo.DisplayName);
+            
+            try
+            {
+                if (Active_monitorInfo != null && Active_monitorInfo.DisplayName != null)
+                {
+                    Key_Profile_Name = MonitorProfile.GetMonitorProfile(Active_monitorInfo.DisplayName);
+                }                
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+            }
 
             Trace.WriteLine($" Key_Profile_Name = {Key_Profile_Name}");
 

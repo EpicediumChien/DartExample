@@ -367,7 +367,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetMonitorProfile(MonitorInfo m)
         {
             string Key_Profile_Name = string.Empty;
-            Key_Profile_Name = MonitorProfile.GetMonitorProfile(m.DisplayName);
+            
+            try
+            {
+                Key_Profile_Name = MonitorProfile.GetMonitorProfile(m.DisplayName);
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+            }
 
             return Task.FromResult(Key_Profile_Name);
         }
