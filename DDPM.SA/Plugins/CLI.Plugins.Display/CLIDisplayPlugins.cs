@@ -4900,7 +4900,14 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
-                        r = devMgr.SetMonitorProfile(monitor, value).Result;
+                        try
+                        {
+                            r = devMgr.SetMonitorProfile(monitor, value).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                        
 
                         _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
@@ -4927,7 +4934,14 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
-                        r = devMgr.SetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                        try
+                        {
+                            r = devMgr.SetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                        
 
                         // jim modify 20240608
                         _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
@@ -4959,7 +4973,14 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
-                            r = devMgr.SetMonitorProfile(mo, value).Result;
+                            try
+                            {
+                                r = devMgr.SetMonitorProfile(mo, value).Result;
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                            }                            
 
                             _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_AllMonitorProfile_RESPONSE.ServiceTag = tag;
@@ -4996,7 +5017,14 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (var monitor in _AllInfoMonitors)
                     {
                         Key_Profile_Name = string.Empty;
-                        Key_Profile_Name = devMgr.GetMonitorProfile(monitor).Result;
+                        try
+                        {
+                            Key_Profile_Name = devMgr.GetMonitorProfile(monitor).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                                               
 
                         // jim modify 20240608
                         _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -5025,7 +5053,15 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string idx in index)
                     {
                         Key_Profile_Name = string.Empty;
-                        Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+                        
+                        try
+                        {
+                            Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+                        }
 
                         // jim modify 20240608
                         _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
@@ -5058,7 +5094,15 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             Key_Profile_Name = string.Empty;
-                            Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
+                            
+                            try
+                            {
+                                Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+                            }
 
                             // jim modify 20240608
                             _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
