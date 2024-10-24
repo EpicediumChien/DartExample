@@ -2209,27 +2209,64 @@ namespace DDPM.SA.Common.Settings
             return strJson;
         }
 
+        private static bool IsAbsolutePath(string path)
+        {
+            return Path.IsPathRooted(path) && !path.StartsWith(".") && !path.StartsWith(@"..");
+        }
+
+        private static bool IsRelativePath(string path)
+        {
+            return !IsAbsolutePath(path) && (path.StartsWith(".") || path.StartsWith(@"..") || Path.GetDirectoryName(path) != null);
+        }
+
+        private static bool IsFileNameOnly(string path)
+        {
+            return !IsAbsolutePath(path) && !IsRelativePath(path);
+        }
+
+        private static bool IsUrl(string path)
+        {
+            Uri uriResult;
+            bool result = Uri.TryCreate(path, UriKind.Absolute, out uriResult)
+                          && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return result;
+        }
+
         //Make sure "needCheckThumbprintInbox" and "givenThumbprintCheck" do not active at the same time
         private static bool IsProcessInfoValid(
-            ILog log, string filePath, 
-            string fileHash = "", 
-            string hashType = "SHA512", 
+            ILog log, string filePath,
+            string fileHash = "",
+            string hashType = "SHA512",
             bool needCheckThumbprintInbox = false,
             string givenThumbprintCheck = "")
         {
             string info = string.Empty;
-            FileInfo fi = new FileInfo(filePath);
-            if (fi == null)
+            if (IsFileNameOnly(filePath))
             {
                 if (log != null)
-                    log.Error("[IsProcessInfoValid] create FileInfo from path got null object");
-                return false;
+                    log.Error($"[IsProcessInfoValid] just file name [{filePath}] only");
             }
-            if (!IsFilePathValid(filePath, out info))
+            else if(IsUrl(filePath))
             {
                 if (log != null)
-                    log.Info($"[IsProcessInfoValid] IsFilePathValid: {info}");
-                return false;
+                    log.Error($"[IsProcessInfoValid] just URL [{filePath}] only");
+                return true;
+            }
+            else
+            {                
+                FileInfo fi = new FileInfo(filePath);
+                if (fi == null)
+                {
+                    if (log != null)
+                        log.Error("[IsProcessInfoValid] create FileInfo from path got null object");
+                    return false;
+                }
+                if (!IsFilePathValid(filePath, out info))
+                {
+                    if (log != null)
+                        log.Info($"[IsProcessInfoValid] IsFilePathValid: {info}");
+                    return false;
+                }
             }
             if (!string.IsNullOrEmpty(fileHash) && fileHash.Length > 0)
             {
@@ -2265,7 +2302,7 @@ namespace DDPM.SA.Common.Settings
                         log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
                     return false;
                 }
-            }
+            }         
             return true;
         }
 
@@ -2293,9 +2330,14 @@ namespace DDPM.SA.Common.Settings
             {
                 startInfo = new ProcessStartInfo(filePath, arguments);
             }
+            else
+            {
+                filePath = startInfo.FileName;
+            }
             bool result = true;
             if (isLockNeeded)
-            {                
+            {
+                log.Info("[StartProcessSafely] Lock file");
                 using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
                 {                    
                     // start process
@@ -2303,6 +2345,7 @@ namespace DDPM.SA.Common.Settings
                     {
                         if (isWaitExitCode)
                         {
+                            log.Info($"[StartProcessSafely] Start process [{process.ProcessName}]");
                             string output = process.StandardOutput.ReadToEnd();
                             string error = process.StandardError.ReadToEnd();
 
@@ -2319,8 +2362,18 @@ namespace DDPM.SA.Common.Settings
                             else
                             {
                                 if (log != null)
-                                    log.Info($"[StartProcessSafely] Error exporting events: {error}");
+                                    log.Error($"[StartProcessSafely] Error exporting events: {error}");
                                 result = false;
+                            }
+                        }
+                        else
+                        {
+                            if (log != null)
+                            {
+                                if (!IsUrl(filePath))
+                                    log.Info($"[StartProcessSafely] Start process [{process.ProcessName}] and do not wait.");
+                                else
+                                    log.Info($"[StartProcessSafely] Start URL and do not wait.");
                             }
                         }
                     }
@@ -2334,6 +2387,7 @@ namespace DDPM.SA.Common.Settings
                 {
                     if (isWaitExitCode)
                     {
+                        log.Info($"[StartProcessSafely] Start process [{process.ProcessName}]");
                         string output = process.StandardOutput.ReadToEnd();
                         string error = process.StandardError.ReadToEnd();
 
@@ -2352,6 +2406,16 @@ namespace DDPM.SA.Common.Settings
                             if (log != null)
                                 log.Info($"[StartProcessSafely] Error exporting events: {error}");
                             result = false;
+                        }
+                    }
+                    else
+                    {
+                        if (log != null)
+                        {
+                            if (!IsUrl(filePath))
+                                log.Info($"[StartProcessSafely] Start process [{process.ProcessName}] and do not wait.");
+                            else
+                                log.Info($"[StartProcessSafely] Start URL and do not wait.");
                         }
                     }
                 }
@@ -2390,6 +2454,27 @@ namespace DDPM.SA.Common.Settings
                 return false;
 
             StartProcessByOptions(log, null, filePath, arguments, isLockNeeded);
+            return true;
+        }
+
+        //Start process without any criteria
+        public static bool StartProcessSafely(
+            ILog log, string filePath,
+            string arguments = "")
+        {
+            string info = string.Empty;
+            if (!IsProcessInfoValid(log, filePath))
+                return false;
+
+            StartProcessByOptions(log, null, filePath, arguments);
+            return true;
+        }
+
+        //Start process without any criteria
+        public static bool StartProcessSafely(
+            ILog log, ProcessStartInfo startInfo)
+        {
+            StartProcessByOptions(log, startInfo);
             return true;
         }
 
