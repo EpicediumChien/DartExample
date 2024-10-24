@@ -1,15 +1,11 @@
 ﻿using DDPM.RemoteManagement.Common.Interfaces;
 using DDPM.SA.Common;
-using DDPM.SA.Common.CLI;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.UX.WPF;
 using Microsoft;
-using Microsoft.VisualBasic.Logging;
 using VcpCore.Common;
-using static Dell.Client.Framework.Common.Platform;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.CMAProxy
