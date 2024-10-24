@@ -605,7 +605,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                                 }
                             }
                             _DelaySWUpdateInfoPackage.DelayTimesAvailable--;
-                            _DelayFWUpdateInfoPackage.SaveTime = DateTime.Now;
+                            _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
                             CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                         }
                         else if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime == null)
