@@ -3536,7 +3536,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     string szInfo = string.Empty;
                     string jsonString = string.Empty;
                     _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
-                    Debug.WriteLine(jsonContent);
                     jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
                     if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
                     {
@@ -3599,7 +3598,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             break;
                                         }
                                     }
-                                    if (newVersion >= oldVersion)
+                                    if (newVersion > oldVersion)
                                     {
                                         ret.Firmwares.Add(firmwares_item);
                                     }

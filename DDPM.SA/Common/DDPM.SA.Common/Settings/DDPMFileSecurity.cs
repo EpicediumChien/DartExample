@@ -774,14 +774,14 @@ namespace DDPM.SA.Common.Settings
             catch (Exception ex)
             {
                 WriteLog(log, "Try to get Signature from json fail.\nReason: " + ex.ToString(), true);
-                strJson = string.Empty;
+                //strJson = string.Empty;
                 return false;
             }
 
             if (string.IsNullOrEmpty(signature))
             {
                 WriteLog(log, "Null signature in json content", true);
-                strJson = string.Empty;
+                //strJson = string.Empty;
                 return false;// No signature so fail
             }
 
@@ -795,7 +795,7 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             WriteLog(log, "Json content got no info matched to signature", true);
-            strJson = string.Empty;
+            //strJson = string.Empty;
             return false;
         }
 
@@ -2177,7 +2177,7 @@ namespace DDPM.SA.Common.Settings
             //return strJson;
 
             // Handle "Info" section
-            if (ret && !string.IsNullOrEmpty(strJson))
+            if ( !string.IsNullOrEmpty(strJson))
             {
                 JObject jObject = JObject.Parse(strJson);
                 string szInfo;

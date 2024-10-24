@@ -192,6 +192,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
+        private bool userClosedPopup = false;
+
         #endregion
 
         #region Constructor
@@ -230,7 +232,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManager plugin started");
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
-            ToastNotificationManagerCompat.OnActivated += CheckInput;//Bruce 0924 add Popup Event
+            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            {
+                CheckInput(toastArgs);
+            };
+
             //displayChange = new DisplayChange(Log);
             //Task.Run(() =>
             //{
@@ -2557,6 +2563,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false)
         {
+            Debug.WriteLine("deviceTypeList=" + deviceTypeList == null);
+            Debug.WriteLine("isOnlyDisplay=" + isOnlyDisplay);
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = null;
@@ -2576,6 +2584,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
                     }
                 }
+                Debug.WriteLine($"displayUpdateHelper.Firmwares = {displayUpdateHelper.Firmwares.Count}");
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger).Result);
             }
@@ -2590,7 +2599,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 CallUpdateProgressUI().Wait();
             }
-            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, installPath).Result;
+            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, isUITrigger, installPath).Result;
             if (_UpdateProgress != null)
             {
                 _FWUpdatePlugin.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
@@ -2709,6 +2718,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
                 if (config != null)
                 {
+                    foreach (FWUpdateInfo updateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        updateInfo.ServerPath = "";
+                        updateInfo.SHA256 = "";
+                        //updateInfo.SHA512 = "";
+                        updateInfo.Thumbprint = "";
+                        if (updateInfo.Thumbprint_List != null)
+                        {
+                            if (updateInfo.Thumbprint_List.Count > 0)
+                            {
+                                updateInfo.Thumbprint_List.Clear();
+                            }
+                        }
+                        else
+                        {
+                            updateInfo.Thumbprint_List = new List<string>();
+                        }
+                    }
                     config.UserSettings.DelayFWUpdateInfoPackage = fwUpdateInfoPackage;
                     return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
                 }
@@ -2762,7 +2789,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 SetDelayFWUpdateInfoPackage();
-                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, false, false, false, null, false, displayUpdateHelper, false, true, true).Result;
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, true, false, false, null, false, displayUpdateHelper, false, true, false).Result;
                 return Task.FromResult(true);
             }
             catch (Exception ex)
@@ -2854,11 +2881,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         private void CallOSD(object o, (string, string, bool) args)
         {
-            ErrorWin errorWin = new ErrorWin(args.Item1, args.Item2, args.Item3);
-            errorWin.ShowWindow();
+            _showosd(Screen.PrimaryScreen.DeviceName, OSDType.Error, OSDType_Device.Unknown, args.Item2, false, args.Item1, args.Item3);
         }
         private void CallPopup(object o, PopupContentPackage popupContentPackage)
         {
+            writelog("[CallPopup], Start.");
             // 將 popupContentPackage.Object 轉換成 JSON 字串
             string json = JsonConvert.SerializeObject(popupContentPackage.Object);
             //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
@@ -2871,15 +2898,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
             if (!string.IsNullOrEmpty(json))
             {
+                userClosedPopup = false;
                 Task.Run(async () =>
                 {
                     ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
-                    ToastNotificationManagerCompat.OnActivated += toastArgs =>
-                    {
-                        CheckInput(toastArgs);
-                    };
                     // 將物件序列化為 JSON 字串
                     string jsonString = System.Text.Json.JsonSerializer.Serialize(json);
+                    Console.WriteLine(jsonString);
                     if (!isInfo)
                     {
                         toastContentBuilder.AddArgument(title);
@@ -2887,7 +2912,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(info);
                         if (!isOnlyUpdate)
                         {
-                            toastContentBuilder.AddButton("Update now", ToastActivationType.Background, "Update " + json);
+                            toastContentBuilder.AddButton("Update now", ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
                             toastContentBuilder.AddButton("Defer", ToastActivationType.Background, "Delay");
                         }
                         else
@@ -2900,18 +2925,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddArgument(title);
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
-
                     }
                     toastContentBuilder.Show(); // 顯示Toast通知
-                    if (!isInfo)
+                    writelog("[CallPopup], popup Show.");
+                    Thread.Sleep(5000);
+                    if (!userClosedPopup)
                     {
-                        if (!isOnlyUpdate)
+                        writelog("[CallPopup], is no user closed popup.");
+                        if (!isInfo)
                         {
-                            DelayEvent(this, json);
-                        }
-                        else
-                        {
-                            UpdateEvent(this, json);
+                            if (!isOnlyUpdate)
+                            {
+                                writelog("[CallPopup], go to DelayEvent.");
+                                DelayEvent(this, popupContentPackage.PopupType.ToString());
+                            }
+                            else
+                            {
+                                writelog("[CallPopup], go to UpdateEvent.");
+                                UpdateEvent(this, popupContentPackage.PopupType.ToString());
+                            }
                         }
                     }
                 });
@@ -2967,63 +2999,77 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string[] ret = e.Argument.Split(" ");
             if (ret.Length >= 2)
             {
+                userClosedPopup = true;
                 if (e.Argument.StartsWith("Update"))
                 {
                     UpdateEvent(this, ret[1]);
                 }
                 else if (e.Argument.StartsWith("Delay"))
                 {
-                    Debug.WriteLine(ret[1]);
                     DelayEvent(this, ret[1]);
                 }
             }
         }
-        private void UpdateEvent(object o, object ob)
+        private void UpdateEvent(object o, string ob)
         {
-            //// 將 e 轉換成 JSON 字串
-            //string json = JsonConvert.SerializeObject(ob);
-            // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
-            // 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
-            if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+            writelog($"[UpdateEvent],{ob} start.");
+            ////// 將 e 轉換成 JSON 字串
+            ////string json = JsonConvert.SerializeObject(ob);
+            //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+            //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
+            //// 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
+            //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
+            if (!string.IsNullOrEmpty(ob))
             {
-                if (_SWUpdatePlugin != null)
+                if (ob.Equals(PopupContentPackage_Enum.SWU.ToString()))
                 {
-                    _SWUpdatePlugin.UpdateEvent(ob);
+                    if (_SWUpdatePlugin != null)
+                    {
+                        writelog("[UpdateEvent], go to _SWUpdatePlugin.UpdateEvent.");
+                        _SWUpdatePlugin.UpdateEvent();
+                    }
+                }
+                else
+                {
+                    if (_FWUpdatePlugin != null)
+                    {
+                        writelog("[UpdateEvent], go to _FWUpdatePlugin.UpdateEvent.");
+                        _FWUpdatePlugin.UpdateEvent();
+                    }
                 }
             }
-            else
-            {
-                if (_FWUpdatePlugin != null)
-                {
-                    _FWUpdatePlugin.UpdateEvent(ob);
-                }
-            }
+            writelog($"[UpdateEvent],{ob} done.");
         }
 
-        private void DelayEvent(object o, object ob)
+        private void DelayEvent(object o, string ob)
         {
-            //// 將 e 轉換成 JSON 字串
-            //string json = JsonConvert.SerializeObject(ob);
-            // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
-            // 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
-            if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+            writelog($"[DelayEvent],{ob} start.");
+            ////// 將 e 轉換成 JSON 字串
+            ////string json = JsonConvert.SerializeObject(ob);
+            //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+            //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
+            //// 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
+            //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
+            if (!string.IsNullOrEmpty(ob))
             {
-                if (_SWUpdatePlugin != null)
+                if (ob.Equals(PopupContentPackage_Enum.SWU.ToString()))
                 {
-                    _SWUpdatePlugin.DelayEvent(ob);
+                    if (_SWUpdatePlugin != null)
+                    {
+                        writelog("[DelayEvent], go to _SWUpdatePlugin.DelayEvent.");
+                        _SWUpdatePlugin.DelayEvent();
+                    }
+                }
+                else
+                {
+                    if (_FWUpdatePlugin != null)
+                    {
+                        writelog("[DelayEvent], go to _FWUpdatePlugin.DelayEvent.");
+                        _FWUpdatePlugin.DelayEvent();
+                    }
                 }
             }
-            else
-            {
-                if (_FWUpdatePlugin != null)
-                {
-                    _FWUpdatePlugin.DelayEvent(ob);
-                }
-            }
+            writelog($"[DelayEvent],{ob} done.");
         }
 
         #endregion
@@ -4413,18 +4459,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region SW Update implementation
 
-        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false)
+        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false, bool reScan = true, bool isUITrigger = false)
         {
             if (_SWUpdatePlugin != null)
             {
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion).Result);
+                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
 
-        public Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, string installPath = "")
+        public Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "")
         {
-            return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, installPath).Result);
+            return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result);
         }
 
         private Task<bool> SW_SetSWUpdateInfoPackage(SWUpdateInfoPackage swUpdateInfoPackage)
@@ -4432,6 +4478,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+                foreach (SWUpdateInfo updateInfo in swUpdateInfoPackage.SWUpdateInfo)
+                {
+                    updateInfo.ServerPath = "";
+                    updateInfo.SHA256 = "";
+                    updateInfo.SHA512 = "";
+                    updateInfo.Thumbprint = "";
+                }
                 config.UserSettings.DelaySWUpdateInfoPackage = swUpdateInfoPackage;
                 return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
             }
@@ -4440,19 +4493,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Task<bool> SW_CheckSWUpdate()
         {
+            writelog("[SW_CheckSWUpdate], start.");
+            bool ret = false;
             if (_SWUpdatePlugin == null)
-                return Task.FromResult(false);
-            SW_SetDelaySWUpdateInfoPackage();
-            List<SWUpdateInfo> swUpdateInfos = _SWUpdatePlugin.CheckUpdate(true, _GlobalSettingParam.GlobalSetting_About.SWVersion).Result;
-            bool b = true;
-            foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
+                return Task.FromResult(ret);
+            try
             {
-                if (swUpdateInfo.SWUErrorCode != SWUErrorCode.NoError)
-                {
-                    b = false;
-                }
+                SW_SetDelaySWUpdateInfoPackage();
+                SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(true, false, false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true, false).Result;
+                ret = true;
             }
-            return Task.FromResult(b);
+            catch (Exception ex)
+            {
+                writelog($"[SW_CheckSWUpdate], Error:{ex.Message}");
+            }
+            writelog("[SW_CheckSWUpdate], done.");
+            return Task.FromResult(ret);
         }
 
         private void SW_SetDelaySWUpdateInfoPackage()
@@ -10437,6 +10493,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static StartRecordingWin StartRecordingWinx = null;
         private static WalkAwayLockWin WalkAwayLockWinx = null;
         private static EasyMemoryWin EasyMemoryWinx = null;
+        private static ErrorWin ErrorWin = null;
 
         public Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content)
         {
@@ -10571,7 +10628,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        private void _showosd(object monitorInfo, OSDType _types, OSDType_Device _DeviceType, string Content, bool State = false)
+        private void _showosd(object monitorInfo, OSDType _types, OSDType_Device _DeviceType, string Content, bool State = false, string title = "", bool stayOpen = false)
         {
             //writelog($"For debugging - Skip _showosd().");
             //return;
@@ -11063,6 +11120,62 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             finally
                                             {
                                                 EasyMemoryWinx = null;
+                                            }
+                                        }
+                                        break;
+
+                                    case OSDType.Error:
+                                        {
+                                            if (State)
+                                            {
+                                                if (ErrorWin != null)
+                                                    ErrorWin.CloseWindow();
+
+                                                ErrorWin = new ErrorWin(title, Content, stayOpen);
+
+                                                try
+                                                {
+                                                    ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    ErrorWin.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOnWinx.ShowWindow();
+
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    ErrorWin = null;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (ErrorWin != null)
+                                                    ErrorWin.CloseWindow();
+
+                                                ErrorWin = new ErrorWin(title, Content, stayOpen);
+
+                                                try
+                                                {
+                                                    ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    ErrorWin.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    ErrorWin = null;
+                                                }
                                             }
                                         }
                                         break;

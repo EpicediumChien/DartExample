@@ -210,4 +210,25 @@
   <data name="can_be_updated_to" xml:space="preserve">
     <value>can be updated to</value>
   </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="UpdateWillBeApplied" xml:space="preserve">
+    <value>Update will be applied</value>
+  </data>
+  <data name="UpdateAvailable_Info" xml:space="preserve">
+    <value>Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.</value>
+  </data>
+  <data name="UpdateWillBeApplied_Info" xml:space="preserve">
+    <value>Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="Defer" xml:space="preserve">
+    <value>Defer</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
 </root>

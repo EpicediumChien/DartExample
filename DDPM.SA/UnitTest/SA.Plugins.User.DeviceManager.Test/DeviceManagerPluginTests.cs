@@ -1637,7 +1637,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
-            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(),It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
+            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
 
             // Execute and Verify
             Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(),false, ""), $"DownloadAndInstall() returns null");

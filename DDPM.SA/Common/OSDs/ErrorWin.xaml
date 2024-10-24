@@ -14,7 +14,7 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <Window.Resources>
-        <Storyboard x:Key="FadeOut">
+        <!--<Storyboard x:Key="FadeOut">
             <DoubleAnimation BeginTime="0:0:2.0"
                              FillBehavior="HoldEnd"
                              Storyboard.TargetName="fadeOutCtrl"
@@ -22,7 +22,7 @@
                              From="0.9"
                              To="0"
                              Duration="0:0:1" />
-        </Storyboard>
+        </Storyboard>-->
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
