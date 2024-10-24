@@ -95,17 +95,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         public static List<WalkThroughInfo> WalkThroughQueue { get; private set; } = new List<WalkThroughInfo>();
         private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
         {
-            { "DDPM", 1 },
-            { "Displays", 2 },
-            { "Webcam", 3 },
-            { "Keyboard", 4 },
-            { "Mice", 5 },
-            { "Stylus", 6 },
-            { "Headset", 7 },
-            { "Speakerphone", 8 },
-            { "Soundbar", 9 },
-            { "Audio", 10 },
-            { "Docks", 11 }
+            { "Consent", 1}, //Add by Derek 2024/10/24
+            { "DDPM", 2 },
+            { "Displays", 3 },
+            { "Webcam", 4 },
+            { "Keyboard", 5 },
+            { "Mice", 6 },
+            { "Stylus", 7 },
+            { "Headset", 8 },
+            { "Speakerphone", 9 },
+            { "Soundbar", 10 },
+            { "Audio", 11 },
+            { "Docks", 12 }
         };
 
         /// <summary>
@@ -213,7 +214,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             //Derek_Du, 2024-10-21 add send process ID to SA
-                            _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
+                            Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
                             await GetDdpmDevicesAsync(_deviceManager);
 
 
@@ -997,10 +998,26 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 
+            //Derek 10/24 for Consent screen to share DDPM data with Dell 
+            string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
+            string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
+
             var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
 
             try
             {
+                if (null == _deviceManager)
+                    return;
+
+                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
+
+                if (!Convert.ToBoolean(regValue))
+                {
+                    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
+                        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
+                }
+
+
                 regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
 
                 if (!Convert.ToBoolean(regValue))

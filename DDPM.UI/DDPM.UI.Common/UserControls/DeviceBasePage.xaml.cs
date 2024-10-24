@@ -90,6 +90,8 @@ namespace DDPM.UI.Common.UserControls
             //    RightFrame.Visibility = Visibility.Visible;
             //System.Windows.MessageBox.Show("OnLeaveLandingMode");
             LeftFrame.Width = viewModel.LeftFrameWidth;
+
+            ChangeNonLandingMode();
         }
 
         private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
@@ -256,26 +258,46 @@ namespace DDPM.UI.Common.UserControls
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //_log.Info($"this.ActualWidth = {this.ActualWidth}");
+            //_log.Info($"vBar.ActualWidth = {vBar.ActualWidth}");
 
             //if (!isLandingMode && LeftFrame.ActualWidth <= 200)
-            if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints + 150)
-            {
+            if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints + 170)
                 ChangeToVerticalLayout();
-            }
             else
-            {
                 ChangeToHorizontalLayout();
-            }
 
             if (!viewModel.IsLandingMode)
-            {
-                RightGrid.Width = this.ActualWidth / 2;
-                LeftFrame.Width = this.ActualWidth / 2;
-            }
+                ChangeNonLandingMode();
             else
+                ChangeToLandingMode();
+        }
+
+        private void ChangeNonLandingMode()
+        {
+            gridNav.Margin = new Thickness(0);
+
+            //mode 1 change left/right frame size
+            RightGrid.Width = this.ActualWidth / 2;
+            LeftFrame.Width = this.ActualWidth / 2 - 30;
+
+            //mode 2 fix right frame size
+            //RightGrid.Width = 720;
+            //LeftFrame.Width = this.ActualWidth - RightGrid.Width;
+
+            if (null != viewModel.DefaultLeftView)
+                viewModel.DefaultLeftView.Width = this.ActualWidth / 2 - 20;
+        }
+
+        private void ChangeToLandingMode()
+        {
+            gridNav.Margin = new Thickness(25);
+
+            LeftFrame.Width = this.ActualWidth - 20;
+
+            if (null != viewModel.DefaultLeftView)
             {
-                LeftFrame.Width = this.ActualWidth - 20;
+                //_log.Info($"viewModel.LeftView = {viewModel.LeftView}");
+                viewModel.DefaultLeftView.Width = this.ActualWidth - vBar.ActualWidth - 140;
             }
         }
 
