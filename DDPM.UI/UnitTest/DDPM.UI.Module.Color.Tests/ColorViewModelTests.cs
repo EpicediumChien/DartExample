@@ -142,7 +142,7 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.MyModule = new ColorModule();
             colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
-
+            colorViewModel.SupportColorPresets = new List<string>() { "a","b","c"};
             colorViewModel.ColorPresetSelectedIndex = -1;
             colorViewModel.UpdateColorPresetSelectedIndex(1);
             Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(1));

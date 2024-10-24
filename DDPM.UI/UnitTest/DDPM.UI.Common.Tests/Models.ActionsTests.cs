@@ -13,26 +13,33 @@ namespace DDPM.UI.Common.Tests
     public class PenActionsTests
     {
         private PenActions? penActions;
+        private Mock<IDeviceManagerSA>? DeviceManagerSAMock;
+        
 
         [SetUp]
         public void Setup()
         {
-            penActions = new PenActions();
+            DeviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA=DeviceManagerSAMock.Object;
+            DeviceManagerSAMock.Setup(x => x.GetEraserDoublePressSetting()).Returns(Task.FromResult("{\r\n    \"actionId\": 90,\r\n    \"actionName\": \"Screen Snipping\"\r\n}"));
+            DeviceManagerSAMock.Setup(x => x.GetEraserSinglePressSetting()).Returns(Task.FromResult("{\r\n    \"actionId\": 90,\r\n    \"actionName\": \"Screen Snipping\"\r\n}"));
+            DeviceManagerSAMock.Setup(x => x.GetEraserLongPressSetting()).Returns(Task.FromResult("{\r\n    \"actionId\": 90,\r\n    \"actionName\": \"Screen Snipping\"\r\n}"));
+
+            DeviceManagerSAMock.Setup(x => x.GetSideTopSwitchSinglePressSetting()).Returns(Task.FromResult("{\r\n    \"actionId\": 90,\r\n    \"actionName\": \"Screen Snipping\"\r\n}"));
+            DeviceManagerSAMock.Setup(x => x.GetSideBottomSwitchSinglePressSetting()).Returns(Task.FromResult("{\r\n    \"actionId\": 90,\r\n    \"actionName\": \"Screen Snipping\"\r\n}"));
+            DeviceManagerSAMock.Setup(x => x.GetMenuSinglePressSetting()).Returns(Task.FromResult("{\r\n    \"actionId\": 90,\r\n    \"actionName\": \"Screen Snipping\"\r\n}"));
+
+            DeviceManagerSAMock.Setup(x => x.GetMenuCenterRightClickSetting()).Returns(Task.FromResult(true));
+            DeviceManagerSAMock.Setup(x => x.GetIsSideTopButtonHoverClick()).Returns(Task.FromResult(true   ));
+            DeviceManagerSAMock.Setup(x => x.GetIsSideBottomButtonHoverClick()).Returns(Task.FromResult(true));
         }
 
         [Test]
         public void TestConstructor_PenActions()
         {
+            penActions = new PenActions();
             // Assert
             Assert.That(penActions, Is.Not.Null);
-        }
-
-        [Test]
-        public void TestConstructor_PenActionsA()
-        {
-            var penActionsA = new PenActions();
-            // Assert
-            Assert.That(penActionsA, Is.Not.Null);
         }
 
         [Test]
@@ -141,7 +148,7 @@ namespace DDPM.UI.Common.Tests
             var deviceManager = DeviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManager;
             DeviceManagerSAMock.Setup(x=>x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-            var result = ActionList.ExportActionList(new PenActions(), "PEN");
+            var result = ActionList.ExportActionList(new KeyboardActions(), "Keyboar");
             // Assert
             Assert.That(result, Is.EqualTo(true));
 

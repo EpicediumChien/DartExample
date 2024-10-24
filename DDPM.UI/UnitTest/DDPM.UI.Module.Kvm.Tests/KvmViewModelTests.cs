@@ -773,7 +773,6 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestOpenNKVMUI()
         {
-            Application Current = new Application();
             Application.Current.MainWindow = new Window();
             try
             {
