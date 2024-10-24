@@ -35,5 +35,8 @@ namespace VcpCore.Common
         public string series { get; set; }
         public string MarketingName { get; set; }
         public string ImageFileName { get; set; }
+        public string SupplierID { get; set; }
+        public string D_Ctrl { get; set; }
+        public double scalingFactor { get; set; }
     }
 }

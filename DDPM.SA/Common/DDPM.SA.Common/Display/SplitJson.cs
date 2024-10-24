@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Windows.Media.Streaming.Adaptive;
@@ -42,6 +43,8 @@ namespace DDPM.SA.Common.Display
                 SplitKey = this.SplitKey,
                 Settings = new List<double>(this.Settings),
                 CustomName = this.CustomName,
+                EAID = this.EAID,
+                Cells = this.Cells.Select(x => (CellJson) x.Clone()).ToArray(),
                 CustomId = this.CustomId
             };
         }

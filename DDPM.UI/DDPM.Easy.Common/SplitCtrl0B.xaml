@@ -81,7 +81,7 @@
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding IsAwsMode}" Value="True"/>
-                            <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}" Value="True"/>
+                            <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource Self}}" Value="True"/>
                         </MultiDataTrigger.Conditions>
                         <Setter Property="BkBrush" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
                     </MultiDataTrigger>

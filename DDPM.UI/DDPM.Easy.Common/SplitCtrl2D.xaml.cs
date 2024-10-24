@@ -121,12 +121,28 @@ namespace DDPM.Easy.Common
         public List<double> DefaultSettings => new List<double>() { 3, 7 };
         #endregion Settings
 
-
-
         #region FriendlyName
-
-        public string FriendlyName { get; set; }
-
+        private string _friendlyName = string.Empty;
+        private string _defaultHorzName = "Option 2.4 2 columns, 30 70 percent splits.";
+        private string _defaultVertName = "Option 2.4 2 rows, 70 30 percent splits.";
+        public string FriendlyName
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_friendlyName))
+                {
+                    if (VM.IsVertical)
+                        return _defaultVertName;
+                    else
+                        return _defaultHorzName;
+                }
+                return _friendlyName;
+            }
+            set
+            {
+                _friendlyName = value;
+            }
+        }
         #endregion FriendlyName
     }
 }

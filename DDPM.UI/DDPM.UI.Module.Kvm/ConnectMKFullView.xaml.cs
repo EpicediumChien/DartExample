@@ -27,6 +27,12 @@ namespace DDPM.UI.Module.Kvm
             InputSourceFullView inputSourceFullView = new InputSourceFullView();
             inputSourceFullView.DataContext = vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(inputSourceFullView);
+            if (vm.ToProgressValue > 3 || vm.ToProgressValue < 0)
+            {
+                vm.ToProgressValue = 2;
+            }
+            vm.FromProgressValue = vm.ToProgressValue;
+            vm.ToProgressValue = vm.ToProgressValue - 1;
         }
 
         private void OpenPxPFullView(object sender, RoutedEventArgs e)
@@ -34,11 +40,19 @@ namespace DDPM.UI.Module.Kvm
             KVMPIPPBPFullView kvmPIPPBPFullView = new KVMPIPPBPFullView(vm);
             kvmPIPPBPFullView.DataContext = vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(kvmPIPPBPFullView);
+            if (vm.ToProgressValue > 3 || vm.ToProgressValue < 0)
+            {
+                vm.ToProgressValue = 2;
+            }
+            vm.FromProgressValue = vm.ToProgressValue;
+            vm.ToProgressValue = vm.ToProgressValue + 1;
         }
 
         private void CloseUSBKVM(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
+            vm.FromProgressValue = 0;
+            vm.ToProgressValue = 1;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)

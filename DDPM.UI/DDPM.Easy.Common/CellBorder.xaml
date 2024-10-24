@@ -11,6 +11,8 @@
             CornerRadius="{Binding Radius, RelativeSource={RelativeSource AncestorType=UserControl}}"
             Background="{Binding BkBrush, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
+        <Grid x:Name="childGrid"/>
+
         <!-- 
         <Border.Style>
             <Style TargetType="Border">
@@ -23,8 +25,8 @@
             </Style>
         </Border.Style> 
         -->
-        <TextBlock Foreground="Red" FontSize="9"
+        <!--<TextBlock Foreground="Red" FontSize="9"
                    Text="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}">
-        </TextBlock>
+        </TextBlock>-->
     </Border>
 </UserControl>

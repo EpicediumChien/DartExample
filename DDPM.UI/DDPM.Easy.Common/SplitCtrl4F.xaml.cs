@@ -104,6 +104,7 @@ namespace DDPM.Easy.Common
             set { }
         }
         #endregion
+
         #region Splitter List
 
         public List<GridSplitter> VSplitterList { get; set; } = new List<GridSplitter>();
@@ -131,9 +132,27 @@ namespace DDPM.Easy.Common
         #endregion Settings
 
         #region FriendlyName
-
-        public string FriendlyName { get; set; }
-
+        private string _friendlyName = string.Empty;
+        private string _defaultHorzName = "Option 4.6 3 columns, equal splits. Column 1, no split. Column 2, no split. Column 3, equal splits.";
+        private string _defaultVertName = "Option 4.6 3 rows, equal splits. Row 1, equal splits. Row 2, no split. Row 3, no split.";
+        public string FriendlyName
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_friendlyName))
+                {
+                    if (VM.IsVertical)
+                        return _defaultVertName;
+                    else
+                        return _defaultHorzName;
+                }
+                return _friendlyName;
+            }
+            set
+            {
+                _friendlyName = value;
+            }
+        }
         #endregion FriendlyName
     }
 }
