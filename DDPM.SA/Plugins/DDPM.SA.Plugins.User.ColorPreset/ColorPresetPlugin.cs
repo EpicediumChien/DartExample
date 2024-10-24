@@ -707,12 +707,16 @@ namespace ColorPreset.Plugins
             string Key_Profile_Name = string.Empty;
             Key_Profile_Name = MonitorProfile.GetMonitorProfile(Active_monitorInfo.DisplayName);
 
+            Trace.WriteLine($" Key_Profile_Name = {Key_Profile_Name}");
+
             int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
             for (int i = 0; i < count; i++)
             {
                 if (string.Equals(Key_Profile_Name, _ICC_Metadata._match_ICC_DeviceName[i].File, StringComparison.OrdinalIgnoreCase))
                 {
+                    Trace.WriteLine($" _ICC_Metadata._match_ICC_DeviceName[i].File = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
+
                     // 20240619 jim modify
 
                     //string strICC_ColorPreset = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset;
@@ -730,6 +734,8 @@ namespace ColorPreset.Plugins
                             WriteColorPreset(Active_monitorInfo, "Rec.709 / BT.709");
                         else
                             WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);
+
+                        Trace.WriteLine($" strICC_ColorPresets = {strICC_ColorPresets[0]}");
 
                         writelog($"ColorPresetPlugin OnRegChanged_ICC ColorPreset = {strICC_ColorPresets[0]}");
 
