@@ -1143,20 +1143,22 @@ namespace NetworkKVM.Plugins
             var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             var CancellationToken = Cancellation.Token;
             CreateNamedPipe_init();
-            Trace.WriteLine("NKVM CreateNamedPipe_init to NamedPipeServer go...");
-            if (pipeServer != null)
+            _logs.DebugMsg("NKVM NamedPipeServer is go...");
+            Trace.WriteLine("NKVM NamedPipeServer is go...");
+            int i = 0;
+            while (_runloop)
             {
-                _logs.DebugMsg("NKVM NamedPipeServer is go...");
-                Trace.WriteLine("NKVM NamedPipeServer is go...");
-                int i = 0;
-                while (_runloop)
+                if (CancellationToken.IsCancellationRequested)
                 {
-                    if (CancellationToken.IsCancellationRequested)
-                    {
-                        _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                        Trace.WriteLine("[NetworkKVM]Token is cancel");
-                        break;
-                    }
+                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                    Trace.WriteLine("[NetworkKVM]Token is cancel");
+                    Disconnect();
+                    CreateNamedPipe_init();
+                    i = 0;
+                    //break;
+                }
+                if (pipeServer != null)
+                {
                     if (pipeServer.IsConnected)
                     {
                         lock (lock_wait)
@@ -1182,6 +1184,7 @@ namespace NetworkKVM.Plugins
                                 //throw;
                                 Disconnect();
                                 CreateNamedPipe_init();
+                                i = 0;
                             }
                         }
                     }
@@ -1196,6 +1199,13 @@ namespace NetworkKVM.Plugins
                         //    CreateNamedPipe_init();
                     }
                 }
+                else
+                {
+                    _logs.DebugMsg("pipeServer is null");
+                    Disconnect();
+                    CreateNamedPipe_init();
+                    i = 0;
+                }
             }
             _logs.DebugMsg("NKVM NamedPipeServer is End...");
             Trace.WriteLine("NKVM NamedPipeServer is End...");
@@ -1207,20 +1217,22 @@ namespace NetworkKVM.Plugins
             var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             var CancellationToken = Cancellation.Token;
             CreateNamedPipe();
-            Trace.WriteLine("NKVM CreateNamedPipe to NamedPipeServer go...");
-            if (pipeServer != null)
+            _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
+            Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
+            int i = 0;
+            while (_runloop)
             {
-                _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
-                Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
-                int i = 0;
-                while (_runloop)
+                if (CancellationToken.IsCancellationRequested)
                 {
-                    if (CancellationToken.IsCancellationRequested)
-                    {
-                        _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                        Trace.WriteLine("[NetworkKVM]Token is cancel");
-                        break;
-                    }
+                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                    Trace.WriteLine("[NetworkKVM]Token is cancel");
+                    Disconnect();
+                    CreateNamedPipe();
+                    i = 0;
+                    //break;
+                }
+                if (pipeServer != null)
+                {
                     if (pipeServer.IsConnected)
                     {
                         lock (lock_wait)
@@ -1246,6 +1258,7 @@ namespace NetworkKVM.Plugins
                                 //throw;
                                 Disconnect();
                                 CreateNamedPipe();
+                                i = 0;
                             }
                         }
                     }
@@ -1259,6 +1272,13 @@ namespace NetworkKVM.Plugins
                         //    Disconnect();
                         //    CreateNamedPipe_init();
                     }
+                }
+                else
+                {
+                    _logs.DebugMsg("pipeServer is null...");
+                    Disconnect();
+                    CreateNamedPipe();
+                    i = 0;
                 }
             }
             _logs.DebugMsg("NKVM NamedPipeServer_UI is End...");
@@ -1393,10 +1413,10 @@ namespace NetworkKVM.Plugins
 
         private void Stop()
         {
-            if (cancellationTokenSource != null)
-            {
-                cancellationTokenSource.Cancel();
-            }
+            //if (cancellationTokenSource != null)
+            //{
+            //    cancellationTokenSource.Cancel();
+            //}
             if (cts != null)
             {
                 cts.Cancel();
