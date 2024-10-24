@@ -94,7 +94,7 @@ namespace CLI.Subagent
                 LogDirectory = LogLocation
 #if RELEASE
                 ,
-                ValidCertificateHashes_CICD = ThumbprintHash.certificateHash
+                ValidCertificateHashes = ThumbprintHash_CICD.certificateHash
 #endif
             };
 
