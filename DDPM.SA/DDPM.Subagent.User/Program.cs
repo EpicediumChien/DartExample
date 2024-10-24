@@ -42,7 +42,7 @@ namespace DDPM.Subagent.User
         /// <summary>
         ///     A name for your product.
         /// </summary>
-        private const string ProductName = "Dell Display and Peripheral Manager";
+        private const string ProductName = "DDPMSubagentUser";
 
         /// <summary>
         ///     Service name for the product. Even if you are not running as a service always provide this because DCF provides you
