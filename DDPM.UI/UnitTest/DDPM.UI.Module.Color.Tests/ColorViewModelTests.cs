@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Collections.ObjectModel;
@@ -28,6 +29,15 @@ namespace DDPM.UI.Module.Color.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            var MyConsoleMock = new Mock<IConsole>();
+            DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
             colorViewModel = new ColorViewModel();
             //privateObject = new PrivateObject(monitorInfo);
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -112,7 +122,7 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.MyModule = new ColorModule();
             colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
-
+            colorViewModel.SupportColorPresets = new List<string>();
             var myColorModule = 1;
             colorViewModel.ColorPresetSelectedIndex = myColorModule;
             Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(myColorModule));
