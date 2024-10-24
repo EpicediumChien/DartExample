@@ -1151,20 +1151,30 @@ namespace NetworkKVM.Plugins
             int i = 0;
             while (_runloop)
             {
-                if (CancellationToken.IsCancellationRequested)
-                {
-                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                    Trace.WriteLine("[NetworkKVM]Token is cancel");
-                    Disconnect();
-                    _AllInfoMonitors = GetMonitors().Result;
-                    CreateNamedPipe_init();
-                    i = 0;
-                    //break;
-                }
+                //if (CancellationToken.IsCancellationRequested)
+                //{
+                //    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                //    Trace.WriteLine("[NetworkKVM]Token is cancel");
+                //    Disconnect();
+                //    _AllInfoMonitors = GetMonitors().Result;
+                //    CreateNamedPipe_init();
+                //    i = 0;
+                //    //break;
+                //}
                 if (pipeServer != null)
                 {
                     if (pipeServer.IsConnected)
                     {
+                        if (CancellationToken.IsCancellationRequested)
+                        {
+                            _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                            Trace.WriteLine("[NetworkKVM]Token is cancel");
+                            Disconnect();
+                            _AllInfoMonitors = GetMonitors().Result;
+                            CreateNamedPipe_init();
+                            i = 0;
+                            //break;
+                        }
                         lock (lock_wait)
                         {
                             try
