@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -208,7 +209,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            //_deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
             //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = null;
         }
@@ -216,7 +218,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            //_deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
             //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = Cursors.Wait;
         }
@@ -226,14 +229,16 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            { }
+            Mouse.OverrideCursor = null;
         }
 
         #endregion Interface IConsolePluginSupportsActivations
 
         ~SoundBarPlugin()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }
