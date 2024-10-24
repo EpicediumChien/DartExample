@@ -3,10 +3,12 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.CMAManager;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11833,7 +11835,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Output={output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
-        private static void LaunchNetworkkvmApp()
+        private static void LaunchNetworkkvmApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11850,8 +11852,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/console start";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11865,7 +11868,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmApp_on()
+        private static void LaunchNetworkkvmApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11882,8 +11885,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvm on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11897,7 +11901,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmApp_off()
+        private static void LaunchNetworkkvmApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11914,8 +11918,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvm off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11929,7 +11934,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmautoconnectApp_on()
+        private static void LaunchNetworkkvmautoconnectApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11946,8 +11951,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmautoconnect on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11961,7 +11967,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmautoconnectApp_off()
+        private static void LaunchNetworkkvmautoconnectApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11978,8 +11984,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmautoconnect off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11993,7 +12000,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferApp_on()
+        private static void LaunchNetworkkvmcontenttransferApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12010,8 +12017,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmcontenttransfer on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12025,7 +12033,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferApp_off()
+        private static void LaunchNetworkkvmcontenttransferApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12042,8 +12050,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmcontenttransfer off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12057,7 +12066,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmincomingportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmincomingportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12074,8 +12083,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12089,7 +12099,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmoutgoingportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmoutgoingportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12106,8 +12116,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12121,7 +12132,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmcontenttransferportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12138,8 +12149,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12153,7 +12165,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmaccessresetApp()
+        private static void LaunchNetworkkvmaccessresetApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12170,8 +12182,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmaccessreset";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12240,7 +12253,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         case "ON":
                             writelog($"Networkkvm on entry");
-                            LaunchNetworkkvmApp_on();
+                            LaunchNetworkkvmApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -12248,7 +12261,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvm off entry");
-                            LaunchNetworkkvmApp_off();
+                            LaunchNetworkkvmApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -12483,7 +12496,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         case "ON":
                             writelog($"Networkkvmautoconnect on entry");
-                            LaunchNetworkkvmautoconnectApp_on();
+                            LaunchNetworkkvmautoconnectApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -12491,7 +12504,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvmautoconnect off entry");
-                            LaunchNetworkkvmautoconnectApp_off();
+                            LaunchNetworkkvmautoconnectApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -12591,7 +12604,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         case "ON":
                             writelog($"Networkkvmcontenttransfer on entry");
-                            LaunchNetworkkvmcontenttransferApp_on();
+                            LaunchNetworkkvmcontenttransferApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -12599,7 +12612,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvmcontenttransfer off entry");
-                            LaunchNetworkkvmcontenttransferApp_off();
+                            LaunchNetworkkvmcontenttransferApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -12701,7 +12714,7 @@ namespace DDPM.CLI.Plugins.Display
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvmincomingport entry");
-                        LaunchNetworkkvmincomingportApp(commandLineInput);
+                        LaunchNetworkkvmincomingportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12790,7 +12803,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 //foreach (int idx in _monitorIndeies)
                 //{
-                LaunchNetworkkvmApp(); //Open DDM console for debug
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
                                        //MonitorInfo monitor = _AllInfoMonitors[idx];
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -12806,7 +12819,7 @@ namespace DDPM.CLI.Plugins.Display
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvmoutgoingport entry");
-                        LaunchNetworkkvmoutgoingportApp(commandLineInput);
+                        LaunchNetworkkvmoutgoingportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12896,9 +12909,9 @@ namespace DDPM.CLI.Plugins.Display
                         _AllInfoMonitors = devMgr.GetMonitors().Result;
                     _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                    //foreach (int idx in _monitorIndeies)
-                    //{
-                    LaunchNetworkkvmApp(); //Open DDM console for debug
+                //foreach (int idx in _monitorIndeies)
+                //{
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
 
                     //MonitorInfo monitor = _AllInfoMonitors[idx];
 
@@ -12914,7 +12927,7 @@ namespace DDPM.CLI.Plugins.Display
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvcontenttransferport entry");
-                        LaunchNetworkkvmcontenttransferportApp(commandLineInput);
+                        LaunchNetworkkvmcontenttransferportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -13008,7 +13021,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 //foreach (int idx in _monitorIndeies)
                 //{
-                LaunchNetworkkvmApp(); //Open DDM console for debug
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
 
                 //MonitorInfo monitor = _AllInfoMonitors[idx];
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
@@ -13019,7 +13032,7 @@ namespace DDPM.CLI.Plugins.Display
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
                 writelog($"Networkkvmaccessreset entry");
-                LaunchNetworkkvmaccessresetApp();
+                LaunchNetworkkvmaccessresetApp(Log);
                 retcode = true;
                 cli_Response.Result = "PASS";
                 cli_Response.Value = $"Networkkvmaccessreset";
