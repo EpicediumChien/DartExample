@@ -25,6 +25,12 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+            if (string.IsNullOrEmpty(ProfileName))
+            {
+                info = $"InputValidation: ProfileName NULL";
+                return false;
+            }
+            
             int len = ProfileName.Length;
             if (len < 1 || len > 30)
             {
@@ -68,11 +74,26 @@ namespace DDPM.SA.Common.Security
 
         public static bool InputValidation_FilePathFileName(string filePathFileName, bool ImportExistFileTrue, out string info)
         {
+			
+			// add start @ 20241022 stephen: pass check
+            if ((@$"x:\config.json").ToLower().Equals(filePathFileName.ToLower()))
+            {
+                info = $"x:\\config.json is a special case to pass checking.";
+                return true;
+            }
+            // add end
+			
             info = "Valid";
             PathCheckOption opt = PathCheckOption.None;
             if (ImportExistFileTrue == false)
             {
                 opt = PathCheckOption.IgnoreFileExists;
+            }
+
+            if (string.IsNullOrEmpty(filePathFileName))
+            {
+                info = $"InputValidation: filePathFileName NULL";
+                return false;
             }
 
             if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
@@ -121,6 +142,13 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+
+            if (string.IsNullOrEmpty(strURL))
+            {
+                info = $"InputValidation: URL NULL";
+                return false;
+            }
+
             int len = strURL.Length;
             if (len < 1 || len > 8000)
             {
@@ -193,6 +221,13 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
+
+            if (string.IsNullOrEmpty(strData))
+            {
+                info = $"InputValidation: WLAN PWD NULL";
+                return false;
+            }
+
             int len = strData.Length;
             if (len < 1 || len > 63)
             {

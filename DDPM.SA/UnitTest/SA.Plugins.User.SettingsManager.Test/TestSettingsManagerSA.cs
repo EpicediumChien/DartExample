@@ -279,6 +279,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(_hotkeySettings, Is.EqualTo(ReadHotkeySettingssResult1)); //run finnish will create hotkeysettings_path1_
             }
             File.WriteAllText(hotkeysettings_path1_, jsonData);
+            string hotkeysettings_path2_ = Environment.CurrentDirectory + "\\" + hotkeysettings_path1_;
+            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", hotkeysettings_path2_);
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (File.Exists(hotkeysettings_path1_))
             {
                 var ReadHotkeySettingssResult2 = SettingsManagerSAPlugin.ReadHotkeySettings().Result;
@@ -374,6 +378,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(_GlobalSettingParam, Is.EqualTo(ReadGlobalSettingsResult1)); //run finnish will create path1_
             }
             File.WriteAllText(GlobalSettings_path1_, jsonData);
+            string GlobalSettings_path2_ = Environment.CurrentDirectory + "\\" + GlobalSettings_path1_;
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", GlobalSettings_path2_);
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
             if (File.Exists(GlobalSettings_path1_))
             {
                 var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;
@@ -388,7 +397,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         {
             bool writeGlobalSettings_ = false;
             bool writeGlobalSettings_2 = true;
-            GlobalSettingParam globalSettingParamNull;
+            GlobalSettingParam? globalSettingParamNull;
             globalSettingParamNull = null;
             GlobalSettingParam globalSettingParam = new GlobalSettingParam()
             {
@@ -406,13 +415,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (globalSettingParamNull == null)
             {
-                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is not null
+                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is null
                 Assert.That(writeGlobalSettings_, Is.EqualTo(WriteGlobalSettingsResult1));
             }
 
             if (globalSettingParam != null)
             {
-                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is null
+                Mock<ISettingsManagerSA> mock_SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>())).Returns(Task.FromResult(true));
+                var mock_SysSettingsPluginObj = mock_SysSettingsPlugin.Object;
+                privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", mock_SysSettingsPluginObj);
+                privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam);
+                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is not  null
                 Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult2));
                 File.Delete(writeglobalSettings_path1_);
             }
@@ -733,7 +747,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Schedule = string.Empty,
                 DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
                 LockRotate = true,
-                isTelemetryConsentOn = true,
+                //isTelemetryConsentOn = true,
                 LockFWU_UI = true,
                 UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
                 SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
@@ -810,7 +824,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Schedule = string.Empty,
                 DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
                 LockRotate = true,
-                isTelemetryConsentOn = true,
+                //isTelemetryConsentOn = true,
                 LockFWU_UI = true,
                 UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
                 SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
@@ -1120,69 +1134,69 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         }
 
         //Robert_Lin, 2024-10-11, EAMonitorSettings property changed
-        //[Test]
-        //public void TestWriteImpExpSettings()
-        //{
-        //    bool WriteImpExpSettingsF = false;
-        //    string WriteImpExpSet_path2 = "WriteImpExpSet.json";
-        //    string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
-        //    File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
-        //    DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings()
-        //    {
-        //        AppSettings = new DDPMAppSettings() { Version = 1.0 },
-        //        MonitorSettings = new DDPMMonitorSettings()
-        //        {
-        //            Version = 2.0,
-        //            Model = "TestMode",
-        //            ServiceTag = "123456",
-        //            EA = new EAMonitorSettings()
-        //            {
-        //                SelectedSplit = new SplitJson(),
-        //                CustomList = new List<SplitJson>(),
-        //                RecentList = new List<SplitJson>(),
-        //            },
-        //            Input = new InputSource()
-        //            {
-        //                strInputSourceList = "HDMI=1"
-        //            },
-        //            KVM = new KVMSettings()
-        //            {
-        //                strUSBKVMPCsList = "TestUSBKVM",
-        //                isOnNKVM = false,
-        //                isOnUSBKVM = true,
-        //            },
-        //            VCPs = new List<VCPCode>()
-        //    {
-        //        new VCPCode()
-        //        {
-        //            Code=0X12,
-        //            Value=new List<int>() { 1,2}
-        //        }
-        //    },
-        //        }
-        //    };
-        //    DDPMImpExpSettings dDPMImpExpSettingsNull = new DDPMImpExpSettings();
-        //    dDPMImpExpSettingsNull = null;
-        //    bool WriteImpExpSettingsT = true;
-        //    PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
-        //    string WriteImpExpSet_path22 = Environment.CurrentDirectory + "\\" + WriteImpExpSet_path2;
-        //    // privatesettingsManagerObj.SetFieldOrProperty("_GlobalSetting_path", WriteImpExpSet_path22);
-        //    string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
-        //    privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
-        //    if (dDPMImpExpSettingsNull == null)
-        //    {
-        //        var WriteImpExpSettings_Result = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettingsNull); //dDPMImpExpSettingsNull null
-        //        Assert.IsNotNull(WriteImpExpSettings_Result);
-        //        Assert.That(WriteImpExpSettingsF, Is.EqualTo(WriteImpExpSettings_Result));
-        //    }
-        //    if (dDPMImpExpSettings != null)
-        //    {
-        //        var WriteImpExpSettings_Result2 = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettings); //dDPMImpExpSettings not null
-        //        Assert.IsNotNull(WriteImpExpSettings_Result2);
-        //        Assert.That(WriteImpExpSettingsT, Is.EqualTo(WriteImpExpSettings_Result2));
-        //        File.Delete(WriteImpExpSet_path2);
-        //    }
-        //}
+        [Test]
+        public void TestWriteImpExpSettings()
+        {
+            bool WriteImpExpSettingsF = false;
+            string WriteImpExpSet_path2 = "WriteImpExpSet.json";
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
+            DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings()
+            {
+                AppSettings = new DDPMAppSettings() { Version = 1.0 },
+                MonitorSettings = new DDPMMonitorSettings()
+                {
+                    Version = 2.0,
+                    Model = "TestMode",
+                    ServiceTag = "123456",
+                    EA = new EAMonitorSettings()
+                    {
+                        SelectedSplit = new SplitJson(),
+                        RecentList = new SplitJson[] { },
+                        //RecentList = new List<SplitJson>(),
+                    },
+                    Input = new InputSource()
+                    {
+                        strInputSourceList = "HDMI=1"
+                    },
+                    KVM = new KVMSettings()
+                    {
+                        strUSBKVMPCsList = "TestUSBKVM",
+                        isOnNKVM = false,
+                        isOnUSBKVM = true,
+                    },
+                    VCPs = new List<VCPCode>()
+            {
+              new VCPCode()
+              {
+                Code=0X12,
+                Value=new List<int>() { 1,2}
+              }
+            },
+                }
+            };
+            DDPMImpExpSettings dDPMImpExpSettingsNull = new DDPMImpExpSettings();
+            dDPMImpExpSettingsNull = null;
+            bool WriteImpExpSettingsT = true;
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string WriteImpExpSet_path22 = Environment.CurrentDirectory + "\\" + WriteImpExpSet_path2;
+            // privatesettingsManagerObj.SetFieldOrProperty("_GlobalSetting_path", WriteImpExpSet_path22);
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privatesettingsManagerObj.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+            if (dDPMImpExpSettingsNull == null)
+            {
+                var WriteImpExpSettings_Result = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettingsNull); //dDPMImpExpSettingsNull null
+                Assert.IsNotNull(WriteImpExpSettings_Result);
+                Assert.That(WriteImpExpSettingsF, Is.EqualTo(WriteImpExpSettings_Result));
+            }
+            if (dDPMImpExpSettings != null)
+            {
+                var WriteImpExpSettings_Result2 = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path22, dDPMImpExpSettings); //dDPMImpExpSettings not null
+                Assert.IsNotNull(WriteImpExpSettings_Result2);
+                Assert.That(WriteImpExpSettingsT, Is.EqualTo(WriteImpExpSettings_Result2));
+                File.Delete(WriteImpExpSet_path2);
+            }
+        }
 
         [Test]
         public void TestDisplayImportSettings()
@@ -1248,7 +1262,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Schedule = string.Empty,
                 DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
                 LockRotate = true,
-                isTelemetryConsentOn = true,
+                //isTelemetryConsentOn = true,
                 LockFWU_UI = true,
                 UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
                 SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },

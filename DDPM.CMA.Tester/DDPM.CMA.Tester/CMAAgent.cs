@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dell.Client.Framework.Agent;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
-using DDPM.SA.Common;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
 using System.Diagnostics;
 using System.Reflection;
 using Dell.UnifiedAgent.Common;
+using Dell.Client.Framework.Agent;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.PluginConditions;
 
 namespace DDPM.CMA.Tester
 {
@@ -26,8 +21,7 @@ namespace DDPM.CMA.Tester
         private Agent _Agent;
         private ILog _Log;
 
-        //DDPM.Subagent
-        private ICMAManagerIT _CMAManagerPlugin;
+        private IRemoteManagement _CMAManagerPlugin;
 
         private readonly AutoResetEvent _PluginAvailabilityTrigger_CMAManager = new(true);
         private readonly object _pluginConditionLock_CMAManager = new object();
@@ -36,6 +30,8 @@ namespace DDPM.CMA.Tester
         private const int TIMEOUT_IN_SECONDS = 60;
         private static int _exitcode = 0;
 
+
+        private static Boolean isresponse = false;
         #endregion
 
         #region Constructor
@@ -85,44 +81,143 @@ namespace DDPM.CMA.Tester
 
         private void RunManagement(string[] args, bool runMode)
         {
-            if (_CMAManagerPlugin == null)
-            {
-                Console.WriteLine("No CMA Manager be found");
-                _exitcode = 1;
-                return;
-            }
+            InitializeCMAManagerPlugin();
 
-            if(args.Length == 0)
+            if (_PluginAvailabilityTrigger_CMAManager.WaitOne(TimeSpan.FromSeconds(TIMEOUT_IN_SECONDS)))
             {
-                Console.WriteLine("No command line input");
-                _exitcode = 2;
-                return;
-            }
+                if (_CMAManagerPlugin == null)
+                {
+                    _exitcode = 123;//Editable field //(int)CLI_ExitCode.null_cli_manager;
+                    return;
+                }
+                isresponse = false;
 
-            CMARequestArgs input = new CMARequestArgs();
-            input.cma_request = args[0];
-            
-            CMAResult result = _CMAManagerPlugin.PerformCMARequest(input).Result;
-            if (result != null)
-            {
-                Console.WriteLine("Detail: " + result.message);
-                Console.WriteLine("Detail: " + result.output_result);
-                Console.WriteLine($"ID: {result.cma_request_id}");
+                //_CMAManagerPlugin.Notify += Notification;
+
+                //Console.WriteLine("Reg");
+
+                // while (!isresponse) { }
+
+                runRequest(args);
+
+
+
+                return;
             }
             else
             {
-                Console.WriteLine("CMA Manager return null result");
+                //Means timeout here
+                Console.WriteLine($"{"Device "} was not found after {TIMEOUT_IN_SECONDS}s.");
+
+                return;
             }
+
+        }
+
+        private void runRequest(string[] args)
+        {
+            Boolean isRunning = true;
+
+            string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
+
+            string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
+            string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
+
+            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
+            //string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
+
+            string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""ConnectedDevices"",""options"":{}}]}";
+            string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
+
+
+            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\temp"",""options"":{}}]}";
+
+
+            string jsondeviceconfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
+            string config = "";
+
+            RemoteRequestArgs cmarequest = new RemoteRequestArgs();
+
+            _CMAManagerPlugin.Notify += Notification;
+            _CMAManagerPlugin.DisplayConnected += DisplayConnected;
+            _CMAManagerPlugin.DisplayDisconnected += DisplayDisconnected;
+            Console.WriteLine("Subscribe Event Success");
+
+            // manager.Info(json);
+
+            while (isRunning)
+            {
+                Console.WriteLine("\nCMAManagerPlugin Demo: ");
+                Console.WriteLine("1. Show ConnectedDevices.");
+                Console.WriteLine("2. Show Display FWUpdate.");
+                Console.WriteLine("3. Show DeviceData.");
+                Console.WriteLine("4. Show DeviceConfiguration.");
+                Console.WriteLine("5. Show DiagnosticsReport.");
+                Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
+                Console.WriteLine("0. Exit.");
+
+                Console.WriteLine("Enter the number to run ?");
+                int sel = Convert.ToInt32(Console.ReadLine());
+
+                switch (sel)
+                {
+                    case 1:
+                        Console.WriteLine($"json String = {jsondevice}");
+                        cmarequest.remote_request = jsondevice;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 2:
+                        Console.WriteLine($"json String = {jsonfwdisplay}");
+                        cmarequest.remote_request = jsonfwdisplay;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 3:
+                        Console.WriteLine($"json String = {jsondevicedata}");
+                        cmarequest.remote_request = jsondevicedata;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 4:
+                        Console.WriteLine($"json String = {jsondeviceconfig2}");
+                        cmarequest.remote_request = jsondeviceconfig2;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 5:
+                        Console.WriteLine($"json String = {jsonreport}");
+                        cmarequest.remote_request = jsonreport;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 6:
+                        Console.WriteLine($"json String = {jsongetdisplaymulti}");
+                        cmarequest.remote_request = jsongetdisplaymulti;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    default:
+                        isRunning = false;
+                        break;
+
+
+                }
+
+                while (!isresponse) { }
+
+            }
+
+
         }
 
         private void InitializeCMAManagerPlugin()
         {
             if (_CMAManagerPlugin != null)
                 return;
+            Console.WriteLine($"{nameof(PluginsStarted)} arrived for {nameof(IRemoteManagement)}");
 
-            _Log.Info($"{nameof(PluginsStarted)} arrived for {nameof(ICMAManagerIT)}");
-
-            _CMAManagerPlugin = _Agent.PluginManager.FindPluginByType<ICMAManagerIT>(PluginResolution.Dynamic);
+            _CMAManagerPlugin = _Agent.PluginManager.FindPluginByType<IRemoteManagement>(PluginResolution.Dynamic);
             if (_CMAManagerPlugin is IFrameworkPluginConditionNotification condition)
             {
                 condition.PluginConditionChangeHandler += OnCMAManagerPluginConditionChangeHandler;
@@ -142,11 +237,11 @@ namespace DDPM.CMA.Tester
 
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        _Log.Info($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in an error condition");
+                        Console.WriteLine($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in an error condition");
                     }
                     else if (pluginCondition is PluginRunningCondition)//cross subagent
                     {
-                        _Log.Info($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in running condition");
+                        Console.WriteLine($"{nameof(GetCurrentCMAManagerPluginCondition)} - CMA Manager Plugin is in running condition");
                         _PluginAvailabilityTrigger_CMAManager.Set();
                     }
                 }
@@ -159,12 +254,16 @@ namespace DDPM.CMA.Tester
 
         private void PluginsStarted(object sender, PluginsStartedEventArgs e)
         {
-            if (e?.ChangedPlugins == null)
+            if (e == null)
+                return;
+            if (e.ChangedPlugins == null)
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
+            Console.WriteLine($"{e.ChangedPlugins.GetType().Name}");
+
+            if (e.ChangedPlugins.OfType<IRemoteManagement>().Any())
             {
                 InitializeCMAManagerPlugin();
             }
@@ -175,6 +274,35 @@ namespace DDPM.CMA.Tester
             InitializeCMAManagerPlugin();
         }
 
+        private static void Notification(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA Notification Alert");
+            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventType);
+            Console.WriteLine("CMA Notification Alert notification : " + e.notification);
+
+            isresponse = true;
+        }
+
+        private static void DisplayConnected(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA DisplayConnected Alert");
+            Console.WriteLine("CMA DisplayConnected Alert eventtype : " + e.eventType);
+            Console.WriteLine("CMA DisplayConnected Alert notification : " + e.notification);
+
+            isresponse = true;
+        }
+
+        private static void DisplayDisconnected(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA DisplayDisconnected Alert");
+            Console.WriteLine("CMA DisplayDisconnected Alert eventtype : " + e.eventType);
+            Console.WriteLine("CMA DisplayDisconnected Alert notification : " + e.notification);
+
+            isresponse = true;
+        }
         #endregion
     }
 }

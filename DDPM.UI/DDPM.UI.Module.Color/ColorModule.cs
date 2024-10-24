@@ -27,7 +27,7 @@ namespace DDPM.UI.Module.Color
             vm.MyModule = this;
 
             vm.Invoke_RefreshData();
-            vm.Invoke_DownloadICCData();
+            //vm.Invoke_DownloadICCData();
         }
 
         public string ModuleName { get => "ColorModule"; }
@@ -77,7 +77,7 @@ namespace DDPM.UI.Module.Color
             _rightView.DataContext = vm;
             vm.MyModule = this;
             vm.Invoke_RefreshData();
-            vm.Invoke_DownloadICCData();
+            //vm.Invoke_DownloadICCData();
         }
 
         public void OnActivated()

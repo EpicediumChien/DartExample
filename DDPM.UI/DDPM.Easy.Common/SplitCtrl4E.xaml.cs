@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
 {
@@ -27,6 +28,8 @@ namespace DDPM.Easy.Common
         public char SplitKey => 'E';
         public UserControl UC => this;
 
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 18;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -71,16 +74,16 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("4e1", cell_4e1));
-            cellListH.Add(new CellObj("4e2", cell_4e2));
-            cellListH.Add(new CellObj("4e3", cell_4e3));
-            cellListH.Add(new CellObj("4e4", cell_4e4));
+            cellListH.Add(new CellObj("4e1", cell_4e1) { rcRatio = new Rect(0, 0, 1 / 3, 0.5) });
+            cellListH.Add(new CellObj("4e2", cell_4e2) { rcRatio = new Rect(0, 0.5, 1 / 3, 0.5) });
+            cellListH.Add(new CellObj("4e3", cell_4e3) { rcRatio = new Rect(1/3, 0, 1 / 3, 1) });
+            cellListH.Add(new CellObj("4e4", cell_4e4) { rcRatio = new Rect(2/3, 0, 1 / 3, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("4E1", cell_4E1));
-            cellListV.Add(new CellObj("4E2", cell_4E2));
-            cellListV.Add(new CellObj("4E3", cell_4E3));
-            cellListV.Add(new CellObj("4E4", cell_4E4));
+            cellListV.Add(new CellObj("4E1", cell_4E1) { rcRatio = new Rect(0.5, 0, 0.5, 1/3) });
+            cellListV.Add(new CellObj("4E2", cell_4E2) { rcRatio = new Rect(0, 0, 0.5, 1/3) });
+            cellListV.Add(new CellObj("4E3", cell_4E3) { rcRatio = new Rect(0, 1/3, 1, 1/3) });
+            cellListV.Add(new CellObj("4E4", cell_4E4) { rcRatio = new Rect(0, 2/3, 1, 1/3) });
         }
 
         #endregion Cell List
@@ -127,11 +130,28 @@ namespace DDPM.Easy.Common
         #endregion Settings
 
 
-
         #region FriendlyName
-
-        public string FriendlyName { get; set; }
-
+        private string _friendlyName = string.Empty;
+        private string _defaultHorzName = "Option 4.5 3 columns, equal splits. Column 1, equal splits. Column 2, no split. Column 3, no split.";
+        private string _defaultVertName = "Option 4.5 3 rows, equal splits. Row 1, no split. Row 2, no split. Row 3, equal splits.";
+        public string FriendlyName
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_friendlyName))
+                {
+                    if (VM.IsVertical)
+                        return _defaultVertName;
+                    else
+                        return _defaultHorzName;
+                }
+                return _friendlyName;
+            }
+            set
+            {
+                _friendlyName = value;
+            }
+        }
         #endregion FriendlyName
     }
 }

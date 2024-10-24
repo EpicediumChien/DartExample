@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DDPM.UI.Common"
+             xmlns:local="clr-namespace:DDPM.UI.Common" xmlns:common="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common" d:DataContext="{d:DesignInstance Type=common:SplitCtrlVM}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
-             Visibility="{Binding CtrlVisibility}">
+             Visibility="{Binding CtrlVisibility}"
+             SizeChanged="UserControl_SizeChanged" >
+
     <UserControl.Resources>
         <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
         <SolidColorBrush x:Key="RightView_Header_BkColor" Color="#0A2343" />
@@ -33,6 +35,7 @@
                     <ColumnDefinition Width="{Binding Col1Width}" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                
                 <!-- Header[0] -->
                 <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -50,11 +53,13 @@
                         </Style>
                     </Border.Style>
                 </Border>
+
                 <!-- Header[1] -->
-                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" x:Name="header1Border">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" x:Name="header1SP">
                         <Image Name="Icon2" Width="16" Height="16" Margin="0,0,5,0"></Image>
-                        <TextBlock Text="{Binding Text2, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <TextBlock Text="{Binding Text2, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" 
+                                   TextTrimming="WordEllipsis" x:Name="header1Text" MaxWidth="150"/>
                     </StackPanel>
                     <Border.Style>
                         <Style TargetType="Border">
@@ -67,6 +72,8 @@
                         </Style>
                     </Border.Style>
                 </Border>
+
+
                 <!-- Header[2] -->
                 <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

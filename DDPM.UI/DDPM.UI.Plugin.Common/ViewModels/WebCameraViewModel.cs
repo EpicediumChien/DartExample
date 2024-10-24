@@ -250,7 +250,53 @@ namespace DDPM.UI.Plugin.ViewModels
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedSnoozeLength");
             }
-        }        
+        }
+
+        private Visibility _UPD_Visibility = Visibility.Hidden;
+
+        public Visibility UPD_Visibility
+        {
+            get
+            {
+                return _UPD_Visibility;
+            }
+            set
+            {
+                _UPD_Visibility = value;
+                OnPropertyChanged("UPD_Visibility");
+            }
+        }
+
+        private Visibility _MPS_Setting_Visibility = Visibility.Hidden;
+
+        public Visibility MPS_Setting_Visibility
+        {
+            get
+            {
+                return _MPS_Setting_Visibility;
+            }
+            set
+            {
+                _MPS_Setting_Visibility = value;
+                OnPropertyChanged("MPS_Setting_Visibility");
+            }
+        }
+
+        private Visibility _MPS_UpdateFW_Visibility = Visibility.Hidden;
+
+        public Visibility MPS_UpdateFW_Visibility
+        {
+            get
+            {
+                return _MPS_UpdateFW_Visibility;
+            }
+            set
+            {
+                _MPS_UpdateFW_Visibility = value;
+                OnPropertyChanged("MPS_UpdateFW_Visibility");
+            }
+        }
+
 
         public event EventHandler<EventArgs> WebcamSettingChanged;
         public event EventHandler<EventArgs> ProfilePropertyChanged;

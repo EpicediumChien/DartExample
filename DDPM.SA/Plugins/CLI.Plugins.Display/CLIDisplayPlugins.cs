@@ -3,10 +3,12 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.CMAManager;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,6 +18,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -81,7 +84,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("DEVICEDATA") && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET"))
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -792,6 +795,20 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+                case "EXPORTSETTINGS":
+                    {
+                        var ret = ExportSettingsx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "IMPORTSETTINGS":
+                    {
+                        var ret = ExportSettingsx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
 
                 default:
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -947,6 +964,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                                 G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                                 G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                                G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
 
                                 if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                                 {
@@ -983,6 +1001,7 @@ namespace DDPM.CLI.Plugins.Display
                                     G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
                                     G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
                                     G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
+                                    G_ConnectedDevices_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
 
                                     if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                                     {
@@ -1028,6 +1047,7 @@ namespace DDPM.CLI.Plugins.Display
                                     G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                     G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
                                     G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                    G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
 
                                     if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                     {
@@ -1220,6 +1240,7 @@ namespace DDPM.CLI.Plugins.Display
                             G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
 
                             if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                             {
@@ -1256,6 +1277,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
                                 G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
                                 G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
+                                G_ConnectedDevices_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
 
                                 if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                                 {
@@ -1301,6 +1323,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                 G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
                                 G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
 
                                 if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                 {
@@ -3777,6 +3800,9 @@ namespace DDPM.CLI.Plugins.Display
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
             text = "[CLI Plugin Display] " + text;
             //Console.WriteLine(text);
             if (log_type == log_type.info)
@@ -3911,7 +3937,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (!ispass)
                                     {
                                         _Input_RESPONSE.Result = "FAIL";
-                                        _Input_RESPONSE.Message = "fail_SetVCP";
+                                        _Input_RESPONSE.Message = "FAIL_SetVCP";
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
                                     }
@@ -3996,7 +4022,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (!ispass)
                                     {
                                         _Input_RESPONSE.Result = "FAIL";
-                                        _Input_RESPONSE.Message = "fail_SetVCP";
+                                        _Input_RESPONSE.Message = "FAIL_SetVCP";
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
                                     }
@@ -4083,7 +4109,7 @@ namespace DDPM.CLI.Plugins.Display
                                         if (!ispass)
                                         {
                                             _Input_RESPONSE.Result = "Fail";
-                                            _Input_RESPONSE.Message = "fail_SetVCP";
+                                            _Input_RESPONSE.Message = "FAIL_SetVCP";
                                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                             output += "\n" + _Input_RESPONSE.ToJson();
                                         }
@@ -4153,7 +4179,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
-                                _Input_RESPONSE.Message = "fail_GetVCPCode";
+                                _Input_RESPONSE.Message = "FAIL_SetVCP";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
@@ -4199,7 +4225,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
-                                _Input_RESPONSE.Message = "fail_GetVCPCode";
+                                _Input_RESPONSE.Message = "FAIL_SetVCP";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
@@ -4247,7 +4273,7 @@ namespace DDPM.CLI.Plugins.Display
                                 if (src == String.Empty)
                                 {
                                     _Input_RESPONSE.Result = "FAIL";
-                                    _Input_RESPONSE.Message = "fail_GetVCPCode";
+                                    _Input_RESPONSE.Message = "FAIL_SetVCP";
                                     System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                     output += "\n" + _Input_RESPONSE.ToJson();
                                 }
@@ -4603,6 +4629,8 @@ namespace DDPM.CLI.Plugins.Display
 
                         r = devMgr.WriteColorPreset(monitor, value).Result;
 
+                        _Set_SupportedColorPreset_RESPONSE.Model = monitor.AliasDeviceName;
+                        _Set_SupportedColorPreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_SupportedColorPreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
                         _Set_SupportedColorPreset_RESPONSE.Command = "SET";
@@ -4612,14 +4640,14 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_SupportedColorPreset_RESPONSE.Result = "fail";
+                            _Set_SupportedColorPreset_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                             ever_fail = true;
                         }
                         else
                         {
-                            _Set_SupportedColorPreset_RESPONSE.Result = "pass";
+                            _Set_SupportedColorPreset_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                         }
@@ -4636,6 +4664,8 @@ namespace DDPM.CLI.Plugins.Display
                         r = devMgr.WriteColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
 
                         // jim modify 20240608
+                        _Set_SupportedColorPreset_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].AliasDeviceName;
+                        _Set_SupportedColorPreset_RESPONSE.SerialNumber = _AllInfoMonitors[System.Convert.ToInt32(idx)].edid.SerialNumber;
                         _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base(idx);
                         _Set_SupportedColorPreset_RESPONSE.ServiceTag = "";
                         _Set_SupportedColorPreset_RESPONSE.Command = "SET";
@@ -4645,14 +4675,14 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_SupportedColorPreset_RESPONSE.Result = "fail";
+                            _Set_SupportedColorPreset_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                             ever_fail = true;
                         }
                         else
                         {
-                            _Set_SupportedColorPreset_RESPONSE.Result = "pass";
+                            _Set_SupportedColorPreset_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                         }
@@ -4675,6 +4705,8 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"WriteColorPreset set tag Entry");
                             r = devMgr.WriteColorPreset(mo, value).Result;
 
+                            _Set_SupportedColorPreset_RESPONSE.Model = mo.AliasDeviceName;
+                            _Set_SupportedColorPreset_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_SupportedColorPreset_RESPONSE.ServiceTag = tag;
                             _Set_SupportedColorPreset_RESPONSE.Command = "SET";
@@ -4684,14 +4716,14 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_SupportedColorPreset_RESPONSE.Result = "fail";
+                                _Set_SupportedColorPreset_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                                 ever_fail = true;
                             }
                             else
                             {
-                                _Set_SupportedColorPreset_RESPONSE.Result = "pass";
+                                _Set_SupportedColorPreset_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                             }
@@ -4721,6 +4753,8 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"ReadCurrentColorPreset Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
 
+                        _Get_ActiveColorPresetList_RESPONSE.Model = monitor.AliasDeviceName;
+                        _Get_ActiveColorPresetList_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Get_ActiveColorPresetList_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
                         _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
@@ -4730,7 +4764,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
                         {
-                            _Get_ActiveColorPresetList_RESPONSE.Result = "fail";
+                            _Get_ActiveColorPresetList_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                             return ((int)CLI_ExitCode.functional_error, output);
@@ -4739,7 +4773,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             //_Get_AllSupportedColorPresetList_RESPONSE.Result = "pass";
                             //System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllSupportedColorPresetList_RESPONSE, Formatting.Indented));
-                            _Get_ActiveColorPresetList_RESPONSE.Result = "pass";
+                            _Get_ActiveColorPresetList_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                         }
@@ -4753,6 +4787,8 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"ReadCurrentColorPreset idx Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
 
+                        _Get_ActiveColorPresetList_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].AliasDeviceName;
+                        _Get_ActiveColorPresetList_RESPONSE.SerialNumber = _AllInfoMonitors[System.Convert.ToInt32(idx)].edid.SerialNumber;
                         _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base(idx);
                         _Get_ActiveColorPresetList_RESPONSE.ServiceTag = "";
                         _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
@@ -4762,14 +4798,14 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
                         {
-                            _Get_ActiveColorPresetList_RESPONSE.Result = "fail";
+                            _Get_ActiveColorPresetList_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                             return ((int)CLI_ExitCode.functional_error, output);
                         }
                         else
                         {
-                            _Get_ActiveColorPresetList_RESPONSE.Result = "pass";
+                            _Get_ActiveColorPresetList_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                         }
@@ -4786,6 +4822,8 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"ReadCurrentColorPreset tag Entry");
                             _ActiveColorPreset = devMgr.ReadCurrentColorPreset(mo).Result;
 
+                            _Get_ActiveColorPresetList_RESPONSE.Model = mo.AliasDeviceName;
+                            _Get_ActiveColorPresetList_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Get_ActiveColorPresetList_RESPONSE.ServiceTag = tag;
                             _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
@@ -4795,14 +4833,14 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (string.IsNullOrEmpty(_ActiveColorPreset))
                             {
-                                _Get_ActiveColorPresetList_RESPONSE.Result = "fail";
+                                _Get_ActiveColorPresetList_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                                 return ((int)CLI_ExitCode.functional_error, output);
                             }
                             else
                             {
-                                _Get_ActiveColorPresetList_RESPONSE.Result = "pass";
+                                _Get_ActiveColorPresetList_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                             }
@@ -4872,13 +4910,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                            _Set_AllMonitorProfile_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                         }
                         else
                         {
-                            _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                            _Set_AllMonitorProfile_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
                         }
@@ -4900,13 +4938,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                            _Set_AllMonitorProfile_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                         }
                         else
                         {
-                            _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                            _Set_AllMonitorProfile_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
                         }
@@ -4931,13 +4969,13 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                                _Set_AllMonitorProfile_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                                 return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             }
                             else
                             {
-                                _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                                _Set_AllMonitorProfile_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
                             }
@@ -4969,13 +5007,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (String.IsNullOrEmpty(Key_Profile_Name))
                         {
-                            _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                            _Get_AllMonitorProfile_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                         }
                         else
                         {
-                            _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                            _Get_AllMonitorProfile_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
                         }
@@ -4998,13 +5036,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (String.IsNullOrEmpty(Key_Profile_Name))
                         {
-                            _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                            _Get_AllMonitorProfile_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                         }
                         else
                         {
-                            _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                            _Get_AllMonitorProfile_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
                         }
@@ -5031,13 +5069,13 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (String.IsNullOrEmpty(Key_Profile_Name))
                             {
-                                _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                                _Get_AllMonitorProfile_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                                 return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             }
                             else
                             {
-                                _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                                _Get_AllMonitorProfile_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
                             }
@@ -5105,13 +5143,13 @@ namespace DDPM.CLI.Plugins.Display
                         if (!r)
                         {
                             ;
-                            _Set_AllActiveColorPreset_RESPONSE.Result = "fail";
+                            _Set_AllActiveColorPreset_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                         }
                         else
                         {
-                            _Set_AllActiveColorPreset_RESPONSE.Result = "pass";
+                            _Set_AllActiveColorPreset_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented);
                         }
@@ -5132,13 +5170,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_AllActiveColorPreset_RESPONSE.Result = "fail";
+                            _Set_AllActiveColorPreset_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                             return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                         }
                         else
                         {
-                            _Set_AllActiveColorPreset_RESPONSE.Result = "pass";
+                            _Set_AllActiveColorPreset_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented);
                         }
@@ -5163,13 +5201,13 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_AllActiveColorPreset_RESPONSE.Result = "fail";
+                                _Set_AllActiveColorPreset_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                                 return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                             }
                             else
                             {
-                                _Set_AllActiveColorPreset_RESPONSE.Result = "pass";
+                                _Set_AllActiveColorPreset_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented);
                             }
@@ -5365,6 +5403,8 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"RestoreFactoryDefaults entry");
                         r = devMgr.SetVCPCapability(monitor, 0x04, 0x01).Result;
 
+                        _Set_CLI_RESPONSE_RESPONSE.Model = monitor.AliasDeviceName;
+                        _Set_CLI_RESPONSE_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_CLI_RESPONSE_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
@@ -5372,7 +5412,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreFactoryDefaults fail{output}");
@@ -5381,7 +5421,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreFactoryDefaults pass{output}");
@@ -5397,6 +5437,8 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"RestoreFactoryDefaults idx entry");
                         r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x04, 0x01).Result;
 
+                        _Set_CLI_RESPONSE_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].AliasDeviceName;
+                        _Set_CLI_RESPONSE_RESPONSE.SerialNumber = _AllInfoMonitors[System.Convert.ToInt32(idx)].edid.SerialNumber;
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
                         _Set_CLI_RESPONSE_RESPONSE.ServiceTag = "";
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
@@ -5404,7 +5446,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreFactoryDefaults idx fail{output}");
@@ -5413,7 +5455,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreFactoryDefaults idx pass{output}");
@@ -5433,6 +5475,8 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"RestoreFactoryDefaults tag entry");
                             r = devMgr.SetVCPCapability(mo, 0x04, 0x01).Result;
 
+                            _Set_CLI_RESPONSE_RESPONSE.Model = mo.AliasDeviceName;
+                            _Set_CLI_RESPONSE_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_CLI_RESPONSE_RESPONSE.ServiceTag = tag;
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
@@ -5440,7 +5484,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 writelog($"RestoreFactoryDefaults tag fail{output}");
@@ -5449,7 +5493,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 writelog($"RestoreFactoryDefaults tag pass{output}");
@@ -5500,7 +5544,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreLevelDefaults fail {output}");
@@ -5509,7 +5553,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreLevelDefaults pass{output}");
@@ -5530,7 +5574,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreLevelDefaults idx fail {output}");
@@ -5539,7 +5583,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreLevelDefaults idx pass{output}");
@@ -5564,7 +5608,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 writelog($"RestoreLevelDefaults tag fail {output}");
@@ -5573,7 +5617,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 writelog($"RestoreLevelDefaults tag pass{output}");
@@ -5624,7 +5668,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreColorDefaults fail{output}");
@@ -5633,7 +5677,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreColorDefaults pass{output}");
@@ -5654,7 +5698,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreColorDefaults idx fail{output}");
@@ -5663,7 +5707,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             writelog($"RestoreColorDefaults idx pass{output}");
@@ -5688,7 +5732,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 writelog($"RestoreColorDefaults tag fail{output}");
@@ -5697,7 +5741,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 writelog($"RestoreColorDefaults tag pass{output}");
@@ -5757,7 +5801,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             if (exit == 0)
@@ -5765,7 +5809,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
@@ -5794,7 +5838,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!r)
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             if (exit == 0)
@@ -5802,7 +5846,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
@@ -5835,7 +5879,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!r)
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 if (exit == 0)
@@ -5843,7 +5887,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             }
@@ -5877,13 +5921,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (retcode)
                         {
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                         else
                         {
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             if (exit == 0)
@@ -5908,13 +5952,13 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (retcode)
                         {
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                         else
                         {
-                            _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             if (exit == 0)
@@ -5942,13 +5986,13 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (retcode)
                             {
-                                _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
+                                _Get_CLI_RESPONSE_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             }
                             else
                             {
-                                _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
+                                _Get_CLI_RESPONSE_RESPONSE.Result = "FAIL";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                                 if (exit == 0)
@@ -6256,6 +6300,11 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;                                  
                                     USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                    if (commandLineInput.Options[i].Option_Value.ToUpper().Equals("HIGHSPEED"))
+                                    {
+                                        commandLineInput.Options[i].Option_Value = "HighDataSpeed";
+                                        USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                    }
                                     USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
                                 }
@@ -6450,31 +6499,69 @@ namespace DDPM.CLI.Plugins.Display
 
                                 break;
                             }
-                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                            if (string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                             {
-                                cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-                                string value = commandLineInput.Options[0].Option_Value;
-                                string frequency = null;
-                                //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
-                                string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
-                                //Debug.WriteLine($"width: {ss[0]}, {ss[1]}");
-                                string[] sss = ss[1].Split("@");
-                                //Debug.WriteLine($"high: {sss[0]}, {sss[1]}");
-                                sss[1].Replace(".", ",");
-                                if (sss[1].Contains(","))
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                                 {
-                                    string[] ssss = sss[1].Split(",");
-                                    frequency = ssss[0];
-                                    string lock_option = ssss[1];
+
+
+                                    cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                    string value = commandLineInput.Options[0].Option_Value;
+                                    string frequency = null;
+                                    //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
+                                    string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
+                                    //Debug.WriteLine($"width: {ss[0]}, {ss[1]}");
+                                    if (string.IsNullOrEmpty(ss[1]))
+                                    {
+                                        string[] sss = ss[1].Split("@");
+                                        //Debug.WriteLine($"high: {sss[0]}, {sss[1]}");
+                                        if (string.IsNullOrEmpty(sss[1]))
+                                        {
+                                            sss[1].Replace(".", ",");
+                                            if (sss[1].Contains(","))
+                                            {
+                                                string[] ssss = sss[1].Split(",");
+                                                if (string.IsNullOrEmpty(ssss[0]))
+                                                {
+                                                    frequency = ssss[0];
+                                                    string lock_option = ssss[1];
+                                                }
+                                                else
+                                                {
+                                                    cLI_RESPONSE.Result = "FAIL";
+                                                    cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                                }
+
+                                            }
+                                            else
+                                                frequency = sss[1];
+                                            //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
+                                            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
+                                            ret = _devMgr.SetDisplayPropertiest(monitorInfo,
+                                                displayProperties,
+                                                displayPropertiesInfo.CurrentOrientation).Result;
+
+                                        }
+                                        else
+                                        {
+                                            cLI_RESPONSE.Result = "FAIL";
+                                            cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        cLI_RESPONSE.Result = "FAIL";
+                                        cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                    }
+
                                 }
                                 else
-                                    frequency = sss[1];
+                                {
+                                    cLI_RESPONSE.Result = "FAIL";
+                                    cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                }
 
-                                //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
-                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
-                                ret = _devMgr.SetDisplayPropertiest(monitorInfo,
-                                    displayProperties,
-                                    displayPropertiesInfo.CurrentOrientation).Result;
                             }
                             else
                             {
@@ -8009,15 +8096,21 @@ namespace DDPM.CLI.Plugins.Display
                 get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                 get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
-                writelog($"MonitorActiveHour Entry");
-                rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
-                writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
+                if (monitor.CapabilityDic.ContainsKey("C0"))
+                {
+                    writelog($"MonitorActiveHour Entry");
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
+                    writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
+                }
 
-                writelog($"DisplayTechnologyType Entry");
-                rc = GetVCPCode(devMgr, monitor, "0xB6").Result;
-                get_DeviceData.DisplayTechnologyType = get_display_technology_type((rc.value).ToString());
-                writelog($"MonitorActiveHour Exit return value: {get_display_technology_type((rc.value).ToString())}");
+                if (monitor.CapabilityDic.ContainsKey("B6"))
+                {
+                    writelog($"DisplayTechnologyType Entry");
+                    rc = GetVCPCode(devMgr, monitor, "0xB6").Result;
+                    get_DeviceData.DisplayTechnologyType = get_display_technology_type((rc.value).ToString());
+                    writelog($"MonitorActiveHour Exit return value: {get_display_technology_type((rc.value).ToString())}");
+                }
 
                 string HexString = monitor.edid.Edid;
                 string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
@@ -8058,10 +8151,13 @@ namespace DDPM.CLI.Plugins.Display
                 get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
                 writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
 
-                writelog($"ScreenOrientation Entry");
-                rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
-                get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
-                writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
+                if (monitor.CapabilityDic.ContainsKey("AA"))
+                {
+                    writelog($"ScreenOrientation Entry");
+                    rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
+                    get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
+                    writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
+                }
 
                 if (monitor.CapabilityDic.ContainsKey("12"))
                 {
@@ -8088,29 +8184,32 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
                 }
 
-                writelog($"AutoBrightness Entry");
-                param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightness, 0).Result;
-                get_DeviceData.AutoBrightness = param.isAutoBrightness ? "on" : "off";
-                writelog($"AutoBrightness Exit return value: {(param.isAutoBrightness ? "on" : "off")}");
-
-                writelog($"AutoBrightnessRangeLevel Entry");
-                param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
-                if (param.AutoBrightnessRangeLevel.Count != 0)
+                if (monitor.CapabilityDic.ContainsKey("66"))
                 {
-                    get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
-                    writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                    writelog($"AutoBrightness Entry");
+                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightness, 0).Result;
+                    get_DeviceData.AutoBrightness = param.isAutoBrightness ? "on" : "off";
+                    writelog($"AutoBrightness Exit return value: {(param.isAutoBrightness ? "on" : "off")}");
+
+                    writelog($"AutoBrightnessRangeLevel Entry");
+                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
+                    if (param.AutoBrightnessRangeLevel.Count != 0)
+                    {
+                        get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
+                        writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                    }
+                    writelog($"AutoBrightness Exit return value: FAIL");
+
+                    writelog($"AutoColorTemp Entry");
+                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;
+                    get_DeviceData.AutoColorTemp = param.isAutoColorTemp ? "on" : "off";
+                    writelog($"AutoColorTemp Exit return value: {(param.isAutoColorTemp ? "on" : "off")}");
+
+                    writelog($"PrimaryMonitorForSync Entry");
+                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.PrimaryMonitorSync, 0).Result;
+                    get_DeviceData.PrimaryMonitorForSync = param.isPrimaryMonitorSync ? "on" : "off";
+                    writelog($"PrimaryMonitorForSync Exit return value: {(param.isPrimaryMonitorSync ? "on" : "off")}");
                 }
-                writelog($"AutoBrightness Exit return value: FAIL");
-
-                writelog($"AutoColorTemp Entry");
-                param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;
-                get_DeviceData.AutoColorTemp = param.isAutoColorTemp ? "on" : "off";
-                writelog($"AutoColorTemp Exit return value: {(param.isAutoColorTemp ? "on" : "off")}");
-
-                writelog($"PrimaryMonitorForSync Entry");
-                param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.PrimaryMonitorSync, 0).Result;
-                get_DeviceData.PrimaryMonitorForSync = param.isPrimaryMonitorSync ? "on" : "off";
-                writelog($"PrimaryMonitorForSync Exit return value: {(param.isPrimaryMonitorSync ? "on" : "off")}");
 
                 writelog($"AspectRatio Entry");
                 int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
@@ -8201,10 +8300,13 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.PowerNap = "N/A";
                 writelog($"PowerNap Exit return value: {get_DeviceData.PowerNap}");
 
-                writelog($"OSD_language Entry");
-                rc = GetVCPCode(devMgr, monitor, "0xCC").Result;
-                get_DeviceData.OSD_language = get_language((rc.value).ToString());
-                writelog($"OSD_language Exit return value: {get_DeviceData.OSD_language}");
+                if (monitor.CapabilityDic.ContainsKey("CC"))
+                {
+                    writelog($"OSD_language Entry");
+                    rc = GetVCPCode(devMgr, monitor, "0xCC").Result;
+                    get_DeviceData.OSD_language = get_language((rc.value).ToString());
+                    writelog($"OSD_language Exit return value: {get_DeviceData.OSD_language}");
+                }
 
                 recode_dis = true;
 
@@ -9163,7 +9265,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) GetDiagnosticReport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "SET" || commandLineInput.Options.Count == 0)
+            if (commandLineInput.Command == "SET")
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -9171,6 +9273,10 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Invalid command line syntax or missing -value=file";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+            else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            {
+                return DiagnosticReportv2(devMgr, commandLineInput).Result;
             }
             else
             {
@@ -9263,9 +9369,16 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
-            string filepath = commandLineInput.Options[0].Option_Value;
-            string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
-            string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            string filepath = @$"C:\Temp\";
+            string filepath_ = @$"C:\Temp\Log";
+            string file = @$"C:\Temp\Log.zip";
+            if (commandLineInput.Options.Count == 1)
+            {
+                filepath = commandLineInput.Options[0].Option_Value;
+                filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
+                file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            }
+
             string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
 
@@ -9289,7 +9402,7 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Message = commandLineInput.Options[0].Option_Value;
+                    cli_Response.Message = filepath;
                     devMgr.SaveLogFile(filepath_);
 
                     if (!File.Exists(file))
@@ -9471,25 +9584,36 @@ namespace DDPM.CLI.Plugins.Display
             else
             {
                 //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                string info = string.Empty;
-                string filename = ss_1[1];
                 if (commandLineInput.Options.Count == 1)
                 {
 
-                    //if (!File.Exists(filename))
-                    if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                    if (commandLineInput.Options[0].Option_Value.Contains(","))
+                    {
+                        string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                        string info = string.Empty;
+                        string filename = ss_1[1];
+                        if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                        {
+                            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                            cli_Response.Command = commandLineInput.Command;
+                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "file.json is not exist.";
+                            return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                        }
+                        else
+                        {
+                            return ApplyConfiguration(devMgr, commandLineInput).Result;
+                        }
+                    }
+                    else
                     {
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
                         cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file.json is not exist.";
+                        cli_Response.Message = "Invalid command line syntax.";
                         return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-                    }
-                    else
-                    {
-                        return ApplyConfiguration(devMgr, commandLineInput).Result;
                     }
                 }
                 else
@@ -9504,7 +9628,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> ApplyConfiguration(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private async Task<(int code, string result)> ApplyConfiguration_v1(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
             Properties displayProperties;
@@ -9518,9 +9642,27 @@ namespace DDPM.CLI.Plugins.Display
             Trace.WriteLine(ss_1[0]);
             Trace.WriteLine(ss_1[1]);
 
-            StreamReader r = new StreamReader(ss_1[1]);
-            string jsonString = r.ReadToEnd();
-            r.Close();
+            /*StreamReader r = new StreamReader(ss_1[1]);
+            string jsonString = r.ReadToEnd();;
+            r.Close();*/
+
+            // modify start @ 20241022 stephen: modify for CMA input config as json string
+            // x:\\config.json
+
+            string jsonString = String.Empty;
+
+            if ((@$"x:\config.json").ToLower().Equals(ss_1[1].ToLower()))
+            {
+                jsonString = commandLineInput.jsonDeviceConfig.ToString();
+            }
+            else
+            {
+                StreamReader r = new StreamReader(ss_1[1]);
+                jsonString = r.ReadToEnd();
+                r.Close();
+            }
+            // modiffy end @ 20241022
+
             string[] jsonString_2 = jsonString.Split("\"Device\":");
             int i = 0;
             int count = jsonString.Split("Index").Length - 1;
@@ -9623,7 +9765,7 @@ namespace DDPM.CLI.Plugins.Display
                     else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
                     writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
 
-                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
+                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(devicedata.ActiveInputSource.ToUpper()).ToString())).Result;
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
                     writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
@@ -9761,6 +9903,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"PowerNap={ApplyConfiguration.PowerNap}");
 
                     retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(devicedata.OSD_language).ToString()).Result;
+                    writelog($"OSD_language={GetOSDLanguage_index(devicedata.OSD_language).ToString()}");
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.OSD_language = devicedata.OSD_language;
                     writelog($"OSD_language={ApplyConfiguration.OSD_language}");
@@ -9773,7 +9916,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         ApplyConfiguration.Result = "FAIL";
-                        ApplyConfiguration.Message = "Sometings fail!";
+                        ApplyConfiguration.Message = "Somethings fail!";
                     }
                     System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
@@ -9821,6 +9964,555 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
             return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private async Task<(int code, string result)> ApplyConfiguration(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+            DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
+            Properties displayProperties;
+            ALSConfig param = new ALSConfig();
+            string output = string.Empty;
+            ObjGetVCP rc = new ObjGetVCP();
+
+            List<DeviceInfo> _deviceinfo = null;
+            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
+            {
+                string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                if (ss_1.Length == 2 )
+                {
+                    if (!string.IsNullOrEmpty(ss_1[0]) && !string.IsNullOrEmpty(ss_1[1]))
+                    {
+                        Trace.WriteLine(ss_1[0]);
+                        Trace.WriteLine(ss_1[1]);
+
+
+                        /*StreamReader r = new StreamReader(ss_1[1]);
+                        string jsonString = r.ReadToEnd();;
+                        r.Close();*/
+
+                        // modify start @ 20241022 stephen: modify for CMA input config as json string
+                        // x:\\config.json
+
+                        string jsonString = String.Empty;
+
+                        if ((@$"x:\config.json").ToLower().Equals(ss_1[1].ToLower()))
+                        {
+                            jsonString = commandLineInput.jsonDeviceConfig.ToString();
+                        }
+                        else
+                        {
+                            StreamReader r = new StreamReader(ss_1[1]);
+                            jsonString = r.ReadToEnd();
+                            r.Close();
+                        }
+                        // modiffy end @ 20241022
+
+                        string[] jsonString_2 = jsonString.Split("\"Device\":");
+                        int i = 0;
+                        int count = jsonString.Split("Index").Length - 1;
+
+                        switch (ss_1[0].ToUpper())
+                        {
+                            case "DISPLAY":
+                                do
+                                {
+                                    if (jsonString_2[i].Contains("DISPLAY", StringComparison.OrdinalIgnoreCase))
+                                    {
+
+                                        if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
+                                        {
+                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+                                        }
+                                        break;
+                                    }
+
+                                    i++;
+                                } while (true);
+                                break;
+
+                            case "MOUSE":
+                                do
+                                {
+                                    if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalMouse\"", "");
+                                        if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
+                                        {
+                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+                                        }
+                                        break;
+                                    }
+                                    i++;
+                                } while (true);
+                                break;
+
+                            case "KEYBOARD":
+                                do
+                                {
+                                    if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalKeyboard\"", "");
+                                        if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
+                                        {
+                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+                                        }
+                                        break;
+                                    }
+
+                                    i++;
+                                } while (true);
+                                break;
+                        }
+                        if (string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
+                        {
+                            CLI_RESPONSE cli_Response_ = new CLI_RESPONSE();
+                            cli_Response_.Command = commandLineInput.Command;
+                            cli_Response_.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response_.Result = "FAIL";
+                            cli_Response_.Message = "file format is not valid.";
+                            return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response_.ToJson());
+                        }
+                        Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
+
+                        // malik
+                        // dynamic jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonString_2[i]);
+                        JObject jsonObject = JObject.Parse(jsonString_2[i]);
+                        // malik
+
+                        bool ispass = true;
+                        //string[] not_support_list = new string[] { "ColorPreset", "ColorManagement"};
+
+                        List<int> _monitorIndeies = new List<int>();
+
+                        if (_AllInfoMonitors == null)
+                            _AllInfoMonitors = devMgr.GetMonitors().Result;
+                        _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+                        writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
+                        if (ss_1[0].ToUpper() == "DISPLAY")
+                        {
+                            foreach (int idx in _monitorIndeies)
+                            {
+                                MonitorInfo monitor = _AllInfoMonitors[idx];
+                                Apply_Configuration ApplyConfiguration = new Apply_Configuration();
+                                ApplyConfiguration.Command = commandLineInput.Command;
+                                ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
+                                ApplyConfiguration.Model = monitor.AliasDeviceName;
+                                ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
+                                ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
+                                ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
+
+
+                                // malik
+                                bool retcode = false;
+                                displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+
+                                foreach (var property in jsonObject.Properties())
+                                {
+                                    Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+
+                                    switch (property.Name.ToString())
+                                    {
+                                        case "ScreenOrientation":
+                                            writelog($"ScreenOrientation entry");
+                                            if (monitor.CapabilityDic.ContainsKey("AA"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(property.Value.ToString())).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
+                                                writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"ScreenOrientation VCP not support");
+                                                output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "ActiveInputSource":
+                                            writelog($"ActiveInputSource entry");
+                                            if (monitor.CapabilityDic.ContainsKey("60"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
+                                                writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"ActiveInputSource VCP not support");
+                                                output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "OptimalResolution":
+                                            writelog($"OptimalResolution entry");
+                                            if (monitor.CapabilityDic.ContainsKey("AA"))
+                                            {
+                                                string[] ss = property.Value.ToString().Split(" ");
+                                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00Hz")[0]) };
+                                                retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.OptimalResolution = property.Value.ToString();
+                                                ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
+                                                writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"OptimalResolution VCP not support");
+                                                output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
+                                            }
+                                            break;
+
+                                        //case "AspectRatio":
+
+                                        //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                                        //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                                        //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                                        //    break;
+
+                                        case "ContrastLevel":
+                                            writelog($"ContrastLevel entry");
+                                            if (monitor.CapabilityDic.ContainsKey("12"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.ContrastLevel = property.Value.ToString();
+                                                writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"ContrastLevel VCP not support");
+                                                output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "BrightnessLevel":
+                                            writelog($"BrightnessLevel entry");
+                                            if (monitor.CapabilityDic.ContainsKey("12"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
+                                                writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"BrightnessLevel VCP not support");
+                                                output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "LuminanceLevel":
+                                            writelog($"LuminanceLevel entry");
+                                            if (!monitor.CapabilityDic.ContainsKey("12"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
+                                                writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"LuminanceLevel VCP not support");
+                                                output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "AutoBrightness":
+                                            writelog($"AutoBrightness entry");
+                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                            {
+                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.AutoBrightness = property.Value.ToString();
+                                                writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"AutoBrightness VCP not support");
+                                                output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "AutoBrightnessRangeLevel":
+                                            writelog($"AutoBrightnessRangeLevel entry");
+                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                            {
+                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
+                                                writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"AutoBrightnessRangeLevel VCP not support");
+                                                output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "AutoColorTemp":
+                                            writelog($"AutoColorTemp entry");
+                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                            {
+                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
+                                                writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"AutoColorTemp VCP not support");
+                                                output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "PrimaryMonitorForSync":
+                                            writelog($"PrimaryMonitorForSync entry");
+                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                            {
+                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
+                                                writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"PrimaryMonitorForSync VCP not support");
+                                                output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
+                                            }
+                                            break;
+
+                                        case "USB_CPrioritization":
+                                            if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                                            {
+                                                USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
+                                                if (gettype != USBCPrioritizationType.Unknow)
+                                                {
+                                                    retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
+                                                    writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
+                                                output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
+                                            }
+
+                                            break;
+
+                                        case "SpeakerMicrophone":
+                                            writelog($"SpeakerMicrophone entry");
+                                            if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
+                                            {
+                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                int getvalue = Convert.ToInt32(rc.value);
+                                                retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+
+                                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                int getvalue2 = Convert.ToInt32(rc.value);
+                                                bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+
+                                                if (!retcode && !retcode2) ispass = false;
+                                                else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
+                                                writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                            }
+                                            else
+                                            {
+                                                ApplyConfiguration.SpeakerMicrophone = "N/A";
+                                                writelog($"SpeakerMicrophone VCP not support");
+                                                output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
+                                            }
+
+                                            break;
+
+                                        case "SpeakerVolume":
+                                            writelog($"SpeakerVolume entry");
+                                            if (monitor.CapabilityDic.ContainsKey("62"))
+                                            {
+                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                int getvalue = Convert.ToInt32(rc.value);
+                                                string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
+                                                if (setvalue != "Unknown_command")
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                else
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
+                                                writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
+                                            }
+                                            else
+                                            {
+                                                ApplyConfiguration.SpeakerVolume = "N/A";
+                                                writelog($"SpeakerVolume VCP not support");
+                                                output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                            }
+
+                                            break;
+
+                                        case "MicrophoneControl":
+                                            writelog($"MicrophoneControl entry");
+                                            if (monitor.CapabilityDic.ContainsKey("8D"))
+                                            {
+                                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                int getvalue = Convert.ToInt32(rc.value);
+                                                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
+                                                writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
+                                            }
+                                            else
+                                            {
+                                                ApplyConfiguration.MicrophoneControl = "N/A";
+                                                writelog($"SpeakerVolume VCP not support");
+                                                output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                            }
+
+                                            break;
+
+                                        case "Uniformity":
+                                            writelog($"Uniformity entry");
+                                            if (monitor.CapabilityDic.ContainsKey("E4"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                                writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                            }
+                                            else
+                                            {
+                                                ApplyConfiguration.Uniformity = "N/A";
+                                                writelog($"Uniformity VCP not support");
+                                                output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                            }
+
+                                            break;
+
+                                        case "PowerNap":
+                                            writelog($"PowerNap entry");
+                                            PowerNapSetting setting = new PowerNapSetting
+                                            {
+                                                Status = false,
+                                                ModelName = monitor.edid.ModelName,
+                                                SerialNumber = monitor.edid.SerialNumber,
+                                                RunType = get_PowerNapType_code(property.Value.ToString())
+                                            };
+                                            retcode = await devMgr.SavePowerNapSetting(setting);
+                                            if (!retcode) ispass = false;
+                                            else ApplyConfiguration.PowerNap = property.Value.ToString();
+                                            writelog($"PowerNap={ApplyConfiguration.PowerNap}");
+                                            break;
+
+                                        case "OSD_language":
+                                            writelog($"OSD_language entry");
+                                            if (monitor.CapabilityDic.ContainsKey("CC"))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                                writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.OSD_language = property.Value.ToString();
+                                                writelog($"OSD_language={ApplyConfiguration.OSD_language}");
+                                            }
+                                            else
+                                            {
+                                                writelog($"OSD_language VCP not support");
+                                                output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
+                                            }
+
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+
+                                if (ispass)
+                                {
+                                    ApplyConfiguration.Result = "PASS";
+                                    ApplyConfiguration.Message = "N/A";
+                                }
+                                else
+                                {
+                                    ApplyConfiguration.Result = "FAIL";
+                                    ApplyConfiguration.Message = "N/A";
+                                }
+                                System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
+                            }
+                        }
+                        else if (ss_1[0].ToUpper() == "MOUSE")
+                        {
+                            CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                            cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
+                            ispass = true;
+
+                            if (ispass)
+                            {
+                                output += $"\n  \"Result: \": \"MOUSE PASS\"";
+                            }
+                            else
+                            {
+                                output += $"\n  \"Result: \": \"MOUSE FAIL\"";
+                            }
+                            output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                        }
+                        else if (ss_1[0].ToUpper() == "KEYBOARD")
+                        {
+                            CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                            cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
+                            ispass = true;
+
+                            if (ispass)
+                            {
+                                output += $"\n  \"Result: \": \"KEYBOARD PASS\"";
+                            }
+                            else
+                            {
+                                output += $"\n  \"Result: \": \"KEYBOARD FAIL\"";
+                            }
+                            output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                        }
+                        else
+                        {
+                            CLI_RESPONSE cli_Response__ = new CLI_RESPONSE();
+                            cli_Response__.Command = commandLineInput.Command;
+                            cli_Response__.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response__.Result = "FAIL";
+                            cli_Response__.Message = "Invalid command line syntax or missing -value=file.json";
+                            return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response__.ToJson());
+                        }
+                        return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+                    }
+                }
+                
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response___ = new CLI_RESPONSE();
+                cli_Response___.Command = commandLineInput.Command;
+                cli_Response___.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response___.Result = "FAIL";
+                cli_Response___.Message = "Invalid command line syntax or missing -value=file.json";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response___.ToJson());
+            }
+            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = "FAIL";
+            cli_Response.Message = "Invalid command line syntax or missing -value=file.json";
+            return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+
         }
 
         private static string get_ScreenOrientation_code(string Orientation)
@@ -9972,15 +10664,15 @@ namespace DDPM.CLI.Plugins.Display
                 case "Component video (YPrPb/YCrCb) 1": return "0x0c";
                 case "Component video (YPrPb/YCrCb) 2": return "0x0d";
                 case "Component video (YPrPb/YCrCb) 3": return "0x0e";
-                case "DisplayPort-1": return "0x0f";
+                case "DISPLAYPORT-1": return "0x0f";
                 case "Mini DisplayPort-1": return "0x10";
                 case "HDMI-1": return "0x11";
                 case "HDMI-2": return "0x12";
-                case "DisplayPort-2": return "0x13";
+                case "DISPLAYPORT-2": return "0x13";
                 case "Mini DisplayPort-2": return "0x14";
                 case "HDMI3": return "0x15";
                 case "HDMI4": return "0x16";
-                case "DisplayPort-3": return "0x17";
+                case "DISPLAYPORT-3": return "0x17";
                 case "Mini DisplayPort-3": return "0x18";
                 case "Thunderbolt-1": return "0x19";
                 case "Thunderbolt-2": return "0x1a";
@@ -11143,7 +11835,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Output={output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
-        private static void LaunchNetworkkvmApp()
+        private static void LaunchNetworkkvmApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11160,8 +11852,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/console start";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11175,7 +11868,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmApp_on()
+        private static void LaunchNetworkkvmApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11192,8 +11885,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvm on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11207,7 +11901,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmApp_off()
+        private static void LaunchNetworkkvmApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11224,8 +11918,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvm off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11239,7 +11934,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmautoconnectApp_on()
+        private static void LaunchNetworkkvmautoconnectApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11256,8 +11951,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmautoconnect on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11271,7 +11967,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmautoconnectApp_off()
+        private static void LaunchNetworkkvmautoconnectApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11288,8 +11984,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmautoconnect off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11303,7 +12000,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferApp_on()
+        private static void LaunchNetworkkvmcontenttransferApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11320,8 +12017,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmcontenttransfer on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11335,7 +12033,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferApp_off()
+        private static void LaunchNetworkkvmcontenttransferApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11352,8 +12050,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmcontenttransfer off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11367,7 +12066,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmincomingportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmincomingportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11384,8 +12083,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11399,7 +12099,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmoutgoingportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmoutgoingportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11416,8 +12116,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11431,7 +12132,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmcontenttransferportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11448,8 +12149,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11463,7 +12165,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmaccessresetApp()
+        private static void LaunchNetworkkvmaccessresetApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11480,8 +12182,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmaccessreset";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11512,6 +12215,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        public event EventHandler<NKVMRespone> CLIActionEvent;
         private async Task<(int code, string result)> Networkkvm(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
@@ -11529,25 +12233,27 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //    //LaunchNetworkkvmApp(); //Open DDM console for debug
 
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ;
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                //    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    
+                    NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    //cli_Response.Model = monitor.AliasDeviceName;
+                    //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
+                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
+                {
                     switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
                         case "ON":
                             writelog($"Networkkvm on entry");
-                            LaunchNetworkkvmApp_on();
+                            LaunchNetworkkvmApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -11555,7 +12261,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvm off entry");
-                            LaunchNetworkkvmApp_off();
+                            LaunchNetworkkvmApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -11570,9 +12276,11 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+
                 }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             if (commandLineInput.Command == "GET")
             {
@@ -11581,29 +12289,42 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
+                //foreach (int idx in _monitorIndeies)
+                //{
                     //LaunchNetworkkvmApp(); //Open DDM console for debug
                     writelog($"Networkkvm get entry");
 
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
 
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    //cli_Response.Model = monitor.AliasDeviceName;
+                    //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    CLIActionEvent += OnCLINKVMv2;
+                    await devMgr.GetNKVMStatus();
+                    Sleep(10000);
+                    
 
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
-            }
+             }
+            //}
             writelog($"Networkkvm exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
+        private void OnCLINKVMv2(object sender, NKVMRespone e)
+        {
+            //EventHandler<NKVMRespone> handler = CLIActionEvent;
 
+            if (e.CLIName != null)
+                Trace.WriteLine($"TRUE");
+            else
+                Trace.WriteLine($"FALSE");
+        }
         private (int code, string result) InAppUSBkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
@@ -11731,7 +12452,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
@@ -11756,25 +12477,26 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                 {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ;
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-
                     switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
                         case "ON":
                             writelog($"Networkkvmautoconnect on entry");
-                            LaunchNetworkkvmautoconnectApp_on();
+                            LaunchNetworkkvmautoconnectApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -11782,7 +12504,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvmautoconnect off entry");
-                            LaunchNetworkkvmautoconnectApp_off();
+                            LaunchNetworkkvmautoconnectApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -11797,9 +12519,10 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             if (commandLineInput.Command == "GET")
             {
@@ -11808,22 +12531,22 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvmautoconnect get entry");
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvmautoconnect get entry");
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             writelog($"Networkkvmautoconnect exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
@@ -11837,7 +12560,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
@@ -11862,25 +12585,26 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                 {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ;
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-
                     switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
                         case "ON":
                             writelog($"Networkkvmcontenttransfer on entry");
-                            LaunchNetworkkvmcontenttransferApp_on();
+                            LaunchNetworkkvmcontenttransferApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -11888,7 +12612,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvmcontenttransfer off entry");
-                            LaunchNetworkkvmcontenttransferApp_off();
+                            LaunchNetworkkvmcontenttransferApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -11903,9 +12627,10 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             if (commandLineInput.Command == "GET")
             {
@@ -11914,23 +12639,23 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvmcontenttransfer get entry");
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvmcontenttransfer get entry");
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
 
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
 
             }
             writelog($"Networkkvmcontenttransfer exit return value : {output}");
@@ -11945,7 +12670,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
@@ -11970,25 +12695,26 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                int low = 1024;
+                int high = 49151;
+                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                 {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    int low = 1024;
-                    int high = 49151;
-
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvmincomingport entry");
-                        LaunchNetworkkvmincomingportApp(commandLineInput);
+                        LaunchNetworkkvmincomingportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12001,9 +12727,18 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                     }
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
+                else
+                {
+                    writelog($"option value not support");
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             if (commandLineInput.Command == "GET")
             {
@@ -12012,23 +12747,23 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvmincomingport get entry");
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvmincomingport get entry");
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
 
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             writelog($"Networkkvmincomingport exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
@@ -12042,7 +12777,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
@@ -12066,24 +12801,25 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
+                //foreach (int idx in _monitorIndeies)
+                //{
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
+                                       //MonitorInfo monitor = _AllInfoMonitors[idx];
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                int low = 1024;
+                int high = 49151;
+                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                 {
-                    LaunchNetworkkvmApp(); //Open DDM console for debug
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    int low = 1024;
-                    int high = 49151;
-
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvmoutgoingport entry");
-                        LaunchNetworkkvmoutgoingportApp(commandLineInput);
+                        LaunchNetworkkvmoutgoingportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12096,9 +12832,18 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                     }
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
+                else
+                {
+                    writelog($"option value not support");
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             if (commandLineInput.Command == "GET")
             {
@@ -12107,22 +12852,22 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvmoutgoingport get entry");
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvmoutgoingport get entry");
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             writelog($"Networkkvmoutgoingport exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
@@ -12136,7 +12881,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
@@ -12152,35 +12897,37 @@ namespace DDPM.CLI.Plugins.Display
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
-
-            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
+            NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+            if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
             {
-
-                List<int> _monitorIndeies = new List<int>();
-
-                if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = devMgr.GetMonitors().Result;
-                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
-
-                foreach (int idx in _monitorIndeies)
+                if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
                 {
-                    LaunchNetworkkvmApp(); //Open DDM console for debug
 
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    List<int> _monitorIndeies = new List<int>();
+
+                    if (_AllInfoMonitors == null)
+                        _AllInfoMonitors = devMgr.GetMonitors().Result;
+                    _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                //foreach (int idx in _monitorIndeies)
+                //{
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
+
+                    //MonitorInfo monitor = _AllInfoMonitors[idx];
+
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    //cli_Response.Model = monitor.AliasDeviceName;
+                    //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    //cli_Response.ServiceTag = monitor.edid.ServiceTag;
                     int low = 1024;
                     int high = 49151;
 
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvcontenttransferport entry");
-                        LaunchNetworkkvmcontenttransferportApp(commandLineInput);
+                        LaunchNetworkkvmcontenttransferportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12197,8 +12944,19 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    //}
                 }
             }
+            else
+            {
+                writelog($"option value not support");
+
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+            }
+
             if (commandLineInput.Command == "GET")
             {
                 List<int> _monitorIndeies = new List<int>();
@@ -12206,23 +12964,23 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvcontenttransferport get entry");
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvcontenttransferport get entry");
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
 
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                //NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             writelog($"Networkkvcontenttransferport exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
@@ -12236,7 +12994,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
@@ -12261,27 +13019,27 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    LaunchNetworkkvmApp(); //Open DDM console for debug
+                //foreach (int idx in _monitorIndeies)
+                //{
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
 
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    writelog($"Networkkvmaccessreset entry");
-                    LaunchNetworkkvmaccessresetApp();
-                    retcode = true;
-                    cli_Response.Result = "PASS";
-                    cli_Response.Value = $"Networkkvmaccessreset";
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                writelog($"Networkkvmaccessreset entry");
+                LaunchNetworkkvmaccessresetApp(Log);
+                retcode = true;
+                cli_Response.Result = "PASS";
+                cli_Response.Value = $"Networkkvmaccessreset";
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             if (commandLineInput.Command == "GET")
             {
@@ -12290,22 +13048,22 @@ namespace DDPM.CLI.Plugins.Display
                     _AllInfoMonitors = devMgr.GetMonitors().Result;
                 _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                foreach (int idx in _monitorIndeies)
-                {
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvmaccessreset get entry");
-                    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                //foreach (int idx in _monitorIndeies)
+                //{
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvmaccessreset get entry");
+                //MonitorInfo monitor = _AllInfoMonitors[idx];
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                //}
             }
             writelog($"Networkkvmaccessreset exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
@@ -12809,6 +13567,91 @@ namespace DDPM.CLI.Plugins.Display
                 S_FWUpdate_RESPONSE.Message = "Format Error";
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_FWUpdate_RESPONSE, Formatting.Indented));
             }
+        }
+
+        private (int code, string result) ExportSettingsx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if ((commandLineInput.Command == "SET" || commandLineInput.Command == "GET") && commandLineInput.Options.Count > 0)
+            {
+                return ExportSettings(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+        private async Task<(int code, string result)> ExportSettings(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            string filepath = commandLineInput.Options[0].Option_Value;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "IMPORTSETTINGS")
+            {
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    writelog($"DisplayImportSettings set entry");
+                    //retcode = devMgr.DisplayImportSettings(monitor, false, filepath).Result;
+
+                    cli_Response.Result = retcode == true ? "PASS" : "FAIL";
+                    //cli_Response.Value = $"IMPORTSETTINGS";
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET" && commandLineInput.TargetFeature == "EXPORTSETTINGS")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"DisplayExportSettings get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    retcode = devMgr.DisplayExportSettings(monitor, filepath).Result;
+
+                    cli_Response.Result = retcode == true ? "PASS" : "FAIL";
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Display Import Export Settings exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+
         }
     }
 }

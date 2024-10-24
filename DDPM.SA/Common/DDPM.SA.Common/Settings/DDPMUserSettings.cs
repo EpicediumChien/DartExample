@@ -1,4 +1,4 @@
-﻿using DdmLibrary.Utility;
+﻿using DDPM.SA.Common.Display;
 using System;
 using System.Collections.Generic;
 
@@ -49,6 +49,7 @@ namespace DDPM.SA.Common.Settings
         public int Language { get; set; }
         public bool IsSynchronizemonitor { get; set; } = false;
         public string Schedule { get; set; } = string.Empty;
+        public FrequencyDateTime TelementryFrequency { get; set; } = new FrequencyDateTime() { Month1stDay = DateTime.Now, PerDay = DateTime.Now, Weekly = DateTime.Now, };
 
         //Input
         //public string strInputSourceList { get; set; }
@@ -60,7 +61,7 @@ namespace DDPM.SA.Common.Settings
 
         //USBKVM
         //public string strUSBKVMPCsList { get; set; }
-        public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
+        //public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
 
         //FW Update
         public bool LockFWU_UI { get; set; }
@@ -71,13 +72,18 @@ namespace DDPM.SA.Common.Settings
         //public bool isOnUSBKVM { get; set; } = false;
         //public bool isOnNKVM { get; set; } = false;
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
-        public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
+        public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
         //Robert_Lin added for Display / Easy Arrange / Settings (EzSettings module)
         //These settings are per-user settings and will apply to all monitors
+
         #region EzSettings
+
         //Recent Hotkey settings: will save to Hotkey settings, implemented by Gavin Liu
+
+        //Robert_Lin, 2024-10-11 EasyArrange Custom Layouts, move from MonitorSettings
+        public SplitJson[] EACustomList { get; set; }
 
         public EzSettings EzSettings { get; set; } = new EzSettings();
 
@@ -89,5 +95,6 @@ namespace DDPM.SA.Common.Settings
 
         #endregion EasyMemory
 
+        public HotkeySettings HotkeySettings { get; set; } = new HotkeySettings();
     }
 }

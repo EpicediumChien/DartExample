@@ -26,11 +26,19 @@ namespace DDPM.Easy.Common
         }
 
 
-
+        private string _cellName = "";
         public string CellName
         {
-            get { return (string)GetValue(CellNameProperty); }
-            set { SetValue(CellNameProperty, value); }
+            get 
+            {
+                //return (string)GetValue(CellNameProperty);
+                return _cellName;
+            }
+            set 
+            {
+                SetValue(CellNameProperty, value); 
+                _cellName = value;
+            }
         }
 
         // Using a DependencyProperty as the backing store for CellName.  This enables animation, styling, binding, etc...
@@ -101,12 +109,16 @@ namespace DDPM.Easy.Common
             DependencyProperty.Register("BkBrush", typeof(Brush), typeof(CellBorder), new PropertyMetadata(new SolidColorBrush(Colors.Transparent)));
 
 
-
+        private bool _isHover = false;
 
         public bool IsHover
         {
             get { return (bool)GetValue(IsHoverProperty); }
-            set { SetValue(IsHoverProperty, value); }
+            set 
+            { 
+                SetValue(IsHoverProperty, value); 
+                _isHover = value;
+            }
         }
 
         // Using a DependencyProperty as the backing store for IsHover.  This enables animation, styling, binding, etc...
@@ -115,5 +127,24 @@ namespace DDPM.Easy.Common
 
 
         public Rect rect { get; set; } = new Rect();
+
+        public Border Border { get { return bd; } }
+
+        public void Dispatcher_SetIsHover(bool isHover)
+        {
+            if (_isHover != isHover)
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    IsHover = isHover;
+                    //IsEnabled = !isHover;
+                });
+            }
+        }
+
+        public void AddChild(UIElement ele)
+        {
+            childGrid.Children.Add(ele);
+        }
     }
 }

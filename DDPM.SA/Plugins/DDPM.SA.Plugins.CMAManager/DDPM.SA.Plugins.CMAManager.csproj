@@ -11,6 +11,7 @@
 	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+    <ProjectReference Include="..\..\DDPM.RemoteManagement.Common\DDPM.RemoteManagement.Common.csproj" />
   </ItemGroup>
 
 </Project>

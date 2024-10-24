@@ -245,7 +245,7 @@ namespace DDPM.SA.Common.CLI
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();
+            APP_RESPONSE response = new APP_RESPONSE();
             response.Command = commandLineInput.Command;
             response.TargetFeature = commandLineInput.TargetFeature;
 
@@ -285,7 +285,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             response.Value = data_IT.Lock_Settings_Updates ? "Lock" : "Unlock";
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             response.Value = data_IT.Lock_Display_ExportSettings ? "Lock" : "Unlock";
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -365,7 +365,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_IT.Lock_Settings_Updates = true;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_IT.Lock_Display_ExportSettings = true;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -419,7 +419,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_user.LockSettings.Lock_Settings_Updates = true;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_user.LockSettings.Lock_Display_ExportSettings = true;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -476,7 +476,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_IT.Lock_Settings_Updates = false;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_IT.Lock_Display_ExportSettings = false;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -530,7 +530,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             data_user.LockSettings.Lock_Settings_Updates = false;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             data_user.LockSettings.Lock_Display_ExportSettings = false;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -594,7 +594,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPUPDATE":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Settings_Updates" }).Result;
                             break;
-                        case "INAPPEXPORTSETTINGS":
+                        case "INAPPEXPORTIMPORT":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ExportSettings" }).Result;
                             break;
                         case "RESTOREFACTORYDEFAULTS":
@@ -673,7 +673,7 @@ namespace DDPM.SA.Common.CLI
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();
+            APP_RESPONSE response = new APP_RESPONSE();
             response.Command = commandLineInput.Command;
             response.TargetFeature = commandLineInput.TargetFeature;
 
@@ -697,7 +697,12 @@ namespace DDPM.SA.Common.CLI
             WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
             ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
             IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
-
+            
+            GlobalSettingParam param = null;
+            if (_DeviceManagerPlugin != null)
+            {
+                param = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+            }
             //GET is for user mode using
             if (commandLineInput.Command.Equals("GET")) //ex: cli.exe /get -app=TelemetryConsent
             {
@@ -726,11 +731,11 @@ namespace DDPM.SA.Common.CLI
                 switch (commandLineInput.TargetFeature)
                 {
                     case "TELEMETRYCONSENT":
-                        DDPMITConfig tmp;
+                        DDPMITConfig tmp;                        
                         if (data_user != null)
                         {
-                            Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {data_user.UserSettings.isTelemetryConsentOn}");
-                            response.Value = (data_user.UserSettings.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                            Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {param.isTelemetryConsentOn}");
+                            response.Value = (param.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
                         }
                         else//IT
                         {
@@ -802,9 +807,9 @@ namespace DDPM.SA.Common.CLI
                     if (value.ToUpper().Equals("TRUE"))
                     {
                         if (data_user != null)
-                        {
+                        {                            
                             if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
-                                data_user.UserSettings.isTelemetryConsentOn = true;
+                                param.isTelemetryConsentOn = true;
                             else
                                 return CLI_Response_TypeNotSupport(commandLineInput, result);
                         }
@@ -814,7 +819,7 @@ namespace DDPM.SA.Common.CLI
                         if (data_user != null)
                         {
                             if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
-                                data_user.UserSettings.isTelemetryConsentOn = false;
+                                param.isTelemetryConsentOn = false;
                             else
                                 return CLI_Response_TypeNotSupport(commandLineInput, result);
                         }
@@ -1097,6 +1102,10 @@ namespace DDPM.SA.Common.CLI
                 {
                     if (data_user != null)
                         status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
+                    if(param != null && commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                    {
+                        _DeviceManagerPlugin.Set_GlobalSetting_EnableTelemetryConsent(param.isTelemetryConsentOn);
+                    }
                 }
 
                 if (status)

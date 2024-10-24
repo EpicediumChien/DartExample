@@ -1330,6 +1330,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Continue 的當地語系化字串。
+        /// </summary>
+        internal static string Continue {
+            get {
+                return ResourceManager.GetString("Continue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Contrast 的當地語系化字串。
         /// </summary>
         internal static string Contrast {
@@ -1425,6 +1434,15 @@ namespace DDPM.UI.Resources {
         internal static string Display {
             get {
                 return ResourceManager.GetString("Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Do you want to reset your monitor to factory settings now? 的當地語系化字串。
+        /// </summary>
+        internal static string DisplayDefault_0 {
+            get {
+                return ResourceManager.GetString("DisplayDefault.0", resourceCulture);
             }
         }
         
@@ -2275,6 +2293,87 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Controls the amount of external sound you hear 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_20 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Eliminates surrounding noise 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_21 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.21", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Allows ambient sound to be heard. Adjusts the volume level of ambient sound heard. 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_22 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.22", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Turns off Noise Cancellation features 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_23 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.23", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Limits your near-end mic noise to create a better audio experience for others 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_24 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.24", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Limits far-end mic noise to create a better audio experience for you 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_25 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Equalizer adjusts based on chosen preset 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_26 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.26", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Adjusts how much you can hear your own voice while speaking on a call. (Not available in Transparency mode) 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_27 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.27", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Removes background noise to allow your voice to be heard clearly 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAudioSettings_28 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.28", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Off 的當地語系化字串。
         /// </summary>
         internal static string HeadsetAudioSettings_3 {
@@ -2356,6 +2455,42 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Pauses music automatically when headset is removed. Music will resume automatically when headset is put on. 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAutomatedActions_10 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Mutes microphone automatically when headset is removed 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAutomatedActions_11 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Pull down boom mic to answer calls 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAutomatedActions_12 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Automatic actions when you move an ear cup off your ear 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAutomatedActions_13 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Low 的當地語系化字串。
         /// </summary>
         internal static string HeadsetAutomatedActions_2 {
@@ -2419,6 +2554,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Automatic actions when you remove your headset 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetAutomatedActions_9 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Busy Light 的當地語系化字串。
         /// </summary>
         internal static string HeadsetDeviceSettings_0 {
@@ -2478,6 +2622,24 @@ namespace DDPM.UI.Resources {
         internal static string HeadsetDeviceSettings_6 {
             get {
                 return ResourceManager.GetString("HeadsetDeviceSettings.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Indicator light when on a call 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetDeviceSettings_7 {
+            get {
+                return ResourceManager.GetString("HeadsetDeviceSettings.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Audio prompts and announcements for device features 的當地語系化字串。
+        /// </summary>
+        internal static string HeadsetDeviceSettings_8 {
+            get {
+                return ResourceManager.GetString("HeadsetDeviceSettings.8", resourceCulture);
             }
         }
         
@@ -2586,6 +2748,60 @@ namespace DDPM.UI.Resources {
         internal static string Illumination_1 {
             get {
                 return ResourceManager.GetString("Illumination.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Automatically apply the settings when the same model is detected 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_Message_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Settings changed. Dell Display and Peripheral Manager will restart. 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_RestartMsg_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_RestartMsg.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Application settings exported successfully 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_SuccessMsg_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_SuccessMsg.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Application settings applied to %1 successfully. Enjoy using your monitor. 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_SuccessMsg_1 {
+            get {
+                return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync? 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_WarningMsg_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_WarningMsg.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 e associated with the current layout. Do you want to overwrite it? 的當地語系化字串。
+        /// </summary>
+        internal static string ImpExp_WarningMsg_1 {
+            get {
+                return ResourceManager.GetString("ImpExp_WarningMsg.1", resourceCulture);
             }
         }
         
@@ -3823,11 +4039,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Restart needed 的當地語系化字串。
+        /// </summary>
+        internal static string RestartNeeded {
+            get {
+                return ResourceManager.GetString("RestartNeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Restore to default 的當地語系化字串。
         /// </summary>
         internal static string RestoreToDefault {
             get {
                 return ResourceManager.GetString("RestoreToDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Restore to default actions 的當地語系化字串。
+        /// </summary>
+        internal static string RestoreToDefaultActions {
+            get {
+                return ResourceManager.GetString("RestoreToDefaultActions", resourceCulture);
             }
         }
         
@@ -4120,11 +4354,47 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Removes background noise to allow your voice to be heard clearly 的當地語系化字串。
+        /// </summary>
+        internal static string SpeakerToolTip_0 {
+            get {
+                return ResourceManager.GetString("SpeakerToolTip.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Plays a sound when the device goes on mute 的當地語系化字串。
+        /// </summary>
+        internal static string SpeakerToolTip_1 {
+            get {
+                return ResourceManager.GetString("SpeakerToolTip.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Plays a sound when the volume level is adjusted 的當地語系化字串。
+        /// </summary>
+        internal static string SpeakerToolTip_2 {
+            get {
+                return ResourceManager.GetString("SpeakerToolTip.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Sticky Notes 的當地語系化字串。
         /// </summary>
         internal static string StickyNotes {
             get {
                 return ResourceManager.GetString("StickyNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Success 的當地語系化字串。
+        /// </summary>
+        internal static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
             }
         }
         
@@ -5196,6 +5466,15 @@ namespace DDPM.UI.Resources {
         internal static string WalkThroughWebCamWB3023_Sub_2 {
             get {
                 return ResourceManager.GetString("WalkThroughWebCamWB3023_Sub.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Warning 的當地語系化字串。
+        /// </summary>
+        internal static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
         

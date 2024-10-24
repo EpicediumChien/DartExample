@@ -49,7 +49,7 @@ namespace DDPM.SA.Common
             "EASYARRANGELAYOUT",        //EasyArrangeLayout         DDPMW-1350
             "INAPPCOLORPRESET",         //InAppColorPreset          DDPMW-1351/1352
             "POWERNAP",                 //PowerNap                  DDPMW-1361
-            "INAPPEXPORTSETTINGS",      //InAppExportSettings       DDPMW-1335
+            "INAPPEXPORTIMPORT",        //INAPPEXPORTIMPORT       DDPMW-1335
             "COLLABSCREENSHARE",        //CollabScreenShare         DDPMW-1843
             "HDR",                      //hdr                       DDPMW-1729
             "ANTIFLICKER",              //AntiFlicker               DDPMW-1735
@@ -172,6 +172,9 @@ namespace DDPM.SA.Common
             //2024-08-28 Casper: Add isCliCommandsProcessCompleted for CLIAgent to judge more situation
             // rather than null commandLineInput
             public bool isCliCommandsProcessCompleted { get; set; } = false;
+
+            // 2024-10-22 Stephen: Add jsonDeviceConfig for CMA while using DeviceConfiguration and pass json string 
+            public string jsonDeviceConfig { get; set; }    =   String.Empty;
 
             public CommandLineInput()
             {

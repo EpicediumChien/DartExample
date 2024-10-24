@@ -36,6 +36,8 @@ namespace DDPM.Easy.Common
         public int CellCount => 3;
         public char SplitKey => 'B';
         public UserControl UC => this;
+        //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
+        public int EAID { get; set; } = 6;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -75,14 +77,14 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("3b1", cell_3b1));
-            cellListH.Add(new CellObj("3b2", cell_3b2));
-            cellListH.Add(new CellObj("3b3", cell_3b3));
+            cellListH.Add(new CellObj("3b1", cell_3b1) { rcRatio = new Rect(0, 0, 1/3, 1) });
+            cellListH.Add(new CellObj("3b2", cell_3b2) { rcRatio = new Rect(1/3, 0, 1/3, 1) });
+            cellListH.Add(new CellObj("3b3", cell_3b3) { rcRatio = new Rect(2/3, 0, 1/3, 1) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("3B1", cell_3B1));
-            cellListV.Add(new CellObj("3B2", cell_3B2));
-            cellListV.Add(new CellObj("3B3", cell_3B3));
+            cellListV.Add(new CellObj("3B1", cell_3B1) { rcRatio = new Rect(0, 0, 1, 1 / 3) });
+            cellListV.Add(new CellObj("3B2", cell_3B2) { rcRatio = new Rect(0, 1/3, 1, 1 / 3) });
+            cellListV.Add(new CellObj("3B3", cell_3B3) { rcRatio = new Rect(0, 2/3, 1, 1 / 3) });
         }
         #endregion Cell List
 
@@ -123,7 +125,27 @@ namespace DDPM.Easy.Common
         #endregion Settings
 
         #region FriendlyName
-        public string FriendlyName { get; set; }
+        private string _friendlyName = string.Empty;
+        private string _defaultHorzName = "Option 3.2 3 columns, equal splits.";
+        private string _defaultVertName = "Option 3.2 3 rows, equal splits.";
+        public string FriendlyName
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_friendlyName))
+                {
+                    if (VM.IsVertical)
+                        return _defaultVertName;
+                    else
+                        return _defaultHorzName;
+                }
+                return _friendlyName;
+            }
+            set
+            {
+                _friendlyName = value;
+            }
+        }
         #endregion FriendlyName
 
     }

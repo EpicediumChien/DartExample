@@ -142,7 +142,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
-            VcpCoreService.Setup(x => x.Re_GetMonitors(new CancellationTokenSource().Token)).Returns(Task.FromResult(_allInfoMonitors));
+            VcpCoreService.Setup(x => x.Re_GetMonitors(It.IsAny<CancellationToken>())).Returns(Task.FromResult(_allInfoMonitors)); //method update
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);

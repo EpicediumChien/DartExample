@@ -26,6 +26,7 @@ namespace DDPM.UI.Common
         public static readonly string On = GetString("On");
         public static readonly string Off = GetString("Off");
         public static readonly string RestoreToDefault = GetString("RestoreToDefault");
+        public static readonly string RestoreToDefaultActions = GetString("RestoreToDefaultActions");
         public static readonly string Unpair = GetString("Unpair");
         public static readonly string PollingRateInfoTip1 = GetString("Mouse.13");
         public static readonly string PollingRateInfoTip2 = GetString("Mouse.14");
@@ -112,7 +113,7 @@ namespace DDPM.UI.Common
         public static readonly string FirmwareVersion = GetString("FirmwareVersion"); //"Firmware Version"
         public static readonly string ServiceTag = GetString("ServiceTag"); //"Service Tag"
         public static readonly string ManufactureMonth = GetString("ManufactureMonth"); //"Manufactured"
-        public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
+        //public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
 
         //strings for Action
         public static readonly string None = GetString("None");//None
@@ -524,7 +525,6 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughHeadsetWL7024_Main3 = GetString("WalkThroughHeadsetWL7024_Main.3");
         public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
 
-
         //OpenAction
         public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
         public static readonly string OpenFileDesc = "Click the browse button to select a file";
@@ -533,5 +533,57 @@ namespace DDPM.UI.Common
         public static readonly string OpenFileWaterMark = "File Name";
         public static readonly string OpenFolderWaterMark = "Folder Name";
 
+        //Headset
+        public static readonly string HeadsetAudioSettingsToolTip_1 = GetString("HeadsetAudioSettings.20");
+        public static readonly string HeadsetAudioSettingsToolTip_2 = GetString("HeadsetAudioSettings.21");
+        public static readonly string HeadsetAudioSettingsToolTip_3 = GetString("HeadsetAudioSettings.22");
+        public static readonly string HeadsetAudioSettingsToolTip_4 = GetString("HeadsetAudioSettings.23");
+        public static readonly string HeadsetAudioSettingsToolTip_5 = GetString("HeadsetAudioSettings.24");
+        public static readonly string HeadsetAudioSettingsToolTip_6 = GetString("HeadsetAudioSettings.25");
+        public static readonly string HeadsetAudioSettingsToolTip_7 = GetString("HeadsetAudioSettings.26");
+        public static readonly string HeadsetAudioSettingsToolTip_8 = GetString("HeadsetAudioSettings.27");
+        public static readonly string HeadsetAudioSettingsToolTip_9 = GetString("HeadsetAudioSettings.28");
+
+        public static readonly string HeadsetAutomatedActionsToolTip_1 = GetString("HeadsetAutomatedActions.9");
+        public static readonly string HeadsetAutomatedActionsToolTip_2 = GetString("HeadsetAutomatedActions.10");
+        public static readonly string HeadsetAutomatedActionsToolTip_3 = GetString("HeadsetAutomatedActions.11");
+        public static readonly string HeadsetAutomatedActionsToolTip_4 = GetString("HeadsetAutomatedActions.12");
+        public static readonly string HeadsetAutomatedActionsToolTip_5 = GetString("HeadsetAutomatedActions.13");
+
+        public static readonly string HeadsetDeviceSettingsToolTip_1 = GetString("HeadsetDeviceSettings.7");
+        public static readonly string HeadsetDeviceSettingsToolTip_2 = GetString("HeadsetDeviceSettings.8");
+
+        //Speaker
+        public static readonly string SpeakerToolTip_1 = GetString("SpeakerToolTip.0");
+        public static readonly string SpeakerToolTip_2 = GetString("SpeakerToolTip.1");
+        public static readonly string SpeakerToolTip_3 = GetString("SpeakerToolTip.2");
+
+        //Import/Export
+        public static readonly string ImpExp_Success = GetString("Success");
+        public static readonly string ImpExp_Warning = GetString("Warning");
+        public static readonly string ImpExp_Continue = GetString("Continue");
+        public static readonly string ImpExp_Cancel = GetString("Cancel");
+        public static readonly string ImpExp_Restart = GetString("RestartNeeded");
+        public static readonly string ImpExp_RestartMsg0 = GetString("ImpExp_RestartMsg.0");
+        public static readonly string ImpExp_SuccessMsg0 = GetString("ImpExp_SuccessMsg.0");
+        public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
+        public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
+        public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+
+        // Pair/Unpair
+        public static readonly string Caption = "Are you sure?";
+        public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";
+        public static readonly string MessageKeyboard = "Unpairing your keyboard can limit your ability to use this computer. Make sure you have an alternative keyboard setup before unpairing.";
+        public static readonly string MessagePen = "Unpairing your pen can limit your ability to use this computer. Make sure you have an alternative pen setup before unpairing.";
+        public static readonly string MessageHeadset = "This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of [NAME] .";
+        public static readonly string Continue = "Continue";
+        public static readonly string Imcompatible = "This device is not compatible with";
+        public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
+        public static readonly string PairYourPen = "Pair your pen";
+        public static readonly string PairYourPenMessage = "Would you like to pair your pen with your system?";
+
+        // Display Restore to Default
+        public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
+        public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
     }
 }

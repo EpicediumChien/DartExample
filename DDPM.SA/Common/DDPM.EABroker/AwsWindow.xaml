@@ -1,0 +1,90 @@
+﻿<Window x:Class="DDPM.EABroker.AwsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DDPM.EABroker"
+        xmlns:ezCommon="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common"
+        mc:Ignorable="d"
+        Title="AwsWindow" 
+        Height="134" Width="788"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Background="Transparent" Loaded="Window_Loaded"
+        >
+    <Window.Resources>
+        <SolidColorBrush x:Key="OuterBorder_BkBrush" Color="#F20D121A"/>
+        <SolidColorBrush x:Key="OuterBorder_BdBrush" Color="#293B4D"/>
+        <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Aws_Normal" Color="White" />
+
+        <Style x:Key="MonitorIdTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Rototo"/>
+        </Style>
+    
+    </Window.Resources>
+    <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsAwsWindowVisible}" Value="True">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="Window.Topmost" Value="True" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+
+        <Border BorderBrush="{StaticResource OuterBorder_BdBrush}" Background="{StaticResource OuterBorder_BkBrush}"
+                Width="{Binding cxAws}" Height="{Binding cyAws}"
+                CornerRadius="6" BorderThickness="1.5">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="ContentControl">
+                        <Setter Property="Width" Value="120"/>
+                        <Setter Property="Height" Value="90"/>
+                    </Style>
+                </Grid.Resources>
+
+                <!-- Icon0, MonitorConfig -->
+                <Grid Grid.Column="0">
+                    <Border Width="120" Height="90" BorderThickness="1" BorderBrush="White"
+                            CornerRadius="6">
+                        <Canvas Name="icon0Canvas">
+                            <Canvas.Resources>
+                                <Style TargetType="ezCommon:CellBorder">
+                                    <Setter Property="BorderThickness" Value="1.5"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Canvas.Resources>
+                        </Canvas>
+                    </Border>
+                </Grid>
+                    
+                <!--<ContentControl Grid.Column="0" Content="{Binding AwsIcon0}"/>-->
+                
+                <!-- Icon1 ~ Icon4, EA Layouts load from RecentList -->
+                <ContentControl Grid.Column="1" Content="{Binding AwsIcon1}"/>
+                <ContentControl Grid.Column="2" Content="{Binding AwsIcon2}"/>
+                <ContentControl Grid.Column="3" Content="{Binding AwsIcon3}"/>
+                <ContentControl Grid.Column="4" Content="{Binding AwsIcon4}"/>
+            </Grid>
+        </Border>
+    </Grid></Window>

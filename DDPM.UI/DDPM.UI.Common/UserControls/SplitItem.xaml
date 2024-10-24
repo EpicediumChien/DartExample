@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
@@ -63,6 +63,20 @@
                 <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}" />
                 <Setter Property="BorderThickness" Value="1.5" />
             </Style>
+            
+            <!-- Set all Tooltip in SplitItem style -->
+            <!--<Style TargetType="ToolTip">
+                <Style.Resources>
+                    <Style TargetType="ContentPresenter">
+                        <Style.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="Wrap" />
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="MaxWidth" Value="200" />
+            </Style>-->
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -156,7 +170,7 @@
             </Grid>
 
             <Border.ToolTip>
-                <ToolTip>
+                <ToolTip MaxWidth="200">
                     <Border Background="{StaticResource ToolipBkColor}"
                             BorderBrush="{StaticResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
@@ -164,6 +178,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
                                 <Setter Property="FontSize" Value="12" />
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </Border.Resources>
 
@@ -197,7 +212,7 @@
                 </Style>
             </Border.Style>
             <Border.ToolTip>
-                <ToolTip>
+                <ToolTip MaxWidth="200">
                     <Border Background="{StaticResource ToolipBkColor}"
                             BorderBrush="{StaticResource ToolipBdColor}"
                             CornerRadius="4" Padding="8,12">
@@ -205,6 +220,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
                                 <Setter Property="FontSize" Value="12" />
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </Border.Resources>
 

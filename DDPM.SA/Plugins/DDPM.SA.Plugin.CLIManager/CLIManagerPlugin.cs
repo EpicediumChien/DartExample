@@ -235,7 +235,7 @@ namespace DDPM.SA.Plugin.CLIManager
             rst.ExitCode = (int)CLI_ExitCode.IT_Command_Not_Support;
             rst.command_guid_string = command_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();//for fail return using
+            APP_RESPONSE response = new APP_RESPONSE();//for fail return using
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
 
@@ -370,8 +370,8 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
                     //break;
-                case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
-                    if (commandLineInput.PluginsType.Equals("APP"))
+                case "INAPPEXPORTIMPORT":      //INAPPEXPORTIMPORT       DDPMW-1335
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);

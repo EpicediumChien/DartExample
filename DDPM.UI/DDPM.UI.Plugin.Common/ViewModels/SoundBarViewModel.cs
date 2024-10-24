@@ -1,7 +1,9 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -11,9 +13,14 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
 
-        private readonly ILog _log;
+        public readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
-
+        public SpeakerInfoValue SpeakerInfoValueDTP;
+        public string _current_soundBar;
+        public string _default = "{CFA20B04-897A-4E5F-A0C3-D95FD4594F85}";
+        public string _speech = "{78EE7B67-5946-4A11-959D-299CC77466D1}";
+        public string _bassBoost = "{44F5D888-F551-4D2C-B41C-EFD6EBD09D23}";
+        public string _trebleBoost = "{CEB39A69-EF4A-4E73-BC8F-8A8B66CE11E1}";
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -27,10 +34,84 @@ namespace DDPM.UI.Plugin.ViewModels
 
             _log = log;
             _deviceManager = deviceManager;
+            _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
+            SpeakerInfoValueDTP = new SpeakerInfoValue();
+            _current_soundBar = string.Empty;       
         }
 
+        public void UpdateDTPValue()
+        {
+            _log.Info($"[SoundBarViewModel] Print get property ...UpdateDTPValue ... in");
+            if (SpeakerInfoValueDTP == null)
+            {
+                SpeakerInfoValueDTP = new SpeakerInfoValue();
+            }
+
+            SpeakerInfoValueDTP.SpeakerProfile = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.SpeakerBass = _deviceManager.GetBassAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.SpeakerMidRange = _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.SpeakerTreble = _deviceManager.GetTrebleAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceID.ToString()).Result;
+            SpeakerInfoValueDTP.IsAudioEqualizerSupported = _deviceManager.GetIsAudioEqualizerSupportedAsync(CurrentDeviceID.ToString()).Result;
+            _log.Info($"[SoundBarViewModel] ***********************************************************************");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfile .............= {SpeakerInfoValueDTP.SpeakerProfile.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerBass .............= {SpeakerInfoValueDTP.SpeakerBass.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerMidRange ........= {SpeakerInfoValueDTP.SpeakerMidRange.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerTreble ...........= {SpeakerInfoValueDTP.SpeakerTreble.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone .......= {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
+        }
+
+        public void CheckPresetsUI()
+        {
+            if (SpeakerInfoValueDTP.IsAudioEqualizerSupported)
+            {
+                _log!.Info($"[SoundBarViewModel] IsAudioEqualizerSupported CheckPresetsUI ......");
+                switch (SpeakerInfoValueDTP.SpeakerProfile)
+                {
+                    case "{CFA20B04-897A-4E5F-A0C3-D95FD4594F85}"://_default
+                        _isDefaultChecked = true;
+                        _isSpeechChecked = false;
+                        _isBassBoostChecked = false;
+                        _isTrebleBoostChecked = false;
+                        break;
+
+                    case "{78EE7B67-5946-4A11-959D-299CC77466D1}"://_speech
+                        _isDefaultChecked = false;
+                        _isSpeechChecked = true;
+                        _isBassBoostChecked = false;
+                        _isTrebleBoostChecked = false;
+                        break;
+
+                    case "{44F5D888-F551-4D2C-B41C-EFD6EBD09D23}"://_bassBoost
+                        _isDefaultChecked = false;
+                        _isSpeechChecked = false;
+                        _isBassBoostChecked = true;
+                        _isTrebleBoostChecked = false;
+                        break;
+
+                    case "{CEB39A69-EF4A-4E73-BC8F-8A8B66CE11E1}"://_trebleBoost
+                        _isDefaultChecked = false;
+                        _isSpeechChecked = false;
+                        _isBassBoostChecked = false;
+                        _isTrebleBoostChecked = true;
+                        break;
+                    default:
+                        break;
+                }
+                    OnPropertyChanged("IsDefaultChecked");
+                    OnPropertyChanged("IsSpeechChecked");
+                    OnPropertyChanged("IsBassBoostChecked");
+                    OnPropertyChanged("IsTrebleBoostChecked");
+            }
+        }
         public void DetectPageShow(string model)
         {
+            _log!.Info($"[SoundBarViewModel] DetectPageShow ......");
             modelTest = model;
             switch (model.ToUpper())
             {
@@ -41,15 +122,15 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 default:
                     break;
-            }
-            CheckAudioSettingsUI();
+            }          
         }
 
-        private void CheckAudioSettingsUI()
+        public void CheckAudioSettingsUI()
         {
-            _isIntelligentMicNoiseCancellationStatus = CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
-            _isMuteSoundNotificationStatus = CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
-            _isVolumeAdjustmentToneMode = CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
+            _log!.Info($"[SoundBarViewModel] CheckAudioSettingsUI ......");
+            _isIntelligentMicNoiseCancellationStatus = SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable;//CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
+            _isMuteSoundNotificationStatus = SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable;//CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
+            _isVolumeAdjustmentToneMode = SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone;//CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
 
             if (_isVolumeAdjustmentToneMode == 3)
             {
@@ -79,6 +160,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void ChangeImage(string model, string btnName)
         {
+            _log!.Info($"[SoundBarViewModel] ChangeImage ...... {model} / {btnName}");
             if (model == "SP3022")
             {
                 switch (btnName)
@@ -130,6 +212,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
+            _log!.Info($"[SoundBarViewModel] PrepareDeviceInfo ...... ");
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
@@ -140,6 +223,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public override bool SetCurrentDevice(string deviceID)
         {
+            _log.Info($"[SoundBarViewModel] SetCurrentDevice ...");
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
@@ -149,6 +233,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
+            _log.Info($"[SoundBarViewModel] HandleNotification ... Receive {property.ToString()}");
             base.HandleNotification(changeType, di, property);
             switch (changeType)
             {
@@ -170,13 +255,35 @@ namespace DDPM.UI.Plugin.ViewModels
                             default:
                                 break;
                         }
-                        GenerateInfo();
+                        //GenerateInfo();
                     }
                     break;
 
                 default:
                     break;
             }
+        }
+        public void RestoreToDefault()
+        {
+            _log.Info($"[SoundBarViewModel] Print before property ...RestoreToDefault ... in");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfile .............= {SpeakerInfoValueDTP.SpeakerProfile.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerBass .............= {SpeakerInfoValueDTP.SpeakerBass.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerMidRange ........= {SpeakerInfoValueDTP.SpeakerMidRange.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerTreble ...........= {SpeakerInfoValueDTP.SpeakerTreble.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone .......= {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
+            _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
+            _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
+            UpdateDTPValue();
+            CheckHeadsetFunc();
+        }
+
+        public void CheckHeadsetFunc()
+        {
+            _log.Info($"[SoundBarViewModel] CheckHeadsetFunc ...");
+            CheckAudioSettingsUI();
+            CheckPresetsUI();
         }
 
         /// <summary>
@@ -247,6 +354,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isDefaultChecked = value;
                     if (_isDefaultChecked)
                     {
+                        _log.Info($"[SoundBarViewModel] IsDefaultChecked ... {value.ToString()}");
+                        _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _default).Wait();
                         IsSpeechChecked = false;
                         IsBassBoostChecked = false;
                         IsTrebleBoostChecked = false;
@@ -268,6 +377,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isSpeechChecked = value;
                     if (_isSpeechChecked)
                     {
+                        _log.Info($"[SoundBarViewModel] IsSpeechChecked ... {value.ToString()}");
+                        _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _speech).Wait();
                         IsDefaultChecked = false;
                         IsBassBoostChecked = false;
                         IsTrebleBoostChecked = false;
@@ -289,6 +400,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isBassBoostChecked = value;
                     if (_isBassBoostChecked)
                     {
+                        _log.Info($"[SoundBarViewModel] IsBassBoostChecked ... {value.ToString()}");
+                        _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _bassBoost).Wait();
                         IsDefaultChecked = false;
                         IsSpeechChecked = false;
                         IsTrebleBoostChecked = false;
@@ -310,6 +423,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isTrebleBoostChecked = value;
                     if (_isTrebleBoostChecked)
                     {
+                        _log.Info($"[SoundBarViewModel] IsTrebleBoostChecked ... {value.ToString()}");
+                        _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _trebleBoost).Wait();
                         IsDefaultChecked = false;
                         IsSpeechChecked = false;
                         IsBassBoostChecked = false;
@@ -329,14 +444,16 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //_isIntelligentMicNoiseCancellationStatus = CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
+                _isIntelligentMicNoiseCancellationStatus = _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString()).Result;//CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
                 return _isIntelligentMicNoiseCancellationStatus;
             }
             set
             {
                 if (_isIntelligentMicNoiseCancellationStatus != value)
                 {
-                    _deviceManager.SetWiredAudioIMicNSEnable(value, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] SetIsWiredAudioIMicNSEnableAsync ... {value.ToString()}");
+                    _deviceManager.SetIsWiredAudioIMicNSEnableAsync(CurrentDeviceInfo!.ID.ToString(), value).Wait();
+                    //_deviceManager.SetWiredAudioIMicNSEnable(value, CurrentDeviceInfo!.ID).Wait();
                     _isIntelligentMicNoiseCancellationStatus = value;
                     OnPropertyChanged("IntelligentMicNoiseCancellation_String");
                 }
@@ -357,13 +474,15 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 //_isMuteSoundNotificationStatus = CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
+                _isMuteSoundNotificationStatus = _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceInfo!.ID.ToString()).Result;
                 return _isMuteSoundNotificationStatus;
             }
             set
             {
                 if (_isMuteSoundNotificationStatus != value)
                 {
-                    _deviceManager.SetWiredAudioMicMuteSoundEnable(value, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] SetIsWiredAudioMicMuteSoundEnableAsync ... {value.ToString()}");
+                    _deviceManager.SetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceInfo!.ID.ToString(), value).Wait();
                     _isMuteSoundNotificationStatus = value;
                     OnPropertyChanged("MuteSoundNotification_String");
                 }
@@ -394,7 +513,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isEveryLevelChecked = true;
                     _isMinMaxOnlyChecked = false;
                     _isVolumeAdjustmentToneMode = 1;
-                    _deviceManager.SetWiredAudioVolumeAdjustmentTone(1, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... {_isVolumeAdjustmentToneMode.ToString()}");
+                    //_deviceManager.SetWiredAudioVolumeAdjustmentTone(1, CurrentDeviceInfo!.ID).Wait();
+                    _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), _isVolumeAdjustmentToneMode).Wait();
                     OnPropertyChanged("VolumeAdjustmentToneStatus");
                     OnPropertyChanged("VolumeAdjustmentTone_String");
                     OnPropertyChanged("IsEveryLevelChecked");
@@ -403,7 +524,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (!value)
                 {
                     _isVolumeAdjustmentToneMode = 3;
-                    _deviceManager.SetWiredAudioVolumeAdjustmentTone(3, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... {_isVolumeAdjustmentToneMode.ToString()}");
+                    //_deviceManager.SetWiredAudioVolumeAdjustmentTone(3, CurrentDeviceInfo!.ID).Wait();
+                    _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), _isVolumeAdjustmentToneMode).Wait();
                     _volumeAdjustmentToneStatus = false;
                     _isEveryLevelChecked = false;
                     _isMinMaxOnlyChecked = false;
@@ -444,7 +567,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isEveryLevelChecked = true;
                     _isMinMaxOnlyChecked = false;
                     _isVolumeAdjustmentToneMode = 1;
-                    _deviceManager.SetWiredAudioVolumeAdjustmentTone(1, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... {_isVolumeAdjustmentToneMode.ToString()}");
+                    //_deviceManager.SetWiredAudioVolumeAdjustmentTone(1, CurrentDeviceInfo!.ID).Wait();
+                    _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), _isVolumeAdjustmentToneMode).Wait();
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
                 }
@@ -466,11 +591,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     return;
                 }
                 if (_isMinMaxOnlyChecked != value)
-                {
+                {                   
                     _isEveryLevelChecked = false;
                     _isMinMaxOnlyChecked = true;
                     _isVolumeAdjustmentToneMode = 2;
-                    _deviceManager.SetWiredAudioVolumeAdjustmentTone(2, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] SetWiredAudioVolumeAdjustmentToneAsync ... {_isVolumeAdjustmentToneMode.ToString()}");
+                    //_deviceManager.SetWiredAudioVolumeAdjustmentTone(2, CurrentDeviceInfo!.ID).Wait();
+                    _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), _isVolumeAdjustmentToneMode).Wait();
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
                 }
@@ -481,21 +608,21 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region SpeakerAudioSettings ToolTip
 
-        private string _intelligentMicNoiseCancellationToolTip = "Removes background noise to allow your voice to be heard clearly";
+        private string _intelligentMicNoiseCancellationToolTip = Strings.SpeakerToolTip_1;//"Removes background noise to allow your voice to be heard clearly";
 
         public string IntelligentMicNoiseCancellationToolTip
         {
             get => _intelligentMicNoiseCancellationToolTip;
         }
 
-        private string _muteSoundNotificationToolTip = "Plays a sound when the device goes on mute";
+        private string _muteSoundNotificationToolTip = Strings.SpeakerToolTip_2;//"Plays a sound when the device goes on mute";
 
         public string MuteSoundNotificationToolTip
         {
             get => _muteSoundNotificationToolTip;
         }
 
-        private string _volumeAdjustmentToneToolTip = "Plays a sound when the volume level is adjusted";
+        private string _volumeAdjustmentToneToolTip = Strings.SpeakerToolTip_3;//"Plays a sound when the volume level is adjusted";
 
         public string VolumeAdjustmentToneToolTip
         {
@@ -591,5 +718,77 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         #endregion SpeakerInteractions
+
+        #region Please Wait
+
+        private bool _isPleaseWaitVisible;
+
+        public bool IsPleaseWaitVisible
+        {
+            get => _isPleaseWaitVisible;
+            set
+            {
+                if (_isPleaseWaitVisible != value)
+                {
+                    _isPleaseWaitVisible = value;
+                    OnPropertyChanged(nameof(IsPleaseWaitVisible));
+                }
+            }
+        }
+
+        public void ShowPleaseWait()
+        {
+            IsPleaseWaitVisible = true;
+        }
+
+        public void HidePleaseWait()
+        {
+            IsPleaseWaitVisible = false;
+        }
+
+        // Please Wait logic
+        public void Invoke_PleaseWait(string model, HeadsetViewModel vm)
+        {
+            BackgroundWorker bw = new BackgroundWorker
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += (sender, e) => DoWork_PleaseWait(model, vm);
+            bw.RunWorkerCompleted += RunWorkerCompleted_PleaseWait;
+
+            ShowPleaseWait();
+            bw.RunWorkerAsync();
+        }
+
+        private void DoWork_PleaseWait(string model, HeadsetViewModel vm)
+        {
+            _log.Info($"[SoundBarViewModel] DoWork_PleaseWait .......");
+            // Simulate time-consuming operation
+            Thread.Sleep(500);
+            int sun = 0;
+            UpdateDTPValue();
+            // Call DetectPageShow
+            DetectPageShow(model);
+        }
+
+        private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)
+        {
+            HidePleaseWait();
+        }
+
+        #endregion Please Wait
+
+        public class SpeakerInfoValue
+        {
+            public string SpeakerProfile { get; set; }
+            public int SpeakerBass { get; set; }
+            public int SpeakerMidRange { get; set; }
+            public int SpeakerTreble { get; set; }
+            public bool IsWiredAudioMicMuteSoundEnable{ get; set; }
+            public int WiredAudioVolumeAdjustmentTone { get; set; }
+            public bool IsWiredAudioIMicNSEnable { get; set; }
+            public bool IsAudioEqualizerSupported { get; set; }
+        }
     }
 }

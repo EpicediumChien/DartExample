@@ -20,12 +20,13 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
     <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
-    <PackageReference Include="Dell.RPC.Transport" Version="1.5.1" />
+    <PackageReference Include="Dell.RPC.Transport" Version="1.5.2.1" />
     <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DDPM.RemoteManagement.Common\DDPM.RemoteManagement.Common.csproj" />
     <ProjectReference Include="..\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
     <ProjectReference Include="..\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
   </ItemGroup>

@@ -6,7 +6,7 @@ namespace DDPM.SA.Common.Settings
 {
     public class ImportVCP
     {
-        public List<int> NotImportVCPs = new List<int>() { 0x02, 0x04, 0x05, 0x06, 0x08, 0xA, 0x60, 0xF0 };
+        public List<int> NotImportVCPs = new List<int>() { 0x02, 0x04, 0x05, 0x06, 0x08, 0xA, 0x60, 0xF0, 0xF4, 0xEC };
         public List<int> ImportVCPSequence = new List<int>() { 0x66, 0x10, 0x12, /*0xF0,*/ 0xE9 };
     }
 
@@ -45,6 +45,16 @@ namespace DDPM.SA.Common.Settings
         }
     }
 
+    public class Gaming()
+    {
+        public Gaming_GameEnhancementMode Current_GameEnhancementMode {  get; set; } = new Gaming_GameEnhancementMode();
+        public Gaming_ResponseTime Current_ResponseTime { get; set; } = new Gaming_ResponseTime();
+        public Gaming_DarkStabilizer Current_DarkStabilizer { get; set; } = new Gaming_DarkStabilizer();
+        public Gaming_HDRType Current_HDRType {  get; set; } = new Gaming_HDRType();
+        public Gaming_DualResolutionType Current_DualResolutionType { get; set; } = new Gaming_DualResolutionType();
+        public bool[] IsEnable_VisionEngineType {  get; set; } = new bool[0];
+    }
+
     /// <summary>
     /// EasyArrange per-monitor settings. The SplitJson class is defined in DDPM.SA.Common/Display folder.
     /// </summary>
@@ -55,10 +65,11 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '0A'
 
+        //Robert_Lin, 2024-10-12 move to UserSerrings
         /// <summary>
         /// Custom layout items (up to 5 items), Default is empty.
         /// </summary>
-        public List<SplitJson> CustomList { get; set; }
+        //public List<SplitJson> CustomList { get; set; }
 
         //Robert_Lin, 2024-10-10, dont provide default list in a get/set property, it would cause double items issue
         // https://stackoverflow.com/questions/13394401/json-net-deserializing-list-gives-duplicate-items
@@ -118,6 +129,8 @@ namespace DDPM.SA.Common.Settings
         public scheduleInfo scheduleInfo { get; set; }
         public ImpExpSettings ImpExpSettings { get; set; }
         public EasyArrangementDDPM easyArrangementDDPM { get; set; }
+        public uint ALSConfig { get; set; }
+        public Gaming Gaming { get; set; } = new Gaming();
     }
 
     public class HotkeyData
