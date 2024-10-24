@@ -63,10 +63,10 @@ namespace DDPM.EABroker
         {
             this.Dispatcher.Invoke(() =>
             {
-                Trace.WriteLine($"  * EAArgs.CustomName=[{arg.CustomName}]");
+                Trace.WriteLine($"  * EAArgs.CustomName=[{arg.SplitJson.CustomName}]");
 
                 cbNames.Items.Clear();
-                string selectedName = arg.CustomName;
+                string selectedName = arg.SplitJson.CustomName;
                 if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
                 {
                     int addCount = 0;
@@ -81,6 +81,7 @@ namespace DDPM.EABroker
                         if (addCount >= EAEMConstants.MaxCustomItems)
                             break;
                     }
+                    cbNames.SelectedItem = selectedName;
                 }
                 else //CustomNames is empty
                 {
@@ -185,5 +186,13 @@ namespace DDPM.EABroker
         }
         #endregion
 
+        private void closeGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CancelButtonClick != null)
+            {
+                CancelButtonClick(this, "");
+            }
+            Hide();
+        }
     }
 }

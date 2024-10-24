@@ -4,6 +4,9 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -26,6 +29,16 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _pollingRateSelectedIndex = -1;
 
         private Visibility _isAllButtonsVisible = Visibility.Visible;
+
+        private Dictionary<string, string> AppGuids = new() {
+            //{"AllApp","{76824745-CE06-4358-835D-7BB991CB71A0}" },
+            {"AllApp",string.Empty },
+            {"Word","{E0C9145B-BE8B-4423-B520-8CA71BE88E11}" },
+            {"Excel","{37743697-4B39-45CD-B7F8-30027D1521ED}" },
+            {"PowerPoint","{7BBECD91-F12A-4CC4-B005-526BA66BA657}" },
+            {"Outlook","{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}" }
+        };
+
         #endregion Variables
 
         public ICommand Hz125ClickedCommand { get; }
@@ -42,7 +55,22 @@ namespace DDPM.UI.Plugin.ViewModels
         public string PollingRateCaption { get; set; } = Strings.PollingRateCaption;
         public string PollingRateInfoTip { get; set; } = "";
         public int ButtonCount { get; set; } = 0;
-        public string SelectedApp { get; set; } = "AllApp";
+
+        private string _selectedApp = "";
+        public string SelectedApp
+        {
+            get => _selectedApp;
+            set
+            {
+                _selectedApp = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(CurrentDeviceID.ToString(), AppGuids[value]);
+            }
+        }
+
+        public string RestoreToDefaultText
+        {
+            get => SelectedApp == "AllApp" ? Strings.RestoreToDefaultActions : Strings.ButtonCustomizeRestoreCaption;
+        }
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
@@ -253,6 +281,9 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(ButtonCollection));
             PrimaryButtonIndex = (int)CurrentDeviceInfo.MousePrimaryButton;
 
+            if (SelectedApp != "AllApp")
+                SelectedApp = "AllApp";
+
             InitializeButton();
             return true;
         }
@@ -262,7 +293,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             //Model = "MS355";
             //Model = "MS700";
-            ////Model = "MS900";
+            //Model = "MS900";
             //Model = "MS7421W";
             //Model = "MS300";
             //Model = "MS5120W";
@@ -314,14 +345,17 @@ namespace DDPM.UI.Plugin.ViewModels
             IsRestoreEnable = false;
             foreach (var btnAction in MouseAction.ButtonActions.Values)
             {
-                if (btnAction.DefaultActionID != btnAction.AssignedAction.ID)
+                if (SelectedApp == "AllApp")
                 {
-                    IsRestoreEnable = true;
-                    break;
+                    if (btnAction.DefaultActionID != btnAction.AssignedAction.ID)
+                    {
+                        IsRestoreEnable = true;
+                        break;
+                    }
                 }
-                foreach (var kvp in btnAction.OfficeActions)
+                else
                 {
-                    if (kvp.Value != -1)
+                    if (btnAction.OfficeActions[SelectedApp] != -1)
                     {
                         IsRestoreEnable = true;
                         break;
@@ -329,6 +363,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
             OnPropertyChanged(nameof(IsRestoreEnable));
+            OnPropertyChanged(nameof(RestoreToDefaultText));
         }
         public void RefreshButtonImageFile(string btnName, bool IsHover = false, bool IsSelected = false)
         {
@@ -529,7 +564,21 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RestoreToDefault()
         {
-            MouseAction = new MouseActions(Model);
+            //MouseAction = new MouseActions(Model);
+            DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAllAssignedActions(CurrentDeviceID.ToString());
+            foreach (var btn in MouseAction.ButtonActions)
+            {
+                if (SelectedApp == "AllApp")
+                {
+                    btn.Value.AssignedAction.ID = btn.Value.DefaultActionID;
+                    btn.Value.AssignedAction.Parameter = string.Empty;
+                }
+                else
+                {
+                    //btn.Value.OfficeActions[SelectedApp] = btn.Value.DefaultActionID;
+                    btn.Value.OfficeActions[SelectedApp] = -1;
+                }
+            }
             ActionList.ExportActionList(MouseAction, Model);
             RefreshButtonInfo();
             IsRestoreEnable = false;
@@ -745,17 +794,40 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (SelectedButton != "")
             {
-                int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
                 if (SelectedApp == "AllApp")
                 {
                     SelectedMouseAction!.AssignedAction.ID = actionID;
                     SelectedMouseAction.AssignedAction.Parameter = parameter;
-                    byte[] newValue = Encoding.UTF8.GetBytes($"{{\"PkId\":{pkId},\"ActionId\":\"{Actions.ActionIdToGuid[actionID]}\"}}");
-                    DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
                 }
                 else
                 {
                     SelectedMouseAction!.OfficeActions[SelectedApp] = actionID;
+                }
+
+                int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
+                if (actionID == -1)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAssignedAction(CurrentDeviceID.ToString(), pkId);
+                }
+                else
+                {
+                    JObject jobj = new()
+                    {
+                        { "PkId", pkId },
+                        { "ActionId", Actions.ActionIdToGuid[actionID] }
+                    };
+
+                    if (parameter == "")
+                    {
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                    }
+                    else
+                    {
+                        jobj.Add("Command", parameter);
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                    }
                 }
                 //OnPropertyChanged($"{SelectedButton}Tooltip");
                 //RefreshButtonImageFile(SelectedButton, false, true);
@@ -771,7 +843,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";
             }
-            SelectedApp = "AllApp";
+            if (SelectedApp != "AllApp")
+                SelectedApp = "AllApp";
         }
 
         public Visibility IsTouchScrollHilighted { get; set; } = Visibility.Collapsed;

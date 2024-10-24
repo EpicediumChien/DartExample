@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.EABroker"
+        xmlns:ezCommon="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common"
         mc:Ignorable="d"
         Title="AwsWindow" 
         Height="134" Width="788"
@@ -17,6 +18,17 @@
     <Window.Resources>
         <SolidColorBrush x:Key="OuterBorder_BkBrush" Color="#F20D121A"/>
         <SolidColorBrush x:Key="OuterBorder_BdBrush" Color="#293B4D"/>
+        <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Aws_Normal" Color="White" />
+
+        <Style x:Key="MonitorIdTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Rototo"/>
+        </Style>
+    
     </Window.Resources>
     <Grid>
         <Grid.Style>
@@ -50,7 +62,25 @@
                     </Style>
                 </Grid.Resources>
 
-                <ContentControl Grid.Column="0" />
+                <!-- Icon0, MonitorConfig -->
+                <Grid Grid.Column="0">
+                    <Border Width="120" Height="90" BorderThickness="1" BorderBrush="White"
+                            CornerRadius="6">
+                        <Canvas Name="icon0Canvas">
+                            <Canvas.Resources>
+                                <Style TargetType="ezCommon:CellBorder">
+                                    <Setter Property="BorderThickness" Value="1.5"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
+                                    <Setter Property="CornerRadius" Value="4"/>
+                                </Style>
+                            </Canvas.Resources>
+                        </Canvas>
+                    </Border>
+                </Grid>
+                    
+                <!--<ContentControl Grid.Column="0" Content="{Binding AwsIcon0}"/>-->
+                
+                <!-- Icon1 ~ Icon4, EA Layouts load from RecentList -->
                 <ContentControl Grid.Column="1" Content="{Binding AwsIcon1}"/>
                 <ContentControl Grid.Column="2" Content="{Binding AwsIcon2}"/>
                 <ContentControl Grid.Column="3" Content="{Binding AwsIcon3}"/>

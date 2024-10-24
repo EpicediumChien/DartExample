@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
@@ -11,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -84,7 +86,7 @@ namespace DDPM.UI.Plugin.ViewModels
             return true;
         }
 
-        void PrepareActionItems()
+        private void PrepareActionItems()
         {
             //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
             Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
@@ -118,11 +120,19 @@ namespace DDPM.UI.Plugin.ViewModels
             //LaunchableAppValues.Add(Strings.Browse);
             foreach (var jo in jsonObject.EnumerateArray())
             {
-                //LaunchableAppValues.Add(i, jo.GetString()!);
-                //i++;
                 LaunchableAppValues.Add(jo.GetString()!);
             }
             LaunchableAppValues.Sort();
+            for (int i = 0; i < LaunchableAppValues.Count; i++)
+            {
+                string str = LaunchableAppValues[i];
+                if (str.Length > 2 && str.Substring(str.Length - 3, 3) == "...")
+                {
+                    LaunchableAppValues.Remove(str);
+                    LaunchableAppValues.Insert(0, str);
+                    i = 100;
+                }
+            }
             ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
             IsActionItemsReady = true;
@@ -625,6 +635,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 RefreshButtonInfo();
                 CheckRestoreStatus();
                 var actionName = actionID == 8 || actionID == 23 ? parameter : "";
+                JObject jobj = new()
+                {
+                    { "actionId", actionID }
+                };
                 switch (SelectedButton)
                 {
                     case "TopButton":
@@ -632,7 +646,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (string.IsNullOrEmpty(actionName))
                         { actionName = _EraserActions[actionID]; }
 
-                        byte[] newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":{actionID},\"actionName\":\"{actionName}\"}}");
+                        jobj.Add("actionName", actionName);
+                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                         {
                             DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
@@ -655,15 +670,19 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         break;
                     case "TopBarrelButton":
-                        //var value2 = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
-                        var value2 = $"{{\"actionId\":{actionID},\"actionName\":\"{_SideSwitchActions[actionID]}\"}}";
-                        byte[] newValue2 = Encoding.UTF8.GetBytes(value2);
+                        if (string.IsNullOrEmpty(actionName))
+                        { actionName = _SideSwitchActions[actionID]; }
+
+                        jobj.Add("actionName", actionName);
+                        byte[] newValue2 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
                         break;
                     case "BottomBarrelButton":
-                        //var value3 = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
-                        var value3 = $"{{\"actionId\":{actionID},\"actionName\":\"{_SideSwitchActions[actionID]}\"}}";
-                        byte[] newValue3 = Encoding.UTF8.GetBytes(value3);
+                        if (string.IsNullOrEmpty(actionName))
+                        { actionName = _SideSwitchActions[actionID]; }
+
+                        jobj.Add("actionName", actionName);
+                        byte[] newValue3 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(itemID, newValue3);
                         break;
                 }
@@ -707,10 +726,16 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
 
-        public void UpdateRadialMenu(int index, int id, string parameter = "")
+        public void UpdateRadialMenu(int index, int id)
         {
             //byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
-            byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{PenAction.RadialLabels[index]}\"}}");
+            JObject jobj = new()
+            {
+                { "menuIndex", index },
+                { "actionId", id },
+                { "actionName", PenAction.RadialLabels[index] }
+            };
+            byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
             DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
         }
         public void UpdateRadialMenuRightClick(bool value)

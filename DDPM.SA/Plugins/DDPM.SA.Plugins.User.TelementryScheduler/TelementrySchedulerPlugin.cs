@@ -107,12 +107,14 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
             return Task.FromResult(Task.CompletedTask);
         }
 
-        public Task ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
+        public Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
         {
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo requested ...");
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo ET : " + EventTag);
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo EV : " + EventValue);
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo Frequency : " + Frequency.ToString());
+
+            var r = false;
 
             if (IsTelemetryConsentOn)
             {
@@ -120,26 +122,35 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                 {
                     case Telementry_Frequency.RealTime:
                         {
-                            _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue);
+                            if (_PlatinumSDKPlugin != null)
+                                r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
                             break;
                         }
                     case Telementry_Frequency.FirstDayofMonth:
                         {
-                            if (DateTime.Now.Day == 1)
-                                _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue);
-
+                            if (_PlatinumSDKPlugin != null)
+                            {
+                                if (DateTime.Now.Day == 1)
+                                    r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            }
                             break;
                         }
                     case Telementry_Frequency.PerDay:
                         {
-                            if (DateTime.Now.AddDays(-1) >= _FrequencyDateTime.PerDay)
-                                _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue);
+                            if (_PlatinumSDKPlugin != null)
+                            {
+                                if (DateTime.Now.AddDays(-1) >= _FrequencyDateTime.PerDay)
+                                    r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            }
                             break;
                         }
                     case Telementry_Frequency.Weekly:
                         {
-                            if (DateTime.Now.AddDays(-7) >= _FrequencyDateTime.Weekly)
-                                _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue);
+                            if (_PlatinumSDKPlugin != null)
+                            {
+                                if (DateTime.Now.AddDays(-7) >= _FrequencyDateTime.Weekly)
+                                    r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            }
                             break;
                         }
                     default:
@@ -147,7 +158,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                 }
             }
 
-            return Task.FromResult(Task.CompletedTask);
+            return Task.FromResult(r);
         }
 
         public Task GetGlobalsetting_IsTelemetryConsentOn(bool value)

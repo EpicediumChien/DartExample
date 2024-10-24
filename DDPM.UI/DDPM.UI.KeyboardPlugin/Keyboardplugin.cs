@@ -8,6 +8,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
@@ -55,11 +56,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if(e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
             {
-                if(e.type == DeviceChangedType.Peripherals_UnPlug)
+                if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
-                    if(e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
                     {
                         _viewModel.OnGoBackClicked();
                         return;
@@ -76,6 +77,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
+            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardDeviceItemsEx();
+            //var jArray = JArray.FromObject(task2.Result);
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
         }
 
@@ -85,7 +88,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
-            if(_isConfigured)
+            if (_isConfigured)
                 return;
 
             // Marked all the instances as singleton
@@ -124,9 +127,9 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if(_viewModel != null && _viewModel.SetCurrentDevice(parameter))
+            if (_viewModel != null && _viewModel.SetCurrentDevice(parameter))
             {
-                if(_viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported)
+                if (_viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported)
                 {
                     _log.Debug($"GetCTKMessageHelper is invoked");
                     Task<CTKMessageHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetCTKMessageHelper();
