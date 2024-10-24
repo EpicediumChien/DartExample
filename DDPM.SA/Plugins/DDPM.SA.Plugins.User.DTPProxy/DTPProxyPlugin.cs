@@ -169,7 +169,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
-                Debug.WriteLine($"{value}");
+
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -188,7 +188,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProgrammableKeys");
-                Debug.WriteLine($"{value}");
+
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -206,7 +206,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
-                Debug.WriteLine($"{value}");
+
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -361,7 +361,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
-                Debug.WriteLine($"{value}");
+
                 return value == null ? new JArray() : (JArray)value;
             }
             else
