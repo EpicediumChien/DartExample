@@ -10998,6 +10998,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[SetNKVMHotkey] SetNKVMHotkey");
             bool b = false;
+            if (_AllInfoMonitors == null)
+            {
+                _AllInfoMonitors = GetMonitors().Result;
+            }
+            else
+            {
+                if (_AllInfoMonitors.Count == 0)
+                {
+                    _AllInfoMonitors = GetMonitors().Result;
+                }
+            }
             if (_AllInfoMonitors != null)
             {
                 if (_AllInfoMonitors.Count > 0)
