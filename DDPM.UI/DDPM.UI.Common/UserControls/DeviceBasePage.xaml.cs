@@ -274,9 +274,11 @@ namespace DDPM.UI.Common.UserControls
 
         private void ChangeNonLandingMode()
         {
+            gridNav.Margin = new Thickness(0);
+
             //mode 1 change left/right frame size
             RightGrid.Width = this.ActualWidth / 2;
-            LeftFrame.Width = this.ActualWidth / 2 - 20;
+            LeftFrame.Width = this.ActualWidth / 2 - 30;
 
             //mode 2 fix right frame size
             //RightGrid.Width = 720;
@@ -284,12 +286,12 @@ namespace DDPM.UI.Common.UserControls
 
             if (null != viewModel.DefaultLeftView)
                 viewModel.DefaultLeftView.Width = this.ActualWidth / 2 - 20;
-
-            gridNav.Margin = new Thickness(0);
         }
 
         private void ChangeToLandingMode()
         {
+            gridNav.Margin = new Thickness(25);
+
             LeftFrame.Width = this.ActualWidth - 20;
 
             if (null != viewModel.DefaultLeftView)
@@ -297,8 +299,6 @@ namespace DDPM.UI.Common.UserControls
                 //_log.Info($"viewModel.LeftView = {viewModel.LeftView}");
                 viewModel.DefaultLeftView.Width = this.ActualWidth - vBar.ActualWidth - 140;
             }
-
-            gridNav.Margin = new Thickness(25);
         }
 
         private void ChangeToVerticalLayout()

@@ -417,10 +417,7 @@
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
-          "DDPM.RemoteManagement.Common.dll": {
-            "assemblyVersion": "2.0.0",
-            "fileVersion": "2.0.0.0"
-          }
+          "DDPM.RemoteManagement.Common.dll": {}
         }
       },
       "DDPM.SA.Obfuscation/1.0.0": {
