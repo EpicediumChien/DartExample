@@ -258,10 +258,10 @@ namespace NetworkKVM.Plugins
         {
             _logs.DebugMsg("[NetworkKVM] GetSupportedNKVM....");
             bool isAdd = false;
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
-            {
+            //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            //{
                 _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
+            //}
             foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
             {
                 string ModelName = monitorInfo.modelName;
@@ -1125,12 +1125,15 @@ namespace NetworkKVM.Plugins
 
         private Task<List<MonitorInfo>> GetMonitors()
         {
+            _logs.DebugMsg("[NetworkKVM] GetMonitors");
             lock (_pluginConditionLock)
             {
                 //_logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
-
-                _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
+                if (_VcpCorePlugin != null)
+                {
+                    _AllInfoMonitors.Clear();
+                    _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
+                }
 
                 //_logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
@@ -1153,6 +1156,7 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("[NetworkKVM]Token is cancel");
                     Trace.WriteLine("[NetworkKVM]Token is cancel");
                     Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
                     CreateNamedPipe_init();
                     i = 0;
                     //break;
@@ -1183,6 +1187,7 @@ namespace NetworkKVM.Plugins
                             {
                                 //throw;
                                 Disconnect();
+                                _AllInfoMonitors = GetMonitors().Result;
                                 CreateNamedPipe_init();
                                 i = 0;
                             }
@@ -1203,6 +1208,7 @@ namespace NetworkKVM.Plugins
                 {
                     _logs.DebugMsg("pipeServer is null");
                     Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
                     CreateNamedPipe_init();
                     i = 0;
                 }
@@ -1227,6 +1233,7 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg("[NetworkKVM]Token is cancel");
                     Trace.WriteLine("[NetworkKVM]Token is cancel");
                     Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
                     CreateNamedPipe();
                     i = 0;
                     //break;
@@ -1257,6 +1264,7 @@ namespace NetworkKVM.Plugins
                             {
                                 //throw;
                                 Disconnect();
+                                _AllInfoMonitors = GetMonitors().Result;
                                 CreateNamedPipe();
                                 i = 0;
                             }
@@ -1277,6 +1285,7 @@ namespace NetworkKVM.Plugins
                 {
                     _logs.DebugMsg("pipeServer is null...");
                     Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
                     CreateNamedPipe();
                     i = 0;
                 }
@@ -2294,6 +2303,7 @@ namespace NetworkKVM.Plugins
 
         public void SetDDPMHotkey(NKVMSetHotkey setHotkey)
         {
+            _logs.DebugMsg("[NetworkKVM] Send SetDDPMHotkey Event");
             NKVMSetHotkey?.AsyncFireAndForget(this, setHotkey, System.Threading.CancellationToken.None);
         }
 
