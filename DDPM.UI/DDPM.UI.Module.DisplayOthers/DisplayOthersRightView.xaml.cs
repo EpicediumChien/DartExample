@@ -232,7 +232,7 @@ namespace DDPM.UI.Module.DisplayOthers
         {
             if (string.IsNullOrEmpty(e))
                 return;
-            string result_success = "result_success";
+            string result_success = "result_success_";
             string model = string.Empty;
             if (e.Contains("result_success") && e.Length > result_success.Length)
             {

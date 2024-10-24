@@ -1342,7 +1342,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.SidetoneLevel = _logicalDeviceHeadset.SidetoneLevel;
                         info.MuteStatus = _logicalDeviceHeadset.MuteStatus;
                         info.BandsGain = _logicalDeviceHeadset.BandsGain;
-                        SetEqualizerValues(_logicalDeviceHeadset, info);
+                        //SetEqualizerValues(_logicalDeviceHeadset, info);
 
                         _logicalDeviceHeadset.IsReadyChanged += _logicalDeviceHeadset_IsReadyChanged;
                         _logicalDeviceHeadset.IsDirtyChanged += _logicalDeviceHeadset_IsDirtyChanged;
@@ -2279,9 +2279,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
+            _logs.DebugMsg_1($"[PeripheralsPlugin] IUpdateManager_IsAnyUpdateAvailableChanged start");
             _updateHelper = new UpdateHelper();
             UpdateAvailable = isAnyUpdateAvailable;
             _updateHelper.UpdateItems = new List<UpdateItemInfo>();
+            _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems.Count = {_iUpdateManager.AllUpdateItems.Count}");
             foreach (var updateItem in _iUpdateManager.AllUpdateItems)
             {
                 _updateItems = new UpdateItemInfo() { UpdateType = updateItem.Type.ToString(), UpdateSeverity = updateItem.Severity.ToString(), NewVersion = updateItem.NewVersion, Description = updateItem.Description };
@@ -2290,9 +2292,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _updateItems.DeviceId = updateItem.DeviceId;
                 _updateItems.DeviceIndex = updateItem.DeviceIndex;
                 _updateItems.DeviceModelNumber = updateItem.DeviceModelNumber;
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceModelNumber = {_updateItems.DeviceModelNumber}");
                 _updateItems.DeviceName = updateItem.DeviceName;
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceName = {_updateItems.DeviceName}");
                 _updateItems.DevicePath = updateItem.DevicePath;
                 _updateItems.DeviceType = updateItem.DeviceType;
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceType = {_updateItems.DeviceType}");
                 _updateItems.FrimwareUpdatePath = updateItem.FrimwareUpdatePath;
                 _updateItems.InstallPath = updateItem.InstallPath;
                 _updateItems.InstanceId = updateItem.InstanceId;
@@ -2307,10 +2312,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
 
             Console.WriteLine(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.");
+            _logs.DebugMsg_1($"[PeripheralsPlugin] isAnyUpdateAvailable = {(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.")}");
             if (isAnyUpdateAvailable)
             {
                 OnUpdateNotify(isAnyUpdateAvailable);
             }
+            _logs.DebugMsg_1($"[PeripheralsPlugin] IUpdateManager_IsAnyUpdateAvailableChanged done");
         }
 
         private void IPhysicalDeviceDongle_PairedDeviceCountChanged(IPhysicalDeviceDongle physicalDeviceDongle, int newValue)
@@ -2444,10 +2451,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public async Task<UpdateHelper> GetFWUpdateInfo()
         {
+            _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo start");
             if (_updateHelper != null)
             {
+                _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo, _updateHelper.UpdateItems = {_updateHelper.UpdateItems.Count}");
+                _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
                 return await Task.Run(() => _updateHelper);
             }
+            _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done but _updateHelper is null");
             return await Task.Run(() => new UpdateHelper());
         }
 

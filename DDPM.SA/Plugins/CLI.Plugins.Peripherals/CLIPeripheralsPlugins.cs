@@ -1402,28 +1402,23 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         private bool? GetFWUpdateList(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isShowInfo = true, bool isDefer = false)
         {
-            List<DeviceType> deviceType = new List<DeviceType>();
-            string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-            Trace.WriteLine(ss_1[0]);
-            switch (ss_1[0].ToUpper())
+            List<DeviceType> deviceTypes = new List<DeviceType>();
+            DeviceType deviceType = DeviceType.Unknown;
+            if (commandLineInput.Options.Count > 0)
             {
-                case "KEYBOARD":
-                    deviceType.Add(DeviceType.LogicalKeyboard);
-                    deviceType.Add(DeviceType.PhysicalDongle);
-                    break;
+                (deviceType, deviceTypes) = SetDevice(commandLineInput);
 
-                case "MOUSE":
-                    deviceType.Add(DeviceType.LogicalMouse);
-                    deviceType.Add(DeviceType.PhysicalDongle);
-                    break;
-
-                case "DOCK":
-                    deviceType.Add(DeviceType.LogicalDock);
-                    deviceType.Add(DeviceType.PhysicalWiredDock);
-                    break;
             }
             List<string> tmpReport = new List<string>();
-            FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, false, isDefer, deviceType).Result;
+            FWUpdateInfoPackage fwUpdateInfoPackage;
+            if (deviceType == DeviceType.Unknown)
+            {
+                fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, false, isDefer, null, false, true).Result;
+            }
+            else
+            {
+                fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, false, isDefer, deviceTypes).Result;
+            }
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0)
             {
                 int index = 1;
@@ -1496,34 +1491,15 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 List<DeviceType> deviceTypes = new List<DeviceType>();
                 DeviceType deviceType = DeviceType.Unknown;
-                switch (commandLineInput.PluginsType)
+                if (commandLineInput.Options.Count > 0)
                 {
-                    case "KEYBOARD":
-                        deviceTypes.Add(DeviceType.LogicalKeyboard);
-                        deviceTypes.Add(DeviceType.PhysicalDongle);
-                        deviceType = DeviceType.LogicalKeyboard;
-                        break;
+                    (deviceType, deviceTypes) = SetDevice(commandLineInput);
 
-                    case "MOUSE":
-                        deviceTypes.Add(DeviceType.LogicalMouse);
-                        deviceTypes.Add(DeviceType.PhysicalDongle);
-                        deviceType = DeviceType.LogicalMouse;
-                        break;
-
-                    case "DOCK":
-                        deviceTypes.Add(DeviceType.LogicalDock);
-                        deviceTypes.Add(DeviceType.PhysicalWiredDock);
-                        deviceType = DeviceType.LogicalDock;
-                        break;
-
-                    default:
-                        deviceType = DeviceType.Unknown;
-                        break;
-                }
-                if (isUODMode && deviceType != DeviceType.LogicalDock)
-                {
-                    cli_FWU_RESPONSE.Message = "Only dock supports UOD update mode.";
-                    return null;
+                    if (isUODMode && deviceType != DeviceType.LogicalDock)
+                    {
+                        cli_FWU_RESPONSE.Message = "Only dock supports UOD update mode.";
+                        return false;
+                    }
                 }
                 _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;

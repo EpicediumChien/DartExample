@@ -7,9 +7,9 @@ using Microsoft.Win32.SafeHandles;
 using Windows.Devices.Geolocation;
 using System.IO;
 using PInvoke;
-using PInvoke;
 using System.Diagnostics;
 using System.Security;
+using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -115,7 +115,7 @@ namespace DDPM.SA.Common.Settings
                 Log.Info(text);
             else
                 Log.Error(text);
-        }
+        }               
 
         //
         //At system session (0) to query user's Sid from active session
@@ -498,6 +498,60 @@ namespace DDPM.SA.Common.Settings
             _CloseHandle(hUserTokenDup);
 
             return result;
+        }
+
+        public static int GetCurrentActiveSessionId()
+        {
+            return _WTSGetActiveConsoleSessionId();
+        }
+
+        public static int GetCurrentUserSessionId()
+        {
+            Process currentProcess = Process.GetCurrentProcess();
+            int sessionId = currentProcess.SessionId;
+            return sessionId;
+        }
+
+        public static int GetSessionIdFromProcessId(int processId)
+        {
+            try
+            {
+                // Get the process by ID
+                Process process = Process.GetProcessById(processId);
+                int sessionId = process.SessionId;
+                Console.WriteLine($"Process with ID {processId} has session ID: {sessionId}");
+                return sessionId;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}. Process ID {processId} might not exist.");
+                return -1;
+            }
+        }
+
+        public static List<int> GetSessionIdFromProcessId(string processName)
+        {
+            List<int> result = new List<int>();
+            if(string.IsNullOrEmpty(processName))
+            {
+                result.Clear();
+                return result;
+            }
+            Process[] processes = Process.GetProcessesByName(processName);
+            foreach (Process process in processes)
+            {
+                Console.WriteLine($"Process {process.ProcessName} with ID {process.Id} has session ID: {process.SessionId}");
+                result.Add(process.SessionId);
+            }
+            return result;
+        }
+
+        public static bool IsYourProcessInActiveSession(ILog log)
+        {
+            int act = GetCurrentActiveSessionId();
+            int cur = GetCurrentUserSessionId();
+            WriteLog(log, $"Current active Session is: {act}, Process created in session: {cur}");
+            return (cur == act);
         }
     }
 }

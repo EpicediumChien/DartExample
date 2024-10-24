@@ -235,7 +235,7 @@ namespace DDPM.SA.Plugin.CLIManager
             rst.ExitCode = (int)CLI_ExitCode.IT_Command_Not_Support;
             rst.command_guid_string = command_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();//for fail return using
+            APP_RESPONSE response = new APP_RESPONSE();//for fail return using
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
 

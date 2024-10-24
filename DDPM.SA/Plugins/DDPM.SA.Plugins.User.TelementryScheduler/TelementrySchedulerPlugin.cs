@@ -18,7 +18,6 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -30,8 +29,9 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ITelementryScheduler) })]
-    [DependencyKnownTypes(new[] { typeof(IPlatinumSDKService) })]
+    [DependencyKnownTypes(new[] { typeof(IPlatinumSDKService), typeof(ISettingsManagerDev) })]
     [PluginRequires(Id = IDs.PlatinumSDK_Plugin, Version = "1.0.0", AllowDynamicResolving = true)]
+    [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
     public class TelementrySchedulerPlugin : BaseAgentPlugin, IDisposableObservable, ITelementryScheduler
     {
         #region Private Members
@@ -47,10 +47,15 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
         private static Logs _logs;
         private IAgent _agent;
         public const string PluginLogId = "TelementryScheduler";
-        private IPlatinumSDKService? _PlatinumSDKPlugin;
+        private IPlatinumSDKService _PlatinumSDKPlugin;
+        private ISettingsManagerDev _SettingsPlugin;
         private readonly object _PluginConditionLock_PlatinumSDKPlugin = new object();
-
-        private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(600000);
+        private readonly object _PluginConditionLock_Settings = new object();
+        private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(90000);
+        private bool IsStartTelementry = false;
+        private bool IsTelemetryConsentOn = false;
+        private DDPMSettings DDPMSettingsconfig;
+        private FrequencyDateTime _FrequencyDateTime = new FrequencyDateTime();
 
         #endregion
 
@@ -66,13 +71,13 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
         {
             _agent = agent;
             _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-            _logs ??= new Logs(Log, PluginLogId);
+            _logs ??= new Logs(Log);
 
             _SchedulerCheckTimer.Elapsed += OnSchedulerTimedRaise;
             _SchedulerCheckTimer.AutoReset = true;
             _SchedulerCheckTimer.Enabled = true;
 
-            _logs.DebugMsg_1("TelementrySchedulerPlugin constructor ...");
+            _logs.DebugMsg("[TelementryScheduler] TelementrySchedulerPlugin constructor ...");
         }
 
         #endregion
@@ -84,68 +89,94 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
             InitializePlatinumSDKPlugin();
+            InitializeSettingsPlugin();
 
-            _logs.DebugMsg_1("TelementryScheduler plugin Starting");
+            _logs.DebugMsg("[TelementryScheduler] TelementryScheduler plugin Starting");
         }
 
         #endregion
 
         #region Imprement ITelementryScheduler
 
-        public Task StopSchedulerManger()
+        public Task StartTelemetrySchedulerManger(bool IsStart)
         {
-            _logs.DebugMsg_1("received StopSchedulerManger requested ...");
+            _logs.DebugMsg("[TelementryScheduler] received StartSchedulerManger IsStart: " + IsStart.ToString() + " requested ...");
 
-            if (_SchedulerCheckTimer.Enabled)
-                _SchedulerCheckTimer.Stop();
+            IsStartTelementry = IsStart;
 
             return Task.FromResult(Task.CompletedTask);
         }
 
-        public Task StartSchedulerManger(int millisecond)
+        public Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
         {
-            _logs.DebugMsg_1("received StartSchedulerManger: " + millisecond.ToString() + " requested ...");
+            _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo requested ...");
+            _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo ET : " + EventTag);
+            _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo EV : " + EventValue);
+            _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo Frequency : " + Frequency.ToString());
 
-            if (_SchedulerCheckTimer.Enabled)
-                _SchedulerCheckTimer.Stop();
+            var r = false;
 
-            _SchedulerCheckTimer.Interval = millisecond;
-            _SchedulerCheckTimer.AutoReset = true;
-            _SchedulerCheckTimer.Start();
-            return Task.FromResult(Task.CompletedTask);
+            if (IsTelemetryConsentOn)
+            {
+                switch (Frequency)
+                {
+                    case Telementry_Frequency.RealTime:
+                        {
+                            if (_PlatinumSDKPlugin != null)
+                                r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            break;
+                        }
+                    case Telementry_Frequency.FirstDayofMonth:
+                        {
+                            if (_PlatinumSDKPlugin != null)
+                            {
+                                if (DateTime.Now.Day == 1)
+                                    r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            }
+                            break;
+                        }
+                    case Telementry_Frequency.PerDay:
+                        {
+                            if (_PlatinumSDKPlugin != null)
+                            {
+                                if (DateTime.Now.AddDays(-1) >= _FrequencyDateTime.PerDay)
+                                    r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            }
+                            break;
+                        }
+                    case Telementry_Frequency.Weekly:
+                        {
+                            if (_PlatinumSDKPlugin != null)
+                            {
+                                if (DateTime.Now.AddDays(-7) >= _FrequencyDateTime.Weekly)
+                                    r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                            }
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
+
+            return Task.FromResult(r);
         }
 
-        public Task ReceiveScheduleInfo(scheduleInfo info)
+        public Task GetGlobalsetting_IsTelemetryConsentOn(bool value)
         {
-            //_logs.DebugMsg_1("ReceiveScheduleInfo ...");
-            //_ScheduleMap = info;
-            //_WaitTag = false;
-            //_logs.DebugMsg_1("ReceiveScheduleInfo _ScheduleMap is " + ((_ScheduleMap != null) ? "Received" : "Null"));
-            return Task.CompletedTask;
+            _logs.DebugMsg("[TelementryScheduler] received GetGlobalsetting_IsTelemetryConsentOn ...");
+
+            IsTelemetryConsentOn = value;
+
+            return Task.FromResult(Task.CompletedTask);
         }
 
         #endregion
 
         #region Private Methods
 
-        protected virtual void OnServiceRequest(ReadWriteRequest e)
-        {
-            _logs.DebugMsg_1("Brocast OnServiceRequest ...");
-
-            //VCPchanged?.Invoke(this, e);
-            EventHandler<ReadWriteRequest> handler = ServiceRequest;
-            if (handler != null)
-                Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
-        }
-
         private void OnSchedulerTimedRaise(Object source, System.Timers.ElapsedEventArgs e)
         {
-            _logs.DebugMsg_1("[Hook] OnSchedulerTimedRaise");
+            _logs.DebugMsg("[TelementryScheduler] [Hook] OnSchedulerTimedRaise");
         }
 
         private void InitializePlatinumSDKPlugin()
@@ -159,6 +190,20 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
             {
                 pluginCondition.PluginConditionChangeHandler += OnPlatinumSDKPluginConditionChangeHandler;
                 GetCurrentPlatinumSDKPluginCondition();
+            }
+        }
+
+        private void InitializeSettingsPlugin()
+        {
+            if (_SettingsPlugin != null)
+                return;
+
+            _SettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerDev>(PluginResolution.Dynamic);
+
+            if (_SettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnSettingsPluginConditionChangeHandler;
+                GetCurrentSettingsPluginCondition();
             }
         }
 
@@ -177,12 +222,70 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         _logs.DebugMsg($"[TelementryScheduler] {nameof(GetCurrentPlatinumSDKPluginCondition)} - PlatinumSDK Plugin is in a {nameof(pluginCondition)} condition");
-                        
+
                         if (_PlatinumSDKPlugin != null)
                             _logs.DebugMsg($"[TelementryScheduler] PlatinumSDK Plugin is Ready ....");
                     }
                 }
             });
+        }
+
+        private void GetCurrentSettingsPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_Settings)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        _logs.DebugMsg($"[TelementryScheduler] {nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
+                    {
+                        _logs.DebugMsg($"[TelementryScheduler] {nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
+                        _SettingsPlugin.SettingReadyEvent += SettingsReady;
+                        DDPMSettingsconfig = _SettingsPlugin.ReloadAppConfigData().Result;
+                    }
+                    else
+                    {
+                        _logs.DebugMsg($"[TelementryScheduler] {nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in unknow condition: {pluginCondition}");
+                    }
+                }
+            });
+        }
+
+        private void SettingsReady(object o, EventArgs eventArgs)
+        {
+            DDPMSettingsconfig = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (DDPMSettingsconfig != null)
+            {
+                _logs.DebugMsg($"[TelementryScheduler] {nameof(SettingsReady)} - Get _FrequencyDateTime Already");
+                _FrequencyDateTime = DDPMSettingsconfig.UserSettings.TelementryFrequency;
+            }
+            else _logs.DebugMsg($"[TelementryScheduler] {nameof(SettingsReady)} - Get _FrequencyDateTime Fail");
+        }
+
+        private bool Get_FrequencyDateTime()
+        {
+            var rc = false;
+
+            DDPMSettingsconfig = _SettingsPlugin.ReloadAppConfigData().Result;
+
+            if (_SettingsPlugin != null)
+            {
+                if (DDPMSettingsconfig != null)
+                    rc = true;
+            }
+
+            return rc;
+        }
+
+        private bool Set_FrequencyDateTime(DDPMSettings config)
+        {
+            var rc = _SettingsPlugin.SetAppConfigData(config).Result;
+
+            return rc;
         }
 
         #endregion
@@ -200,7 +303,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            _logs.DebugMsg_1($"Dispose: {disposing}");
+            _logs.DebugMsg($"[TelementryScheduler] Dispose: {disposing}");
             if (!IsDisposed)
             {
                 if (disposing)
@@ -223,6 +326,10 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
             GetCurrentPlatinumSDKPluginCondition();
         }
 
+        private void OnSettingsPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentSettingsPluginCondition();
+        }
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
@@ -232,6 +339,9 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
+
+            if (e.ChangedPlugins.OfType<ISettingsManagerDev>().Any())
+                InitializeSettingsPlugin();
 
             if (e.ChangedPlugins.OfType<IPlatinumSDKService>().Any())
                 InitializePlatinumSDKPlugin();

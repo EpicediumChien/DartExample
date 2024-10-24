@@ -35,8 +35,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-
-//using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
@@ -49,7 +47,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -92,11 +89,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ISchedulerManager _ScheduleManagerPlugin;
         private IDTPProxyPlugin _DTPProxyPlugin;
         private IEzMemoryPlugin _IEzMemoryPlugin;
+        private ITelementryScheduler _TelementryScheduler;
 
         private readonly object _FwUpdateLock = new object();
         private readonly object _DisplayChangedLock = new object();
         private readonly object _PluginConditionLock = new object();
-
         private readonly object _PluginConditionLock_Display = new object();
         private readonly object _PluginConditionLock_Peripherals = new object();
         private readonly object _PluginConditionLock_Settings = new object();
@@ -106,6 +103,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
         private readonly object _PluginConditionLock_EzMemory = new object();
+        private readonly object _PluginConditionLock_TelementryScheduler = new object();
+
         private DisplayChange displayChange;
 
         //private static Dell.Client.Framework.Common.Log _log;
@@ -188,6 +187,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static CancellationTokenSource _ReGetcancellationTokenSource;
 
+        private static bool _isSubagentActive = true;
         #endregion
 
         #region Constructor
@@ -200,6 +200,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Enabled = true;
 
             writelog("DeviceManagerPlugin constructor ...");
+
+            _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
         }
 
         #endregion
@@ -212,6 +214,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             InitializeSettingsPlugin();
             InitializeDisplayManagerPlugin();
+            InitializeTelementrySchedulerPlugin();
             InitializeColorPresetPlugin();
             InitializePeripheralsPlugin();
             InitializeFWUpdatePlugin();
@@ -1320,6 +1323,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
+            switch (code)
+            {
+                case 0x10:
+                    var TelemetryDta_Brightness = new Displaysettings_Brightness();
+                    TelemetryDta_Brightness.Brightness = val;
+                    TelemetryDta_Brightness.CommunicationPath = "Video";
+                    TelemetryDta_Brightness.GraphicCardName = string.Empty;
+                    TelemetryDta_Brightness.MonitorName = monitorInfo.AliasDeviceName;
+                    TelemetryDta_Brightness.D_Ctrl = monitorInfo.D_Ctrl;
+                    TelemetryDta_Brightness.SupplierID = monitorInfo.SupplierID;
+                    TelemetryDta_Brightness.FirmwareVersion = monitorInfo.FwVersion;
+                    TelemetryDta_Brightness.DisplayModelname = monitorInfo.modelName;
+                    TelemetryDta_Brightness.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                    TelemetryDta_Brightness.DsiplayResolution = string.Empty;
+                    TelemetryDta_Brightness.MaxDisplayResolution = string.Empty;
+                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Brightness.ToJson(), Telementry_Frequency.RealTime);
+                    break;
+
+                case 0x12:
+                    var TelemetryDta_Contrast = new Displaysettings_Contrast();
+                    TelemetryDta_Contrast.Contrast = val;
+                    TelemetryDta_Contrast.CommunicationPath = "Video";
+                    TelemetryDta_Contrast.GraphicCardName = string.Empty;
+                    TelemetryDta_Contrast.MonitorName = monitorInfo.AliasDeviceName;
+                    TelemetryDta_Contrast.D_Ctrl = monitorInfo.D_Ctrl;
+                    TelemetryDta_Contrast.SupplierID = monitorInfo.SupplierID;
+                    TelemetryDta_Contrast.FirmwareVersion = monitorInfo.FwVersion;
+                    TelemetryDta_Contrast.DisplayModelname = monitorInfo.modelName;
+                    TelemetryDta_Contrast.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                    TelemetryDta_Contrast.DsiplayResolution = string.Empty;
+                    TelemetryDta_Contrast.MaxDisplayResolution = string.Empty;
+                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Contrast.ToJson(), Telementry_Frequency.RealTime);
+                    break;
+
+                default:
+                    break;
+            }
+
             return Task.FromResult(r);
         }
 
@@ -1999,99 +2040,1229 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Headset
 
-        public Task SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        //////////////////////////////////Set///////////////////////////////////
+
+        public async Task<bool> SetMicNoiseCancellationAsync(string guid, bool newValue)
         {
-            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
-            writelog($"Target Guid is {guid}");
-            writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
-            return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetMicNoiseCancellationAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
         }
 
-        #endregion
+        public async Task<bool> SetSidetoneAsync(string guid, bool newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetSidetoneAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBusyLightAsync(string guid, bool newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetBusyLightAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetVoiceGuidanceAsync(string guid, bool newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetVoiceGuidanceAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetSelectedPresetAsync(string guid, int newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetSelectedPresetAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetSidetoneLevelAsync(string guid, int newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetSidetoneLevelAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBandsGainAsync(string guid, byte[] newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync requested for GUID: {guid} with value: {BitConverter.ToString(newValue)}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetBandsGainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAncModeAsync(string guid, int newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAncGainAsync(string guid, int newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetAncGainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWearDetectionAsync(string guid, int newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetWearDetectionAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetMicNCIncomingAsync(string guid, bool newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetMicNCIncomingAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetUnPairAsync(string guid, bool newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetUnPairAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync requested for GUID: {guid} with value: {newValue}");
+
+            try
+            {
+                await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync success for GUID: {guid}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        //////////////////////////////////// Get//////////////////////////////////////////
+
+        public async Task<JArray> GetDeviceItemsExAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync requested for GUID: {guid}");
+
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceItemsExAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync Success for GUID: {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync failed for GUID: {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetInterfaceTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return default(DeviceInterfaceType);
+            }
+        }
+
+        public async Task<string> GetDeviceNameAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceNameAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceNameAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetDeviceIdAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceIdAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceIdAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPluginIdAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetPluginIdAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPluginIdAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetODMIdAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetODMIdAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetODMIdAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetModelNumberAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetModelNumberAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetModelNumberAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetInstanceNumberAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetInstanceNumberAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetInstanceNumberAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetInstanceIdAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetInstanceIdAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetInstanceIdAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetFirmwareVersionAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetFirmwareVersionAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetFirmwareVersionAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetDeviceTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetParentDeviceTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetParentDeviceTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetParentDeviceTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsBatteryLevelSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsBatteryLevelSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetBatteryLevelAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetBatteryLevelAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBatteryLevelAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetDeviceBatteryStatusAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceBatteryStatusAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceBatteryStatusAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairingStatusAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetPairingStatusAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairingStatusAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetMaxPairingSlotsAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetMaxPairingSlotsAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMaxPairingSlotsAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetPairedDeviceCountAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetPairedDeviceCountAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPairedDeviceCountAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetTotalNumberOfPairedHostNameAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetTotalNumberOfPairedHostNameAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetSerialNumberAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetSerialNumberAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSerialNumberAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> GetIsReadyAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsReadyAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsReadyAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsDirtyAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsDirtyAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsDirtyAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsMicNoiseCancellationSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsMicNoiseCancellationSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsSidetoneSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsSidetoneSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsSidetoneSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBusyLightSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsBusyLightSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsBusyLightSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsVoiceGuidanceSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsVoiceGuidanceSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsPresetsSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsPresetsSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsPresetsSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsEqualizerSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsEqualizerSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsEqualizerSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetConnectionTypeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+        }
+
+        public async Task<bool> GetIsANCSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsANCSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsANCSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionSensitivitySupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionSensitivitySupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionPauseMusicSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionMuteMicSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionQuickPauseSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionQuickPauseSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetMicNoiseCancellationAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetMicNoiseCancellationAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMicNoiseCancellationAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetMicNCIncomingAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetMicNCIncomingAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMicNCIncomingAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetSidetoneAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetSidetoneAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSidetoneAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBusyLightAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetBusyLightAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBusyLightAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetVoiceGuidanceAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetVoiceGuidanceAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetVoiceGuidanceAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetSelectedPresetAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetSelectedPresetAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSelectedPresetAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetSidetoneLevelAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetSidetoneLevelAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSidetoneLevelAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetMuteStatusAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetMuteStatusAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMuteStatusAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<byte[]> GetBandsGainAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetBandsGainAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBandsGainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetAncModeAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetAncModeAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAncModeAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAncGainAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetAncGainAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAncGainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetWearDetectionAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetWearDetectionAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWearDetectionAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Headset] received GetIsMicNCIncomingSupportedAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsMicNCIncomingSupportedAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion Headset
 
         #region Wired Audio
-        public async Task<int> GetBassAsync(string Guid)
+
+        //////////////////////////////////Set///////////////////////////////////
+
+        public async Task<bool> SetBassAsync(string guid, int newValue)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetBassAsync(Guid));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetBassAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetBassAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetBassAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task SetBassAsync(string Guid, int newValue)
+        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
         {
-            _DTPProxyPlugin.SetBassAsync(Guid, newValue);
-            //return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetMidRangeAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetMidRangeAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task<int> GetMidRangeAsync(string Guid)
+        public async Task<bool> SetTrebleAsync(string guid, int newValue)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetMidRangeAsync(Guid));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetTrebleAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetTrebleAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task SetMidRangeAsync(string Guid, int newValue)
+        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
         {
-            _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
-            //return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetProfileForSpeaker requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetProfileForSpeaker(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetProfileForSpeaker succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetProfileForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task<int> GetTrebleAsync(string Guid)
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetTrebleAsync(Guid));
-        }
-        public async Task SetTrebleAsync(string Guid, int newValue)
-        {
-            _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
-            //return Task.FromResult(true);
-        }
-        //-----------------------------------
-        public Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
-        {
-            writelog("DeviceMangerPlugin received SetIsWiredAudioMicMuteSoundEnableAsync requested ...");
-            writelog($"Target Guid is {Guid}");
-            writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(Guid, newValue);
-            return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioMicMuteSoundEnableAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(Guid));
-        }
-        //-----------------------------------
-        public Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
-        {
-            writelog("DeviceMangerPlugin received SetWiredAudioVolumeAdjustmentToneAsync requested ...");
-            writelog($"Target Guid is {Guid}");
-            writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(Guid, newValue);
-            return Task.FromResult(true);
-        }
-
-        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
-        {
-            return await Task.Run(() => _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(Guid));
-        }
-        //-----------------------------------
-        public Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue)
-        {
-            writelog("DeviceMangerPlugin received SetIsWiredAudioIMicNSEnableValue requested ...");
-            writelog($"Target Guid is {Guid}");
-            writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableValue(Guid, newValue);
-            return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetWiredAudioVolumeAdjustmentToneAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetWiredAudioVolumeAdjustmentToneAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
-        public async Task<bool> GetIsWiredAudioIMicNSEnableValue(string Guid)
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableValueAsync(Guid));
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetIsWiredAudioIMicNSEnableAsync requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioIMicNSEnableAsync succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
         }
-        //-----------------------------------
-        public Task SetResetToDefaultValue(string Guid, bool newValue)
+
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
         {
-            writelog("DeviceMangerPlugin received SetResetToDefaultValue requested ...");
-            writelog($"Target Guid is {Guid}");
-            writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetResetToDefaultValueAsync(Guid, newValue);
-            return Task.FromResult(true);
+            writelog($"[DeviceManagerPlugin] [Soundbar] received SetResetToDefaultAsyncForSoundbar requested ... {guid} / {newValue}");
+            try
+            {
+                await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetResetToDefaultAsyncForSoundbar succeeded for {guid} / {newValue}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] SetResetToDefaultAsyncForSoundbar failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        //////////////////////////////////Get///////////////////////////////////
+        public async Task<int> GetBassAsync(string guid)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetBassAsync requested ... {guid}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBassAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetBassAsync succeeded for {guid}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return -1; // Returning -1 as a failure indicator
+            }
+        }
+
+        public async Task<int> GetMidRangeAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetMidRangeAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMidRangeAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetMidRangeAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetMidRangeAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetTrebleAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetTrebleAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetTrebleAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetTrebleAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetTrebleAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioMicMuteSoundEnableAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioMicMuteSoundEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetWiredAudioVolumeAdjustmentToneAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetWiredAudioVolumeAdjustmentToneAsync failed for {itemID} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID)
+        {
+            writelog($"[DeviceManagerPlugin] [Soundbar] received GetIsWiredAudioIMicNSEnableAsync requested ... {itemID}");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(itemID);
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioIMicNSEnableAsync succeeded for {itemID}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Soundbar] GetIsWiredAudioIMicNSEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                return false;
+            }
         }
 
         #endregion
@@ -2556,21 +3727,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false)
         {
+            writelog($"[GetFWUpdateInfo], enter");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
+                writelog($"[GetFWUpdateInfo], start");
+                writelog($"[GetFWUpdateInfo], GetFWUpdateInfo start");
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
+                    writelog($"[GetFWUpdateInfo], updateHelper is null");
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
+                writelog($"[GetFWUpdateInfo], updateHelper count = {updateHelper.UpdateItems.Count}");
+                writelog($"[GetFWUpdateInfo], GetFWUpdateInfo done");
+                writelog($"[GetFWUpdateInfo], GetDisplayFWUpdate start");
                 DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
+                    writelog($"[GetFWUpdateInfo], displayUpdateHelper is null");
                     displayUpdateHelper = new DisplayUpdateHelper();
                     displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
                 }
-
+                writelog($"[GetFWUpdateInfo], displayUpdateHelper.Firmwares count = {displayUpdateHelper.Firmwares.Count}");
+                writelog($"[GetFWUpdateInfo], GetDisplayFWUpdate done");
+                writelog($"[GetFWUpdateInfo], _FWUpdatePlugin.GetFWUpdateInfo start");
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay).Result);
             }
@@ -2692,6 +3873,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"{nameof(SetServerURL)} done");
             return Task.FromResult(ret);
         }
+
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -3610,8 +4792,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
 
-
-
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
             if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
                 monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
@@ -3908,6 +5088,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Failed, return an empty array instead of null
             return Task.FromResult(new SplitJson[] { });
         }
+
         /// <summary>
         /// Write the EACustomList to current user's settings file
         /// </summary>
@@ -4478,6 +5659,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
                                     monitorSettings.ALSConfig = aLSConfig.AllValue;
                                 }
+                                writelog("[DisplayExportSettings]Export Gaming");
+                                GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+                                gamingDisplayPropertiesInfo = GetGamingProperties_SupportedList(monitorInfo).Result;
+                                if (gamingDisplayPropertiesInfo != null)
+                                {
+                                    if (gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode && gamingDisplayPropertiesInfo.Current_GameEnhancementMode != null)
+                                    {
+                                        monitorSettings.Gaming.Current_GameEnhancementMode = (Gaming_GameEnhancementMode)gamingDisplayPropertiesInfo.Current_GameEnhancementMode;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_ResponseTime && gamingDisplayPropertiesInfo.Current_ResponseTime != null)
+                                    {
+                                        monitorSettings.Gaming.Current_ResponseTime = (Gaming_ResponseTime)gamingDisplayPropertiesInfo.Current_ResponseTime;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer && gamingDisplayPropertiesInfo.Current_DarkStabilizer != null)
+                                    {
+                                        monitorSettings.Gaming.Current_DarkStabilizer = (Gaming_DarkStabilizer)gamingDisplayPropertiesInfo.Current_DarkStabilizer;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_HDRType && gamingDisplayPropertiesInfo.Current_HDRType != null)
+                                    {
+                                        monitorSettings.Gaming.Current_HDRType = (Gaming_HDRType)gamingDisplayPropertiesInfo.Current_HDRType;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_DualResolutionType && gamingDisplayPropertiesInfo.Current_DualResolutionType != null)
+                                    {
+                                        monitorSettings.Gaming.Current_DualResolutionType = (Gaming_DualResolutionType)gamingDisplayPropertiesInfo.Current_DualResolutionType;
+                                    }
+                                    if (gamingDisplayPropertiesInfo.IsSupported_VisionEngineType && gamingDisplayPropertiesInfo.IsEnable_VisionEngineType != null)
+                                    {
+                                        monitorSettings.Gaming.IsEnable_VisionEngineType = gamingDisplayPropertiesInfo.IsEnable_VisionEngineType;
+                                    }
+                                }
                                 writelog("[DisplayExportSettings]Export VCPs");
                                 foreach (VCPCode vcp in monitorSettings.VCPs)
                                 {
@@ -4567,6 +5778,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     bool b = _ColorPresetPlugin.Import(monitorInfo, ImpExpSettings.MonitorSettings.ColorPreset, _SettingsPlugin).Result;
                                 }
+                                if (ImpExpSettings.MonitorSettings.Gaming != null)
+                                {
+                                    Gaming gaming = ImpExpSettings.MonitorSettings.Gaming;
+                                    if (gaming.Current_GameEnhancementMode != 0)
+                                    {
+                                        bool bge = SetGameEnhancementMode(monitorInfo, gaming.Current_GameEnhancementMode).Result;
+                                    }
+                                    if (gaming.Current_ResponseTime != 0)
+                                    {
+                                        bool bgr = SetGaming_ResponseTime(monitorInfo, gaming.Current_ResponseTime).Result;
+                                    }
+                                    if (gaming.Current_DarkStabilizer != 0)
+                                    {
+                                        bool bgd = SetGaming_DarkStabilizer(monitorInfo, gaming.Current_DarkStabilizer).Result;
+                                    }
+                                    if (gaming.Current_HDRType != 0)
+                                    {
+                                        bool bgh = SetGaming_HDRType(monitorInfo, gaming.Current_HDRType).Result;
+                                    }
+                                    if (gaming.Current_DualResolutionType != 0)
+                                    {
+                                        bool bgdr = SetGaming_DualResolutionType(monitorInfo, gaming.Current_DualResolutionType).Result;
+                                    }
+                                    if (gaming.IsEnable_VisionEngineType != null)
+                                    {
+                                        if (gaming.IsEnable_VisionEngineType.Length > 0)
+                                        {
+                                            bool bgv = SetGaming_VisionEngineEnableType(monitorInfo, gaming.IsEnable_VisionEngineType).Result;
+                                        }
+                                    }
+                                }
                                 writelog("[DisplayImportSettings]Import VCP");
                                 if (vcps != null)
                                 {
@@ -4588,6 +5830,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 //{
                                                 //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
                                                 //}
+                                                if (ImpExpSettings.MonitorSettings.Gaming.Current_DualResolutionType != 0 && code.Code == 0xEA)
+                                                {
+                                                    continue;
+                                                }
                                                 //get vcp code
                                                 objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
                                                 if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
@@ -4909,17 +6155,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(Guid));
         }
+
         public async Task<JArray> GetMouseAssignableActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseProgrammableKeys(Guid));
         }
+
         public async Task<JArray> GetAppSpecificProfiles(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
+        }
+
+        public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
         }
 
         public Task SetDPIValue(string Guid, int newValue)
@@ -4940,6 +6194,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetMouseAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task DeleteMouseAssignedAction(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received DeleteAssignedAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.DeleteMouseAssignedAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+
         #endregion
 
         #region Pen
@@ -4948,72 +6220,89 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetPenDeviceItemsEx());
         }
+
         public Task<string> PairingPen()
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.PairingPen();
         }
+
         public Task UnPairPen(string Guid)
         {
             writelog("DeviceMangerPlugin received PairingPen requested ...");
             return _DTPProxyPlugin.UnPairPen(Guid);
         }
+
         public Task<string> GetEraserDoublePressValues()
         {
             return _DTPProxyPlugin.GetEraserDoublePressValues();
         }
+
         public Task<string> GetEraserSinglePressValues()
         {
             return _DTPProxyPlugin.GetEraserSinglePressValues();
         }
+
         public Task<string> GetEraserLongPressValues()
         {
             return _DTPProxyPlugin.GetEraserLongPressValues();
         }
+
         public Task<string> GetSideSwitchSinglePressValues()
         {
             return _DTPProxyPlugin.GetSideSwitchSinglePressValues();
         }
+
         public Task<string> GetMenuSinglePressValues()
         {
             return _DTPProxyPlugin.GetMenuSinglePressValues();
         }
+
         public Task<string> GetLaunchableAppValues()
         {
             return _DTPProxyPlugin.GetLaunchableAppValues();
         }
+
         public Task<string> GetEraserDoublePressSetting()
         {
             return _DTPProxyPlugin.GetEraserDoublePressSetting();
         }
+
         public Task<string> GetEraserSinglePressSetting()
         {
             return _DTPProxyPlugin.GetEraserSinglePressSetting();
         }
+
         public Task<string> GetEraserLongPressSetting()
         {
             return _DTPProxyPlugin.GetEraserLongPressSetting();
         }
+
         public Task<string> GetSideTopSwitchSinglePressSetting()
         {
             return _DTPProxyPlugin.GetSideTopSwitchSinglePressSetting();
         }
+
         public Task<string> GetSideBottomSwitchSinglePressSetting()
         {
             return _DTPProxyPlugin.GetSideBottomSwitchSinglePressSetting();
         }
+
         public Task<string> GetMenuSinglePressSetting()
         {
             return _DTPProxyPlugin.GetMenuSinglePressSetting();
         }
+
         public Task<bool> GetMenuCenterRightClickSetting()
         {
             return _DTPProxyPlugin.GetMenuCenterRightClickSetting();
         }
+
         public Task<bool> GetIsSideTopButtonHoverClick()
         {
             return _DTPProxyPlugin.GetIsSideTopButtonHoverClick();
         }
+
         public Task<bool> GetIsSideBottomButtonHoverClick()
         {
             return _DTPProxyPlugin.GetIsSideBottomButtonHoverClick();
@@ -5517,9 +6806,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-
         #endregion
-
 
         #endregion
 
@@ -5620,8 +6907,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 _GlobalSettingParam.isTelemetryConsentOn = isEnable;
+
+                if (_TelementryScheduler != null)
+                {
+                    writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                    _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                }
+                else writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " _TelementryScheduler is null");
+
                 ret = SaveGlobalSettingParam();
             }
+
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
@@ -5647,6 +6943,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _GlobalSettingParam.GlobalSetting_About.DriverVersion = "N/A";
                 }
             }
+
+            if (_GlobalSettingParam != null)
+            {
+                if (_TelementryScheduler != null)
+                {
+                    writelog(nameof(LoadGlobalSettingParam) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                    _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                }
+                else writelog(nameof(LoadGlobalSettingParam) + " _TelementryScheduler is null");
+            }
+            else writelog(nameof(LoadGlobalSettingParam) + " _GlobalSettingParam is null");
+
             return ret;
         }
 
@@ -6240,7 +7548,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
 
                                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                                        {
+                                            displayInOut = false;
                                             _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                                            displayInOut = true;
+                                        }
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
@@ -6327,7 +7639,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    handler.Invoke(this, e);
             if (_DisplayManagerPlugin != null)
             {
+                displayInOut = false;
                 _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
+                displayInOut = true;
             }
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
@@ -6705,7 +8019,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 text = "";
 
             text = "[DeviceManager] " + text;
-            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + text);
+            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + text);
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
@@ -6881,6 +8195,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 pluginCondition.PluginConditionChangeHandler += OnEzMemoryPluginConditionChangeHandler;
                 GetCurrentEzMemoryPluginCondition();
+            }
+        }
+
+        private void InitializeTelementrySchedulerPlugin()
+        {
+            if (_TelementryScheduler != null)
+                return;
+
+            _TelementryScheduler = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
+
+            if (_TelementryScheduler is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
+                GetCurrentTelementrySchedulerCondition();
             }
         }
 
@@ -7497,6 +8825,43 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in a started condition");
+                    }
+                }
+            });
+        }
+
+        private void GetCurrentTelementrySchedulerCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_TelementryScheduler as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_TelementryScheduler)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
+
+                        if (_GlobalSettingParam != null)
+                        {
+                            writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                            _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                        }
+                        else writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
+
+                        if (_GlobalSettingParam != null)
+                        {
+                            writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                            _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                        }
+                        else writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
                     }
                 }
             });
@@ -8604,6 +9969,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"Switch_InputSource InputSource count is 0");
                     return;
                 }
+                Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
+                //for magration that hotkeyInfo that inputsource name is empty
+                if (list.Any(x => string.IsNullOrEmpty(x.Name)))
+                {
+                    List<InputSourceObj> inputSourceObjs = list.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
+                    {
+                        Name = b.InputName,
+                        Code = a.Code,
+                    }).ToList();
+
+                    foreach (var item in inputSourceObjs)
+                    {
+                        Debug.WriteLine($"inputSourceObjs: {item.Name}={item.Code}");
+                    }
+                    if (inputSourceObjs == null || list.Count == 0)
+                    {
+                        //hotkey.InputSource Count must not 0.
+                        Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
+                        writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],migration hotkeyInfo:inputsoure is empty or can't convert ");
+                        return;
+                    }
+                    else
+                    {
+                        list.Clear();
+                        list.AddRange(inputSourceObjs);
+                        //update settings
+                        GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, HotkeyType.FavoriteInputSource, inputSourceObjs);
+                    }
+                }
                 string crtInput = monitorInfo.inputSource;
                 Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}] crtInput is [{crtInput}]");
                 //InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
@@ -8623,11 +10017,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 HotkeyInfo hotkey = (HotkeyInfo)param[0];
                 List<InputSourceObj> list = (List<InputSourceObj>)param[1];
-                InputSourceObj changeInput = list[0];// hotkey.InputSource[0];
-                Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput.Name}");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
+                //for magration that hotkeyInfo that inputsource name is empty
+                string changeInput = string.Empty;// hotkey.InputSource[0];
+                if (list.Any(x => string.IsNullOrEmpty(x.Name)))
+                {
+                    Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
+                    InputInfo inputInfo = inputList.Values.SingleOrDefault(x => x.Code.Equals(list[0].Code));
+                    if (inputInfo != null)
+                        changeInput = inputInfo.InputName;
+                    //update settings
+                    List<InputSourceObj> inputSources = new List<InputSourceObj>();
+                    inputSources.Add(new InputSourceObj((UInt16)inputInfo.Code, inputInfo.InputName));
+                    GetInputSourceHotKeyDataAndSaveNewBack(monitorInfo, HotkeyType.FavoriteInputSource, inputSources);
+                }
+                else
+                {
+                    changeInput = list[0].Name;
+                }
+                Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput}");
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput).Result;
                 Debug.WriteLine($"Favorite_InputSource => {setNextInput}");
-                writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
+                writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput}]" + (setNextInput ? "success" : "fail"));
             }
         }
 
@@ -9985,7 +11395,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                     }
-
                 }
             }
             catch (Exception ex)
@@ -10158,7 +11567,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 moinfo.edid.ModelName = ddmMonitorSettings.Model;
                 moinfo.edid.ServiceTag = ddmMonitorSettings.ServiceTag;
 
-
                 //Will migrate Desktop[0] only
                 if (ddmMonitorSettings.EasyArrangement.Desktops.Count > 0)
                 {
@@ -10217,10 +11625,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     eaSettings.SelectedSplit = selJson;
                     eaSettings.RecentList = recentList.ToArray();
                     WriteEAMonitorSettings(moinfo, eaSettings);
-
                 }
             }
         }
+
         #endregion Migration
 
         #region Event Handler
@@ -10280,6 +11688,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GetCurrentEzMemoryPluginCondition();
         }
 
+        private void OnTelementrySchedulerConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentTelementrySchedulerCondition();
+        }
+
         //Bruce, 2024-08-09 add new event
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
@@ -10327,6 +11740,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (e.ChangedPlugins.OfType<IEzMemoryPlugin>().Any())
                 InitializeEzMemoryPlugin();
+
+            if (e.ChangedPlugins.OfType<ITelementryScheduler>().Any())
+                InitializeTelementrySchedulerPlugin();
         }
 
         //Jim, 2024-09-05 add new event
@@ -10364,34 +11780,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
-                    {
-                        if (Device is OSDType_Device.Headset)
                         {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content))
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                else
+                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
                             else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
+                                return Task.CompletedTask;
                         }
-                        else if (Device is OSDType_Device.Keyboard)
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
-                        else if (Device is OSDType_Device.Mouse)
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
-                        else
-                            return Task.CompletedTask;
-                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -10407,13 +11823,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                    {
-                        if (!string.IsNullOrWhiteSpace(Content))
-                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                        else
-                            writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -10429,20 +11845,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                    {
-                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.NumLock:
-                    {
-                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.CapsLock:
-                    {
-                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -10458,30 +11874,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.EasyMemory:
-                    {
-                        _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.Fingerprint:
-                    {
-                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.DisplayChanged:
-                    {
-                        _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.WalkAwayLock:
-                    {
-                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                            return Task.CompletedTask;
+                        }
                     case OSDType.StartRecording:
-                    {
-                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -10550,441 +11966,441 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
-                                    {
-                                        if (State)
                                         {
-                                            if (MuteWinx != null)
-                                                MuteWinx.CloseWindow();
+                                            if (State)
+                                            {
+                                                if (MuteWinx != null)
+                                                    MuteWinx.CloseWindow();
 
-                                            MuteWinx = new MuteWin(Content);
+                                                MuteWinx = new MuteWin(Content);
 
-                                            try
-                                            {
-                                                MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                MuteWinx.ShowWindow();
+                                                try
+                                                {
+                                                    MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    MuteWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                    //MuteWinx.Top = sreen.WorkingArea.Top;
+                                                    //MuteWinx.Left = sreen.WorkingArea.Left;
+                                                    //MuteWinx.ShowWindow();
+                                                }
+                                                finally
+                                                {
+                                                    MuteWinx = null;
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                                //MuteWinx.Top = sreen.WorkingArea.Top;
-                                                //MuteWinx.Left = sreen.WorkingArea.Left;
-                                                //MuteWinx.ShowWindow();
-                                            }
-                                            finally
-                                            {
-                                                MuteWinx = null;
+                                                if (UnMuteWinx != null)
+                                                    UnMuteWinx.CloseWindow();
+
+                                                UnMuteWinx = new UnMuteWin(Content);
+
+                                                try
+                                                {
+                                                    UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    UnMuteWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                    //UnMuteWinx.Top = sreen.WorkingArea.Top;
+                                                    //UnMuteWinx.Left = sreen.WorkingArea.Left;
+                                                    //UnMuteWinx.ShowWindow();
+                                                }
+                                                finally
+                                                {
+                                                    UnMuteWinx = null;
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            if (UnMuteWinx != null)
-                                                UnMuteWinx.CloseWindow();
-
-                                            UnMuteWinx = new UnMuteWin(Content);
-
-                                            try
-                                            {
-                                                UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                UnMuteWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                                //UnMuteWinx.Top = sreen.WorkingArea.Top;
-                                                //UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                //UnMuteWinx.ShowWindow();
-                                            }
-                                            finally
-                                            {
-                                                UnMuteWinx = null;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.BatteryLow:
-                                    {
-                                        if (_DeviceType is OSDType_Device.Headset)
                                         {
-                                            if (HeadsetBatteryLowIWinx != null)
-                                                HeadsetBatteryLowIWinx.CloseWindow();
+                                            if (_DeviceType is OSDType_Device.Headset)
+                                            {
+                                                if (HeadsetBatteryLowIWinx != null)
+                                                    HeadsetBatteryLowIWinx.CloseWindow();
 
-                                            HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
+                                                HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
 
-                                            try
-                                            {
-                                                HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                HeadsetBatteryLowIWinx.ShowWindow();
+                                                try
+                                                {
+                                                    HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    HeadsetBatteryLowIWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                    //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                    //HeadsetBatteryLowIWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
+                                                }
+                                                finally
+                                                {
+                                                    HeadsetBatteryLowIWinx = null;
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else if (_DeviceType is OSDType_Device.Keyboard)
                                             {
-                                                //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                //HeadsetBatteryLowIWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
+                                                if (KeybordBatteryLowIWinx != null)
+                                                    KeybordBatteryLowIWinx.CloseWindow();
+
+                                                KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
+
+                                                try
+                                                {
+                                                    KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    KeybordBatteryLowIWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                    //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                    //KeybordBatteryLowIWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                                }
+                                                finally
+                                                {
+                                                    KeybordBatteryLowIWinx = null;
+                                                }
                                             }
-                                            finally
+                                            else if (_DeviceType is OSDType_Device.Mouse)
                                             {
-                                                HeadsetBatteryLowIWinx = null;
+                                                if (MouseBatteryLowIWinx != null)
+                                                    MouseBatteryLowIWinx.CloseWindow();
+
+                                                MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
+
+                                                try
+                                                {
+                                                    MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    MouseBatteryLowIWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                    //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                    //MouseBatteryLowIWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                                }
+                                                finally
+                                                {
+                                                    MouseBatteryLowIWinx = null;
+                                                }
                                             }
                                         }
-                                        else if (_DeviceType is OSDType_Device.Keyboard)
-                                        {
-                                            if (KeybordBatteryLowIWinx != null)
-                                                KeybordBatteryLowIWinx.CloseWindow();
-
-                                            KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
-
-                                            try
-                                            {
-                                                KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                KeybordBatteryLowIWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                //KeybordBatteryLowIWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                KeybordBatteryLowIWinx = null;
-                                            }
-                                        }
-                                        else if (_DeviceType is OSDType_Device.Mouse)
-                                        {
-                                            if (MouseBatteryLowIWinx != null)
-                                                MouseBatteryLowIWinx.CloseWindow();
-
-                                            MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
-
-                                            try
-                                            {
-                                                MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                MouseBatteryLowIWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                //MouseBatteryLowIWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                MouseBatteryLowIWinx = null;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.StartRecording:
-                                    {
-                                        if (StartRecordingWinx != null)
-                                            StartRecordingWinx.CloseWindow();
+                                        {
+                                            if (StartRecordingWinx != null)
+                                                StartRecordingWinx.CloseWindow();
 
-                                        StartRecordingWinx = new StartRecordingWin(Content);
+                                            StartRecordingWinx = new StartRecordingWin(Content);
 
-                                        try
-                                        {
-                                            StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                            StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                            StartRecordingWinx.ShowWindow();
+                                            try
+                                            {
+                                                StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                StartRecordingWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //StartRecordingWinx.Top = sreen.WorkingArea.Top;
+                                                //StartRecordingWinx.Left = sreen.WorkingArea.Left;
+                                                //StartRecordingWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                StartRecordingWinx = null;
+                                            }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            //StartRecordingWinx.Top = sreen.WorkingArea.Top;
-                                            //StartRecordingWinx.Left = sreen.WorkingArea.Left;
-                                            //StartRecordingWinx.ShowWindow();
-                                            writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
-                                        }
-                                        finally
-                                        {
-                                            StartRecordingWinx = null;
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.DisplayChanged:
-                                    {
-                                        if (DisplayChangedWinx != null)
-                                            DisplayChangedWinx.CloseWindow();
+                                        {
+                                            if (DisplayChangedWinx != null)
+                                                DisplayChangedWinx.CloseWindow();
 
-                                        DisplayChangedWinx = new DisplayChangedWin(Content);
+                                            DisplayChangedWinx = new DisplayChangedWin(Content);
 
-                                        try
-                                        {
-                                            DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                            DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                            DisplayChangedWinx.ShowWindow();
+                                            try
+                                            {
+                                                DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                DisplayChangedWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
+                                                //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
+                                                //DisplayChangedWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                DisplayChangedWinx = null;
+                                            }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
-                                            //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
-                                            //DisplayChangedWinx.ShowWindow();
-                                            writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
-                                        }
-                                        finally
-                                        {
-                                            DisplayChangedWinx = null;
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.WalkAwayLock:
-                                    {
-                                        if (WalkAwayLockWinx != null)
-                                            WalkAwayLockWinx.CloseWindow();
+                                        {
+                                            if (WalkAwayLockWinx != null)
+                                                WalkAwayLockWinx.CloseWindow();
 
-                                        WalkAwayLockWinx = new WalkAwayLockWin(Content);
+                                            WalkAwayLockWinx = new WalkAwayLockWin(Content);
 
-                                        try
-                                        {
-                                            WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                            WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                            WalkAwayLockWinx.ShowWindow();
+                                            try
+                                            {
+                                                WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                WalkAwayLockWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
+                                                //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
+                                                //WalkAwayLockWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                WalkAwayLockWinx = null;
+                                            }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
-                                            //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
-                                            //WalkAwayLockWinx.ShowWindow();
-                                            writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
-                                        }
-                                        finally
-                                        {
-                                            WalkAwayLockWinx = null;
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.ScrollLock:
-                                    {
-                                        if (State)
                                         {
-                                            if (ScrollLockOnWinx != null)
-                                                ScrollLockOnWinx.CloseWindow();
-
-                                            ScrollLockOnWinx = new ScrollLockOnWin();
-
-                                            try
+                                            if (State)
                                             {
-                                                ScrollLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                ScrollLockOnWinx.ShowWindow();
+                                                if (ScrollLockOnWinx != null)
+                                                    ScrollLockOnWinx.CloseWindow();
+
+                                                ScrollLockOnWinx = new ScrollLockOnWin();
+
+                                                try
+                                                {
+                                                    ScrollLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    ScrollLockOnWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //ScrollLockOnWinx.ShowWindow();
+
+                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    ScrollLockOnWinx = null;
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                //ScrollLockOnWinx.ShowWindow();
+                                                if (ScrollLockOffWinx != null)
+                                                    ScrollLockOffWinx.CloseWindow();
 
-                                                writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                ScrollLockOnWinx = null;
+                                                ScrollLockOffWinx = new ScrollLockOffWin();
+
+                                                try
+                                                {
+                                                    ScrollLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    ScrollLockOffWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //ScrollLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    ScrollLockOffWinx = null;
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            if (ScrollLockOffWinx != null)
-                                                ScrollLockOffWinx.CloseWindow();
-
-                                            ScrollLockOffWinx = new ScrollLockOffWin();
-
-                                            try
-                                            {
-                                                ScrollLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                ScrollLockOffWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                //ScrollLockOffWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                ScrollLockOffWinx = null;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.NumLock:
-                                    {
-                                        if (State)
                                         {
-                                            if (NumLockOnWinx != null)
-                                                NumLockOnWinx.CloseWindow();
-
-                                            NumLockOnWinx = new NumLockOnWin();
-
-                                            try
+                                            if (State)
                                             {
-                                                NumLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                NumLockOnWinx.ShowWindow();
+                                                if (NumLockOnWinx != null)
+                                                    NumLockOnWinx.CloseWindow();
+
+                                                NumLockOnWinx = new NumLockOnWin();
+
+                                                try
+                                                {
+                                                    NumLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    NumLockOnWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOnWinx.ShowWindow();
+
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    NumLockOnWinx = null;
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                //NumLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                //NumLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                //NumLockOnWinx.ShowWindow();
+                                                if (NumLockOffWinx != null)
+                                                    NumLockOffWinx.CloseWindow();
 
-                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                NumLockOnWinx = null;
+                                                NumLockOffWinx = new NumLockOffWin();
+
+                                                try
+                                                {
+                                                    NumLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    NumLockOffWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    NumLockOffWinx = null;
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            if (NumLockOffWinx != null)
-                                                NumLockOffWinx.CloseWindow();
-
-                                            NumLockOffWinx = new NumLockOffWin();
-
-                                            try
-                                            {
-                                                NumLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                NumLockOffWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //NumLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                //NumLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                //NumLockOffWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                NumLockOffWinx = null;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.CapsLock:
-                                    {
-                                        if (State)
                                         {
-                                            if (CapsLockOnWinx != null)
-                                                CapsLockOnWinx.CloseWindow();
+                                            if (State)
+                                            {
+                                                if (CapsLockOnWinx != null)
+                                                    CapsLockOnWinx.CloseWindow();
 
-                                            CapsLockOnWinx = new CapsLockOnWin();
+                                                CapsLockOnWinx = new CapsLockOnWin();
 
-                                            try
-                                            {
-                                                CapsLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                CapsLockOnWinx.ShowWindow();
+                                                try
+                                                {
+                                                    CapsLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    CapsLockOnWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //CapsLockOnWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    CapsLockOnWinx = null;
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                //CapsLockOnWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                CapsLockOnWinx = null;
+                                                if (CapsLockOffWinx != null)
+                                                    CapsLockOffWinx.CloseWindow();
+
+                                                CapsLockOffWinx = new CapsLockOffWin();
+
+                                                try
+                                                {
+                                                    CapsLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    CapsLockOffWinx.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //CapsLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    CapsLockOffWinx = null;
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            if (CapsLockOffWinx != null)
-                                                CapsLockOffWinx.CloseWindow();
-
-                                            CapsLockOffWinx = new CapsLockOffWin();
-
-                                            try
-                                            {
-                                                CapsLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                CapsLockOffWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                //CapsLockOffWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                CapsLockOffWinx = null;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.Fingerprint:
-                                    {
-                                        if (FingerprintWinx != null)
-                                            FingerprintWinx.CloseWindow();
+                                        {
+                                            if (FingerprintWinx != null)
+                                                FingerprintWinx.CloseWindow();
 
-                                        FingerprintWinx = new FingerprintWin();
+                                            FingerprintWinx = new FingerprintWin();
 
-                                        try
-                                        {
-                                            FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                            FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                            FingerprintWinx.ShowWindow();
+                                            try
+                                            {
+                                                FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                FingerprintWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //FingerprintWinx.Top = sreen.WorkingArea.Top;
+                                                //FingerprintWinx.Left = sreen.WorkingArea.Left;
+                                                //FingerprintWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                FingerprintWinx = null;
+                                            }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            //FingerprintWinx.Top = sreen.WorkingArea.Top;
-                                            //FingerprintWinx.Left = sreen.WorkingArea.Left;
-                                            //FingerprintWinx.ShowWindow();
-                                            writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
-                                        }
-                                        finally
-                                        {
-                                            FingerprintWinx = null;
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.EasyMemory:
-                                    {
-                                        if (EasyMemoryWinx != null)
-                                            EasyMemoryWinx.CloseWindow();
+                                        {
+                                            if (EasyMemoryWinx != null)
+                                                EasyMemoryWinx.CloseWindow();
 
-                                        EasyMemoryWinx = new EasyMemoryWin();
+                                            EasyMemoryWinx = new EasyMemoryWin();
 
-                                        try
-                                        {
-                                            EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                            EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                            EasyMemoryWinx.ShowWindow();
+                                            try
+                                            {
+                                                EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                EasyMemoryWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
+                                                //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
+                                                //EasyMemoryWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                EasyMemoryWinx = null;
+                                            }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
-                                            //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
-                                            //EasyMemoryWinx.ShowWindow();
-                                            writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
-                                        }
-                                        finally
-                                        {
-                                            EasyMemoryWinx = null;
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     default:
                                         break;
@@ -11064,6 +12480,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(result);
+        }
+
+        #endregion
+
+        #region TelemetryScheduler
+
+        public Task StartTelemetrySchedulerManger(bool IsStart)
+        {
+            if (_TelementryScheduler != null)
+                _TelementryScheduler.StartTelemetrySchedulerManger(IsStart);
+
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency)
+        {
+            var r = false;
+            if (_TelementryScheduler != null)
+                r = _TelementryScheduler.ReceiveTelemetryInfo(EventTag, EventValue, Frequency).Result;
+
+            return Task.FromResult(r);
         }
 
         #endregion
