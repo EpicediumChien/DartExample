@@ -525,7 +525,6 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughHeadsetWL7024_Main3 = GetString("WalkThroughHeadsetWL7024_Main.3");
         public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
 
-
         //OpenAction
         public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
         public static readonly string OpenFileDesc = "Click the browse button to select a file";
@@ -570,6 +569,7 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
         public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
         public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+
         // Pair/Unpair
         public static readonly string Caption = "Are you sure?";
         public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";

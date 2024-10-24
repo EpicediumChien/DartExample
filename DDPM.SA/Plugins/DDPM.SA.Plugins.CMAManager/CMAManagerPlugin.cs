@@ -54,6 +54,9 @@ namespace DDPM.SA.Plugins.CMAManager
         private readonly object _PluginConditionLock_CliManager = new object();
         private List<string> commandinputs = new List<string>();
 
+        // add @ 20241023 device manager for check connect disconnect devices
+        private DeviceControlPannel deviceControlPannel;
+
         private enum log_type
         {
             info = 0,
@@ -67,6 +70,7 @@ namespace DDPM.SA.Plugins.CMAManager
         public CMAManagerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+            deviceControlPannel = new DeviceControlPannel();
 
             WriteLog($"CMA ManagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
@@ -188,7 +192,6 @@ namespace DDPM.SA.Plugins.CMAManager
 
             foreach (var s in cmd.req)
             {
-                //Console.WriteLine(s.ToString());
                 tasks.Add(new CmaCommand.CmaTask(cmd.sid, s.ToString()));
             }
 
@@ -219,7 +222,6 @@ namespace DDPM.SA.Plugins.CMAManager
                             command = command + (" value=" + task.value);
                         }
                     }
-
                     
                 }
 
@@ -243,9 +245,19 @@ namespace DDPM.SA.Plugins.CMAManager
                 if ("fw".Equals(task.active))
                 {
                     eventtype = 5;
-                    command = command + ("set ");
-                    command = command + ("app=firmwareupdate");
-                    command = command + (" value=" + task.devicetype + ",forcewithnotice");
+
+                    if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
+                    {
+                        command = command + ("set ");
+                        command = command + ("dock=silentfwupdate");
+                    }
+                    else
+                    {
+                        command = command + ("set ");
+                        command = command + ("app=firmwareupdate");
+                        command = command + (" value=" + task.devicetype + ",forcewithnotice");
+                    }
+
                 }
 
                 CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
@@ -346,13 +358,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     responseMsg = "Exception: Unknow Result";
                     args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
                 }
-                
 
-
-                
-                //args.notification = cliResult.serialize_Json_response;
-                //args.notification = "{\r\n   \"sid\": \"" + task.sid + "\",\r\n   \"gid\": \"" + guid + "\",\r\n   \"response\": [\r\n      \r\n      {\r\n         \"id\": " + task.tid + ",\r\n         \"result\": 0,\r\n         \"msg\": \"\",\r\n         \"data\": [\r\n            " + cliResult.serialize_Json_response + "\r\n         ]\r\n      }\r\n   ]\r\n}";
-                
                 OnEventNotify(args);
             }
         }
@@ -482,7 +488,45 @@ namespace DDPM.SA.Plugins.CMAManager
             WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed");
 
             // TODO: implement decice connect/disconnect information
-            
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed data.type = " + data.type);
+
+            foreach (MonitorInfo info in data.mos) {
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo ToString = " + info.ToString());
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo AliasDeviceName = " + info.AliasDeviceName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo Index = " + info.Index);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo CapabilityString = " + info.CapabilityString);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DisplayName = " + info.DisplayName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DDCisON = " + info.DDCisON);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid = " + info.edid);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo FwVersion = " + info.FwVersion);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputSource = " + info.inputSource);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputCable = " + info.inputCable);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName = " + info.modelName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo series = " + info.series);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.PID = " + info.edid.PID);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ModelNam = " + info.edid.ModelName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.SerialNumber = " + info.edid.SerialNumber);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ServiceTag = " + info.edid.ServiceTag);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName =========================================");
+
+            }
+
+           
+            NotifyArgs args = deviceControlPannel.OnDeviceChnaged(data);
+
+            args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \"\",\"data\": [" + args.notification + "]}]}";
+
+            if (Params.EventType.DISPLAY_CONNECT.ToString().Equals(args.eventType))
+            {
+                OnEventDisplayConnect(args);
+            }
+            else 
+            {
+                OnEventDisplayDisconnect(args);
+            }
+
+            //OnEventNotify(args);
+
             return Task.CompletedTask;
         }
         #endregion
@@ -492,32 +536,29 @@ namespace DDPM.SA.Plugins.CMAManager
             if (Handler != null)
             {
                 Handler.Invoke(this, e);
-                //WriteLog($"CLIActionEvent Invoked: ID:{e.command_guid_string}");
             }
         }
 
         private void OnEventDisplayConnect(NotifyArgs e)
         {
-            EventHandler<NotifyArgs> Handler = DisplayConnect;
+            EventHandler<NotifyArgs> Handler = DisplayConnected;
             if (Handler != null)
             {
                 Handler.Invoke(this, e);
-                //WriteLog($"CLIActionEvent Invoked: ID:{e.command_guid_string}");
             }
         }
 
-        private void OnEventDisplayDisConnect(NotifyArgs e)
+        private void OnEventDisplayDisconnect(NotifyArgs e)
         {
-            EventHandler<NotifyArgs> Handler = DisplayDisConnect;
+            EventHandler<NotifyArgs> Handler = DisplayDisconnected;
             if (Handler != null)
             {
                 Handler.Invoke(this, e);
-                //WriteLog($"CLIActionEvent Invoked: ID:{e.command_guid_string}");
             }
         }
 
         public event EventHandler<NotifyArgs> Notify;
-        public event EventHandler<NotifyArgs> DisplayConnect;
-        public event EventHandler<NotifyArgs> DisplayDisConnect;
+        public event EventHandler<NotifyArgs> DisplayConnected;
+        public event EventHandler<NotifyArgs> DisplayDisconnected;
     }
 }
