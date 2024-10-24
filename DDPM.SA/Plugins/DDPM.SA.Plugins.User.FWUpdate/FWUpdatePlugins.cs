@@ -906,10 +906,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="e"></param>
         private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            //_checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-            TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-            int checkTime = 5;
-            if (difference.TotalMinutes > checkTime)
+            _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
+            //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
+            //int checkTime = 5;
+            //if (difference.TotalMinutes > checkTime)
             {
                 CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
             }

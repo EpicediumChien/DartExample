@@ -527,9 +527,9 @@ namespace DDPM.SA.Plugins.SWUpdate
         private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-            TimeSpan difference = DateTime.Now - _SWUpdateInfoPackage.TheLastCheckTime;
-            int checkTime = 24;
-            if (difference.TotalHours > checkTime)
+            //TimeSpan difference = DateTime.Now - _SWUpdateInfoPackage.TheLastCheckTime;
+            //int checkTime = 24;
+            //if (difference.TotalHours > checkTime)
             {
                 CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
             }
