@@ -170,7 +170,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
@@ -189,7 +189,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProgrammableKeys");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
@@ -207,7 +207,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
@@ -343,7 +343,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ProgrammableKeys");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
@@ -380,7 +380,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_keyboardInterfaceType, commodity, "DeviceItemsEx");
-                    return (JArray)value;
+                    return value == null ? new JArray() : (JArray)value;
                 }
                 else
                 {
@@ -459,7 +459,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "PresetProfiles");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
@@ -477,7 +477,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "CustomProfiles");
                 Debug.WriteLine($"{value}");
-                return (JArray)value;
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
@@ -1635,7 +1635,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "DeviceItemsEx");
-                    return (JArray)value;
+                    return value == null ? new JArray() : (JArray)value;
                 }
                 else
                 {
