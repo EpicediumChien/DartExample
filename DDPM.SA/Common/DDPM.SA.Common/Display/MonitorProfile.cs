@@ -500,6 +500,7 @@ namespace DDPM.SA.Common
             return blRes;
         }
 
+        /*
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize);
@@ -521,5 +522,6 @@ namespace DDPM.SA.Common
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
         }
+        */
     }
 }

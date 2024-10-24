@@ -42,6 +42,7 @@ using VcpCore.Common;
 //using WinCopies.Util;
 using DdmLibrary;
 using DdmLibrary.Utility;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 //using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
@@ -156,7 +157,7 @@ namespace ColorPreset.Plugins
         public Task<Dictionary<string, InstalledAppInfo>> GetInstalledAppsList(bool isReload = false)
         {
             LoadInstalledAppList(isReload);
-            return Task.FromResult(_AllAppData);
+            return System.Threading.Tasks.Task.FromResult(_AllAppData);
         }
 
         public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)
@@ -347,7 +348,7 @@ namespace ColorPreset.Plugins
                 });
             }
 
-            return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+            return System.Threading.Tasks.Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
         public Task<List<ColorPresetSettings>> ChangeColorPresetForMonitorConfig(MonitorInfo mo, string AppName, string ColorPreset_Name, List<ColorPresetSettings> config)
@@ -367,7 +368,7 @@ namespace ColorPreset.Plugins
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].Color = nColorVCPCoreValue;
             }
 
-            return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+            return System.Threading.Tasks.Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
         public Task<List<ColorPresetSettings>> DeleteColorPresetForMonitorConfig(MonitorInfo mo, string AppName, List<ColorPresetSettings> config)
@@ -384,7 +385,7 @@ namespace ColorPreset.Plugins
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(AppName);
             }
 
-            return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+            return System.Threading.Tasks.Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
         /// <summary>
@@ -503,7 +504,7 @@ namespace ColorPreset.Plugins
 
             }
 
-            return Task.FromResult(true);
+            return System.Threading.Tasks.Task.FromResult(true);
         }
 
         public Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, ISettingsManagerDev _SettingsPlugin, string ColorPreset_Name = "", string ICC_profile_Name = "")
@@ -549,7 +550,14 @@ namespace ColorPreset.Plugins
 
                         for (int i = 0; i < count; i++)
                         {
-                            MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                            try
+                            {
+                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
+                            }                            
                         }
                     }
                 }
@@ -563,7 +571,14 @@ namespace ColorPreset.Plugins
 
                             for (int i = 0; i < count; i++)
                             {
-                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                                try
+                                {
+                                    MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                                }
+                                catch (Exception ex)
+                                {
+                                    writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
+                                }                               
                             }
 
                             string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
@@ -649,7 +664,14 @@ namespace ColorPreset.Plugins
 
                     for (int i = 0; i < count; i++)
                     {
-                        MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                        try
+                        {
+                            MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
+                        }                        
                     }
                 }
             }
@@ -678,7 +700,14 @@ namespace ColorPreset.Plugins
 
                         for (int i = 0; i < count; i++)
                         {
-                            MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                            try
+                            {
+                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
+                            }                            
                         }
 
                         string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
@@ -697,7 +726,7 @@ namespace ColorPreset.Plugins
 
             }
 
-            return Task.FromResult(blRet);
+            return System.Threading.Tasks.Task.FromResult(blRet);
         }
 
         public void OnRegChanged_ICC(object sender, EventArgs e)
@@ -794,12 +823,12 @@ namespace ColorPreset.Plugins
             if (index >= 0)
             {
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType == (int)ColorPresetRunType.Auto)
-                    return Task.FromResult("ON");
+                    return System.Threading.Tasks.Task.FromResult("ON");
                 else
-                    return Task.FromResult("OFF");
+                    return System.Threading.Tasks.Task.FromResult("OFF");
             }
 
-            return Task.FromResult("OFF");
+            return System.Threading.Tasks.Task.FromResult("OFF");
         }
 
         public Task<string> GetColorManagementStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin)
@@ -815,14 +844,14 @@ namespace ColorPreset.Plugins
             if (index >= 0)
             {
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.Off)
-                    return Task.FromResult("OFF");
+                    return System.Threading.Tasks.Task.FromResult("OFF");
                 else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
-                    return Task.FromResult("BYMONITOR");
+                    return System.Threading.Tasks.Task.FromResult("BYMONITOR");
                 else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Byhost)
-                    return Task.FromResult("BYHOST");
+                    return System.Threading.Tasks.Task.FromResult("BYHOST");
             }
 
-            return Task.FromResult("OFF");
+            return System.Threading.Tasks.Task.FromResult("OFF");
         }
 
         public void ShowOSD_ColoPreset(MonitorInfo monitorInfo, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
@@ -917,7 +946,7 @@ namespace ColorPreset.Plugins
             if (string.IsNullOrEmpty(vcp_capbilities))
             {
                 ColorPresetSupportList.Clear();
-                return Task.FromResult(ColorPresetSupportList);
+                return System.Threading.Tasks.Task.FromResult(ColorPresetSupportList);
             }
 
             //if (Log != null)
@@ -1111,7 +1140,7 @@ namespace ColorPreset.Plugins
                 index++;
             }
 
-            return Task.FromResult(ColorPresetSupportList);
+            return System.Threading.Tasks.Task.FromResult(ColorPresetSupportList);
         }
 
         public Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null, int colorPresetRunType = 0)
@@ -1167,13 +1196,21 @@ namespace ColorPreset.Plugins
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
                     {
                         writelog($"ColorPreset plugin SetMonitorProfile ColorPreset_Name = {ColorPreset_Name}");
-                        SetMonitorProfile(m, ColorPreset_Name);
+
+                        try
+                        {
+                            SetMonitorProfile(m, ColorPreset_Name);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                        
                     }
                 }
 
             }
 
-            return Task.FromResult(true);
+            return System.Threading.Tasks.Task.FromResult(true);
             //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
@@ -1222,7 +1259,7 @@ namespace ColorPreset.Plugins
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
             }
 
-            return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+            return System.Threading.Tasks.Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
         public Task<string> GetColorPresetName(int Color_VCPCore_E2)
@@ -1238,11 +1275,11 @@ namespace ColorPreset.Plugins
             // 若存在，回傳True，將Key為Color_VCPCore_E2的Value，帶入tmp
             if (!VcpCodeList.VCPE2.TryGetValue(Color_VCPCore_E2, out string tmp))
             {
-                return Task.FromResult(string.Empty);
+                return System.Threading.Tasks.Task.FromResult(string.Empty);
             }
             else
             {
-                return Task.FromResult(tmp);
+                return System.Threading.Tasks.Task.FromResult(tmp);
             }
         }
 
@@ -1259,11 +1296,11 @@ namespace ColorPreset.Plugins
             // 若存在，回傳True，將Key為ColorPreset_Name的Value，帶入tmp
             if (!VcpCodeList.VCPE2_ref.TryGetValue(ColorPreset_Name, out int tmp))
             {
-                return Task.FromResult(-1);
+                return System.Threading.Tasks.Task.FromResult(-1);
             }
             else
             {
-                return Task.FromResult(tmp);
+                return System.Threading.Tasks.Task.FromResult(tmp);
             }
         }
 
@@ -1384,7 +1421,7 @@ namespace ColorPreset.Plugins
             if (System.String.IsNullOrEmpty(strSync_ColorPreset_Name))
                 strSync_ColorPreset_Name = ColorPreset_Name;
 
-            return Task.FromResult(strSync_ColorPreset_Name);
+            return System.Threading.Tasks.Task.FromResult(strSync_ColorPreset_Name);
 
         }
 
@@ -1900,7 +1937,7 @@ namespace ColorPreset.Plugins
                         if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
                         {
                             writelog($"[DownloadICCData] {FileInfo}");
-                            return Task.FromResult(_ICC_Metadata);
+                            return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                         }
 
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
@@ -1914,14 +1951,14 @@ namespace ColorPreset.Plugins
                             {
                                 writelog($"[DownloadICCData] {FileInfo}");
                                 //return null;
-                                return Task.FromResult(_ICC_Metadata);
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                             }
 
                             strReadJson = string.Empty;
                             if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
                             {
                                 writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
-                                return Task.FromResult(_ICC_Metadata);
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                             }
 
                             if (strReadJson.Length < 1)
@@ -1933,7 +1970,7 @@ namespace ColorPreset.Plugins
                             }
 
                             if (strReadJson == string.Empty || strReadJson.Length == 0)
-                                return Task.FromResult(_ICC_Metadata);
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
 
                             try
                             {
@@ -2017,12 +2054,12 @@ namespace ColorPreset.Plugins
                 }
 
                 writelog("ColorPresetPlugin DownloadICCData exit ...");
-                return Task.FromResult(_ICC_Metadata);
+                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
             }
             catch (Exception ex)
             {
                 writelog($"ColorPresetPlugin DownloadICCData Exception = {ex.Message.ToString()}");
-                return Task.FromResult(_ICC_Metadata);
+                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
             }
         }
 
@@ -2049,7 +2086,15 @@ namespace ColorPreset.Plugins
                     {
                         if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                         {
-                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            try
+                            {
+                                MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                            }
+                            
                             writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             break;
                         }
@@ -2058,7 +2103,15 @@ namespace ColorPreset.Plugins
                     {
                         if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
                         {
-                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            try
+                            {
+                                MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                            }
+                            
                             writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             break;
                         }
@@ -2067,7 +2120,15 @@ namespace ColorPreset.Plugins
                     {
                         if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("2020", StringComparison.OrdinalIgnoreCase))
                         {
-                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            try
+                            {
+                                MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                            }
+                            
                             writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             break;
                         }
@@ -2075,7 +2136,15 @@ namespace ColorPreset.Plugins
 
                     if (string.Equals(ColorPreset_Name, strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
                     {
-                        MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                        try
+                        {
+                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                        }
+                        
                         writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                         break;
                     }
@@ -2083,7 +2152,7 @@ namespace ColorPreset.Plugins
             }
 
             writelog("ColorPresetPlugin SetMonitorProfile exit ...");
-            return Task.FromResult(true);
+            return System.Threading.Tasks.Task.FromResult(true);
         }
 
         /// <summary>
@@ -2122,7 +2191,7 @@ namespace ColorPreset.Plugins
             }
 
             writelog("ColorPresetPlugin Export exit ...");
-            return Task.FromResult(curColorPresetSetting);
+            return System.Threading.Tasks.Task.FromResult(curColorPresetSetting);
         }
 
         /// <summary>
@@ -2157,7 +2226,7 @@ namespace ColorPreset.Plugins
 
                 writelog("ColorPresetPlugin Import Data is finished");
 
-                return Task.FromResult(true);
+                return System.Threading.Tasks.Task.FromResult(true);
             }
 
             if (index < 0)
@@ -2202,12 +2271,12 @@ namespace ColorPreset.Plugins
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 writelog("ColorPresetPlugin Import exit ...");
 
-                return Task.FromResult(true);
+                return System.Threading.Tasks.Task.FromResult(true);
             }
 
             writelog("ColorPresetPlugin Import exit ...");
 
-            return Task.FromResult(false);
+            return System.Threading.Tasks.Task.FromResult(false);
         }
 
         /// <summary>
@@ -2331,7 +2400,7 @@ namespace ColorPreset.Plugins
 
                 writelog("ColorPresetPlugin Migration exit ...");
 
-                return Task.FromResult(true);
+                return System.Threading.Tasks.Task.FromResult(true);
             }
 
             if (index < 0)
@@ -2455,10 +2524,10 @@ namespace ColorPreset.Plugins
 
                 writelog("ColorPresetPlugin Migration exit ...");
 
-                return Task.FromResult(true);
+                return System.Threading.Tasks.Task.FromResult(true);
             }
 
-            return Task.FromResult(false);
+            return System.Threading.Tasks.Task.FromResult(false);
         }
 
         #endregion
