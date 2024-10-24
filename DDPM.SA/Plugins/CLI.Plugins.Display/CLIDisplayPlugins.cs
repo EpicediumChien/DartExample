@@ -12877,7 +12877,7 @@ namespace DDPM.CLI.Plugins.Display
                     Console.WriteLine($"info.FileSavepath = " + info.FileSavepath);
                 }
 
-                List<FWUpdateInfo> result = devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, "").Result;
+                List<FWUpdateInfo> result = devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, false, "").Result;
 
                 foreach (FWUpdateInfo info in result)
                 {

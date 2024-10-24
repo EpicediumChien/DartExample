@@ -1505,7 +1505,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                 _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
                 _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
-                FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode).Result;
+                FWUpdateInfoPackage fwUpdateInfoPackage;
+                if (deviceType == DeviceType.Unknown)
+                {
+                    fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false,true,true).Result;
+                }
+                else
+                {
+                    fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode).Result;
+                }
                 if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                 {
                     cli_FWU_RESPONSE.Message = "No updates available";
@@ -1962,7 +1970,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                             ret = true;
-                            _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, installPath);
+                            _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
                         }
                         else
                         {

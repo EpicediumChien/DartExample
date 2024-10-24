@@ -1,0 +1,95 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+
+namespace DDPM.OSDs
+{
+    /// <summary>
+    /// Interaction logic for ErrorWin.xaml
+    /// </summary>
+    public partial class ErrorWin : Window
+    {
+        private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;
+        private bool stayOpen;
+
+
+        public ErrorWin(string HeaderText, string SubHeaderText, bool stayOpen)
+        {
+            InitializeComponent();
+            DataContext = this;
+            Header.Text = HeaderText;
+            SubHeader.Text = SubHeaderText;
+            this.stayOpen = stayOpen;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+            if (!stayOpen)
+            {
+                this.WindowState = WindowState.Maximized;
+                this.Topmost = true;
+
+                time = TimeSpan.FromMilliseconds(3000);
+                animationTimer = new DispatcherTimer();
+                animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                animationTimer.Tick += RunTimerTick;
+                animationTimer.Start();
+            }
+        }
+
+        private void RunTimerTick(object sender, EventArgs e)
+        {
+            if (time == TimeSpan.Zero)
+            {
+                animationTimer?.Stop();
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.Close();
+                });
+            }
+            else
+            {
+                time = time.Add(TimeSpan.FromMilliseconds(-1000));
+            }
+        }
+
+        private void close_Click(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
+        }
+
+        public void ShowWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(ShowWindow);
+                return;
+            }
+            Show();
+        }
+
+        public void CloseWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(CloseWindow);
+                return;
+            }
+            Close();
+        }
+    }
+}

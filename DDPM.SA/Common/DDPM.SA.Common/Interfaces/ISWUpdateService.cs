@@ -12,6 +12,7 @@ namespace DDPM.SA.Common
         event EventHandler<SWUpdateInfoPackage> CallSaveUpdateInfoPackage;
 
         event EventHandler<PopupContentPackage> CallPopup;
+        event EventHandler<(string, string, bool)> CallOSD;
         /// <summary>
         /// for CLI use
         /// </summary>
@@ -19,17 +20,15 @@ namespace DDPM.SA.Common
 
         void StartCheckUpdateScheduleTimer();
 
-        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion);
+        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, bool reScan, bool isUItrigger);
 
-        Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion);
-
-        Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, string installPath);
+        Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath);
 
         void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelayFWUpdateInfoPackage);
 
-        void DelayEvent(object e);
+        void DelayEvent();
 
-        void UpdateEvent(object e);
+        void UpdateEvent();
         void SetSkipCA(bool isSkipCA);
     }
 }
