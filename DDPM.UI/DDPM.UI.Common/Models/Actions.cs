@@ -26,9 +26,8 @@ namespace DDPM.UI.Common
         public Dictionary<int, SelectedAction> RadialActions = new();
         public bool IsUseCenter = true;
 
-        public PenActions()
+        public PenActions(bool IsResetRadialMenu = false)
         {
-
             Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
             TopButtonDoubleClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
@@ -92,7 +91,8 @@ namespace DDPM.UI.Common
             task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideBottomButtonHoverClick();
             IsBottomBarrelHoverClickOn = task2.Result;
 
-            ResetRadialMenu();
+            if (IsResetRadialMenu)
+                ResetRadialMenu();
         }
 
         public void RestoreToDefault()
@@ -456,7 +456,7 @@ namespace DDPM.UI.Common
                             return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
                     }
                     //var pen = new PenActions(model);
-                    var pen = new PenActions();
+                    var pen = new PenActions(true);
                     ExportActionList(pen, model);
                     return pen;
 
