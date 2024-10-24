@@ -6431,10 +6431,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetKeyboardDeviceItemsEx());
         }
-        public Task SetKbDeleteAssignedAction(string Guid, int newValue)
+        public Task DeleteKeyboardAssignedAction(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetKbAssignKeystrokeAction requested ...");
-            _DTPProxyPlugin.SetKbDeleteAssignedAction(Guid, newValue);
+            _DTPProxyPlugin.DeleteKeyboardAssignedAction(Guid, newValue);
             return Task.FromResult(true);
         }
         public Task<JArray> GetKbProgrammableKeys(string Guid)

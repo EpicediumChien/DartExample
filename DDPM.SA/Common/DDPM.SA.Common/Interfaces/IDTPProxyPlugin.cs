@@ -40,7 +40,7 @@ namespace DDPM.SA.Common
 
         #region Keyboard
 
-        Task SetKbDeleteAssignedAction(string Guid, int newValue);
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task<JArray> GetKeyboardDeviceItemsEx();
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
@@ -180,7 +180,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
-      
+
         //Peripheral Common Properties Get
         Task<JArray> GetDeviceItemsExAsync(string Guid);
         Task<DeviceInterfaceType> GetInterfaceTypeAsync(string Guid);
@@ -250,7 +250,7 @@ namespace DDPM.SA.Common
 
         Task<int> GetBassAsync(string Guid);
         Task<int> GetMidRangeAsync(string Guid);
-        Task<int> GetTrebleAsync(string Guid);  
+        Task<int> GetTrebleAsync(string Guid);
         Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid);
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);

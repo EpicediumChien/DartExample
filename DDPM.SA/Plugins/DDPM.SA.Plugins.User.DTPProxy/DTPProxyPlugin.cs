@@ -169,7 +169,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -188,7 +188,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProgrammableKeys");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -206,7 +206,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -224,7 +224,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "DeleteAllAssignedActions");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return (bool)value;
             }
             else
@@ -317,9 +317,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         //IKeyboardCommodity.DeleteAssignedAction
 
-        public async Task SetKbDeleteAssignedAction(string Guid, int newValue)
+        public async Task DeleteKeyboardAssignedAction(string Guid, int newValue)
         {
-            if (!await GetItemIDAsync("KeyBoard", Guid))
+            if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
@@ -342,7 +342,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ProgrammableKeys");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -355,13 +355,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<JArray> GetKbAssignableActions(string Guid)
         {
-            if (!await GetItemIDAsync("KeyBoard", Guid))
+            if (!await GetItemIDAsync("Keyboard", Guid))
             { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -401,7 +401,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
         {
-            if (!await GetItemIDAsync("KeyBoard", Guid))
+            if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
@@ -416,7 +416,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetKbAssignDialogAction(string Guid, string newValue)
         {
-            if (!await GetItemIDAsync("KeyBoard", Guid))
+            if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
@@ -432,7 +432,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetKbAssignedAction(string Guid, string newValue)
         {
-            if (!await GetItemIDAsync("KeyBoard", Guid))
+            if (!await GetItemIDAsync("Keyboard", Guid))
             { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
@@ -458,7 +458,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "PresetProfiles");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -476,7 +476,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "CustomProfiles");
-                Debug.WriteLine($"{value}");
+                Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
@@ -1592,7 +1592,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_penInterfaceType, commodity, "Pair");
-                Debug.WriteLine($"Pen Pair value: {value}");
+                Debug.WriteLine($"Pen Pair value: {value ?? ""}");
                 return (string)value;
             }
             else
@@ -4903,7 +4903,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
         {
-            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value}");
+            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
