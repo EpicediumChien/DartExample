@@ -1019,6 +1019,15 @@ namespace DDPM.SA.Common
 
         #endregion Wires Audio
 
+        #region Dongle
+
+        Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
+        Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
+        Task<string> GetDeviceIdAsyncForDongle(string Guid);
+        Task<string> GetPluginIdAsyncForDongle(string Guid);
+        Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
+        #endregion
+
         #endregion public for DTPProxy
 
         #region OSD
