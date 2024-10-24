@@ -6211,6 +6211,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.DeleteMouseAssignedAction(Guid, newValue);
             return Task.FromResult(true);
         }
+        public Task SetMouseAssignDialogAction(string Guid, byte[] newValue)
+        {
+            writelog("DeviceMangerPlugin received SetMouseAssignDialogAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetMouseAssignDialogAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue)
+        {
+            writelog("DeviceMangerPlugin received SetMouseAssignKeystrokeAction requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetMouseAssignKeystrokeAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
 
         #endregion
 
@@ -6404,6 +6420,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target itemID is {itemID}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetTipSensitivity(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+        #endregion
+
+        #region keyboard
+
+        public async Task<JArray> GetKeyboardDeviceItemsEx()
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetKeyboardDeviceItemsEx());
+        }
+        public Task SetKbDeleteAssignedAction(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetKbAssignKeystrokeAction requested ...");
+            _DTPProxyPlugin.SetKbDeleteAssignedAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task<JArray> GetKbProgrammableKeys(string Guid)
+        {
+            return Task.Run(() => _DTPProxyPlugin.GetKbProgrammableKeys(Guid));
+        }
+        public Task<JArray> GetKbAssignableActions(string Guid)
+        {
+            return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
+        }
+        public Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetKbAssignKeystrokeAction requested ...");
+            _DTPProxyPlugin.SetKbAssignKeystrokeAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetKbAssignDialogAction(string Guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetKbAssignDialogAction requested ...");
+            _DTPProxyPlugin.SetKbAssignDialogAction(Guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetKbAssignedAction(string Guid, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetKbAssignedAction requested ...");
+            _DTPProxyPlugin.SetKbAssignedAction(Guid, newValue);
             return Task.FromResult(true);
         }
 
@@ -6913,7 +6970,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                     _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
                 }
-                else writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " _TelementryScheduler is null");
+                else
+                    writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " _TelementryScheduler is null");
 
                 ret = SaveGlobalSettingParam();
             }
@@ -6951,9 +7009,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog(nameof(LoadGlobalSettingParam) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                     _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
                 }
-                else writelog(nameof(LoadGlobalSettingParam) + " _TelementryScheduler is null");
+                else
+                    writelog(nameof(LoadGlobalSettingParam) + " _TelementryScheduler is null");
             }
-            else writelog(nameof(LoadGlobalSettingParam) + " _GlobalSettingParam is null");
+            else
+                writelog(nameof(LoadGlobalSettingParam) + " _GlobalSettingParam is null");
 
             return ret;
         }
@@ -8850,7 +8910,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
                         }
-                        else writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+                        else
+                            writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -8861,7 +8922,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
                         }
-                        else writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+                        else
+                            writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
                     }
                 }
             });
@@ -11780,34 +11842,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
+                    {
+                        if (Device is OSDType_Device.Headset)
                         {
-                            if (Device is OSDType_Device.Headset)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
-                                else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Keyboard)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                                else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Mouse)
-                            {
-                                if (!string.IsNullOrWhiteSpace(Content))
-                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                                else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                                return Task.CompletedTask;
-                            }
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
                             else
-                                return Task.CompletedTask;
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
                         }
+                        else if (Device is OSDType_Device.Keyboard)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Mouse)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content))
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else
+                            return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -11823,13 +11885,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                        {
-                            if (!string.IsNullOrWhiteSpace(Content))
-                                _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                            else
-                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        if (!string.IsNullOrWhiteSpace(Content))
+                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                        else
+                            writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -11845,20 +11907,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                        {
-                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.NumLock:
-                        {
-                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.CapsLock:
-                        {
-                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -11874,30 +11936,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.EasyMemory:
-                        {
-                            _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.EasyMemory, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.Fingerprint:
-                        {
-                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.DisplayChanged:
-                        {
-                            _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.WalkAwayLock:
-                        {
-                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                        return Task.CompletedTask;
+                    }
                     case OSDType.StartRecording:
-                        {
-                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -11966,441 +12028,441 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
+                                            if (MuteWinx != null)
+                                                MuteWinx.CloseWindow();
+
+                                            MuteWinx = new MuteWin(Content);
+
+                                            try
                                             {
-                                                if (MuteWinx != null)
-                                                    MuteWinx.CloseWindow();
-
-                                                MuteWinx = new MuteWin(Content);
-
-                                                try
-                                                {
-                                                    MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MuteWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                                    //MuteWinx.Top = sreen.WorkingArea.Top;
-                                                    //MuteWinx.Left = sreen.WorkingArea.Left;
-                                                    //MuteWinx.ShowWindow();
-                                                }
-                                                finally
-                                                {
-                                                    MuteWinx = null;
-                                                }
+                                                MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                MuteWinx.ShowWindow();
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                if (UnMuteWinx != null)
-                                                    UnMuteWinx.CloseWindow();
-
-                                                UnMuteWinx = new UnMuteWin(Content);
-
-                                                try
-                                                {
-                                                    UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    UnMuteWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
-                                                    //UnMuteWinx.Top = sreen.WorkingArea.Top;
-                                                    //UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                    //UnMuteWinx.ShowWindow();
-                                                }
-                                                finally
-                                                {
-                                                    UnMuteWinx = null;
-                                                }
+                                                writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                //MuteWinx.Top = sreen.WorkingArea.Top;
+                                                //MuteWinx.Left = sreen.WorkingArea.Left;
+                                                //MuteWinx.ShowWindow();
+                                            }
+                                            finally
+                                            {
+                                                MuteWinx = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (UnMuteWinx != null)
+                                                UnMuteWinx.CloseWindow();
+
+                                            UnMuteWinx = new UnMuteWin(Content);
+
+                                            try
+                                            {
+                                                UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                UnMuteWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                writelog($"[_showosd] ERROR - OSDType.Mute: {ex.Message}, State: {State}");
+                                                //UnMuteWinx.Top = sreen.WorkingArea.Top;
+                                                //UnMuteWinx.Left = sreen.WorkingArea.Left;
+                                                //UnMuteWinx.ShowWindow();
+                                            }
+                                            finally
+                                            {
+                                                UnMuteWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.BatteryLow:
+                                    {
+                                        if (_DeviceType is OSDType_Device.Headset)
                                         {
-                                            if (_DeviceType is OSDType_Device.Headset)
+                                            if (HeadsetBatteryLowIWinx != null)
+                                                HeadsetBatteryLowIWinx.CloseWindow();
+
+                                            HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
+
+                                            try
                                             {
-                                                if (HeadsetBatteryLowIWinx != null)
-                                                    HeadsetBatteryLowIWinx.CloseWindow();
-
-                                                HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
-
-                                                try
-                                                {
-                                                    HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    HeadsetBatteryLowIWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    //HeadsetBatteryLowIWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
-                                                }
-                                                finally
-                                                {
-                                                    HeadsetBatteryLowIWinx = null;
-                                                }
+                                                HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                HeadsetBatteryLowIWinx.ShowWindow();
                                             }
-                                            else if (_DeviceType is OSDType_Device.Keyboard)
+                                            catch (Exception ex)
                                             {
-                                                if (KeybordBatteryLowIWinx != null)
-                                                    KeybordBatteryLowIWinx.CloseWindow();
-
-                                                KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
-
-                                                try
-                                                {
-                                                    KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    KeybordBatteryLowIWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    //KeybordBatteryLowIWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
-                                                }
-                                                finally
-                                                {
-                                                    KeybordBatteryLowIWinx = null;
-                                                }
+                                                //HeadsetBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                //HeadsetBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                //HeadsetBatteryLowIWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.BatteryLow: {ex.Message}");
                                             }
-                                            else if (_DeviceType is OSDType_Device.Mouse)
+                                            finally
                                             {
-                                                if (MouseBatteryLowIWinx != null)
-                                                    MouseBatteryLowIWinx.CloseWindow();
-
-                                                MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
-
-                                                try
-                                                {
-                                                    MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MouseBatteryLowIWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
-                                                    //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
-                                                    //MouseBatteryLowIWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
-                                                }
-                                                finally
-                                                {
-                                                    MouseBatteryLowIWinx = null;
-                                                }
+                                                HeadsetBatteryLowIWinx = null;
                                             }
                                         }
-                                        break;
+                                        else if (_DeviceType is OSDType_Device.Keyboard)
+                                        {
+                                            if (KeybordBatteryLowIWinx != null)
+                                                KeybordBatteryLowIWinx.CloseWindow();
+
+                                            KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
+
+                                            try
+                                            {
+                                                KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                KeybordBatteryLowIWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //KeybordBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                //KeybordBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                //KeybordBatteryLowIWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType_Device.Keyboard: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                KeybordBatteryLowIWinx = null;
+                                            }
+                                        }
+                                        else if (_DeviceType is OSDType_Device.Mouse)
+                                        {
+                                            if (MouseBatteryLowIWinx != null)
+                                                MouseBatteryLowIWinx.CloseWindow();
+
+                                            MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
+
+                                            try
+                                            {
+                                                MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                MouseBatteryLowIWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //MouseBatteryLowIWinx.Top = sreen.WorkingArea.Top;
+                                                //MouseBatteryLowIWinx.Left = sreen.WorkingArea.Left;
+                                                //MouseBatteryLowIWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType_Device.Mouse: {ex.Message}");
+                                            }
+                                            finally
+                                            {
+                                                MouseBatteryLowIWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.StartRecording:
+                                    {
+                                        if (StartRecordingWinx != null)
+                                            StartRecordingWinx.CloseWindow();
+
+                                        StartRecordingWinx = new StartRecordingWin(Content);
+
+                                        try
                                         {
-                                            if (StartRecordingWinx != null)
-                                                StartRecordingWinx.CloseWindow();
-
-                                            StartRecordingWinx = new StartRecordingWin(Content);
-
-                                            try
-                                            {
-                                                StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                StartRecordingWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //StartRecordingWinx.Top = sreen.WorkingArea.Top;
-                                                //StartRecordingWinx.Left = sreen.WorkingArea.Left;
-                                                //StartRecordingWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                StartRecordingWinx = null;
-                                            }
+                                            StartRecordingWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            StartRecordingWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            StartRecordingWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //StartRecordingWinx.Top = sreen.WorkingArea.Top;
+                                            //StartRecordingWinx.Left = sreen.WorkingArea.Left;
+                                            //StartRecordingWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.StartRecording: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            StartRecordingWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.DisplayChanged:
+                                    {
+                                        if (DisplayChangedWinx != null)
+                                            DisplayChangedWinx.CloseWindow();
+
+                                        DisplayChangedWinx = new DisplayChangedWin(Content);
+
+                                        try
                                         {
-                                            if (DisplayChangedWinx != null)
-                                                DisplayChangedWinx.CloseWindow();
-
-                                            DisplayChangedWinx = new DisplayChangedWin(Content);
-
-                                            try
-                                            {
-                                                DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                DisplayChangedWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
-                                                //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
-                                                //DisplayChangedWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                DisplayChangedWinx = null;
-                                            }
+                                            DisplayChangedWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            DisplayChangedWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            DisplayChangedWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //DisplayChangedWinx.Top = sreen.WorkingArea.Top;
+                                            //DisplayChangedWinx.Left = sreen.WorkingArea.Left;
+                                            //DisplayChangedWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.DisplayChanged: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            DisplayChangedWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.WalkAwayLock:
+                                    {
+                                        if (WalkAwayLockWinx != null)
+                                            WalkAwayLockWinx.CloseWindow();
+
+                                        WalkAwayLockWinx = new WalkAwayLockWin(Content);
+
+                                        try
                                         {
-                                            if (WalkAwayLockWinx != null)
-                                                WalkAwayLockWinx.CloseWindow();
-
-                                            WalkAwayLockWinx = new WalkAwayLockWin(Content);
-
-                                            try
-                                            {
-                                                WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                WalkAwayLockWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
-                                                //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
-                                                //WalkAwayLockWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                WalkAwayLockWinx = null;
-                                            }
+                                            WalkAwayLockWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            WalkAwayLockWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            WalkAwayLockWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //WalkAwayLockWinx.Top = sreen.WorkingArea.Top;
+                                            //WalkAwayLockWinx.Left = sreen.WorkingArea.Left;
+                                            //WalkAwayLockWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.WalkAwayLock: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            WalkAwayLockWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.ScrollLock:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
+                                            if (ScrollLockOnWinx != null)
+                                                ScrollLockOnWinx.CloseWindow();
+
+                                            ScrollLockOnWinx = new ScrollLockOnWin();
+
+                                            try
                                             {
-                                                if (ScrollLockOnWinx != null)
-                                                    ScrollLockOnWinx.CloseWindow();
-
-                                                ScrollLockOnWinx = new ScrollLockOnWin();
-
-                                                try
-                                                {
-                                                    ScrollLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    ScrollLockOnWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //ScrollLockOnWinx.ShowWindow();
-
-                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    ScrollLockOnWinx = null;
-                                                }
+                                                ScrollLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                ScrollLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                ScrollLockOnWinx.ShowWindow();
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                if (ScrollLockOffWinx != null)
-                                                    ScrollLockOffWinx.CloseWindow();
+                                                //ScrollLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //ScrollLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //ScrollLockOnWinx.ShowWindow();
 
-                                                ScrollLockOffWinx = new ScrollLockOffWin();
-
-                                                try
-                                                {
-                                                    ScrollLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    ScrollLockOffWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //ScrollLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    ScrollLockOffWinx = null;
-                                                }
+                                                writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                ScrollLockOnWinx = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (ScrollLockOffWinx != null)
+                                                ScrollLockOffWinx.CloseWindow();
+
+                                            ScrollLockOffWinx = new ScrollLockOffWin();
+
+                                            try
+                                            {
+                                                ScrollLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                ScrollLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                ScrollLockOffWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //ScrollLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //ScrollLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //ScrollLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                ScrollLockOffWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.NumLock:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
+                                            if (NumLockOnWinx != null)
+                                                NumLockOnWinx.CloseWindow();
+
+                                            NumLockOnWinx = new NumLockOnWin();
+
+                                            try
                                             {
-                                                if (NumLockOnWinx != null)
-                                                    NumLockOnWinx.CloseWindow();
-
-                                                NumLockOnWinx = new NumLockOnWin();
-
-                                                try
-                                                {
-                                                    NumLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    NumLockOnWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //NumLockOnWinx.ShowWindow();
-
-                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    NumLockOnWinx = null;
-                                                }
+                                                NumLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                NumLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                NumLockOnWinx.ShowWindow();
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                if (NumLockOffWinx != null)
-                                                    NumLockOffWinx.CloseWindow();
+                                                //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //NumLockOnWinx.ShowWindow();
 
-                                                NumLockOffWinx = new NumLockOffWin();
-
-                                                try
-                                                {
-                                                    NumLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    NumLockOffWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //NumLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    NumLockOffWinx = null;
-                                                }
+                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                NumLockOnWinx = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (NumLockOffWinx != null)
+                                                NumLockOffWinx.CloseWindow();
+
+                                            NumLockOffWinx = new NumLockOffWin();
+
+                                            try
+                                            {
+                                                NumLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                NumLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                NumLockOffWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //NumLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                NumLockOffWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.CapsLock:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
+                                            if (CapsLockOnWinx != null)
+                                                CapsLockOnWinx.CloseWindow();
+
+                                            CapsLockOnWinx = new CapsLockOnWin();
+
+                                            try
                                             {
-                                                if (CapsLockOnWinx != null)
-                                                    CapsLockOnWinx.CloseWindow();
-
-                                                CapsLockOnWinx = new CapsLockOnWin();
-
-                                                try
-                                                {
-                                                    CapsLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    CapsLockOnWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //CapsLockOnWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    CapsLockOnWinx = null;
-                                                }
+                                                CapsLockOnWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                CapsLockOnWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                CapsLockOnWinx.ShowWindow();
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                if (CapsLockOffWinx != null)
-                                                    CapsLockOffWinx.CloseWindow();
-
-                                                CapsLockOffWinx = new CapsLockOffWin();
-
-                                                try
-                                                {
-                                                    CapsLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    CapsLockOffWinx.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //CapsLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    CapsLockOffWinx = null;
-                                                }
+                                                //CapsLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //CapsLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //CapsLockOnWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                CapsLockOnWinx = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (CapsLockOffWinx != null)
+                                                CapsLockOffWinx.CloseWindow();
+
+                                            CapsLockOffWinx = new CapsLockOffWin();
+
+                                            try
+                                            {
+                                                CapsLockOffWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                CapsLockOffWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                CapsLockOffWinx.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //CapsLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //CapsLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //CapsLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                CapsLockOffWinx = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.Fingerprint:
+                                    {
+                                        if (FingerprintWinx != null)
+                                            FingerprintWinx.CloseWindow();
+
+                                        FingerprintWinx = new FingerprintWin();
+
+                                        try
                                         {
-                                            if (FingerprintWinx != null)
-                                                FingerprintWinx.CloseWindow();
-
-                                            FingerprintWinx = new FingerprintWin();
-
-                                            try
-                                            {
-                                                FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                FingerprintWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //FingerprintWinx.Top = sreen.WorkingArea.Top;
-                                                //FingerprintWinx.Left = sreen.WorkingArea.Left;
-                                                //FingerprintWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                FingerprintWinx = null;
-                                            }
+                                            FingerprintWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            FingerprintWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            FingerprintWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //FingerprintWinx.Top = sreen.WorkingArea.Top;
+                                            //FingerprintWinx.Left = sreen.WorkingArea.Left;
+                                            //FingerprintWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.Fingerprint: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            FingerprintWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     case OSDType.EasyMemory:
+                                    {
+                                        if (EasyMemoryWinx != null)
+                                            EasyMemoryWinx.CloseWindow();
+
+                                        EasyMemoryWinx = new EasyMemoryWin();
+
+                                        try
                                         {
-                                            if (EasyMemoryWinx != null)
-                                                EasyMemoryWinx.CloseWindow();
-
-                                            EasyMemoryWinx = new EasyMemoryWin();
-
-                                            try
-                                            {
-                                                EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                EasyMemoryWinx.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
-                                                //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
-                                                //EasyMemoryWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
-                                            }
-                                            finally
-                                            {
-                                                EasyMemoryWinx = null;
-                                            }
+                                            EasyMemoryWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                            EasyMemoryWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                            EasyMemoryWinx.ShowWindow();
                                         }
-                                        break;
+                                        catch (Exception ex)
+                                        {
+                                            //EasyMemoryWinx.Top = sreen.WorkingArea.Top;
+                                            //EasyMemoryWinx.Left = sreen.WorkingArea.Left;
+                                            //EasyMemoryWinx.ShowWindow();
+                                            writelog($"[_showosd] ERROR - OSDType.EasyMemory: {ex.Message}");
+                                        }
+                                        finally
+                                        {
+                                            EasyMemoryWinx = null;
+                                        }
+                                    }
+                                    break;
 
                                     default:
                                         break;

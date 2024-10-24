@@ -139,7 +139,9 @@ namespace DDPM.CMA.Tester
             RemoteRequestArgs cmarequest = new RemoteRequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
-            Console.WriteLine("Reg Event Success");
+            _CMAManagerPlugin.DisplayConnected += DisplayConnected;
+            _CMAManagerPlugin.DisplayDisconnected += DisplayDisconnected;
+            Console.WriteLine("Subscribe Event Success");
 
             // manager.Info(json);
 
@@ -281,7 +283,26 @@ namespace DDPM.CMA.Tester
 
             isresponse = true;
         }
+
+        private static void DisplayConnected(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA DisplayConnected Alert");
+            Console.WriteLine("CMA DisplayConnected Alert eventtype : " + e.eventType);
+            Console.WriteLine("CMA DisplayConnected Alert notification : " + e.notification);
+
+            isresponse = true;
+        }
+
+        private static void DisplayDisconnected(object sender, NotifyArgs e)
+        {
+
+            Console.WriteLine("CMA DisplayDisconnected Alert");
+            Console.WriteLine("CMA DisplayDisconnected Alert eventtype : " + e.eventType);
+            Console.WriteLine("CMA DisplayDisconnected Alert notification : " + e.notification);
+
+            isresponse = true;
+        }
         #endregion
     }
 }
-cd 

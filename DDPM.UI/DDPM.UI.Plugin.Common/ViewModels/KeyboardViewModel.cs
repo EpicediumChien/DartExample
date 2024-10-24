@@ -4,11 +4,14 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Text;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -611,8 +614,8 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "KM714";
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-            //KeyboardActions = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model, CurrentInstanceID);
-            KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model);
+            //KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model);
+            KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model, CurrentDeviceID.ToString());
 
             //foreach(var keyAction in KeyboardActions.KeyActions.Values) {
             //  keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID + 1);
@@ -1113,6 +1116,22 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (SelectedKey != "")
             {
+                int pkId = (int)(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true);
+                JObject json_obj = new JObject();
+                json_obj.Add("PkId", pkId);
+                json_obj.Add("ActionId", Actions.ActionIdToGuid[actionID]);
+                string json_str = JsonConvert.SerializeObject(json_obj);
+                if (parameter == "")
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+                }
+                else
+                {
+                    json_obj.Add("Command", parameter);
+                    json_str = JsonConvert.SerializeObject(json_obj);
+                    DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+                }
+
                 SelectedAction!.AssignedAction.ID = actionID;
                 SelectedAction!.AssignedAction.Parameter = parameter;
                 OnPropertyChanged($"{SelectedKey}Tooltip");
