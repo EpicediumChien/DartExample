@@ -37,9 +37,17 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestConstructor_PenActions()
         {
-            penActions = new PenActions();
+            //penActions = new PenActions();
+            //// Assert
+            //Assert.That(penActions, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestConstructor_PenActionsA()
+        {
+            var penActionsA = new PenActions();
             // Assert
-            Assert.That(penActions, Is.Not.Null);
+            Assert.That(penActionsA, Is.Not.Null);
         }
 
         [Test]
