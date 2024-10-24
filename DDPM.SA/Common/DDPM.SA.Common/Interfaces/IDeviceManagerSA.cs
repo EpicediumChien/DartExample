@@ -675,7 +675,7 @@ namespace DDPM.SA.Common
         #endregion
 
         #region Keyboard
-        Task SetKbDeleteAssignedAction(string Guid, int newValue);
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task<JArray> GetKeyboardDeviceItemsEx();
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);

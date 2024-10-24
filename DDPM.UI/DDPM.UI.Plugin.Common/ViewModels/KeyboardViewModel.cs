@@ -1117,19 +1117,28 @@ namespace DDPM.UI.Plugin.ViewModels
             if (SelectedKey != "")
             {
                 int pkId = (int)(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true);
+                pkId = CheckPKID(pkId);
+
                 JObject json_obj = new JObject();
                 json_obj.Add("PkId", pkId);
                 json_obj.Add("ActionId", Actions.ActionIdToGuid[actionID]);
                 string json_str = JsonConvert.SerializeObject(json_obj);
-                if (parameter == "")
+                if (actionID == -1 || actionID > 40)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+                    DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAssignedAction(CurrentDeviceID.ToString(), pkId);
                 }
                 else
                 {
-                    json_obj.Add("Command", parameter);
-                    json_str = JsonConvert.SerializeObject(json_obj);
-                    DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceInfo!.ID.ToString(), json_str);
+                    if (parameter == "")
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceID.ToString(), json_str);
+                    }
+                    else
+                    {
+                        json_obj.Add("Command", parameter);
+                        json_str = JsonConvert.SerializeObject(json_obj);
+                        DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceID.ToString(), json_str);
+                    }
                 }
 
                 SelectedAction!.AssignedAction.ID = actionID;
@@ -1139,6 +1148,23 @@ namespace DDPM.UI.Plugin.ViewModels
                 CheckRestoreStatus();
                 //ActionList.ExportActionList(KeyboardAction, Model, CurrentInstanceID);
                 ActionList.ExportActionList(KeyboardAction, Model);
+            }
+        }
+
+        private int CheckPKID(int pkID)
+        {
+            switch (Model)
+            {
+                case "KB525C":
+                case "KB900":
+                    if (pkID == 19)      // ScrollLock
+                        return 14;       // M2
+                    else if (pkID == 20) // PauseBreak
+                        return 15;       // M3
+                    else
+                        return pkID;
+                default:                 // KB555
+                    return pkID;
             }
         }
 
