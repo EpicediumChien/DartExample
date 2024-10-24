@@ -259,5 +259,14 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion
+
+        #region Dongle
+        Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
+        Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
+        Task<string> GetDeviceIdAsyncForDongle(string Guid);
+        Task<string> GetPluginIdAsyncForDongle(string Guid);    
+        Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
+
+        #endregion
     }
 }

@@ -28,7 +28,6 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -2045,8 +2044,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetMicNoiseCancellationAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetMicNoiseCancellationAsync(guid, newValue);
@@ -2062,8 +2059,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetSidetoneAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetSidetoneAsync(guid, newValue);
@@ -2079,8 +2074,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetBusyLightAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetBusyLightAsync(guid, newValue);
@@ -2096,8 +2089,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetVoiceGuidanceAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetVoiceGuidanceAsync(guid, newValue);
@@ -2113,8 +2104,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetSelectedPresetAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetSelectedPresetAsync(guid, newValue);
@@ -2130,8 +2119,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetSidetoneLevelAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetSidetoneLevelAsync(guid, newValue);
@@ -2147,8 +2134,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetBandsGainAsync(string guid, byte[] newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync requested for GUID: {guid} with value: {BitConverter.ToString(newValue)}");
-
             try
             {
                 await _DTPProxyPlugin.SetBandsGainAsync(guid, newValue);
@@ -2164,8 +2149,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetAncModeAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
@@ -2181,8 +2164,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetAncGainAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetAncGainAsync(guid, newValue);
@@ -2198,8 +2179,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetWearDetectionAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetWearDetectionAsync(guid, newValue);
@@ -2215,8 +2194,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetMicNCIncomingAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetMicNCIncomingAsync(guid, newValue);
@@ -2232,8 +2209,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetUnPairAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetUnPairAsync(guid, newValue);
@@ -2249,8 +2224,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync requested for GUID: {guid} with value: {newValue}");
-
             try
             {
                 await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
@@ -2268,8 +2241,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<JArray> GetDeviceItemsExAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync requested for GUID: {guid}");
-
             try
             {
                 var result = await _DTPProxyPlugin.GetDeviceItemsExAsync(guid);
@@ -2285,7 +2256,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetInterfaceTypeAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetInterfaceTypeAsync(guid);
@@ -2301,7 +2271,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetDeviceNameAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceNameAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetDeviceNameAsync(guid);
@@ -2317,7 +2286,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetDeviceIdAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceIdAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetDeviceIdAsync(guid);
@@ -2333,7 +2301,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetPluginIdAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetPluginIdAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetPluginIdAsync(guid);
@@ -2349,7 +2316,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetODMIdAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetODMIdAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetODMIdAsync(guid);
@@ -2365,7 +2331,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetModelNumberAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetModelNumberAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetModelNumberAsync(guid);
@@ -2381,7 +2346,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetInstanceNumberAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetInstanceNumberAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetInstanceNumberAsync(guid);
@@ -2397,7 +2361,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetInstanceIdAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetInstanceIdAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetInstanceIdAsync(guid);
@@ -2413,7 +2376,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetFirmwareVersionAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetFirmwareVersionAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetFirmwareVersionAsync(guid);
@@ -2429,7 +2391,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetDeviceTypeAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceTypeAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetDeviceTypeAsync(guid);
@@ -2445,7 +2406,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetParentDeviceTypeAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetParentDeviceTypeAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetParentDeviceTypeAsync(guid);
@@ -2461,7 +2421,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsBatteryLevelSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsBatteryLevelSupportedAsync(guid);
@@ -2477,7 +2436,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetBatteryLevelAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetBatteryLevelAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetBatteryLevelAsync(guid);
@@ -2493,7 +2451,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetDeviceBatteryStatusAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetDeviceBatteryStatusAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetDeviceBatteryStatusAsync(guid);
@@ -2509,8 +2466,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetPairingStatusAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetPairingStatusAsync requested ... {guid}");
-            try
+             try
             {
                 var result = await _DTPProxyPlugin.GetPairingStatusAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync succeeded, value is {result.ToString()}");
@@ -2525,7 +2481,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetMaxPairingSlotsAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetMaxPairingSlotsAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetMaxPairingSlotsAsync(guid);
@@ -2541,7 +2496,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetPairedDeviceCountAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetPairedDeviceCountAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetPairedDeviceCountAsync(guid);
@@ -2557,7 +2511,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetTotalNumberOfPairedHostNameAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetTotalNumberOfPairedHostNameAsync(guid);
@@ -2573,7 +2526,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetSerialNumberAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetSerialNumberAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetSerialNumberAsync(guid);
@@ -2589,7 +2541,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsReadyAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsReadyAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsReadyAsync(guid);
@@ -2605,7 +2556,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsDirtyAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsDirtyAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsDirtyAsync(guid);
@@ -2621,7 +2571,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsMicNoiseCancellationSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsMicNoiseCancellationSupportedAsync(guid);
@@ -2637,7 +2586,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsSidetoneSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsSidetoneSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsSidetoneSupportedAsync(guid);
@@ -2653,7 +2601,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsBusyLightSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsBusyLightSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsBusyLightSupportedAsync(guid);
@@ -2669,7 +2616,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsVoiceGuidanceSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsVoiceGuidanceSupportedAsync(guid);
@@ -2685,7 +2631,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsPresetsSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsPresetsSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsPresetsSupportedAsync(guid);
@@ -2701,7 +2646,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsEqualizerSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsEqualizerSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsEqualizerSupportedAsync(guid);
@@ -2717,7 +2661,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetConnectionTypeAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
@@ -2733,7 +2676,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsANCSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsANCSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsANCSupportedAsync(guid);
@@ -2749,7 +2691,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsWearDetectionSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsWearDetectionSupportedAsync(guid);
@@ -2765,7 +2706,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionSensitivitySupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsWearDetectionSensitivitySupportedAsync(guid);
@@ -2781,7 +2721,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionPauseMusicSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicSupportedAsync(guid);
@@ -2797,7 +2736,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionMuteMicSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicSupportedAsync(guid);
@@ -2813,7 +2751,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsWearDetectionQuickPauseSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsWearDetectionQuickPauseSupportedAsync(guid);
@@ -2829,7 +2766,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetMicNoiseCancellationAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetMicNoiseCancellationAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetMicNoiseCancellationAsync(guid);
@@ -2845,7 +2781,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetMicNCIncomingAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetMicNCIncomingAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetMicNCIncomingAsync(guid);
@@ -2861,7 +2796,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetSidetoneAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetSidetoneAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetSidetoneAsync(guid);
@@ -2877,7 +2811,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetBusyLightAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetBusyLightAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetBusyLightAsync(guid);
@@ -2893,7 +2826,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetVoiceGuidanceAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetVoiceGuidanceAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetVoiceGuidanceAsync(guid);
@@ -2909,7 +2841,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetSelectedPresetAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetSelectedPresetAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetSelectedPresetAsync(guid);
@@ -2925,7 +2856,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetSidetoneLevelAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetSidetoneLevelAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetSidetoneLevelAsync(guid);
@@ -2941,7 +2871,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetMuteStatusAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetMuteStatusAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetMuteStatusAsync(guid);
@@ -2957,11 +2886,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<byte[]> GetBandsGainAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetBandsGainAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetBandsGainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded for {result.ToString()}");
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, result length is {result.Length}");
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, but result is null");
+                }
                 return result;
             }
             catch (Exception ex)
@@ -2973,7 +2908,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetAncModeAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetAncModeAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetAncModeAsync(guid);
@@ -2989,7 +2923,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetAncGainAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetAncGainAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetAncGainAsync(guid);
@@ -3005,7 +2938,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetWearDetectionAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetWearDetectionAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetWearDetectionAsync(guid);
@@ -3021,7 +2953,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> GetIsMicNCIncomingSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Headset] received GetIsMicNCIncomingSupportedAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetIsMicNCIncomingSupportedAsync(guid);
@@ -3044,7 +2975,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetBassAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetBassAsync requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetBassAsync(guid, newValue);
@@ -3060,7 +2990,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetMidRangeAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetMidRangeAsync requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
@@ -3076,7 +3005,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetTrebleAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetTrebleAsync requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
@@ -3092,7 +3020,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetProfileForSpeaker requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetProfileForSpeaker(guid, newValue);
@@ -3108,7 +3035,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetIsWiredAudioMicMuteSoundEnableAsync requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
@@ -3124,7 +3050,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetWiredAudioVolumeAdjustmentToneAsync requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
@@ -3140,7 +3065,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetIsWiredAudioIMicNSEnableAsync requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
@@ -3156,7 +3080,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received SetResetToDefaultAsyncForSoundbar requested ... {guid} / {newValue}");
             try
             {
                 await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
@@ -3174,7 +3097,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetProfileAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetProfileAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetProfileAsync(guid);
@@ -3190,7 +3112,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<int> GetBassAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetBassAsync requested ... {guid}");
             try
             {
                 var result = await _DTPProxyPlugin.GetBassAsync(guid);
@@ -3200,106 +3121,179 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync failed for {guid} - Exception: {ex.Message}");
-                return -1; // Returning -1 as a failure indicator
+                return -1; 
             }
         }
 
-        public async Task<int> GetMidRangeAsync(string itemID)
+        public async Task<int> GetMidRangeAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetMidRangeAsync requested ... {itemID}");
             try
             {
-                var result = await _DTPProxyPlugin.GetMidRangeAsync(itemID);
+                var result = await _DTPProxyPlugin.GetMidRangeAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync failed for {itemID} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetTrebleAsync(string itemID)
+        public async Task<int> GetTrebleAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetTrebleAsync requested ... {itemID}");
             try
             {
-                var result = await _DTPProxyPlugin.GetTrebleAsync(itemID);
+                var result = await _DTPProxyPlugin.GetTrebleAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync failed for {itemID} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string itemID)
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetIsWiredAudioMicMuteSoundEnableAsync requested ... {itemID}");
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(itemID);
+                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string itemID)
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetWiredAudioVolumeAdjustmentToneAsync requested ... {itemID}");
             try
             {
-                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(itemID);
+                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {itemID} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string itemID)
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetIsWiredAudioIMicNSEnableAsync requested ... {itemID}");
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(itemID);
+                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {itemID} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string itemID)
+        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string guid)
         {
-            writelog($"[DeviceManagerPlugin] [Speaker] received GetIsAudioEqualizerSupportedAsync requested ... {itemID}");
             try
             {
-                var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(itemID);
+                var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {itemID} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
+        #endregion
+
+
+        #region Dongle
+
+        public async Task<string> GetFirmwareVersionAsyncForDongle(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetFirmwareVersionAsyncForDongle(guid);
+                writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetConnectedDeviceInfoAsyncForDongle(guid);
+                writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetDeviceIdAsyncForDongle(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceIdAsyncForDongle(guid);
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPluginIdAsyncForDongle(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPluginIdAsyncForDongle(guid);
+                writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetDeviceItemsExAsyncForDongle(guid);
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
         #endregion
 
         #region CMA/CLI Function area

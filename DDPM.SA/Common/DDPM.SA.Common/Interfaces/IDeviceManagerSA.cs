@@ -6,7 +6,6 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -1031,6 +1030,15 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion Wires Audio
+
+        #region Dongle
+
+        Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
+        Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
+        Task<string> GetDeviceIdAsyncForDongle(string Guid);
+        Task<string> GetPluginIdAsyncForDongle(string Guid);
+        Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
+        #endregion
 
         #endregion public for DTPProxy
 
