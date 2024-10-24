@@ -141,5 +141,10 @@ namespace DDPM.Easy.Common
                 });
             }
         }
+
+        public void AddChild(UIElement ele)
+        {
+            childGrid.Children.Add(ele);
+        }
     }
 }

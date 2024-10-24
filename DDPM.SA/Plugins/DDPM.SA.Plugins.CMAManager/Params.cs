@@ -46,8 +46,10 @@ namespace DDPM.SA.Plugins.CMAManager
         public static class Response
         {
             public const int STATUS_COMMAND_SUCCESS = 0;
-            public const int STATUS_COMMAND_TIMEOUT = 1;
-            public const int STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS = 11;
+
+            public const int STATUS_COMMAND_TIMEOUT = 500;
+            public const int STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS = 501;
+
 
             public const int STATUS_FW_UPDATE_DEVICE_NOT_FOUND = 101;
             public const int STATUS_FW_UPDATE_PENDING = 102;

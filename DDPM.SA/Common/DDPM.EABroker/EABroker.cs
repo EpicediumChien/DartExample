@@ -9,6 +9,7 @@ namespace DDPM.EABroker
 {
     public class EABroker
     {
+        #region Private members
         private bool _isEaBrokerStarted = false;
         private AwsWindow _awsWindow;
         private EAEditWindow _editWindow;
@@ -19,59 +20,38 @@ namespace DDPM.EABroker
         private readonly IDeviceManagerSA _deviceManagerSA;
         private readonly IEasyArrangeService _easyArrangeService;
         private readonly ArrangeVM _vm = new ArrangeVM();
+        #endregion  Private members
 
+        #region Public Properties
+        public ArrangeVM VM { get { return _vm; } }
+        #endregion  Public Properties
+
+        #region ctor
         public EABroker(IAgent agent, IDeviceManagerSA deviceManager, IDisplayService displayService, IEasyArrangeService easyArrangeService)
         {
             _agent = agent;
-            _log = agent.CreateLogger("EABroker",typeof(EABroker));
+            _log = agent.CreateLogger("EABroker", typeof(EABroker));
             _deviceManagerSA = deviceManager;
             _easyArrangeService = easyArrangeService;
 
             _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService);
             WriteLog("EABroker is constructed.");
         }
+        #endregion ctor
 
+        #region Starting
         public void Start()
         {
             WriteLog("@EABroker.Start()");
             //Init InfoWindow, EAEditWindow, SaveCustomWindow 
-            InitAllWindows(); 
+            InitAllWindows();
             //Init EAWorkWindows
             _vm.InitWorkWindows();
             //Init AwsWindow
             _vm.InitAwsWindow();
-            _isEaBrokerStarted=true;
+            _isEaBrokerStarted = true;
 
         }
-
-        public void Stop()
-        {
-
-        }
-
-        private void WriteLog(string msg, Exception? e=null)
-        {
-            if (_vm != null)
-                _vm.WriteLog(msg, e);
-            else
-            {
-                if (_log != null)
-                {
-                    if (e == null)
-                    {
-                        _log.Info(msg);
-                    }
-                    else
-                    {
-                        _log.Error(e, msg);
-                    }
-                }
-            }
-        }
-
-        public ArrangeVM VM { get { return _vm; } }
-        public EAEditWindow EditWindow { get { return _editWindow; } }
-
         private void InitAllWindows()
         {
             int added = 0;
@@ -145,6 +125,40 @@ namespace DDPM.EABroker
                 Thread.Sleep(10);
             }
         }
+        #endregion
+
+        #region Exiting
+        public void Stop()
+        {
+
+        }
+        #endregion
+
+        #region Log
+        private void WriteLog(string msg, Exception? e = null)
+        {
+            if (_vm != null)
+                _vm.WriteLog(msg, e);
+            else
+            {
+                if (_log != null)
+                {
+                    if (e == null)
+                    {
+                        _log.Info(msg);
+                    }
+                    else
+                    {
+                        _log.Error(e, msg);
+                    }
+                }
+            }
+        }
+        #endregion
+
+
+        public EAEditWindow EditWindow { get { return _editWindow; } }
+
 
         public void SetWorkSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
         {
@@ -154,6 +168,7 @@ namespace DDPM.EABroker
                 workWindow.SetWorkingSplit(cellCount, splitKey, settings);
             }
         }
+
 
         /*
         public EventHandler<string>? EditSave;

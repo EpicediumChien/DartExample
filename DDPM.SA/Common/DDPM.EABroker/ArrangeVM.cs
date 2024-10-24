@@ -65,7 +65,7 @@ namespace DDPM.EABroker
         private double _yAwsWindow = 0;
 
         //AWS Icons
-        private SplitCtrl0B _awsIcon0;
+        private ISplitCtrl _awsIcon0;
         private ISplitCtrl _awsIcon1;
         private ISplitCtrl _awsIcon2;
         private ISplitCtrl _awsIcon3;
@@ -117,6 +117,7 @@ namespace DDPM.EABroker
             _displayService = dispMgr;
             _easyArrangeService = eaService;
 
+            ReloadEzSettingsFromUserSettingsFile();
         }
         #endregion
 
@@ -361,8 +362,8 @@ namespace DDPM.EABroker
 
                             if (_awsBuddyWindow != null)
                             {
-                                //_awsBuddyWindow.MoveToScreen(_awsWindow.HoveringScreen);
-                                //_awsBuddyWindow.SetWorkSplit(HoveringSplit);
+                                _awsBuddyWindow.MoveToScreen(_awsWindow.HoveringScreen);
+                                _awsBuddyWindow.SetWorkSplit(HoveringSplit, cellObj.Name);
                                 //_awsBuddyWindow.RefreshCellRects();
                             }
                             return cellObj;
@@ -477,7 +478,6 @@ namespace DDPM.EABroker
                 OnPropertyChanged("IsSpanMultiMonitors");
             }
         }
-
 
         public bool ReloadEzSettingsFromUserSettingsFile()
         {
@@ -815,6 +815,16 @@ namespace DDPM.EABroker
         public static double cxIcon => 120;
         public static double cyIcon => 90;
 
+        public ISplitCtrl AwsIcon0
+        {
+            get => _awsIcon0;
+            set
+            {
+                SetProperty(ref _awsIcon0, value);
+                OnPropertyChanged("AwsIcon0Info");
+            }
+        }
+
         public ISplitCtrl AwsIcon1
         {
             get => _awsIcon1;
@@ -955,7 +965,7 @@ namespace DDPM.EABroker
                 if (_awsIcon1 == null)
                     return "(null)";
                 if (_awsIcon1.IsAddedCustomLayout)
-                    return $"{_awsIcon1.FriendlyName}, Cells: {CellBordersText(_awsIcon1.CellBorders)}";
+                    return $"{_awsIcon1.FriendlyName}, Cells: Cells: {CellListText(_awsIcon1.CellList)}, CellBorders: {CellBordersText(_awsIcon1.CellBorders)}";
                 else
                     return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
             }

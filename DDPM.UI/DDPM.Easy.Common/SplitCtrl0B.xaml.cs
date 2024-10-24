@@ -172,6 +172,11 @@ namespace DDPM.Easy.Common
                 cellBorder.Width = settings[idxSettings + 2] * xRatio;
                 cellBorder.Height = settings[idxSettings + 3] * yRatio;
 
+                //Point topLeftCellBd = cellBorder.PointToScreen(new Point(left, top));
+                //Rect rcCellBd = new Rect(topLeftCellBd.X, topLeftCellBd.Y, border.Width, border.Height);
+                //cellBorder.rect = rcCellBd;
+
+
                 canvas.Children.Add(cellBorder);
                 Canvas.SetLeft(cellBorder, left);
                 Canvas.SetTop(cellBorder, top);
@@ -252,7 +257,9 @@ namespace DDPM.Easy.Common
             }
             
         }
+
         #endregion Cell List
+
 
         #region CellBorders
         private List<CellBorder> celBordersH = new List<CellBorder>();
