@@ -2145,4 +2145,7 @@
   <data name="DisplayDefault.0" xml:space="preserve">
     <value>Do you want to reset your monitor to factory settings now?</value>
   </data>
+  <data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>Restore to default actions</value>
+  </data>
 </root>

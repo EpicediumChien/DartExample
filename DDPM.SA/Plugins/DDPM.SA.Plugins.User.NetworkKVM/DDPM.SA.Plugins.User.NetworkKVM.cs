@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Security;
+using DDPM.SA.Common.NKVM;
 using DdpmJsonCommon;
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
@@ -99,7 +100,7 @@ namespace NetworkKVM.Plugins
             Disconnect();
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
-            _ = Task.Run(async () => await NamedPipeServer(token));
+            _ = Task.Run(async () => await NamedPipeServer_UI(token));
 
             return Task.CompletedTask;
         }
@@ -145,7 +146,6 @@ namespace NetworkKVM.Plugins
                 }
                 Disconnect();
                 _ = Task.Run(async () => await NamedPipeServer(token));
-                //CreateNamedPipe_init();
                 _AllInfoMonitors.Clear();
             }
             else
@@ -172,11 +172,6 @@ namespace NetworkKVM.Plugins
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
-                            //CreateNamedPipe_init();
-                            //if (pipeServer.IsConnected)
-                            //{
-                            //    MonitorPlug();
-                            //}
                         }
                     }
                     //}
@@ -200,14 +195,9 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             Disconnect();
-                            //CreateNamedPipe_init();
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
-                            //if (pipeServer.IsConnected)
-                            //{
-                            //    MonitorPlug();
-                            //}
                         }
                     }
                     List<MonitorInfo> plugin = monitorInfos
@@ -227,14 +217,9 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             Disconnect();
-                            //CreateNamedPipe_init();
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
-                            //if (pipeServer.IsConnected)
-                            //{
-                            //    MonitorPlug();
-                            //}
                         }
                     }
 
@@ -273,10 +258,10 @@ namespace NetworkKVM.Plugins
         {
             _logs.DebugMsg("[NetworkKVM] GetSupportedNKVM....");
             bool isAdd = false;
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
-            {
+            //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            //{
                 _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
+            //}
             foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
             {
                 string ModelName = monitorInfo.modelName;
@@ -366,92 +351,165 @@ namespace NetworkKVM.Plugins
         {
             _logs.DebugMsg("[NetworkKVM] isSupportMonitor");
             string ModelName = monitorInfo.modelName.Replace(" ", "");
-            if (ModelName.IndexOf("P2424HEB") != -1 ||
-                ModelName.IndexOf("P2725DEB") != -1 ||
-                ModelName.IndexOf("P3424WEB") != -1 ||
-                ModelName.IndexOf("P5524Q") != -1 ||
-                ModelName.IndexOf("P5524QT") != -1 ||
-                ModelName.IndexOf("P6524QT") != -1 ||
-                ModelName.IndexOf("P7524QT") != -1 ||
-                ModelName.IndexOf("P8624QT") != -1 ||
-                ModelName.IndexOf("P5525QC") != -1)
+            _logs.DebugMsg("[NetworkKVM] ModelName : " + ModelName);
+
+            NKVMSupportList nKVMSupport = new NKVMSupportList();
+            if (nKVMSupport.SupportList.Exists(x => ModelName.Contains(x)))
             {
+                _logs.DebugMsg("[NetworkKVM] Monitor is support monitor");
                 return Task.FromResult(true);
             }
-            if (monitorInfo.CapabilityDic.ContainsKey("C6"))
+            else
             {
-                _logs.DebugMsg("[NetworkKVM] C6....");
-                string capabilityString = monitorInfo.CapabilityString;
-                if (_SupportedMonitors != null)
+                if (monitorInfo.CapabilityDic.ContainsKey("C6"))
                 {
-                    if (_SupportedMonitors.Count > 0)
+                    _logs.DebugMsg("[NetworkKVM] C6....");
+                    string capabilityString = monitorInfo.CapabilityString;
+                    if (_SupportedMonitors != null)
                     {
-                        if (_SupportedMonitors.IndexOf(ModelName) == -1)
+                        if (_SupportedMonitors.Count > 0)
                         {
-                            if (IsSupportNKVM(capabilityString))
+                            if (_SupportedMonitors.IndexOf(ModelName) == -1)
                             {
-                                _SupportedMonitors.Add(ModelName);
+                                _logs.DebugMsg("[NetworkKVM] _SupportedMonitors is not find monitor");
+                                if (IsSupportNKVM(capabilityString))
+                                {
+                                    _logs.DebugMsg("[NetworkKVM] IsSupportNKVM is true");
+                                    _SupportedMonitors.Add(ModelName);
+                                    return Task.FromResult(true);
+                                }
+                            }
+                            else
+                            {
+                                _logs.DebugMsg("[NetworkKVM] _SupportedMonitors is find monitor");
                                 return Task.FromResult(true);
                             }
                         }
                         else
                         {
-                            return Task.FromResult(true);
+                            _logs.DebugMsg("[NetworkKVM] _SupportedMonitors count is 0");
+                            if (IsSupportNKVM(capabilityString))
+                            {
+                                _logs.DebugMsg("[NetworkKVM] IsSupportNKVM is true");
+                                _SupportedMonitors.Add(ModelName);
+                                return Task.FromResult(true);
+                            }
                         }
                     }
                     else
                     {
+                        _logs.DebugMsg("[NetworkKVM] _SupportedMonitors is null");
+                        _SupportedMonitors = new List<string>();
                         if (IsSupportNKVM(capabilityString))
                         {
+                            _logs.DebugMsg("[NetworkKVM] IsSupportNKVM is true");
                             _SupportedMonitors.Add(ModelName);
                             return Task.FromResult(true);
-                        }
-                        else if (!ModelName.Contains("25"))
-                        {
-                            string strSupport = ModelName.Substring(0, 1);
-                            switch (strSupport)
-                            {
-                                case "U":
-                                case "C":
-                                    return Task.FromResult(true);
-                            }
                         }
                     }
                 }
                 else
                 {
-                    _SupportedMonitors = new List<string>();
-                    if (IsSupportNKVM(capabilityString))
-                    {
-                        _SupportedMonitors.Add(ModelName);
-                        return Task.FromResult(true);
-                    }
-                    else if (!ModelName.Contains("25"))
-                    {
-                        string strSupport = ModelName.Substring(0, 1);
-                        switch (strSupport)
-                        {
-                            case "U":
-                            case "C":
-                                return Task.FromResult(true);
-                        }
-                    }
+                    _logs.DebugMsg("[NetworkKVM]No C6....");
                 }
             }
-            else
-            {
-                _logs.DebugMsg("[NetworkKVM] no C6....");
-                if (!ModelName.Contains("25"))
-                {
-                    string strSupport = ModelName.Substring(0, 1);
-                    switch (strSupport)
-                    {
-                        case "U":
-                        case "C":
-                            return Task.FromResult(true);
-                    }
-                }
-            }
+
+            //if (ModelName.IndexOf("P2424HEB") != -1 ||
+            //    ModelName.IndexOf("P2725DEB") != -1 ||
+            //    ModelName.IndexOf("P3424WEB") != -1 ||
+            //    ModelName.IndexOf("P5524Q") != -1 ||
+            //    ModelName.IndexOf("P5524QT") != -1 ||
+            //    ModelName.IndexOf("P6524QT") != -1 ||
+            //    ModelName.IndexOf("P7524QT") != -1 ||
+            //    ModelName.IndexOf("P8624QT") != -1 ||
+            //    ModelName.IndexOf("P5525QC") != -1)
+            //{
+            //    return Task.FromResult(true);
+            //}
+            //if (monitorInfo.CapabilityDic.ContainsKey("C6"))
+            //{
+            //    _logs.DebugMsg("[NetworkKVM] C6....");
+            //    string capabilityString = monitorInfo.CapabilityString;
+            //    if (_SupportedMonitors != null)
+            //    {
+            //        if (_SupportedMonitors.Count > 0)
+            //        {
+            //            if (_SupportedMonitors.IndexOf(ModelName) == -1)
+            //            {
+            //                if (IsSupportNKVM(capabilityString))
+            //                {
+            //                    _SupportedMonitors.Add(ModelName);
+            //                    return Task.FromResult(true);
+            //                }
+            //                else if (!ModelName.Contains("25"))
+            //                {
+            //                    string strSupport = ModelName.Substring(0, 1);
+            //                    switch (strSupport)
+            //                    {
+            //                        case "U":
+            //                        case "C":
+            //                            return Task.FromResult(true);
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                return Task.FromResult(true);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            if (IsSupportNKVM(capabilityString))
+            //            {
+            //                _SupportedMonitors.Add(ModelName);
+            //                return Task.FromResult(true);
+            //            }
+            //            else if (!ModelName.Contains("25"))
+            //            {
+            //                string strSupport = ModelName.Substring(0, 1);
+            //                switch (strSupport)
+            //                {
+            //                    case "U":
+            //                    case "C":
+            //                        return Task.FromResult(true);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        _SupportedMonitors = new List<string>();
+            //        if (IsSupportNKVM(capabilityString))
+            //        {
+            //            _SupportedMonitors.Add(ModelName);
+            //            return Task.FromResult(true);
+            //        }
+            //        else if (!ModelName.Contains("25"))
+            //        {
+            //            string strSupport = ModelName.Substring(0, 1);
+            //            switch (strSupport)
+            //            {
+            //                case "U":
+            //                case "C":
+            //                    return Task.FromResult(true);
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    _logs.DebugMsg("[NetworkKVM] no C6....");
+            //    if (!ModelName.Contains("25"))
+            //    {
+            //        string strSupport = ModelName.Substring(0, 1);
+            //        switch (strSupport)
+            //        {
+            //            case "U":
+            //            case "C":
+            //                return Task.FromResult(true);
+            //        }
+            //    }
+            //}
             return Task.FromResult(false);
         }
 
@@ -1067,12 +1125,15 @@ namespace NetworkKVM.Plugins
 
         private Task<List<MonitorInfo>> GetMonitors()
         {
+            _logs.DebugMsg("[NetworkKVM] GetMonitors");
             lock (_pluginConditionLock)
             {
                 //_logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
-
-                _AllInfoMonitors.Clear();
-                _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
+                if (_VcpCorePlugin != null)
+                {
+                    _AllInfoMonitors.Clear();
+                    _AllInfoMonitors.AddRange(_VcpCorePlugin.GetMonitors().Result);
+                }
 
                 //_logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
@@ -1085,19 +1146,110 @@ namespace NetworkKVM.Plugins
             var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             var CancellationToken = Cancellation.Token;
             CreateNamedPipe_init();
-            Trace.WriteLine("NKVM CreateNamedPipe_init to NamedPipeServer go...");
-            if (pipeServer != null)
+            _logs.DebugMsg("NKVM NamedPipeServer is go...");
+            Trace.WriteLine("NKVM NamedPipeServer is go...");
+            int i = 0;
+            while (_runloop)
             {
-                _logs.DebugMsg("NKVM NamedPipeServer is go...");
-                Trace.WriteLine("NKVM NamedPipeServer is go...");
-                while (_runloop)
+                //if (CancellationToken.IsCancellationRequested)
+                //{
+                //    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                //    Trace.WriteLine("[NetworkKVM]Token is cancel");
+                //    Disconnect();
+                //    _AllInfoMonitors = GetMonitors().Result;
+                //    CreateNamedPipe_init();
+                //    i = 0;
+                //    //break;
+                //}
+                if (pipeServer != null)
                 {
-                    if (CancellationToken.IsCancellationRequested)
+                    if (pipeServer.IsConnected)
                     {
-                        _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                        Trace.WriteLine("[NetworkKVM]Token is cancel");
-                        break;
+                        if (CancellationToken.IsCancellationRequested)
+                        {
+                            _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                            Trace.WriteLine("[NetworkKVM]Token is cancel");
+                            Disconnect();
+                            _AllInfoMonitors = GetMonitors().Result;
+                            CreateNamedPipe_init();
+                            i = 0;
+                            //break;
+                        }
+                        lock (lock_wait)
+                        {
+                            try
+                            {
+
+                                response = ReadAsync().Result;
+                                _logs.DebugMsg("[NetworkKVM] Get :" + response);
+
+                                if (response == "Disconnect")
+                                {
+                                    Disconnect();
+                                    //CreateNamedPipe();
+                                }
+                                else
+                                {
+                                    JsonstringParse(response).Wait(); //read json type
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                //throw;
+                                Disconnect();
+                                _AllInfoMonitors = GetMonitors().Result;
+                                CreateNamedPipe_init();
+                                i = 0;
+                            }
+                        }
                     }
+                    else
+                    {
+                        if (i > 2)
+                        {
+                            break;
+                        }
+                        i++;
+                        //    Disconnect();
+                        //    CreateNamedPipe_init();
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("pipeServer is null");
+                    Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
+                    CreateNamedPipe_init();
+                    i = 0;
+                }
+            }
+            _logs.DebugMsg("NKVM NamedPipeServer is End...");
+            Trace.WriteLine("NKVM NamedPipeServer is End...");
+            //_agent.StopAgent();
+        }
+
+        private async Task NamedPipeServer_UI(CancellationToken token)
+        {
+            var Cancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
+            var CancellationToken = Cancellation.Token;
+            CreateNamedPipe();
+            _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
+            Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
+            int i = 0;
+            while (_runloop)
+            {
+                if (CancellationToken.IsCancellationRequested)
+                {
+                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                    Trace.WriteLine("[NetworkKVM]Token is cancel");
+                    Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
+                    CreateNamedPipe();
+                    i = 0;
+                    //break;
+                }
+                if (pipeServer != null)
+                {
                     if (pipeServer.IsConnected)
                     {
                         lock (lock_wait)
@@ -1122,20 +1274,34 @@ namespace NetworkKVM.Plugins
                             {
                                 //throw;
                                 Disconnect();
-                                CreateNamedPipe_init();
+                                _AllInfoMonitors = GetMonitors().Result;
+                                CreateNamedPipe();
+                                i = 0;
                             }
                         }
                     }
                     else
                     {
-                        break;
-                    //    Disconnect();
-                    //    CreateNamedPipe_init();
+                        if (i > 2)
+                        {
+                            break;
+                        }
+                        i++;
+                        //    Disconnect();
+                        //    CreateNamedPipe_init();
                     }
                 }
+                else
+                {
+                    _logs.DebugMsg("pipeServer is null...");
+                    Disconnect();
+                    _AllInfoMonitors = GetMonitors().Result;
+                    CreateNamedPipe();
+                    i = 0;
+                }
             }
-            _logs.DebugMsg("NKVM NamedPipeServer is End...");
-            Trace.WriteLine("NKVM NamedPipeServer is End...");
+            _logs.DebugMsg("NKVM NamedPipeServer_UI is End...");
+            Trace.WriteLine("NKVM NamedPipeServer_UI is End...");
             //_agent.StopAgent();
         }
 
@@ -1266,10 +1432,10 @@ namespace NetworkKVM.Plugins
 
         private void Stop()
         {
-            if (cancellationTokenSource != null)
-            {
-                cancellationTokenSource.Cancel();
-            }
+            //if (cancellationTokenSource != null)
+            //{
+            //    cancellationTokenSource.Cancel();
+            //}
             if (cts != null)
             {
                 cts.Cancel();
@@ -2147,6 +2313,7 @@ namespace NetworkKVM.Plugins
 
         public void SetDDPMHotkey(NKVMSetHotkey setHotkey)
         {
+            _logs.DebugMsg("[NetworkKVM] Send SetDDPMHotkey Event");
             NKVMSetHotkey?.AsyncFireAndForget(this, setHotkey, System.Threading.CancellationToken.None);
         }
 

@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace DDPM.UI.Plugin.Common
 {
     /// <summary>
-    /// OpenRunModalDialog.xaml 的互動邏輯
+    /// RadialMenuModalDialog.xaml 的互動邏輯
     /// </summary>
     public partial class RadialMenuModalDialog : Window
     {
@@ -159,7 +159,7 @@ namespace DDPM.UI.Plugin.Common
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", ""));
-            if (id == SelectedActionID)
+            if (id == SelectedActionID && id != 8 && id != 23)
             { return; }
 
             txtLabelText.Visibility = Visibility.Visible;
@@ -210,16 +210,17 @@ namespace DDPM.UI.Plugin.Common
                 if (modalDialog.ShowDialog()!.Value)
                 {
                     //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    //if (modalDialog.ID == 1)
+                    //{
+                    //    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                    //}
+                    //else
+                    //{
+                    //    //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                    //    PenActions.RadialLabels[SelectedMenuID] = parameter;
+                    //}
                     parameter = $"{modalDialog.Parameter}";
-                    if (modalDialog.ID == 1)
-                    {
-                        PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-                    }
-                    else
-                    {
-                        //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
-                        PenActions.RadialLabels[SelectedMenuID] = parameter;
-                    }
+                    PenActions.RadialLabels[SelectedMenuID] = parameter;
                     spLabel.Visibility = Visibility.Collapsed;
                 }
                 else
@@ -240,7 +241,7 @@ namespace DDPM.UI.Plugin.Common
             CloseActionCombo();
             PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
             PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID, parameter);
+            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
             ActionList.ExportActionList(PenActions, "PEN");
             RefreshAction();
         }
@@ -319,7 +320,7 @@ namespace DDPM.UI.Plugin.Common
             {
                 0 or 4 => 130,
                 1 or 3 or 5 or 7 => 136,
-                2 or 6 => 140,
+                2 or 6 => 125,
                 _ => 0
             };
             var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
@@ -441,18 +442,21 @@ namespace DDPM.UI.Plugin.Common
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
-                if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
+                //if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
+                if (modalDialog.ShowDialog()!.Value && $"{modalDialog.Parameter}" != parameter)
                 {
-                    parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
-                    if (modalDialog.ID == 1)
-                    {
-                        PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-                    }
-                    else
-                    {
-                        //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
-                        PenActions.RadialLabels[SelectedMenuID] = _vm.LaunchableAppValues[modalDialog.ID];
-                    }
+                    //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    //if (modalDialog.ID == 1)
+                    //{
+                    //    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                    //}
+                    //else
+                    //{
+                    //    //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                    //    PenActions.RadialLabels[SelectedMenuID] = _vm.LaunchableAppValues[modalDialog.ID];
+                    //}
+                    parameter = $"{modalDialog.Parameter}";
+                    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
                 }
                 else
                 {
@@ -462,6 +466,7 @@ namespace DDPM.UI.Plugin.Common
             }
             PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
             PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
+            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
             ActionList.ExportActionList(PenActions, "PEN");
             RefreshAction();
             CloseActionCombo();

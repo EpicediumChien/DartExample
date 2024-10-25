@@ -1166,13 +1166,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature into SetALSMMS ...");
 
             ////==Multi - Monitor Sync(MMS)==//0x00 MMS Off; 0x01 MMS On (DUT1); 0x03 (On, DP-out, MST)
-            if (SetVCPCapability(monitorInfos, 0xEF, StrConvertUint(value)).Result)
+            if (monitorInfos.CapabilityDic.ContainsKey("EF"))
             {
-                param.isMMSEnable = StrConvertOnOff(value);
-                param.result = true;
+                if (SetVCPCapability(monitorInfos, 0xEF, StrConvertUint(value)).Result)
+                {
+                    param.isMMSEnable = StrConvertOnOff(value);
+                    param.result = true;
+                }
+                else
+                    param.result = false;
             }
-            else
-                param.result = false;
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSMMS ");
         }
@@ -1212,20 +1215,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP();
             //==Primary ==//Bit 5 : 0 = UnSelected, 1 = Selected
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
-            if (result != null && result.result)
+            if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
-                uint val = SetBitsValue((uint)result.value, 5, (int)StrConvertUint(value));
-                if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                if (result != null && result.result)
                 {
-                    param.isPrimaryMonitorSync = StrConvertOnOff(value);
-                    param.result = true;
+                    uint val = SetBitsValue((uint)result.value, 5, (int)StrConvertUint(value));
+                    if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                    {
+                        param.isPrimaryMonitorSync = StrConvertOnOff(value);
+                        param.result = true;
+                    }
+                    else
+                        param.result = false;
                 }
                 else
                     param.result = false;
             }
-            else
-                param.result = false;
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALPrimaryMS ");
         }
@@ -1265,20 +1271,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP();
             //==Auto Color Temperature==//Bit 4 : 0 = Off, 1 = On
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
-            if (result != null && result.result)
+            if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
-                uint val = SetBitsValue((uint)result.value, 4, (int)StrConvertUint(value));
-                if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                if (result != null && result.result)
                 {
-                    param.isAutoColorTemp = StrConvertOnOff(value);
-                    param.result = true;
+                    uint val = SetBitsValue((uint)result.value, 4, (int)StrConvertUint(value));
+                    if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                    {
+                        param.isAutoColorTemp = StrConvertOnOff(value);
+                        param.result = true;
+                    }
+                    else
+                        param.result = false;
                 }
                 else
                     param.result = false;
             }
-            else
-                param.result = false;
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAutoColorTemp ");
         }
@@ -1318,26 +1327,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature into SetALSAutoBrightness ...");
 
             ObjGetVCP result = new ObjGetVCP();
-            //==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
-            if (result != null && result.result)
+            if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
-                uint val;
-                if (string.Equals(value, "ON", StringComparison.OrdinalIgnoreCase))
-                    val = SetBitsValue((uint)result.value, 0, 2);
-                else
-                    val = SetBitsValue((uint)result.value, 0, 1);
-
-                if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                //==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
+                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                if (result != null && result.result)
                 {
-                    param.isAutoBrightness = StrConvertOnOff(value);
-                    param.result = true;
+                    uint val;
+                    if (string.Equals(value, "ON", StringComparison.OrdinalIgnoreCase))
+                        val = SetBitsValue((uint)result.value, 0, 2);
+                    else
+                        val = SetBitsValue((uint)result.value, 0, 1);
+
+                    if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                    {
+                        param.isAutoBrightness = StrConvertOnOff(value);
+                        param.result = true;
+                    }
+                    else
+                        param.result = false;
                 }
                 else
                     param.result = false;
             }
-            else
-                param.result = false;
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAutoBrightness ");
         }
@@ -1395,35 +1407,38 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
             List<AutoBrightnessRangeLevel> brightnessrangelevellist = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel();
-            //==Auto Brightness Range  Level==//Bit 6~7 : 0=Leve 1 | 1=Level 2 | 2=Level 3
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
-            if (result != null && result.result)
+            if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
-                uint val = SetBitsValue((uint)result.value, 6, int.Parse(value));
-                if (SetVCPCapability(monitorInfos, 0x66, val).Result)
+                //==Auto Brightness Range  Level==//Bit 6~7 : 0=Leve 1 | 1=Level 2 | 2=Level 3
+                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                if (result != null && result.result)
                 {
-                    switch (value)
+                    uint val = SetBitsValue((uint)result.value, 6, int.Parse(value));
+                    if (SetVCPCapability(monitorInfos, 0x66, val).Result)
                     {
-                        case "0":
-                            brightnessrangelevel.level_name = "Low";
-                            break;
+                        switch (value)
+                        {
+                            case "0":
+                                brightnessrangelevel.level_name = "Low";
+                                break;
 
-                        case "1":
-                            brightnessrangelevel.level_name = "Mid";
-                            break;
+                            case "1":
+                                brightnessrangelevel.level_name = "Mid";
+                                break;
 
-                        case "2":
-                            brightnessrangelevel.level_name = "High";
-                            break;
+                            case "2":
+                                brightnessrangelevel.level_name = "High";
+                                break;
+                        }
+                        param.AutoBrightnessRangeLevel.Add(brightnessrangelevel);
+                        param.result = true;
                     }
-                    param.AutoBrightnessRangeLevel.Add(brightnessrangelevel);
-                    param.result = true;
+                    else
+                        param.result = false;
                 }
                 else
                     param.result = false;
             }
-            else
-                param.result = false;
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAutoBrightnessRangeLevel ");
         }
@@ -1440,8 +1455,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
             //List<AutoBrightnessRangeLevel> brightnessrangelevellist = new List<AutoBrightnessRangeLevel>();
             //AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel();
+            if (monitorInfos.CapabilityString.Contains("66"))//Directly determine CapabilityString to improve performance
+            {
+                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+            }
 
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
             if (result != null && result.result)
             {
                 ParseBitDefineToAlsObject((uint)result.value, ref param);
@@ -1503,13 +1521,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //ObjGetVCP result = new ObjGetVCP();
 
             param.AllValue = UpdateAllValue(param);
-
-            if (SetVCPCapability(monitorInfos, 0x66, param.AllValue).Result)
+            if (monitorInfos.CapabilityString.Contains("66"))
             {
-                param.result = true;
+                if (SetVCPCapability(monitorInfos, 0x66, param.AllValue).Result)
+                {
+                    param.result = true;
+                }
+                else
+                    param.result = false;
             }
-            else
-                param.result = false;
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAll ");
         }
@@ -3534,8 +3554,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     string szInfo = string.Empty;
                     string jsonString = string.Empty;
-                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} json content check start");
-                    Debug.WriteLine(jsonContent);
+                    _logs.DebugMsg($"{nameof(GetDisplayFWMetadata)} json content check start");
                     jsonString = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
                     if (!string.IsNullOrEmpty(szInfo) && settingsPlugin != null)
                     {
@@ -3598,7 +3617,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             break;
                                         }
                                     }
-                                    if (newVersion >= oldVersion)
+                                    if (newVersion > oldVersion)
                                     {
                                         ret.Firmwares.Add(firmwares_item);
                                     }

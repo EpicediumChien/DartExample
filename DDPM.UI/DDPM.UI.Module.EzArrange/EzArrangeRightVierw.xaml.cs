@@ -135,7 +135,9 @@ namespace DDPM.UI.Module.EzArrange
             foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
             {
                 SplitItem? spItem = null;
-                ISplitCtrl newSplit = spCtrl.New();
+                //Reused
+                ISplitCtrl newSplit = spCtrl;
+                //ISplitCtrl newSplit = spCtrl.New();
                 if (newSplit == null)
                     continue;
                 newSplit.SplitMode = eSplitModes.Icon;
@@ -222,7 +224,7 @@ namespace DDPM.UI.Module.EzArrange
 
             if (sp0A != null)
             {
-                sp0A.FriendlyName = "Off"; //Need Multilogual support
+                //sp0A.FriendlyName = "Off"; //Need Multilogual support
                 sp0A.SplitMode = eSplitModes.Icon;
                 item0A = splitListView_Recent.AddItemToList(sp0A.UC);
                 item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
@@ -240,17 +242,24 @@ namespace DDPM.UI.Module.EzArrange
                 int idxRecentList = 0;
                 foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
                 {
-                    //Robert_Lin, 2024-10-4 Check maximun items, +1:Off 
-                    if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems+1)
+                    //Robert_Lin, 2024-10-4 Check maximun items
+                    if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
                         break;
 
                     //Validate RectentList items, skip the invalid items
                     //1 CustomId=0 and CustomName is empty is invalid
-                    if ((spj.CustomId == 0) && (!String.IsNullOrWhiteSpace(spj.CustomName)))
+                    //if ((spj.CustomId == 0) && (!String.IsNullOrWhiteSpace(spj.CustomName)))
+                    //{
+                    //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                    //    idxRecentList++;
+                    //    continue;
+                    //}
+
+                    //Add CustomName for the default RecentList item which is created by EAPlugin
+                    if (String.IsNullOrWhiteSpace(spj.CustomName))
                     {
-                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                        idxRecentList++;
-                        continue;
+                        ISplitCtrl? ispGetName = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                        spj.CustomName = ispGetName.FriendlyName;
                     }
 
                     //2 All Recent item must has Buddy
@@ -573,19 +582,43 @@ namespace DDPM.UI.Module.EzArrange
                     //4 DDPM.UI get the EditStart' event and <sting> is empty, then DDPM.UI should be
                     //  minimize itselft (based on UI team's requirements), until a 'EditReturn' event.
 
-                    //Prepare for the EAArgs
-                    int selectedIndex = 0;
-                    List<string> friendlyNameList = GenerateCustomNames(out selectedIndex);
+                    //Get the CustomName list and the index to the first unused name
+                    int idxFirstUnused = 0;
+                    List<string> customNameList = GenerateCustomNames(out idxFirstUnused);
 
-                    //Create a defulte EAArgs, for pre-defined layout
+                    //index to friendlyNameList of current editing
+                    //Case_1: edit a preset layout
+                    //  selectedIndex <- idxFirstUnused
+                    //Case_2: edit a custom layout
+                    //  selectedIndex <- the name of clicking
+                    int selectedIndex = idxFirstUnused; 
+                    //If Case_2, edit a custom layout
+                    if (spItem.SplitOwner == Common.EAEM.eSplitOwner.EaCustom)
+                    {
+                        //Use the CustomName to find the index to friendlyNameList
+                        selectedIndex = customNameList.IndexOf(spItem.CustomName);
+                        //If not found (should be never
+                        if (selectedIndex < 0)
+                        {
+                            selectedIndex = 0; //will replace to the first one
+                        }
+                    }
+
+                    //If (idxFirstUnused<0), that is CustomList is full, then sel the selectedIndex to 0.
+                    if ((idxFirstUnused < 0) || (selectedIndex >= customNameList.Count))
+                    {
+                        selectedIndex = 0;
+                    }
+
+                    //Create a default EAArgs, for pre-defined layout
                     EAArgs args = new EAArgs()
                     {
                         Command = "EditCommnd",
                         CellCount = spCtrl.CellCount,
                         SplitKey = spCtrl.SplitKey,
                         CustomId = spItem.CustomId,
-                        CustomName = friendlyNameList[selectedIndex],
-                        CustomNames = friendlyNameList,
+                        CustomName = customNameList[selectedIndex],
+                        CustomNames = customNameList,
                         Settings = spCtrl.Settings
 
                     };
@@ -594,8 +627,9 @@ namespace DDPM.UI.Module.EzArrange
                         CellCount = spCtrl.CellCount,
                         SplitKey = spCtrl.SplitKey,
                         CustomId = spItem.CustomId,
-                        CustomName = friendlyNameList[selectedIndex],
+                        CustomName = customNameList[selectedIndex],
                         Settings = new List<double>(spCtrl.Settings),
+                        EAID = spCtrl.EAID,
                         Cells = GetCellsFromISplitCtrl(spCtrl)
                     };
                     //If editing SplitItem is NOT a Pre-defined layout (edit from CustomList)
@@ -707,7 +741,7 @@ namespace DDPM.UI.Module.EzArrange
             Dispatcher.Invoke(new Action(() =>
             {
                 //Find in CustomList, for the item with the same CustomName
-                SplitItem? itemCustom = splitListView_Custom.FindItemByFriendlyName(e.CustomName);
+                SplitItem? itemCustom = splitListView_Custom.FindItemByFriendlyName(e.SplitJson.CustomName);
                 //If found in CustomList
                 if (itemCustom != null)
                 {
@@ -741,18 +775,14 @@ namespace DDPM.UI.Module.EzArrange
                     if (splitListView_Custom.ItemCount < EAEMConstants.MaxCustomItems)
                     {
                         //Create a custom item
-                        ISplitCtrl ispCustom = ISplitCtrl.Create(e.CellCount, e.SplitKey);
+                        ISplitCtrl ispCustom = ISplitCtrl.Create(e.SplitJson.CellCount, e.SplitJson.SplitKey);
                         if (ispCustom == null)
                         {
-                            if ((e.CellCount == 0) && (e.SplitKey == 'B'))
-                            {
-                                ispCustom = new SplitCtrl0B();
-                            }
-                            else
-                                return;
+                            return;
                         }
-                        ispCustom.Settings = e.Settings;
-                        ispCustom.FriendlyName = e.CustomName;
+                        ispCustom.Settings = e.SplitJson.Settings;
+                        ispCustom.FriendlyName = e.SplitJson.CustomName;
+                        ispCustom.EAID = e.SplitJson.EAID;
                         //Insert to the first (DDPMW-861)
                         itemCustom = splitListView_Custom.InsertSplitCtrlToList(ispCustom, 0);
                         itemCustom.CustomId = GenerateCustomId();
@@ -764,7 +794,6 @@ namespace DDPM.UI.Module.EzArrange
                             //Setup Buddy
                             itemCustom.Buddy = itemRecent;
                             itemRecent.Buddy = itemCustom;
-
                         }
                         //Set it as current selected
                         _vm.SelectedSplitItem = itemCustom;
@@ -878,6 +907,8 @@ namespace DDPM.UI.Module.EzArrange
             //Save UserSettings: CustomList
             if (includeCustomList)
             {
+                splitListView_Custom.RefreshCustomEAID();
+
                 List<SplitJson> customList = new List<SplitJson>();
                 foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
                 {
@@ -919,10 +950,11 @@ namespace DDPM.UI.Module.EzArrange
         /// This method must be executed in UI thread.
         /// </summary>
         /// <param name="selectedIndex">
-        /// Output selectedIndex for current custom item
+        /// the index to the returning list that the first unused name.
+        /// -1 = no unused name
         /// </param>
         /// <returns>The CustomName list</returns>
-        private List<string> GenerateCustomNames(out int selectedIndex)
+        private List<string> GenerateCustomNames(out int idxFirstUnused)
         {
             List<string> listOut = new List<string>();
 
@@ -936,15 +968,15 @@ namespace DDPM.UI.Module.EzArrange
             const int MaxCustomItems = DDPM.SA.Common.Display.EAEMConstants.MaxCustomItems; //=5
             if (listOut.Count >= MaxCustomItems)
             {
-                selectedIndex = 0;
+                idxFirstUnused = -1; //No unused name in listOut
                 return listOut;
             }
 
             //Step C. Add remaining names
             //C1. SelectedIndex <- the first available index
-            selectedIndex = listOut.Count;
+            idxFirstUnused = listOut.Count;
             //C2. Generate unused names
-            for (int i = selectedIndex; i < MaxCustomItems; i++)
+            for (int i = idxFirstUnused; i < MaxCustomItems; i++)
             {
                 //C3. Get the next available custom name
                 for (int j=1; j<=MaxCustomItems; j++)
@@ -954,7 +986,7 @@ namespace DDPM.UI.Module.EzArrange
                     //C3.2. Check if this customName is already used by other custom item 
                     if (!listOut.Contains(customName))
                     {
-                        //C3.3. No, this customName is avaiable to use => add to list
+                        //C3.3. No, this customName is available to use => add to list
                         listOut.Add(customName);
                         break; //Find a customName for next item
                     }
@@ -1035,18 +1067,40 @@ namespace DDPM.UI.Module.EzArrange
         {
             if (_deviceManagerSA != null)
             {
-                int selectedIndex = 0;
-                List<string> friendlyNameList = GenerateCustomNames(out selectedIndex);
-                //Create a defulte EAArgs, for pre-defined layout
+                //Get the CustomName list and the index to the first unused name
+                int idxFirstUnused = 0;
+                List<string> customNameList = GenerateCustomNames(out idxFirstUnused);
+
+                //index to customNameList of current editing
+                // always use the first unused name
+                int selectedIndex = idxFirstUnused;
+
+                // But if custom list if full, then + button should not be enabled.
+                // Use the name of first item
+                if ((selectedIndex < 0) || (selectedIndex >= customNameList.Count))
+                {
+                    selectedIndex = 0;
+                }
+                //Create a default EAArgs, for SplitCtrl0B layout
                 EAArgs args = new EAArgs()
                 {
                     Command = "EditCommnd",
                     CellCount = 0,
                     SplitKey = 'B',
                     CustomId = 0,
-                    CustomName = friendlyNameList[selectedIndex],
-                    CustomNames = friendlyNameList,
+                    CustomName = customNameList[selectedIndex],
+                    CustomNames = customNameList,
                     Settings = new List<double>()
+                };
+                args.SplitJson = new SplitJson()
+                {
+                    CellCount = 0,
+                    SplitKey = 'B',
+                    CustomId = 0,
+                    CustomName = customNameList[selectedIndex],
+                    Settings = new List<double>(),
+                    EAID = 0,
+                    Cells = new CellJson[] { }
                 };
                 //Register a event handler for EditStarted event
                 _deviceManagerSA.EAEditStarted += _deviceManagerSA_EAEditStarted;

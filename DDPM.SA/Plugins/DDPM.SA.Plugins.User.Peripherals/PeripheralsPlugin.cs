@@ -1342,7 +1342,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.SidetoneLevel = _logicalDeviceHeadset.SidetoneLevel;
                         info.MuteStatus = _logicalDeviceHeadset.MuteStatus;
                         info.BandsGain = _logicalDeviceHeadset.BandsGain;
-                        SetEqualizerValues(_logicalDeviceHeadset, info);
+                        //SetEqualizerValues(_logicalDeviceHeadset, info);
 
                         _logicalDeviceHeadset.IsReadyChanged += _logicalDeviceHeadset_IsReadyChanged;
                         _logicalDeviceHeadset.IsDirtyChanged += _logicalDeviceHeadset_IsDirtyChanged;

@@ -99,6 +99,7 @@ namespace DDPM.SA.Common
         public string SerialNumber { get; set; }
         public string Result { get; set; }
         public string Message { get; set; }
+        public string FWVer { get; set; }
 
         public ConnectedDevices()
         {
@@ -112,6 +113,7 @@ namespace DDPM.SA.Common
             ServiceTag = "N/A";
             Result = "N/A";
             Message = "N/A";
+            FWVer = "N/A";
 
         }
 
@@ -554,5 +556,158 @@ namespace DDPM.SA.Common
         public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
+    }
+
+    public class NKVM_RESPONSE
+    {
+        //public string Model { get; set; }
+        //public string SerialNumber { get; set; }
+        //public string Index { get; set; }
+        //public List<string> GUID { get; set; }
+        //public string ServiceTag { get; set; }
+        public string Command { get; set; }
+        public string TargetFeature { get; set; }
+        public string Value { get; set; }
+        public string Result { get; set; }
+        public string Message { get; set; }
+
+        public NKVM_RESPONSE()
+        {
+            //Model = "N/A";
+            //SerialNumber = "N/A";
+            Command = "N/A";
+            TargetFeature = "N/A";
+            Result = "N/A";
+            //Index = "N/A";
+            //ServiceTag = "N/A";
+            Value = "N/A";
+            Message = "N/A";
+            //GUID = new List<string>();
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
+    }
+
+    public class MONITORCOUNT_RESPONSE
+    {
+        //public string Model { get; set; }
+        //public string SerialNumber { get; set; }
+        //public string Index { get; set; }
+        //public List<string> GUID { get; set; }
+        //public string ServiceTag { get; set; }
+        public string Command { get; set; }
+        public string TargetFeature { get; set; }
+        public string Value { get; set; }
+        public string Result { get; set; }
+        public string Message { get; set; }
+
+        public MONITORCOUNT_RESPONSE()
+        {
+            //Model = "N/A";
+            //SerialNumber = "N/A";
+            Command = "N/A";
+            TargetFeature = "N/A";
+            Result = "N/A";
+            //Index = "N/A";
+            //ServiceTag = "N/A";
+            Value = "N/A";
+            Message = "N/A";
+            //GUID = new List<string>();
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
+    }
+
+    public class APP_RESPONSE
+    {
+        //public string Model { get; set; }
+        //public string SerialNumber { get; set; }
+        //public string Index { get; set; }
+        //public List<string> GUID { get; set; }
+        //public string ServiceTag { get; set; }
+        public string Command { get; set; }
+        public string TargetFeature { get; set; }
+        public string Value { get; set; }
+        public string Result { get; set; }
+        public string Message { get; set; }
+
+        public APP_RESPONSE()
+        {
+            //Model = "N/A";
+            //SerialNumber = "N/A";
+            Command = "N/A";
+            TargetFeature = "N/A";
+            Result = "N/A";
+            //Index = "N/A";
+            //ServiceTag = "N/A";
+            Value = "N/A";
+            Message = "N/A";
+            //GUID = new List<string>();
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
     }
 }

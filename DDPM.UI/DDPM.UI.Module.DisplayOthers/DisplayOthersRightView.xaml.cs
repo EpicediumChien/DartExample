@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -153,9 +154,11 @@ namespace DDPM.UI.Module.DisplayOthers
             var psi = new System.Diagnostics.ProcessStartInfo();
             psi.FileName = Environment.SystemDirectory + Path.DirectorySeparatorChar + @"rundll32.exe";
             psi.Arguments = @"shell32.dll,Control_RunDLL desk.cpl,,1";
-            psi.UseShellExecute = true;
+            //psi.UseShellExecute = true;
 
-            System.Diagnostics.Process.Start(psi);
+            //System.Diagnostics.Process.Start(psi);
+
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
         }
 
         private void import_Click(object sender, RoutedEventArgs e)
@@ -232,7 +235,7 @@ namespace DDPM.UI.Module.DisplayOthers
         {
             if (string.IsNullOrEmpty(e))
                 return;
-            string result_success = "result_success";
+            string result_success = "result_success_";
             string model = string.Empty;
             if (e.Contains("result_success") && e.Length > result_success.Length)
             {

@@ -114,7 +114,14 @@ namespace DDPM.SA.Common
 
         public bool Equals(FWUpdateInfo fwUpdateInfo)
         {
-            return fwUpdateInfo.DevicePath == DevicePath;
+            if (fwUpdateInfo.IsDisplay)
+            {
+                return fwUpdateInfo.ServiceTag == ServiceTag;
+            }
+            else
+            {
+                return fwUpdateInfo.DevicePath == DevicePath;
+            }
         }
     }
 

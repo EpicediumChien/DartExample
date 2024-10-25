@@ -86,7 +86,7 @@ namespace DDPM.EABroker
                 }
             });
         }
-        public void SetWorkSplit(ISplitCtrl splitCtrl)
+        public void SetWorkSplit(ISplitCtrl splitCtrl, string hoverCellName="")
         {
             if (_workSplit != null)
             {
@@ -99,11 +99,17 @@ namespace DDPM.EABroker
 
             this.Dispatcher.Invoke(() =>
             {
-                _workSplit = splitCtrl.Clone();
+                ISplitCtrl localSplit = splitCtrl.Clone();
+                _workSplit = localSplit;
 
-                if (_workSplit.IsAddedCustomLayout) //SplitCtrl0B
+                //Robert_Lin, 2024-10-23 Temporary comment-out
+                
+                if (localSplit.IsAddedCustomLayout) //SplitCtrl0B
                 {
-                    SplitCtrl0B sp0B = new SplitCtrl0B();
+                    SplitCtrl0B sp0B = (SplitCtrl0B)localSplit;
+
+                    if (_workScreen == null)
+                        _workScreen = _vm.WorkScreen;
 
                     //Fix the rcScreen from _workScreen
                     Rect rcScreen = new Rect();
@@ -114,13 +120,21 @@ namespace DDPM.EABroker
 
                     //Create Borders and CellBorders to canvas grid
                     sp0B.ApplySettingsToCellList(rcScreen);
+
+                    foreach(CellBorder cb in sp0B.CellBorders)
+                    {
+                        if (cb.CellName.Equals(hoverCellName))
+                            cb.Dispatcher_SetIsHover(true);
+                        else
+                            cb.Dispatcher_SetIsHover(false);
+                    }
                 }
-
-                _workSplit.SplitMode = eSplitModes.Work;
-                _workSplit.IsEditable = false;
-                _workSplit.IsVertical = IsVertical;
-
-                splitContent.Content = _workSplit.UC;
+                
+                localSplit.SplitMode = eSplitModes.Work;
+                localSplit.IsEditable = false;
+                localSplit.IsVertical = IsVertical;
+                localSplit.HoveringCell = hoverCellName;
+                splitContent.Content = localSplit;
             });
         }
 
@@ -209,6 +223,8 @@ namespace DDPM.EABroker
         private void HandleHoveringAwsCellObjChanged(object? sender, CellObj cellObj)
         {
             ISplitCtrl? localSplit = _workSplit;
+
+            return;
 
             if (localSplit != null)
             {
