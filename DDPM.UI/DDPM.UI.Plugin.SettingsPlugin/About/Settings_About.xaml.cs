@@ -37,11 +37,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             string url = "https://www.dell.com/support/home";
             try
             {
-                Process.Start(new ProcessStartInfo
+                /*Process.Start(new ProcessStartInfo
                 {
                     FileName = url,
                     UseShellExecute = true
-                });
+                });*/
+                DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                    null,
+                    new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
             }
             catch
             {

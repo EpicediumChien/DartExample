@@ -7,6 +7,10 @@ using System.Windows;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 using DDPM.SA.Common;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
+using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace DDPM.UI.Module.WebCameraPresenceDetection
 {
@@ -16,6 +20,9 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
     public partial class WebCameraPresenceDetectionRightView : UserControl
     {
         private readonly WebCameraViewModel _vm;
+
+        private DispatcherTimer _timer;
+        private int _countdown;
 
         public WebCameraPresenceDetectionRightView(WebCameraViewModel vm)
         {
@@ -45,22 +52,26 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
             _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
             {
-                SnoozeLength = 30
+                SnoozeLength = 30,
+                SnoozeLength_sec = 1800
             });
 
             _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
             {
-                SnoozeLength = 60
+                SnoozeLength = 60,
+                SnoozeLength_sec = 3600
             });
 
             _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
             {
-                SnoozeLength = 90
+                SnoozeLength = 90,
+                SnoozeLength_sec = 5400
             });
 
             _vm.SnoozeLength_ItemsCollection.Add(new UI_SnoozeLength
             {
-                SnoozeLength = 120
+                SnoozeLength = 120,
+                SnoozeLength_sec = 7200
             });
 
            
@@ -84,22 +95,35 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
             _vm.SelectedDelay = _vm.Delay_ItemsCollection.Find(x => (x.Delay == nRes));
 
+            
             nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
             //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
 
-            if (nRes > 0)
+            if (nRes >= 0)
                 _vm.IsChecked_Snooze = true;
             else
                 _vm.IsChecked_Snooze = false;
+            
 
             nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
             //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID).Result;
 
-            if (nRes != 30 && nRes != 60 && nRes != 90 && nRes != 120)
+            //if (nRes != 30 && nRes != 60 && nRes != 90 && nRes != 120)
+            //    nRes = 60;
+
+            if (nRes <= 1800)
+                nRes = 30;
+            else if (nRes > 1800 && nRes <= 3600)
                 nRes = 60;
+            else if (nRes > 3600 && nRes <= 5400)
+                nRes = 90;
+            else if (nRes > 5400 && nRes <= 7200)
+                nRes = 120;
 
-             _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
+            _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
 
+            if (_vm.IsChecked_Snooze == false)
+                DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-100, _vm.CurrentDeviceInfo!.ID);
 
             //lock/unlock init, 9/23 add lock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -232,7 +256,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Image elm)
+            if (sender is System.Windows.Controls.Image elm)
             {
                 var val = elm.Tag!.ToString();
                 if (val == "0")
@@ -240,6 +264,48 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 else
                     _vm.Redo();
             }
+        }
+
+        private void HandleSnoozeCheck(object sender, RoutedEventArgs e)
+        {
+            if (_vm.IsChecked_Snooze)
+            {
+                txtTimer.Visibility = Visibility.Visible;
+                _countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                _timer = new DispatcherTimer();
+                _timer.Interval = TimeSpan.FromSeconds(1);
+                _timer.Tick += Timer_Tick;
+                _timer.Start();
+            }
+        }
+
+        private void HandleSnoozeUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (_vm.IsChecked_Snooze == false)
+            {
+                _timer.Stop();
+                txtTimer.Visibility = Visibility.Collapsed;
+                txtTimer.Text = "00:00:00";
+                _countdown = 0;
+            }
+
+        }
+
+
+        private void onSoozeLegthcbxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {            
+            if (_vm.IsChecked_Snooze)
+            {
+                _countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;             
+            }         
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {          
+            _countdown--;
+            TimeSpan ts = TimeSpan.FromSeconds(_countdown);
+
+            txtTimer.Text = ts.ToString(@"hh\:mm\:ss");
         }
     }
 }

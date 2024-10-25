@@ -979,7 +979,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
             object regValue;
             _userId = GetActiveUserID();
-            string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{_userId}";
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{_userId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 

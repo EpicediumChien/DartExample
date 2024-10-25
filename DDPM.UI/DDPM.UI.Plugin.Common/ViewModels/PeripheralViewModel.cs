@@ -10,7 +10,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
-using System.Collections.ObjectModel;
+ using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -126,9 +126,17 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentDeviceID = new Guid(deviceID);
 
             if (DeviceInfos.ContainsKey(CurrentDeviceID))
-            {
+            {               
                 var di = DeviceInfos[CurrentDeviceID];
-                CurrentInstanceID = di.InstanceId;
+                _log.Info($"[PeripheralViewModel] SetCurrentDevice ... InstanceId = {di.InstanceId.ToString()}");
+                if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
+                {
+                    CurrentInstanceID = di.ID.GetHashCode();
+                }
+                else
+                {
+                    CurrentInstanceID = di.InstanceId;
+                }
                 if (di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle || di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalAudioDongle)
                 {
                     foreach (var info in DeviceInfos.Values)
