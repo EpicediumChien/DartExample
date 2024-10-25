@@ -115,17 +115,17 @@
                     </Grid>
                     <Grid Margin="0,20,0,0">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
+                      <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" IsEnabled="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" Checked = "HandleSnoozeCheck" Unchecked = "HandleSnoozeUnchecked"/>
                       <!--Timer-->
                       <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
-                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
+                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,75,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
                     </Grid>
                     <Grid Margin="0,20,0,15">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                         <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
                                   SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
                                   IsEnabled="{Binding Path= IsChecked_WalkAwayLock}"
-                                  TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
+                                  TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}" SelectionChanged="onSoozeLegthcbxSelectionChanged" />
                     </Grid>
                 </StackPanel>
                 </StackPanel>

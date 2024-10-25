@@ -160,10 +160,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             //_vm.SetTouchScrollSensitivityLevel();
         }
 
-        private void btnPair_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
         /// <summary>
         /// Node move, Mouse Left Button Down event
         /// </summary>

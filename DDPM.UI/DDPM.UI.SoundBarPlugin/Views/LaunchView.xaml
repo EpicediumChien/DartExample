@@ -28,6 +28,7 @@
                 <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="500" To="620" />
                 <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
             </Storyboard>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -167,6 +168,24 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
+        </Grid>
+        <!-- Please Wait -->
+        <Grid x:Name="PleaseWaitGrid" Background="#CC000000" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Width="587" Height="265" Background="#F20D121A"
+                    BorderBrush="#293D4D" BorderThickness="1" CornerRadius="4"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
+                          Margin="0,64,0,32">
+                        <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                Foreground="#F5F6F7" FontSize="32" />
+                    </Grid>
+                    <Grid Height="64">
+                        <UXControls:UXBusyIndicator Width="64" Height="64"
+                                                    BusyIndicatorType="Secondary" IsActive="True" />
+                    </Grid>
+                </StackPanel>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

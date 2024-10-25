@@ -1,5 +1,11 @@
 ﻿namespace DDPM.SA.Common
 {
+    public enum PopupContentPackage_Enum
+    {
+        Unknow,
+        FWU,
+        SWU
+    }
     /// <summary>
     /// Popup內容包
     /// </summary>
@@ -16,6 +22,7 @@
         /// Popup事件回傳的物件
         /// </summary>
         public object Object { get; set; }
+        public PopupContentPackage_Enum PopupType { get; set; }
 
         public PopupContentPackage()
         {
@@ -23,6 +30,7 @@
             IsOnlyUpdate = false;
             StayOpen = false;
             Timeout = 5;
+            PopupType = PopupContentPackage_Enum.Unknow;
         }
     }
 }
