@@ -6555,17 +6555,17 @@ namespace DDPM.CLI.Plugins.Display
                                     //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
                                     string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
                                     //Debug.WriteLine($"width: {ss[0]}, {ss[1]}");
-                                    if (string.IsNullOrEmpty(ss[1]))
+                                    if (!string.IsNullOrEmpty(ss[1]))
                                     {
                                         string[] sss = ss[1].Split("@");
                                         //Debug.WriteLine($"high: {sss[0]}, {sss[1]}");
-                                        if (string.IsNullOrEmpty(sss[1]))
+                                        if (!string.IsNullOrEmpty(sss[1]))
                                         {
                                             sss[1].Replace(".", ",");
-                                            if (sss[1].Contains(","))
+                                            if (!sss[1].Contains(","))
                                             {
                                                 string[] ssss = sss[1].Split(",");
-                                                if (string.IsNullOrEmpty(ssss[0]))
+                                                if (!string.IsNullOrEmpty(ssss[0]))
                                                 {
                                                     frequency = ssss[0];
                                                     string lock_option = ssss[1];

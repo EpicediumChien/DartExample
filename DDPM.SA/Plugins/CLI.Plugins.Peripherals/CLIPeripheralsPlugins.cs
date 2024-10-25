@@ -71,6 +71,9 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         #region interface implementation
 
+        bool _recode_head = false;
+        bool _recode_speak = false;
+
         public CLIEventResult SetCommandArgs(CLIEventArgs input, IDeviceManagerSA devMgr)
         {
             _devMgr = devMgr;
@@ -83,7 +86,26 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (commandLineInput != null)
             {
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
-                    _commandLineInput.PluginsType = "HEADSET";
+                {
+
+                    List<DeviceInfo> _deviceinfo = null;
+                    _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+                    foreach (var g in _deviceinfo)
+                    {
+                        if (g.LogicalDeviceType == "LogicalHeadset")
+                        {
+                            _commandLineInput.PluginsType = "HEADSET";
+                            _recode_head = true;
+                        }
+                        if (g.LogicalDeviceType == "LogicalWiredAudio")
+                        {
+                            _commandLineInput.PluginsType = "LOGICALWIREDAUDIO";
+                            _recode_speak = true;
+                        }
+
+                    }
+
+                }
 
                 if (commandLineInput.Command.Equals("SET"))
                 {
@@ -168,6 +190,47 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //}
                         }
                     }
+                }
+                if (commandLineInput.Command.Equals("GET"))
+                {
+                    if (commandLineInput.TargetType.Equals("APP"))
+                    {
+                        if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
+                        {
+                            //switch (commandLineInput.TargetFeature)
+                            //{
+                            //    case "FIRMWAREUPDATE":
+                            //    case "UODFWUPDATE":
+                            //    case "LOCKUIUPDATE":
+                            //    case "UNLOCKUIUPDATE":
+                            var ret = SWAPPUpdate_get(commandLineInput);
+                            result.ExitCode = ret.code;
+                            result.serialize_Json_response = ret.json;
+                            return result;
+                            //}
+                        }
+                    }
+                }
+                if (commandLineInput.Command.Equals("SET"))
+                {
+                    if (commandLineInput.TargetType.Equals("APP"))
+                    {
+                        if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
+                        {
+                            //switch (commandLineInput.TargetFeature)
+                            //{
+                            //    case "FIRMWAREUPDATE":
+                            //    case "UODFWUPDATE":
+                            //    case "LOCKUIUPDATE":
+                            //    case "UNLOCKUIUPDATE":
+                            var ret = SWAPPUpdate(commandLineInput);
+                            result.ExitCode = ret.code;
+                            result.serialize_Json_response = ret.json;
+                            return result;
+                            //}
+                        }
+                    }
+
                 }
                 if (commandLineInput.Command.Equals("SET"))
                 {
@@ -367,14 +430,139 @@ namespace DDPM.CLI.Plugins.Peripherals
                 });
             }
 
-            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))// for audio headset RESTOREFACTORYDEFAULTS.
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("AUDIO"))// for audio headset RESTOREFACTORYDEFAULTS.
+            {
+                if (_commandLineInput.PluginsType.Equals("HEADSET"))
+                {
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(GUID, true)).Result;
+                            if (result == "0")
+                            {
+                                x.Result = "PASS";
+                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
+                                x.Value = "SUCCESS";
+                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                                x.Message = "N/A";
+                            }
+                            else if (result == "1")
+                            {
+                                x.Result = "FAIL";
+                                x.Message = "Timeout";
+                            }
+                            else
+                            {
+                                x.Result = "FAIL";
+                                x.Message = result;
+                            }
+                            retcode = (result == "0") ? true : false;
+                        }
+                    });
+                }
+
+                if (_commandLineInput.PluginsType.Equals("LOGICALWIREDAUDIO"))
+                {
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(GUID, true)).Result;
+                            if (result == "0")
+                            {
+                                x.Result = "PASS";
+                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
+                                x.Value = "SUCCESS";
+                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                                x.Message = "N/A";
+                            }
+                            else if (result == "1")
+                            {
+                                x.Result = "FAIL";
+                                x.Message = "Timeout";
+                            }
+                            else
+                            {
+                                x.Result = "FAIL";
+                                x.Message = result;
+                            }
+                            retcode = (result == "0") ? true : false;
+                        }
+                    });
+                }
+
+                if (_recode_speak && _recode_head)
+                {
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(GUID, true)).Result;
+                            if (result == "0")
+                            {
+                                x.Result = "PASS";
+                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
+                                x.Value = "SUCCESS";
+                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                                x.Message = "N/A";
+                            }
+                            else if (result == "1")
+                            {
+                                x.Result = "FAIL";
+                                x.Message = "Timeout";
+                            }
+                            else
+                            {
+                                x.Result = "FAIL";
+                                x.Message = result;
+                            }
+                            retcode = (result == "0") ? true : false;
+                        }
+                    });
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(GUID, true)).Result;
+                            if (result == "0")
+                            {
+                                x.Result = "PASS";
+                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
+                                x.Value = "SUCCESS";
+                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
+                                x.Message = "N/A";
+                            }
+                            else if (result == "1")
+                            {
+                                x.Result = "FAIL";
+                                x.Message = "Timeout";
+                            }
+                            else
+                            {
+                                x.Result = "FAIL";
+                                x.Message = result;
+                            }
+                            retcode = (result == "0") ? true : false;
+                        }
+                    });
+                }
+
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("WEBCAM"))// for audio headset RESTOREFACTORYDEFAULTS.
             {
                 SetResults.ForEach(x =>
                 {
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(GUID, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(GUID, true)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -1982,14 +2170,10 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     case "UPDATESOURCELOCATION":
 
-                        cLI_SWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-                        string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-
-                        if (ss_1[1].ToUpper().Contains(":\\"))
+                        if (commandLineInput.Options[0].Option_Value.ToUpper() == "ON" || commandLineInput.Options[0].Option_Value.ToUpper().Contains("/") || commandLineInput.Options[0].Option_Value.ToUpper() == "OFF")
                         {
-
+                            ret = _devMgr.SetServerURL(commandLineInput.Options[0].Option_Value.ToString()).Result;
                         }
-                        cLI_SWU_RESPONSE.Message = "UPDATESOURCELOCATION";
 
                         break;
 
@@ -2053,6 +2237,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             bool? ret = null;
             bool isShowInfo = true;
             string installPath = "";
+            string path = "";
             bool somethingError = false;
             CLI_SWU_RESPONSE cLI_SWU_RESPONSE = null;
             try
@@ -2094,14 +2279,12 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     case "UPDATESOURCELOCATION":
 
-                        cLI_SWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-                        string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                        path = _devMgr.GetServerURL().Result;
+                        if (!string.IsNullOrEmpty(path))
+                            ret = true;
 
-                        if (ss_1[1].ToUpper().Contains(":\\"))
-                        {
-
-                        }
-                        cLI_SWU_RESPONSE.Message = "UPDATESOURCELOCATION";
+                        cLI_RESPONSE.Value = path;
+                        Trace.WriteLine($"path = {path}");
 
                         break;
 
