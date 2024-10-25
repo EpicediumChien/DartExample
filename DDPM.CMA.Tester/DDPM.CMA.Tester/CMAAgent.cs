@@ -252,7 +252,7 @@ namespace DDPM.CMA.Tester
 
         #region Event Handlers
 
-        private void PluginsStarted(object sender, PluginsStartedEventArgs e)
+        private void PluginsStarted(object? sender, PluginsStartedEventArgs e)
         {
             if (e == null)
                 return;
@@ -261,15 +261,13 @@ namespace DDPM.CMA.Tester
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            Console.WriteLine($"{e.ChangedPlugins.GetType().Name}");
-
             if (e.ChangedPlugins.OfType<IRemoteManagement>().Any())
             {
                 InitializeCMAManagerPlugin();
             }
         }
 
-        private void OnCMAManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnCMAManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             InitializeCMAManagerPlugin();
         }
