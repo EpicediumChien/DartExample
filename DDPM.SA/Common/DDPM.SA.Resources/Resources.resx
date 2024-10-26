@@ -324,4 +324,7 @@
   <data name="Warm" xml:space="preserve">
     <value>Warm</value>
   </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
 </root>
