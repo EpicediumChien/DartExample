@@ -1369,25 +1369,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     if (monitorInfo.CapabilityDic.ContainsKey("12"))
                     {
-                        writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");                        
-                        rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val);
+                        writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
+                        rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                         if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
                         else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
                     }
                     else
                     {
-                        
+
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
-                        rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val);
+                        rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                         if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
                         else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
                     }
                     break;
 
                 case 0x12:
-                   
+
                     writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
-                    rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val);
+                    rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                     if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
                     else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
 
@@ -12943,6 +12943,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
+        }
+
+        private string GetMonitorCurrentResolution(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayManagerPlugin != null)
+            {
+                var r = _DisplayManagerPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isCurrent)
+                        {
+                            rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return rc;
+        }
+
+        private string GetMonitorMaxResolution(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayManagerPlugin != null)
+            {
+                var r = _DisplayManagerPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isRecommended)
+                        {
+                            rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return rc;
         }
     }
 }

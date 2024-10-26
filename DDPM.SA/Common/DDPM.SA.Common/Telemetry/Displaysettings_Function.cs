@@ -7,7 +7,7 @@ namespace DDPM.SA.Common
 {
     public class Displaysettings_Function
     {
-        public bool Send_Brightness_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, uint val)
+        public bool Send_Brightness_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, uint val, string currentResolution, string maxResolution)
         {
             var rt = false;
 
@@ -21,15 +21,15 @@ namespace DDPM.SA.Common
             TelemetryDta_Brightness.FirmwareVersion = monitorInfo.FwVersion;
             TelemetryDta_Brightness.DisplayModelname = monitorInfo.modelName;
             TelemetryDta_Brightness.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-            TelemetryDta_Brightness.DsiplayResolution = string.Empty;
-            TelemetryDta_Brightness.MaxDisplayResolution = string.Empty;
+            TelemetryDta_Brightness.DsiplayResolution = currentResolution;
+            TelemetryDta_Brightness.MaxDisplayResolution = maxResolution;
             
             rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Brightness.ToJson(), Telementry_Frequency.RealTime).Result;
 
             return rt;
         }
 
-        public bool Send_Luminance_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, uint val)
+        public bool Send_Luminance_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, uint val, string currentResolution, string maxResolution)
         {
             var rt = false;
 
@@ -43,15 +43,15 @@ namespace DDPM.SA.Common
             TelemetryDta_Luminance.FirmwareVersion = monitorInfo.FwVersion;
             TelemetryDta_Luminance.DisplayModelname = monitorInfo.modelName;
             TelemetryDta_Luminance.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-            TelemetryDta_Luminance.DsiplayResolution = string.Empty;
-            TelemetryDta_Luminance.MaxDisplayResolution = string.Empty;
+            TelemetryDta_Luminance.DsiplayResolution = currentResolution;
+            TelemetryDta_Luminance.MaxDisplayResolution = maxResolution;
 
             rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Luminance.ToJson(), Telementry_Frequency.RealTime).Result;
 
             return rt;
         }
 
-        public bool Send_Contrast_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, uint val)
+        public bool Send_Contrast_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, uint val, string currentResolution, string maxResolution)
         {
             var rt = false;
 
@@ -65,8 +65,8 @@ namespace DDPM.SA.Common
             TelemetryDta_Contrast.FirmwareVersion = monitorInfo.FwVersion;
             TelemetryDta_Contrast.DisplayModelname = monitorInfo.modelName;
             TelemetryDta_Contrast.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-            TelemetryDta_Contrast.DsiplayResolution = string.Empty;
-            TelemetryDta_Contrast.MaxDisplayResolution = string.Empty;
+            TelemetryDta_Contrast.DsiplayResolution = currentResolution;
+            TelemetryDta_Contrast.MaxDisplayResolution = maxResolution;
 
             rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Contrast.ToJson(), Telementry_Frequency.RealTime).Result;
 

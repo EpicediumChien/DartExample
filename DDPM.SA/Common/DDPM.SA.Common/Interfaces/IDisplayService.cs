@@ -43,6 +43,7 @@ namespace DDPM.SA.Common
         /// </summary>
         event EventHandler<bool> HDRChangeEvent;
 
+        Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo);
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
         Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo);
         Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
@@ -172,9 +173,12 @@ namespace DDPM.SA.Common
         #region OutReport
         Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
         #endregion
+
         #region Display FWU Metadata
     
         Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
         #endregion
+
+        
     }
 }
