@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\Common\ShowOsd\DDPM.ShowOsd.csproj" />
     <ProjectReference Include="..\..\Common\ColorApp\DDPM.ColorApp.csproj" />
     <ProjectReference Include="..\..\Common\MonitorBorker\DDPM.MonitorBorker.csproj" />
+    <ProjectReference Include="..\..\DDPM.PowerMon\DDPM.PowerMon.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -53,6 +53,8 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using System.Runtime;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using Point = System.Windows.Point;
+using DDPM.PowerMon;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -194,6 +196,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _isSubagentActive = true;
         private bool userClosedPopup = false;
 
+        private static PowerMonitor _pwr_Mon = null;
         #endregion
 
         #region Constructor
@@ -246,6 +249,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+
+            Thread thread = new Thread(() =>
+            {
+                if(_pwr_Mon == null)
+                {
+                    _pwr_Mon = new PowerMonitor(Log);
+                    _pwr_Mon.ShowDialog();
+                }
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
 
         #endregion
