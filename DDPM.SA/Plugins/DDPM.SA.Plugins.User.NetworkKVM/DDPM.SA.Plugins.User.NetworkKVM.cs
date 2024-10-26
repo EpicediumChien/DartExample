@@ -1175,31 +1175,34 @@ namespace NetworkKVM.Plugins
                             i = 0;
                             //break;
                         }
-                        lock (lock_wait)
+                        else
                         {
-                            try
+                            lock (lock_wait)
                             {
-
-                                response = ReadAsync().Result;
-                                _logs.DebugMsg("[NetworkKVM] Get :" + response);
-
-                                if (response == "Disconnect")
+                                try
                                 {
+
+                                    response = ReadAsync().Result;
+                                    _logs.DebugMsg("[NetworkKVM] Get :" + response);
+
+                                    if (response == "Disconnect")
+                                    {
+                                        Disconnect();
+                                        //CreateNamedPipe();
+                                    }
+                                    else
+                                    {
+                                        JsonstringParse(response).Wait(); //read json type
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    //throw;
                                     Disconnect();
-                                    //CreateNamedPipe();
+                                    _AllInfoMonitors = GetMonitors().Result;
+                                    CreateNamedPipe_init();
+                                    i = 0;
                                 }
-                                else
-                                {
-                                    JsonstringParse(response).Wait(); //read json type
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                //throw;
-                                Disconnect();
-                                _AllInfoMonitors = GetMonitors().Result;
-                                CreateNamedPipe_init();
-                                i = 0;
                             }
                         }
                     }
@@ -1238,45 +1241,48 @@ namespace NetworkKVM.Plugins
             int i = 0;
             while (_runloop)
             {
-                if (CancellationToken.IsCancellationRequested)
-                {
-                    _logs.DebugMsg("[NetworkKVM]Token is cancel");
-                    Trace.WriteLine("[NetworkKVM]Token is cancel");
-                    Disconnect();
-                    _AllInfoMonitors = GetMonitors().Result;
-                    CreateNamedPipe();
-                    i = 0;
-                    //break;
-                }
                 if (pipeServer != null)
                 {
                     if (pipeServer.IsConnected)
                     {
-                        lock (lock_wait)
+                        if (CancellationToken.IsCancellationRequested)
                         {
-                            try
+                            _logs.DebugMsg("[NetworkKVM]Token is cancel");
+                            Trace.WriteLine("[NetworkKVM]Token is cancel");
+                            Disconnect();
+                            _AllInfoMonitors = GetMonitors().Result;
+                            CreateNamedPipe();
+                            i = 0;
+                            //break;
+                        }
+                        else
+                        {
+                            lock (lock_wait)
                             {
-
-                                response = ReadAsync().Result;
-                                _logs.DebugMsg("[NetworkKVM] Get :" + response);
-
-                                if (response == "Disconnect")
+                                try
                                 {
+
+                                    response = ReadAsync().Result;
+                                    _logs.DebugMsg("[NetworkKVM] Get :" + response);
+
+                                    if (response == "Disconnect")
+                                    {
+                                        Disconnect();
+                                        //CreateNamedPipe();
+                                    }
+                                    else
+                                    {
+                                        JsonstringParse(response).Wait(); //read json type
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    //throw;
                                     Disconnect();
-                                    //CreateNamedPipe();
+                                    _AllInfoMonitors = GetMonitors().Result;
+                                    CreateNamedPipe();
+                                    i = 0;
                                 }
-                                else
-                                {
-                                    JsonstringParse(response).Wait(); //read json type
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                //throw;
-                                Disconnect();
-                                _AllInfoMonitors = GetMonitors().Result;
-                                CreateNamedPipe();
-                                i = 0;
                             }
                         }
                     }
