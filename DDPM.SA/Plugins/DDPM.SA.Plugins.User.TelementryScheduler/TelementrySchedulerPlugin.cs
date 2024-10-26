@@ -132,6 +132,8 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                             {
                                 if (DateTime.Now.Day == 1)
                                     r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                                else
+                                    r = true;
                             }
                             break;
                         }
@@ -141,6 +143,8 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                             {
                                 if (DateTime.Now.AddDays(-1) >= _FrequencyDateTime.PerDay)
                                     r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                                else
+                                    r = true;
                             }
                             break;
                         }
@@ -150,6 +154,8 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                             {
                                 if (DateTime.Now.AddDays(-7) >= _FrequencyDateTime.Weekly)
                                     r = _PlatinumSDKPlugin.UpdateEventValue(EventTag, EventValue).Result;
+                                else
+                                    r = true;
                             }
                             break;
                         }
