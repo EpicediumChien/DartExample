@@ -2283,7 +2283,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             _updateHelper = new UpdateHelper();
             UpdateAvailable = isAnyUpdateAvailable;
             _updateHelper.UpdateItems = new List<UpdateItemInfo>();
-            _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems.Count = {_iUpdateManager.AllUpdateItems.Count}");
+            if (_iUpdateManager != null && _iUpdateManager.AllUpdateItems != null)
+            {
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems.Count = {_iUpdateManager.AllUpdateItems.Count}");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems is null");
+            }
             foreach (var updateItem in _iUpdateManager.AllUpdateItems)
             {
                 _updateItems = new UpdateItemInfo() { UpdateType = updateItem.Type.ToString(), UpdateSeverity = updateItem.Severity.ToString(), NewVersion = updateItem.NewVersion, Description = updateItem.Description };
