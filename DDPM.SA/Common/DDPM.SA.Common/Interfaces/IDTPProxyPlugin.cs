@@ -28,9 +28,9 @@ namespace DDPM.SA.Common
         Task<JArray> GetAppSpecificProfiles(string Guid);
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
         Task<JArray> GetMouseAssignableActions(string Guid);
-        //Task<string> GetKeystrokeDisplayData(string Guid);
-        //Task<bool> StartKeystrokeRecording(string Guid);
-        //Task<bool> StopKeystrokeRecording(string Guid);
+        Task<string> GetMouseKeystrokeDisplayData(string Guid);
+        Task<bool> StartMouseKeystrokeRecording(string Guid);
+        Task<bool> StopMouseKeystrokeRecording(string Guid);
 
         Task SetDpiValue(string Guid, int newValue);
         Task SetMouseAction(string Guid, byte[] newValue);

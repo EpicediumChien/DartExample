@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -303,12 +304,19 @@ namespace DDPM.UI.Module.ButtonSettings
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
+
+                if (action == AdvancedAction.AssignKeystroke)
+                { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
+
                 if (modalDialog.ShowDialog()!.Value)
                 {
+                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
                     parameter = modalDialog.Parameter;
                 }
                 else
                 {
+                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
                     Initialize();
                     return;
                 }
@@ -360,6 +368,9 @@ namespace DDPM.UI.Module.ButtonSettings
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
+            if (action == AdvancedAction.AssignKeystroke)
+            { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
+
             if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
             {
                 _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);

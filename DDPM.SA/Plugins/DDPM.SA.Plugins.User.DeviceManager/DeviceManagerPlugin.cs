@@ -3899,22 +3899,83 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"{nameof(SetServerURL)} start");
             if (!string.IsNullOrEmpty(url))
             {
-                writelog($"{nameof(url)} is valid");
-                string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
-                string KeyName = @"TestServerURL";
-                ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result;
-                writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
-                KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
-                ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result && ret;
-                writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
-                if (_FWUpdatePlugin != null)
+                if (url.ToUpper() == "ON")
                 {
-                    ret = _FWUpdatePlugin.RestartService().Result && ret;
-                    writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+                    string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
+                    string KeyName = @"TestServerURL";
+                    string url2 = "https://clientperipherals.dell.com/DDPM/3fcf51beb3c8/";
+                    ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url2).Result;
+                    writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
+                    KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
+                    ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url2).Result && ret;
+                    writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
+                    if (_FWUpdatePlugin != null)
+                    {
+                        ret = _FWUpdatePlugin.RestartService().Result && ret;
+                        writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+                    }
                 }
+                else if (url.ToUpper() == "OFF")
+                {
+                    string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
+                    string KeyName = @"TestServerURL";
+                    string url2 = "";
+                    ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url2).Result;
+                    writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
+                    KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
+                    ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url2).Result && ret;
+                    writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
+                    if (_FWUpdatePlugin != null)
+                    {
+                        ret = _FWUpdatePlugin.RestartService().Result && ret;
+                        writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+                    }
+                }
+                else
+                {
+                    writelog($"{nameof(url)} is valid");
+                    string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
+                    string KeyName = @"TestServerURL";
+                    ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result;
+                    writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
+                    KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
+                    ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url).Result && ret;
+                    writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
+                    if (_FWUpdatePlugin != null)
+                    {
+                        ret = _FWUpdatePlugin.RestartService().Result && ret;
+                        writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+                    }
+                }
+
+
             }
             writelog($"{nameof(SetServerURL)} done");
             return Task.FromResult(ret);
+        }
+        public Task<string> GetServerURL()
+        {
+            bool ret = false;
+            string URL = null;
+            writelog($"{nameof(SetServerURL)} start");
+            //if (!string.IsNullOrEmpty(url))
+            //{
+            //writelog($"{nameof(url)} is valid");
+            string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
+            string KeyName = @"TestServerURL";
+            object o = ReadRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName).Result;
+            //writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
+            KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
+            object o_ = ReadRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName).Result;
+            //writelog($"{nameof(SetServerURL)} Dell Display Manager Ret:{ret}");
+            //if (_FWUpdatePlugin != null)
+            //{
+            //    ret = _FWUpdatePlugin.RestartService().Result && ret;
+            //    writelog($"{nameof(SetServerURL)} Restart Service Ret:{ret}");
+            //}
+            //}
+            writelog($"{nameof(SetServerURL)} done");
+            return Task.FromResult(o.ToString());
         }
 
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
@@ -6328,10 +6389,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
-
         public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
+        }
+        public async Task<string> GetMouseKeystrokeDisplayData(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMouseKeystrokeDisplayData(Guid));
+        }
+        public async Task<bool> StartMouseKeystrokeRecording(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.StartMouseKeystrokeRecording(Guid));
+        }
+        public async Task<bool> StopMouseKeystrokeRecording(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.StopMouseKeystrokeRecording(Guid));
         }
 
         public Task SetDPIValue(string Guid, int newValue)
