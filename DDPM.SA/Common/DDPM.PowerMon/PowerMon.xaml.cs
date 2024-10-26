@@ -134,7 +134,9 @@ namespace DDPM.PowerMon
                             }
                             else if (pPwrSetting.Data == 1)
                             {
-                                MonitorTurnedOn?.Invoke(this, EventArgs.Empty);
+                                Task.Run(() =>
+                                    MonitorTurnedOn?.Invoke(this, EventArgs.Empty)
+                                );
                             }
                         }
                         //PowerSettingChanged?.Invoke(this, EventArgs.Empty);

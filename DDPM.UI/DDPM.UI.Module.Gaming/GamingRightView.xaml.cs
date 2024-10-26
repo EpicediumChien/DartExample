@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Windows;
@@ -22,8 +23,44 @@ namespace DDPM.UI.Module.Gaming
         public GamingRightView()
         {
             InitializeComponent();
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is not null");
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            }
+            else
+            {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is null");
+            }
         }
-
+        ~GamingRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is not null");
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+            else
+            {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is null");
+            }
+        }
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ResolutionRefreshRate", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    GamingViewModel vm = (GamingViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.Lock_RefreshRate = (bool)isLocked;
+                        Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {isLocked}");
+                    }
+                }));
+            }
+        }
         private void CallWindowsSettings_Click(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.DeviceManagerSA.CallWindowsDisplaySetting();

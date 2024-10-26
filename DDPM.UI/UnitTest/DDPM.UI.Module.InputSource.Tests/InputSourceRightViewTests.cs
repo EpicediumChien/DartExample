@@ -15,6 +15,13 @@ namespace DDPM.UI.Module.InputSource.Tests
         [SetUp]
         public void SetUp()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             inputSourceViewModel = new InputSourceViewModel();
             inputSourceRightView = new InputSourceRightView(inputSourceViewModel);
             privateObject = new PrivateObject(inputSourceRightView);

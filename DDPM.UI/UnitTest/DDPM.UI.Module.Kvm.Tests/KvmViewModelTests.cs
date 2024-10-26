@@ -28,6 +28,13 @@ namespace DDPM.UI.Module.Kvm.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
@@ -766,7 +773,6 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestOpenNKVMUI()
         {
-            Application Current = new Application();
             Application.Current.MainWindow = new Window();
             try
             {
