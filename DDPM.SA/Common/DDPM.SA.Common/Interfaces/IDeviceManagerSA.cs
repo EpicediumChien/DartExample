@@ -526,6 +526,8 @@ namespace DDPM.SA.Common
         Task<bool> SetSkipCA(bool isSkipCA);
 
         Task<bool> GetSkipCA();
+        Task<bool> SetServerURL(string url);
+        Task<string> GetServerURL();
 
         #endregion public for FW Update by Bruce
 
@@ -675,7 +677,7 @@ namespace DDPM.SA.Common
         #endregion
 
         #region Keyboard
-        Task SetKbDeleteAssignedAction(string Guid, int newValue);
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task<JArray> GetKeyboardDeviceItemsEx();
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
