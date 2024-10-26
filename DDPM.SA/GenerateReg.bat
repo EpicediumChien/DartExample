@@ -85,7 +85,6 @@ echo "{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}"="%BaseDir%\\bin\\DDPM.Subagent.Use
 echo "{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SchedulerManager.dll">>%OutFile%
 echo "{E993A925-BAF0-42DF-B878-7EC075D5B941}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Display.dll">>%OutFile%
 echo "{FE361209-1BEB-4B52-AC1A-D0227B7641CB}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Peripherals.dll">>%OutFile%
-echo "{E5DA6004-21DC-4058-917F-A0ECF838EA03}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.ActionsManger.dll">>%OutFile%
 echo "{D034EE8F-7C8A-4296-8B5B-33B4E978C6B5}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DTPProxy.dll">>%OutFile%
 echo "{388F486D-2A86-421C-B571-3AAF9F839BA2}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.EzMemory.dll">>%OutFile%
 echo.>>%OutFile%

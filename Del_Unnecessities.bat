@@ -52,5 +52,5 @@ cd /d %~dp0
 if exist "ListDIR.txt" del /f /s "ListDIR.txt"
 if exist "ListFile.txt" del /f /s "ListFile.txt"
 
-PAUSE
+::PAUSE
 exit /b %ResultCode%

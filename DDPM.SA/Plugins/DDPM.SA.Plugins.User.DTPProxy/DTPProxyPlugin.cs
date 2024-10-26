@@ -4040,7 +4040,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
                 {
-                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "Bass");
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "Profile");
                     writelog($"[Speaker] GetProfileAsync succeeded for {guid}");
                     return (string)value;
                 }
