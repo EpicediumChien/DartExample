@@ -43,6 +43,8 @@ using VcpCore.Common;
 using DdmLibrary;
 using DdmLibrary.Utility;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using System.Windows.Media.Animation;
 //using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
@@ -97,12 +99,14 @@ namespace ColorPreset.Plugins
 
         //20240905 Jim add
         MonitorInfo Active_monitorInfo = null;
+        public RegistryMonitor_NightLight registryMonitor_NightLight = null;
         public RegistryMonitor_ICC registryMonitor_ICC = null;
 
         /// <summary>
         /// Colorpreset Manual change event，return Colorpreset name
         /// </summary>
         public event EventHandler<string>? Coloreset_manual_ChangeEvent;
+        public event EventHandler<string>? NightLightStatus_ChangeEvent;
 
         private enum log_type
         {
@@ -557,7 +561,7 @@ namespace ColorPreset.Plugins
                             catch (Exception ex)
                             {
                                 writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                            }                            
+                            }
                         }
                     }
                 }
@@ -578,7 +582,7 @@ namespace ColorPreset.Plugins
                                 catch (Exception ex)
                                 {
                                     writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                                }                               
+                                }
                             }
 
                             string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
@@ -671,7 +675,7 @@ namespace ColorPreset.Plugins
                         catch (Exception ex)
                         {
                             writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                        }                        
+                        }
                     }
                 }
             }
@@ -707,7 +711,7 @@ namespace ColorPreset.Plugins
                             catch (Exception ex)
                             {
                                 writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                            }                            
+                            }
                         }
 
                         string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
@@ -734,13 +738,13 @@ namespace ColorPreset.Plugins
             writelog("ColorPresetPlugin OnRegChanged_ICC requested ...");
 
             string Key_Profile_Name = string.Empty;
-            
+
             try
             {
                 if (Active_monitorInfo != null && Active_monitorInfo.DisplayName != null)
                 {
                     Key_Profile_Name = MonitorProfile.GetMonitorProfile(Active_monitorInfo.DisplayName);
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -802,12 +806,179 @@ namespace ColorPreset.Plugins
             }
         }
 
-        // add jim 20240604
+        public Task<bool> CheckColorICCStatus()
+        {
+            writelog("ColorPresetPlugin CheckColorICCStatus requested ...");
+
+            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
+
+            if (registryMonitor_ICC == null)
+            {
+                writelog("Monitor ICC change initiate...");
+                registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                registryMonitor_ICC.Start();
+                writelog("Monitor ICC change started");
+                return System.Threading.Tasks.Task.FromResult(true);
+            }          
+
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
+
+        public Task<bool> StopRegistryMonitor_ICC()
+        {
+            writelog("ColorPresetPlugin StopRegistryMonitor_ICC requested ...");
+
+            if (registryMonitor_ICC != null)
+            {
+                registryMonitor_ICC.Stop();
+                registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
+                registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
+                registryMonitor_ICC = null;
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
+
         public void OnError_ICC(object sender, ErrorEventArgs e)
         {
             writelog("ColorPresetPlugin OnError_ICC requested ...");
 
-            StopRegistryMonitor();
+            StopRegistryMonitor_ICC();
+        }
+        
+        public Task<bool> StopRegistryMonitor_NightLight()
+        {
+            writelog("ColorPresetPlugin StopRegistryMonitor_NightLight requested ...");
+
+            if (registryMonitor_NightLight != null)
+            {
+                registryMonitor_NightLight.Stop();
+                registryMonitor_NightLight.RegChanged -= new EventHandler(OnRegChanged_NightLight);
+                registryMonitor_NightLight.Error -= new System.IO.ErrorEventHandler(OnError_NightLight);
+                registryMonitor_NightLight = null;
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
+
+        public Task<bool> CheckNightLightStatus()
+        {
+            writelog("ColorPresetPlugin CheckNightLightStatus requested ...");
+
+            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+
+            if (registryMonitor_NightLight == null)
+            {
+                writelog("Monitor NightLight Status change initiate...");
+                registryMonitor_NightLight = new RegistryMonitor_NightLight(keyName);
+                registryMonitor_NightLight.RegChanged += new EventHandler(OnRegChanged_NightLight);
+                registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(OnError_NightLight);
+                registryMonitor_NightLight.Start();
+                writelog("Monitor NightLight Status change started");
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
+
+        public void OnRegChanged_NightLight(object sender, EventArgs e)
+        {
+            SyncNightlightStatus();
+            return;
+        }
+
+        // add jim 20240604
+        public void OnError_NightLight(object sender, ErrorEventArgs e)
+        {
+            StopRegistryMonitor_NightLight();
+        }
+
+        public Task<bool> SyncNightlightStatus()
+        {
+            writelog("ColorPresetPlugin SyncNightlightStatus requested ...");
+
+            // 20240627 jim modify
+
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.CurrentUser, RegistryView.Registry64);
+
+            //using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate", false);
+                if (registryKey != null)
+                {
+                    object obj = registryKey?.GetValue("Data");
+                    if (obj != null)
+                    {
+                        byte[] array = (byte[])obj;
+
+                        //bool nightLightIsOn = false;
+
+                        if (array.Length >= 18)
+                        {
+                            int ch = array[18];
+
+                            if (ch == 0x15)
+                            {
+                                //nightLightIsOn = true;
+
+                                // jim modify 20240604
+                                //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                                //{
+                                //    NightlightStatus = "On";
+                                //}));
+
+                                NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "On", System.Threading.CancellationToken.None);
+                            }
+                            else if (ch == 0x13)
+                            {
+                                //nightLightIsOn = false;
+
+                                // jim modify 20240604
+                                //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                                //{
+                                //    NightlightStatus = "Off";
+                                //}));
+                                NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // jim add 20240711
+                        //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                        //{
+                        //    NightlightStatus = "Off";
+                        //}));
+                        NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+                    }
+                }
+                else
+                {
+                    // jim add 20240711
+                    //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    //{
+                    //    NightlightStatus = "Off";
+                    //}));
+                    NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+                }
+            }
+            else
+            {
+                // jim add 20240711
+                //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                //{
+                //    NightlightStatus = "Off";
+                //}));
+                NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+            }
+
+            return System.Threading.Tasks.Task.FromResult(true);
         }
 
         public Task<string> GetAutoColorPresetStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin)
