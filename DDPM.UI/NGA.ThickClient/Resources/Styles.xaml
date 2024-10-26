@@ -10,7 +10,7 @@
     <system:Double x:Key="DdpmMinWindowHeight">40</system:Double>
     <system:Double x:Key="DdpmMinWindowWidth">60</system:Double>
 
-    <system:Int16 x:Key="breakPoint">537</system:Int16>
+    <system:Int16 x:Key="breakPoint">910</system:Int16> <!-- 537 -->
 
     <!-- Original (NoResize) settings
     <Setter Property="MinHeight" Value="{StaticResource DefaultWindowHeight}" />

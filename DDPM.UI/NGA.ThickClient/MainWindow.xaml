@@ -7,9 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wpf="clr-namespace:Dell.Client.Framework.UX.WPF.Console;assembly=DCF.UX.WPF"
     Background="{DynamicResource mainWindowBkColor}"
-    mc:Ignorable="d"
+    mc:Ignorable="d" MinWidth="900"
     TopBackground="{DynamicResource bkImage}"
-    ResizeMode="CanResize">
+    ResizeMode="CanResize"
+    Loaded="MainWindow_Loaded">
     <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>-->

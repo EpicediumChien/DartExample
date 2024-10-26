@@ -994,13 +994,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (null == _deviceManager)
                     return;
 
-                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
+                //Derek 10/25 for Consent, please don't remove it
+                //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
 
-                if (!Convert.ToBoolean(regValue))
-                {
-                    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
-                        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
-                }
+                //if (!Convert.ToBoolean(regValue))
+                //{
+                //    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
+                //        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
+                //}
 
 
                 regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
