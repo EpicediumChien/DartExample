@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<None Remove="json\ActHours.json" />
 	<None Remove="json\deviceConfig.json" />
-    <None Remove="json\jsonActHours.json" />
   </ItemGroup>
 
   <ItemGroup>
-	<Content Include="json\deviceConfig.json" />
-    <Content Include="json\jsonActHours.json" />
+	<Content Include="json\DeviceConfig.json" />
+    <Content Include="json\ActHours.json" />
   </ItemGroup>
 
   <ItemGroup>
