@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Dell.Client.Framework.Common;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static VcpCore.Common.EDIDReader;
 
@@ -24,50 +27,65 @@ namespace VcpCore.Common
                 foreach (ManagementObject TempMonitor in searcher.Get())
                 {
                     string InstanceName = TempMonitor.GetPropertyValue("InstanceName").ToString();
-                    if (InstanceName.Split("\\").Count() < 1 || InstanceName.Split("\\")[1] != MontitorID.Split("\\")[1])
+                    string[] InstanceName_spilit = InstanceName.Split("\\");
+                    if (InstanceName_spilit.Length == 3)
                     {
-                        continue;
-                    }
-
-                    EdidParser classEdidParser = new EdidParser();
-                    ManagementBaseObject methodParameters = TempMonitor.GetMethodParameters("WmiGetMonitorRawEEdidV1Block");
-                    methodParameters["BlockId"] = 0;
-                    try
-                    {
-                        ManagementBaseObject managementBaseObject = TempMonitor.InvokeMethod("WmiGetMonitorRawEEdidV1Block", methodParameters, null);
-
-                        byte[] blocks = (byte[])managementBaseObject["BlockContent"];
-                        edid.VideoInputType = Display_Parameters.Video_Input_Definition(blocks);
-                        edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(blocks);
-                        classEdidParser.Push(blocks);
-                        edid.Edid = classEdidParser.HexString;
-                        edid.ManufactureID = classEdidParser.GetManufacturerID();
-                        edid.VendorID = classEdidParser.GetVendorID();
-                        edid.PID = classEdidParser.GetPID(blocks);
-                        //  string text2 = classEdidParser.GetManufacturerID() + classEdidParser.GetVendorID();
-                        edid.SerialNumber = classEdidParser.GetSerialNum();
-                        edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month, ref edid.Week);
-                        edid.ServiceTag = classEdidParser.GetServiceTag();
-                        edid.ModelName = classEdidParser.GetModelName();
-                        edid.Size = classEdidParser.GetScreenSize();
-
+                        InstanceName_spilit[(InstanceName_spilit.Length - 1)] = Regex.Replace(InstanceName_spilit[(InstanceName_spilit.Length - 1)], @"_\d", string.Empty) ?? string.Empty;
+                        string name = "SYSTEM\\CurrentControlSet\\Enum\\DISPLAY\\" + InstanceName_spilit[1] + "\\" + InstanceName_spilit[2];
                         try
                         {
-                            var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid));
+                            using RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(name);
+                            if (registryKey != null)
+                            {
+                                string Path_Instance_DeviceID = (string)registryKey.GetValue("Driver");
+                                if (string.IsNullOrEmpty(Path_Instance_DeviceID) || !(MontitorID.Contains(Path_Instance_DeviceID)))
+                                    continue;
+                                //if (InstanceName.Split("\\").Count() < 1 || InstanceName.Split("\\")[1] != MontitorID.Split("\\")[1])
+                                //    continue;
+
+                                name += "\\Device Parameters";                                
+                                
+                                //ManagementBaseObject methodParameters = TempMonitor.GetMethodParameters("WmiGetMonitorRawEEdidV1Block");
+                                //methodParameters["BlockId"] = 0;
+                                using RegistryKey registryKeyII = Registry.LocalMachine.OpenSubKey(name);
+                                try
+                                {
+                                    //ManagementBaseObject managementBaseObject = TempMonitor.InvokeMethod("WmiGetMonitorRawEEdidV1Block", methodParameters, null);
+                                    //byte[] blocks = (byte[])managementBaseObject["BlockContent"];
+                                    byte[] blocks = (byte[])registryKeyII.GetValue("EDID");
+                                    if (blocks != null)
+                                    {
+                                        EdidParser classEdidParser = new EdidParser();
+                                        edid.VideoInputType = Display_Parameters.Video_Input_Definition(blocks);
+                                        edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(blocks);
+                                        classEdidParser.Push(blocks);
+                                        edid.Edid = classEdidParser.HexString;
+                                        edid.ManufactureID = classEdidParser.GetManufacturerID();
+                                        edid.VendorID = classEdidParser.GetVendorID();
+                                        edid.PID = classEdidParser.GetPID(blocks);
+                                        //  string text2 = classEdidParser.GetManufacturerID() + classEdidParser.GetVendorID();
+                                        edid.SerialNumber = classEdidParser.GetSerialNum();
+                                        edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month, ref edid.Week);
+                                        edid.ServiceTag = classEdidParser.GetServiceTag();
+                                        edid.ModelName = classEdidParser.GetModelName();
+                                        edid.Size = classEdidParser.GetScreenSize();
+                                        try { var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid)); }
+                                        catch (Exception) { }
+
+                                        result = true;
+                                    }
+                                }
+                                catch (Exception) { }
+                            }
                         }
                         catch (Exception) { }
-
-                        {
-                            result = true;
-                        }
                     }
-                    catch (Exception) { }
                 }
             }
             catch (Exception) { result = false; }
-
             return result;
         }
+
         public static EDID getEDID(byte[] edid_byte)
         {
             EDID edid = new EDID();
