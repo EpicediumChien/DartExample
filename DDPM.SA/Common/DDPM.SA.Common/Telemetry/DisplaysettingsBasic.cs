@@ -44,4 +44,9 @@ namespace DDPM.SA.Common
     {
         public uint Contrast { get; set; } = 0x0;
     }
+
+    public class Displaysettings_Luminance : DisplaysettingsBasic
+    {
+        public uint Luminance { get; set; } = 0x0;
+    }
 }
