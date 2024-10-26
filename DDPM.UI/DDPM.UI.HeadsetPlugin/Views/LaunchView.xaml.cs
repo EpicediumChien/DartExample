@@ -340,6 +340,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             }
             if (_vm!.ConnectionType == "Dongle")
             {
+                //string pp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsyncForDongle(_vm!.CurrentDeviceID.ToString()).Result;
+                //string ppp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsync(_vm!.CurrentDeviceID.ToString()).Result;
                 txtSystemName3.Text = Strings.USBWirelessReceiver;
                 txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
                 txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";

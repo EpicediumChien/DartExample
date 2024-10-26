@@ -92,6 +92,7 @@ namespace DDPM.SA.Common
             "VALUE",
             "PEN",
             "WEBCAM",
+            "SPEAKERPHONE",
         };
 
         private ILog _Log;

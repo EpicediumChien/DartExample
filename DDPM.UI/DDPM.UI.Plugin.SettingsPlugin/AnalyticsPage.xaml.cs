@@ -202,10 +202,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
             string url = vm.strPrivacyUrl;
             // Open the browser and navigate to specified url
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = url,
-                UseShellExecute = true
+            //Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = url,
+            //    UseShellExecute = true
+            //});
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                null,
+                new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
             });
         }
 

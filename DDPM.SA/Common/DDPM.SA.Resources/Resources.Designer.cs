@@ -79,6 +79,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to can be updated to.
+        /// </summary>
+        internal static string can_be_updated_to {
+            get {
+                return ResourceManager.GetString("can_be_updated_to", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Defer.
+        /// </summary>
+        internal static string Defer {
+            get {
+                return ResourceManager.GetString("Defer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delay.
         /// </summary>
         internal static string Delay {
@@ -232,6 +250,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        internal static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Software update unsuccessful..
         /// </summary>
         internal static string Software_update_unsuccessful {
@@ -295,6 +322,33 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update available.
+        /// </summary>
+        internal static string UpdateAvailable {
+            get {
+                return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update..
+        /// </summary>
+        internal static string UpdateAvailable_Info {
+            get {
+                return ResourceManager.GetString("UpdateAvailable_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update now.
+        /// </summary>
+        internal static string UpdateNow {
+            get {
+                return ResourceManager.GetString("UpdateNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updates info.
         /// </summary>
         internal static string Updates_info {
@@ -304,11 +358,38 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update will be applied.
+        /// </summary>
+        internal static string UpdateWillBeApplied {
+            get {
+                return ResourceManager.GetString("UpdateWillBeApplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update..
+        /// </summary>
+        internal static string UpdateWillBeApplied_Info {
+            get {
+                return ResourceManager.GetString("UpdateWillBeApplied_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         internal static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to will be updated to .
+        /// </summary>
+        internal static string will_be_updated_to_ {
+            get {
+                return ResourceManager.GetString("will_be_updated_to ", resourceCulture);
             }
         }
         

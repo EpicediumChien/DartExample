@@ -99,6 +99,7 @@ namespace DDPM.SA.Common
         public string SerialNumber { get; set; }
         public string Result { get; set; }
         public string Message { get; set; }
+        public string FWVer { get; set; }
 
         public ConnectedDevices()
         {
@@ -112,6 +113,7 @@ namespace DDPM.SA.Common
             ServiceTag = "N/A";
             Result = "N/A";
             Message = "N/A";
+            FWVer = "N/A";
 
         }
 

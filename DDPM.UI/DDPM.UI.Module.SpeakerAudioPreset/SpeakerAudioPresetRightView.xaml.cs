@@ -30,6 +30,48 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             InitializeComponent();
             _vm = vm;
             _vm.DetectPageShow(_vm.Model);
+            _vm.UpdateDTPValue();
+            if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)
+            {
+                if (_vm.SpeakerInfoValueDTP.SpeakerBass > 2 || _vm.SpeakerInfoValueDTP.SpeakerBass < -2)
+                    SetNodeValue(Node1, 0);
+                else
+                    SetNodeValue(Node1, _vm.SpeakerInfoValueDTP.SpeakerBass);
+
+                if (_vm.SpeakerInfoValueDTP.SpeakerMidRange > 2 || _vm.SpeakerInfoValueDTP.SpeakerMidRange < -2)
+                    SetNodeValue(Node2, 0);
+                else
+                    SetNodeValue(Node2, _vm.SpeakerInfoValueDTP.SpeakerMidRange);
+
+                if (_vm.SpeakerInfoValueDTP.SpeakerTreble > 2 || _vm.SpeakerInfoValueDTP.SpeakerTreble < -2)
+                    SetNodeValue(Node3, 0);
+                else
+                    SetNodeValue(Node3, _vm.SpeakerInfoValueDTP.SpeakerTreble);
+            }
+            _vm.CheckPresetsUI();
+            _vm.CheckAudioSettingsUI();
+        }
+
+        /// <summary>
+        /// Set Node Value (from external input)
+        /// </summary>
+        /// <param name="node">Image</param>
+        /// <param name="value">Value between 4 to -6</param>
+        public void SetNodeValue(Image node, double value)
+        {
+            if (value < -2 || value > 2)
+                throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 2 and -2");
+
+            double minValue = 0;
+            double maxValue = 150;
+            double minOutput = -2;
+            double maxOutput = 2;
+
+            double newY = minValue + (maxValue - minValue) * (maxOutput - value) / (maxOutput - minOutput);
+
+            Canvas.SetTop(node, newY);
+            UpdateNodeValuePosition(node);
+            UpdateCurve();
         }
 
         private Point initialPositionNode1;
@@ -49,9 +91,9 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             currentNode.CaptureMouse();
 
             // 儲存初始位置
-            initialPositionNode1 = new Point(Canvas.GetLeft(Node1), Canvas.GetTop(Node1));
-            initialPositionNode2 = new Point(Canvas.GetLeft(Node2), Canvas.GetTop(Node2));
-            initialPositionNode3 = new Point(Canvas.GetLeft(Node3), Canvas.GetTop(Node3));
+            //initialPositionNode1 = new Point(Canvas.GetLeft(Node1), Canvas.GetTop(Node1));
+            //initialPositionNode2 = new Point(Canvas.GetLeft(Node2), Canvas.GetTop(Node2));
+            //initialPositionNode3 = new Point(Canvas.GetLeft(Node3), Canvas.GetTop(Node3));
 
             // 更換選取後的圖片
             currentNode.Source = new BitmapImage(new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png"));
@@ -102,15 +144,18 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 switch (currentNode.Name)
                 {
                     case "Node1":
-                        //_vm._deviceManager.SetBandsGain(int.Parse(Node1Text.Text), _vm.CurrentDeviceInfo!.ID, "band1gain").Wait();
+                        _vm._log!.Info($"[SpeakerAudioPresetRightView] SetBassAsync ...... {Node1Text.Text}");
+                        _vm._deviceManager.SetBassAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text));                       
                         break;
 
                     case "Node2":
-                        //_vm._deviceManager.SetBandsGain(int.Parse(Node2Text.Text), _vm.CurrentDeviceInfo!.ID, "band2gain").Wait();
+                        _vm._log!.Info($"[SpeakerAudioPresetRightView] SetMidRangeAsync ...... {Node2Text.Text}");
+                        _vm._deviceManager.SetMidRangeAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text));                     
                         break;
 
                     case "Node3":
-                        //_vm._deviceManager.SetBandsGain(int.Parse(Node3Text.Text), _vm.CurrentDeviceInfo!.ID, "band3gain").Wait();
+                        _vm._log!.Info($"[SpeakerAudioPresetRightView] SetTrebleAsync ...... {Node3Text.Text}");
+                        _vm._deviceManager.SetTrebleAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text));
                         break;
                 }
 
@@ -180,16 +225,16 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 Canvas.SetLeft(textBackground, Canvas.GetLeft(node) - (textBackground.Width - node.Width) / 2);
                 Canvas.SetTop(textBackground, Canvas.GetTop(node) - textBackground.Height);
 
-                // 計算並顯示介於 4 到 -6 之間的值
+                // 計算並顯示介於 2 到 -2 之間的值
                 double minValue = 0;
                 double maxValue = 150;
-                double minOutput = -6;
-                double maxOutput = 5;
+                double minOutput = -2;
+                double maxOutput = 3;
 
                 double normalizedValue = maxOutput - ((Canvas.GetTop(node) - minValue) / (maxValue - minValue) * (maxOutput - minOutput));
                 normalizedValue = Convert.ToInt16(Math.Floor(normalizedValue));
-                if (normalizedValue >= 5)
-                    normalizedValue = 4;
+                if (normalizedValue >= 3)
+                    normalizedValue = 2;
                 textBlock.Text = normalizedValue.ToString("0");
                 //Debug.WriteLine("SetNodeValue normalizedValue : " + normalizedValue.ToString());
             }
@@ -206,9 +251,17 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
 
             CurvePathFigure.StartPoint = node1Position;
 
-            Segment1.Point1 = new Point((initialPositionNode1.X + node2Position.X) / 2, node1Position.Y);
-            Segment1.Point2 = new Point((initialPositionNode1.X + node2Position.X) / 2, node2Position.Y);
+            //Segment1.Point1 = new Point((initialPositionNode1.X + node2Position.X) / 2, node1Position.Y);
+            //Segment1.Point2 = new Point((initialPositionNode1.X + node2Position.X) / 2, node2Position.Y);
+            //Segment1.Point3 = node2Position;
+
+            Segment1.Point1 = new Point((node1Position.X + node2Position.X) / 2, node1Position.Y);
+            Segment1.Point2 = new Point((node1Position.X + node2Position.X) / 2, node2Position.Y);
             Segment1.Point3 = node2Position;
+
+            //Segment2.Point1 = new Point((node2Position.X + node3Position.X) / 2, node2Position.Y);
+            //Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);
+            //Segment2.Point3 = node3Position;
 
             Segment2.Point1 = new Point((node2Position.X + node3Position.X) / 2, node2Position.Y);
             Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);
