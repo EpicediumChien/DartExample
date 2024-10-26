@@ -124,7 +124,7 @@ namespace DDPM.CMA.Tester
             string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
 
             string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
-            //string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
+            string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
 
             string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""ConnectedDevices"",""options"":{}}]}";
             string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
@@ -134,7 +134,12 @@ namespace DDPM.CMA.Tester
 
 
             string jsondeviceconfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
-            string config = "";
+            string configless = "{\"Index\": \"1\",\"DeviceType\": \"Display\",\"BrightnessLevel\": \"90%\",\"ContrastLevel\": \"90%\"}";
+            string jsondeviceconfig3 = "{\"sid\":\"1728380278\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + configless + ",\"options\":{}}]}";
+
+            string test = @"{""sid"":""1729840262"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""c:\temp"",""options"":{""index"":""1"",""servicetag"":""aaaaa"",""devicemodel"":""dell ea"",""uod"":true,""forcewithnotice"":true,""updatesilent"":true,""minversion"":""1.0.0.5""}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ConnectedDevices"",""options"":{}}]}";
+
+            string jsondevicedatadisplay = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""DeviceData"",""options"":{}}]}";
 
             RemoteRequestArgs cmarequest = new RemoteRequestArgs();
 
@@ -154,6 +159,13 @@ namespace DDPM.CMA.Tester
                 Console.WriteLine("4. Show DeviceConfiguration.");
                 Console.WriteLine("5. Show DiagnosticsReport.");
                 Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
+                Console.WriteLine("7. Show Dock FWUpdate.");
+
+
+                Console.WriteLine("21. Show 2 task.");
+                Console.WriteLine("22. DeviceConfiguration with only few attributes.");
+                Console.WriteLine("23. Show DeviceData - Display.");
+
                 Console.WriteLine("0. Exit.");
 
                 Console.WriteLine("Enter the number to run ?");
@@ -194,6 +206,30 @@ namespace DDPM.CMA.Tester
                     case 6:
                         Console.WriteLine($"json String = {jsongetdisplaymulti}");
                         cmarequest.remote_request = jsongetdisplaymulti;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 7:
+                        Console.WriteLine($"json String = {jsonfwdock}");
+                        cmarequest.remote_request = jsonfwdock;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 21:
+                        Console.WriteLine($"json String = {test}");
+                        cmarequest.remote_request = test;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 22:
+                        Console.WriteLine($"json String = {jsondeviceconfig3}");
+                        cmarequest.remote_request = jsondeviceconfig3;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 23:
+                        Console.WriteLine($"json String = {jsondevicedatadisplay}");
+                        cmarequest.remote_request = jsondevicedatadisplay;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
