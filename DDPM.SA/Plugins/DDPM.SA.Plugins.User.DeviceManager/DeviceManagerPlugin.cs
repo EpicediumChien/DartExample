@@ -255,6 +255,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if(_pwr_Mon == null)
                 {
                     _pwr_Mon = new PowerMonitor(Log);
+                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
                     _pwr_Mon.ShowDialog();
                 }
                 System.Windows.Threading.Dispatcher.Run();
@@ -8067,7 +8068,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (type == DeviceChangedType.NotifyOnly)
             {
-                writelog("[OnDeviceChanged] Notify event to registers");
+                //writelog("[OnDeviceChanged] Notify event to registers");
                 //Task.Run(() => updateALSwithAllMonitors());
             }
             else
@@ -12898,5 +12899,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        private void MonitorEvent_On(object sender, EventArgs e)
+        {
+            writelog("GOT MONITOR ON EVENT");
+            if (_DisplayManagerPlugin != null)
+            {
+                using (_ReGetcancellationTokenSource = new CancellationTokenSource())
+                {
+                    try
+                    {
+                        var _cancellationTokenSource_tmp = CancellationTokenSource.CreateLinkedTokenSource(_ReGetcancellationTokenSource.Token);
+                        var token = _cancellationTokenSource_tmp.Token;
+
+                        //Call VCP to catch updated monitor info
+                        if (_AllInfoMonitors != null)
+                            _AllInfoMonitors.Clear();
+                        else
+                            _AllInfoMonitors = new List<MonitorInfo>();
+                        writelog("_DisplayManagerPlugin.Re_GetMonitors with token");
+                        _AllInfoMonitors.AddRange((_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList());
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"MonitorEvent_On to Re-GetMonitor failed: {ex.Message}");
+                    }
+                }
+            }
+        }
     }
 }
