@@ -84,10 +84,7 @@
         //User.SettingsManager
         public const string DDPM_SETTINGSMANAGER_SA_PLUGIN_ID = "{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}";
 
-        //Actions Manger
-        public const string DDPM_ACTIONS_MANGER_PLUGIN_ID = "{E5DA6004-21DC-4058-917F-A0ECF838EA03}";
-
-        //CLIProxy
+        //CMAProxy
         public const string DDPM_CMA_Proxy_Plugin = "{09F670EB-3F2B-4005-9A8B-D4BF1033A425}";
 
         /// <summary>

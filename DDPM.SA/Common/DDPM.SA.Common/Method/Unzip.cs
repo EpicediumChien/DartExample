@@ -11,7 +11,7 @@ namespace DDPM.SA.Common.Method
 {
     public class Unzip
     {
-        private Logs _logs;
+        private Logs? _logs;
 
         public Unzip(Logs logs)
         {
@@ -50,14 +50,14 @@ namespace DDPM.SA.Common.Method
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(zipFilePath, out FileInfo))
             {
-                _logs.Info($"{nameof(ExecuteUnzip)} {FileInfo}");
+                _logs?.Info($"{nameof(ExecuteUnzip)} {FileInfo}");
                 exeFilePath = "";
                 return false;
             }
 
             try
             {
-                _logs.DebugMsg_1(nameof(Unzip) + " start");
+                _logs?.DebugMsg_1(nameof(Unzip) + " start");
 
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
                 SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
@@ -84,14 +84,14 @@ namespace DDPM.SA.Common.Method
                     }*/
                     // 解壓縮zip檔案，並覆蓋現有檔案
                     ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
-                    _logs.DebugMsg_1(nameof(Unzip) + " done");
+                    _logs?.DebugMsg_1(nameof(Unzip) + " done");
                     exeFilePath = GetExeFilePath(extractPath);
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1(nameof(Unzip) + "Unzip fail: " + ex.Message);
+                _logs?.DebugMsg_1(nameof(Unzip) + "Unzip fail: " + ex.Message);
                 exeFilePath = "";
                 return false;
             }

@@ -14,9 +14,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
@@ -42,6 +45,7 @@ namespace DDPM.UI.Plugin.ViewModels
     public class UI_SnoozeLength
     {
         public int SnoozeLength { get; set; }
+        public int SnoozeLength_sec { get; set; }
 
         public string DisplayText
         {
@@ -79,7 +83,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<WebcamOperation> WCOperations = new();
         private int OPIndex = -1;
         const int MaxOPs = 30;
-
 
         // 20240926 jim add
         private bool showLockMask = false;
@@ -208,13 +211,56 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isChecked_Snooze = value;
                 if (_isChecked_Snooze)
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
-                else
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                {  
+                    if (_SelectedSnoozeLength != null)
+                    {
+                        if (_SelectedSnoozeLength.SnoozeLength == 30)
+                        {
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                            //_SelectedSnoozeLength.SnoozeLength = 1800;
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                        }
+                        else if (_SelectedSnoozeLength.SnoozeLength == 60)
+                        {
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                            //_SelectedSnoozeLength.SnoozeLength = 3600;
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                        }
+                        else if (_SelectedSnoozeLength.SnoozeLength == 90)
+                        {
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                            //_SelectedSnoozeLength.SnoozeLength = 5400;
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                        }
+                        else if (_SelectedSnoozeLength.SnoozeLength == 120)
+                        {
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                            //_SelectedSnoozeLength.SnoozeLength = 7200;
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                        }
+
+
+
+                    }                    
+                }
+                //    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                //else
+                //    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+
+                else //(_isChecked_Snooze == false)
+                {
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -100);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);                   
+                }
+
                 OnPropertyChanged("IsChecked_Snooze");
-                OnPropertyChanged("SnoozeStatus_String");
+                OnPropertyChanged("SnoozeStatus_String");              
             }
         }
 
@@ -234,6 +280,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 SetProperty(ref _SelectedDelay, value);
                 DdpmCommonHelper.DeviceManagerSA!.SetWALTime(CurrentDeviceInfo!.ID.ToString(), _SelectedDelay.Delay);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                 //DdpmCommonHelper.DeviceManagerSA!.SetWALTime(30, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedDelay");
             }
@@ -246,7 +295,39 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 SetProperty(ref _SelectedSnoozeLength, value);
-                DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength);
+
+                //int nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(CurrentDeviceInfo!.ID.ToString()).Result;
+
+                if (_SelectedSnoozeLength.SnoozeLength == 30)
+                {
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                    //_SelectedSnoozeLength.SnoozeLength = 1800;
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                }
+                else if (_SelectedSnoozeLength.SnoozeLength == 60)
+                {
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                    //_SelectedSnoozeLength.SnoozeLength = 3600;
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                }
+                else if (_SelectedSnoozeLength.SnoozeLength == 90)
+                {
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                    //_SelectedSnoozeLength.SnoozeLength = 5400;
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                }
+                else if (_SelectedSnoozeLength.SnoozeLength == 120)
+                {
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                    //_SelectedSnoozeLength.SnoozeLength = 7200;
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                }
+
+                //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength);
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedSnoozeLength");
             }
@@ -1419,7 +1500,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(MessageBoxVisibility));
             }
         }
-        public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
+        public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;    
+
     }
 
     public class StreamResolution
