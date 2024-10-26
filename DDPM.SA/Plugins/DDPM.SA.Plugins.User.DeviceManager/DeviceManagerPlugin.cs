@@ -253,7 +253,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             Thread thread = new Thread(() =>
             {
-                if(_pwr_Mon == null)
+                if (_pwr_Mon == null)
                 {
                     _pwr_Mon = new PowerMonitor(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
@@ -1362,65 +1362,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //Telementry Collection
             var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
             switch (code)
             {
                 case 0x10:
 
                     if (monitorInfo.CapabilityDic.ContainsKey("12"))
                     {
-                        var TelemetryDta_Brightness = new Displaysettings_Brightness();
-                        TelemetryDta_Brightness.Brightness = val;
-                        TelemetryDta_Brightness.CommunicationPath = "Video";
-                        TelemetryDta_Brightness.GraphicCardName = string.Empty;
-                        TelemetryDta_Brightness.MonitorName = monitorInfo.AliasDeviceName;
-                        TelemetryDta_Brightness.D_Ctrl = monitorInfo.D_Ctrl;
-                        TelemetryDta_Brightness.SupplierID = monitorInfo.SupplierID;
-                        TelemetryDta_Brightness.FirmwareVersion = monitorInfo.FwVersion;
-                        TelemetryDta_Brightness.DisplayModelname = monitorInfo.modelName;
-                        TelemetryDta_Brightness.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-                        TelemetryDta_Brightness.DsiplayResolution = string.Empty;
-                        TelemetryDta_Brightness.MaxDisplayResolution = string.Empty;
-                        writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
-                        rt = _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Brightness.ToJson(), Telementry_Frequency.RealTime).Result;
+                        writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");                        
+                        rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val);
                         if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
                         else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
                     }
                     else
                     {
-                        var TelemetryDta_Luminance = new Displaysettings_Luminance();
-                        TelemetryDta_Luminance.Luminance = val;
-                        TelemetryDta_Luminance.CommunicationPath = "Video";
-                        TelemetryDta_Luminance.GraphicCardName = string.Empty;
-                        TelemetryDta_Luminance.MonitorName = monitorInfo.AliasDeviceName;
-                        TelemetryDta_Luminance.D_Ctrl = monitorInfo.D_Ctrl;
-                        TelemetryDta_Luminance.SupplierID = monitorInfo.SupplierID;
-                        TelemetryDta_Luminance.FirmwareVersion = monitorInfo.FwVersion;
-                        TelemetryDta_Luminance.DisplayModelname = monitorInfo.modelName;
-                        TelemetryDta_Luminance.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-                        TelemetryDta_Luminance.DsiplayResolution = string.Empty;
-                        TelemetryDta_Luminance.MaxDisplayResolution = string.Empty;
+                        
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
-                        rt = _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Luminance.ToJson(), Telementry_Frequency.RealTime).Result;
+                        rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val);
                         if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
                         else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
                     }
                     break;
 
                 case 0x12:
-                    var TelemetryDta_Contrast = new Displaysettings_Contrast();
-                    TelemetryDta_Contrast.Contrast = val;
-                    TelemetryDta_Contrast.CommunicationPath = "Video";
-                    TelemetryDta_Contrast.GraphicCardName = string.Empty;
-                    TelemetryDta_Contrast.MonitorName = monitorInfo.AliasDeviceName;
-                    TelemetryDta_Contrast.D_Ctrl = monitorInfo.D_Ctrl;
-                    TelemetryDta_Contrast.SupplierID = monitorInfo.SupplierID;
-                    TelemetryDta_Contrast.FirmwareVersion = monitorInfo.FwVersion;
-                    TelemetryDta_Contrast.DisplayModelname = monitorInfo.modelName;
-                    TelemetryDta_Contrast.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-                    TelemetryDta_Contrast.DsiplayResolution = string.Empty;
-                    TelemetryDta_Contrast.MaxDisplayResolution = string.Empty;
+                   
                     writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
-                    rt = _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Contrast.ToJson(), Telementry_Frequency.RealTime).Result;
+                    rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val);
                     if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
                     else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
 
