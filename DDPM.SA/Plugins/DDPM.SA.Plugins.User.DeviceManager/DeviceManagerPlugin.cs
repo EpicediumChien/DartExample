@@ -62,6 +62,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IDeviceManagerSA) })]
+    [PluginRequires(Id = IDs.Telementry_Scheduler_Plugin_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.Display_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.Scheduler_Manager_Plugin_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.DDPM_PERIPHERALS_PLUGIN_ID, AllowDynamicResolving = true)]
@@ -69,7 +70,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [PluginRequires(Id = IDs.CLI_Manager_Plugin, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.DDPM_EMPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
     //[DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
-    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
+    [DependencyKnownTypes(new[] { typeof(ITelementryScheduler), typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
     public class DeviceMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDeviceManagerSA
     {
         #region Private Members
@@ -257,7 +258,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             Thread thread = new Thread(() =>
             {
-                if(_pwr_Mon == null)
+                if (_pwr_Mon == null)
                 {
                     _pwr_Mon = new PowerMonitor(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
@@ -1451,38 +1452,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
+            //Telementry Collection
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
             switch (code)
             {
                 case 0x10:
-                    var TelemetryDta_Brightness = new Displaysettings_Brightness();
-                    TelemetryDta_Brightness.Brightness = val;
-                    TelemetryDta_Brightness.CommunicationPath = "Video";
-                    TelemetryDta_Brightness.GraphicCardName = string.Empty;
-                    TelemetryDta_Brightness.MonitorName = monitorInfo.AliasDeviceName;
-                    TelemetryDta_Brightness.D_Ctrl = monitorInfo.D_Ctrl;
-                    TelemetryDta_Brightness.SupplierID = monitorInfo.SupplierID;
-                    TelemetryDta_Brightness.FirmwareVersion = monitorInfo.FwVersion;
-                    TelemetryDta_Brightness.DisplayModelname = monitorInfo.modelName;
-                    TelemetryDta_Brightness.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-                    TelemetryDta_Brightness.DsiplayResolution = string.Empty;
-                    TelemetryDta_Brightness.MaxDisplayResolution = string.Empty;
-                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Brightness.ToJson(), Telementry_Frequency.RealTime);
+
+                    if (monitorInfo.CapabilityDic.ContainsKey("12"))
+                    {
+                        writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");                        
+                        rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val);
+                        if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
+                        else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
+                    }
+                    else
+                    {
+                        
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
+                        rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val);
+                        if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
+                        else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
+                    }
                     break;
 
                 case 0x12:
-                    var TelemetryDta_Contrast = new Displaysettings_Contrast();
-                    TelemetryDta_Contrast.Contrast = val;
-                    TelemetryDta_Contrast.CommunicationPath = "Video";
-                    TelemetryDta_Contrast.GraphicCardName = string.Empty;
-                    TelemetryDta_Contrast.MonitorName = monitorInfo.AliasDeviceName;
-                    TelemetryDta_Contrast.D_Ctrl = monitorInfo.D_Ctrl;
-                    TelemetryDta_Contrast.SupplierID = monitorInfo.SupplierID;
-                    TelemetryDta_Contrast.FirmwareVersion = monitorInfo.FwVersion;
-                    TelemetryDta_Contrast.DisplayModelname = monitorInfo.modelName;
-                    TelemetryDta_Contrast.DisplayServiceTag = monitorInfo.edid.ServiceTag;
-                    TelemetryDta_Contrast.DsiplayResolution = string.Empty;
-                    TelemetryDta_Contrast.MaxDisplayResolution = string.Empty;
-                    _TelementryScheduler.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_Contrast.ToJson(), Telementry_Frequency.RealTime);
+                   
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
+                    rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val);
+                    if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
+                    else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
+
                     break;
 
                 default:
@@ -7957,9 +7957,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
                                         {
-                                            displayInOut = false;
+                                            //displayInOut = false;
                                             _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
-                                            displayInOut = true;
+                                            //displayInOut = true;
                                         }
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
@@ -8047,9 +8047,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    handler.Invoke(this, e);
             if (_DisplayManagerPlugin != null)
             {
-                displayInOut = false;
+                //displayInOut = false;
                 _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
-                displayInOut = true;
+                //displayInOut = true;
             }
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";

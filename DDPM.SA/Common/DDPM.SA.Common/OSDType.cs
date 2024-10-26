@@ -12,7 +12,7 @@
         WalkAwayLock,
         StartRecording,
         EasyMemory,
-        Error
+        Error,
     }
 
     public enum OSDType_Device
