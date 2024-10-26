@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Windows;
@@ -24,14 +25,24 @@ namespace DDPM.UI.Module.Gaming
             InitializeComponent();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is not null");
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            }
+            else
+            {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is null");
             }
         }
         ~GamingRightView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is not null");
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+            else
+            {
+                Trace.WriteLine($"GamingRightView DdpmCommonHelper.DeviceManagerSA is null");
             }
         }
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
