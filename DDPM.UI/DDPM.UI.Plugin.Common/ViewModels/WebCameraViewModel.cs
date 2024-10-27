@@ -487,8 +487,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         WebcamSettings.Resolutions.Add(sts[2], sts[0]);
                     }
-
                 }
+                var resolutions = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(CurrentDeviceID.ToString());
+                if (resolutions != null)
+                {
+                }
+
                 WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
                 WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
 

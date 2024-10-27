@@ -1283,7 +1283,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
                         info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                         info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
-                        info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
+                        //info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
                         info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
                         info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
                         info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
@@ -1362,41 +1362,41 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     if (item is ILogicalDeviceDock _logicalDeviceDock)
                     {
-                        info.MonitorCount = _logicalDeviceDock.MonitorCount;
-                        info.DockInfo = _logicalDeviceDock.DockInfo;
-                        info.DockType = _logicalDeviceDock.DockType;
-                        info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
-                        info.FirmwareVersion = _logicalDeviceDock.DockPackageFwVersion;
-                        info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
-                        info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
-                        info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
-                        try
-                        {
-                            string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
-                            Debug.WriteLine(textString);
-                            DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
-                            if (dockData != null)
-                            {
-                                info.DockData = dockData;
-                                info.ModelNumber = dockData.MarketingName;
-                                info.Name = $"Dell Dock";
-                                if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
-                                {
-                                    info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
-                                }
-                                if (string.IsNullOrEmpty(info.DockServiceTag))
-                                {
-                                    info.DockServiceTag = dockData.ServiceTag;
-                                }
-                                if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
-                                {
-                                    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
-                                }
-                            }
-                        }
-                        catch
-                        {
-                        }
+                        //info.MonitorCount = _logicalDeviceDock.MonitorCount;
+                        //info.DockInfo = _logicalDeviceDock.DockInfo;
+                        //info.DockType = _logicalDeviceDock.DockType;
+                        //info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
+                        //info.FirmwareVersion = _logicalDeviceDock.DockPackageFwVersion;
+                        //info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
+                        //info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
+                        //info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
+                        //try
+                        //{
+                        //    string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
+                        //    Debug.WriteLine(textString);
+                        //    DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
+                        //    if (dockData != null)
+                        //    {
+                        //        info.DockData = dockData;
+                        //        info.ModelNumber = dockData.MarketingName;
+                        //        info.Name = $"Dell Dock";
+                        //        if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                        //        {
+                        //            info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                        //        }
+                        //        if (string.IsNullOrEmpty(info.DockServiceTag))
+                        //        {
+                        //            info.DockServiceTag = dockData.ServiceTag;
+                        //        }
+                        //        if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
+                        //        {
+                        //            info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                        //        }
+                        //    }
+                        //}
+                        //catch
+                        //{
+                        //}
                     }
                     _deviceHelper.deviceInfo.Add(info);
 

@@ -865,6 +865,33 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<string[]> GetSupportedResolutions(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return new string[0]; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "SupportedResolutions");
+                    return (string[])value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetSupportedResolutions]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    writelog($"[GetSupportedResolutions]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    return new string[0];
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetSupportedResolutions]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                writelog($"[GetSupportedResolutions]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                return new string[0];
+            }
+
+        }
 
         public async Task SetProfile(string Guid, string newValue)
         {

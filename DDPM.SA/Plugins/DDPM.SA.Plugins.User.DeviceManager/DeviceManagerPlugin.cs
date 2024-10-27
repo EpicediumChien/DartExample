@@ -6771,6 +6771,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
         }
+        public async Task<string[]> GetSupportedResolutions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSupportedResolutions(Guid));
+        }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)
         {
