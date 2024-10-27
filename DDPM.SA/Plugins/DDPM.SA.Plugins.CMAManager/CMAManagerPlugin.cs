@@ -186,13 +186,13 @@ namespace DDPM.SA.Plugins.CMAManager
 
             CmaCommand cmd = new CmaCommand(guid, request);
 
-            WriteLog($"[CMA] initCommandTask request = {request}]");
+            WriteLog($"[CMA] initCommandTask request = {request}");
 
             List<CmaCommand.CmaTask> tasks = new List<CmaCommand.CmaTask>();
 
             foreach (var s in cmd.req)
             {
-                tasks.Add(new CmaCommand.CmaTask(cmd.sid, s.ToString()));
+                tasks.Add(new CmaCommand.CmaTask(cmd.sid, s.ToString().ToLower()));
             }
 
             foreach (CmaCommand.CmaTask task in tasks)
@@ -201,18 +201,26 @@ namespace DDPM.SA.Plugins.CMAManager
                 int eventtype = 0;
 
                 //Console.WriteLine("task.options = " + task.options);
+                WriteLog($"[CMA] initCommandTask  task.command = {task.command}");
 
-                if ("get".Equals(task.active))
+                if ("get".Equals(task.active.ToLower()))
                 {
 
                     eventtype = 1;
                     command = command + ("get ");
 
-                    if (Params.App.ConnectedDevices.Equals(task.command))
+
+                    if (Params.App.ConnectedDevices.ToLower().Equals(task.command.ToLower())
+                        || Params.App.DeviceData.ToLower().Equals(task.command.ToLower()))
                     {
                         command = command + ("app=" + task.command);
                         command = command + (" value=" + task.devicetype);
                     }
+/*                    else if (Params.App.DeviceData.ToLower().Equals(task.command.ToLower()))
+                    {
+                        command = command + ("app=" + task.command);
+                        command = command + (" value=" + task.devicetype);
+                    }*/
                     else
                     {
                         command = command + (task.devicetype + "=" + task.command);
@@ -222,15 +230,14 @@ namespace DDPM.SA.Plugins.CMAManager
                             command = command + (" value=" + task.value);
                         }
                     }
-                    
                 }
 
-                if ("set".Equals(task.active))
+                if ("set".Equals(task.active.ToLower()))
                 {
                     eventtype = 2;
                     command = command + ("set ");
                     
-                    if (!Params.App.DeviceConfiguration.Equals(task.command))
+                    if (!Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
                     {
                         command = command + (task.devicetype + "=" + task.command);
                         command = command + (" value=" + task.value);
@@ -242,7 +249,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     }
                 }
 
-                if ("fw".Equals(task.active))
+                if ("fw".Equals(task.active.ToLower()))
                 {
                     eventtype = 5;
 
@@ -290,7 +297,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 Console.WriteLine("command = " + command);
 
-                WriteLog($"[CMA] initCommandTask command = {command}]");
+                WriteLog($"[CMA] initCommandTask command = {command}");
 
                 taskInfos.Add(taskinfo);
 
@@ -358,6 +365,9 @@ namespace DDPM.SA.Plugins.CMAManager
                     responseMsg = "Exception: Unknow Result";
                     args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
                 }
+
+                Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult.command_guid_string + "\n args.notification = " + args.notification);
+                //Console.WriteLine("[CMA] );
 
                 OnEventNotify(args);
             }
@@ -530,11 +540,13 @@ namespace DDPM.SA.Plugins.CMAManager
             return Task.CompletedTask;
         }
         #endregion
+
         private void OnEventNotify(NotifyArgs e)
         {
             EventHandler<NotifyArgs> Handler = Notify;
             if (Handler != null)
             {
+                WriteLog($"[CMA] OnEventNotify e.notification = {e.notification}");
                 Handler.Invoke(this, e);
             }
         }
@@ -544,6 +556,7 @@ namespace DDPM.SA.Plugins.CMAManager
             EventHandler<NotifyArgs> Handler = DisplayConnected;
             if (Handler != null)
             {
+                WriteLog($"[CMA] OnEventDisplayConnect e.notification = {e.notification}");
                 Handler.Invoke(this, e);
             }
         }
@@ -553,6 +566,7 @@ namespace DDPM.SA.Plugins.CMAManager
             EventHandler<NotifyArgs> Handler = DisplayDisconnected;
             if (Handler != null)
             {
+                WriteLog($"[CMA] OnEventDisplayDisonnect e.notification = {e.notification}");
                 Handler.Invoke(this, e);
             }
         }
