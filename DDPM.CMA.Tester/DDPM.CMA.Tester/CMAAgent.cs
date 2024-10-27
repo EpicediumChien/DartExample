@@ -118,13 +118,14 @@ namespace DDPM.CMA.Tester
         {
             Boolean isRunning = true;
 
-            string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
-
+            
             string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
             string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
 
             string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
             string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
+            string jsonfwkb = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""Keyboard"",""options"":{}}]}";
+            string jsonfwmouse = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""MOUSE"",""options"":{}}]}";
 
             string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""ConnectedDevices"",""options"":{}}]}";
             string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
@@ -132,8 +133,9 @@ namespace DDPM.CMA.Tester
 
             string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\temp"",""options"":{}}]}";
 
-
+            string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
             string jsondeviceconfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
+
             string configless = "{\"Index\": \"1\",\"DeviceType\": \"Display\",\"BrightnessLevel\": \"90%\",\"ContrastLevel\": \"90%\"}";
             string jsondeviceconfig3 = "{\"sid\":\"1728380278\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + configless + ",\"options\":{}}]}";
 
@@ -155,11 +157,13 @@ namespace DDPM.CMA.Tester
                 Console.WriteLine("\nCMAManagerPlugin Demo: ");
                 Console.WriteLine("1. Show ConnectedDevices.");
                 Console.WriteLine("2. Show Display FWUpdate.");
-                Console.WriteLine("3. Show DeviceData.");
-                Console.WriteLine("4. Show DeviceConfiguration.");
-                Console.WriteLine("5. Show DiagnosticsReport.");
+                Console.WriteLine("3. Show DeviceData All (No filter).");
+                Console.WriteLine("4. Show DeviceConfiguration with json in value.");
+                Console.WriteLine("5. Show DiagnosticsReport export to c:\\temp\\.");
                 Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
                 Console.WriteLine("7. Show Dock FWUpdate.");
+                Console.WriteLine("8. Show Keyboard FWUpdate.");
+                Console.WriteLine("9. Show Mouse FWUpdate.");
 
 
                 Console.WriteLine("21. Show 2 task.");
@@ -212,6 +216,18 @@ namespace DDPM.CMA.Tester
                     case 7:
                         Console.WriteLine($"json String = {jsonfwdock}");
                         cmarequest.remote_request = jsonfwdock;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 8:
+                        Console.WriteLine($"json String = {jsonfwkb}");
+                        cmarequest.remote_request = jsonfwkb;
+                        _CMAManagerPlugin.Info(cmarequest);
+                        break;
+
+                    case 9:
+                        Console.WriteLine($"json String = {jsonfwmouse}");
+                        cmarequest.remote_request = jsonfwmouse;
                         _CMAManagerPlugin.Info(cmarequest);
                         break;
 
