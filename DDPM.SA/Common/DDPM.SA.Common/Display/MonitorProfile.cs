@@ -336,7 +336,7 @@ namespace DDPM.SA.Common
             res = _WcsGetDefaultColorProfileSize(scope,
                 deviceName,
                 COLORPROFILETYPE.CPT_ICC,
-                COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE,
+                COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_RELATIVE_COLORIMETRIC | COLORPROFILESUBTYPE.CPST_ABSOLUTE_COLORIMETRIC | COLORPROFILESUBTYPE.CPST_PERCEPTUAL | COLORPROFILESUBTYPE.CPST_SATURATION,
                 0,
                 out cbProfileName);
             if (res == 0)
@@ -349,7 +349,7 @@ namespace DDPM.SA.Common
             res = _WcsGetDefaultColorProfile(scope,
                 deviceName,
                 COLORPROFILETYPE.CPT_ICC,
-                COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE,
+                COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_RELATIVE_COLORIMETRIC | COLORPROFILESUBTYPE.CPST_ABSOLUTE_COLORIMETRIC | COLORPROFILESUBTYPE.CPST_PERCEPTUAL | COLORPROFILESUBTYPE.CPST_SATURATION,
                 0,
                 cbProfileName,
                 profileName);
@@ -500,6 +500,7 @@ namespace DDPM.SA.Common
             return blRes;
         }
 
+        /*
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize);
@@ -521,5 +522,6 @@ namespace DDPM.SA.Common
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
         }
+        */
     }
 }

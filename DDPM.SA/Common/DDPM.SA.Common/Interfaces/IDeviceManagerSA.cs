@@ -513,12 +513,11 @@ namespace DDPM.SA.Common
 
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false);
-
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false);
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
-        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
+        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "");
 
         void SetUILockStatus(bool isLockFWU_UI);
 
@@ -527,6 +526,8 @@ namespace DDPM.SA.Common
         Task<bool> SetSkipCA(bool isSkipCA);
 
         Task<bool> GetSkipCA();
+        Task<bool> SetServerURL(string url);
+        Task<string> GetServerURL();
 
         #endregion public for FW Update by Bruce
 
@@ -588,9 +589,9 @@ namespace DDPM.SA.Common
 
         #region public for SW Update
 
-        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false);
+        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUItrigger = false);
 
-        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, string installPath = "");
+        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
 
         #endregion public for SW Update
 
@@ -676,7 +677,7 @@ namespace DDPM.SA.Common
         #endregion
 
         #region Keyboard
-        Task SetKbDeleteAssignedAction(string Guid, int newValue);
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task<JArray> GetKeyboardDeviceItemsEx();
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
@@ -1015,6 +1016,7 @@ namespace DDPM.SA.Common
 
         ////////////////////////////////Get////////////////////////////////
 
+        Task<string> GetProfileAsync(string item);
         Task<int> GetBassAsync(string Guid);
 
         Task<int> GetMidRangeAsync(string Guid);
@@ -1026,8 +1028,18 @@ namespace DDPM.SA.Common
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
 
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
+        Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion Wires Audio
+
+        #region Dongle
+
+        Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
+        Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
+        Task<string> GetDeviceIdAsyncForDongle(string Guid);
+        Task<string> GetPluginIdAsyncForDongle(string Guid);
+        Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
+        #endregion
 
         #endregion public for DTPProxy
 

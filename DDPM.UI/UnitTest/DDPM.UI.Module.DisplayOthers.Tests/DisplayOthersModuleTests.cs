@@ -4,6 +4,7 @@ using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.DisplayOthers.Tests
@@ -18,6 +19,13 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         [SetUp]
         public void SetUp()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             var moduleOwerMock = new Mock<IModuleOwner>();
             var moduleOwer = moduleOwerMock.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwer;

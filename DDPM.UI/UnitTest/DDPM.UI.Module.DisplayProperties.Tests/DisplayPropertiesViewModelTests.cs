@@ -5,6 +5,7 @@ using DDPM.UI.Common.Models;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
+using System.Windows;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.DisplayProperties.Tests
@@ -23,6 +24,13 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;

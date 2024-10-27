@@ -565,8 +565,13 @@ namespace DDPM.UI.Module.Color
 
             // Create a watcher and listen for events
             //startWatcher = new ManagementEventWatcher(scope, queryString);
-            startWatcher.EventArrived -= startWatcher_EventArrived;
-            startWatcher.Stop();
+
+            //avoid exception
+            if (startWatcher != null)
+            {
+                startWatcher.EventArrived -= startWatcher_EventArrived;
+                startWatcher.Stop();
+            }
         }
 
         // add jim 20240604
@@ -629,8 +634,12 @@ namespace DDPM.UI.Module.Color
 
             // Create a watcher and listen for events
             //endProcWatcher = new ManagementEventWatcher(scope, queryString);
-            endProcWatcher.EventArrived -= ProcessEnded;
-            endProcWatcher.Stop();
+
+            if (endProcWatcher != null)
+            {
+                endProcWatcher.EventArrived -= ProcessEnded;
+                endProcWatcher.Stop();
+            }
         }
 
         //  jim  add - modify  20240604

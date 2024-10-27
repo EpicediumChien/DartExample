@@ -718,11 +718,22 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     Debug.WriteLine($"Error stopping MediaFrameReader: {ex.Message}");
                 }
-                _vm.MediaFrameReader.Dispose();
+
+                try
+                {
+                    if (_vm.MediaFrameReader != null)
+                     _vm.MediaFrameReader.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error Dispose MediaFrameReader: {ex.Message}");
+                }
+
                 _vm.MediaFrameReader = null;
             }
             if (_vm!.MediaCapture != null)
             {
+                _vm!.MediaCapture.Dispose();
                 _vm.MediaCapture = null;
             }
         }
