@@ -9,7 +9,9 @@
     Background="{DynamicResource mainWindowBkColor}"
     mc:Ignorable="d"
     TopBackground="{DynamicResource bkImage}"
-    ResizeMode="CanResize">
+    ResizeMode="CanResize"
+    MinWidth="910" 
+    Loaded="MainWindow_Loaded">
     <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>-->

@@ -132,6 +132,12 @@ namespace NGA.ThickClient
             Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
             DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
             ReAdjustWindowSize();
+
+            //Derek 10/26
+            int minWidth = 950;
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                minWidth = width;
+            this.MinWidth = minWidth;
         }
 
         private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
