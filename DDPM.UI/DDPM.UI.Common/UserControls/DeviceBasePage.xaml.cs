@@ -95,7 +95,7 @@ namespace DDPM.UI.Common.UserControls
             //System.Windows.MessageBox.Show("OnLeaveLandingMode");
 
             isFirstEntryNonLandingMode = true;
-            ChangeNonLandingMode();
+            ChangeToNonLandingMode();
         }
 
         private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
@@ -267,7 +267,7 @@ namespace DDPM.UI.Common.UserControls
                 ChangeToHorizontalLayout();
 
             if (!viewModel.IsLandingMode)
-                ChangeNonLandingMode();
+                ChangeToNonLandingMode();
             else
             { 
                 ChangeToLandingMode();
@@ -279,8 +279,9 @@ namespace DDPM.UI.Common.UserControls
             _log?.Info($"gridDisplayName.ActualWidth = {gridDisplayName.ActualWidth}");
         }
 
-        private void ChangeNonLandingMode()
+        private void ChangeToNonLandingMode()
         {
+            //横屏 to non landing mode
             if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal)
             {
                 AdjustHorizontalLayoutForNonLandingMode(false);
@@ -292,19 +293,7 @@ namespace DDPM.UI.Common.UserControls
                 }
             }
             else
-            {
-                //left side
-                LeftGrid.Width = this.ActualWidth;
-                LeftFrame.Width = this.ActualWidth;
-
-                //right side
-                vBar.Width = vBarWidthNormal;
-                //extend vBar
-                foreach (var item in viewModel.VbarItems)
-                {
-                    item.CompleteStory();
-                }
-            }
+                ExtendVBarOnVerticalLayout();
 
             //show right frame on ToHorizontalLayout
             //show right frame
@@ -313,7 +302,22 @@ namespace DDPM.UI.Common.UserControls
 
             //topViewScrollViewer.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
 
-            PrintDebugData("ChangeNonLandingMode");
+            //PrintDebugData("ChangeNonLandingMode");
+        }
+
+        private void ExtendVBarOnVerticalLayout()
+        {
+            //left side
+            LeftGrid.Width = this.ActualWidth;
+            LeftFrame.Width = this.ActualWidth;
+
+            //right side
+            vBar.Width = vBarWidthNormal;
+            //extend vBar
+            foreach (var item in viewModel.VbarItems)
+            {
+                item.CompleteStory();
+            }
         }
 
         //for debug
@@ -371,6 +375,10 @@ namespace DDPM.UI.Common.UserControls
             }
             else
                 isFirstEntryNonLandingMode = false;
+
+            //leave landing mode from Vertical layout
+            if (!viewModel.IsLandingMode && topStackPanel.Orientation == System.Windows.Controls.Orientation.Vertical)
+                ExtendVBarOnVerticalLayout();
         }
 
         private void AdjustHorizontalLayoutForNonLandingMode(bool bVBarNormal = true)
