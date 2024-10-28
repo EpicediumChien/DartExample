@@ -1034,6 +1034,16 @@ namespace DDPM.UI.Module.Color
             }         
         }
 
+        ~ColorViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+                DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent -= OnColoresetManualChangeHandler;
+                DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent -= OnNightLightStatusChangeHandler;
+            }
+        }
+
         private void OnColoresetManualChangeHandler(object sender, string e)
         {
             int index = 0;      

@@ -1105,6 +1105,10 @@ namespace ColorPreset.Plugins
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities, bool SmartHDR_ON = false)
         {
+
+            Trace.WriteLine($" [ReadColorPreset]  vcp_capbilities = {vcp_capbilities}");
+
+
             int index = -1;
 
             //if (Log != null)
