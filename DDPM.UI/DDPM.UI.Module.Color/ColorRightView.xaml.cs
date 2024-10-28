@@ -117,7 +117,9 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessStart_Stop();
             vm.WatchForProcessEnd_Stop();
 
-            vm.StopRegistryMonitor();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLight();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_ICC();
+            //vm.StopRegistryMonitor();
 
             //Lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -331,10 +333,11 @@ namespace DDPM.UI.Module.Color
 
         private void nightlight_config_Click(object sender, RoutedEventArgs e)
         {
-            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+            //string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
-            ColorViewModel vm = (ColorViewModel)DataContext;
+            //ColorViewModel vm = (ColorViewModel)DataContext;
 
+            /*
             if (vm.registryMonitor_NightLight == null)
             {
                 vm.registryMonitor_NightLight = new RegistryMonitor_NightLight(keyName);
@@ -342,6 +345,7 @@ namespace DDPM.UI.Module.Color
                 vm.registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(vm.OnError_NightLight);
                 vm.registryMonitor_NightLight.Start();
             }
+            */
 
             var psi = new System.Diagnostics.ProcessStartInfo();
 
