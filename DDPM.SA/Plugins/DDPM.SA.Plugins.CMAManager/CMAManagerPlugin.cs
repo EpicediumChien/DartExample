@@ -477,7 +477,7 @@ namespace DDPM.SA.Plugins.CMAManager
             foreach (TaskInfo taskinfo in taskInfos) {
                 //new Thread(runCommandTask).Start(taskinfo);
                 WriteLog($"[CMA]  before runCommandTask, taskinfo.sid = {taskinfo.sid} ; taskinfo.gid = {taskinfo.gid} ; taskinfo.tid = {taskinfo.tid} ; taskinfo.eventtype = {taskinfo.eventtype} ; taskinfo.command = {taskinfo.command}");
-                runCommandTask(taskinfo);
+                new Thread(runCommandTask).Start(taskinfo);
             }
         }
 
