@@ -1182,5 +1182,49 @@ namespace DDPM.EABroker
             }
         }
         #endregion
+
+        #region Telemetry
+        public void SendTelemetry_EasyArrangeLayout()
+        {
+            if (_easyArrangeService != null)
+            {
+                if (HoveringSplit != null)
+                {
+                    MonitorInfo? monitorInfo = null;
+                    if (WorkScreen != null)
+                    {
+                        List<MonitorInfo> monitorInfos = GetMonitorsFromDeviceName(WorkScreen.DeviceName);
+                        if ((monitorInfos != null) && (monitorInfos.Count > 0))
+                        {
+                            monitorInfo = monitorInfos[0];
+                        }
+                    }
+                    string eventValue = GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(HoveringSplit);
+                    _easyArrangeService.SendEasyArrangeLayoutTelemetry(eventValue, monitorInfo);
+                }
+            }
+        }
+        /// <summary>
+        /// CellCount SplitKey => return value
+        /// 0         'B'         "custom-layout"
+        /// 2                     "2-windows"
+        /// 3                     "3-windows"
+        /// 4                     "4-windows"
+        /// 5                     "5-windows"
+        /// 6                     "6-windows"
+        /// 7                     "7ormore-windows"
+        /// </summary>
+        /// <param name="splitCtrl"></param>
+        /// <returns></returns>
+        private string GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(ISplitCtrl splitCtrl)
+        {
+            if ((splitCtrl.CellCount == 0) && (splitCtrl.SplitKey == 'B'))
+                return "custom-layout";
+            if (splitCtrl.CellCount == 7)
+                return "7ormore-windows";
+            return $"{splitCtrl.CellCount}-windows";
+
+        }
+        #endregion Telemetry
     }
 }
