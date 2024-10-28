@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.PowerMon" WindowStartupLocation="Manual" Left="-10000" Top="-10000"
-        mc:Ignorable="d" Visibility="Hidden" Loaded="Window_Loaded" Unloaded="Window_Unloaded"
+        mc:Ignorable="d" Visibility="Hidden" Loaded="Window_Loaded" Unloaded="Window_Unloaded" ShowInTaskbar="False"
         Title="PowerMon" Height="1" Width="1">
     <Grid>
         
