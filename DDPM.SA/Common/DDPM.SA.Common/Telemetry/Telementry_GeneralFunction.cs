@@ -4,7 +4,7 @@ using System.Management;
 
 namespace DDPM.SA.Common
 {
-    public class GeneralFunction
+    public class Telementry_GeneralFunction
     {
         public string GetMonitorAdapter()
         {
