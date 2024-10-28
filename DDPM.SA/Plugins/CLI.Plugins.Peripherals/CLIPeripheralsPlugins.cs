@@ -587,6 +587,96 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("KEYBOARD"))
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Value = "SUCCESS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("MOUSE"))
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Value = "SUCCESS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("PEN"))
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Value = "SUCCESS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
             foreach (var op in _commandLineInput.Options)
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
