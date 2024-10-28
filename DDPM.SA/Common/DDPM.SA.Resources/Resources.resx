@@ -324,4 +324,46 @@
   <data name="Warm" xml:space="preserve">
     <value>Warm</value>
   </data>
+  <data name="Battery_Low" xml:space="preserve">
+    <value>Battery Low</value>
+  </data>
+  <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>Caps Lock Off</value>
+  </data>
+  <data name="Caps_Lock_On" xml:space="preserve">
+    <value>Caps Lock On</value>
+  </data>
+  <data name="Easy_Memory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+  <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>Go to Widget Settings</value>
+  </data>
+  <data name="is_muted" xml:space="preserve">
+    <value>is muted</value>
+  </data>
+  <data name="is_Unmuted" xml:space="preserve">
+    <value>is Unmuted</value>
+  </data>
+  <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Num Lock Off</value>
+  </data>
+  <data name="Num_Lock_On" xml:space="preserve">
+    <value>Num Lock On</value>
+  </data>
+  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>Presence detection sensor is covered</value>
+  </data>
+  <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>To access Quick Settings Widget again, press and hold [Alt + Z] on your keyboard.</value>
+  </data>
+  <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Scroll Lock Off</value>
+  </data>
+  <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Scroll Lock On</value>
+  </data>
+  <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>Walk Away Lock</value>
+  </data>
 </root>
