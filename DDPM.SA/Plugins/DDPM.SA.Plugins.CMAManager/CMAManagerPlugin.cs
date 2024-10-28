@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
@@ -467,7 +468,7 @@ namespace DDPM.SA.Plugins.CMAManager
             foreach (TaskInfo taskinfo in taskInfos) {
                 //new Thread(runCommandTask).Start(taskinfo);
                 WriteLog($"[CMA]  before runCommandTask, taskinfo.sid = {taskinfo.sid} ; taskinfo.gid = {taskinfo.gid} ; taskinfo.tid = {taskinfo.tid} ; taskinfo.eventtype = {taskinfo.eventtype} ; taskinfo.command = {taskinfo.command}");
-                runCommandTask(taskinfo);
+                new Thread(runCommandTask).Start(taskinfo);
             }
         }
 
