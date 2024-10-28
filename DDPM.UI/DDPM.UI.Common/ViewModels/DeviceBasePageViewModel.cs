@@ -445,6 +445,7 @@ namespace DDPM.UI.Common.ViewModels
                         }
                     }
                 }
+
                 return DefaultLeftView;
             }
         }

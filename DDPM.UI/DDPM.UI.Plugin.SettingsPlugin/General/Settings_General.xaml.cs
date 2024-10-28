@@ -30,7 +30,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         // 10/12/2024 Derek add checkBoxHeight for RWD
         private const int checkBoxHeight = 30;
-        private readonly Int16 breakPoints = 537;
+        private readonly Int16 breakPoints = 910;
 
         public Settings_General()
         {
@@ -125,7 +125,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         // 10/12/2024 Derek add for RWD
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints - 212 - 50)
                 reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
             else
                 reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
