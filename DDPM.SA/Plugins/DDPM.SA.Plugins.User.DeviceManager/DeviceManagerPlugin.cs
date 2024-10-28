@@ -3793,42 +3793,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update implementation
 
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, string minVersion = "")
         {
-            writelog($"[GetFWUpdateInfo], enter");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
-                writelog($"[GetFWUpdateInfo], start");
-                UpdateHelper updateHelper = new UpdateHelper();
-                updateHelper.UpdateItems = new List<UpdateItemInfo>();
-                DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
-                displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
-                if (reScan)
+                UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+                if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
-                    writelog($"[GetFWUpdateInfo], GetFWUpdateInfo start");
-                    updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
-                    if (updateHelper == null || updateHelper.UpdateItems == null)
-                    {
-                        writelog($"[GetFWUpdateInfo], updateHelper is null");
-                        updateHelper = new UpdateHelper();
-                        updateHelper.UpdateItems = new List<UpdateItemInfo>();
-                    }
-                    writelog($"[GetFWUpdateInfo], updateHelper count = {updateHelper.UpdateItems.Count}");
-                    writelog($"[GetFWUpdateInfo], GetFWUpdateInfo done");
-                    writelog($"[GetFWUpdateInfo], GetDisplayFWUpdate start");
-                    displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
-                    if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
-                    {
-                        writelog($"[GetFWUpdateInfo], displayUpdateHelper is null");
-                        displayUpdateHelper = new DisplayUpdateHelper();
-                        displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
-                    }
-                    writelog($"[GetFWUpdateInfo], displayUpdateHelper.Firmwares count = {displayUpdateHelper.Firmwares.Count}");
-                    writelog($"[GetFWUpdateInfo], GetDisplayFWUpdate done");
+                    updateHelper = new UpdateHelper();
+                    updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
-                writelog($"[GetFWUpdateInfo], _FWUpdatePlugin.GetFWUpdateInfo start");
+                DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
+                {
+                    displayUpdateHelper = new DisplayUpdateHelper();
+                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
+                }
+
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, minVersion).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -4093,7 +4076,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 SetDelayFWUpdateInfoPackage();
-                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, true, false, false, null, false, displayUpdateHelper, false, true, false).Result;
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, true, false, false, null, false, displayUpdateHelper, false, true, false, null, null, "").Result;
                 return Task.FromResult(true);
             }
             catch (Exception ex)
