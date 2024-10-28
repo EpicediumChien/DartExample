@@ -73,6 +73,36 @@ namespace DDPM.SA.Plugins.CMAManager
         }
 
 
+        public static class Lock
+        {
+            public const string InAppUpdate = "inappupdate";
+            public const string InAppRestoreDefault = "inapprestoredefault";
+            public const string RestoreFactoryDefaults = "restorefactorydefaults";
+            public const string ScreenNotification = "screennotification ";
+            public const string TelemetryConsent = "telemetryconsent";
+            public const string InAppBriCont = "InAppBriCont";
+            //public const string InAppUpdate = "inappupdate";  // #5.13.7
+            //public const string InAppUpdate = "inappupdate";  // #5.13.8
+            public const string PrimaryMonitorSync = "PrimaryMonitorSync";
+            public const string ResolutionRefreshRate = "ResolutionRefreshRate";
+            public const string USBCPrioritization = "USBCPrioritization";
+            //public const string InAppUpdate = "inappupdate";  // #5.13.12
+            public const string InAppUSBKVM = "InAppUSBKVM";
+            public const string InAppColorPreset = "InAppColorPreset ";
+            public const string PowerNap = "PowerNap";
+            public const string InAppExportSettings = "InAppExportSettings";
+            public const string CollabScreenShare = "CollabScreenShare ";
+            public const string hdr = "hdr";
+            public const string AntiFlicker = "AntiFlicker";
+            public const string MicSwitch = "MicSwitch";
+            public const string AIAutoFraming = "AIAutoFraming";
+            //public const string InAppUpdate = "inappupdate";  // #5.13.22
+            //public const string InAppUpdate = "inappupdate";  // #5.13.23
+            //public const string InAppUpdate = "inappupdate";  // #5.13.24
+            //public const string InAppUpdate = "inappupdate";  // #5.13.25
+
+        }
+
         public static class Dock
         {
             public const string FWVersion = "FWVersion";
