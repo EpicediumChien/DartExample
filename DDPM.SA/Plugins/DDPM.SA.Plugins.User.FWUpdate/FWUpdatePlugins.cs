@@ -1693,7 +1693,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             if (errorCodeNode.InnerText == "E2")
                             {
                                 _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                                _notificationStr = $"{_fWUpdateInfo.DeviceName} E2:Firmware update unsuccessful";
+                                _notificationStr = $"Firmware update unsuccessful";
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E2:Firmware update unsuccessful");
                             }
                             else if (errorCodeNode.InnerText == "E4")
