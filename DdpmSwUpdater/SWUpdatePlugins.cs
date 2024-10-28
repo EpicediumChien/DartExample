@@ -125,25 +125,41 @@ namespace DdpmSwUpdater
                 return Task.FromResult(swUpdateInfos);
             }
             LogManage.LogMessage($"swUpdateInfos ok");
+            LogManage.LogMessage($"swUpdateInfos.Count {swUpdateInfos.Count}");
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
+                string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string savePath;
                 CertificateCheck caCheck = new CertificateCheck();
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                LogManage.LogMessage($"Initialize download path start");
                 if (string.IsNullOrEmpty(installPath))
                 {
-                    savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                    if (!string.IsNullOrEmpty(path_programdata))
+                    {
+                        savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                    }
+                    else
+                    {
+                        foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
+                        {
+                            swUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                        }
+                        LogManage.LogMessage(nameof(DownloadAndInstall) + " path_programdata is can not get");
+                        return Task.FromResult(swUpdateInfos);
+                    }
                 }
                 else
                 {
                     savePath = installPath;
                 }
-                LogManage.LogMessage($"{savePath}");
                 if (!Directory.Exists(savePath))
                 {
                     Directory.CreateDirectory(savePath);
                 }
+                LogManage.LogMessage($"Initialize download path done");
+                LogManage.LogMessage($"CheckFold1 start");
                 if (!CheckFold(savePath, out string folderInfo, out string pathSymbolicLinInfo))//0815 Bruce Add Security
                 {
                     foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
@@ -154,7 +170,6 @@ namespace DdpmSwUpdater
                     return Task.FromResult(swUpdateInfos);
                 }
                 LogManage.LogMessage($"CheckFold ok");
-                LogManage.LogMessage($"swUpdateInfos.Count {swUpdateInfos.Count}");
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
                     LogManage.LogMessage(swUpdateInfos[i].SoftwareName + nameof(DownloadAndInstall) + " start");
@@ -163,6 +178,7 @@ namespace DdpmSwUpdater
                     _updateErrorCode = SWUErrorCode.Unknow;
                     swUpdateInfos[i].SWUErrorCode = _updateErrorCode;
                     string url = swUpdateInfos[i].ServerPath;
+                    LogManage.LogMessage($"CheckFold2 start");
                     if (!CheckFold(savePath, out folderInfo, out pathSymbolicLinInfo))//0815 Bruce Add Security
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
@@ -170,6 +186,7 @@ namespace DdpmSwUpdater
                         continue;
                     }
                     LogManage.LogMessage($"CheckFold2 ok");
+                    LogManage.LogMessage($"Download start");
                     _downloadTimer = new Timer();
                     _downloadTimer.Interval = 1000;
                     _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -180,6 +197,7 @@ namespace DdpmSwUpdater
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, isSkipCA);
                     _downloadTimer.Stop();
+                    LogManage.LogMessage($"Download done");
                     if (!downloadRet)
                     {
                         if (downloadInfo.Equals("CA check fail"))
@@ -193,34 +211,54 @@ namespace DdpmSwUpdater
                         LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " Download File Fail");
                         continue;
                     }
+                    LogManage.LogMessage($"Creat extractPath");
                     string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
                     if (!Directory.Exists(extractPath))
                     {
                         Directory.CreateDirectory(extractPath);
                     }
+                    LogManage.LogMessage($"CheckFold3 start");
                     if (!CheckFold(extractPath, out folderInfo, out pathSymbolicLinInfo))//0815 Bruce Add Security
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
                         continue;
                     }
-                    string exeFilePath;
-                    if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                    LogManage.LogMessage($"CheckFold3 ok");
+                    try
                     {
-                        LogManage.LogMessage(_SWUpdateInfo.SoftwareName + " Unzip Faile");
-                        _notificationStr = $"Software update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
-                        continue;
+                        using (FileLock fileLock = new FileLock(_installationFileStoragePath, PathCheckOption.None, lockNow: true))
+                        {
+                            string exeFilePath;
+                            LogManage.LogMessage($"Unzip start");
+                            if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                            {
+                                LogManage.LogMessage(_SWUpdateInfo.SoftwareName + " Unzip Faile");
+                                _notificationStr = $"Software update unsuccessful.";
+                                NotificationFWupdate("Error", _notificationStr);
+                                continue;
+                            }
+                            LogManage.LogMessage($"Unzip done");
+                            LogManage.LogMessage($"Install start");
+                            using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
+                            {
+                                swUpdateInfos[i].InstallPaths = exeFilePath;
+                                swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
+                            }
+                            LogManage.LogMessage($"Install done");
+                            if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
+                            {
+                                NotificationFWupdate("SW info", _notificationStr);
+                            }
+                            else
+                            {
+                                NotificationFWupdate("Error", _notificationStr);
+                            }
+                        }
                     }
-                    swUpdateInfos[i].InstallPaths = exeFilePath;
-                    swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
-                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
+                    catch (Exception ex)
                     {
-                        NotificationFWupdate("SW info", _notificationStr);
-                    }
-                    else
-                    {
-                        NotificationFWupdate("Error", _notificationStr);
+                        LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} FileLock Error: {ex.Message}");
                     }
                 }
                 // 檢查資料夾是否存在
@@ -313,6 +351,7 @@ namespace DdpmSwUpdater
                     _clientProcess.WaitForExit();
                 }
                 _updateErrorCode = SWUErrorCode.NoError;
+                CancelRegEvent();
                 return _updateErrorCode;
             }
             catch (Exception ex)
@@ -477,8 +516,11 @@ namespace DdpmSwUpdater
         }
         private void CancelRegEvent()
         {
-            watcher.Stop();
-            watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
+            if (watcher != null)
+            {
+                watcher.Stop();
+                watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
+            }
         }
         private void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
         {
