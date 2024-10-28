@@ -2253,4 +2253,10 @@
   <data name="VisionEngine_Crosshair" xml:space="preserve">
     <value>Crosshair</value>
   </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Software version</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Driver version</value>
+  </data>
 </root>

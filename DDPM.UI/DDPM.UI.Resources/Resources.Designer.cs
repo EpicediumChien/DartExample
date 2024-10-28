@@ -1744,6 +1744,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Driver version.
+        /// </summary>
+        internal static string Driver_version {
+            get {
+                return ResourceManager.GetString("Driver_version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dual Resolution.
         /// </summary>
         internal static string Dual_Resolution {
@@ -4422,6 +4431,15 @@ namespace DDPM.UI.Resources {
         internal static string SmartHDR {
             get {
                 return ResourceManager.GetString("SmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Software version.
+        /// </summary>
+        internal static string Software_version {
+            get {
+                return ResourceManager.GetString("Software_version", resourceCulture);
             }
         }
         
