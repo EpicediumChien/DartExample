@@ -15,7 +15,7 @@ using VcpCore.Common;
 using Windows.System;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
-
+[assembly: InternalsVisibleTo("DDPM.UI.Common.Tests")]
 namespace DDPM.UI.Module.Brightness
 {
     internal class BrightnessViewModel : ObservableObject, INotifyPropertyChanged

@@ -2118,7 +2118,7 @@ namespace VcpCore.Plugins
                         dd.cb = Marshal.SizeOf(dd);
                         //----
                         int realindex = -1;
-                        for (int jj = 0; _EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
+                        for (uint jj = 0u; _EnumDisplayDevices(DeviceName, jj, ref dd, 0); jj++)
                         {
                             token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 

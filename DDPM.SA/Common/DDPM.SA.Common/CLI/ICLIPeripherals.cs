@@ -49,7 +49,7 @@ namespace DDPM.SA.Common
             switch (targetFeature)
             {
                 case "FIELDOFVIEW":
-                    Guid = "DellPeripheral.Webcam.0";
+                    //Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.GetIsPropertyFOVSupportedByDTP(Guid).Result)
                     {
                         retvalue = _devMgr.GetFieldOfView(Guid).Result;
@@ -66,7 +66,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "HDR":
-                    Guid = "DellPeripheral.Webcam.0";
+                    //Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.GetIsPropertyHDRSupported(Guid).Result)
                     {
                         retcode = _devMgr.GetIsHDROn(Guid).Result;
@@ -84,7 +84,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "ANTIFLICKER":
-                    Guid = "DellPeripheral.Webcam.0";
+                    //Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.GetIsPropertyAntiFlickerSupported(Guid).Result)
                     {
                         retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
@@ -102,7 +102,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "AIAUTOFRAMING":
-                    Guid = "DellPeripheral.Webcam.0";
+                    //Guid = "DellPeripheral.Webcam.0";
                     if (_devMgr.GetIsPropertyAutoFramingSupported(Guid).Result)
                     {
                         retcode = _devMgr.GetIsAutoFramingOn(Guid).Result;

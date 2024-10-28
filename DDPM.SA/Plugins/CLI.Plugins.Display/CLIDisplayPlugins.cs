@@ -3,10 +3,12 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.CMAManager;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -1440,7 +1442,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -1514,7 +1516,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -1988,7 +1990,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = SetVCPCode(devMgr, monitor, "0x10", value).Result;
 
-                        S_Brightness_RESPONSE.Model = monitor.AliasDeviceName;
+                        S_Brightness_RESPONSE.Model = monitor.modelName;
                         S_Brightness_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Brightness_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Brightness_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2050,7 +2052,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = SetVCPCode(devMgr, nidx, "0x10", value).Result;
 
-                        S_Brightness_RESPONSE.Model = _AllInfoMonitors[nidx].AliasDeviceName;
+                        S_Brightness_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
                         S_Brightness_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
                         S_Brightness_RESPONSE.Index = change_0base_to_1base(idx);
                         S_Brightness_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
@@ -2107,7 +2109,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
 
-                            S_Brightness_RESPONSE.Model = mo.AliasDeviceName;
+                            S_Brightness_RESPONSE.Model = mo.modelName;
                             S_Brightness_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             S_Brightness_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             S_Brightness_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2164,7 +2166,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = GetVCPCode(devMgr, monitor, "0x10").Result;
 
-                        G_Brightness_RESPONSE.Model = monitor.AliasDeviceName;
+                        G_Brightness_RESPONSE.Model = monitor.modelName;
                         G_Brightness_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         G_Brightness_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         G_Brightness_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2195,7 +2197,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
 
-                                G_Luminus_RESPONSE.Model = monitor.AliasDeviceName;
+                                G_Luminus_RESPONSE.Model = monitor.modelName;
                                 G_Luminus_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                                 G_Luminus_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                                 G_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2225,7 +2227,7 @@ namespace DDPM.CLI.Plugins.Display
                         int nidx = int.Parse(idx);
                         rc = GetVCPCode(devMgr, nidx, "0x10").Result;
 
-                        G_Brightness_RESPONSE.Model = _AllInfoMonitors[nidx].AliasDeviceName;
+                        G_Brightness_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
                         G_Brightness_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
                         G_Brightness_RESPONSE.Index = change_0base_to_1base(idx);
                         G_Brightness_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
@@ -2255,7 +2257,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
-                                G_Luminus_RESPONSE.Model = _AllInfoMonitors[nidx].AliasDeviceName;
+                                G_Luminus_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
                                 G_Luminus_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
                                 G_Luminus_RESPONSE.Index = change_0base_to_1base(idx);
                                 G_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
@@ -2282,7 +2284,7 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"Brightness get tag entry");
                             rc = GetVCPCode(devMgr, mo, "0x10").Result;
 
-                            G_Brightness_RESPONSE.Model = mo.AliasDeviceName;
+                            G_Brightness_RESPONSE.Model = mo.modelName;
                             G_Brightness_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_Brightness_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_Brightness_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2312,7 +2314,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
-                                    G_Luminus_RESPONSE.Model = mo.AliasDeviceName;
+                                    G_Luminus_RESPONSE.Model = mo.modelName;
                                     G_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                                     G_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                                     G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2397,7 +2399,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            S_Contrast_RESPONSE.Model = monitor.AliasDeviceName;
+                            S_Contrast_RESPONSE.Model = monitor.modelName;
                             S_Contrast_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             S_Contrast_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             S_Contrast_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2410,7 +2412,7 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented);
                         }
 
-                        S_Contrast_RESPONSE.Model = monitor.AliasDeviceName;
+                        S_Contrast_RESPONSE.Model = monitor.modelName;
                         S_Contrast_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Contrast_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Contrast_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2464,7 +2466,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            S_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                            S_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                             S_Contrast_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                             S_Contrast_RESPONSE.Index = change_0base_to_1base((_AllInfoMonitors[Convert.ToInt32(idx)].Index).ToString());
                             S_Contrast_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -2477,7 +2479,7 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented);
                         }
 
-                        S_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                        S_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                         S_Contrast_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                         S_Contrast_RESPONSE.Index = change_0base_to_1base(idx);
                         S_Contrast_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -2529,7 +2531,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                S_Contrast_RESPONSE.Model = mo.AliasDeviceName;
+                                S_Contrast_RESPONSE.Model = mo.modelName;
                                 S_Contrast_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                                 S_Contrast_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                                 S_Contrast_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2541,7 +2543,7 @@ namespace DDPM.CLI.Plugins.Display
                                 System.Console.WriteLine(JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented);
                             }
-                            S_Contrast_RESPONSE.Model = mo.AliasDeviceName;
+                            S_Contrast_RESPONSE.Model = mo.modelName;
                             S_Contrast_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             S_Contrast_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             S_Contrast_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2587,7 +2589,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = GetVCPCode(devMgr, monitor, "0x12").Result;
 
-                        G_Contrast_RESPONSE.Model = monitor.AliasDeviceName;
+                        G_Contrast_RESPONSE.Model = monitor.modelName;
                         G_Contrast_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         G_Contrast_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         G_Contrast_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2632,7 +2634,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = GetVCPCode(devMgr, Convert.ToInt32(idx), "0x12").Result;
 
-                        G_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                        G_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                         G_Contrast_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                         G_Contrast_RESPONSE.Index = change_0base_to_1base(idx);
                         G_Contrast_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -2671,7 +2673,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             rc = GetVCPCode(devMgr, mo, "0x12").Result;
 
-                            G_Contrast_RESPONSE.Model = mo.AliasDeviceName;
+                            G_Contrast_RESPONSE.Model = mo.modelName;
                             G_Contrast_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_Contrast_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_Contrast_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2753,7 +2755,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = SetVCPCode(devMgr, monitor, "0x10", value).Result;
 
-                        S_Luminus_RESPONSE.Model = monitor.AliasDeviceName;
+                        S_Luminus_RESPONSE.Model = monitor.modelName;
                         S_Luminus_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Luminus_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2791,7 +2793,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = SetVCPCode(devMgr, Convert.ToInt32(idx), "0x10", value).Result;
 
-                        S_Luminus_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                        S_Luminus_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                         S_Luminus_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                         S_Luminus_RESPONSE.Index = change_0base_to_1base(idx);
                         S_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -2825,7 +2827,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
 
-                            S_Luminus_RESPONSE.Model = mo.AliasDeviceName;
+                            S_Luminus_RESPONSE.Model = mo.modelName;
                             S_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             S_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             S_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2866,7 +2868,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = GetVCPCode(devMgr, monitor, "0x10").Result;
 
-                        G_Luminus_RESPONSE.Model = monitor.AliasDeviceName;
+                        G_Luminus_RESPONSE.Model = monitor.modelName;
                         G_Luminus_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         G_Luminus_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         G_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -2907,7 +2909,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = GetVCPCode(devMgr, Convert.ToInt32(idx), "0x10").Result;
 
-                        G_Luminus_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                        G_Luminus_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                         G_Luminus_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                         G_Luminus_RESPONSE.Index = change_0base_to_1base(idx);
                         G_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -2945,7 +2947,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             rc = GetVCPCode(devMgr, mo, "0x10").Result;
 
-                            G_Luminus_RESPONSE.Model = mo.AliasDeviceName;
+                            G_Luminus_RESPONSE.Model = mo.modelName;
                             G_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -3011,7 +3013,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
 
-                        G_EDID_RESPONSE.Model = monitor.AliasDeviceName;
+                        G_EDID_RESPONSE.Model = monitor.modelName;
                         G_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         G_EDID_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         G_EDID_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -3050,7 +3052,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
                         {
-                            G_EDID_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                            G_EDID_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                             G_EDID_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                             G_EDID_RESPONSE.Index = change_0base_to_1base(idx);
                             G_EDID_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -3101,7 +3103,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
 
-                            G_EDID_RESPONSE.Model = mo.AliasDeviceName;
+                            G_EDID_RESPONSE.Model = mo.modelName;
                             G_EDID_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_EDID_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_EDID_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -3143,7 +3145,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
 
-                        R_EDID_RESPONSE.Model = monitor.AliasDeviceName;
+                        R_EDID_RESPONSE.Model = monitor.modelName;
                         R_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         R_EDID_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         R_EDID_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -3162,7 +3164,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             R_EDID_RESPONSE.Value = "N/A";
-                            R_EDID_RESPONSE.AliasDeviceName = monitor.AliasDeviceName;
+                            R_EDID_RESPONSE.AliasDeviceName = monitor.modelName;
                             R_EDID_RESPONSE.Edid = monitor.edid.Edid;
                             R_EDID_RESPONSE.ManufactureID = monitor.edid.ManufactureID;
                             R_EDID_RESPONSE.VendorID = monitor.edid.VendorID;
@@ -3192,7 +3194,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
                         {
-                            R_EDID_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                            R_EDID_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                             R_EDID_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                             R_EDID_RESPONSE.Index = change_0base_to_1base(idx);
                             R_EDID_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -3211,7 +3213,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 R_EDID_RESPONSE.Value = "N/A";
-                                R_EDID_RESPONSE.AliasDeviceName = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                                R_EDID_RESPONSE.AliasDeviceName = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                                 R_EDID_RESPONSE.Edid = _AllInfoMonitors[Convert.ToInt32(idx)].edid.Edid;
                                 R_EDID_RESPONSE.ManufactureID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ManufactureID;
                                 R_EDID_RESPONSE.VendorID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.VendorID;
@@ -3252,7 +3254,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
 
-                            R_EDID_RESPONSE.Model = monitor.AliasDeviceName;
+                            R_EDID_RESPONSE.Model = monitor.modelName;
                             R_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             R_EDID_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             R_EDID_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -3271,7 +3273,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 R_EDID_RESPONSE.Value = "N/A";
-                                R_EDID_RESPONSE.AliasDeviceName = monitor.AliasDeviceName;
+                                R_EDID_RESPONSE.AliasDeviceName = monitor.modelName;
                                 R_EDID_RESPONSE.Edid = monitor.edid.Edid;
                                 R_EDID_RESPONSE.ManufactureID = monitor.edid.ManufactureID;
                                 R_EDID_RESPONSE.VendorID = monitor.edid.VendorID;
@@ -3336,7 +3338,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
 
-                        R_EDID_RESPONSE.Model = monitor.AliasDeviceName;
+                        R_EDID_RESPONSE.Model = monitor.modelName;
                         R_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         R_EDID_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         R_EDID_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -3355,7 +3357,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             R_EDID_RESPONSE.Value = "N/A";
-                            R_EDID_RESPONSE.AliasDeviceName = monitor.AliasDeviceName;
+                            R_EDID_RESPONSE.AliasDeviceName = monitor.modelName;
                             R_EDID_RESPONSE.Edid = monitor.edid.Edid;
                             R_EDID_RESPONSE.ManufactureID = monitor.edid.ManufactureID;
                             R_EDID_RESPONSE.VendorID = monitor.edid.VendorID;
@@ -3386,7 +3388,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
                         {
-                            R_EDID_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                            R_EDID_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                             R_EDID_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                             R_EDID_RESPONSE.Index = change_0base_to_1base(idx);
                             R_EDID_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -3405,7 +3407,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 R_EDID_RESPONSE.Value = "N/A";
-                                R_EDID_RESPONSE.AliasDeviceName = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                                R_EDID_RESPONSE.AliasDeviceName = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                                 R_EDID_RESPONSE.Edid = _AllInfoMonitors[Convert.ToInt32(idx)].edid.Edid;
                                 R_EDID_RESPONSE.ManufactureID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ManufactureID;
                                 R_EDID_RESPONSE.VendorID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.VendorID;
@@ -3447,7 +3449,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
 
-                            R_EDID_RESPONSE.Model = monitor.AliasDeviceName;
+                            R_EDID_RESPONSE.Model = monitor.modelName;
                             R_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             R_EDID_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             R_EDID_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -3466,7 +3468,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 R_EDID_RESPONSE.Value = "N/A";
-                                R_EDID_RESPONSE.AliasDeviceName = monitor.AliasDeviceName;
+                                R_EDID_RESPONSE.AliasDeviceName = monitor.modelName;
                                 R_EDID_RESPONSE.Edid = monitor.edid.Edid;
                                 R_EDID_RESPONSE.ManufactureID = monitor.edid.ManufactureID;
                                 R_EDID_RESPONSE.VendorID = monitor.edid.VendorID;
@@ -3532,7 +3534,7 @@ namespace DDPM.CLI.Plugins.Display
                     int count = 0;
                     foreach (var mo in _AllInfoMonitors)
                     {
-                        G_Monitos_RESPONSE.Monitors.Add("[" + count.ToString() + "] " + mo.AliasDeviceName);
+                        G_Monitos_RESPONSE.Monitors.Add("[" + count.ToString() + "] " + mo.modelName);
                         count++;
                     }
 
@@ -3578,7 +3580,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
 
-                        G_FW_RESPONSE.Model = monitor.AliasDeviceName;
+                        G_FW_RESPONSE.Model = monitor.modelName;
                         G_FW_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         G_FW_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         G_FW_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
@@ -3622,7 +3624,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
                         {
-                            G_FW_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
+                            G_FW_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].modelName;
                             G_FW_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
                             G_FW_RESPONSE.Index = change_0base_to_1base(idx);
                             G_FW_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
@@ -3674,7 +3676,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
 
-                            G_FW_RESPONSE.Model = mo.AliasDeviceName;
+                            G_FW_RESPONSE.Model = mo.modelName;
                             G_FW_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_FW_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_FW_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -3744,7 +3746,7 @@ namespace DDPM.CLI.Plugins.Display
             int index = 0;
             foreach (var g in _AllInfoMonitors)
             {
-                System.Console.WriteLine("[" + index.ToString() + "] : " + g.AliasDeviceName);
+                System.Console.WriteLine("[" + index.ToString() + "] : " + g.modelName);
                 index++;
             }
 
@@ -3766,7 +3768,7 @@ namespace DDPM.CLI.Plugins.Display
             //string rc = await _DisplayPlugin.GetCapabilitiesString(_AllInfoMonitors[i_index]);
             string rc = await devMgr.GetCapabilitiesString(_AllInfoMonitors[i_index]);
 
-            System.Console.WriteLine("{0} : CapabilitiesString is\n{1}", _AllInfoMonitors[i_index].AliasDeviceName, rc);
+            System.Console.WriteLine("{0} : CapabilitiesString is\n{1}", _AllInfoMonitors[i_index].modelName, rc);
 
             return (int)CLI_ExitCode.success;
         }
@@ -3786,7 +3788,7 @@ namespace DDPM.CLI.Plugins.Display
             //string rc = await _DisplayPlugin.GetVCPCapabilities(_AllInfoMonitors[i_index]);
             string rc = await devMgr.GetVCPCapabilities(_AllInfoMonitors[i_index]);
 
-            System.Console.WriteLine("{0} : GetVCPCapabilities:\n{1}", _AllInfoMonitors[i_index].AliasDeviceName, rc);
+            System.Console.WriteLine("{0} : GetVCPCapabilities:\n{1}", _AllInfoMonitors[i_index].modelName, rc);
 
             return (int)CLI_ExitCode.success;
         }
@@ -4627,7 +4629,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         r = devMgr.WriteColorPreset(monitor, value).Result;
 
-                        _Set_SupportedColorPreset_RESPONSE.Model = monitor.AliasDeviceName;
+                        _Set_SupportedColorPreset_RESPONSE.Model = monitor.modelName;
                         _Set_SupportedColorPreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_SupportedColorPreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
@@ -4662,7 +4664,7 @@ namespace DDPM.CLI.Plugins.Display
                         r = devMgr.WriteColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
 
                         // jim modify 20240608
-                        _Set_SupportedColorPreset_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].AliasDeviceName;
+                        _Set_SupportedColorPreset_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].modelName;
                         _Set_SupportedColorPreset_RESPONSE.SerialNumber = _AllInfoMonitors[System.Convert.ToInt32(idx)].edid.SerialNumber;
                         _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base(idx);
                         _Set_SupportedColorPreset_RESPONSE.ServiceTag = "";
@@ -4703,7 +4705,7 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"WriteColorPreset set tag Entry");
                             r = devMgr.WriteColorPreset(mo, value).Result;
 
-                            _Set_SupportedColorPreset_RESPONSE.Model = mo.AliasDeviceName;
+                            _Set_SupportedColorPreset_RESPONSE.Model = mo.modelName;
                             _Set_SupportedColorPreset_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_SupportedColorPreset_RESPONSE.ServiceTag = tag;
@@ -4751,7 +4753,7 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"ReadCurrentColorPreset Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
 
-                        _Get_ActiveColorPresetList_RESPONSE.Model = monitor.AliasDeviceName;
+                        _Get_ActiveColorPresetList_RESPONSE.Model = monitor.modelName;
                         _Get_ActiveColorPresetList_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Get_ActiveColorPresetList_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
@@ -4785,7 +4787,7 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"ReadCurrentColorPreset idx Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
 
-                        _Get_ActiveColorPresetList_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].AliasDeviceName;
+                        _Get_ActiveColorPresetList_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].modelName;
                         _Get_ActiveColorPresetList_RESPONSE.SerialNumber = _AllInfoMonitors[System.Convert.ToInt32(idx)].edid.SerialNumber;
                         _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base(idx);
                         _Get_ActiveColorPresetList_RESPONSE.ServiceTag = "";
@@ -4820,7 +4822,7 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"ReadCurrentColorPreset tag Entry");
                             _ActiveColorPreset = devMgr.ReadCurrentColorPreset(mo).Result;
 
-                            _Get_ActiveColorPresetList_RESPONSE.Model = mo.AliasDeviceName;
+                            _Get_ActiveColorPresetList_RESPONSE.Model = mo.modelName;
                             _Get_ActiveColorPresetList_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Get_ActiveColorPresetList_RESPONSE.ServiceTag = tag;
@@ -4898,7 +4900,14 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
-                        r = devMgr.SetMonitorProfile(monitor, value).Result;
+                        try
+                        {
+                            r = devMgr.SetMonitorProfile(monitor, value).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                        
 
                         _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
@@ -4925,7 +4934,14 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
-                        r = devMgr.SetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                        try
+                        {
+                            r = devMgr.SetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                        
 
                         // jim modify 20240608
                         _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
@@ -4957,7 +4973,14 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
-                            r = devMgr.SetMonitorProfile(mo, value).Result;
+                            try
+                            {
+                                r = devMgr.SetMonitorProfile(mo, value).Result;
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                            }                            
 
                             _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_AllMonitorProfile_RESPONSE.ServiceTag = tag;
@@ -4994,7 +5017,14 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (var monitor in _AllInfoMonitors)
                     {
                         Key_Profile_Name = string.Empty;
-                        Key_Profile_Name = devMgr.GetMonitorProfile(monitor).Result;
+                        try
+                        {
+                            Key_Profile_Name = devMgr.GetMonitorProfile(monitor).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+                        }                                               
 
                         // jim modify 20240608
                         _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -5023,7 +5053,15 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string idx in index)
                     {
                         Key_Profile_Name = string.Empty;
-                        Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+                        
+                        try
+                        {
+                            Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+                        }
 
                         // jim modify 20240608
                         _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
@@ -5056,7 +5094,15 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             Key_Profile_Name = string.Empty;
-                            Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
+                            
+                            try
+                            {
+                                Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
+                            }
 
                             // jim modify 20240608
                             _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
@@ -5258,7 +5304,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -5348,7 +5394,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -5401,7 +5447,7 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"RestoreFactoryDefaults entry");
                         r = devMgr.SetVCPCapability(monitor, 0x04, 0x01).Result;
 
-                        _Set_CLI_RESPONSE_RESPONSE.Model = monitor.AliasDeviceName;
+                        _Set_CLI_RESPONSE_RESPONSE.Model = monitor.modelName;
                         _Set_CLI_RESPONSE_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_CLI_RESPONSE_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
@@ -5435,7 +5481,7 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"RestoreFactoryDefaults idx entry");
                         r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x04, 0x01).Result;
 
-                        _Set_CLI_RESPONSE_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].AliasDeviceName;
+                        _Set_CLI_RESPONSE_RESPONSE.Model = _AllInfoMonitors[System.Convert.ToInt32(idx)].modelName;
                         _Set_CLI_RESPONSE_RESPONSE.SerialNumber = _AllInfoMonitors[System.Convert.ToInt32(idx)].edid.SerialNumber;
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
                         _Set_CLI_RESPONSE_RESPONSE.ServiceTag = "";
@@ -5473,7 +5519,7 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"RestoreFactoryDefaults tag entry");
                             r = devMgr.SetVCPCapability(mo, 0x04, 0x01).Result;
 
-                            _Set_CLI_RESPONSE_RESPONSE.Model = mo.AliasDeviceName;
+                            _Set_CLI_RESPONSE_RESPONSE.Model = mo.modelName;
                             _Set_CLI_RESPONSE_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_CLI_RESPONSE_RESPONSE.ServiceTag = tag;
@@ -6497,33 +6543,59 @@ namespace DDPM.CLI.Plugins.Display
 
                                 break;
                             }
-                            if (string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
+                            if (commandLineInput.Options.Count == 1)
                             {
-                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                                 {
-
-
-                                    cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-                                    string value = commandLineInput.Options[0].Option_Value;
-                                    string frequency = null;
-                                    //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
-                                    string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
-                                    //Debug.WriteLine($"width: {ss[0]}, {ss[1]}");
-                                    if (string.IsNullOrEmpty(ss[1]))
+                                    if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                                     {
-                                        string[] sss = ss[1].Split("@");
-                                        //Debug.WriteLine($"high: {sss[0]}, {sss[1]}");
-                                        if (string.IsNullOrEmpty(sss[1]))
+
+
+                                        cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                        string value = commandLineInput.Options[0].Option_Value;
+                                        string frequency = null;
+                                        //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
+                                        string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
+                                        //Trace.WriteLine($"1: {ss[0]}  {ss[1]}");
+                                        if (ss.Length > 1)
                                         {
-                                            sss[1].Replace(".", ",");
-                                            if (sss[1].Contains(","))
+                                            if (!string.IsNullOrEmpty(ss[1]))
                                             {
-                                                string[] ssss = sss[1].Split(",");
-                                                if (string.IsNullOrEmpty(ssss[0]))
+                                                string[] sss = ss[1].Split("@");
+                                                //Trace.WriteLine($"2: {sss[0]} {sss[1]}");
+                                                if (sss.Length > 1)
                                                 {
-                                                    frequency = ssss[0];
-                                                    string lock_option = ssss[1];
-                                                }
+                                                    if (!string.IsNullOrEmpty(sss[1]))
+                                                    {
+                                                        //sss[1].Replace(".", ",");
+                                                        if (sss[1].Contains(","))
+                                                        {
+                                                            //Trace.WriteLine($"3:  {sss[1]}");
+                                                            string[] ssss = sss[1].Split(",");
+                                                            if (!string.IsNullOrEmpty(ssss[0]))
+                                                            {
+                                                                frequency = ssss[0];
+                                                                //Trace.WriteLine($"4: {ssss[0]}");
+                                                                //Trace.WriteLine($"4: {ssss[1]}");
+                                                                //string lock_option = ssss[1];
+                                                            }
+                                                            else
+                                                            {
+                                                                cLI_RESPONSE.Result = "FAIL";
+                                                                cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                                            }
+
+                                                        }
+                                                        else
+                                                            frequency = sss[1];
+                                                        //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
+                                                        displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
+                                                        ret = _devMgr.SetDisplayPropertiest(monitorInfo,
+                                                            displayProperties,
+                                                            displayPropertiesInfo.CurrentOrientation).Result;
+
+                                                    }
+                                                }                                                 
                                                 else
                                                 {
                                                     cLI_RESPONSE.Result = "FAIL";
@@ -6532,18 +6604,10 @@ namespace DDPM.CLI.Plugins.Display
 
                                             }
                                             else
-                                                frequency = sss[1];
-                                            //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
-                                            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
-                                            ret = _devMgr.SetDisplayPropertiest(monitorInfo,
-                                                displayProperties,
-                                                displayPropertiesInfo.CurrentOrientation).Result;
-
-                                        }
-                                        else
-                                        {
-                                            cLI_RESPONSE.Result = "FAIL";
-                                            cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                            {
+                                                cLI_RESPONSE.Result = "FAIL";
+                                                cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                            }
                                         }
 
                                     }
@@ -6554,13 +6618,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
 
                                 }
-                                else
-                                {
-                                    cLI_RESPONSE.Result = "FAIL";
-                                    cLI_RESPONSE.Message = "Invalid command line syntax ";
-                                }
-
-                            }
+                            }                    
                             else
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -6928,7 +6986,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (result)
             {
-                ALS_RESPONSE.Model = monitorInfos[int.Parse(idx)].AliasDeviceName;
+                ALS_RESPONSE.Model = monitorInfos[int.Parse(idx)].modelName;
                 ALS_RESPONSE.SerialNumber = monitorInfos[int.Parse(idx)].edid.SerialNumber;
                 ALS_RESPONSE.ServiceTag = monitorInfos[int.Parse(idx)].edid.ServiceTag;
                 ALS_RESPONSE.Result = "PASS";
@@ -7598,7 +7656,7 @@ namespace DDPM.CLI.Plugins.Display
                 return (int)CLI_ExitCode.functional_error;
             }
 
-            Console.WriteLine($"Monitor [{_AllInfoMonitors[idxMonitor].AliasDeviceName}] : PXP Capabilities:");
+            Console.WriteLine($"Monitor [{_AllInfoMonitors[idxMonitor].modelName}] : PXP Capabilities:");
             Console.WriteLine("\"Pxp.GetCapabilities\": { [");
             bool isFirst = true;
             foreach (UInt16 cap in pxpCaps)
@@ -8032,14 +8090,14 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) GetDeviceData(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            if (commandLineInput.Command == "GET" && commandLineInput.Options.Count < 2)
             {
                 return DeviceData(devMgr, commandLineInput).Result;
             }
-            else if (commandLineInput.Command == "SET" && commandLineInput.Options.Count == 1)
-            {
-                return ApplyConfiguration(devMgr, commandLineInput).Result;
-            }
+            //else if (commandLineInput.Command == "SET" && commandLineInput.Options.Count == 1)
+            //{
+            //    return ApplyConfiguration(devMgr, commandLineInput).Result;
+            //}
             else
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -8063,6 +8121,7 @@ namespace DDPM.CLI.Plugins.Display
             bool recode_per = false;
 
             List<int> _monitorIndeies = new List<int>();
+            List<int> _deviceIndeies = new List<int>();
             /*_deviceHelper = new DeviceHelper
             {
                 deviceInfo = new List<DeviceInfo>()
@@ -8074,262 +8133,682 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+            //_deviceIndeies = GetDDeviceIndeies(commandLineInput, _deviceinfo);
 
             int index = 0;
+            int index_per = 0;
 
-            foreach (int idx in _monitorIndeies)
+
+            if (commandLineInput.Options.Count > 0)
             {
-                MonitorInfo monitor = _AllInfoMonitors[idx];
-                Get_DeviceData get_DeviceData = new Get_DeviceData();
 
-
-                get_DeviceData.Model = monitor.AliasDeviceName;
-                get_DeviceData.SerialNumber = monitor.edid.SerialNumber;
-                get_DeviceData.Index = change_0base_to_1base((monitor.Index).ToString());
-                get_DeviceData.ServiceTag = monitor.edid.ServiceTag;
-
-                get_DeviceData.Manufacturer = modify_Manufactur(monitor.edid.ManufactureID);
-                get_DeviceData.PID = monitor.edid.PID.ToString();
-                get_DeviceData.ManufacturingYear = monitor.edid.Year.ToString();
-                get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
-                get_DeviceData.FirmwareVersion = monitor.FwVersion;
-
-                if (monitor.CapabilityDic.ContainsKey("C0"))
+                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                 {
-                    writelog($"MonitorActiveHour Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
-                    get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
-                    writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
-                }
-
-                if (monitor.CapabilityDic.ContainsKey("B6"))
-                {
-                    writelog($"DisplayTechnologyType Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0xB6").Result;
-                    get_DeviceData.DisplayTechnologyType = get_display_technology_type((rc.value).ToString());
-                    writelog($"MonitorActiveHour Exit return value: {get_display_technology_type((rc.value).ToString())}");
-                }
-
-                string HexString = monitor.edid.Edid;
-                string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
-                int num_x = 0;
-                int num_y = 0;
-                num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
-                num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
-                writelog($"ScreenSize Entry");
-                get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
-                writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
-
-                int MaxWidth = 0;
-                int MaxHigh = 0;
-                float Frequency = 0;
-                string resolution = string.Empty;
-                writelog($"OptimalResolution, Resolution Entry");
-                displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
-                foreach (Properties displayProperties in displayPropertiesInfo.SupportedProperties.Properties)
-                {
-                    if (displayProperties.Resolutions_High > MaxHigh)
+                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
                     {
-                        MaxHigh = displayProperties.Resolutions_High;
-                        MaxWidth = displayProperties.Resolutions_Width;
-                        Frequency = displayProperties.Frequency;
+                        case "DISPLAY":
+                            foreach (int idx in _monitorIndeies)
+                            {
+                                MonitorInfo monitor = _AllInfoMonitors[idx];
+                                Get_DeviceData get_DeviceData = new Get_DeviceData();
+
+
+                                get_DeviceData.Model = monitor.modelName;
+                                get_DeviceData.SerialNumber = monitor.edid.SerialNumber;
+                                get_DeviceData.Index = change_0base_to_1base((monitor.Index).ToString());
+                                get_DeviceData.ServiceTag = monitor.edid.ServiceTag;
+
+                                get_DeviceData.Manufacturer = modify_Manufactur(monitor.edid.ManufactureID);
+                                get_DeviceData.PID = monitor.edid.PID.ToString();
+                                get_DeviceData.ManufacturingYear = monitor.edid.Year.ToString();
+                                get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
+                                get_DeviceData.FirmwareVersion = monitor.FwVersion;
+
+                                if (monitor.CapabilityDic.ContainsKey("C0"))
+                                {
+                                    writelog($"MonitorActiveHour Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                                    get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
+                                    writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
+                                }
+
+                                if (monitor.CapabilityDic.ContainsKey("B6"))
+                                {
+                                    writelog($"DisplayTechnologyType Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0xB6").Result;
+                                    get_DeviceData.DisplayTechnologyType = get_display_technology_type((rc.value).ToString());
+                                    writelog($"MonitorActiveHour Exit return value: {get_display_technology_type((rc.value).ToString())}");
+                                }
+
+                                string HexString = monitor.edid.Edid;
+                                string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
+                                int num_x = 0;
+                                int num_y = 0;
+                                num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                                num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                                writelog($"ScreenSize Entry");
+                                get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
+                                writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
+
+                                int MaxWidth = 0;
+                                int MaxHigh = 0;
+                                float Frequency = 0;
+                                string resolution = string.Empty;
+                                writelog($"OptimalResolution, Resolution Entry");
+                                displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+                                foreach (Properties displayProperties in displayPropertiesInfo.SupportedProperties.Properties)
+                                {
+                                    if (displayProperties.Resolutions_High > MaxHigh)
+                                    {
+                                        MaxHigh = displayProperties.Resolutions_High;
+                                        MaxWidth = displayProperties.Resolutions_Width;
+                                        Frequency = displayProperties.Frequency;
+                                    }
+                                    if (displayProperties.isCurrent)
+                                        resolution = $"{displayProperties.Resolutions_Width} x {displayProperties.Resolutions_High} at {displayProperties.Frequency.ToString("0.00")}Hz";
+                                }
+
+                                get_DeviceData.OptimalResolution = $"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz";
+                                get_DeviceData.Resolution = resolution;
+                                writelog($"OptimalResolution, Resolution Exit return value: OptimalResolution{$"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz"} Resolution{resolution}");
+
+                                get_DeviceData.ActiveInputSource = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
+                                writelog($"ActiveInputSource Exit return value: {GetCurrentInput(devMgr, (monitor.Index).ToString()).Result}");
+
+                                writelog($"ReadCurrentColorPreset Entry");
+                                get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
+                                writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
+
+                                if (monitor.CapabilityDic.ContainsKey("AA"))
+                                {
+                                    writelog($"ScreenOrientation Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
+                                    get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
+                                    writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
+                                }
+
+                                if (monitor.CapabilityDic.ContainsKey("12"))
+                                {
+                                    writelog($"ContrastLevel Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0x12").Result;
+                                    get_DeviceData.ContrastLevel = (rc.value).ToString() + "%";
+                                    writelog($"ContrastLevel Exit return value: {(rc.value).ToString() + "%"}");
+
+                                    writelog($"BrightnessLevel Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0x10").Result;
+                                    get_DeviceData.BrightnessLevel = (rc.value).ToString() + "%";
+                                    writelog($"BrightnessLevel Exit return value: {(rc.value).ToString() + "%"}");
+
+                                    get_DeviceData.LuminanceLevel = "N/A";
+                                }
+                                else
+                                {
+                                    get_DeviceData.ContrastLevel = "N/A";
+                                    get_DeviceData.BrightnessLevel = "N/A";
+
+                                    writelog($"LuminanceLevel Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0x10").Result;
+                                    get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
+                                    writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
+                                }
+
+                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                {
+                                    writelog($"AutoBrightness Entry");
+                                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightness, 0).Result;
+                                    get_DeviceData.AutoBrightness = param.isAutoBrightness ? "on" : "off";
+                                    writelog($"AutoBrightness Exit return value: {(param.isAutoBrightness ? "on" : "off")}");
+
+                                    writelog($"AutoBrightnessRangeLevel Entry");
+                                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
+                                    if (param.AutoBrightnessRangeLevel.Count != 0)
+                                    {
+                                        get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
+                                        writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                                    }
+                                    writelog($"AutoBrightness Exit return value: FAIL");
+
+                                    writelog($"AutoColorTemp Entry");
+                                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;
+                                    get_DeviceData.AutoColorTemp = param.isAutoColorTemp ? "on" : "off";
+                                    writelog($"AutoColorTemp Exit return value: {(param.isAutoColorTemp ? "on" : "off")}");
+
+                                    writelog($"PrimaryMonitorForSync Entry");
+                                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.PrimaryMonitorSync, 0).Result;
+                                    get_DeviceData.PrimaryMonitorForSync = param.isPrimaryMonitorSync ? "on" : "off";
+                                    writelog($"PrimaryMonitorForSync Exit return value: {(param.isPrimaryMonitorSync ? "on" : "off")}");
+                                }
+
+                                writelog($"AspectRatio Entry");
+                                int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                                get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                                writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+
+                                writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
+                                if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                                {
+                                    get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
+                                }
+                                else
+                                    get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
+                                writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
+
+                                get_DeviceData.ColorManagement = "N/A";
+
+                                writelog($"SpeakerVolume Entry (62, 8D)");
+                                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
+                                {
+                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                    int getvalue = Convert.ToInt32(rc.value);
+                                    get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
+                                    get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
+                                }
+                                else
+                                    get_DeviceData.SpeakerMicrophone = "N/A";
+                                writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
+
+                                writelog($"SpeakerVolume Entry (62)");
+                                if (monitor.CapabilityDic.ContainsKey("62"))
+                                {
+                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                    int getvalue = Convert.ToInt32(rc.value);
+                                    if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "OSDENABLE";
+                                    if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "OSDDISABLE";
+                                    if ((getvalue & 0xFF) != 0xFE && (getvalue & 0xFF) != 0xFF) get_DeviceData.SpeakerVolume = $"{getvalue}";
+                                }
+                                else
+                                    get_DeviceData.SpeakerVolume = "N/A";
+                                writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
+
+                                writelog($"MicrophoneControl Entry");
+                                if (monitor.CapabilityDic.ContainsKey("8D"))
+                                {
+                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                    int getvalue = Convert.ToInt32(rc.value);
+                                    if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "OSDENABLE";
+                                    if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "OSDDISABLE";
+                                }
+                                else
+                                    get_DeviceData.MicrophoneControl = "N/A";
+                                writelog($"MicrophoneControl Exit return value: {get_DeviceData.MicrophoneControl}");
+
+                                /*writelog($"Uniformity Entry");
+                                if (monitor.CapabilityDic.ContainsKey("E4"))
+                                {
+                                    rc = GetVCPCode(devMgr, monitor, "0xE4").Result;
+                                    get_DeviceData.Uniformity = (rc.value).ToString();
+                                }
+                                else
+                                    get_DeviceData.Uniformity = "N/A";
+                                writelog($"Uniformity Exit return value: {(rc.value).ToString()}");*/
+
+                                writelog($"PowerNap Entry");
+                                List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                                read_list.RemoveAll(x => x.SerialNumber == null);
+                                int powernap_idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                                if (read_list.Count == 0 || powernap_idx < 0)  //if no PowerNap setting exist, create a new setting
+                                {
+                                    PowerNapSetting setting = new PowerNapSetting
+                                    {
+                                        Status = false,
+                                        ModelName = monitor.edid.ModelName,
+                                        SerialNumber = monitor.edid.SerialNumber,
+                                        RunType = PowerNapType.Off
+                                    };
+                                    await devMgr.SavePowerNapSetting(setting);
+                                }
+                                else if (read_list.Count != 0)
+                                {
+                                    if (read_list[powernap_idx].RunType.ToString().ToUpper() == "SLEEPIFRUNNING")
+                                        get_DeviceData.PowerNap = "Sleep";
+                                    else
+                                        get_DeviceData.PowerNap = read_list[powernap_idx].RunType.ToString();
+                                }
+                                else
+                                    get_DeviceData.PowerNap = "N/A";
+                                writelog($"PowerNap Exit return value: {get_DeviceData.PowerNap}");
+
+                                if (monitor.CapabilityDic.ContainsKey("CC"))
+                                {
+                                    writelog($"OSD_language Entry");
+                                    rc = GetVCPCode(devMgr, monitor, "0xCC").Result;
+                                    get_DeviceData.OSD_language = get_language((rc.value).ToString());
+                                    writelog($"OSD_language Exit return value: {get_DeviceData.OSD_language}");
+                                }
+
+                                recode_dis = true;
+
+                                index = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
+
+                                System.Console.WriteLine(JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented);
+                            }
+
+                            break;
+
+                        case "MOUSE":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalMouse")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+
+                            break;
+
+                        case "KEYBOARD":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalKeyboard")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+                            break;
+                        case "WEBCAM":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalWebcam")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+                            break;
+                        case "WIREDAUDIO":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalWiredAudio")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+                            break;
+                        case "HEADSET":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalHeadset")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+                            break;
+                        case "PEN":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalPen")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+                            break;
+                        case "DOCK":
+
+                            foreach (var g in _deviceinfo)
+                            {
+                                if (g.LogicalDeviceType == "LogicalDock")
+                                {
+                                    output += $"\n  \"Device\": \"{g.Name}\"";
+                                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                                    index_per++;
+
+                                    cli_Response2.Index = index_per.ToString();
+                                    cli_Response2.Model = g.Name;
+                                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                                    recode_per = true;
+                                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                                }
+
+                            }
+
+                            break;
                     }
-                    if (displayProperties.isCurrent)
-                        resolution = $"{displayProperties.Resolutions_Width} x {displayProperties.Resolutions_High} at {displayProperties.Frequency.ToString("0.00")}Hz";
                 }
-
-                get_DeviceData.OptimalResolution = $"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz";
-                get_DeviceData.Resolution = resolution;
-                writelog($"OptimalResolution, Resolution Exit return value: OptimalResolution{$"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz"} Resolution{resolution}");
-
-                get_DeviceData.ActiveInputSource = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
-                writelog($"ActiveInputSource Exit return value: {GetCurrentInput(devMgr, (monitor.Index).ToString()).Result}");
-
-                writelog($"ReadCurrentColorPreset Entry");
-                get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
-                writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
-
-                if (monitor.CapabilityDic.ContainsKey("AA"))
+            }
+            else if (commandLineInput.Options.Count == 0)
+            {
+                foreach (int idx in _monitorIndeies)
                 {
-                    writelog($"ScreenOrientation Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
-                    get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
-                    writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
-                }
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    Get_DeviceData get_DeviceData = new Get_DeviceData();
 
-                if (monitor.CapabilityDic.ContainsKey("12"))
-                {
-                    writelog($"ContrastLevel Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0x12").Result;
-                    get_DeviceData.ContrastLevel = (rc.value).ToString() + "%";
-                    writelog($"ContrastLevel Exit return value: {(rc.value).ToString() + "%"}");
 
-                    writelog($"BrightnessLevel Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0x10").Result;
-                    get_DeviceData.BrightnessLevel = (rc.value).ToString() + "%";
-                    writelog($"BrightnessLevel Exit return value: {(rc.value).ToString() + "%"}");
+                    get_DeviceData.Model = monitor.modelName;
+                    get_DeviceData.SerialNumber = monitor.edid.SerialNumber;
+                    get_DeviceData.Index = change_0base_to_1base((monitor.Index).ToString());
+                    get_DeviceData.ServiceTag = monitor.edid.ServiceTag;
 
-                    get_DeviceData.LuminanceLevel = "N/A";
-                }
-                else
-                {
-                    get_DeviceData.ContrastLevel = "N/A";
-                    get_DeviceData.BrightnessLevel = "N/A";
+                    get_DeviceData.Manufacturer = modify_Manufactur(monitor.edid.ManufactureID);
+                    get_DeviceData.PID = monitor.edid.PID.ToString();
+                    get_DeviceData.ManufacturingYear = monitor.edid.Year.ToString();
+                    get_DeviceData.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
+                    get_DeviceData.FirmwareVersion = monitor.FwVersion;
 
-                    writelog($"LuminanceLevel Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0x10").Result;
-                    get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
-                    writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
-                }
-
-                if (monitor.CapabilityDic.ContainsKey("66"))
-                {
-                    writelog($"AutoBrightness Entry");
-                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightness, 0).Result;
-                    get_DeviceData.AutoBrightness = param.isAutoBrightness ? "on" : "off";
-                    writelog($"AutoBrightness Exit return value: {(param.isAutoBrightness ? "on" : "off")}");
-
-                    writelog($"AutoBrightnessRangeLevel Entry");
-                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
-                    if (param.AutoBrightnessRangeLevel.Count != 0)
+                    if (monitor.CapabilityDic.ContainsKey("C0"))
                     {
-                        get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
-                        writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                        writelog($"MonitorActiveHour Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        get_DeviceData.MonitorActiveHour = (rc.value).ToString() + " hours";
+                        writelog($"MonitorActiveHour Exit return value: {(rc.value).ToString()}");
                     }
-                    writelog($"AutoBrightness Exit return value: FAIL");
 
-                    writelog($"AutoColorTemp Entry");
-                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;
-                    get_DeviceData.AutoColorTemp = param.isAutoColorTemp ? "on" : "off";
-                    writelog($"AutoColorTemp Exit return value: {(param.isAutoColorTemp ? "on" : "off")}");
-
-                    writelog($"PrimaryMonitorForSync Entry");
-                    param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.PrimaryMonitorSync, 0).Result;
-                    get_DeviceData.PrimaryMonitorForSync = param.isPrimaryMonitorSync ? "on" : "off";
-                    writelog($"PrimaryMonitorForSync Exit return value: {(param.isPrimaryMonitorSync ? "on" : "off")}");
-                }
-
-                writelog($"AspectRatio Entry");
-                int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
-                get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
-                writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
-
-                writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
-                if (displayPropertiesInfo.SupportedUSBCPrioritization)
-                {
-                    get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
-                }
-                else
-                    get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
-                writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
-
-                get_DeviceData.ColorManagement = "N/A";
-
-                writelog($"SpeakerVolume Entry (62, 8D)");
-                if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
-                {
-                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                    int getvalue = Convert.ToInt32(rc.value);
-                    get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-                    get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
-                }
-                else
-                    get_DeviceData.SpeakerMicrophone = "N/A";
-                writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
-
-                writelog($"SpeakerVolume Entry (62)");
-                if (monitor.CapabilityDic.ContainsKey("62"))
-                {
-                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                    int getvalue = Convert.ToInt32(rc.value);
-                    if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "OSDENABLE";
-                    if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "OSDDISABLE";
-                    if ((getvalue & 0xFF) != 0xFE && (getvalue & 0xFF) != 0xFF) get_DeviceData.SpeakerVolume = $"{getvalue}";
-                }
-                else
-                    get_DeviceData.SpeakerVolume = "N/A";
-                writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
-
-                writelog($"MicrophoneControl Entry");
-                if (monitor.CapabilityDic.ContainsKey("8D"))
-                {
-                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                    int getvalue = Convert.ToInt32(rc.value);
-                    if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "OSDENABLE";
-                    if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "OSDDISABLE";
-                }
-                else
-                    get_DeviceData.MicrophoneControl = "N/A";
-                writelog($"MicrophoneControl Exit return value: {get_DeviceData.MicrophoneControl}");
-
-                /*writelog($"Uniformity Entry");
-                if (monitor.CapabilityDic.ContainsKey("E4"))
-                {
-                    rc = GetVCPCode(devMgr, monitor, "0xE4").Result;
-                    get_DeviceData.Uniformity = (rc.value).ToString();
-                }
-                else
-                    get_DeviceData.Uniformity = "N/A";
-                writelog($"Uniformity Exit return value: {(rc.value).ToString()}");*/
-
-                writelog($"PowerNap Entry");
-                List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
-                read_list.RemoveAll(x => x.SerialNumber == null);
-                int powernap_idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
-                if (read_list.Count == 0 || powernap_idx < 0)  //if no PowerNap setting exist, create a new setting
-                {
-                    PowerNapSetting setting = new PowerNapSetting
+                    if (monitor.CapabilityDic.ContainsKey("B6"))
                     {
-                        Status = false,
-                        ModelName = monitor.edid.ModelName,
-                        SerialNumber = monitor.edid.SerialNumber,
-                        RunType = PowerNapType.Off
-                    };
-                    await devMgr.SavePowerNapSetting(setting);
-                }
-                else if (read_list.Count != 0)
-                {
-                    if (read_list[powernap_idx].RunType.ToString().ToUpper() == "SLEEPIFRUNNING")
-                        get_DeviceData.PowerNap = "Sleep";
+                        writelog($"DisplayTechnologyType Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0xB6").Result;
+                        get_DeviceData.DisplayTechnologyType = get_display_technology_type((rc.value).ToString());
+                        writelog($"MonitorActiveHour Exit return value: {get_display_technology_type((rc.value).ToString())}");
+                    }
+
+                    string HexString = monitor.edid.Edid;
+                    string text = HexString.Substring("00FFFFFFFFFFFF00".Length + 26, 4);
+                    int num_x = 0;
+                    int num_y = 0;
+                    num_x = int.Parse(text.Substring(0, 2), NumberStyles.HexNumber);
+                    num_y = int.Parse(text.Substring(2, 2), NumberStyles.HexNumber);
+                    writelog($"ScreenSize Entry");
+                    get_DeviceData.ScreenSize = $"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)";
+                    writelog($"ScreenSize Exit return value: {$"{num_x}0 x {num_y}0 mm ({monitor.edid.Size.ToString("0.00")} in)"}");
+
+                    int MaxWidth = 0;
+                    int MaxHigh = 0;
+                    float Frequency = 0;
+                    string resolution = string.Empty;
+                    writelog($"OptimalResolution, Resolution Entry");
+                    displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+                    foreach (Properties displayProperties in displayPropertiesInfo.SupportedProperties.Properties)
+                    {
+                        if (displayProperties.Resolutions_High > MaxHigh)
+                        {
+                            MaxHigh = displayProperties.Resolutions_High;
+                            MaxWidth = displayProperties.Resolutions_Width;
+                            Frequency = displayProperties.Frequency;
+                        }
+                        if (displayProperties.isCurrent)
+                            resolution = $"{displayProperties.Resolutions_Width} x {displayProperties.Resolutions_High} at {displayProperties.Frequency.ToString("0.00")}Hz";
+                    }
+
+                    get_DeviceData.OptimalResolution = $"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz";
+                    get_DeviceData.Resolution = resolution;
+                    writelog($"OptimalResolution, Resolution Exit return value: OptimalResolution{$"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz"} Resolution{resolution}");
+
+                    get_DeviceData.ActiveInputSource = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
+                    writelog($"ActiveInputSource Exit return value: {GetCurrentInput(devMgr, (monitor.Index).ToString()).Result}");
+
+                    writelog($"ReadCurrentColorPreset Entry");
+                    get_DeviceData.ColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
+                    writelog($"ReadCurrentColorPreset Exit return value: {devMgr.ReadCurrentColorPreset(monitor).Result}");
+
+                    if (monitor.CapabilityDic.ContainsKey("AA"))
+                    {
+                        writelog($"ScreenOrientation Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
+                        get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
+                        writelog($"ScreenOrientation Exit return value: {Orientations_Str[((uint)rc.value) - 1]}");
+                    }
+
+                    if (monitor.CapabilityDic.ContainsKey("12"))
+                    {
+                        writelog($"ContrastLevel Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0x12").Result;
+                        get_DeviceData.ContrastLevel = (rc.value).ToString() + "%";
+                        writelog($"ContrastLevel Exit return value: {(rc.value).ToString() + "%"}");
+
+                        writelog($"BrightnessLevel Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0x10").Result;
+                        get_DeviceData.BrightnessLevel = (rc.value).ToString() + "%";
+                        writelog($"BrightnessLevel Exit return value: {(rc.value).ToString() + "%"}");
+
+                        get_DeviceData.LuminanceLevel = "N/A";
+                    }
                     else
-                        get_DeviceData.PowerNap = read_list[powernap_idx].RunType.ToString();
-                }
-                else
-                    get_DeviceData.PowerNap = "N/A";
-                writelog($"PowerNap Exit return value: {get_DeviceData.PowerNap}");
+                    {
+                        get_DeviceData.ContrastLevel = "N/A";
+                        get_DeviceData.BrightnessLevel = "N/A";
 
-                if (monitor.CapabilityDic.ContainsKey("CC"))
+                        writelog($"LuminanceLevel Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0x10").Result;
+                        get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
+                        writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
+                    }
+
+                    if (monitor.CapabilityDic.ContainsKey("66"))
+                    {
+                        writelog($"AutoBrightness Entry");
+                        param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightness, 0).Result;
+                        get_DeviceData.AutoBrightness = param.isAutoBrightness ? "on" : "off";
+                        writelog($"AutoBrightness Exit return value: {(param.isAutoBrightness ? "on" : "off")}");
+
+                        writelog($"AutoBrightnessRangeLevel Entry");
+                        param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
+                        if (param.AutoBrightnessRangeLevel.Count != 0)
+                        {
+                            get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
+                            writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                        }
+                        writelog($"AutoBrightness Exit return value: FAIL");
+
+                        writelog($"AutoColorTemp Entry");
+                        param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;
+                        get_DeviceData.AutoColorTemp = param.isAutoColorTemp ? "on" : "off";
+                        writelog($"AutoColorTemp Exit return value: {(param.isAutoColorTemp ? "on" : "off")}");
+
+                        writelog($"PrimaryMonitorForSync Entry");
+                        param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.PrimaryMonitorSync, 0).Result;
+                        get_DeviceData.PrimaryMonitorForSync = param.isPrimaryMonitorSync ? "on" : "off";
+                        writelog($"PrimaryMonitorForSync Exit return value: {(param.isPrimaryMonitorSync ? "on" : "off")}");
+                    }
+
+                    writelog($"AspectRatio Entry");
+                    int gcd = (int)GCD((ulong)MaxWidth, (ulong)MaxHigh);
+                    get_DeviceData.AspectRatio = $"{MaxWidth / gcd}:{MaxHigh / gcd}";
+                    writelog($"AspectRatio Exit return value: {$"{MaxWidth / gcd}:{MaxHigh / gcd}"}");
+
+                    writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
+                    if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                    {
+                        get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
+                    }
+                    else
+                        get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
+                    writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
+
+                    get_DeviceData.ColorManagement = "N/A";
+
+                    writelog($"SpeakerVolume Entry (62, 8D)");
+                    if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                        int getvalue = Convert.ToInt32(rc.value);
+                        get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
+                        get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
+                    }
+                    else
+                        get_DeviceData.SpeakerMicrophone = "N/A";
+                    writelog($"SpeakerVolume  (62, 8D) Exit return value: {get_DeviceData.SpeakerVolume} ,SpeakerMicrophone {get_DeviceData.SpeakerMicrophone} ");
+
+                    writelog($"SpeakerVolume Entry (62)");
+                    if (monitor.CapabilityDic.ContainsKey("62"))
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                        int getvalue = Convert.ToInt32(rc.value);
+                        if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "OSDENABLE";
+                        if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "OSDDISABLE";
+                        if ((getvalue & 0xFF) != 0xFE && (getvalue & 0xFF) != 0xFF) get_DeviceData.SpeakerVolume = $"{getvalue}";
+                    }
+                    else
+                        get_DeviceData.SpeakerVolume = "N/A";
+                    writelog($"SpeakerVolume  (62) Exit return value: {get_DeviceData.SpeakerVolume}");
+
+                    writelog($"MicrophoneControl Entry");
+                    if (monitor.CapabilityDic.ContainsKey("8D"))
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                        int getvalue = Convert.ToInt32(rc.value);
+                        if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "OSDENABLE";
+                        if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "OSDDISABLE";
+                    }
+                    else
+                        get_DeviceData.MicrophoneControl = "N/A";
+                    writelog($"MicrophoneControl Exit return value: {get_DeviceData.MicrophoneControl}");
+
+                    /*writelog($"Uniformity Entry");
+                    if (monitor.CapabilityDic.ContainsKey("E4"))
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0xE4").Result;
+                        get_DeviceData.Uniformity = (rc.value).ToString();
+                    }
+                    else
+                        get_DeviceData.Uniformity = "N/A";
+                    writelog($"Uniformity Exit return value: {(rc.value).ToString()}");*/
+
+                    writelog($"PowerNap Entry");
+                    List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                    read_list.RemoveAll(x => x.SerialNumber == null);
+                    int powernap_idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                    if (read_list.Count == 0 || powernap_idx < 0)  //if no PowerNap setting exist, create a new setting
+                    {
+                        PowerNapSetting setting = new PowerNapSetting
+                        {
+                            Status = false,
+                            ModelName = monitor.edid.ModelName,
+                            SerialNumber = monitor.edid.SerialNumber,
+                            RunType = PowerNapType.Off
+                        };
+                        await devMgr.SavePowerNapSetting(setting);
+                    }
+                    else if (read_list.Count != 0)
+                    {
+                        if (read_list[powernap_idx].RunType.ToString().ToUpper() == "SLEEPIFRUNNING")
+                            get_DeviceData.PowerNap = "Sleep";
+                        else
+                            get_DeviceData.PowerNap = read_list[powernap_idx].RunType.ToString();
+                    }
+                    else
+                        get_DeviceData.PowerNap = "N/A";
+                    writelog($"PowerNap Exit return value: {get_DeviceData.PowerNap}");
+
+                    if (monitor.CapabilityDic.ContainsKey("CC"))
+                    {
+                        writelog($"OSD_language Entry");
+                        rc = GetVCPCode(devMgr, monitor, "0xCC").Result;
+                        get_DeviceData.OSD_language = get_language((rc.value).ToString());
+                        writelog($"OSD_language Exit return value: {get_DeviceData.OSD_language}");
+                    }
+
+                    recode_dis = true;
+
+                    index = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented);
+                }
+
+                foreach (var g in _deviceinfo)
                 {
-                    writelog($"OSD_language Entry");
-                    rc = GetVCPCode(devMgr, monitor, "0xCC").Result;
-                    get_DeviceData.OSD_language = get_language((rc.value).ToString());
-                    writelog($"OSD_language Exit return value: {get_DeviceData.OSD_language}");
+                    output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
+                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+
+                    index++;
+                    cli_Response2.Index = index.ToString();
+                    cli_Response2.Model = g.Name;
+                    cli_Response2.ID = g.ID;
+                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                    recode_per = true;
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
                 }
-
-                recode_dis = true;
-
-                index = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
-
-                System.Console.WriteLine(JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented));
-                output += "\n" + JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented);
             }
 
-            foreach (var g in _deviceinfo)
-            {
-                output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
-                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
-
-                index++;
-                cli_Response2.Index = index.ToString();
-                cli_Response2.Model = g.Name;
-                cli_Response2.ID = g.ID;
-                cli_Response2.FirmwareVersion = g.FirmwareVersion;
-                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
-                cli_Response2.BatteryStatus = g.BatteryStatus;
-
-                recode_per = true;
-                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
-            }
             CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3();
             if (recode_per || recode_dis)
             {
@@ -8349,6 +8828,7 @@ namespace DDPM.CLI.Plugins.Display
             output_2 += output;
             return ((int)CLI_ExitCode.success, output_2);
         }
+
 
         private static string get_headsetconnection_type(HeadsetConnectionType ConnectionType)
         {
@@ -8478,7 +8958,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     get_Capabilitystring = new Get_Capabilitystring();
                     get_Capabilitystring.Command = commandLineInput.Command;
-                    get_Capabilitystring.Model = monitor.AliasDeviceName;
+                    get_Capabilitystring.Model = monitor.modelName;
                     get_Capabilitystring.TargetFeature = commandLineInput.TargetFeature;
                     get_Capabilitystring.SerialNumber = monitor.edid.SerialNumber;
                     get_Capabilitystring.ServiceTag = monitor.edid.ServiceTag;
@@ -8499,7 +8979,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     get_Capabilitystring = new Get_Capabilitystring();
                     get_Capabilitystring.Command = commandLineInput.Command;
-                    get_Capabilitystring.Model = monitor.AliasDeviceName;
+                    get_Capabilitystring.Model = monitor.modelName;
                     get_Capabilitystring.TargetFeature = commandLineInput.TargetFeature;
                     get_Capabilitystring.SerialNumber = monitor.edid.SerialNumber;
                     get_Capabilitystring.ServiceTag = monitor.edid.ServiceTag;
@@ -8522,7 +9002,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         get_Capabilitystring = new Get_Capabilitystring();
                         get_Capabilitystring.Command = commandLineInput.Command;
-                        get_Capabilitystring.Model = monitor.AliasDeviceName;
+                        get_Capabilitystring.Model = monitor.modelName;
                         get_Capabilitystring.TargetFeature = commandLineInput.TargetFeature;
                         get_Capabilitystring.SerialNumber = monitor.edid.SerialNumber;
                         get_Capabilitystring.ServiceTag = monitor.edid.ServiceTag;
@@ -8582,7 +9062,7 @@ namespace DDPM.CLI.Plugins.Display
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.Model = monitor.modelName;
                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9097,7 +9577,7 @@ namespace DDPM.CLI.Plugins.Display
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.Model = monitor.modelName;
                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9191,9 +9671,9 @@ namespace DDPM.CLI.Plugins.Display
             foreach (MonitorInfo monitor in _AllInfoMonitors)
             {
                 if ((monitor.Index + 1) == _AllInfoMonitors.Count)
-                    output += $"  \"Index_{change_0base_to_1base((monitor.Index).ToString())}\": \"{monitor.AliasDeviceName}\",\"{monitor.edid.ServiceTag}\"";
+                    output += $"  \"Index_{change_0base_to_1base((monitor.Index).ToString())}\": \"{monitor.modelName}\",\"{monitor.edid.ServiceTag}\"";
                 else
-                    output += $"  \"Index_{change_0base_to_1base((monitor.Index).ToString())}\": \"{monitor.AliasDeviceName}\",\"{monitor.edid.ServiceTag}\",\n";
+                    output += $"  \"Index_{change_0base_to_1base((monitor.Index).ToString())}\": \"{monitor.modelName}\",\"{monitor.edid.ServiceTag}\",\n";
             }
             output += "\n}";
             output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
@@ -9312,7 +9792,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9331,7 +9811,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base(idx);
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9349,7 +9829,7 @@ namespace DDPM.CLI.Plugins.Display
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.Model = monitor.modelName;
                         cli_Response.SerialNumber = monitor.edid.SerialNumber;
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9396,7 +9876,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9424,7 +9904,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base(idx);
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9450,7 +9930,7 @@ namespace DDPM.CLI.Plugins.Display
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.Model = monitor.modelName;
                         cli_Response.SerialNumber = monitor.edid.SerialNumber;
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9507,7 +9987,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9529,7 +10009,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base(idx);
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9550,7 +10030,7 @@ namespace DDPM.CLI.Plugins.Display
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.Model = monitor.modelName;
                         cli_Response.SerialNumber = monitor.edid.SerialNumber;
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -9753,7 +10233,7 @@ namespace DDPM.CLI.Plugins.Display
                     Apply_Configuration ApplyConfiguration = new Apply_Configuration();
                     ApplyConfiguration.Command = commandLineInput.Command;
                     ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
-                    ApplyConfiguration.Model = monitor.AliasDeviceName;
+                    ApplyConfiguration.Model = monitor.modelName;
                     ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                     ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                     ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
@@ -10104,7 +10584,7 @@ namespace DDPM.CLI.Plugins.Display
                                 Apply_Configuration ApplyConfiguration = new Apply_Configuration();
                                 ApplyConfiguration.Command = commandLineInput.Command;
                                 ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
-                                ApplyConfiguration.Model = monitor.AliasDeviceName;
+                                ApplyConfiguration.Model = monitor.modelName;
                                 ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                                 ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                                 ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
@@ -10729,7 +11209,7 @@ namespace DDPM.CLI.Plugins.Display
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.Model = monitor.modelName;
                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -10858,7 +11338,7 @@ namespace DDPM.CLI.Plugins.Display
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.Model = monitor.modelName;
                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11012,7 +11492,7 @@ namespace DDPM.CLI.Plugins.Display
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.Model = monitor.modelName;
                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11198,7 +11678,7 @@ namespace DDPM.CLI.Plugins.Display
                             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Model = monitor.AliasDeviceName;
+                            cli_Response.Model = monitor.modelName;
                             cli_Response.SerialNumber = monitor.edid.SerialNumber;
                             cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                             cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11243,7 +11723,7 @@ namespace DDPM.CLI.Plugins.Display
                             ObjGetVCP rc = new ObjGetVCP();
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Model = monitor.AliasDeviceName;
+                            cli_Response.Model = monitor.modelName;
                             cli_Response.SerialNumber = monitor.edid.SerialNumber;
                             cli_Response.Index = change_0base_to_1base(idx);
                             cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11285,7 +11765,7 @@ namespace DDPM.CLI.Plugins.Display
                                 ObjGetVCP rc = new ObjGetVCP();
                                 cli_Response.Command = commandLineInput.Command;
                                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                                cli_Response.Model = monitor.AliasDeviceName;
+                                cli_Response.Model = monitor.modelName;
                                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11332,7 +11812,7 @@ namespace DDPM.CLI.Plugins.Display
                             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Model = monitor.AliasDeviceName;
+                            cli_Response.Model = monitor.modelName;
                             cli_Response.SerialNumber = monitor.edid.SerialNumber;
                             cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                             cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11405,7 +11885,7 @@ namespace DDPM.CLI.Plugins.Display
                             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Model = monitor.AliasDeviceName;
+                            cli_Response.Model = monitor.modelName;
                             cli_Response.SerialNumber = monitor.edid.SerialNumber;
                             cli_Response.Index = change_0base_to_1base(idx);
                             cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11477,7 +11957,7 @@ namespace DDPM.CLI.Plugins.Display
                                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                                 cli_Response.Command = commandLineInput.Command;
                                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                                cli_Response.Model = monitor.AliasDeviceName;
+                                cli_Response.Model = monitor.modelName;
                                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11586,7 +12066,7 @@ namespace DDPM.CLI.Plugins.Display
                             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Model = monitor.AliasDeviceName;
+                            cli_Response.Model = monitor.modelName;
                             cli_Response.SerialNumber = monitor.edid.SerialNumber;
                             cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                             cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11620,7 +12100,7 @@ namespace DDPM.CLI.Plugins.Display
                             ObjGetVCP rc = new ObjGetVCP();
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Model = monitor.AliasDeviceName;
+                            cli_Response.Model = monitor.modelName;
                             cli_Response.SerialNumber = monitor.edid.SerialNumber;
                             cli_Response.Index = change_0base_to_1base(idx);
                             cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11653,7 +12133,7 @@ namespace DDPM.CLI.Plugins.Display
                                 ObjGetVCP rc = new ObjGetVCP();
                                 cli_Response.Command = commandLineInput.Command;
                                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                                cli_Response.Model = monitor.AliasDeviceName;
+                                cli_Response.Model = monitor.modelName;
                                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11743,7 +12223,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11790,7 +12270,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11833,7 +12313,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Output={output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
-        private static void LaunchNetworkkvmApp()
+        private static void LaunchNetworkkvmApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11850,8 +12330,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/console start";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11865,7 +12346,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmApp_on()
+        private static void LaunchNetworkkvmApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11882,8 +12363,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvm on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11897,7 +12379,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmApp_off()
+        private static void LaunchNetworkkvmApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11914,8 +12396,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvm off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11929,7 +12412,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmautoconnectApp_on()
+        private static void LaunchNetworkkvmautoconnectApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11946,8 +12429,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmautoconnect on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11961,7 +12445,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmautoconnectApp_off()
+        private static void LaunchNetworkkvmautoconnectApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -11978,8 +12462,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmautoconnect off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -11993,7 +12478,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferApp_on()
+        private static void LaunchNetworkkvmcontenttransferApp_on(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12010,8 +12495,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmcontenttransfer on";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12025,7 +12511,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferApp_off()
+        private static void LaunchNetworkkvmcontenttransferApp_off(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12042,8 +12528,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = "/networkkvmcontenttransfer off";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12057,7 +12544,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmincomingportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmincomingportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12074,8 +12561,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12089,7 +12577,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmoutgoingportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmoutgoingportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12106,8 +12594,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12121,7 +12610,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmcontenttransferportApp(CommandLineInput commandLineInput)
+        private static void LaunchNetworkkvmcontenttransferportApp(ILog log, CommandLineInput commandLineInput)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12138,8 +12627,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12153,7 +12643,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private static void LaunchNetworkkvmaccessresetApp()
+        private static void LaunchNetworkkvmaccessresetApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
             string valueName = "(Default)";
@@ -12170,8 +12660,9 @@ namespace DDPM.CLI.Plugins.Display
                         string executablePath = value.ToString();
                         string exeFileAndLocation = executablePath;
                         string arguments = $"/networkkvmaccessreset";
-                        Process.Start(exeFileAndLocation, arguments);
-                        Trace.WriteLine("Executable Path: " + executablePath);
+                        //Process.Start(exeFileAndLocation, arguments);
+                        //Trace.WriteLine("Executable Path: " + executablePath);
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
                     }
                     else
                     {
@@ -12229,7 +12720,7 @@ namespace DDPM.CLI.Plugins.Display
                     NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    //cli_Response.Model = monitor.AliasDeviceName;
+                    //cli_Response.Model = monitor.modelName;
                     //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12240,7 +12731,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         case "ON":
                             writelog($"Networkkvm on entry");
-                            LaunchNetworkkvmApp_on();
+                            LaunchNetworkkvmApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -12248,7 +12739,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvm off entry");
-                            LaunchNetworkkvmApp_off();
+                            LaunchNetworkkvmApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -12286,7 +12777,7 @@ namespace DDPM.CLI.Plugins.Display
                     NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    //cli_Response.Model = monitor.AliasDeviceName;
+                    //cli_Response.Model = monitor.modelName;
                     //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12355,7 +12846,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12412,7 +12903,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12473,7 +12964,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12483,7 +12974,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         case "ON":
                             writelog($"Networkkvmautoconnect on entry");
-                            LaunchNetworkkvmautoconnectApp_on();
+                            LaunchNetworkkvmautoconnectApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -12491,7 +12982,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvmautoconnect off entry");
-                            LaunchNetworkkvmautoconnectApp_off();
+                            LaunchNetworkkvmautoconnectApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -12526,7 +13017,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12581,7 +13072,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12591,7 +13082,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         case "ON":
                             writelog($"Networkkvmcontenttransfer on entry");
-                            LaunchNetworkkvmcontenttransferApp_on();
+                            LaunchNetworkkvmcontenttransferApp_on(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "ON";
@@ -12599,7 +13090,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "OFF":
                             writelog($"Networkkvmcontenttransfer off entry");
-                            LaunchNetworkkvmcontenttransferApp_off();
+                            LaunchNetworkkvmcontenttransferApp_off(Log);
                             retcode = true;
                             cli_Response.Result = "PASS";
                             cli_Response.Value = "OFF";
@@ -12635,7 +13126,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12690,7 +13181,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12701,7 +13192,7 @@ namespace DDPM.CLI.Plugins.Display
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvmincomingport entry");
-                        LaunchNetworkkvmincomingportApp(commandLineInput);
+                        LaunchNetworkkvmincomingportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12743,7 +13234,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12790,12 +13281,12 @@ namespace DDPM.CLI.Plugins.Display
 
                 //foreach (int idx in _monitorIndeies)
                 //{
-                LaunchNetworkkvmApp(); //Open DDM console for debug
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
                                        //MonitorInfo monitor = _AllInfoMonitors[idx];
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12806,7 +13297,7 @@ namespace DDPM.CLI.Plugins.Display
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvmoutgoingport entry");
-                        LaunchNetworkkvmoutgoingportApp(commandLineInput);
+                        LaunchNetworkkvmoutgoingportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12847,7 +13338,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12896,15 +13387,15 @@ namespace DDPM.CLI.Plugins.Display
                         _AllInfoMonitors = devMgr.GetMonitors().Result;
                     _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                    //foreach (int idx in _monitorIndeies)
-                    //{
-                    LaunchNetworkkvmApp(); //Open DDM console for debug
+                //foreach (int idx in _monitorIndeies)
+                //{
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
 
                     //MonitorInfo monitor = _AllInfoMonitors[idx];
 
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    //cli_Response.Model = monitor.AliasDeviceName;
+                    //cli_Response.Model = monitor.modelName;
                     //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -12914,7 +13405,7 @@ namespace DDPM.CLI.Plugins.Display
                     if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
                     {
                         writelog($"Networkkvcontenttransferport entry");
-                        LaunchNetworkkvmcontenttransferportApp(commandLineInput);
+                        LaunchNetworkkvmcontenttransferportApp(Log, commandLineInput);
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
@@ -12960,7 +13451,7 @@ namespace DDPM.CLI.Plugins.Display
                 //NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -13008,18 +13499,18 @@ namespace DDPM.CLI.Plugins.Display
 
                 //foreach (int idx in _monitorIndeies)
                 //{
-                LaunchNetworkkvmApp(); //Open DDM console for debug
+                LaunchNetworkkvmApp(Log); //Open DDM console for debug
 
                 //MonitorInfo monitor = _AllInfoMonitors[idx];
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
                 writelog($"Networkkvmaccessreset entry");
-                LaunchNetworkkvmaccessresetApp();
+                LaunchNetworkkvmaccessresetApp(Log);
                 retcode = true;
                 cli_Response.Result = "PASS";
                 cli_Response.Value = $"Networkkvmaccessreset";
@@ -13043,7 +13534,7 @@ namespace DDPM.CLI.Plugins.Display
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                //cli_Response.Model = monitor.AliasDeviceName;
+                //cli_Response.Model = monitor.modelName;
                 //cli_Response.SerialNumber = monitor.edid.SerialNumber;
                 //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                 //cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -13533,7 +14024,7 @@ namespace DDPM.CLI.Plugins.Display
                     Console.WriteLine($"info.FileSavepath = " + info.FileSavepath);
                 }
 
-                List<FWUpdateInfo> result = devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, "").Result;
+                List<FWUpdateInfo> result = devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, false, "").Result;
 
                 foreach (FWUpdateInfo info in result)
                 {
@@ -13595,7 +14086,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -13624,7 +14115,7 @@ namespace DDPM.CLI.Plugins.Display
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.Model = monitor.modelName;
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;

@@ -9,13 +9,18 @@
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-		<Version>2.0.0.45</Version>
+		<Version>2.0.0.47</Version>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
+		<ApplicationIcon>MyDell_Blue.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<Optimize>False</Optimize>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="MyDell_Blue.ico" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.8.2" />
@@ -26,7 +31,6 @@
 		<ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
 		<ProjectReference Include="..\Plugins\CLI.Plugins.Display\CLI.Plugins.Display.csproj" />
 		<ProjectReference Include="..\Plugins\CLI.Plugins.Peripherals\CLI.Plugins.Peripherals.csproj" />
-		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ActionsManger\DDPM.SA.Plugins.User.ActionsManger.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.CLIProxy\DDPM.SA.Plugins.User.CLIProxy.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.CMAProxy\DDPM.SA.Plugins.User.CMAProxy.csproj" />
 		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ColorPreset\DDPM.SA.Plugins.User.ColorPreset.csproj" />

@@ -515,6 +515,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "UPDATE":
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
                             break;
+                        case "UPDATESOURCELOCATION":
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                            break;
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;

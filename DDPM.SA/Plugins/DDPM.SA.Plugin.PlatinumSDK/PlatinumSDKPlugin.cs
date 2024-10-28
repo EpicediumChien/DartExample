@@ -98,8 +98,8 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                 return Task.FromResult(false);
             }
         }
-        #endregion 
 
+        #endregion IPlatinumSDKService implementation
 
         #region Overriding methods
 

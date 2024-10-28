@@ -61,14 +61,14 @@ namespace DDPM.UI.Common
         F10,
         F11,
         F12,
-        PrtSc,
-        ScrollLock,
-        PauseBreak,
+        PrtSc = 13,
         Home,
         End,
-        Calculator,
         PgUp,
-        PgDown
+        PgDown,
+        Calculator,
+        ScrollLock,
+        PauseBreak,
     }
 
     public enum MouseButtonName
