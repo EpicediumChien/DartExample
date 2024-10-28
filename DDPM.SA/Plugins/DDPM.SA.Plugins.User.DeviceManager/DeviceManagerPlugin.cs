@@ -140,6 +140,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         public event EventHandler<string> Coloreset_manual_ChangeEvent;
 
+        /// <summary>
+        /// NightLight Status change event，return On or Off
+        /// </summary>
+        public event EventHandler<string> NightLightStatus_ChangeEvent;
+
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
 
@@ -852,6 +857,78 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         /// <summary>
+        /// 啟動監視NightLight Status
+        /// </summary>
+        public Task<bool> CheckNightLightStatus()
+        {
+            writelog("DeviceManagerPlugin received CheckNightLightStatus requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckNightLightStatus]");
+                return Task.FromResult(false);
+            }
+            
+            var temp = _ColorPresetPlugin.CheckNightLightStatus().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
+        /// 啟動監視Color ICC profile Status
+        /// </summary>
+        public Task<bool> CheckColorICCStatus()
+        {
+            writelog("DeviceManagerPlugin received CheckColorICCStatus requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckColorICCStatus]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.CheckColorICCStatus().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
+        /// 停止監視NightLight Status
+        /// </summary>
+        public Task<bool> StopRegistryMonitor_NightLight()
+        {
+            writelog("DeviceManagerPlugin received StopRegistryMonitor_NightLight requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - StopRegistryMonitor_NightLight]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLight().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
+        /// 停止監視Color ICC profile Status
+        /// </summary>
+        public Task<bool> StopRegistryMonitor_ICC()
+        {
+            writelog("DeviceManagerPlugin received StopRegistryMonitor_ICC requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - StopRegistryMonitor_ICC]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.StopRegistryMonitor_ICC().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
         /// 自動根據App name 去設定 color preset
         /// </summary>
         /// <param name="mo"></param> 螢幕資訊
@@ -956,6 +1033,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var temp = _ColorPresetPlugin.Sync_ColorPresetName(monitorInfo, ColorPreset_Name).Result;
 
             return Task.FromResult(temp);
+        }
+
+        public Task<bool> SyncNightlightStatus()
+        {
+            writelog("DeviceManagerPlugin received SyncNightlightStatus requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - SyncNightlightStatus]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.SyncNightlightStatus().Result;
+
+            return Task.FromResult(true);
         }
 
         #endregion
@@ -7343,6 +7435,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //}
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
+            LauchNightLightStatusMonitor();
         }
 
         #region OutReport
@@ -8721,6 +8814,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         _ColorPresetPlugin.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
 
+                        _ColorPresetPlugin.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
+
                         if (_SettingsPlugin != null)
                         {
                             _AllAppData = _ColorPresetPlugin.GetInstalledAppsList().Result;//_ColorPresetPlugin.FindAppsbyShell().Result;
@@ -8906,6 +9001,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             writelog("CheckAutoColorManagementEnableOnStartedCondition, Exit");
+        }
+
+        private void LauchNightLightStatusMonitor()
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("LauchNightLightStatusMonitor, _SettingsPlugin == null");
+                return;
+            }
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("LauchNightLightStatusMonitor, _ColorPresetPlugin == null");
+                return;
+            }
+
+            writelog("LauchNightLightStatusMonitor, Enter");
+
+            writelog("LauchNightLightStatusMonitor, CheckNightLightStatus()");
+            CheckNightLightStatus();           
+
+            writelog("LauchNightLightStatusMonitor, Exit");
         }
 
         private void GetCurrentSettingsPluginCondition()
@@ -12148,6 +12265,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
+
+        private void OnNightLightStatusChangeHandler(object sender, string e)
+        {
+            NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }       
 
         #endregion
 

@@ -72,6 +72,8 @@ namespace DDPM.SA.Common
 
         event EventHandler<string> Coloreset_manual_ChangeEvent;
 
+        event EventHandler<string> NightLightStatus_ChangeEvent;
+
         Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
 
         void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);
@@ -119,6 +121,14 @@ namespace DDPM.SA.Common
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
         Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
+
+        Task<bool> SyncNightlightStatus();
+        Task<bool> CheckNightLightStatus();
+        Task<bool> CheckColorICCStatus();
+
+
+        Task<bool> StopRegistryMonitor_NightLight();
+        Task<bool> StopRegistryMonitor_ICC();
 
         #endregion public for ColorPreset
 
