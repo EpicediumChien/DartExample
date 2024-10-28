@@ -1,4 +1,5 @@
 ﻿using CLI.Plugins.Display;
+using DDPM.RemoteManagement.Common.Interfaces;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
