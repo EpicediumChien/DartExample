@@ -1,28 +1,18 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
+using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
-using System.Xml.XPath;
-using System.Threading;
-using Windows.UI.Composition.Interactions;
-using static DDPM.SA.Common.ICLICommandTable;
-using Microsoft.VisualBasic.Logging;
-using StreamJsonRpc;
-using Newtonsoft.Json.Linq;
-using static DDPM.SA.Plugins.CMAManager.Params;
-using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
-using Dell.Client.Framework.UX.WPF;
 using VcpCore.Common;
+using static DDPM.SA.Common.ICLICommandTable;
 using IDs = DDPM.SA.Common.IDs;
-using DDPM.SA.Common.Interfaces;
-using DDPM.RemoteManagement.Common.Interfaces;
-using System.Windows.Documents;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
