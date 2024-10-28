@@ -187,6 +187,59 @@ namespace DDPM.Easy.Common
             return true;
         }
 
+        public List<Rect>? ConvertSettingsToRatioRects(Rect rcView)
+        {
+            List<double> settings = VM.Settings_Double;
+
+            if (settings == null)
+                return null;
+            if (settings.Count == 0)
+                return null;
+
+            //settings[0] is BorderCount
+            int borderCount = (int)settings[0];
+            if (borderCount <= 0)
+                return null;
+
+            //Check the settings.Count should be (borderCount*4 + 4)
+            if (settings.Count != ((borderCount + 1) * 4))
+                return null;
+
+            //settings[1] is screenScale
+            double orgScreenScale = settings[1];
+            //settings[2] is screenWidth
+            double orgWidth = settings[2];
+            //settings[3] is screenHeight
+            double orgHeight = settings[3];
+
+            if (orgWidth <= 0)
+                orgWidth = 1;
+            if (orgHeight <= 0)
+                orgHeight = 1;
+
+            double xRatio = rcView.Width / orgWidth;
+            double yRatio = rcView.Height / orgHeight;
+
+            List<Rect> listOut = new List<Rect>();
+
+            int idxSettings = 0;
+            for (int idx = 0; idx < borderCount; idx++)
+            {
+                idxSettings += 4;
+                if ((idxSettings + 4) > settings.Count)
+                    break;
+
+                double left = settings[idxSettings] * xRatio;
+                double top = settings[idxSettings + 1] * yRatio;
+                double width = settings[idxSettings + 2] * xRatio;
+                double height = settings[idxSettings + 3] * yRatio;
+
+                Rect rcRatio = new Rect(left, top, width, height);
+                listOut.Add(rcRatio);
+            }
+            return listOut;
+        }
+
         /// <summary>
         /// Convert ISplitCtrl.Settings to list of Rects, all these Rect are the layout in a 1x1 View
         /// </summary>
