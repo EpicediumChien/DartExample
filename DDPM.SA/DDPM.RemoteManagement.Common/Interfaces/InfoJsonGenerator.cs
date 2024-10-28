@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DDPM.SA.Plugins.CMAManager
+namespace DDPM.RemoteManagement.Common.Interfaces
 {
     public class InfoJsonGenerator
     {
@@ -14,11 +14,13 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public InfoJsonGenerator(string _sid, List<string> _list)
         {
-            try {
+            try
+            {
                 sid = _sid;
                 req = "[" + GenReq(_list) + "]";
             }
-            catch {
+            catch
+            {
                 throw new Exception("Data can't be null");
             }
         }
@@ -110,9 +112,6 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
 
-
-
-
             public class Options
             {
                 public string index { get; set; }
@@ -121,10 +120,6 @@ namespace DDPM.SA.Plugins.CMAManager
                 //public string serialnumber { get; set; }
 
                 // attribut for fwupdate
-                public bool uod { get; set; }
-                public bool forcewithnotice { get; set; }
-                public bool forcewithnonotice { get; set; }
-                public bool defer { get; set; }
                 public string minversion { get; set; }
 
 
@@ -171,38 +166,6 @@ namespace DDPM.SA.Plugins.CMAManager
                         result = result + $"\"serialnumber\":\"{serialnumber}\",";
                     }
                     */
-
-
-
-                    if (uod)
-                    {
-                        if (hasValue)
-                        {
-                            result = result + ",";
-                        }
-                        result = result + ($"\"uod\":{uod}").ToLower();
-                        hasValue = true;
-                    }
-
-                    if (forcewithnotice)
-                    {
-                        if (hasValue)
-                        {
-                            result = result + ",";
-                        }
-                        result = result + ($"\"forcewithnotice\":{forcewithnotice}").ToLower();
-                        hasValue = true;
-                    }
-
-                    if (forcewithnonotice)
-                    {
-                        if (hasValue)
-                        {
-                            result = result + ",";
-                        }
-                        result = result + ($"\"updatesilent\":{forcewithnonotice}").ToLower();
-                        hasValue = true;
-                    }
 
                     if (!String.IsNullOrEmpty(minversion))
                     {

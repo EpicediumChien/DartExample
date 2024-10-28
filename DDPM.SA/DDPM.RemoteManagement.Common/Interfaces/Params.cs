@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DDPM.SA.Plugins.CMAManager
+namespace DDPM.RemoteManagement.Common.Interfaces
 {
     public static class Params
     {
