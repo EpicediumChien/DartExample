@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using Windows.Media.AppRecording;
 using static DDPM.UI.Common.User32;
 using UserControl = System.Windows.Controls.UserControl;
+using Rect = System.Windows.Rect;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -614,11 +615,11 @@ namespace DDPM.UI.Module.EzArrange
                     EAArgs args = new EAArgs()
                     {
                         Command = "EditCommnd",
+                        CustomNames = customNameList,
                         CellCount = spCtrl.CellCount,
                         SplitKey = spCtrl.SplitKey,
                         CustomId = spItem.CustomId,
                         CustomName = customNameList[selectedIndex],
-                        CustomNames = customNameList,
                         Settings = spCtrl.Settings
 
                     };
@@ -821,6 +822,33 @@ namespace DDPM.UI.Module.EzArrange
                     } //if (splitListView_Custom.ItemCount < EAEMConstants.MaxCustomItems)
                 }
 
+                //For AddedCustom, convert the Settings to RatioRects and store in CellBorder.rcRatio
+                if (itemCustom.IsAddedCustomLayout)
+                {
+                    if (itemCustom.ISplitCtrl != null)
+                    {
+                        SplitCtrl0B sp0B = (SplitCtrl0B)itemCustom.ISplitCtrl;
+                        List<System.Windows.Rect>? ratioRects = sp0B.ConvertSettingsToRatioRects(new System.Windows.Rect(0,0,1,1));
+                        List<CellBorder> cellBorders = new List<CellBorder>();
+                        if (ratioRects != null)
+                        {
+                            //To create CellBorders for SplitCtrl
+                            int idx = 0;
+                            foreach (Rect rc in ratioRects)
+                            {
+                                idx++;
+                                CellBorder cellBorder = new CellBorder();
+                                cellBorder.rcRatio = rc;
+                                cellBorder.Name = $"Cb{idx}";
+                                cellBorders.Add(cellBorder);
+                            }
+                            sp0B.CellBorders.Clear();
+                            sp0B.CellBorders.AddRange(cellBorders);
+
+                        }
+                    }
+                }
+                
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
                 _vm.SetWorkSplit(e.CellCount, e.SplitKey, e.Settings);
                 SaveEaSettings(true);

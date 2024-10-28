@@ -269,6 +269,8 @@ namespace NGA.ThickClientCore
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            _log?.Info("MainWindow_Closed");
+
             if (!_cleanupOnExit)
                 Cleanup();
         }

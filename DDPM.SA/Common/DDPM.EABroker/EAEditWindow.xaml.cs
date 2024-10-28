@@ -155,11 +155,11 @@ namespace DDPM.EABroker
         public bool ShowAndEdit(EAArgs args, Screen scr)
         {
             _inputArgs = args;
-            if ((args.CellCount == 0) && (args.SplitKey == 'B'))
+            if ((args.SplitJson.CellCount == 0) && (args.SplitJson.SplitKey == 'B'))
             {
                 this.Dispatcher.Invoke(() => { UI_ShowAndEdit_AddedCustom(args, scr); });
             }
-            else if (ISplitCtrl.IsExisted(args.CellCount, args.SplitKey))
+            else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
             {
                 this.Dispatcher.Invoke(() => { UI_ShowAndEdit_PredefinedCustom(args, scr); });
             }

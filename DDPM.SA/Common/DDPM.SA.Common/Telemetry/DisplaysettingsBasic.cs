@@ -18,7 +18,7 @@ namespace DDPM.SA.Common
         public DisplaysettingsBasic()
         {
             CommunicationPath = "Video";
-            GraphicCardName = string.Empty;
+            GraphicCardName = (new Telementry_GeneralFunction()).GetMonitorAdapter();
             MonitorName = string.Empty;
             D_Ctrl = string.Empty;
             SupplierID = string.Empty;
@@ -43,6 +43,11 @@ namespace DDPM.SA.Common
     public class Displaysettings_Contrast : DisplaysettingsBasic
     {
         public uint Contrast { get; set; } = 0x0;
+    }
+
+    public class Displaysettings_Luminance : DisplaysettingsBasic
+    {
+        public uint Luminance { get; set; } = 0x0;
     }
 
     public class Displaysettings_InputSource : DisplaysettingsBasic 

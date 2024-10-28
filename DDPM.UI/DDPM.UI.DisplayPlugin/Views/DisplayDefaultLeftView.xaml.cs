@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Module.InputSource;
 using DDPM.UI.Plugin.Common;
 using Dell.Client.Framework.Common;
@@ -7,6 +8,7 @@ using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Views
 {
@@ -148,10 +150,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //devImg.Width = this.ActualWidth / 2 + 40;
-            devImg.Width = this.ActualWidth - 30;
+            //_log?.Info($"this.ActualWidth = {this.ActualWidth}");
+            //DDPM.UI.Common.Models.HomeDevice deviceBasePageViewModel = (DDPM.UI.Common.Models.HomeDevice)this.DataContext;
+            //_log?.Info($"LandingMarketName = {deviceBasePageViewModel.LandingMarketName}");
 
-            //_log.Info($"this.ActualWidth = {this.ActualWidth}");
+            //BasePage: vBar.ActualWidth = 224
+            //devImg.Width = this.ActualWidth - 224;
         }
     }
 }

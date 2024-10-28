@@ -30,6 +30,13 @@ namespace DDPM.UI.Common.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             logMock = new Mock<ILog>();
             log = logMock.Object;
             var myConsoleMock = new Mock<IConsole>();
