@@ -29,6 +29,12 @@ namespace DDPM.SA.Common
     //set -Display=BrightnessLevel -option=value
     public class ICLICommandTable
     {
+        private readonly Dictionary<string, int> Command_Timeout_Value = new Dictionary<string, int>()
+        {
+            { "DEVICEDATA", 300 },
+            { "DEVICECONFIGURATION", 300 }
+        };
+
         //IT feature table
         private readonly List<string> Supported_IT_Feature = new List<string>()//ex: /get -app="telemetryconsent"
         {
@@ -185,6 +191,8 @@ namespace DDPM.SA.Common
                 GuidString = new List<string>();
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
+
+            public int nTimeOutValue { get; set; } = 60;
         }
 
         public CommandLineInput StringProcessing(string[] args)
@@ -369,18 +377,30 @@ namespace DDPM.SA.Common
             }
 
             //Dean 0816 check the command is belong to IT/normal or both
-            CheckCommandRoutePath(commandInput);
+            CheckCommandRoutePath(ref commandInput);
+            CheckTimeoutAndAssignValue(ref commandInput);
             commandInput.isCliCommandsProcessCompleted = true;
 
             return commandInput;
         }
 
-        private void CheckCommandRoutePath(CommandLineInput commandInput)
+        private void CheckTimeoutAndAssignValue(ref CommandLineInput commandInput)
+        {
+            CommandLineInput commandInput_temp = commandInput;
+            if (Command_Timeout_Value.ContainsKey(commandInput_temp.TargetFeature.ToUpper()))
+            {
+                commandInput.nTimeOutValue = Command_Timeout_Value[commandInput_temp.TargetFeature.ToUpper()];
+                return;
+            }
+        }
+
+        private void CheckCommandRoutePath(ref CommandLineInput commandInput)
         {
             commandInput.isNormalCommands = false;
             commandInput.isITCommands = false;
+            CommandLineInput commandInput_temp = commandInput;
 
-            int feature_idx = Supported_IT_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput.TargetFeature.ToUpper().Trim()));
+            int feature_idx = Supported_IT_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput_temp.TargetFeature.ToUpper().Trim()));
             if (feature_idx >= 0) //has IT feature
             {
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy

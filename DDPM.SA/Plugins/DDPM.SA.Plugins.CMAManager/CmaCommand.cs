@@ -41,9 +41,7 @@ namespace DDPM.SA.Plugins.CMAManager
         }
 
         public string gid { get; set; }
-
         public string sid { get; set; }
-
         public Array req { get; set; }
 
         public class CmaTask
@@ -95,17 +93,11 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
             public string sid { get; set; }
-
             public int tid { get; set; }
-
             public string active { get; set; }
-
             public string devicetype { get; set; }
-
             public string command { get; set; } = string.Empty;
-
             public string value { get; set; } = string.Empty;
-
             public JObject options { get; set; }
 
         }
@@ -126,13 +118,20 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 modelname = (string)options["modelname"];
 
+/*                forcewithnotice = (bool)options["forcewithnotice"];
+
+                forcewithnonotice = (bool)options["forcewithnonotice"];
+
+                defer = (bool)options["defer"];*/
+
             }
 
             public string index { get; set; } = string.Empty;
-
             public string servicetag { get; set; } = string.Empty;
-
             public string modelname { get; set; } = string.Empty;
+/*            public bool forcewithnotice { get; set; } = false;
+            public bool forcewithnonotice { get; set; } = false;
+            public bool defer { get; set; } = false;*/
 
         }
 

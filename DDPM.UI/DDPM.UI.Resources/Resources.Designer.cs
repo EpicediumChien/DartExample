@@ -1483,6 +1483,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disconnect all USB storage devices from monitor..
+        /// </summary>
+        internal static string Disconnect_all_USB_storage_devices_from_monitor {
+            get {
+                return ResourceManager.GetString("Disconnect_all_USB_storage_devices_from_monitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display.
         /// </summary>
         internal static string Display {
@@ -1740,6 +1749,15 @@ namespace DDPM.UI.Resources {
         internal static string Documents {
             get {
                 return ResourceManager.GetString("Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driver version.
+        /// </summary>
+        internal static string Driver_version {
+            get {
+                return ResourceManager.GetString("Driver_version", resourceCulture);
             }
         }
         
@@ -4129,6 +4147,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preview Changes.
+        /// </summary>
+        internal static string Preview_Changes {
+            get {
+                return ResourceManager.GetString("Preview_Changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick Note.
         /// </summary>
         internal static string QuickNote {
@@ -4426,6 +4453,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Software version.
+        /// </summary>
+        internal static string Software_version {
+            get {
+                return ResourceManager.GetString("Software_version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Audio Preset.
         /// </summary>
         internal static string Soundbar_0 {
@@ -4615,6 +4651,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stop Preview.
+        /// </summary>
+        internal static string Stop_Preview {
+            get {
+                return ResourceManager.GetString("Stop_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Success.
         /// </summary>
         internal static string Success {
@@ -4719,6 +4764,15 @@ namespace DDPM.UI.Resources {
         internal static string Tooltip_5 {
             get {
                 return ResourceManager.GetString("Tooltip.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This feature enables our eyes to adapt to a desired setting..
+        /// </summary>
+        internal static string Tooltips_Schedule {
+            get {
+                return ResourceManager.GetString("Tooltips_Schedule", resourceCulture);
             }
         }
         

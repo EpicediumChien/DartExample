@@ -20,6 +20,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.CLIManager
@@ -213,7 +214,8 @@ namespace DDPM.SA.Plugin.CLIManager
                     }
                 }
                 counter++;
-                if (counter >= 60)//means timeout
+                //1028 change to timeout value that be customized by each command.Default is 60s.
+                if (counter >= commandLineInput.nTimeOutValue)//60)//means timeout
                 {
                     result.command_guid_string = arg.command_guid_string;
                     result.serialize_Json_response = Response_NoResultTimeout(commandLineInput);

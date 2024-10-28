@@ -33,4 +33,5 @@ namespace DDPM.RemoteManagement.Common.Interfaces
         event EventHandler<NotifyArgs> DisplayDisconnected;
 
     }
+
 }
