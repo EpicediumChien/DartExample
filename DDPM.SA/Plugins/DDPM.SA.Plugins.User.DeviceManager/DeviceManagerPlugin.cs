@@ -9574,9 +9574,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            //Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
-            //Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
-            //Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
             if (_altPressed && strKey.Equals("Z"))
             {
                 CallQAM_UI(this);
@@ -9673,20 +9670,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
                         var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
-                        foreach (var h in hotkeyInfo.Hotkey)
+                        Debug.WriteLine($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                        Debug.WriteLine($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                        if (_ctrlPressed || _altPressed || _shiftPressed)
                         {
-                            Debug.WriteLine($"Hotkey : {h}= {(int)h}");
+                            writelog($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                            writelog($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
                         }
-                        Debug.WriteLine($"pressed : {e.KeyValue}={e.KeyCode}");
-                        Debug.WriteLine($"key b1 : {b1}");
-                        Debug.WriteLine($"key _ctrlPressed : {_ctrlPressed}");
-                        Debug.WriteLine($"key _altPressed : {_altPressed}");
-                        Debug.WriteLine($"key _shiftPressed : {_shiftPressed}");
                         if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
                         && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
                         && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
                         && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
                         {
+                            Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
                             HotkeyType job = hotkeyInfo.Job;
                             ExecHotkeyJob(settings, job);
                         }
@@ -9731,14 +9727,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //check (1)
                 if (lastSelectedMonitor_UI == null)
                 {
-                    writelog($"[ExecHotkeyJob] UI didn't set any selected monitor");
+                    Debug.WriteLine($"[ExecHotkeyJob：{job}] UI didn't set any selected monitor");
+                    writelog($"[ExecHotkeyJob：{job}] UI didn't set any selected monitor");
                     return Task.FromResult(false);
                 }
                 monitorInfo = _AllInfoMonitors.Find(x => x.modelName.Equals(lastSelectedMonitor_UI.modelName) && x.edid.ServiceTag.Equals(lastSelectedMonitor_UI.edid.ServiceTag));
                 if (monitorInfo == null)
                 {
-                    writelog($"[ExecHotkeyJob] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
-
+                    writelog($"[ExecHotkeyJob：{job}] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
+                    Debug.WriteLine($"[ExecHotkeyJob：{job}] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
                     return Task.FromResult(false);
                 }
             }
@@ -9752,63 +9749,67 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Brightness_Value));
-                    }
+                    if (!isAutoBrightnessOn(monitorInfo))
+                        if (IsALSautobrightness(monitorInfo))
+                        {
+                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                            HotkeyPopup(hotkeyPopWrap);
+                        }
+                        else
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                        }
                     break;
 
                 case HotkeyType.BrightnessIncrease:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));
-                    }
+                    if (!isAutoBrightnessOn(monitorInfo))
+                        if (IsALSautobrightness(monitorInfo))
+                        {
+                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                            HotkeyPopup(hotkeyPopWrap);
+                        }
+                        else
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                        }
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));
-                    }
+                    if (!isAutoBrightnessOn(monitorInfo))
+                        if (IsALSautobrightness(monitorInfo))
+                        {
+                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                            HotkeyPopup(hotkeyPopWrap);
+                        }
+                        else
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                        }
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Contrast_Value));
-                    }
+                    if (!isAutoBrightnessOn(monitorInfo))
+                        if (IsALSautobrightness(monitorInfo))
+                        {
+                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                            HotkeyPopup(hotkeyPopWrap);
+                        }
+                        else
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                        }
                     break;
 
                 case HotkeyType.LuminanceReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Luminance_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Luminance_Value));
                     break;
 
                 case HotkeyType.LuminanceIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Luminance_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Luminance_Value));
                     break;
 
                 case HotkeyType.ToggleInputSource:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Toggle_InputSource));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Toggle_InputSource));
                     break;
 
                 case HotkeyType.FavoriteInputSource:
@@ -9818,7 +9819,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
                     if (hotkeyInfoIs != null && hotkeyData != null)// hotkeyInfoIs.InputSource != null)
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { hotkeyInfoIs, hotkeyData.inputSource }, Favorite_InputSource));
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfoIs, hotkeyData.inputSource }, Favorite_InputSource));
                     }
                     break;
 
@@ -9828,16 +9829,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     HotkeyData hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
                     if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { hotkeyInfo, hotkeyData2.inputSource }, Switch_InputSource));
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo, hotkeyData2.inputSource }, Switch_InputSource));
                     }
                     break;
 
                 case HotkeyType.SwapIputPIPPBP:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Swap_IputPIPPBP));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Swap_IputPIPPBP));
                     break;
 
                 case HotkeyType.ChangePIPPosition:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Change_PIPPosition));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Change_PIPPosition));
                     break;
 
                 case HotkeyType.KvmSwitchInputSource:
@@ -9846,35 +9847,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     HotkeyData hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
                     }
                     break;
 
                 case HotkeyType.KvmSwitchKbMsKey:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Kvm_SwitchKbMsKey));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_SwitchKbMsKey));
                     break;
 
                 case HotkeyType.KvmChangePIPPosition:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Kvm_ChangePIPPosition));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_ChangePIPPosition));
                     break;
 
                 case HotkeyType.DarkStabilizerToggle:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DarkStabilizerToggle));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Gaming_DarkStabilizerToggle));
                     break;
 
                 case HotkeyType.DualResolutionToggle:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DualResolutionToggle));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Gaming_DualResolutionToggle));
                     break;
 
                 case HotkeyType.VisionEngineToggle:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_VisionEngineToggle));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Gaming_VisionEngineToggle));
                     break;
 
                 case HotkeyType.ToggleEzRecentSetting:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Toggle_EzRecentSetting));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Toggle_EzRecentSetting));
                     break;
             }
             return Task.FromResult(true);
+        }
+
+        private bool isAutoBrightnessOn(MonitorInfo mo)
+        {
+            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
+            return result.IsEnable;
         }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
@@ -10166,26 +10173,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                ObjGetVCP pxpMode = GetPxpMode(monitorInfo).Result;
-                if (pxpMode != null && pxpMode.result == true && !IsPIPMode((UInt32)pxpMode.value))
+                if (!IsPIPMode(monitorInfo))
                 {
-                    //not in pip mode
-                    ushort[] pxpCap = GetPipPbpCapabilitiesWords(monitorInfo).Result;
-                    if (pxpCap == null)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        foreach (UInt16 mode in pxpCap)
-                        {
-                            PxpModeObj? obj = Array.Find(PxpModeObj.Table, x => x.ModeCode == mode && x.Arg.ToLower().Contains("pip"));
-                            if (obj != null)
-                            {
-                                bool setPxp = SetPbpMode(monitorInfo, (UInt16)obj.ModeCode).Result;
-                            }
-                        }
-                    }
+                    //pxp off
+                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
+                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
+                    return;
                 }
                 else
                 {
@@ -10195,24 +10188,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private bool IsPIPMode(UInt32 value)
+        private bool IsPIPMode(MonitorInfo mo)
         {
-            PxpModeObj? obj = Array.Find(PxpModeObj.Table, x => x.ModeCode == value);
-            if (obj != null)
+            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
+            Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
+            if (pxpMode != null && pxpMode.result == true)
             {
-                return obj.Arg.ToLower().Contains("pip");
+                return (UInt32)pxpMode.value != 0;
             }
             return false;
         }
 
         private void Swap_IputPIPPBP(MonitorInfo monitorInfo, Object[] param)
         {
+            Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP >begin");
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                ObjGetVCP pxpMode = GetPxpMode(monitorInfo).Result;
-                if (pxpMode != null && pxpMode.result == true && (UInt32)pxpMode.value == 0)
+                if (!IsPIPMode(monitorInfo))
                 {
                     //pxp off
+                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
+                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
                     return;
                 }
                 //0 = main, 1 = sub1, 2 = sub2, 3 = sub3
@@ -10272,6 +10268,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 x = swapList[0];
                 y = swapList[1];
                 bool swap= VideoSwap(monitorInfo, (UInt16)x, (UInt16)y).Result;*/
+            }
+            else
+            {
+                Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP >end; HotkeyFuncLock");
             }
         }
 
@@ -10584,19 +10584,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (hotkeyPopWrap.hotkeyType)
             {
                 case HotkeyType.BrightnessReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
                     break;
 
                 case HotkeyType.BrightnessIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
                     break;
             }
         }
@@ -10641,7 +10641,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
                 if (obContrast.result)
                 {
-                    uint contrastValue = ((uint)obContrast.value) <= 1 ? 0 : (uint)obContrast.value - 1;
+                    uint contrastValue = ((uint)obContrast.value) <= 5 ? 0 : (uint)obContrast.value - 5;
                     bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
                     writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
                 }
@@ -10655,7 +10655,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
                 if (obContrast.result)
                 {
-                    uint contrastValue = ((uint)obContrast.value) + 1 >= 100 ? 100 : (uint)obContrast.value + 1;
+                    uint contrastValue = ((uint)obContrast.value) + 5 >= 100 ? 100 : (uint)obContrast.value + 5;
                     bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
                     writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
                 }
@@ -10713,14 +10713,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 switch (setting.RunType)
                                 {
                                     case PowerNapType.ReduceBrightness:
-                                        allJobs.Add(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
+                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapReduceBrightness));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
                                         Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:true");
                                         writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:true");
                                         break;
 
                                     case PowerNapType.SleepIfRunning:
-                                        allJobs.Add(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
+                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
                                         Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:true");
                                         writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:true");
@@ -10757,14 +10757,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 switch (setting.RunType)
                                 {
                                     case PowerNapType.ReduceBrightness:
-                                        allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
+                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapReduceBrightness));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
                                         Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:false");
                                         writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:false");
                                         break;
 
                                     case PowerNapType.SleepIfRunning:
-                                        allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
+                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
                                         Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:false");
                                         writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:false");
