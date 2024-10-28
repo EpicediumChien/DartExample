@@ -125,7 +125,7 @@ namespace DDPM.CMA.Tester
             // string jsonActHours = await ReadJsonFileAsync("ActHours");
             string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
 
-            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
+            string jsonFwDisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
             string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
             string jsonfwkb = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""Keyboard"",""options"":{}}]}";
             string jsonfwmouse = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""MOUSE"",""options"":{}}]}";
@@ -138,7 +138,7 @@ namespace DDPM.CMA.Tester
 
             string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
             // string deviceConfig = await ReadJsonFileAsync("DeviceConfig");
-            string jsondeviceconfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
+            string jsonDeviceConfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
 
             string configless = "{\"Index\": \"1\",\"DeviceType\": \"Display\",\"BrightnessLevel\": \"90%\",\"ContrastLevel\": \"90%\"}";
             string jsondeviceconfig3 = "{\"sid\":\"1728380278\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + configless + ",\"options\":{}}]}";
@@ -147,7 +147,7 @@ namespace DDPM.CMA.Tester
 
             string jsondevicedatadisplay = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""DeviceData"",""options"":{}}]}";
 
-            RemoteRequestArgs cmarequest = new RemoteRequestArgs();
+            RemoteRequestArgs cmaRequest = new RemoteRequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
             _CMAManagerPlugin.DisplayConnected += DisplayConnected;
@@ -210,55 +210,56 @@ namespace DDPM.CMA.Tester
                             cmaRequest.remote_request = jsonReport;
                             break;
 
-                    case 6:
-                        Console.WriteLine($"json String = {jsongetdisplaymulti}");
-                        cmarequest.remote_request = jsongetdisplaymulti;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 6:
+                            Console.WriteLine($"json String = {jsongetdisplaymulti}");
+                            cmaRequest.remote_request = jsongetdisplaymulti;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    case 7:
-                        Console.WriteLine($"json String = {jsonfwdock}");
-                        cmarequest.remote_request = jsonfwdock;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 7:
+                            Console.WriteLine($"json String = {jsonfwdock}");
+                            cmaRequest.remote_request = jsonfwdock;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    case 8:
-                        Console.WriteLine($"json String = {jsonfwkb}");
-                        cmarequest.remote_request = jsonfwkb;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 8:
+                            Console.WriteLine($"json String = {jsonfwkb}");
+                            cmaRequest.remote_request = jsonfwkb;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    case 9:
-                        Console.WriteLine($"json String = {jsonfwmouse}");
-                        cmarequest.remote_request = jsonfwmouse;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 9:
+                            Console.WriteLine($"json String = {jsonfwmouse}");
+                            cmaRequest.remote_request = jsonfwmouse;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    case 21:
-                        Console.WriteLine($"json String = {test}");
-                        cmarequest.remote_request = test;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 21:
+                            Console.WriteLine($"json String = {test}");
+                            cmaRequest.remote_request = test;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    case 22:
-                        Console.WriteLine($"json String = {jsondeviceconfig3}");
-                        cmarequest.remote_request = jsondeviceconfig3;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 22:
+                            Console.WriteLine($"json String = {jsondeviceconfig3}");
+                            cmaRequest.remote_request = jsondeviceconfig3;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    case 23:
-                        Console.WriteLine($"json String = {jsondevicedatadisplay}");
-                        cmarequest.remote_request = jsondevicedatadisplay;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 23:
+                            Console.WriteLine($"json String = {jsondevicedatadisplay}");
+                            cmaRequest.remote_request = jsondevicedatadisplay;
+                            _CMAManagerPlugin.Info(cmaRequest);
+                            break;
 
-                    default:
-                        isRunning = false;
-                        break;
+                        default:
+                            isRunning = false;
+                            break;
 
 
+                    }
+                    while (!isresponse) { }
                 }
-                while (!isresponse) { }
             }
         }
 
