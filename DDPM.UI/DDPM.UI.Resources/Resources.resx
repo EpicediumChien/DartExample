@@ -2268,4 +2268,7 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>This feature enables our eyes to adapt to a desired setting.</value>
   </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Disconnect all USB storage devices from monitor.</value>
+  </data>
 </root>
