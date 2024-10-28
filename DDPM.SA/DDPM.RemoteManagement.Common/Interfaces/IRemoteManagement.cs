@@ -27,7 +27,7 @@ namespace DDPM.RemoteManagement.Common.Interfaces
     public interface IRemoteManagement : IFrameworkPlugin
     {
         Task<RemoteManagementResult> Info(RemoteRequestArgs request);
-        event EventHandler<NotifyArgs> Notify;
+        event EventHandler<List<NotifyArgs>> Notify;
 
         event EventHandler<NotifyArgs> DisplayConnected;
         event EventHandler<NotifyArgs> DisplayDisconnected;

@@ -23,6 +23,8 @@ using IDs = DDPM.SA.Common.IDs;
 using DDPM.SA.Common.Interfaces;
 using DDPM.RemoteManagement.Common.Interfaces;
 using System.Windows.Documents;
+using System.Collections;
+using Newtonsoft.Json;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
@@ -38,6 +40,9 @@ namespace DDPM.SA.Plugins.CMAManager
 
         #region Basic code for plugin
         public const string PluginLogId = "DDPMRemoteManager";
+
+        private Queue<TaskInfo> taskInfoQueue = new Queue<TaskInfo>();
+        private List<NotifyArgs> notifyArgsList = new List<NotifyArgs>();
 
         #region Private Members
 
@@ -121,6 +126,9 @@ namespace DDPM.SA.Plugins.CMAManager
         #endregion
 
         #region Event Handler
+        public event EventHandler<List<NotifyArgs>> Notify;
+        public event EventHandler<NotifyArgs> DisplayConnected;
+        public event EventHandler<NotifyArgs> DisplayDisconnected;
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -384,7 +392,6 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private void initCommandTask(String guid, String request)
         {
-            List<TaskInfo> taskInfos = new List<TaskInfo>();
 
             CmaCommand cmd = new CmaCommand(guid, request);
 
@@ -401,9 +408,6 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 string command = "";
                 int eventtype = 0;
-
-                //Console.WriteLine("task.options = " + task.options);
-                WriteLog($"[CMA] initCommandTask task.command = {task.command}");
 
                 if ("get".Equals(task.active.ToLower()))
                 {
@@ -437,65 +441,55 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 }
 
-                /*CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
-
-                if (option.index != null && option.index.Length > 0)
-                {
-                    command = command + (" index=" + option.index);
-                }
-
-                if (option.servicetag != null && option.servicetag.Length > 0)
-                {
-                    command = command + (" servicetag=" + option.servicetag);
-                }
-
-                if (option.modelname != null && option.modelname.Length > 0)
-                {
-                    command = command + (" model=" + option.modelname);
-                }*/
-
-
                 commandinputs.Add(command);
 
-                TaskInfo taskinfo = new TaskInfo();
-                taskinfo.sid = task.sid;
-                taskinfo.gid = guid;
-                taskinfo.tid = task.tid;
-                taskinfo.eventtype = eventtype;
-                taskinfo.command = command;
-                taskinfo.jsonconfig = task.value;       
+                TaskInfo taskInfo = new TaskInfo();
+                taskInfo.sid = task.sid;
+                taskInfo.gid = guid;
+                taskInfo.tid = task.tid;
+                taskInfo.eventtype = eventtype;
+                taskInfo.command = command;
+                taskInfo.jsonconfig = task.value;       
 
-                Console.WriteLine("command = " + command);
-
-                WriteLog($"[CMA] initCommandTask command = {command}");
-                WriteLog($"[CMA] initCommandTask taskinfo.jsonconfig = {taskinfo.jsonconfig}");
-
-                taskInfos.Add(taskinfo);
-
-            }
-
-            foreach (TaskInfo taskinfo in taskInfos) {
-                //new Thread(runCommandTask).Start(taskinfo);
-                WriteLog($"[CMA]  before runCommandTask, taskinfo.sid = {taskinfo.sid} ; taskinfo.gid = {taskinfo.gid} ; taskinfo.tid = {taskinfo.tid} ; taskinfo.eventtype = {taskinfo.eventtype} ; taskinfo.command = {taskinfo.command}");
-                new Thread(runCommandTask).Start(taskinfo);
+                taskInfoQueue.Enqueue(taskInfo);
+                int lastProcessedTid = -1;
+                while (taskInfoQueue.Count > 0)
+                {
+                    TaskInfo curTaskInfo = taskInfoQueue.Peek();
+                    if (lastProcessedTid != curTaskInfo.tid)
+                    {
+                        lastProcessedTid = curTaskInfo.tid;
+                        _ = Task.Run(async() => await ProcessQueueAsync(curTaskInfo));
+                    }
+                }
+                EventHandler<List<NotifyArgs>> Handler = Notify;
+                Handler.Invoke(this, notifyArgsList);
             }
         }
 
-        private void runCommandTask(object _taskinfo)
+        private async Task ProcessQueueAsync(TaskInfo taskInfo)
         {
-            TaskInfo taskinfo = (TaskInfo)_taskinfo;
+            Console.WriteLine($"taskInfoQueue = {taskInfoQueue.Count}");
+            WriteLog($"[CMA]  before runCommandTask, taskinfo.sid = {taskInfo.sid} ; taskinfo.gid = {taskInfo.gid} ; taskinfo.tid = {taskInfo.tid} ; taskinfo.eventtype = {taskInfo.eventtype} ; taskinfo.command = {taskInfo.command}");
+            await runCommandTaskAsync(taskInfo);
+            Console.WriteLine($"Processing tid: {taskInfo.tid} TargetFeature: {taskInfo.command}");
+        }
 
-            if (null != _CliManagerPlugin)
+        private async Task<CLIEventResult> runCommandTaskAsync(object _taskinfo)
+        {
+            TaskInfo taskInfo = (TaskInfo)_taskinfo;
+
+            if (null != _CliManagerPlugin && !string.IsNullOrEmpty(taskInfo.command))
             {
                 ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskinfo.command.Split(' '));
+                CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
                 commandLineInput.isCliRunAdmin = true;
-                commandLineInput.jsonDeviceConfig = taskinfo.jsonconfig;
+                commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
 
-                Console.WriteLine("[CMA] runCommandTask taskinfo.command = " + taskinfo.command);
+                Console.WriteLine("[CMA] runCommandTask taskinfo.command = " + taskInfo.command);
 
                 //_CliManagerPlugin.PerformCommandLineRelay
-                CLIEventResult cliResult = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+                CLIEventResult cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
                 Boolean isSuccess = false;
 
                 string responseMsg = String.Empty;
@@ -503,7 +497,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 string responseResult = String.Empty;
 
                 NotifyArgs args = new NotifyArgs();
-                args.eventType = taskinfo.eventtype.ToString();
+                args.eventType = taskInfo.eventtype.ToString();
 
 
                 try
@@ -526,24 +520,26 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     if (isSuccess)
                     {
-                        args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
                     }
                     else
                     {
-                        args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
                     }
                 }
                 catch
                 {
                     responseMsg = "Exception: Unknow Result";
-                    args.notification = "{\"sid\": \"" + taskinfo.sid + "\",\"gid\": \"" + taskinfo.gid + "\",\"response\": [{\"tid\": " + taskinfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                    args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
                 }
 
                 Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult.command_guid_string + "\n args.notification = " + args.notification);
                 //Console.WriteLine("[CMA] );
 
                 OnEventNotify(args);
+                return cliResult;
             }
+            return new CLIEventResult();
         }
         
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
@@ -716,12 +712,9 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private void OnEventNotify(NotifyArgs e)
         {
-            EventHandler<NotifyArgs> Handler = Notify;
-            if (Handler != null)
-            {
-                WriteLog($"[CMA] OnEventNotify e.notification = {e.notification}");
-                Handler.Invoke(this, e);
-            }
+            taskInfoQueue.Dequeue();
+            WriteLog($"[CMA] OnEventNotify e.notification = {e.notification}");
+            notifyArgsList.Add(e);
         }
 
         private void OnEventDisplayConnect(NotifyArgs e)
@@ -743,9 +736,5 @@ namespace DDPM.SA.Plugins.CMAManager
                 Handler.Invoke(this, e);
             }
         }
-
-        public event EventHandler<NotifyArgs> Notify;
-        public event EventHandler<NotifyArgs> DisplayConnected;
-        public event EventHandler<NotifyArgs> DisplayDisconnected;
     }
 }

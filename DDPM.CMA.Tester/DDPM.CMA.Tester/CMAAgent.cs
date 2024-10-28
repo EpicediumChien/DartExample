@@ -211,53 +211,40 @@ namespace DDPM.CMA.Tester
                             break;
 
                         case 6:
-                            Console.WriteLine($"json String = {jsongetdisplaymulti}");
                             cmaRequest.remote_request = jsongetdisplaymulti;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         case 7:
-                            Console.WriteLine($"json String = {jsonfwdock}");
                             cmaRequest.remote_request = jsonfwdock;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         case 8:
-                            Console.WriteLine($"json String = {jsonfwkb}");
                             cmaRequest.remote_request = jsonfwkb;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         case 9:
-                            Console.WriteLine($"json String = {jsonfwmouse}");
                             cmaRequest.remote_request = jsonfwmouse;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         case 21:
-                            Console.WriteLine($"json String = {test}");
                             cmaRequest.remote_request = test;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         case 22:
-                            Console.WriteLine($"json String = {jsondeviceconfig3}");
                             cmaRequest.remote_request = jsondeviceconfig3;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         case 23:
-                            Console.WriteLine($"json String = {jsondevicedatadisplay}");
                             cmaRequest.remote_request = jsondevicedatadisplay;
-                            _CMAManagerPlugin.Info(cmaRequest);
                             break;
 
                         default:
                             isRunning = false;
                             break;
-
-
                     }
+                    stopwatch.Start();
+                    Console.WriteLine($"json String = {cmaRequest.remote_request}");
+                    _CMAManagerPlugin.Info(cmaRequest);
                     while (!isresponse) { }
                 }
             }
@@ -338,22 +325,17 @@ namespace DDPM.CMA.Tester
             InitializeCMAManagerPlugin();
         }
 
-        private static void Notification(object? sender, NotifyArgs e)
+        private static void Notification(object? sender, List<NotifyArgs> e)
         {
-            Console.WriteLine("CMA Notification Alert");
-            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventType);
-            Console.WriteLine("CMA Notification Alert notification : " + e.notification);
-
-            JsonDocument jsonDocument = JsonDocument.Parse(e.notification);
-
-            requestNumList.Remove(jsonDocument.RootElement.GetProperty("response")[0]
-                                  .GetProperty("tid").GetInt32());
-            if (requestNumList.Count == 0)
+            foreach (NotifyArgs notifyArgs in e)
             {
-                isresponse = true;
-                stopwatch.Stop();
-                Console.WriteLine($"Request finished in {stopwatch.Elapsed.TotalSeconds} seconds.");
+                Console.WriteLine("CMA Notification Alert");
+                Console.WriteLine("CMA Notification Alert eventtype : " + notifyArgs.eventType);
+                Console.WriteLine("CMA Notification Alert notification : " + notifyArgs.notification);
             }
+            isresponse = true;
+            stopwatch.Stop();
+            Console.WriteLine($"Request finished in {stopwatch.Elapsed.TotalSeconds} seconds.");
         }
 
         private static void DisplayConnected(object? sender, NotifyArgs e)
