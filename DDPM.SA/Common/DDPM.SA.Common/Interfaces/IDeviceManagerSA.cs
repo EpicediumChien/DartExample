@@ -526,6 +526,8 @@ namespace DDPM.SA.Common
         Task<bool> SetSkipCA(bool isSkipCA);
 
         Task<bool> GetSkipCA();
+        Task<bool> SetServerURL(string url);
+        Task<string> GetServerURL();
 
         #endregion public for FW Update by Bruce
 

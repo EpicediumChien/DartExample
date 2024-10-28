@@ -306,11 +306,11 @@ namespace DDPM.UI.Common.Tests
             Assert.That(homeDevice.Text1, Is.EqualTo(""));
 
             // Act
-            var monitorinfo = new MonitorInfo() { inputSource = "inputSource" };
+            var monitorinfo = new MonitorInfo() { inputCable = "inputCable" };
             homeDevice.MonitorInfo = monitorinfo;
             var result = homeDevice.Text1;
             // Assert
-            Assert.That(result, Is.EqualTo("inputSource"));
+            Assert.That(result, Is.EqualTo("inputCable"));
 
             // Act
             var deviceInfo = new DeviceInfo() { Name = "A", BatteryStatus = "save" };

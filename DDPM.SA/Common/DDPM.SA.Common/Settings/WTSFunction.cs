@@ -111,10 +111,13 @@ namespace DDPM.SA.Common.Settings
         {
             text = "[WTSFunction] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }               
 
         //

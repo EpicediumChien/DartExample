@@ -136,7 +136,6 @@ namespace DDPM.Subagent.User
                     new Guid(IDs.CLI_Plugin_Display),
                     new Guid(IDs.CLI_Plugin_Peripherals),
                     new Guid(IDs.DDPM_DTP_Proxy_Plugin),
-                    new Guid(IDs.DDPM_ACTIONS_MANGER_PLUGIN_ID),
                     new Guid(IDs.DDPM_EMPlugin_PLUGIN_ID),
                 },
                 /*

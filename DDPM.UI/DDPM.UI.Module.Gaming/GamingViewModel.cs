@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
@@ -225,6 +226,46 @@ namespace DDPM.UI.Module.Gaming
             Debug.WriteLine("RefreshHotkeySettings done");
         }
         #endregion
+        #region Lock/Unlock
+        #region RefreshRate
+        private bool _Lock_RefreshRate;
+        public bool Lock_RefreshRate
+        {
+            get
+            {
+                return _Lock_RefreshRate;
+            }
+            set
+            {
+                _Lock_RefreshRate = value;
+                OnPropertyChanged("RefreshRateUI_IsEnable");
+                OnPropertyChanged("RefreshRateUI_Opacity");
+                OnPropertyChanged("RefreshRateUI_LockTooltip");
+            }
+        }
+        public bool RefreshRateUI_IsEnable
+        {
+            get
+            {
+                return _Lock_RefreshRate ? false : true;
+            }
+        }
+        public string RefreshRateUI_Opacity
+        {
+            get
+            {
+                return _Lock_RefreshRate ? "0.5" : "1.0";
+            }
+        }
+        public Visibility RefreshRateUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_RefreshRate ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        #endregion
+        #endregion
         public Visibility IsSupported_GameEnhanceMode { get; set; } = Visibility.Collapsed;
         public Visibility IsSupported_ResponseTime { get; set; } = Visibility.Collapsed;
         public Visibility IsSupported_DarkStabilizer { get; set; } = Visibility.Collapsed;
@@ -400,6 +441,10 @@ namespace DDPM.UI.Module.Gaming
                 _selectedHDRType = HDRType_ItemsCollection.Find(x => (x.HDRType.Equals(displayPropertiesInfo.Current_HDRType)));
                 _selectedDualResolution = DualResolution_ItemsCollection.Find(x => (x.DualResolutionType.Equals(displayPropertiesInfo.Current_DualResolutionType)));
                 Invoke_RefreshHotkeySettings();
+                //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
+                Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {Lock_RefreshRate}");
                 RefreshUI();
             }
             catch (Exception)

@@ -6543,33 +6543,59 @@ namespace DDPM.CLI.Plugins.Display
 
                                 break;
                             }
-                            if (string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
+                            if (commandLineInput.Options.Count == 1)
                             {
-                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                                 {
-
-
-                                    cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-                                    string value = commandLineInput.Options[0].Option_Value;
-                                    string frequency = null;
-                                    //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
-                                    string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
-                                    //Debug.WriteLine($"width: {ss[0]}, {ss[1]}");
-                                    if (string.IsNullOrEmpty(ss[1]))
+                                    if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                                     {
-                                        string[] sss = ss[1].Split("@");
-                                        //Debug.WriteLine($"high: {sss[0]}, {sss[1]}");
-                                        if (string.IsNullOrEmpty(sss[1]))
+
+
+                                        cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                        string value = commandLineInput.Options[0].Option_Value;
+                                        string frequency = null;
+                                        //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
+                                        string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
+                                        //Trace.WriteLine($"1: {ss[0]}  {ss[1]}");
+                                        if (ss.Length > 1)
                                         {
-                                            sss[1].Replace(".", ",");
-                                            if (sss[1].Contains(","))
+                                            if (!string.IsNullOrEmpty(ss[1]))
                                             {
-                                                string[] ssss = sss[1].Split(",");
-                                                if (string.IsNullOrEmpty(ssss[0]))
+                                                string[] sss = ss[1].Split("@");
+                                                //Trace.WriteLine($"2: {sss[0]} {sss[1]}");
+                                                if (sss.Length > 1)
                                                 {
-                                                    frequency = ssss[0];
-                                                    string lock_option = ssss[1];
-                                                }
+                                                    if (!string.IsNullOrEmpty(sss[1]))
+                                                    {
+                                                        //sss[1].Replace(".", ",");
+                                                        if (sss[1].Contains(","))
+                                                        {
+                                                            //Trace.WriteLine($"3:  {sss[1]}");
+                                                            string[] ssss = sss[1].Split(",");
+                                                            if (!string.IsNullOrEmpty(ssss[0]))
+                                                            {
+                                                                frequency = ssss[0];
+                                                                //Trace.WriteLine($"4: {ssss[0]}");
+                                                                //Trace.WriteLine($"4: {ssss[1]}");
+                                                                //string lock_option = ssss[1];
+                                                            }
+                                                            else
+                                                            {
+                                                                cLI_RESPONSE.Result = "FAIL";
+                                                                cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                                            }
+
+                                                        }
+                                                        else
+                                                            frequency = sss[1];
+                                                        //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
+                                                        displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
+                                                        ret = _devMgr.SetDisplayPropertiest(monitorInfo,
+                                                            displayProperties,
+                                                            displayPropertiesInfo.CurrentOrientation).Result;
+
+                                                    }
+                                                }                                                 
                                                 else
                                                 {
                                                     cLI_RESPONSE.Result = "FAIL";
@@ -6578,18 +6604,10 @@ namespace DDPM.CLI.Plugins.Display
 
                                             }
                                             else
-                                                frequency = sss[1];
-                                            //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
-                                            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
-                                            ret = _devMgr.SetDisplayPropertiest(monitorInfo,
-                                                displayProperties,
-                                                displayPropertiesInfo.CurrentOrientation).Result;
-
-                                        }
-                                        else
-                                        {
-                                            cLI_RESPONSE.Result = "FAIL";
-                                            cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                            {
+                                                cLI_RESPONSE.Result = "FAIL";
+                                                cLI_RESPONSE.Message = "Invalid command line syntax ";
+                                            }
                                         }
 
                                     }
@@ -6600,13 +6618,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
 
                                 }
-                                else
-                                {
-                                    cLI_RESPONSE.Result = "FAIL";
-                                    cLI_RESPONSE.Message = "Invalid command line syntax ";
-                                }
-
-                            }
+                            }                    
                             else
                             {
                                 cLI_RESPONSE.Result = "FAIL";

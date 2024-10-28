@@ -107,14 +107,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     public partial class AnalyticsPage : UserControl
     {
         // 10/15 Derek add for RWD
-        private readonly Int16 breakPoints = 537;
+        //private readonly Int16 breakPoints = 910;
 
         public AnalyticsPage()
         {
             InitializeComponent();
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            //if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+            //    breakPoints = width;
 
             var vm = new AnalyticsViewModel();
             this.DataContext = vm;
@@ -218,10 +218,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
-                url_btn.Width = 220;
-            else
-                url_btn.Width = 250;
+            //if (this.ActualWidth <= breakPoints - 212 - 50)
+            //    url_btn.Width = 220;
+            //else
+            //    url_btn.Width = 250;
         }
     }
 }

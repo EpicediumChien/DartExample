@@ -11,12 +11,7 @@ namespace DDPM.UI.Module.AddKnM_Dongle
         private readonly AddDeviceViewModel _vm;
 
         // 10/15 Derek for RWD
-        private readonly int alertTextOriWidth = 300, alertTextWidthRWD = 200;
-        private readonly Int16 breakPoints = 537;
-        private readonly int textBlockWidth = 190;
-        private readonly int textBlockWidthRWD = 200;
-        private readonly int bdrWidth = 245, bdrHeight = 220;
-        private readonly int bdrWidthRWD = 260, bdrHeightRWD = 200;
+        private readonly Int16 breakPoints = 910;
 
         //private readonly string Step1 = "Connect your USB wireless receiver to your system";
         //private readonly string Step2 = "Slide the power switch to OFF.";
@@ -38,39 +33,42 @@ namespace DDPM.UI.Module.AddKnM_Dongle
                 breakPoints = width;
         }
 
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            AdjustBorderHeight();
+        }
+
         //10/13 Derek 需要根据breakpoints来调整布局
         private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints - 315)
                 ChangeToVerticalLayout();
             else
                 ChangeToHorizontalLayout();
 
             txtAlert.Width = bdrAlert.ActualWidth - 50;
+            AdjustBorderHeight();
+        }
+
+        private void AdjustBorderHeight()
+        {
+            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = stepsBorder4.ActualHeight;
         }
 
         private void ChangeToVerticalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Vertical;
 
-            //change Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsBorder4.Width = bdrWidthRWD;
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = stepsBorder4.Height = bdrHeightRWD;
-
-            //change textBlock size
-            txtStep1.Width = txtStep2.Width = txtStep3.Width = txtStep4.Width = textBlockWidthRWD;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsBorder4.Width = this.ActualWidth - 58;
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = txtStep4.Width = this.ActualWidth  - 110;
         }
 
         private void ChangeToHorizontalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Horizontal;
 
-            //restore Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsBorder4.Width = bdrWidth;
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = stepsBorder4.Height = bdrHeight;
-
-            //restore textBlock size
-            txtStep1.Width = txtStep2.Width = txtStep3.Width = txtStep4.Width = textBlockWidth;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsBorder4.Width = this.ActualWidth / 4 - 18;
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = txtStep4.Width = this.ActualWidth / 4 - 70;
         }
     }
 }

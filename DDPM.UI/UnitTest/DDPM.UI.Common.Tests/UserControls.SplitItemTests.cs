@@ -1,5 +1,6 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
@@ -31,7 +32,14 @@ namespace DDPM.UI.Common.Tests
         [SetUp]
         public void Setup()
         {
-            deviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            deviceManagerSAMock =new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
             splitItem = new SplitItem();
             privateObject = new PrivateObject(splitItem);
@@ -274,7 +282,7 @@ namespace DDPM.UI.Common.Tests
         public void TestReplaceByEAArgs()
         {
             //ISplitCtrl == null
-            var args = new EAArgs() { CellCount = 0, SplitKey = 'A' };
+            var args = new EAArgs() { SplitJson=new SplitJson(), CellCount = 1, SplitKey = 'A' };
             try
             {
                 splitItem.ReplaceByEAArgs(args);
@@ -292,7 +300,7 @@ namespace DDPM.UI.Common.Tests
             splitItemViewModel.SplitCtrl = splitCtrl;
             SplitItemViewModel vm = new SplitItemViewModel() { SplitCtrl = splitCtrl };
             privateObject.SetFieldOrProperty("vm", vm);
-            args = new EAArgs() { CellCount = 0,SplitKey='B',CustomName="name",Settings=new List<double>() { 2.2,2.3} };
+            args = new EAArgs() { SplitJson = new SplitJson(),CellCount = 0,SplitKey='B',CustomName="name",Settings=new List<double>() { 2.2,2.3} };
             try
             {
                 splitItem.ReplaceByEAArgs(args);
@@ -303,7 +311,7 @@ namespace DDPM.UI.Common.Tests
                 Assert.Fail("not invoked");
             }
 
-            args = new EAArgs() { CellCount = 0, SplitKey = 'A', CustomName = "name", Settings = new List<double>() { 2.2, 2.3 } };
+            args = new EAArgs() { SplitJson = new SplitJson(), CellCount = 0, SplitKey = 'A', CustomName = "name", Settings = new List<double>() { 2.2, 2.3 } };
             try
             {
                 splitItem.ReplaceByEAArgs(args);

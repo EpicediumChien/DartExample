@@ -61,11 +61,56 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device connected.
+        /// </summary>
+        internal static string A0_Device_connected {
+            get {
+                return ResourceManager.GetString("A0_Device_connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware update started.
+        /// </summary>
+        internal static string A1_Firmware_update_started {
+            get {
+                return ResourceManager.GetString("A1_Firmware_update_started", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware update successful.
+        /// </summary>
+        internal static string A2_Firmware_update_successful {
+            get {
+                return ResourceManager.GetString("A2_Firmware_update_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AI Auto-Framing.
+        /// </summary>
+        internal static string AI_Auto_Framing {
+            get {
+                return ResourceManager.GetString("AI_Auto_Framing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto Brightness is currently enabled.Do you wish to override it?.
         /// </summary>
         internal static string Auto_Brightness_is_currently_enabled {
             get {
                 return ResourceManager.GetString("Auto_Brightness_is_currently_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-framing.
+        /// </summary>
+        internal static string Auto_framing {
+            get {
+                return ResourceManager.GetString("Auto_framing", resourceCulture);
             }
         }
         
@@ -84,6 +129,24 @@ namespace DDPM.SA.Resources {
         internal static string can_be_updated_to {
             get {
                 return ResourceManager.GetString("can_be_updated_to", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DDPM will reopen soon after update.
+        /// </summary>
+        internal static string DDPM_will_reopen_soon_after_update {
+            get {
+                return ResourceManager.GetString("DDPM_will_reopen_soon_after_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string Default {
+            get {
+                return ResourceManager.GetString("Default", resourceCulture);
             }
         }
         
@@ -160,6 +223,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading and installing.
+        /// </summary>
+        internal static string Downloading_and_installing {
+            get {
+                return ResourceManager.GetString("Downloading_and_installing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB wireless receiver firmware is unable to support device firmware upgrade.
+        /// </summary>
+        internal static string E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade {
+            get {
+                return ResourceManager.GetString("E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string Error {
@@ -174,6 +255,24 @@ namespace DDPM.SA.Resources {
         internal static string Failed_to_open_application {
             get {
                 return ResourceManager.GetString("Failed_to_open_application", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field of View.
+        /// </summary>
+        internal static string Field_of_View {
+            get {
+                return ResourceManager.GetString("Field_of_View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware Update.
+        /// </summary>
+        internal static string Firmware_Update {
+            get {
+                return ResourceManager.GetString("Firmware_Update", resourceCulture);
             }
         }
         
@@ -205,11 +304,38 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installing.
+        /// </summary>
+        internal static string Installing {
+            get {
+                return ResourceManager.GetString("Installing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid ID. Please provide a valid action ID..
         /// </summary>
         internal static string Invalid_ID {
             get {
                 return ResourceManager.GetString("Invalid_ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please double click mouse left button to start firmware update.
+        /// </summary>
+        internal static string M1_Please_double_click_mouse_left_button_to_start_firmware_update {
+            get {
+                return ResourceManager.GetString("M1_Please_double_click_mouse_left_button_to_start_firmware_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please press \&quot;U\&quot; key on keyboard to start firmware update.
+        /// </summary>
+        internal static string M2_Please_press_key_on_keyboard_to_start_firmware_update {
+            get {
+                return ResourceManager.GetString("M2_Please_press_key_on_keyboard_to_start_firmware_update", resourceCulture);
             }
         }
         
@@ -250,11 +376,74 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OFF.
+        /// </summary>
+        internal static string OFF {
+            get {
+                return ResourceManager.GetString("OFF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         internal static string Ok {
             get {
                 return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ON.
+        /// </summary>
+        internal static string ON {
+            get {
+                return ResourceManager.GetString("ON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presets.
+        /// </summary>
+        internal static string Presets {
+            get {
+                return ResourceManager.GetString("Presets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing.
+        /// </summary>
+        internal static string Processing {
+            get {
+                return ResourceManager.GetString("Processing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service not running. Try again.
+        /// </summary>
+        internal static string Service_not_running_Try_again {
+            get {
+                return ResourceManager.GetString("Service_not_running_Try_again", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smooth.
+        /// </summary>
+        internal static string Smooth {
+            get {
+                return ResourceManager.GetString("Smooth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Software Update.
+        /// </summary>
+        internal static string Software_Update {
+            get {
+                return ResourceManager.GetString("Software_Update", resourceCulture);
             }
         }
         
@@ -273,6 +462,33 @@ namespace DDPM.SA.Resources {
         internal static string SW_info {
             get {
                 return ResourceManager.GetString("SW_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout.
+        /// </summary>
+        internal static string Timeout {
+            get {
+                return ResourceManager.GetString("Timeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout error.
+        /// </summary>
+        internal static string Timeout_error {
+            get {
+                return ResourceManager.GetString("Timeout_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to detect target device.
+        /// </summary>
+        internal static string Unable_to_detect_target_device {
+            get {
+                return ResourceManager.GetString("Unable_to_detect_target_device", resourceCulture);
             }
         }
         
@@ -318,6 +534,15 @@ namespace DDPM.SA.Resources {
         internal static string Update_failed_due_to_network_error {
             get {
                 return ResourceManager.GetString("Update_failed_due_to_network_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to update failed with unknown error.
+        /// </summary>
+        internal static string update_failed_with_unknown_error {
+            get {
+                return ResourceManager.GetString("update_failed_with_unknown_error", resourceCulture);
             }
         }
         
@@ -376,6 +601,52 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Updating firmware. Do not remove or power off the device. Leave the device undisturbed.
+        /// </summary>
+        internal static string Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed {
+            get {
+                return ResourceManager.GetString("Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undistur" +
+                        "bed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating Software. Do not power off this PC..
+        /// </summary>
+        internal static string Updating_Software_Do_not_power_off_this_PC {
+            get {
+                return ResourceManager.GetString("Updating_Software_Do_not_power_off_this_PC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User aborted firmware update.
+        /// </summary>
+        internal static string User_aborted_firmware_update {
+            get {
+                return ResourceManager.GetString("User_aborted_firmware_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vibrant.
+        /// </summary>
+        internal static string Vibrant {
+            get {
+                return ResourceManager.GetString("Vibrant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warm.
+        /// </summary>
+        internal static string Warm {
+            get {
+                return ResourceManager.GetString("Warm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         internal static string Warning {
@@ -399,6 +670,15 @@ namespace DDPM.SA.Resources {
         internal static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom.
+        /// </summary>
+        internal static string Zoom {
+            get {
+                return ResourceManager.GetString("Zoom", resourceCulture);
             }
         }
     }
