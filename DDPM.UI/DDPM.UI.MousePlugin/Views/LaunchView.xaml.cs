@@ -367,6 +367,9 @@ namespace DDPM.UI.Plugin.MousePlugin
         private void SetBLConnectionStatus()
         {
             string hostName = Dns.GetHostName();
+            if (hostName.Length > 15)
+                hostName = hostName.Substring(0, 15);
+
             //var hostIndex = _vm!.PairedHostName1.ToUpper() == hostName.ToUpper() ? 1 : (_vm.PairedHostName2.ToUpper() == hostName.ToUpper() ? 2 : 3);
             txt1.Style = ConnectionStyle2;
             imgBL1.Source = img2;
@@ -452,6 +455,12 @@ namespace DDPM.UI.Plugin.MousePlugin
                     txtBLHost2.Style = ConnectionStyle1;
                     break;
             }
+            if (txtBLHost1.Text.Length > 15)
+                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+            if (txtBLHost2.Text.Length > 15)
+                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+            if (txtBLHost3.Text.Length > 15)
+                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
         }
 
         private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
