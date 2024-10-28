@@ -1933,6 +1933,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #region Bruce display properties implementation
 
+        public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
+        {
+            DisplaySupportedProperties rc = null;
+            if (_DisplayPropertiesPlugin != null)
+                rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+
+            return Task.FromResult(rc);
+        }
+
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
         {
             string setParam = "USB-C Prioritization";
