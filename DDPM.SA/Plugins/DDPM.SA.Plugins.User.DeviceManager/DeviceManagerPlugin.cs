@@ -55,6 +55,9 @@ using System.Runtime;
 using Point = System.Windows.Point;
 using DDPM.PowerMon;
 using static VcpCore.Common.User32;
+using static VcpCore.Common.User32;
+using System.Windows.Media.Media3D;
+using DDPM.SA.Common.Telemetry;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -5399,6 +5402,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 bool writeResult = await _SettingsPlugin.WriteMonitorSettings(model, settings);
                 if (writeResult)
                 {
+                    DisplayPropertiesInfo dpInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
+                    if (dpInfo != null)
+                    {
+                        DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
+                        bool var = infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
+                        if(var)
+                            writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Success.");
+                        else
+                            writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Error.");
+                    }
                     writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) OK.");
                     return true;
                 }
@@ -5463,6 +5476,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool writeResult = await _SettingsPlugin.WriteMonitorSettings(model, settings);
                     if (writeResult)
                     {
+                        DisplayPropertiesInfo dpInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
+                        if (dpInfo != null)
+                        {
+                            DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
+                            bool var = infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
+                            if (var)
+                                writelog($"@ UpdateMonitorEzProfileSettingDDPM(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Success.");
+                            else
+                                writelog($"@ UpdateMonitorEzProfileSettingDDPM(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Error.");
+                        }
                         writelog($"@ UpdateMonitorEzProfileSettingDDPM(model={model}, serviceTag={serviceTag}, ID={profileSettingDDPM.ID}) updated successfully.");
                         return true;
                     }
@@ -5578,7 +5601,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="eaProfile"></param>
         /// <returns></returns>
-        public async Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile)
+        public async Task<bool> WriteUserEAProfileDDPM(MonitorInfo monitorInfo, EAProfileDDPM eaProfile)
         {
             if (_SettingsPlugin == null)
             {
@@ -5622,6 +5645,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 if (await _SettingsPlugin.SetAppConfigData(ddpmSettings))
                 {
+                    if (monitorInfo != null)
+                    {
+                        DisplayPropertiesInfo dpInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
+                        if (dpInfo != null)
+                        {
+                            DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
+                            List<string> telementryList = new List<string> { "EasyMemoryProfileCount", "MaxEasyMemoryLayoutUsed" };
+                            foreach (var telem in telementryList)
+                            {
+                                if (infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
+                                {
+                                    writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Success.");
+                                }
+                                else
+                                {
+                                    writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Error.");
+                                }
+                            }
+                        }
+                    }
                     writelog($"@ WriteUserEAProfileDDPM OK.");
                     return true;
                 }
@@ -5635,7 +5678,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<bool> UpdateUserEAProfileDDPM(EAProfileDDPM eaProfile)
+        public async Task<bool> UpdateUserEAProfileDDPM(MonitorInfo monitorInfo, EAProfileDDPM eaProfile)
         {
             if (_SettingsPlugin == null)
             {
@@ -5664,6 +5707,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (await _SettingsPlugin.SetAppConfigData(ddpmSettings))
                         {
+                            DisplayPropertiesInfo dpInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
+                            if (dpInfo != null)
+                            {
+                                DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
+                                List<string> telementryList = new List<string> { "EasyMemoryProfileCount", "MaxEasyMemoryLayoutUsed" };
+                                foreach (var telem in telementryList)
+                                {
+                                    if(infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
+                                    {
+                                        writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Success.");
+                                    }
+                                    else
+                                    {
+                                        writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Error.");
+                                    }
+                                }
+                            }
                             writelog($"@ UpdateUserEAProfileDDPM: Profile with ID {eaProfile.ID} updated successfully.");
                             return true;
                         }
@@ -11432,7 +11492,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                               (app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)));
 
                         // 將更新後的 currentProfile 寫入
-                        result = WriteUserEAProfileDDPM(eaProfileDDPM).Result;
+                        result = WriteUserEAProfileDDPM(null, eaProfileDDPM).Result;
                     }
                     if (result)
                         writelog($"@ DDMtoDDPM_EzMemory: UserSettings PASS");

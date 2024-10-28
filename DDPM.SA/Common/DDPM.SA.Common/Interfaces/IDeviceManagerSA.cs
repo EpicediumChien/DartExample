@@ -294,9 +294,9 @@ namespace DDPM.SA.Common
 
         public Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList);
 
-        public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile);
+        public Task<bool> WriteUserEAProfileDDPM(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
 
-        public Task<bool> UpdateUserEAProfileDDPM(EAProfileDDPM eaProfile);
+        public Task<bool> UpdateUserEAProfileDDPM(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
 
         public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM();
 
