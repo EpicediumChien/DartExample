@@ -15,8 +15,6 @@ namespace DDPM.SA.Common
         public string FirmwareVersion { get; set; }
         public float ScreenSize { get; set; }
         public double Scalefactor { get; set; }
-        public string ScreenSize { get; set; }
-        public string scalefactor { get; set; }
         public string CurrentResolution { get; set; }
         public string MaxResolution { get; set; }
 
@@ -28,8 +26,6 @@ namespace DDPM.SA.Common
             FirmwareVersion = string.Empty;
             ScreenSize = 0x0;
             Scalefactor = 0x0;
-            ScreenSize = string.Empty;
-            scalefactor = string.Empty;
             CurrentResolution = string.Empty;
             MaxResolution = string.Empty;
         }
@@ -46,20 +42,22 @@ namespace DDPM.SA.Common
 
             public uint scheduled { get; set; } = 0x0;
         }
-
         public class DisplayFeatures_EasyMemoryProfileCount : DisplayFeaturesBasic
-    public class DisplayFeatures_KVM : DisplayFeaturesBasic
         {
             public uint profile_count_value { get; set; } = 0x0;
-        public string KVMMode { get; set; } = string.Empty;
         }
-
+        public class DisplayFeatures_KVM : DisplayFeaturesBasic
+        {
+            public string KVMMode { get; set; } = string.Empty;
+        }
         public class DisplayFeatures_MaxEasyMemoryLayoutUsed : DisplayFeaturesBasic
-    public class DisplayFeatures_USBKVMMode : DisplayFeaturesBasic
         {
             public uint maximum_widows_among_profile { get; set; } = 0x0;
         }
-        public string USBKVMMode { get; set; } = string.Empty;
+        public class DisplayFeatures_USBKVMMode : DisplayFeaturesBasic
+        {
+            public string USBKVMMode { get; set; } = string.Empty;
+        }
     }
 
 }

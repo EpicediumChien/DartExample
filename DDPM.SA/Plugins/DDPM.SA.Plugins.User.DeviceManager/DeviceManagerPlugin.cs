@@ -57,6 +57,7 @@ using DDPM.PowerMon;
 using static VcpCore.Common.User32;
 using static VcpCore.Common.User32;
 using System.Windows.Media.Media3D;
+using DDPM.SA.Common.Telemetry;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -5405,7 +5406,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (dpInfo != null)
                     {
                         DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
-                        bool var = infos.SentInfoToTelementry(_TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
+                        bool var = infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
                         if(var)
                             writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Success.");
                         else
@@ -5479,7 +5480,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (dpInfo != null)
                         {
                             DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
-                            bool var = infos.SentInfoToTelementry(_TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
+                            bool var = infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
                             if (var)
                                 writelog($"@ UpdateMonitorEzProfileSettingDDPM(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Success.");
                             else
@@ -5653,7 +5654,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             List<string> telementryList = new List<string> { "EasyMemoryProfileCount", "MaxEasyMemoryLayoutUsed" };
                             foreach (var telem in telementryList)
                             {
-                                if (infos.SentInfoToTelementry(_TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
+                                if (infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
                                 {
                                     writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Success.");
                                 }
@@ -5713,7 +5714,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 List<string> telementryList = new List<string> { "EasyMemoryProfileCount", "MaxEasyMemoryLayoutUsed" };
                                 foreach (var telem in telementryList)
                                 {
-                                    if(infos.SentInfoToTelementry(_TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
+                                    if(infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
                                     {
                                         writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Success.");
                                     }
