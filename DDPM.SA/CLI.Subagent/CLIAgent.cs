@@ -149,7 +149,7 @@ namespace CLI.Subagent
                 return;
             }
 
-            if (_PluginAvailabilityTrigger_CliManager.WaitOne(TimeSpan.FromSeconds(TIMEOUT_IN_SECONDS)))
+            if (_PluginAvailabilityTrigger_CliManager.WaitOne(TimeSpan.FromSeconds(commandLineInput.nTimeOutValue)))//TIMEOUT_IN_SECONDS)))
             {
                 if (_CliManagerPlugin == null)
                 {

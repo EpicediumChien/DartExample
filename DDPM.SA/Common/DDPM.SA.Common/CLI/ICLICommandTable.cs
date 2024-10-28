@@ -185,6 +185,8 @@ namespace DDPM.SA.Common
                 GuidString = new List<string>();
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
+
+            public int nTimeOutValue { get; set; } = 30;
         }
 
         public CommandLineInput StringProcessing(string[] args)
