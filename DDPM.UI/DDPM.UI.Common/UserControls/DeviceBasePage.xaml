@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:common="clr-namespace:DDPM.UI.Common"
-             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceBasePageViewModel}"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" 
+             xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceBasePageViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded"
@@ -42,124 +43,128 @@
         <!-- Layers: buttom to top, 1,2,3, ... -->
         <!-- Layer 1 -->
         <Grid>
+            <UXControls:UXScrollViewer x:Name="topViewScrollViewer">
+                <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
+                    <!-- LeftFrame -->
+                    <Grid x:Name="LeftGrid">
+                        <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="20"/>
 
-            <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
-                <!-- LeftFrame -->
-                <Grid>
-                    <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="12" />
+                        <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
+                        <Grid Name="markeyNameWidthGrid">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Margin" Value="10,0,212,0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLandingMode}" Value="False">
+                                            <Setter Property="Margin" Value="100,0,70,0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
 
-                    <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
-                    <Grid Name="markeyNameWidthGrid">
-                        <Grid.Style>
-                            <Style TargetType="Grid">
-                                <Setter Property="Margin" Value="100,0,212,0"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsLandingMode}" Value="False">
-                                        <Setter Property="Margin" Value="100,0,70,0"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Style>
-                    </Grid>
+                        <!-- Layer 2 : Nav and Vbar -->
+                        <Grid Name="gridNav">
+                            <!-- Nav: Display Monitor market name, and LeftArrow back to DdpmHomePage -->
+                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,8,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition MaxHeight="90" />
+                                    <RowDefinition Height="AUto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                    <!-- Layer 2 : Nav and Vbar -->
-                    <Grid Name="gridNav">
-                        <!-- Nav: Display Monitor market name, and LeftArrow back to DdpmHomePage -->
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,8,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="90" />
-                                <RowDefinition Height="AUto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <!-- LeftArrow -->
-                            <!-- OLD, Robert_Lin, 2024-6-10, change to using Polyline to draw -->
-                            <!--
+                                <!-- LeftArrow -->
+                                <!-- OLD, Robert_Lin, 2024-6-10, change to using Polyline to draw -->
+                                <!--
                             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="&#xe223; "
                             FontFamily="Segoe UI Symbol" FontSize="30"
                             HorizontalAlignment="Left" TextBlockType="Header2"
                             TextBlockSemanticColorType="Light" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" />
                             -->
-                            <!-- Robert_Lin, 2024-6-10, new approach -->
-                            <!-- Robert_Lin, 2024-8-8, change for support keyboard tab stop -->
-                            <Border 
-                                Focusable="True" KeyboardNavigation.TabNavigation="None"
-                                BorderBrush="{StaticResource FocusDotBrush}" PreviewKeyDown="bdLeftArrow_PreviewKeyDown">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                                <Setter Property="BorderThickness" Value="1" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-
-                                <Grid Width="24" Height="24" Cursor="Hand" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown">
-                                    <!--2024/06/19 Elie, Fix the issue where canot go back to homepage.-->
-                                    <Polyline Points="12,5 5,12 12,19"
-                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
-                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                    <Polyline Points="5,12 19,12"
-                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
-                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-
-                                    <Grid.Style>
-                                        <Style TargetType="Grid">
+                                <!-- Robert_Lin, 2024-6-10, new approach -->
+                                <!-- Robert_Lin, 2024-8-8, change for support keyboard tab stop -->
+                                <Border Focusable="True" KeyboardNavigation.TabNavigation="None"
+                                    BorderBrush="{StaticResource FocusDotBrush}" PreviewKeyDown="bdLeftArrow_PreviewKeyDown">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BorderThickness" Value="0" />
                                             <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Grid.Effect">
-                                                        <Setter.Value>
-                                                            <DropShadowEffect Color="White" Direction="315"
-                                                                      ShadowDepth="4" BlurRadius="6"
-                                                                      Opacity="0.7" />
-                                                        </Setter.Value>
-                                                    </Setter>
+                                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                                    <Setter Property="BorderThickness" Value="1" />
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Grid.Style>
-                                </Grid>
-                            </Border>
+                                    </Border.Style>
 
-                            <!-- Monitor Market Name -->
-                            <!-- Robert_Lin, 2024-8-29 Comment out for DDPMW-2094 
+                                    <Grid Width="24" Height="24" Cursor="Hand" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown">
+                                        <!--2024/06/19 Elie, Fix the issue where canot go back to homepage.-->
+                                        <Polyline Points="12,5 5,12 12,19"
+                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                        <Polyline Points="5,12 19,12"
+                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Grid.Effect">
+                                                            <Setter.Value>
+                                                                <DropShadowEffect Color="White" Direction="315"
+                                                                      ShadowDepth="4" BlurRadius="6"
+                                                                      Opacity="0.7" />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Monitor Market Name -->
+                                <!-- Robert_Lin, 2024-8-29 Comment out for DDPMW-2094 
                             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Display], Source={x:Static lang:LangHelper.Instance}}" Name="marketName"
                                                     HorizontalAlignment="Left" TextBlockType="Header2"
                                                     TextBlockSemanticColorType="DefaultHeader"
                                                     Foreground="White"
                                                     FontSize="24" />
                             -->
-                            <!-- Robert_Lin, 2024-8-29 for DDPMW-2094, for NPI projects show MarketName else show "Display" 
+                                <!-- Robert_Lin, 2024-8-29 for DDPMW-2094, for NPI projects show MarketName else show "Display" 
                             The binding Text will be HomeDevice.LandingMarketName
                             Support text wrap, maxmum tow rows, ending with "..."
                             -->
-                            <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,12" >
-                                <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
+                                <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
+                                    <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
                                             Text="{Binding SelectedHomeDevice.LandingMarketName}"
                                             HorizontalAlignment="Left" TextBlockType="Header2"
                                             TextBlockSemanticColorType="DefaultHeader"
-                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" TextWrapping="Wrap" TextTrimming="WordEllipsis"
+                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" TextTrimming="WordEllipsis"
                                             FontSize="24"
                                                 MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
                                                 MaxHeight="90"/>
-                            </Grid>
+                                </Grid>
 
 
 
-                            <!-- ComboBox to select Monitor -->
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                                <StackPanel>
-                                    <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
-                                    <UXControls:UXTextBlock Text="{Binding SelectedHomeDevice.DisplayName}"
+                                <!-- ComboBox to select Monitor -->
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                    <StackPanel>
+                                        <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
+                                        <Grid x:Name="gridDisplayName">
+                                            <UXControls:UXTextBlock Text="{Binding SelectedHomeDevice.DisplayName}" 
+                                                    TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
+                                                    HorizontalAlignment="Left" 
+                                                    MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
                                                     Visibility="{Binding SelectedHomeDeviceTextVisibiliity}"
                                                     Foreground="White" FontSize="18" />
+                                        </Grid>
 
-                                    <!-- HomeDeviceComboBox - Option1: Using UXComboBox
+                                        <!-- HomeDeviceComboBox - Option1: Using UXComboBox
                                     <UXControls:UXComboBox  x:Name="HomeDeviceComboBox"
                                     Visibility="{Binding HomeDevicesComboBoxVisibility}"
                                     Background="#FF293B4D" Width="200"
@@ -168,61 +173,28 @@
                                     BorderBrush="#FF40586D" Foreground="White"
                                     SelectedItem="{Binding SelectedHomeDevice, Mode=TwoWay}">
                                     </UXControls:UXComboBox> -->
-                                    <!-- HomeDeviceComboBox - Option1: Using WPF ComboBox -->
-                                    <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
-                                    <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" MinWidth="140" Height="40"
+                                        <!-- HomeDeviceComboBox - Option1: Using WPF ComboBox -->
+                                        <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
+                                        <!-- Derek_Du 2024-10-26 remove MinWidth="140"  for RWD -->
+                                        <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" Height="40"
                                       Visibility="{Binding HomeDevicesComboBoxVisibility}"
                                       ItemsSource="{Binding HomeDevices}"
                                       DisplayMemberPath="DisplayName"
                                       SelectedItem="{Binding SelectedHomeDevice, Mode=TwoWay}">
-                                    </ComboBox>
-                                </StackPanel>
+                                        </ComboBox>
+                                    </StackPanel>
 
-                                <!-- DeviceInfoIcon : Image will be loaded in C# code -->
-                                <Image Name="imgInfoIcon" Stretch="None" Margin="8,0,0,6" Visibility="Collapsed"
+                                    <!-- DeviceInfoIcon : Image will be loaded in C# code -->
+                                    <Image Name="imgInfoIcon" Stretch="None" Margin="8,0,0,6" Visibility="Collapsed"
                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
-                                    <Image.ToolTip>
-                                        <!-- Placement="Top" HorizontalOffset="12" VerticalOffset="-28"
+                                        <Image.ToolTip>
+                                            <!-- Placement="Top" HorizontalOffset="12" VerticalOffset="-28"
                                         -->
-                                        <!-- Robert_Lin, 2024-6-26 fix tooltip placement. OLD:
+                                            <!-- Robert_Lin, 2024-6-26 fix tooltip placement. OLD:
                                         Placement="Top" HorizontalOffset="16"
                                         NEW: VerticalOffset="-90" may depend on the height of tooltop.
                                         -->
-                                        <ToolTip Placement="Left" HorizontalOffset="-16" VerticalOffset="-90">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
-                                                </Border.Resources>
-
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding [FirmwareVersion], Source={x:Static lang:LangHelper.Instance}}" />
-                                                        <TextBlock Text="{Binding SelectedHomeDevice.FwVer}" />
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding [ServiceTag], Source={x:Static lang:LangHelper.Instance}}" />
-                                                        <TextBlock Text="{Binding SelectedHomeDevice.ServiceTag}" />
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding [ManufactureMonth], Source={x:Static lang:LangHelper.Instance}}" />
-                                                        <TextBlock Text="{Binding SelectedHomeDevice.MfgDate}" />
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-
-                                <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,0" VerticalAlignment="Center">
-                                    <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
-                                        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
-                                      Fill="#FFB6B6B6" />
-                                        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
-                                      Fill="#FFB6B6B6" />
-                                        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
-                                      Fill="#FFB6B6B6" />
-                                        <Grid.ToolTip>
-                                            <ToolTip Placement="Right" HorizontalOffset="-16" VerticalOffset="-90">
+                                            <ToolTip Placement="Left" HorizontalOffset="-16" VerticalOffset="-90">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
                                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
@@ -230,30 +202,68 @@
 
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [FirmwareVersion], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipFwVer" Margin="0,0,8,0" />
+                                                            <TextBlock Text="{Binding [FirmwareVersion], Source={x:Static lang:LangHelper.Instance}}" />
                                                             <TextBlock Text="{Binding SelectedHomeDevice.FwVer}" />
                                                         </StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [ServiceTag], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipServiceTag" Margin="0,0,8,0" />
+                                                            <TextBlock Text="{Binding [ServiceTag], Source={x:Static lang:LangHelper.Instance}}" />
                                                             <TextBlock Text="{Binding SelectedHomeDevice.ServiceTag}" />
                                                         </StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [ManufactureMonth], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipManufactureMonth" Margin="0,0,8,0" />
+                                                            <TextBlock Text="{Binding [ManufactureMonth], Source={x:Static lang:LangHelper.Instance}}" />
                                                             <TextBlock Text="{Binding SelectedHomeDevice.MfgDate}" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>
                                             </ToolTip>
-                                        </Grid.ToolTip>
-                                    </Grid>
-                                </Viewbox>
-                            </StackPanel>
-                        </Grid>
+                                        </Image.ToolTip>
+                                    </Image>
 
-                        <!-- Vbar -->
-                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,0,10,0" x:Name="vBar">
-                            <ItemsControl Name="vbarList" Margin="12,10,0,0"
-                                  HorizontalAlignment="Right" ItemsSource="{Binding VbarItems}">
+                                    <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,10" VerticalAlignment="Center">
+                                        <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
+                                            <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+                                      Fill="#FFB6B6B6" />
+                                            <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+                                      Fill="#FFB6B6B6" />
+                                            <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+                                      Fill="#FFB6B6B6" />
+                                            <Grid.ToolTip>
+                                                <ToolTip Placement="Right" HorizontalOffset="-16" VerticalOffset="-90">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                        </Border.Resources>
+
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [FirmwareVersion], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipFwVer" Margin="0,0,8,0" />
+                                                                <TextBlock Text="{Binding SelectedHomeDevice.FwVer}" />
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ServiceTag], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipServiceTag" Margin="0,0,8,0" />
+                                                                <TextBlock Text="{Binding SelectedHomeDevice.ServiceTag}" />
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ManufactureMonth], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipManufactureMonth" Margin="0,0,8,0" />
+                                                                <TextBlock Text="{Binding SelectedHomeDevice.MfgDate}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Grid.ToolTip>
+                                        </Grid>
+                                    </Viewbox>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <!-- vBar + RightFrame -->
+                    <StackPanel x:Name="stVbarRightFrame">
+                        <!-- vBar -->
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" x:Name="vBar" 
+                              MouseEnter="vBar_MouseEnter" MouseLeave="vBar_MouseLeave">
+                            <ItemsControl Name="vbarList" Margin="0,10,5,0" HorizontalAlignment="Right" ItemsSource="{Binding VbarItems}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -268,37 +278,36 @@
                                 </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
                         </Grid>
-                    </Grid>
-                </Grid>
 
-                <UXControls:UXScrollViewer x:Name="rightFrameSV">
-                    <!-- RightFrame -->
-                    <Grid>
-                        <Border CornerRadius="13" Padding="16,24" Background="{StaticResource RightBaseBkColor}" 
-                            x:Name="RightGrid">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
 
-                                <!-- RightViewHeader control -->
-                                <common:RightViewHeaderCtrl Grid.Row="0" x:Name="rightViewHeaderCtrl"
+                        <!-- RightFrame -->
+                        <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
+                            <Border CornerRadius="13" Margin="0,0,0,20" Padding="16,0" 
+                                    Background="{StaticResource RightBaseBkColor}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- RightViewHeader control -->
+                                    <common:RightViewHeaderCtrl Grid.Row="0" x:Name="rightViewHeaderCtrl" Margin="0,10,0,0"
                                     SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                     ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                     SelectionChanged="rightViewHeaderCtrl_SelectionChanged"/>
 
-                                <!-- RightFrame: will inject DdpmModule's RightView -->
-                                <!-- Robert_Lin, 2024-8-23, change Mode back to OneWay due to the RightView property in ViewModel
+                                    <!-- RightFrame: will inject DdpmModule's RightView -->
+                                    <!-- Robert_Lin, 2024-8-23, change Mode back to OneWay due to the RightView property in ViewModel
                                  is Get only, no Setter -->
-                                <!-- Robert_Lin, 2024-6-26, chage Mode to OneWay from TwoWay -->
-                                <ContentControl Grid.Row="1" Name="RightFrame"
-                                Content="{Binding RightView, Mode=OneWay}"/>
-                            </Grid>
-                        </Border>
-                    </Grid>
-                </UXControls:UXScrollViewer>
-            </StackPanel>
+                                    <!-- Robert_Lin, 2024-6-26, chage Mode to OneWay from TwoWay -->
+                                    <ContentControl Grid.Row="1" Name="RightFrame"
+                                    Content="{Binding RightView, Mode=OneWay}"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </UXControls:UXScrollViewer>
         </Grid>
 
         <!-- Layer : FullView -->

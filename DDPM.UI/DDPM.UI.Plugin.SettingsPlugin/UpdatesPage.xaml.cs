@@ -16,7 +16,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     public partial class UpdatesPage : UserControl
     {
         // 10/15 Derek for RWD
-        private readonly Int16 breakPoints = 537;
+        private readonly Int16 breakPoints = 910;
 
         public UpdatesPage()
         {
@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints - 212 - 50)
                 ChangeToVerticalLayout();
             else
                 ChangeToHorizontalLayout();
