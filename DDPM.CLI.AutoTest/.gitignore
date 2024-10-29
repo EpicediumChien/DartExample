@@ -1,0 +1,7 @@
+.venv
+build
+DellDeviceData
+dist
+Reports
+*.log
+*.spec

@@ -23,6 +23,8 @@ using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using Windows.System;
+using DDPM.SA.Common.Settings;
+using PInvoke;
 
 namespace NetworkKVM.Plugins
 {
@@ -958,7 +960,10 @@ namespace NetworkKVM.Plugins
 
                         Process procNew = new Process();
                         procNew.StartInfo.FileName = strFullPath;
-                        procNew.Start();
+                        //procNew.Start();
+
+                        //Check process with inbox thumbprint and without argument via startInfo
+                        DDPMFileSecurity.StartProcessSafely(Log, procNew.StartInfo, true);
                     }
                     else
                     {
@@ -977,7 +982,11 @@ namespace NetworkKVM.Plugins
                     proc.StartInfo.FileName = strFullPath;
                     proc.StartInfo.Arguments = $"/Connect " + namedpipeName;
                     _logs.DebugMsg("[NetworkKVM] Connect " + namedpipeName);
-                    proc.Start();
+                    //proc.Start();
+
+                    //Check process with inbox thumbprint and with argument via startInfo
+                    DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true);
+
                     return Task.FromResult(true);
                 }
                 catch (System.Exception ex)

@@ -841,7 +841,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         jobj.Add("Command", parameter);
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                        if (actionID == 14)
+                            DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                        else
+                            DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
                     }
                 }
                 //OnPropertyChanged($"{SelectedButton}Tooltip");
