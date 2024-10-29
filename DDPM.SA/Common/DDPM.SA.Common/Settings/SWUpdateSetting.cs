@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -39,16 +40,17 @@ namespace DDPM.SA.Common.Settings
                 }
             }
         }
-        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey)
+        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {
             SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA)
             {
                 if (!certificateCheck.CheckURLCACertificate(URL))
                 {
                     info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                    logs?.DebugMsg_1(info);
                     return data;
                 }
             }
@@ -100,21 +102,25 @@ namespace DDPM.SA.Common.Settings
                                     software.DdpmSwUpdaterServer_path = software.DdpmSwUpdaterServer_path.Replace("%21", $"DdpmSwUpdater");
                                 }
                                 info = $"{nameof(GetSWMetadata)} done";
+                                logs?.DebugMsg_1(info);
                             }
                             else
                             {
                                 info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                                logs?.DebugMsg_1(info);
                             }
                         }
                         else
                         {
                             info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty.";
+                            logs?.DebugMsg_1(info);
                         }
                     }
                     catch (JsonException ex)
                     {
                         data = new SWUpdateHelper();
                         info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
+                        logs?.DebugMsg_1(info);
                     }
                 }
             }
@@ -122,6 +128,7 @@ namespace DDPM.SA.Common.Settings
             {
                 data = new SWUpdateHelper();
                 info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
+                logs?.DebugMsg_1(info);
             }
             return data;
         }
