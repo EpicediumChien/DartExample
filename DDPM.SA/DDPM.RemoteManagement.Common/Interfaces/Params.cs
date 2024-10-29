@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.RemoteManagement.Common.Interfaces
+﻿namespace DDPM.RemoteManagement.Common.Interfaces
 {
     public static class Params
     {
@@ -13,6 +7,10 @@ namespace DDPM.RemoteManagement.Common.Interfaces
         {
             public const int GET = 1;
             public const int SET = 2;
+
+            public const int LOCK = 3;
+            public const int UNLOCK = 4;
+
             public const int FW = 5;
 
             public const int DISPLAY_CONNECT = 11;
@@ -80,22 +78,22 @@ namespace DDPM.RemoteManagement.Common.Interfaces
             public const string RestoreFactoryDefaults = "restorefactorydefaults";
             public const string ScreenNotification = "screennotification ";
             public const string TelemetryConsent = "telemetryconsent";
-            public const string InAppBriCont = "InAppBriCont";
+            public const string InAppBriCont = "inappbricont";
             //public const string InAppUpdate = "inappupdate";  // #5.13.7
             //public const string InAppUpdate = "inappupdate";  // #5.13.8
-            public const string PrimaryMonitorSync = "PrimaryMonitorSync";
-            public const string ResolutionRefreshRate = "ResolutionRefreshRate";
-            public const string USBCPrioritization = "USBCPrioritization";
+            public const string PrimaryMonitorSync = "primarymonitorsync";
+            public const string ResolutionRefreshRate = "resolutionrefreshrate";
+            public const string USBCPrioritization = "usbcprioritization";
             //public const string InAppUpdate = "inappupdate";  // #5.13.12
-            public const string InAppUSBKVM = "InAppUSBKVM";
-            public const string InAppColorPreset = "InAppColorPreset ";
-            public const string PowerNap = "PowerNap";
-            public const string InAppExportSettings = "InAppExportSettings";
-            public const string CollabScreenShare = "CollabScreenShare ";
+            public const string InAppUSBKVM = "inappusbkvm";
+            public const string InAppColorPreset = "inappcolorpreset";
+            public const string PowerNap = "powernap";
+            public const string InAppExportSettings = "inappexportsettings";
+            public const string CollabScreenShare = "collabscreenshare ";
             public const string hdr = "hdr";
-            public const string AntiFlicker = "AntiFlicker";
-            public const string MicSwitch = "MicSwitch";
-            public const string AIAutoFraming = "AIAutoFraming";
+            public const string AntiFlicker = "antiflicker";
+            public const string MicSwitch = "micswitch";
+            public const string AIAutoFraming = "aiautoframing";
             //public const string InAppUpdate = "inappupdate";  // #5.13.22
             //public const string InAppUpdate = "inappupdate";  // #5.13.23
             //public const string InAppUpdate = "inappupdate";  // #5.13.24
@@ -103,6 +101,12 @@ namespace DDPM.RemoteManagement.Common.Interfaces
 
         }
 
+        public static class FwUpdateOptions
+        {
+            public const string ForceWithNotice = "forcewithnotice";
+            public const string ForceWithNonotice = "forcewithnonotice";
+            public const string Defer = "defer";
+        }
         public static class Dock
         {
             public const string FWVersion = "FWVersion";

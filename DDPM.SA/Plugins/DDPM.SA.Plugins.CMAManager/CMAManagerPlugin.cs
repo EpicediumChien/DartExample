@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
+using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.CMAManager
@@ -229,25 +230,36 @@ namespace DDPM.SA.Plugins.CMAManager
 
             return command;
         }
-
         private string createCommandSet(CmaCommand.CmaTask task)
         {
+            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+
             string command = string.Empty;
 
             command = command + ("set ");
 
-            if (!Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
-            {
-                command = command + (task.devicetype + "=" + task.command);
-                command = command + (" value=" + task.value);
-            }
-            else
+            // special case
+            if (Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
             {
                 command = command + ("app=" + task.command);
                 command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
+
+                if (option.index != null && option.index.Length > 0)
+                {
+                    command = command + (" index=" + option.index);
+                }
+                else
+                {
+                    command = command + (" index=1");
+                }
+
+                return command;
             }
 
-            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+            command = command + (task.devicetype + "=" + task.command);
+            command = command + (" value=" + task.value);
+
+            // check options
 
             if (option.index != null && option.index.Length > 0)
             {
@@ -270,9 +282,10 @@ namespace DDPM.SA.Plugins.CMAManager
         private string createCommandFw(CmaCommand.CmaTask task)
         {
 
-            const string ForceWithNotice = "forcewithnotice";
-            const string ForceWithNonotice = "forcewithnonotice";
-            const string Defer = "defer";
+            //  move to Params @ 20241029 stephen
+            /*            const string ForceWithNotice = "forcewithnotice";
+                        const string ForceWithNonotice = "forcewithnonotice";
+                        const string Defer = "defer";*/
 
             string command = string.Empty;
 
@@ -291,19 +304,19 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 bool hasOption = false;
 
-                if (ForceWithNotice.ToLower().Equals(task.value.ToLower()))
+                if (Params.FwUpdateOptions.ForceWithNotice.ToLower().Equals(task.value.ToLower()))
                 {
                     command = command + (",forcewithnotice");
                     hasOption = true;
                 }
 
-                if (ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
+                if (Params.FwUpdateOptions.ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
                 {
                     command = command + (",forcewithnonotice");
                     hasOption = true;
                 }
 
-                if (Defer.ToLower().Equals(task.value.ToLower()))
+                if (Params.FwUpdateOptions.Defer.ToLower().Equals(task.value.ToLower()))
                 {
                     command = command + (",Defer");
                     hasOption = true;
@@ -314,30 +327,8 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (",forcewithnotice");
                 }
 
-                CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
-
-/*                if (option.forcewithnotice != null && option.forcewithnotice)
-                {
-                    command = command + (",forcewithnotice");
-                    hasOption = true;
-                }*/
-
-/*                if (option.forcewithnonotice != null && option.forcewithnonotice)
-                {
-                    command = command + (",forcewithnonotice");
-                    hasOption = true;
-                }
-
-                if (option.defer != null && option.defer)
-                {
-                    command = command + (",defer");
-                    hasOption = true;
-                }*/
-
-                
+                //CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
             }
-
-            
 
             return command;
         }
@@ -345,36 +336,27 @@ namespace DDPM.SA.Plugins.CMAManager
         private string createCommandLock(Boolean isLock, CmaCommand.CmaTask task)
         {
             string command = string.Empty;
+            string comLock = isLock ? Params.Active.LOCK : Params.Active.UNLOCK;
+
+            comLock = comLock.ToLower();
 
             command = command + ("set ");
 
-/*            if (!Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
+            switch (task.command.ToLower())
             {
-                command = command + (task.devicetype + "=" + task.command);
-                command = command + (" value=" + task.value);
-            }
-            else
-            {
-                command = command + ("app=" + task.command);
-                command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
-            }
+                case Params.Lock.InAppUpdate:
+                    command = command + ("app=" + task.command);
+                    command = command + (" value=" + comLock);
+                    break;
 
-            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+                case Params.Lock.TelemetryConsent:
+                    command = command + ("app=" + task.command);
+                    command = command + (" value=" + task.value + "," + comLock);
+                    break;
 
-            if (option.index != null && option.index.Length > 0)
-            {
-                command = command + (" index=" + option.index);
+                    // default: // TODO: Error Command
+
             }
-
-            if (option.servicetag != null && option.servicetag.Length > 0)
-            {
-                command = command + (" servicetag=" + option.servicetag);
-            }
-
-            if (option.modelname != null && option.modelname.Length > 0)
-            {
-                command = command + (" model=" + option.modelname);
-            }*/
 
             return command;
         }
@@ -398,35 +380,36 @@ namespace DDPM.SA.Plugins.CMAManager
                 string command = "";
                 int eventtype = 0;
 
-                if ("get".Equals(task.active.ToLower()))
+                if (Params.Active.GET.ToLower().Equals(task.active.ToLower()))
                 {
                     eventtype = 1;
                     command = createCommandGet(task);
                 }
 
-                if ("set".Equals(task.active.ToLower()))
+                if (Params.Active.SET.ToLower().Equals(task.active.ToLower()))
                 {
                     eventtype = 2;
                     command = createCommandSet(task);
-
-                    
                 }
 
-                if ("fw".Equals(task.active.ToLower()))
+                if (Params.Active.LOCK.ToLower().Equals(task.active.ToLower()))
+                {
+                    eventtype = 3;
+                    command = createCommandLock(true, task);
+
+                }
+
+                if (Params.Active.UNLOCK.ToLower().Equals(task.active.ToLower()))
+                {
+                    eventtype = 4;
+                    command = createCommandLock(false, task);
+
+                }
+
+                if (Params.Active.FW.ToLower().Equals(task.active.ToLower()))
                 {
                     eventtype = 5;
-
-                    if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
-                    {
-                        command = command + ("set ");
-                        command = command + ("dock=silentfwupdate");
-                    }
-                    else
-                    {
-                        command = command + ("set ");
-                        command = command + ("app=firmwareupdate");
-                        command = command + (" value=" + task.devicetype + ",forcewithnotice");
-                    }
+                    command = createCommandFw(task);
 
                 }
 
@@ -438,7 +421,10 @@ namespace DDPM.SA.Plugins.CMAManager
                 taskInfo.tid = task.tid;
                 taskInfo.eventtype = eventtype;
                 taskInfo.command = command;
-                taskInfo.jsonconfig = task.value;       
+                taskInfo.jsonconfig = task.value;
+
+                WriteLog($"[CMA] initCommandTask command = {command}");
+                WriteLog($"[CMA] initCommandTask taskinfo.jsonconfig = {taskInfo.jsonconfig}");
 
                 taskInfoQueue.Enqueue(taskInfo);
             }
