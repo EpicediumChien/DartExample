@@ -93,6 +93,8 @@ namespace DDPM.UI.Module.Color
 
         private bool IsColorEnable = false;
 
+        public bool Is_ColorPreset_ManualFirst = true;
+
         public bool ColorEnable
         {
             get
@@ -838,8 +840,8 @@ namespace DDPM.UI.Module.Color
                     //string strSync_ColorPresetName = string.Empty;
                     //strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
                     //strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-
-                    strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
+                    if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
+                        strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
 
                     //int pIdx = SupportColorPresets.FindIndex(x =>
                     //                    x.Trim() == value.ColorPresetName.Trim());
@@ -1348,14 +1350,14 @@ namespace DDPM.UI.Module.Color
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;
-                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
+                //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
 
             }
             else
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
-                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
+                //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
             }
 
             Visibility vis_ad;
