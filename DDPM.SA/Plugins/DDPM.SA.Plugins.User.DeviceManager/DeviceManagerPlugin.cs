@@ -210,7 +210,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _isSubagentActive = true;
         private bool userClosedPopup = false;
 
-        private static PowerMonitor _pwr_Mon = null;
+        private static PowerEventControl _pwr_Mon = null;
 
         private static OSD_Controler _OSD_Controler = new OSD_Controler();
 
