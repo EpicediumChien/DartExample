@@ -432,74 +432,78 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private async Task<NotifyArgs> runCommandTaskAsync(TaskInfo taskInfo)
         {
+            Boolean isSuccess = false;
+            string responseMsg = String.Empty;
+            string responseResult = String.Empty;
+            string finalResult = String.Empty;
+
+            ICLICommandTable iCLICommandTable;
+            CommandLineInput commandLineInput;
+
+            CLIEventResult? cliResult = null;
+            JObject? cliResp = null;
+            int count = 0;
+
             if (null != _CliManagerPlugin && !string.IsNullOrEmpty(taskInfo.command))
             {
-                Boolean isSuccess = true;
-                string responseMsg = String.Empty;
-                string currentResult = String.Empty;
-                CLIEventResult? cliResult = null;
-                JObject? cliResp = null;
+                
                 while (taskInfoQueue.Count > 0)
                 {
-                    if (cliResp == null)
+                    isSuccess = false;
+                    responseMsg = String.Empty;
+                    responseResult = String.Empty;
+
+                    taskInfo = taskInfoQueue.Peek();
+
+                    iCLICommandTable = new ICLICommandTable(null);
+                    commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
+                    commandLineInput.isCliRunAdmin = true;
+                    commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
+
+                    cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
+                    cliResult.serialize_Json_response = cliResult.serialize_Json_response;
+                    cliResp = JObject.Parse(cliResult.serialize_Json_response);
+                    responseMsg = (string?)cliResp["Message"] ?? string.Empty;
+                    responseResult = (string)cliResp["Result"] ?? string.Empty;
+
+                    if (responseResult.Equals("Success"))
                     {
-                        taskInfo = taskInfoQueue.Peek();
-                        Console.WriteLine($"Processing tid: {taskInfo.tid} TargetFeature: {taskInfo.command}");
-                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
-                        commandLineInput.isCliRunAdmin = true;
-                        commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
-
-                        Console.WriteLine("[CMA] runCommandTask taskInfo.command = " + taskInfo.command);
-
-                        //_CliManagerPlugin.PerformCommandLineRelay
-                        if (cliResult == null)
-                        {
-                            cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
-                            cliResult.serialize_Json_response = cliResult.serialize_Json_response;
-                            cliResp = JObject.Parse(cliResult.serialize_Json_response);
-                            responseMsg = (string?)cliResp["Message"] ?? string.Empty;
-                        }
-                        else
-                        {
-                            CLIEventResult newResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
-                            cliResult.serialize_Json_response = cliResult.serialize_Json_response + "," + newResult.serialize_Json_response;
-                            cliResp = JObject.Parse(newResult.serialize_Json_response);
-                            responseMsg = responseMsg + "," + (string?)cliResp["Message"] ?? string.Empty;
-                        }
-                        // TODO
-
-                        currentResult = (string?)cliResp["Result"] ?? string.Empty;
-
-                        if (!currentResult.Equals("Success")&&!currentResult.Equals("PASS"))
-                        {
-                            isSuccess = false;
-                        }
-
-                        taskInfoQueue.Dequeue();
-                        cliResp = null;
+                        isSuccess = true;
                     }
-                }
-                NotifyArgs args = new NotifyArgs();
-                args.eventType = taskInfo.eventtype.ToString();
 
-                try
-                {
+                    if (responseResult.Equals("PASS"))
+                    {
+                        isSuccess = true;
+                    }
+
+                    if (count > 0) 
+                    {
+                        finalResult = finalResult + ",";
+                    }
+
 
                     if (isSuccess)
                     {
-                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
+                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}";
                     }
                     else
                     {
-                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}";
                     }
+/*
+                    catch{
+                        responseMsg = "Exception: Unknow Result";
+                        args.notification = "{[{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
+                    }*/
+
+                    count = count + 1;
+                    taskInfoQueue.Dequeue();
+
                 }
-                catch
-                {
-                    responseMsg = "Exception: Unknow Result";
-                    args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
-                }
+
+                NotifyArgs args = new NotifyArgs();
+                args.eventType = taskInfo.eventtype.ToString();
+                args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [" + finalResult + "]}]}";
 
                 Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult?.command_guid_string + "\n args.notification = " + args.notification);
                 //Console.WriteLine("[CMA] );
