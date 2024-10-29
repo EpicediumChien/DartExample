@@ -214,8 +214,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             //Derek_Du, 2024-10-21 add send process ID to SA
-                            _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
+                            Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted",Telementry_Frequency.RealTime);
+
                             await GetDdpmDevicesAsync(_deviceManager);
 
 
