@@ -536,7 +536,9 @@ namespace DDPM.SA.Common
         Task<bool> SetSkipCA(bool isSkipCA);
 
         Task<bool> GetSkipCA();
+
         Task<bool> SetServerURL(string url);
+
         Task<string> GetServerURL();
 
         #endregion public for FW Update by Bruce
@@ -669,6 +671,7 @@ namespace DDPM.SA.Common
         Task<JArray> GetMouseProgrammableKeys(string Guid);
         Task<JArray> GetAppSpecificProfiles(string Guid);
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
+
         Task<JArray> GetMouseAssignableActions(string Guid);
         Task<string> GetMouseKeystrokeDisplayData(string Guid);
         Task<bool> StartMouseKeystrokeRecording(string Guid);
@@ -678,23 +681,29 @@ namespace DDPM.SA.Common
         Task SetMouseAction(string Guid, byte[] newValue);
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
         Task DeleteMouseAssignedAction(string Guid, int newValue);
+
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
+
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
 
-        #endregion
+        #endregion Mouse
 
         #region Keyboard
+
         Task<JArray> GetKeyboardDeviceItemsEx();
+
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task SetKbAssignedAction(string Guid, string newValue);
+
         Task SetKbAssignDialogAction(string Guid, string newValue);
+
         Task SetKbAssignKeystrokeAction(string Guid, string newValue);
 
-        #endregion Mouse
+        #endregion Keyboard
 
         #region Pen
 
@@ -1026,6 +1035,7 @@ namespace DDPM.SA.Common
         ////////////////////////////////Get////////////////////////////////
 
         Task<string> GetProfileAsync(string item);
+
         Task<int> GetBassAsync(string Guid);
 
         Task<int> GetMidRangeAsync(string Guid);
@@ -1037,6 +1047,7 @@ namespace DDPM.SA.Common
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
 
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
+
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion Wires Audio
@@ -1044,11 +1055,16 @@ namespace DDPM.SA.Common
         #region Dongle
 
         Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
+
         Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
+
         Task<string> GetDeviceIdAsyncForDongle(string Guid);
+
         Task<string> GetPluginIdAsyncForDongle(string Guid);
+
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
-        #endregion
+
+        #endregion Dongle
 
         #endregion public for DTPProxy
 
@@ -1061,6 +1077,8 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type, bool State);
 
         Task ShowOSD(object monitorInfo, OSDType type);
+
+        Task ShowOSD(object monitorInfo, OSDType type, bool State, (string, string, bool) args);
 
         #endregion OSD
 

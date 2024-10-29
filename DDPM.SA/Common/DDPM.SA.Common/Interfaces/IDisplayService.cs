@@ -44,10 +44,15 @@ namespace DDPM.SA.Common
         event EventHandler<bool> HDRChangeEvent;
 
         Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo);
+
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
+
         Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo);
+
         Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
+
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
+
         Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
@@ -65,6 +70,14 @@ namespace DDPM.SA.Common
         Task<string> GetOSDOrientation(MonitorInfo monitorInfos);
 
         Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation);
+
+        Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName);
+
+        Task<string> GetMonitorCurrentResolution(MonitorInfo monitor);
+
+        Task<string> GetMonitorMaxResolution(MonitorInfo monitor);
+
+        Task<string> GetMonitorRefreshRate(MonitorInfo monitor);
 
         #endregion Bruce display properties
 
@@ -147,38 +160,57 @@ namespace DDPM.SA.Common
 
         //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
         public Task<bool> ReloadEzSettings();
+
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+
         #endregion EasyArange
 
         #region Gaming
 
         event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+
         Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo);
+
         Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo);
+
         Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo);
+
         Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo);
+
         Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo);
+
         Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo);
+
         Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo);
+
         Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo);
+
         Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+
         Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+
         Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+
         Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+
         Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+
         Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
+
         Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType);
+
         #endregion Gaming
 
         #region OutReport
+
         Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
-        #endregion
+
+        #endregion OutReport
 
         #region Display FWU Metadata
-    
-        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
-        #endregion
 
-        
+        Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
+
+        #endregion Display FWU Metadata
     }
 }
