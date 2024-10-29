@@ -666,20 +666,17 @@ namespace DDPM.SA.Common
         #region Mouse
 
         Task<int> GetDpiValue(string Guid);
-
         Task<JArray> GetMouseProgrammableKeys(string Guid);
-
         Task<JArray> GetAppSpecificProfiles(string Guid);
-
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
         Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<string> GetMouseKeystrokeDisplayData(string Guid);
+        Task<bool> StartMouseKeystrokeRecording(string Guid);
+        Task<bool> StopMouseKeystrokeRecording(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
-
         Task SetMouseAction(string Guid, byte[] newValue);
-
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
-
         Task DeleteMouseAssignedAction(string Guid, int newValue);
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
@@ -687,10 +684,12 @@ namespace DDPM.SA.Common
         #endregion
 
         #region Keyboard
-        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task<JArray> GetKeyboardDeviceItemsEx();
         Task<JArray> GetKbProgrammableKeys(string Guid);
+        Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task SetKbAssignedAction(string Guid, string newValue);
         Task SetKbAssignDialogAction(string Guid, string newValue);
         Task SetKbAssignKeystrokeAction(string Guid, string newValue);

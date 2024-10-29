@@ -1030,7 +1030,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
                 if (monitorSettings != null)
                 {
-                    if (path.Substring(path.Length - 5, 5) != ".json")
+                    if (path.Length > 6)
+                    {
+                        if ((path.Substring(path.Length - 5, 5).ToUpper() != ".json".ToUpper()))
+                        {
+                            path = path + ".json";
+                        }
+                    }
+                    else
                     {
                         path = path + ".json";
                     }

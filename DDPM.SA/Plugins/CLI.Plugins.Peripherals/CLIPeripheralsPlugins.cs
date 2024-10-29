@@ -587,6 +587,96 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("KEYBOARD"))
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Value = "SUCCESS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("MOUSE"))
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Value = "SUCCESS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
+            if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("PEN"))
+            {
+                SetResults.ForEach(x =>
+                {
+                    x.Value = "";
+                    if (x.Result == "")
+                    {
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Value = "SUCCESS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
+                        retcode = (result == "0") ? true : false;
+                    }
+                });
+                return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+            }
+
             foreach (var op in _commandLineInput.Options)
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
@@ -692,18 +782,18 @@ namespace DDPM.CLI.Plugins.Peripherals
 
             switch (_commandLineInput.TargetFeature)
             {
-                case "BACKLIGHTINGCONTROLS":
-                    taskA = _devMgr.SetBackLightingControls;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-                case "BACKLIGHTINGLEVEL":
-                    taskA = _devMgr.SetBackLightingLevel;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-                case "COLLABORATIONBLINKEFFECTENABLE":
-                    taskB = _devMgr.SetCollaborationBlinkEffectEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                //case "BACKLIGHTINGCONTROLS":
+                //    taskA = _devMgr.SetBackLightingControls;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
+                //case "BACKLIGHTINGLEVEL":
+                //    taskA = _devMgr.SetBackLightingLevel;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
+                //case "COLLABORATIONBLINKEFFECTENABLE":
+                //    taskB = _devMgr.SetCollaborationBlinkEffectEnable;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
                 case "COLLABCAMERAENABLE":
                     taskB = _devMgr.SetCollaborationCameraEnable;
                     RunTaskB(bl);
@@ -712,14 +802,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                     taskB = _devMgr.SetCollaborationChatEnable;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
-                case "COLLABORATIONDOUBLETAPENABLE":
-                    taskB = _devMgr.SetCollaborationDoubleTapEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "COLLABORATIONKEYENABLE":
-                    taskB = _devMgr.SetCollaborationKeyEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                //case "COLLABORATIONDOUBLETAPENABLE":
+                //    taskB = _devMgr.SetCollaborationDoubleTapEnable;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
+                //case "COLLABORATIONKEYENABLE":
+                //    taskB = _devMgr.SetCollaborationKeyEnable;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
                 case "COLLABMICMUTE":
                     taskB = _devMgr.SetCollaborationMicEnable;
                     RunTaskB(!bl);
@@ -728,97 +818,97 @@ namespace DDPM.CLI.Plugins.Peripherals
                     taskB = _devMgr.SetCollaborationScreenShareEnable;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
-                case "DPILEVEL":
-                    taskA = _devMgr.SetDPILevel;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-                case "DPIVALUE":
-                    taskA = _devMgr.SetDPIValue;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-                case "PRIMARYMOUSEBUTTON":
-                    MouseButton button;
-                    switch (value.ToUpper())
-                    {
-                        case "L":
-                            button = MouseButton.Left;
-                            break;
+                //case "DPILEVEL":
+                //    taskA = _devMgr.SetDPILevel;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
+                //case "DPIVALUE":
+                //    taskA = _devMgr.SetDPIValue;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
+                //case "PRIMARYMOUSEBUTTON":
+                //    MouseButton button;
+                //    switch (value.ToUpper())
+                //    {
+                //        case "L":
+                //            button = MouseButton.Left;
+                //            break;
 
-                        case "R":
-                            button = MouseButton.Right;
-                            break;
+                //        case "R":
+                //            button = MouseButton.Right;
+                //            break;
 
-                        default:
-                            SetFailResults("Invalid setting value");
-                            return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
-                    SetResults.ForEach(x =>
-                    {
-                        x.Value = value;
-                        if (x.Result == "")
-                        {
-                            var result = RunAsyncTimeout(_devMgr.SetPrimaryMouseButton(button, Guid.Parse(x.Guid))).Result;
-                            if (result == "0")
-                            {
-                                x.Result = "PASS";
-                                x.Message = "N/A";
-                            }
-                            else if (result == "1")
-                            {
-                                x.Result = "FAIL";
-                                x.Message = "Timeout";
-                            }
-                            else
-                            {
-                                x.Result = "FAIL";
-                                x.Message = result;
-                            }
-                        }
-                    });
-                    return (int)CLI_ExitCode.success;
+                //        default:
+                //            SetFailResults("Invalid setting value");
+                //            return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                //    }
+                //    SetResults.ForEach(x =>
+                //    {
+                //        x.Value = value;
+                //        if (x.Result == "")
+                //        {
+                //            var result = RunAsyncTimeout(_devMgr.SetPrimaryMouseButton(button, Guid.Parse(x.Guid))).Result;
+                //            if (result == "0")
+                //            {
+                //                x.Result = "PASS";
+                //                x.Message = "N/A";
+                //            }
+                //            else if (result == "1")
+                //            {
+                //                x.Result = "FAIL";
+                //                x.Message = "Timeout";
+                //            }
+                //            else
+                //            {
+                //                x.Result = "FAIL";
+                //                x.Message = result;
+                //            }
+                //        }
+                //    });
+                //    return (int)CLI_ExitCode.success;
 
-                case "TOUCHSCROLLSENSITIVITYLEVEL":
-                    taskA = _devMgr.SetTouchScrollSensitivityLevel;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-                case "UNPAIR":
-                    SetResults.ForEach(x =>
-                    {
-                        x.Value = "";
-                        if (x.Result == "")
-                        {
-                            var result = RunAsyncTimeout(_devMgr.UnPair(Guid.Parse(x.Guid))).Result;
-                            if (result == "0")
-                            {
-                                x.Result = "PASS";
-                                x.Message = "N/A";
-                            }
-                            else if (result == "1")
-                            {
-                                x.Result = "FAIL";
-                                x.Message = "Timeout";
-                            }
-                            else
-                            {
-                                x.Result = "FAIL";
-                                x.Message = result;
-                            }
-                        }
-                    });
-                    return (int)CLI_ExitCode.success;
+                //case "TOUCHSCROLLSENSITIVITYLEVEL":
+                //    taskA = _devMgr.SetTouchScrollSensitivityLevel;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
+                //case "UNPAIR":
+                //    SetResults.ForEach(x =>
+                //    {
+                //        x.Value = "";
+                //        if (x.Result == "")
+                //        {
+                //            var result = RunAsyncTimeout(_devMgr.UnPair(Guid.Parse(x.Guid))).Result;
+                //            if (result == "0")
+                //            {
+                //                x.Result = "PASS";
+                //                x.Message = "N/A";
+                //            }
+                //            else if (result == "1")
+                //            {
+                //                x.Result = "FAIL";
+                //                x.Message = "Timeout";
+                //            }
+                //            else
+                //            {
+                //                x.Result = "FAIL";
+                //                x.Message = result;
+                //            }
+                //        }
+                //    });
+                //    return (int)CLI_ExitCode.success;
                 //Headset&Speaker
-                case "SETWIREDAUDIOIMICNSENABLE":
-                    taskB = _devMgr.SetWiredAudioIMicNSEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "SETWIREDAUDIOMICMUTESOUNDENABLE":
-                    taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "SETWIREDAUDIOVOLUMEADJUSTMENTTONE":
-                    taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                //case "SETWIREDAUDIOIMICNSENABLE":
+                //    taskB = _devMgr.SetWiredAudioIMicNSEnable;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
+                //case "SETWIREDAUDIOMICMUTESOUNDENABLE":
+                //    taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
+                //case "SETWIREDAUDIOVOLUMEADJUSTMENTTONE":
+                //    taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
                 case "ANCMODE":
                     if (val == 1)
                         data.LockSettings.Lock_Audio_ancMode = false;
@@ -832,10 +922,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                     taskA = _devMgr.SetAncGain;
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
-                case "SETSELECTEDPRESET":
-                    taskA = _devMgr.SetSelectedPreset;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                //case "SETSELECTEDPRESET":
+                //    taskA = _devMgr.SetSelectedPreset;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
                 //case "SETBANDSGAIN":
                 //    if (!int.TryParse(value, out val))
                 //    {
@@ -852,14 +942,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                     taskB = _devMgr.SetMicNoiseCancellation;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
-                case "SETSIDETONE":
-                    taskB = _devMgr.SetSidetone;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "SETSIDETONELEVEL":
-                    taskA = _devMgr.SetSidetoneLevel;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                //case "SETSIDETONE":
+                //    taskB = _devMgr.SetSidetone;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
+                //case "SETSIDETONELEVEL":
+                //    taskA = _devMgr.SetSidetoneLevel;
+                //    RunTaskA(val);
+                //    return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
                     if (val == 1)
                         data.LockSettings.Lock_Audio_wearDetection = false;
@@ -869,18 +959,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                     taskA = _devMgr.SetWearDetectionForCLI;
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
-                case "SETBUSYLIGHT":
-                    taskB = _devMgr.SetBusyLight;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "SETVOICEGUIDANCE":
-                    taskB = _devMgr.SetVoiceGuidance;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "SETMICNCINCOMING":
-                    taskB = _devMgr.SetMicNCIncoming;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                //case "SETBUSYLIGHT":
+                //    taskB = _devMgr.SetBusyLight;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
+                //case "SETVOICEGUIDANCE":
+                //    taskB = _devMgr.SetVoiceGuidance;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
+                //case "SETMICNCINCOMING":
+                //    taskB = _devMgr.SetMicNCIncoming;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
                 //case "SETEQUALIZERVALUES":
                 //    if (!bool.TryParse(value, out bl))
                 //    {
@@ -893,10 +983,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        SetFailResults("Invalid setting value");
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
-                case "SETISMICENUMERATIONON":
-                    taskB = _devMgr.SetIsMicEnumerationOn;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                //case "SETISMICENUMERATIONON":
+                //    taskB = _devMgr.SetIsMicEnumerationOn;
+                //    RunTaskB(bl);
+                //    return (int)CLI_ExitCode.success;
 
                 case "HDR":
                     //ItemId = "DellPeripheral.Webcam.0";
