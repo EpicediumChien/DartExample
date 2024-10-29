@@ -401,7 +401,8 @@ namespace DDPM.UI.Module.Color
 
                             string strSync_ColorPresetName_Manual = string.Empty;
                             //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
-                            strSync_ColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName_Manual).Result;
+                            if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
+                                strSync_ColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName_Manual).Result;
 
                             if (!string.IsNullOrEmpty(strSync_ColorPresetName_Manual))
                             {
@@ -423,7 +424,8 @@ namespace DDPM.UI.Module.Color
 
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
+                    if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
                     //int j = 0;
                 })); 
