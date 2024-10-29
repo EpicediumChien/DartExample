@@ -1284,7 +1284,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
                         info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                         info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
-                        info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
+                        //info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
                         info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
                         info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
                         info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;

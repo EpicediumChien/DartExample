@@ -277,6 +277,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Wireless Receiver Connection 的當地語系化字串。
+        /// </summary>
+        internal static string AddDevice_KnM_14 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Slide power switch slider to ON 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_2 {

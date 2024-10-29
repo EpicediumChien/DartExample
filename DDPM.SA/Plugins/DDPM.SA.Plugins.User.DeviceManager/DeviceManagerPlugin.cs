@@ -378,7 +378,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetMonitorProfile(MonitorInfo m)
         {
             string Key_Profile_Name = string.Empty;
-            
+
             try
             {
                 Key_Profile_Name = MonitorProfile.GetMonitorProfile(m.DisplayName);
@@ -2485,7 +2485,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<string> GetPairingStatusAsync(string guid)
         {
-             try
+            try
             {
                 var result = await _DTPProxyPlugin.GetPairingStatusAsync(guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync succeeded, value is {result.ToString()}");
@@ -3140,7 +3140,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync failed for {guid} - Exception: {ex.Message}");
-                return -1; 
+                return -1;
             }
         }
 
@@ -6389,10 +6389,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
-
         public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
+        }
+        public async Task<string> GetMouseKeystrokeDisplayData(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMouseKeystrokeDisplayData(Guid));
+        }
+        public async Task<bool> StartMouseKeystrokeRecording(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.StartMouseKeystrokeRecording(Guid));
+        }
+        public async Task<bool> StopMouseKeystrokeRecording(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.StopMouseKeystrokeRecording(Guid));
         }
 
         public Task SetDPIValue(string Guid, int newValue)
@@ -6660,6 +6671,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbProgrammableKeys(Guid));
         }
+        public Task<bool> DeleteKeyboardAllAssignedActions(string Guid)
+        {
+            return Task.Run(() => _DTPProxyPlugin.DeleteKeyboardAllAssignedActions(Guid));
+        }
         public Task<JArray> GetKbAssignableActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
@@ -6755,6 +6770,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
+        }
+        public async Task<string> GetSupportedResolutions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSupportedResolutions(Guid));
+        }
+        public async Task<string> GetSelectedResolution(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSelectedResolution(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)
@@ -12725,60 +12748,60 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     break;
 
                                     case OSDType.Error:
+                                    {
+                                        if (State)
                                         {
-                                            if (State)
+                                            if (ErrorWin != null)
+                                                ErrorWin.CloseWindow();
+
+                                            ErrorWin = new ErrorWin(title, Content, stayOpen);
+
+                                            try
                                             {
-                                                if (ErrorWin != null)
-                                                    ErrorWin.CloseWindow();
-
-                                                ErrorWin = new ErrorWin(title, Content, stayOpen);
-
-                                                try
-                                                {
-                                                    ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    ErrorWin.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                    //NumLockOnWinx.ShowWindow();
-
-                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    ErrorWin = null;
-                                                }
+                                                ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                ErrorWin.ShowWindow();
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                if (ErrorWin != null)
-                                                    ErrorWin.CloseWindow();
+                                                //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                //NumLockOnWinx.ShowWindow();
 
-                                                ErrorWin = new ErrorWin(title, Content, stayOpen);
-
-                                                try
-                                                {
-                                                    ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                    ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    ErrorWin.ShowWindow();
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                    //NumLockOffWinx.ShowWindow();
-                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                                }
-                                                finally
-                                                {
-                                                    ErrorWin = null;
-                                                }
+                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                ErrorWin = null;
                                             }
                                         }
-                                        break;
+                                        else
+                                        {
+                                            if (ErrorWin != null)
+                                                ErrorWin.CloseWindow();
+
+                                            ErrorWin = new ErrorWin(title, Content, stayOpen);
+
+                                            try
+                                            {
+                                                ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                ErrorWin.ShowWindow();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                //NumLockOffWinx.ShowWindow();
+                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                            }
+                                            finally
+                                            {
+                                                ErrorWin = null;
+                                            }
+                                        }
+                                    }
+                                    break;
 
                                     default:
                                         break;

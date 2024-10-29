@@ -28,6 +28,9 @@ namespace DDPM.SA.Common
         Task<JArray> GetAppSpecificProfiles(string Guid);
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
         Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<string> GetMouseKeystrokeDisplayData(string Guid);
+        Task<bool> StartMouseKeystrokeRecording(string Guid);
+        Task<bool> StopMouseKeystrokeRecording(string Guid);
 
         Task SetDpiValue(string Guid, int newValue);
         Task SetMouseAction(string Guid, byte[] newValue);
@@ -41,17 +44,18 @@ namespace DDPM.SA.Common
 
         #region Keyboard
 
-        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task<JArray> GetKeyboardDeviceItemsEx();
         Task<JArray> GetKbProgrammableKeys(string Guid);
+        Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+
+
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task SetKbAssignedAction(string Guid, string newValue);
         Task SetKbAssignDialogAction(string Guid, string newValue);
         Task SetKbAssignKeystrokeAction(string Guid, string newValue);
 
         #endregion
-
-
 
         #region Pen
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
@@ -102,24 +106,17 @@ namespace DDPM.SA.Common
         Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
-
         Task<string> GetCameraFirmwareVersion(string Guid);
-
         Task<bool> GetIsPropertyFOVSupported(string Guid);
-
         Task<int> GetFieldOfView(string Guid);
-
         Task<bool> GetIsPropertyHDRSupported(string Guid);
-
         Task<bool> GetIsHDROn(string Guid);
-
         Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid);
-
         Task<int> GetAntiFlicker(string Guid);
-
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
-
         Task<bool> GetIsAutoFramingOn(string Guid);
+        Task<string> GetSupportedResolutions(string Guid);
+        Task<string> GetSelectedResolution(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
@@ -264,7 +261,7 @@ namespace DDPM.SA.Common
         Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
         Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
         Task<string> GetDeviceIdAsyncForDongle(string Guid);
-        Task<string> GetPluginIdAsyncForDongle(string Guid);    
+        Task<string> GetPluginIdAsyncForDongle(string Guid);
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
         #endregion

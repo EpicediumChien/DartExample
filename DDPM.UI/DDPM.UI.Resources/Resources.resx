@@ -2148,4 +2148,7 @@
   <data name="RestoreToDefaultActions" xml:space="preserve">
     <value>Restore to default actions</value>
   </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>Wireless Receiver Connection</value>
+  </data>
 </root>
