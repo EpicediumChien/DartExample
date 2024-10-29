@@ -115,7 +115,8 @@ namespace DDPM.SA.Common
         Task<int> GetAntiFlicker(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
-        Task<string[]> GetSupportedResolutions(string Guid);
+        Task<string> GetSupportedResolutions(string Guid);
+        Task<string> GetSelectedResolution(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);

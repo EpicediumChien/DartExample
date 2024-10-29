@@ -764,7 +764,8 @@ namespace DDPM.SA.Common
         Task<int> GetAntiFlickerValueByDTP(string Guid);
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
         Task<bool> GetIsAutoFramingOn(string Guid);
-        Task<string[]> GetSupportedResolutions(string Guid);
+        Task<string> GetSupportedResolutions(string Guid);
+        Task<string> GetSelectedResolution(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 

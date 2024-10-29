@@ -865,30 +865,57 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-        public async Task<string[]> GetSupportedResolutions(string Guid)
+        public async Task<string> GetSupportedResolutions(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return new string[0]; }
+            { return string.Empty; }
 
             if (_webcamMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "SupportedResolutions");
-                    return (string[])value;
+                    return Encoding.UTF8.GetString((byte[])value);
                 }
                 else
                 {
                     Debug.WriteLine($"[GetSupportedResolutions]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                     writelog($"[GetSupportedResolutions]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
-                    return new string[0];
+                    return string.Empty;
                 }
             }
             else
             {
                 Debug.WriteLine($"[GetSupportedResolutions]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
                 writelog($"[GetSupportedResolutions]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
-                return new string[0];
+                return string.Empty;
+            }
+
+        }
+        public async Task<string> GetSelectedResolution(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return string.Empty; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "SelectedResolution");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetSelectedResolution]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    writelog($"[GetSelectedResolution]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetSelectedResolution]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                writelog($"[GetSelectedResolution]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                return string.Empty;
             }
 
         }
@@ -4866,7 +4893,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             try
             {
                 Debug.WriteLine($"commodity: {commodity.GetType().Name} Property: {property}");
-                return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
+                var obj = interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
+                Debug.WriteLine($"{obj.ToString()}");
+                return obj;
             }
             catch (Exception ex)
             {
