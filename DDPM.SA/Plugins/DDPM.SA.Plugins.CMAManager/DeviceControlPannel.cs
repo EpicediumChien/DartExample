@@ -2,11 +2,6 @@
 using DDPM.SA.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.CMAManager
@@ -20,17 +15,17 @@ namespace DDPM.SA.Plugins.CMAManager
         private List<MonitorInfo> monitors;
         private List<DeviceInfo> deivces;
 
-        public DeviceControlPannel() 
+        public DeviceControlPannel()
         {
             monitors = new List<MonitorInfo>();
             deivces = new List<DeviceInfo>();
         }
 
         public NotifyArgs OnDeviceChnaged(CMADeviceChanges _CMADeviceChanges)
-        { 
+        {
             NotifyArgs args = new NotifyArgs();
 
-            if (_CMADeviceChanges == null) 
+            if (_CMADeviceChanges == null)
             {
                 args.eventType = Params.EventType.UNKNOW_ERROR.ToString();
                 args.notification = "Device data is null.";
@@ -39,7 +34,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             }
 
-            if (_CMADeviceChanges.type.ToLower().Equals(DEVICE_DISPLAY)) 
+            if (_CMADeviceChanges.type.ToLower().Equals(DEVICE_DISPLAY))
             {
                 args = CheckDisplay(_CMADeviceChanges.mos);
             }
@@ -82,40 +77,42 @@ namespace DDPM.SA.Plugins.CMAManager
 
         }
 
-        private NotifyArgs CheckPeripheral(List<DeviceInfo> list) 
+        private NotifyArgs CheckPeripheral(List<DeviceInfo> list)
         {
             NotifyArgs args = new NotifyArgs();
 
             return args;
         }
 
-        private string getMosDiffer(List<MonitorInfo> src, List<MonitorInfo> des) {
+        private string getMosDiffer(List<MonitorInfo> src, List<MonitorInfo> des)
+        {
             string result = string.Empty;
 
             List<MonitorInfo> diff = new List<MonitorInfo>();
 
-            foreach (MonitorInfo info in src) 
+            foreach (MonitorInfo info in src)
             {
                 Boolean isExist = false;
 
-                foreach (MonitorInfo other in des) 
+                foreach (MonitorInfo other in des)
                 {
-                    if (other == info) { 
+                    if (other == info)
+                    {
                         isExist = true;
                         break; ;
                     }
                 }
 
-                if (!isExist) 
+                if (!isExist)
                 {
-                    diff.Add(info); 
+                    diff.Add(info);
                 }
             }
 
-            if (diff.Count > 0) 
+            if (diff.Count > 0)
             {
                 ItemMonitor item;
-                foreach (MonitorInfo info in diff) 
+                foreach (MonitorInfo info in diff)
                 {
                     item = new ItemMonitor()
                     {
@@ -124,13 +121,13 @@ namespace DDPM.SA.Plugins.CMAManager
                         modelname = info.edid.ModelName,
                         fwversion = info.FwVersion,
                         pid = info.edid.PID,
-                        serialnumber = info.edid.SerialNumber, 
-                        servicetag  =   info.edid.ServiceTag
+                        serialnumber = info.edid.SerialNumber,
+                        servicetag = info.edid.ServiceTag
                     };
 
                     result = result + "{" + item.ToString() + "}";
                 }
-            
+
             }
 
             return result;
@@ -154,46 +151,89 @@ namespace DDPM.SA.Plugins.CMAManager
             public string ToString()
             {
                 string result = string.Empty;
+                bool hasData = false;
 
                 if (Index != null)
                 {
-                    result = result + $"\"Index\":{Index},";
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
+                    result = result + $"\"Index\":{Index}";
+                    hasData = true;
                 }
 
                 if (!String.IsNullOrEmpty(devicetype))
                 {
-                    result = result + $"\"DeviceType\":\"{devicetype}\",";
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
+                    result = result + $"\"DeviceType\":\"{devicetype}\"";
+                    hasData = true;
                 }
 
                 if (!String.IsNullOrEmpty(modelname))
                 {
-                    result = result + $"\"Model\":\"{modelname}\",";
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
+                    result = result + $"\"Model\":\"{modelname}\"";
+                    hasData = true;
                 }
 
                 if (!String.IsNullOrEmpty(fwversion))
                 {
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
                     result = result + $"\"FWVersion\":\"{fwversion}\"";
+                    hasData = true;
                 }
 
                 if (!String.IsNullOrEmpty(pid))
                 {
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
                     result = result + $"\"PID\":\"{pid}\"";
+                    hasData = true;
                 }
 
                 if (!String.IsNullOrEmpty(serialnumber))
                 {
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
                     result = result + $"\"SerialNumber\":\"{serialnumber}\"";
+                    hasData = true;
                 }
 
                 if (!String.IsNullOrEmpty(servicetag))
                 {
+                    if (hasData)
+                    {
+                        result = result + ",";
+                    }
+
                     result = result + $"\"Servicetag\":\"{servicetag}\"";
+                    hasData = true;
                 }
 
 
                 return result;
             }
         }
-        
+
     }
 }
