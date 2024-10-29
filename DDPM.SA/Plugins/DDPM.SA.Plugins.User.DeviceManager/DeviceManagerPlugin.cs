@@ -60,6 +60,8 @@ using System.Windows.Media.Media3D;
 using DDPM.SA.Common.Telemetry;
 using DDPM.SA.Common.Telemetry;
 using static VcpCore.Common.User32;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.ComponentModel;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -208,6 +210,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool userClosedPopup = false;
 
         private static PowerEventControl _pwr_Mon = null;
+
+        private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
         #endregion
 
         #region Constructor
@@ -218,10 +222,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Elapsed += OnPowerNapTimedRaise;
             _PowerNapTimer.AutoReset = true;
             _PowerNapTimer.Enabled = true;
-
+            UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
+        }
+
+        private void UXSystemParametersChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
+            {
+                OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                if (previousOsTheme == oSTheme) return;
+                //telemetry [Application Settings ==>AppMode : "Dark","Light"]
+                Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
+                //Telementry Collection
+                var rt = false;
+                var hotkeyTelemetry_Function = new HotkeyTelemetry_Function();
+                string appModeTelementryData = string.Empty;
+                switch (oSTheme)
+                {
+                    case OSThemeEnum.Light:
+                        appModeTelementryData = "Light";
+                        break;
+                    case OSThemeEnum.Dark:
+                        appModeTelementryData = "Dark";
+                        break;
+                    default:
+                        break;
+                }
+                Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
+                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
+                Task.Run(() => hotkeyTelemetry_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+                /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
+                 else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
+                previousOsTheme = oSTheme;
+            }
         }
 
         #endregion
@@ -870,7 +906,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckNightLightStatus]");
                 return Task.FromResult(false);
             }
-            
+
             var temp = _ColorPresetPlugin.CheckNightLightStatus().Result;
 
             return Task.FromResult(temp);
@@ -5517,7 +5553,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
                         bool var = infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
-                        if(var)
+                        if (var)
                             writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Success.");
                         else
                             writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Error.");
@@ -5824,7 +5860,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 List<string> telementryList = new List<string> { "EasyMemoryProfileCount", "MaxEasyMemoryLayoutUsed" };
                                 foreach (var telem in telementryList)
                                 {
-                                    if(infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
+                                    if (infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
                                     {
                                         writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Success.");
                                     }
@@ -7486,6 +7522,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
+            //Telementry Collection [Application Settings ==>AppMode : "Dark","Light"]  
+            var hotkeyTelemetry_Function = new HotkeyTelemetry_Function();
+            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            string appModeTelementryData = string.Empty;
+            switch (oSTheme)
+            {
+                case OSThemeEnum.Light:
+                    appModeTelementryData = "Light";
+                    break;
+                case OSThemeEnum.Dark:
+                    appModeTelementryData = "Dark";
+                    break;
+                default:
+                    break;
+            }
+            Debug.WriteLine($"SettingsReady:AppModeTelemetry=> {appModeTelementryData}");
+            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
+            Task.Run(() => hotkeyTelemetry_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+            previousOsTheme = oSTheme;
         }
 
         #region OutReport
@@ -9070,7 +9125,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("LauchNightLightStatusMonitor, Enter");
 
             writelog("LauchNightLightStatusMonitor, CheckNightLightStatus()");
-            CheckNightLightStatus();           
+            CheckNightLightStatus();
 
             writelog("LauchNightLightStatusMonitor, Exit");
         }
@@ -9688,6 +9743,39 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             ReloadHotkeyConfigData();
+            //Telementry Collection
+            var rt = false;
+            var hotkeyTelemetry_Function = new HotkeyTelemetry_Function();
+            if (mo != null)
+            {
+                string hotkeyTelementryData = string.Empty;
+                switch (info.Job)
+                {
+                    case HotkeyType.ToggleInputSource:
+                        hotkeyTelementryData = HotkeyTelementryHelper.toHotKeyText(info.Hotkey);
+                        break;
+                    case HotkeyType.SwitchInputSource:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.ChangePIPPosition:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.ToggleEzRecentSetting:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.VisionEngineToggle:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.DarkStabilizerToggle:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                }
+                Debug.WriteLine($"HotkeyTelemetry:{mo.edid.SerialNumber}:{info.Job}=> {hotkeyTelementryData}");
+                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
+                rt = hotkeyTelemetry_Function.Send_Hotkey_Telementry(_TelementryScheduler, mo, hotkeyTelementryData, info.Job);
+                if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for HotkeyTelemetry Success ...");
+                else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for HotkeyTelemetry Fail ...");
+            }
 
             return Task.FromResult(true);
         }
@@ -11107,6 +11195,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _powerNapJobQueue.Clear();
             _screenSaver = false;
             _PowerNapTimer.Start();
+
+            //Telementry Collection
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+            MonitorInfo monitorInfo = _AllInfoMonitors.SingleOrDefault(x => x.edid.SerialNumber.Equals(powerNapSetting.SerialNumber));
+            if (monitorInfo != null)
+            {
+                if (powerNapSetting.Status)
+                {
+                    string powerNapTelementryData = string.Empty;
+                    switch (powerNapSetting.RunType)
+                    {
+                        case PowerNapType.Off:
+                            powerNapTelementryData = "Off";
+                            break;
+                        case PowerNapType.ReduceBrightness:
+                            powerNapTelementryData = "Reduce_brightness";
+                            break;
+                        case PowerNapType.SleepIfRunning:
+                            powerNapTelementryData = "Sleep";
+                            break;
+                    }
+                    Debug.WriteLine($"powerNapTelementry:{monitorInfo.edid.SerialNumber}=> {powerNapTelementryData}");
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
+                    rt = Displaysettings_Function.Send_PowerNap_Telementry(_TelementryScheduler, monitorInfo, powerNapTelementryData, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                    if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Success ...");
+                    else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Fail ...");
+                }
+            }
             return Task.FromResult(true);
         }
 
@@ -12319,7 +12436,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnNightLightStatusChangeHandler(object sender, string e)
         {
             NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }       
+        }
 
         #endregion
 
@@ -12974,60 +13091,60 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         break;
 
                                     case OSDType.Error:
-                                    {
-                                        if (State)
                                         {
-                                            if (ErrorWin != null)
-                                                ErrorWin.CloseWindow();
-
-                                            ErrorWin = new ErrorWin(title, Content, stayOpen);
-
-                                            try
+                                            if (State)
                                             {
-                                                ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                ErrorWin.ShowWindow();
+                                                if (ErrorWin != null)
+                                                    ErrorWin.CloseWindow();
+
+                                                ErrorWin = new ErrorWin(title, Content, stayOpen);
+
+                                                try
+                                                {
+                                                    ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    ErrorWin.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //NumLockOnWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOnWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOnWinx.ShowWindow();
+
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    ErrorWin = null;
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                //NumLockOnWinx.Top = sreen.WorkingArea.Top;
-                                                //NumLockOnWinx.Left = sreen.WorkingArea.Left;
-                                                //NumLockOnWinx.ShowWindow();
+                                                if (ErrorWin != null)
+                                                    ErrorWin.CloseWindow();
 
-                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                ErrorWin = null;
+                                                ErrorWin = new ErrorWin(title, Content, stayOpen);
+
+                                                try
+                                                {
+                                                    ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    ErrorWin.ShowWindow();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //NumLockOffWinx.Top = sreen.WorkingArea.Top;
+                                                    //NumLockOffWinx.Left = sreen.WorkingArea.Left;
+                                                    //NumLockOffWinx.ShowWindow();
+                                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
+                                                }
+                                                finally
+                                                {
+                                                    ErrorWin = null;
+                                                }
                                             }
                                         }
-                                        else
-                                        {
-                                            if (ErrorWin != null)
-                                                ErrorWin.CloseWindow();
-
-                                            ErrorWin = new ErrorWin(title, Content, stayOpen);
-
-                                            try
-                                            {
-                                                ErrorWin.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                ErrorWin.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                ErrorWin.ShowWindow();
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                //NumLockOffWinx.Top = sreen.WorkingArea.Top;
-                                                //NumLockOffWinx.Left = sreen.WorkingArea.Left;
-                                                //NumLockOffWinx.ShowWindow();
-                                                writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                            }
-                                            finally
-                                            {
-                                                ErrorWin = null;
-                                            }
-                                        }
-                                    }
-                                    break;
+                                        break;
 
                                     default:
                                         break;
