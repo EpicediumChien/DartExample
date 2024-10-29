@@ -10,7 +10,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
- using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -54,7 +54,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
         public List<string> EOLList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
         //public DDPMSettings? DDPMSettings;
-        public WebcamSettings WebcamSettings = new();
+        //public WebcamSettings WebcamSettings = new();
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
             Requires.NotNull(console, nameof(console));
@@ -126,7 +126,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentDeviceID = new Guid(deviceID);
 
             if (DeviceInfos.ContainsKey(CurrentDeviceID))
-            {               
+            {
                 var di = DeviceInfos[CurrentDeviceID];
                 _log.Info($"[PeripheralViewModel] SetCurrentDevice ... InstanceId = {di.InstanceId.ToString()}");
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
@@ -162,7 +162,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //}
                 //else
                 //{
-                    Model = CurrentDeviceInfo.ModelNumber;
+                Model = CurrentDeviceInfo.ModelNumber;
                 //}
                 //ID = CurrentDeviceInfo.ID.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
                 Name = CurrentDeviceInfo.Name;
