@@ -32,7 +32,9 @@ namespace DDPM.SA.Common
         private readonly Dictionary<string, int> Command_Timeout_Value = new Dictionary<string, int>()
         {
             { "DEVICEDATA", 300 },
-            { "DEVICECONFIGURATION", 300 }
+            { "DEVICECONFIGURATION", 300 },
+            { "EXPORTSETTINGS", 300 },
+            { "IMPORTSETTINGS", 300 }
         };
 
         //IT feature table

@@ -10,7 +10,7 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
-          "DDPM.RemoteManagement.Common": "2.0.0.1",
+          "DDPM.RemoteManagement.Common": "2.0.0.3",
           "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.2.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
@@ -20,21 +20,21 @@
           "DdmLibrary": "1.0.0.0",
           "DPeMClientBroker": "1.7.6.0",
           "DPeMPublic.Common": "1.7.6.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.44"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.44": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
-            "assemblyVersion": "10.0.19041.38",
-            "fileVersion": "10.0.19041.43"
+            "assemblyVersion": "10.0.19041.24",
+            "fileVersion": "10.0.19041.34"
           },
           "WinRT.Runtime.dll": {
-            "assemblyVersion": "2.1.0.0",
-            "fileVersion": "2.1.2.47512"
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.8.46841"
           }
         }
       },
@@ -405,13 +405,13 @@
         }
       },
       "System.ValueTuple/4.5.0": {},
-      "DDPM.RemoteManagement.Common/2.0.0.1": {
+      "DDPM.RemoteManagement.Common/2.0.0.3": {
         "dependencies": {
           "DellClientFramework": "6.4.11.2"
         },
         "runtime": {
           "DDPM.RemoteManagement.Common.dll": {
-            "assemblyVersion": "2.0.0.1",
+            "assemblyVersion": "2.0.0.3",
             "fileVersion": "2.0.0.3"
           }
         }
@@ -519,7 +519,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.44": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -790,7 +790,7 @@
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
     },
-    "DDPM.RemoteManagement.Common/2.0.0.1": {
+    "DDPM.RemoteManagement.Common/2.0.0.3": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
