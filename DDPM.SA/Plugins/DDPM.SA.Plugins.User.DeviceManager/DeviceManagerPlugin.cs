@@ -5517,7 +5517,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         DisplayFeatures_Functions infos = new DisplayFeatures_Functions();
                         bool var = infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, monitorSettings.easyArrangementDDPM, null, "EasyMemory");
-                        if(var)
+                        if (var)
                             writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Success.");
                         else
                             writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTag={serviceTag}) : SentInfoToTelementry Error.");
@@ -5824,7 +5824,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 List<string> telementryList = new List<string> { "EasyMemoryProfileCount", "MaxEasyMemoryLayoutUsed" };
                                 foreach (var telem in telementryList)
                                 {
-                                    if(infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
+                                    if (infos.SentInfoToTelementry(Log, _TelementryScheduler, monitorInfo, dpInfo, null, ddpmSettings, telem))
                                     {
                                         writelog($"@ UpdateUserEAProfileDDPM(model={monitorInfo.modelName}, serviceTag={monitorInfo.edid.ServiceTag}) : {telem} SentInfoToTelementry Success.");
                                     }
@@ -5998,33 +5998,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void DeleteDdpmSwUpdaterFolder()
         {
-            writelog("[DeleteDdpmSwUpdaterFolder], start.");
-            string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
-            object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater").Result;
-            writelog($"[DeleteDdpmSwUpdaterFolder], o={o}.");
-            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            try
             {
-                writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
-                DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
-                if (!string.IsNullOrEmpty(AppDataPath))
+                writelog("[DeleteDdpmSwUpdaterFolder], start.");
+                string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater").Result;
+                writelog($"[DeleteDdpmSwUpdaterFolder], o={o}.");
+                if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
-                    string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                    if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                    writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
+                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                    string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                    if (!string.IsNullOrEmpty(AppDataPath))
                     {
-                        writelog($"[DeleteDdpmSwUpdaterFolder], Exists.");
-                        Directory.Delete(path, true);
-                        writelog($"[DeleteDdpmSwUpdaterFolder], Delete.");
+                        string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                        if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                        {
+                            writelog($"[DeleteDdpmSwUpdaterFolder], Exists.");
+                            Directory.Delete(path, true);
+                            writelog($"[DeleteDdpmSwUpdaterFolder], Delete.");
+                        }
+                        WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
+                        writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
                     }
-                    WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
-                    writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
+                    else
+                    {
+                        writelog("[DeleteDdpmSwUpdaterFolder], AppDataPath get null.");
+                    }
                 }
-                else
-                {
-                    writelog("[DeleteDdpmSwUpdaterFolder], AppDataPath get null.");
-                }
+                writelog("[DeleteDdpmSwUpdaterFolder], done.");
             }
-            writelog("[DeleteDdpmSwUpdaterFolder], done.");
+            catch (Exception ex)
+            {
+                writelog($"[DeleteDdpmSwUpdaterFolder], Error : {ex.Message}");
+            }
         }
 
         #endregion
