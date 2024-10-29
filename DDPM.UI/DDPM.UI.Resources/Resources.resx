@@ -2271,4 +2271,7 @@
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Disconnect all USB storage devices from monitor.</value>
   </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>Wireless Receiver Connection</value>
+  </data>
 </root>
