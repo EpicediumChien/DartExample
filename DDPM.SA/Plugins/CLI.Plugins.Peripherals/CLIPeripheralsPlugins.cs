@@ -118,7 +118,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 case "FIRMWAREUPDATE":
                                 case "UODFWUPDATE":
                                 case "LOCKUIUPDATE":
-                                case "UNLOCKUIUPDATE":
+                                //case "UNLOCKUIUPDATE":
                                     var ret = FWUpdate(commandLineInput);
                                     result.ExitCode = ret.code;
                                     result.serialize_Json_response = ret.json;
@@ -983,10 +983,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        SetFailResults("Invalid setting value");
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
-                //case "SETISMICENUMERATIONON":
-                //    taskB = _devMgr.SetIsMicEnumerationOn;
-                //    RunTaskB(bl);
-                //    return (int)CLI_ExitCode.success;
+                case "MICSWITCH":
+                    taskB = _devMgr.SetIsMicEnumerationOn;
+                    RunTaskD(bl);
+                    return (int)CLI_ExitCode.success;
 
                 case "HDR":
                     //ItemId = "DellPeripheral.Webcam.0";
@@ -1150,7 +1150,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
 
-                case "MICSWITCH":
+                case "MICSWITCH_":
                     //var ItemId_ = "DellPeripheral.Webcam.0";
                     if (_deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID)?.IsMicEnumerationSupported == true)
                     {
@@ -1284,7 +1284,34 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
             });
         }
-
+        private void RunTaskD(bool val)
+        {
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
+            SetResults.ForEach(x =>
+            {
+                x.Value = _commandLineInput.Options[0].Option_Value;
+                if (x.Result == "")
+                {
+                    var result = RunAsyncTimeout(taskB(val, Guid.Parse(x.Guid))).Result;
+                    if (result == "0")
+                    {
+                        x.Result = "PASS";
+                        //x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                        x.Message = "N/A";
+                    }
+                    else if (result == "1")
+                    {
+                        x.Result = "FAIL";
+                        x.Message = "Timeout";
+                    }
+                    else
+                    {
+                        x.Result = "FAIL";
+                        x.Message = result;
+                    }
+                }
+            });
+        }
         private void SetFailResults(string message)
         {
             SetResults.ForEach(x =>
@@ -1403,7 +1430,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     case "FIRMWAREUPDATE":
                         cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
-                        if (commandLineInput.Options.Count > 4)
+                        if (commandLineInput.Options.Count > 5)
                         {
                             cLI_FWU_RESPONSE.Result = "FAIL";
                             cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
@@ -1428,54 +1455,62 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 {
                                     if (ss_1[0].ToUpper().Equals("DISPLAY"))
                                     {
-                                        //display servicetag & miniver
-                                        if (commandLineInput.Options.Count == 3)
+                                        //display servicetag & miniver & model
+                                        if (commandLineInput.Options.Count == 4)
                                         {
                                             string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
                                             string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-                                            if (ss_2.Length == 2 && ss_3.Length == 2)
+                                            string[] ss_4 = commandLineInput.Options[3].Option_Value.Split(",");
+                                            if (ss_2.Length == 2 && ss_3.Length == 2 && ss_4.Length == 2)
                                             {
                                                 if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
                                                 {
                                                     if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
                                                     {
-                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
+                                                        if (!string.IsNullOrEmpty(ss_4[0]) && !string.IsNullOrEmpty(ss_4[1]))
                                                         {
-                                                            List<string> stag = new List<string> { ss_2[0] };
-                                                            string min = ss_3[0];
-                                                            isShowInfo = true;
+                                                            if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
+                                                            {
+                                                                List<string> stag = new List<string> { ss_2[0] };
+                                                                string min = ss_3[0];
+                                                                List<string> model = new List<string> { ss_4[0] };
+                                                                isShowInfo = true;
 
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, min);
+                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, min);
 
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
+                                                                result.ExitCode = fwupdate.code;
+                                                                result.serialize_Json_response = fwupdate.result;
+                                                                ret = true;
+                                                            }
+                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
+                                                            {
+                                                                List<string> stag = new List<string> { ss_2[0] };
+                                                                string min = ss_3[0];
+                                                                List<string> model = new List<string> { ss_4[0] };
+                                                                isShowInfo = false;
+                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, min);
+                                                                FWResultReceived_List += Download_Event_2;
+                                                                result.ExitCode = fwupdate.code;
+                                                                result.serialize_Json_response = fwupdate.result;
+                                                                ret = true;
+                                                            }
+                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
+                                                            {
+                                                                List<string> stag = new List<string> { ss_2[0] };
+                                                                string min = ss_3[0];
+                                                                List<string> model = new List<string> { ss_4[0] };
+                                                                installPath = Path.GetFullPath(ss_1[1]);
+                                                                Trace.WriteLine($"installPath = {installPath}");
+                                                                isShowInfo = true;
+                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, min);
+
+                                                                result.ExitCode = fwupdate.code;
+                                                                result.serialize_Json_response = fwupdate.result;
+                                                                ret = true;
+
+                                                            }
                                                         }
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            List<string> stag = new List<string> { ss_2[0] };
-                                                            string min = ss_3[0];
-                                                            isShowInfo = false;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, min);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            List<string> stag = new List<string> { ss_2[0] };
-                                                            string min = ss_3[0];
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, min);
 
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
                                                     }
 
                                                 }
@@ -1483,6 +1518,144 @@ namespace DDPM.CLI.Plugins.Peripherals
 
 
                                         }
+                                        //display (servicetag  && miniver) or (servicetag  && model) or (miniver  && model)
+                                        if (commandLineInput.Options.Count == 3)
+                                        {
+                                            string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
+                                            string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
+
+                                            if (ss_2.Length == 2 && ss_3.Length == 2)
+                                            {
+                                                if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
+                                                {
+                                                    if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
+                                                    {
+                                                        //display servicetag & miniver 
+                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
+                                                        {
+                                                            List<string> stag = new List<string> { ss_2[0] };
+                                                            string min = ss_3[0];
+                                                            isShowInfo = true;
+
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, min);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //display servicetag & miniver 
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
+                                                        {
+                                                            List<string> stag = new List<string> { ss_2[0] };
+                                                            string min = ss_3[0];
+                                                            isShowInfo = false;
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, min);
+                                                            FWResultReceived_List += Download_Event_2;
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //display servicetag &  miniver 
+                                                        else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
+                                                        {
+                                                            string min = ss_2[0];
+                                                            List<string> stag = new List<string> { ss_2[0] };
+                                                            installPath = Path.GetFullPath(ss_1[1]);
+                                                            Trace.WriteLine($"installPath = {installPath}");
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, min);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+
+                                                        }
+                                                        //display servicetag & model
+                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            List<string> stag = new List<string> { ss_2[0] };
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            isShowInfo = true;
+
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, null);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //display servicetag & model
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            List<string> stag = new List<string> { ss_2[0] };
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            isShowInfo = false;
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, null);
+                                                            FWResultReceived_List += Download_Event_2;
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //display servicetag & model
+                                                        else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            List<string> stag = new List<string> { ss_2[0] };
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            installPath = Path.GetFullPath(ss_1[1]);
+                                                            Trace.WriteLine($"installPath = {installPath}");
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, null);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+
+                                                        }
+                                                        //display miniver  && model
+                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            string min = ss_3[0];
+                                                            isShowInfo = true;
+
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, min);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //display miniver  && model
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            string min = ss_3[0];
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            isShowInfo = false;
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, min);
+                                                            FWResultReceived_List += Download_Event_2;
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //display miniver  && model
+                                                        else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            string min = ss_2[0];
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            installPath = Path.GetFullPath(ss_1[1]);
+                                                            Trace.WriteLine($"installPath = {installPath}");
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, min);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        //display servicetag  or  miniver or model
                                         if (commandLineInput.Options.Count == 2)
                                         {
                                             string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
@@ -1495,7 +1668,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     {
                                                         List<string> stag = new List<string> { ss_2[0] };
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null);
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, null);
 
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1506,7 +1679,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     {
                                                         List<string> stag = new List<string> { ss_2[0] };
                                                         isShowInfo = false;
-                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null);
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, null);
                                                         FWResultReceived_List += Download_Event_2;
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1519,7 +1692,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         installPath = Path.GetFullPath(ss_1[1]);
                                                         Trace.WriteLine($"installPath = {installPath}");
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null);
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, null);
 
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1531,7 +1704,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     {
                                                         string min = ss_2[0];
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, min);
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, min);
 
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1542,7 +1715,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     {
                                                         string min = ss_2[0];
                                                         isShowInfo = false;
-                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, min);
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, min);
                                                         FWResultReceived_List += Download_Event_2;
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1555,7 +1728,44 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         installPath = Path.GetFullPath(ss_1[1]);
                                                         Trace.WriteLine($"installPath = {installPath}");
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, min);
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, min);
+
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+
+                                                    }
+                                                    //display  only model
+                                                    else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
+                                                    {
+
+                                                        List<string> model = new List<string> { ss_2[0] };
+                                                        isShowInfo = true;
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, null);
+
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                    }
+                                                    //display  only model
+                                                    else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
+                                                    {
+                                                        List<string> model = new List<string> { ss_2[0] };
+                                                        isShowInfo = false;
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, null);
+                                                        FWResultReceived_List += Download_Event_2;
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                    }
+                                                    //display  only model
+                                                    else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
+                                                    {
+                                                        List<string> model = new List<string> { ss_2[0] };
+                                                        installPath = Path.GetFullPath(ss_1[1]);
+                                                        Trace.WriteLine($"installPath = {installPath}");
+                                                        isShowInfo = true;
+                                                        var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, null);
 
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1568,35 +1778,35 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         }
 
 
-                                        //display  no servicetag miniver
+                                        //display  no servicetag miniver model
                                         else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
                                         {
 
                                             isShowInfo = true;
-                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null);
+                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, null);
 
                                             result.ExitCode = fwupdate.code;
                                             result.serialize_Json_response = fwupdate.result;
                                             ret = true;
                                         }
-                                        //display  no servicetag miniver
+                                        //display  no servicetag miniver model
                                         else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
                                         {
 
                                             isShowInfo = false;
-                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null);
+                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, null);
                                             FWResultReceived_List += Download_Event_2;
                                             result.ExitCode = fwupdate.code;
                                             result.serialize_Json_response = fwupdate.result;
                                             ret = true;
                                         }
-                                        //display  no servicetag miniver
+                                        //display  no servicetag miniver model
                                         else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 1)
                                         {
                                             installPath = Path.GetFullPath(ss_1[1]);
                                             Trace.WriteLine($"installPath = {installPath}");
                                             isShowInfo = true;
-                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null);
+                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, null);
 
                                             result.ExitCode = fwupdate.code;
                                             result.serialize_Json_response = fwupdate.result;
@@ -1621,24 +1831,119 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     else if (!ss_1[0].ToUpper().Equals("DISPLAY"))
                                     {
 
-                                        if (commandLineInput.Options.Count == 3)
+                                        if (commandLineInput.Options.Count == 4)
                                         {
 
                                             string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
                                             string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
+                                            string[] ss_4 = commandLineInput.Options[3].Option_Value.Split(",");
+                                            if (ss_2.Length == 2 && ss_3.Length == 2 && ss_4.Length == 2)
+                                            {
+                                                if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
+                                                {
+                                                    if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
+                                                    {
+                                                        if (!string.IsNullOrEmpty(ss_4[0]) && !string.IsNullOrEmpty(ss_4[1]))
+                                                        {
+                                                            //peripherals guid & miniver & model
+                                                            if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
+                                                            {
+
+                                                                List<string> guid = new List<string>();
+                                                                string min = ss_3[0];
+                                                                List<string> model = new List<string> { ss_4[0] };
+
+                                                                foreach (var g in _deviceinfo)
+                                                                {
+                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
+                                                                    {
+                                                                        Trace.WriteLine($"IN ============");
+                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
+                                                                    }
+                                                                }
+
+                                                                isShowInfo = true;
+                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
+
+                                                                result.ExitCode = fwupdate.code;
+                                                                result.serialize_Json_response = fwupdate.result;
+                                                                ret = true;
+                                                            }
+                                                            //peripherals guid & miniver& model
+                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
+                                                            {
+                                                                List<string> guid = new List<string>();
+                                                                string min = ss_3[0];
+                                                                List<string> model = new List<string> { ss_4[0] };
+                                                                foreach (var g in _deviceinfo)
+                                                                {
+                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
+                                                                    {
+                                                                        Trace.WriteLine($"IN ============");
+                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
+                                                                    }
+                                                                }
+
+                                                                isShowInfo = true;
+                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
+                                                                FWResultReceived_List += Download_Event_2;
+                                                                result.ExitCode = fwupdate.code;
+                                                                result.serialize_Json_response = fwupdate.result;
+                                                                ret = true;
+                                                            }
+                                                            //peripherals guid & miniver& model
+                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
+                                                            {
+                                                                List<string> guid = new List<string>();
+                                                                string min = ss_3[0];
+                                                                List<string> model = new List<string> { ss_4[0] };
+                                                                foreach (var g in _deviceinfo)
+                                                                {
+                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
+                                                                    {
+                                                                        Trace.WriteLine($"IN ============");
+                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
+                                                                    }
+                                                                }
+                                                                installPath = Path.GetFullPath(ss_1[1]);
+                                                                Trace.WriteLine($"installPath = {installPath}");
+                                                                isShowInfo = true;
+                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
+
+                                                                result.ExitCode = fwupdate.code;
+                                                                result.serialize_Json_response = fwupdate.result;
+                                                                ret = true;
+
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+
+
+
+
+
+                                        }
+                                        //peripherals (guid  && miniver) or (guid  && model) or (miniver  && model)
+                                        if (commandLineInput.Options.Count == 3)
+                                        {
+                                            string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
+                                            string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
+
                                             if (ss_2.Length == 2 && ss_3.Length == 2)
                                             {
                                                 if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
                                                 {
                                                     if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
                                                     {
-                                                        //peripherals guid & miniver
-                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
+                                                        //peripherals guid  && miniver
+                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
                                                         {
 
                                                             List<string> guid = new List<string>();
                                                             string min = ss_3[0];
-
                                                             foreach (var g in _deviceinfo)
                                                             {
                                                                 if (g.ID.ToString().ToUpper() == ss_2[0])
@@ -1649,18 +1954,17 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                             }
 
                                                             isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, min);
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
 
                                                             result.ExitCode = fwupdate.code;
                                                             result.serialize_Json_response = fwupdate.result;
                                                             ret = true;
                                                         }
-                                                        //peripherals guid & miniver
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_2[1].ToUpper().Equals("MINIVERSION"))
+                                                        //peripherals guid  && miniver
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
                                                         {
                                                             List<string> guid = new List<string>();
                                                             string min = ss_3[0];
-
                                                             foreach (var g in _deviceinfo)
                                                             {
                                                                 if (g.ID.ToString().ToUpper() == ss_2[0])
@@ -1671,16 +1975,86 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                             }
 
                                                             isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, min);
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
                                                             FWResultReceived_List += Download_Event_2;
                                                             result.ExitCode = fwupdate.code;
                                                             result.serialize_Json_response = fwupdate.result;
                                                             ret = true;
                                                         }
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_2[1].ToUpper().Equals("MINIVERSION"))
+                                                        //peripherals guid  && miniver
+                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
                                                         {
                                                             List<string> guid = new List<string>();
                                                             string min = ss_3[0];
+                                                            foreach (var g in _deviceinfo)
+                                                            {
+                                                                if (g.ID.ToString().ToUpper() == ss_2[0])
+                                                                {
+                                                                    Trace.WriteLine($"IN ============");
+                                                                    guid = new List<string>() { commandLineInput.Options[1].Option_Value };
+                                                                }
+                                                            }
+                                                            installPath = Path.GetFullPath(ss_1[1]);
+                                                            Trace.WriteLine($"installPath = {installPath}");
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+
+                                                        }
+                                                        //peripherals guid  && model
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            List<string> guid = new List<string>();
+
+                                                            foreach (var g in _deviceinfo)
+                                                            {
+                                                                if (g.ID.ToString().ToUpper() == ss_2[0])
+                                                                {
+                                                                    Trace.WriteLine($"IN ============");
+                                                                    guid = new List<string>() { commandLineInput.Options[1].Option_Value };
+                                                                }
+                                                            }
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //peripherals guid  && model
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            List<string> guid = new List<string>();
+
+                                                            foreach (var g in _deviceinfo)
+                                                            {
+                                                                if (g.ID.ToString().ToUpper() == ss_2[0])
+                                                                {
+                                                                    Trace.WriteLine($"IN ============");
+                                                                    guid = new List<string>() { commandLineInput.Options[1].Option_Value };
+                                                                }
+                                                            }
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
+                                                            FWResultReceived_List += Download_Event_2;
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //peripherals guid  && model
+                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
+
+
+                                                        {
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            List<string> guid = new List<string>();
 
                                                             foreach (var g in _deviceinfo)
                                                             {
@@ -1693,7 +2067,51 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                             installPath = Path.GetFullPath(ss_1[1]);
                                                             Trace.WriteLine($"installPath = {installPath}");
                                                             isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, min);
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+
+                                                        }
+                                                        //peripherals miniver  && model
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+
+                                                            string min = ss_2[0];
+                                                            List<string> model = new List<string> { ss_3[0] };
+
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
+
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //peripherals miniver  && model
+                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
+                                                        {
+                                                            string min = ss_2[0];
+                                                            List<string> model = new List<string> { ss_3[0] };
+
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
+                                                            FWResultReceived_List += Download_Event_2;
+                                                            result.ExitCode = fwupdate.code;
+                                                            result.serialize_Json_response = fwupdate.result;
+                                                            ret = true;
+                                                        }
+                                                        //peripherals miniver  && model
+                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
+
+
+                                                        {
+                                                            string min = ss_2[0];
+                                                            List<string> model = new List<string> { ss_3[0] };
+                                                            installPath = Path.GetFullPath(ss_1[1]);
+                                                            Trace.WriteLine($"installPath = {installPath}");
+                                                            isShowInfo = true;
+                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
 
                                                             result.ExitCode = fwupdate.code;
                                                             result.serialize_Json_response = fwupdate.result;
@@ -1703,12 +2121,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     }
                                                 }
                                             }
-
-
-
-
-
                                         }
+
 
 
                                         if (commandLineInput.Options.Count == 2)
@@ -1791,7 +2205,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         string min = ss_2[0];
 
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, min);
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
 
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1803,7 +2217,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         string min = ss_2[0];
 
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, min);
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
                                                         FWResultReceived_List += Download_Event_2;
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1816,7 +2230,46 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         installPath = Path.GetFullPath(ss_1[1]);
                                                         Trace.WriteLine($"installPath = {installPath}");
                                                         isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, min);
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
+
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+
+                                                    }
+                                                    //peripherals only model
+                                                    else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
+                                                    {
+
+                                                        List<string> model = new List<string> { ss_2[0] };
+
+                                                        isShowInfo = true;
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
+
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                    }
+                                                    //peripherals only model
+                                                    else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
+                                                    {
+                                                        List<string> model = new List<string> { ss_2[0] };
+
+                                                        isShowInfo = true;
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
+                                                        FWResultReceived_List += Download_Event_2;
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                    }
+                                                    //peripherals only model
+                                                    else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
+                                                    {
+                                                        List<string> model = new List<string> { ss_2[0] };
+                                                        installPath = Path.GetFullPath(ss_1[1]);
+                                                        Trace.WriteLine($"installPath = {installPath}");
+                                                        isShowInfo = true;
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
 
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;
@@ -1830,7 +2283,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
 
 
-                                        //peripherals no guid minversion
+                                        //peripherals no guid minversion model
                                         else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
                                         {
                                             isShowInfo = true;
@@ -1840,7 +2293,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             result.serialize_Json_response = fwupdate.result;
                                             ret = true;
                                         }
-                                        //peripherals no guid minversion
+                                        //peripherals no guid minversion model
                                         else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
                                         {
                                             isShowInfo = false;
@@ -1850,7 +2303,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             result.serialize_Json_response = fwupdate.result;
                                             ret = true;
                                         }
-                                        //peripherals no guid minversion
+                                        //peripherals no guid minversion model
                                         else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 1)
                                         {
                                             installPath = Path.GetFullPath(ss_1[1]);
@@ -2241,7 +2694,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return false;
             }
         }
-        private (int code, string result) Auto_FWUpdate2(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false, List<string> guid = null, string miniver = null)
+        private (int code, string result) Auto_FWUpdate2(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false, List<string> guid = null, List<string> model = null, string miniver = null)
         {
             try
             {
@@ -2288,7 +2741,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     //Trace.WriteLine($"guid = {guid[0]}");
                     //Trace.WriteLine($"miniver = {miniver}");
-                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode, false, true, false, guid, null, miniver).Result;
+                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode, false, true, false, guid, null, model, miniver).Result;
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
                         cli_FWU_RESPONSE.Message = "No updates available";
@@ -2341,7 +2794,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
         }
 
-        private (int code, string result) Auto_FWUpdate_display(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, string installPath, bool isShowInfo = true, bool isForce = false, List<string> serviceTags = null, string miniver = null)
+        private (int code, string result) Auto_FWUpdate_display(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, string installPath, bool isShowInfo = true, bool isForce = false, List<string> serviceTags = null, List<string> model = null, string miniver = null)
         {
             if (commandLineInput.ServiceTag.Count > 0)
             {
@@ -2376,7 +2829,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     else
                     {
                         //Trace.WriteLine($"serviceTags = {serviceTags}");
-                        FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false, true, true, true, null, serviceTags, miniver).Result;
+                        FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false, true, true, true, null, serviceTags, model, miniver).Result;
                         FWUpdateInfo ret = fwUpdateInfoPackage.FWUpdateInfo.Find(x => x.ServiceTag.Equals(commandLineInput.Options[1].Option_Value));
                         Trace.WriteLine($"ret {ret}");
                         Trace.WriteLine($"commandLineInput.Options[1].Option_Value {commandLineInput.Options[1].Option_Value}");
@@ -2462,7 +2915,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 else
                 {
                     //Trace.WriteLine($"serviceTags = {serviceTags[0]}");
-                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false, true, true, false, null, serviceTags, miniver).Result;
+                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false, true, true, false, null, serviceTags, null, miniver).Result;
 
                     //Trace.WriteLine($"ret {ret.ToString()}");
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
@@ -2646,7 +3099,36 @@ namespace DDPM.CLI.Plugins.Peripherals
                         if (commandLineInput.Options.Count > 0)
                         {
 
-
+                            string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                            if (ss_1.Length == 2)
+                            {
+                                if (!string.IsNullOrEmpty(ss_1[0]) && !string.IsNullOrEmpty(ss_1[1]))
+                                {
+                                    if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
+                                    {
+                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, true, false, true, false).Result;
+                                        Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
+                                        ret = true;
+                                        _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
+                                        ret = true;
+                                    }
+                                    //peripherals no guid minversion model
+                                    else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
+                                    {
+                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(false, true, false, true, false).Result;
+                                        Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
+                                        ret = true;
+                                        _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
+                                        ret = true;
+                                    }
+                                    else if (ss_1[1].ToUpper().Equals("DEFER") && commandLineInput.Options.Count == 1)
+                                    {
+                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true, true, false).Result;
+                                        Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
+                                        ret = true;
+                                    }
+                                }
+                            }
 
                         }
                         else if (commandLineInput.Options.Count == 0)
@@ -2666,11 +3148,18 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     case "UPDATESOURCELOCATION":
 
-                        if (commandLineInput.Options[0].Option_Value.ToUpper() == "ON" || commandLineInput.Options[0].Option_Value.ToUpper().Contains("/") || commandLineInput.Options[0].Option_Value.ToUpper() == "OFF")
+                        if (commandLineInput.Options.Count > 0)
                         {
-                            ret = _devMgr.SetServerURL(commandLineInput.Options[0].Option_Value.ToString()).Result;
+                            if (commandLineInput.Options[0].Option_Value.ToUpper() == "ON" || commandLineInput.Options[0].Option_Value.ToUpper() == "OFF")
+                            {
+                                ret = _devMgr.SetServerURL(commandLineInput.Options[0].Option_Value.ToString()).Result;
+                            }
+                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\"))
+                            {
+                                string path = File.ReadAllText($"{commandLineInput.Options[0].Option_Value}");
+                                ret = _devMgr.SetServerURL(path).Result;
+                            }
                         }
-
                         break;
 
                     default:
