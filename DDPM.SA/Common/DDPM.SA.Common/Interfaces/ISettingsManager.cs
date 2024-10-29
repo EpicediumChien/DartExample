@@ -26,10 +26,6 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list);
 
-        //For FW/SW update lock event
-        event EventHandler<bool> FWSWUpdateSettingChange;
-
-        Task<List<string>> GetInfos(bool force_reload = false);
     }
 
     /// <summary>
@@ -39,6 +35,8 @@ namespace DDPM.SA.Common
     public interface ISettingsManagerSA : IFrameworkPlugin
     {
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        //For FW/SW update lock event
+        event EventHandler<bool> FWSWUpdateSettingChange;
 
         Task<DDPMITConfig> GetITGlobalConfigs(bool force_reload = false);
 

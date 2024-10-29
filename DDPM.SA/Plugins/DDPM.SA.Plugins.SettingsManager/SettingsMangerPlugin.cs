@@ -94,7 +94,8 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         #region ISettingsManagerSA implementation
 
-        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;        
+        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        public event EventHandler<bool> FWSWUpdateSettingChange;
 
         //Target to notify User setting
         private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
@@ -145,8 +146,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
         #endregion
 
-        #region ISettingsManagerIT implementation
-        public event EventHandler<bool> FWSWUpdateSettingChange;
+        #region ISettingsManagerIT implementation        
 
         public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
         {
