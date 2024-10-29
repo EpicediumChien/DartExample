@@ -12993,12 +12993,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("GOT MONITOR ON EVENT");
             if (_DisplayManagerPlugin != null)
             {
-                using (_ReGetcancellationTokenSource = new CancellationTokenSource())
+                //using (_ReGetcancellationTokenSource = new CancellationTokenSource())
                 {
                     try
                     {
-                        var _cancellationTokenSource_tmp = CancellationTokenSource.CreateLinkedTokenSource(_ReGetcancellationTokenSource.Token);
-                        var token = _cancellationTokenSource_tmp.Token;
+                        //var _cancellationTokenSource_tmp = CancellationTokenSource.CreateLinkedTokenSource(_ReGetcancellationTokenSource.Token);
+                        //var token = _cancellationTokenSource_tmp.Token;
 
                         //Call VCP to catch updated monitor info
                         if (_AllInfoMonitors != null)
@@ -13006,7 +13006,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         else
                             _AllInfoMonitors = new List<MonitorInfo>();
                         writelog("_DisplayManagerPlugin.Re_GetMonitors with token");
-                        _AllInfoMonitors.AddRange((_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList());
+                        _AllInfoMonitors.AddRange((Re_GetMonitors().Result).ToList());
                     }
                     catch (Exception ex)
                     {
