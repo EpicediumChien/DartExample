@@ -52,7 +52,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
-        public List<string> EOLList = new() { "WK636", "KM714", "WM126", "WM116", "WM514" };
+        public List<string> EOLList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
         //public DDPMSettings? DDPMSettings;
         public WebcamSettings WebcamSettings = new();
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)

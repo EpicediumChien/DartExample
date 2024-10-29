@@ -289,15 +289,31 @@ namespace DDPM.UI.Common.UserControls
                 if (ISplitCtrl != null)
                 {
                     eaid = ISplitCtrl.EAID;
-                    foreach(CellObj objCell in ISplitCtrl.CellList)
+                    if ((CellCount == 0) && (SplitKey == 'B'))
                     {
-                        CellJson cj = new CellJson();
-                        cj.Name = objCell.Name;
-                        cj.x = objCell.rcRatio.Left;
-                        cj.y = objCell.rcRatio.Top;
-                        cj.w = objCell.rcRatio.Width;
-                        cj.h = objCell.rcRatio.Height;
-                        cells.Add(cj);
+                        foreach (CellBorder cellBorder in ISplitCtrl.CellBorders)
+                        {
+                            CellJson cj = new CellJson();
+                            cj.Name = cellBorder.Name;
+                            cj.x = cellBorder.rcRatio.Left;
+                            cj.y = cellBorder.rcRatio.Top;
+                            cj.w = cellBorder.rcRatio.Width;
+                            cj.h = cellBorder.rcRatio.Height;
+                            cells.Add(cj);
+                        }
+                    }
+                    else
+                    {
+                        foreach (CellObj objCell in ISplitCtrl.CellList)
+                        {
+                            CellJson cj = new CellJson();
+                            cj.Name = objCell.Name;
+                            cj.x = objCell.rcRatio.Left;
+                            cj.y = objCell.rcRatio.Top;
+                            cj.w = objCell.rcRatio.Width;
+                            cj.h = objCell.rcRatio.Height;
+                            cells.Add(cj);
+                        }
                     }
                 }
                 return new SA.Common.Display.SplitJson()

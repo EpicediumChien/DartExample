@@ -324,4 +324,157 @@
   <data name="Warm" xml:space="preserve">
     <value>Warm</value>
   </data>
+  <data name="Standard_0" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Native_0" xml:space="preserve">
+    <value>Native</value>
+  </data>
+  <data name="Multimedia_0" xml:space="preserve">
+    <value>Multimedia</value>
+  </data>
+  <data name="Movie_0" xml:space="preserve">
+    <value>Movie</value>
+  </data>
+  <data name="Nature_0" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="Game_0" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Game_1" xml:space="preserve">
+    <value>Game1</value>
+  </data>
+  <data name="Sport_0" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="Text_0" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Warm_0" xml:space="preserve">
+    <value>Warm</value>
+  </data>
+  <data name="Cool_0" xml:space="preserve">
+    <value>Cool</value>
+  </data>
+  <data name="Custom_Color" xml:space="preserve">
+    <value>Custom Color</value>
+  </data>
+  <data name="ComfortView_0" xml:space="preserve">
+    <value>ComfortView</value>
+  </data>
+  <data name="Game_2" xml:space="preserve">
+    <value>Game2</value>
+  </data>
+  <data name="Game_3" xml:space="preserve">
+    <value>Game3</value>
+  </data>
+  <data name="Desktop_0" xml:space="preserve">
+    <value>Desktop</value>
+  </data>
+  <data name="Reference_0" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="Metro_0" xml:space="preserve">
+    <value>Metro</value>
+  </data>
+  <data name="Paper_0" xml:space="preserve">
+    <value>Paper</value>
+  </data>
+  <data name="Standard_HDR" xml:space="preserve">
+    <value>Standard HDR</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>Movie HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>Game HDR</value>
+  </data>
+  <data name="Vivid_HDR" xml:space="preserve">
+    <value>Vivid HDR</value>
+  </data>
+  <data name="Custom_1" xml:space="preserve">
+    <value>Custom 1</value>
+  </data>
+  <data name="Custom_2" xml:space="preserve">
+    <value>Custom 2</value>
+  </data>
+  <data name="Custom_3" xml:space="preserve">
+    <value>Custom 3</value>
+  </data>
+  <data name="User_1" xml:space="preserve">
+    <value>User 1</value>
+  </data>
+  <data name="User_2" xml:space="preserve">
+    <value>User 2</value>
+  </data>
+  <data name="User_3" xml:space="preserve">
+    <value>User 3</value>
+  </data>
+  <data name="SPORTS_Game" xml:space="preserve">
+    <value>SPORTS Game</value>
+  </data>
+  <data name="Custom_layout" xml:space="preserve">
+    <value>Custom layout</value>
+  </data>
+  <data name="Cancel_0" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Save_0" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Arrange_Windows" xml:space="preserve">
+    <value>Arrange Windows</value>
+  </data>
+  <data name="EA_MSG_0" xml:space="preserve">
+    <value>Adjust your current window arrangement, edit the name (if desired), and click “Save”  to store the arrangement.</value>
+  </data>
+  <data name="Battery_Low" xml:space="preserve">
+    <value>Battery Low</value>
+  </data>
+  <data name="Caps_Lock_On" xml:space="preserve">
+    <value>Caps Lock On</value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock Off</value>
+  </data>
+  <data name="Easy_Memory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+  <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>Go to Widget Settings</value>
+  </data>
+  <data name="is_muted" xml:space="preserve">
+    <value>is muted</value>
+  </data>
+  <data name="is_Unmuted" xml:space="preserve">
+    <value>is Unmuted</value>
+  </data>
+  <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Num Lock Off</value>
+  </data>
+  <data name="Num_Lock_On" xml:space="preserve">
+    <value>Num Lock On</value>
+  </data>
+  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>Presence detection sensor is covered</value>
+  </data>
+  <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>To access Quick Settings Widget again, press and hold [Alt + Z] on your keyboard.</value>
+  </data>
+  <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Scroll Lock Off</value>
+  </data>
+  <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Scroll Lock On</value>
+  </data>
+  <data name="Export_MSG_0" xml:space="preserve">
+    <value>The same monitor is detected, do you want to import settings for</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>Walk Away Lock</value>
+  </data>
 </root>

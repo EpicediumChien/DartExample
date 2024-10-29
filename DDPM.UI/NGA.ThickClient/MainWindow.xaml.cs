@@ -132,6 +132,12 @@ namespace NGA.ThickClient
             Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
             DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
             ReAdjustWindowSize();
+
+            //Derek 10/26
+            int minWidth = 950;
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                minWidth = width;
+            this.MinWidth = minWidth;
         }
 
         private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
@@ -391,5 +397,10 @@ namespace NGA.ThickClient
         private const UInt32 SWP_NOACTIVATE = 0x0010;
 
         #endregion
+
+        private void ConsoleWindow_Closed(object sender, EventArgs e)
+        {
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Closed");
+        }
     }
 }

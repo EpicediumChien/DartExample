@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -751,37 +752,51 @@ namespace DDPM.UI.Plugin.ViewModels
         private string GetButtonTooltip(MouseButtonName btnName)
         {
             var action = MouseAction.ButtonActions[btnName];
-            ActionItem actionItem;
-            var parameter = "";
             if (SelectedApp == "AllApp")
             {
-                if (action.AssignedAction.ID == -1)
-                {
-                    if (action.DefaultActionID == -1)
-                    {
-                        return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
-                    }
-                    actionItem = Actions.KnMActions[action.DefaultActionID];
-                }
-                else
-                {
-                    actionItem = Actions.KnMActions[action.AssignedAction.ID];
-                    parameter = action.AssignedAction.Parameter;
-                }
-                string tooltip = actionItem.Caption!;
-                if (parameter != "")
-                    tooltip += " : " + parameter;
-                return tooltip;
+                return GetAllAppTooltip(action);
             }
             else
             {
                 var actionID = action.OfficeActions[SelectedApp];
                 if (actionID == -1)
-                { return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2; }
+                {
+                    if (action.AssignedAction.ID == -1)
+                    {
+                        return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                    }
+                    else
+                    {
+                        return GetAllAppTooltip(action);
+                    }
+                }
                 else
                     return Actions.OfficeActions[actionID].Caption;
             }
         }
+        private string GetAllAppTooltip(SelectedMouseAction action)
+        {
+            var parameter = "";
+            ActionItem actionItem;
+            if (action.AssignedAction.ID == -1)
+            {
+                if (action.DefaultActionID == -1)
+                {
+                    return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                }
+                actionItem = Actions.KnMActions[action.DefaultActionID];
+            }
+            else
+            {
+                actionItem = Actions.KnMActions[action.AssignedAction.ID];
+                parameter = action.AssignedAction.Parameter;
+            }
+            string tooltip = actionItem.Caption!;
+            if (parameter != "")
+                tooltip += " : " + parameter;
+            return tooltip;
+        }
+
         public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM); }
         public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM);
         public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM);

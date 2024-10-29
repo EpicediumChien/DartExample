@@ -2253,4 +2253,22 @@
   <data name="VisionEngine_Crosshair" xml:space="preserve">
     <value>Crosshair</value>
   </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Software version</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Driver version</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Preview Changes</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Stop Preview</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>This feature enables our eyes to adapt to a desired setting.</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Disconnect all USB storage devices from monitor.</value>
+  </data>
 </root>
