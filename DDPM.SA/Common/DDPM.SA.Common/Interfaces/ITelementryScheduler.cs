@@ -9,6 +9,8 @@ namespace DDPM.SA.Common
 
         Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
 
+        Task<bool> ReceiveTelemetryInfo(string EventTag, Telementry_Frequency Frequency);
+
         Task GetGlobalsetting_IsTelemetryConsentOn(bool value);
     }
 }
