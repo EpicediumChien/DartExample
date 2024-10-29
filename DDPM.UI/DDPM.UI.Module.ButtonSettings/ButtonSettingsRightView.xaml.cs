@@ -3,7 +3,6 @@ using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -306,17 +305,22 @@ namespace DDPM.UI.Module.ButtonSettings
                 modalDialog.Top = windowTop;
 
                 if (action == AdvancedAction.AssignKeystroke)
-                { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
-
+                {
+                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task.Result;
+                }
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task1.Result;
+                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
+                    var keystroke = task2.Result;
                     parameter = modalDialog.Parameter;
                 }
                 else
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task1.Result;
                     Initialize();
                     return;
                 }
