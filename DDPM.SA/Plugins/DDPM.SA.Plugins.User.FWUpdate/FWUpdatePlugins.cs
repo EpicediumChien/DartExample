@@ -1080,12 +1080,30 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="e"></param>
         private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
+            _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} start");
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-            //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-            //int checkTime = 5;
-            //if (difference.TotalMinutes > checkTime)
+            if (_SettingsPlugin != null)
             {
-                CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
+                if (!data.Lock_Settings_Updates)
+                {
+                    //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
+                    //int checkTime = 5;
+                    //if (difference.TotalMinutes > checkTime)
+                    {
+                        CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                    }
+                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
+                }
+                else
+                {
+                    _checkUpdateScheduleTimer.Stop();
+                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
             }
         }
 
@@ -2028,13 +2046,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {nameof(Unzip)} done");
             return ret;
         }
-        private void ReadRegistryLock()
-        {
-            if (_SettingsPlugin != null)
-            {
-
-            }
-        }
         private void InitializeSettingsPlugin()
         {
             _logs.DebugMsg_1(nameof(InitializeSettingsPlugin) + " start");
@@ -2069,6 +2080,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
+                        _SettingsPlugin.FWSWUpdateSettingChange += UpdateLockSettingChange;
                     }
                     else
                     {
@@ -2076,6 +2088,26 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
             });
+        }
+        private void UpdateLockSettingChange(object o, bool isLockUpdate)
+        {
+            _logs.DebugMsg_1($"UpdateLockSettingChange start");
+            if (_checkUpdateScheduleTimer != null)
+            {
+                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is no null");
+                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer isLockUpdate:{isLockUpdate}");
+                if (isLockUpdate)
+                {
+                    _checkUpdateScheduleTimer.Stop();
+                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is stop");
+                }
+                else
+                {
+                    _checkUpdateScheduleTimer.Start();
+                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is start");
+                }
+            }
+            _logs.DebugMsg_1($"UpdateLockSettingChange done");
         }
     }
 }
