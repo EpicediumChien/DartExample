@@ -1,15 +1,12 @@
 ﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.DTM.Client.Platinum;
 using Dell.TechHub.Common;
 using Dell.TechHub.Common.PluginInterfaces.Transmission;
 using Dell.TechHub.Sdk.Common.Identifiers;
 using Microsoft;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
 
@@ -72,19 +69,29 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             {
                 if (_platinumClientSdk != null)
                 {
-                    var transmissionId = _platinumClientSdk.LogEventAsync(Event, EventValue, DataClassificationId.Restricted).Result;
+                    TransmissionId transmissionId;
+
+                    if (string.IsNullOrWhiteSpace(EventValue))
+                        transmissionId = _platinumClientSdk.LogEventAsync(Event, DataClassificationId.Restricted).Result;
+                    else
+                        transmissionId = _platinumClientSdk.LogEventAsync(Event, EventValue, DataClassificationId.Restricted).Result;
+
                     _logs.DebugMsg_1($"Logged event with transmission ID {transmissionId}");
                     TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
                     switch (status.State)
                     {
                         case TransmissionState.Queued:
                             return Task.FromResult(true);
+
                         case TransmissionState.Successful:
                             return Task.FromResult(true);
+
                         case TransmissionState.FailedAndEnqueued:
                             return Task.FromResult(false);
+
                         case TransmissionState.FailedAndIgnored:
                             return Task.FromResult(false);
+
                         default:
                             return Task.FromResult(false);
                     }
@@ -140,7 +147,6 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                     return;
 
                 _platinumClientSdk = (IPlatinumClientSdk)_agent.FindPluginByType(typeof(IPlatinumClientSdk));
-
             }
             catch (Exception ex)
             {

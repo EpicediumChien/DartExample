@@ -244,16 +244,19 @@ namespace DDPM.SA.Common
                 this.Frequency == properties.Frequency;
         }
     }
+
     /// <summary>
     /// 現在顯示器的參數
     /// </summary>
     public class DisplayCurrentPropertiesInfo
     {
         public string DisplayName;
+
         /// <summary>
         /// HDR狀態
         /// </summary>
         public bool isHDREnable;
+
         /// <summary>
         /// 現在螢幕畫面方向
         /// </summary>
@@ -263,6 +266,7 @@ namespace DDPM.SA.Common
         /// 螢幕可支援的解析度刷新率、方向列表(含現在值、建議值)
         /// </summary>
         public Properties CurrentProperties;
+
         /// <summary>
         /// USB-C Prioritization狀態
         /// </summary>
