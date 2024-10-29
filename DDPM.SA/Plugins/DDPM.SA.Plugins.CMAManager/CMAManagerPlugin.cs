@@ -42,7 +42,8 @@ namespace DDPM.SA.Plugins.CMAManager
         public const string PluginLogId = "DDPMRemoteManager";
 
         private Queue<TaskInfo> taskInfoQueue = new Queue<TaskInfo>();
-        private List<NotifyArgs> notifyArgsList = new List<NotifyArgs>();
+        private bool QueueProcessingFlag = false;
+        private NotifyArgs notifyArgs = new NotifyArgs();
 
         #region Private Members
 
@@ -126,7 +127,7 @@ namespace DDPM.SA.Plugins.CMAManager
         #endregion
 
         #region Event Handler
-        public event EventHandler<List<NotifyArgs>> Notify;
+        public event EventHandler<NotifyArgs> Notify;
         public event EventHandler<NotifyArgs> DisplayConnected;
         public event EventHandler<NotifyArgs> DisplayDisconnected;
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
@@ -452,75 +453,68 @@ namespace DDPM.SA.Plugins.CMAManager
                 taskInfo.jsonconfig = task.value;       
 
                 taskInfoQueue.Enqueue(taskInfo);
-                int lastProcessedTid = -1;
-                while (taskInfoQueue.Count > 0)
-                {
-                    TaskInfo curTaskInfo = taskInfoQueue.Peek();
-                    if (lastProcessedTid != curTaskInfo.tid)
-                    {
-                        lastProcessedTid = curTaskInfo.tid;
-                        _ = Task.Run(async() => await ProcessQueueAsync(curTaskInfo));
-                    }
-                }
-                EventHandler<List<NotifyArgs>> Handler = Notify;
-                Handler.Invoke(this, notifyArgsList);
             }
         }
 
-        private async Task ProcessQueueAsync(TaskInfo taskInfo)
+        private async Task<NotifyArgs> runCommandTaskAsync(TaskInfo taskInfo)
         {
-            Console.WriteLine($"taskInfoQueue = {taskInfoQueue.Count}");
-            WriteLog($"[CMA]  before runCommandTask, taskinfo.sid = {taskInfo.sid} ; taskinfo.gid = {taskInfo.gid} ; taskinfo.tid = {taskInfo.tid} ; taskinfo.eventtype = {taskInfo.eventtype} ; taskinfo.command = {taskInfo.command}");
-            await runCommandTaskAsync(taskInfo);
-            Console.WriteLine($"Processing tid: {taskInfo.tid} TargetFeature: {taskInfo.command}");
-        }
-
-        private async Task<CLIEventResult> runCommandTaskAsync(object _taskinfo)
-        {
-            TaskInfo taskInfo = (TaskInfo)_taskinfo;
-
             if (null != _CliManagerPlugin && !string.IsNullOrEmpty(taskInfo.command))
             {
-                ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
-                commandLineInput.isCliRunAdmin = true;
-                commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
-
-                Console.WriteLine("[CMA] runCommandTask taskinfo.command = " + taskInfo.command);
-
-                //_CliManagerPlugin.PerformCommandLineRelay
-                CLIEventResult cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
-                Boolean isSuccess = false;
-
+                Boolean isSuccess = true;
                 string responseMsg = String.Empty;
+                string currentResult = String.Empty;
+                CLIEventResult? cliResult = null;
+                JObject? cliResp = null;
+                while (taskInfoQueue.Count > 0)
+                {
+                    if (cliResp == null)
+                    {
+                        taskInfo = taskInfoQueue.Peek();
+                        Console.WriteLine($"Processing tid: {taskInfo.tid} TargetFeature: {taskInfo.command}");
+                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
+                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
+                        commandLineInput.isCliRunAdmin = true;
+                        commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
 
-                string responseResult = String.Empty;
+                        Console.WriteLine("[CMA] runCommandTask taskInfo.command = " + taskInfo.command);
 
+                        //_CliManagerPlugin.PerformCommandLineRelay
+                        if (cliResult == null)
+                        {
+                            cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
+                            cliResult.serialize_Json_response = cliResult.serialize_Json_response;
+                            cliResp = JObject.Parse(cliResult.serialize_Json_response);
+                            responseMsg = (string?)cliResp["Message"] ?? string.Empty;
+                        }
+                        else
+                        {
+                            CLIEventResult newResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
+                            cliResult.serialize_Json_response = cliResult.serialize_Json_response + "," + newResult.serialize_Json_response;
+                            cliResp = JObject.Parse(newResult.serialize_Json_response);
+                            responseMsg = responseMsg + "," + (string?)cliResp["Message"] ?? string.Empty;
+                        }
+                        // TODO
+
+                        currentResult = (string?)cliResp["Result"] ?? string.Empty;
+
+                        if (!currentResult.Equals("Success")&&!currentResult.Equals("PASS"))
+                        {
+                            isSuccess = false;
+                        }
+
+                        taskInfoQueue.Dequeue();
+                        cliResp = null;
+                    }
+                }
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = taskInfo.eventtype.ToString();
-
 
                 try
                 {
 
-                    JObject jObject = JObject.Parse(cliResult.serialize_Json_response);
-
-                    responseMsg = (string)jObject["Message"];
-                    responseResult = (string)jObject["Result"];
-
-                    if (responseResult.Equals("Success"))
-                    {
-                        isSuccess = true;
-                    }
-
-                    if (responseResult.Equals("PASS"))
-                    {
-                        isSuccess = true;
-                    }
-
                     if (isSuccess)
                     {
-                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
                     }
                     else
                     {
@@ -530,16 +524,18 @@ namespace DDPM.SA.Plugins.CMAManager
                 catch
                 {
                     responseMsg = "Exception: Unknow Result";
-                    args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                    args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
                 }
 
-                Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult.command_guid_string + "\n args.notification = " + args.notification);
+                Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult?.command_guid_string + "\n args.notification = " + args.notification);
                 //Console.WriteLine("[CMA] );
 
                 OnEventNotify(args);
-                return cliResult;
+
+                return args;
             }
-            return new CLIEventResult();
+
+            return new NotifyArgs();
         }
         
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
@@ -564,6 +560,10 @@ namespace DDPM.SA.Plugins.CMAManager
             try
             {
                 initCommandTask(uniqueAgentGuid.ToString(), request.remote_request);
+
+                TaskInfo taskInfo = taskInfoQueue.Peek();
+                WriteLog($"[CMA]  before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo));
             }
             catch (Exception e) {
 
@@ -712,9 +712,12 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private void OnEventNotify(NotifyArgs e)
         {
-            taskInfoQueue.Dequeue();
-            WriteLog($"[CMA] OnEventNotify e.notification = {e.notification}");
-            notifyArgsList.Add(e);
+            EventHandler<NotifyArgs> Handler = Notify;
+            if (Handler != null)
+            {
+                WriteLog($"[CMA] OnEventNotify e.notification = {e.notification}");
+                Handler.Invoke(this, e);
+            }
         }
 
         private void OnEventDisplayConnect(NotifyArgs e)

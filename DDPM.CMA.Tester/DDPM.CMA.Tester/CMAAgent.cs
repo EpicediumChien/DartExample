@@ -325,14 +325,11 @@ namespace DDPM.CMA.Tester
             InitializeCMAManagerPlugin();
         }
 
-        private static void Notification(object? sender, List<NotifyArgs> e)
+        private static void Notification(object? sender, NotifyArgs e)
         {
-            foreach (NotifyArgs notifyArgs in e)
-            {
-                Console.WriteLine("CMA Notification Alert");
-                Console.WriteLine("CMA Notification Alert eventtype : " + notifyArgs.eventType);
-                Console.WriteLine("CMA Notification Alert notification : " + notifyArgs.notification);
-            }
+            Console.WriteLine("CMA Notification Alert");
+            Console.WriteLine("CMA Notification Alert event type : " + e.eventType);
+            Console.WriteLine("CMA Notification Alert notification : " + e.notification);
             isresponse = true;
             stopwatch.Stop();
             Console.WriteLine($"Request finished in {stopwatch.Elapsed.TotalSeconds} seconds.");
