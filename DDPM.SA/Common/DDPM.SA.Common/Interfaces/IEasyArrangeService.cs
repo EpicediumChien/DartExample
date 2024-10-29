@@ -33,12 +33,8 @@ namespace DDPM.SA.Common.Interfaces
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
         #endregion
 
-
-
-
-        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, SplitJson);
-
-
-        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+        #region Telemetry - Used by EABroker only
+        public void SendEasyArrangeLayoutTelemetry(string eventValue, MonitorInfo? mi = null, Telementry_Frequency frequency = Telementry_Frequency.RealTime);
+        #endregion
     }
 }

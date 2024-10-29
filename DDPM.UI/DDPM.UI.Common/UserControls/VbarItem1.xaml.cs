@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -108,10 +109,23 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(VbarItem1), new PropertyMetadata(false));
 
+        #region RWD by Derek
+        public void AutoReverse()
+        {
+            Hover.Storyboard.AutoReverse = true; //自动展开又回去
+        }
+        public void CompleteStory()
+        {
+            bdOuter.Width = 212;
+        }
+
+        public void ResetStory()
+        {
+            bdOuter.Width = 64;
+        }
+        #endregion
 
         //Robert_Lin, 2024-9-25 Locked state
-
-
         public bool IsLocked
         {
             get { return (bool)GetValue(IsLockedProperty); }

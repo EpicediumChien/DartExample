@@ -18,7 +18,7 @@ namespace DDPM.SA.Common
         public DisplaysettingsBasic()
         {
             CommunicationPath = "Video";
-            GraphicCardName = (new GeneralFunction()).GetMonitorAdapter();
+            GraphicCardName = (new Telementry_GeneralFunction()).GetMonitorAdapter();
             MonitorName = string.Empty;
             D_Ctrl = string.Empty;
             SupplierID = string.Empty;

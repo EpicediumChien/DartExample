@@ -108,6 +108,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             { "Audio", 11 },
             { "Docks", 12 }
         };
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -136,6 +137,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 AddIconsToMasthead(masthead);
             }
         }
+
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
         {
@@ -803,17 +805,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 return;
 
             if (_log != null)
-                _log.Info("DdpmHomePlugin Dispose.");
+                _log.Info("DdpmHomePlugin Dispose(bool disposing).");
 
             if (disposing && _deviceManager != null)
             {
+                //_log.Info("disposing && _deviceManager != null");
+
                 if (_IDeviceManagerPluginCondition != null)
                 {
+                    //_log.Info("_IDeviceManagerPluginCondition != null");
+
                     var pluginCondition = ((IFrameworkPluginConditionNotification)_IDeviceManagerPluginCondition).CurrentConditionAsync();
                     if (pluginCondition != null)
                     {
+                        //_log.Info("pluginCondition != null");
+
                         if (pluginCondition is PluginRunningCondition)
+                        {
+                            //_log.Info("pluginCondition is PluginRunningCondition");
                             _deviceManager.Reset0x52TimerTick(8000);
+                        }
+                        //else
+                        //{
+                        //    _log.Info("pluginCondition is not PluginRunningCondition");
+                        //}
                     }
                 }
             }
@@ -994,13 +1009,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (null == _deviceManager)
                     return;
 
-                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
+                //Derek 10/25 for Consent, please don't remove it
+                //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
 
-                if (!Convert.ToBoolean(regValue))
-                {
-                    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
-                        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
-                }
+                //if (!Convert.ToBoolean(regValue))
+                //{
+                //    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
+                //        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
+                //}
 
 
                 regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);

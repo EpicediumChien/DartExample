@@ -108,6 +108,7 @@
     <None Remove="Resources\Images\Key5.png" />
     <None Remove="Resources\Images\Key6.png" />
     <None Remove="Resources\Images\KM714.png" />
+    <None Remove="Resources\Images\KM717.png" />
     <None Remove="Resources\Images\KnM.png" />
     <None Remove="Resources\Images\Left.png" />
     <None Remove="Resources\Images\Link.png" />
@@ -254,6 +255,7 @@
     <None Remove="Resources\Images\undo2.png" />
     <None Remove="Resources\Images\Up.png" />
     <None Remove="Resources\Images\Usb24.png" />
+    <None Remove="Resources\Images\UV514.png" />
     <None Remove="Resources\Images\Video.png" />
     <None Remove="Resources\Images\Warring.png" />
     <None Remove="Resources\Images\WB3023.png" />
@@ -283,12 +285,15 @@
     <None Remove="Resources\Images\Wired.png" />
     <None Remove="Resources\Images\WiredConnection.png" />
     <None Remove="Resources\Images\WK636.png" />
+    <None Remove="Resources\Images\WK717.png" />
     <None Remove="Resources\Images\WL3024.png" />
     <None Remove="Resources\Images\WL5024.png" />
     <None Remove="Resources\Images\WL7024.png" />
     <None Remove="Resources\Images\WM116.png" />
     <None Remove="Resources\Images\WM126.png" />
+    <None Remove="Resources\Images\WM326.png" />
     <None Remove="Resources\Images\WM514.png" />
+    <None Remove="Resources\Images\WM527.png" />
     <None Remove="Resources\Images\ZoomIn.png" />
     <None Remove="Resources\Images\ZoomInS.png" />
     <None Remove="Resources\Images\ZoomOut.png" />
@@ -412,6 +417,7 @@
     </Resource>
     <Resource Include="Resources\Images\info18.png" />
     <Resource Include="Resources\Images\KB740.png" />
+    <Resource Include="Resources\Images\KM717.png" />
     <Resource Include="Resources\Images\PanD.png" />
     <Resource Include="Resources\Images\PanL.png" />
     <Resource Include="Resources\Images\PanR.png" />
@@ -530,6 +536,7 @@
     <Resource Include="Resources\Images\TrashCan.png" />
     <Resource Include="Resources\Images\undo.png" />
     <Resource Include="Resources\Images\undo2.png" />
+    <Resource Include="Resources\Images\UV514.png" />
     <Resource Include="Resources\Images\WB5023.png" />
     <Resource Include="Resources\Images\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -552,6 +559,7 @@
     <Resource Include="Resources\Images\Wired.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\WK717.png" />
     <Resource Include="Resources\Images\WL3024.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -748,7 +756,9 @@
     </Resource>
     <Resource Include="Resources\Images\WK636.png" />
     <Resource Include="Resources\Images\WM116.png" />
+    <Resource Include="Resources\Images\WM326.png" />
     <Resource Include="Resources\Images\WM514.png" />
+    <Resource Include="Resources\Images\WM527.png" />
     <Resource Include="Resources\Images\ZoomIn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

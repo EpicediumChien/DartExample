@@ -191,8 +191,8 @@ namespace DDPM.UI.Module.EzMemory
 
                 // Handle User Settings
                 bool userSettingsSuccess = isEditMode
-                    ? DdpmCommonHelper.DeviceManagerSA.UpdateUserEAProfileDDPM(_eAProfileDDPM).Result
-                    : DdpmCommonHelper.DeviceManagerSA.WriteUserEAProfileDDPM(_eAProfileDDPM).Result;
+                    ? DdpmCommonHelper.DeviceManagerSA.UpdateUserEAProfileDDPM(_selecthomeDevice.MonitorInfo, _eAProfileDDPM).Result
+                    : DdpmCommonHelper.DeviceManagerSA.WriteUserEAProfileDDPM(_selecthomeDevice.MonitorInfo, _eAProfileDDPM).Result;
 
                 if (userSettingsSuccess)
                 {

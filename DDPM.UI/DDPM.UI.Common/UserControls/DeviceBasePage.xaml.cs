@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -21,7 +22,10 @@ namespace DDPM.UI.Common.UserControls
         public DeviceBasePageViewModel ViewModel { get { return viewModel; } }
 
         //Derek 10/17 for RWD
-        private readonly Int16 breakPoints = 537;
+        private readonly Int16 breakPoints = 900;
+        private readonly Int16 vBarWidthNormal = 230, vBarWidthRWD = 76;
+        private readonly Int16 rightGridWidth = 660;
+        private bool isFirstEntryNonLandingMode = true;
 
         public DeviceBasePage()
         {
@@ -89,9 +93,9 @@ namespace DDPM.UI.Common.UserControls
 
             //    RightFrame.Visibility = Visibility.Visible;
             //System.Windows.MessageBox.Show("OnLeaveLandingMode");
-            LeftFrame.Width = viewModel.LeftFrameWidth;
 
-            ChangeNonLandingMode();
+            isFirstEntryNonLandingMode = true;
+            ChangeToNonLandingMode();
         }
 
         private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
@@ -128,6 +132,7 @@ namespace DDPM.UI.Common.UserControls
                 LeftArrowClick(sender, e);
 
             //System.Windows.MessageBox.Show("leftArrow_MouseLeftButtonDown");
+            isFirstEntryNonLandingMode = false;
         }
 
         //RightViewHeaderCtrl cannot notify SelectedIndex property changed to ViewModel.
@@ -192,9 +197,6 @@ namespace DDPM.UI.Common.UserControls
             {
                 _log.Info($"DeviceBasePage_Loaded, Elapsed {_stopwatch.Elapsed.TotalMilliseconds} msec.");
             }
-
-            LeftFrame.Width = this.ActualWidth - 20;
-            rightFrameSV.Height = RightGrid.Height;
         }
 
         private void bdLeftArrow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -258,61 +260,133 @@ namespace DDPM.UI.Common.UserControls
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //_log.Info($"vBar.ActualWidth = {vBar.ActualWidth}");
-
-            //if (!isLandingMode && LeftFrame.ActualWidth <= 200)
-            if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints + 170)
+            //if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints)
                 ChangeToVerticalLayout();
             else
                 ChangeToHorizontalLayout();
 
             if (!viewModel.IsLandingMode)
-                ChangeNonLandingMode();
+                ChangeToNonLandingMode();
             else
+            { 
                 ChangeToLandingMode();
+                RightGrid.Visibility = Visibility.Collapsed;
+            }
+
+            //tbDisplayName.Width = gridDisplayName.ActualWidth;
+            _log?.Info($"tbDisplayName.ActualWidth = {tbDisplayName.ActualWidth}");
+            _log?.Info($"gridDisplayName.ActualWidth = {gridDisplayName.ActualWidth}");
         }
 
-        private void ChangeNonLandingMode()
+        private void ChangeToNonLandingMode()
         {
-            gridNav.Margin = new Thickness(0);
+            //横屏 to non landing mode
+            if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal)
+            {
+                AdjustHorizontalLayoutForNonLandingMode(false);
 
-            //mode 1 change left/right frame size
-            RightGrid.Width = this.ActualWidth / 2;
-            LeftFrame.Width = this.ActualWidth / 2 - 30;
+                //restore vBar
+                foreach (var item in viewModel.VbarItems)
+                {
+                    item.ResetStory();
+                }
+            }
+            else
+                ExtendVBarOnVerticalLayout();
 
-            //mode 2 fix right frame size
-            //RightGrid.Width = 720;
-            //LeftFrame.Width = this.ActualWidth - RightGrid.Width;
+            //show right frame on ToHorizontalLayout
+            //show right frame
+            RightGrid.Visibility = Visibility.Visible;
+            stVbarRightFrame.Orientation = System.Windows.Controls.Orientation.Horizontal;
 
-            if (null != viewModel.DefaultLeftView)
-                viewModel.DefaultLeftView.Width = this.ActualWidth / 2 - 20;
+            //topViewScrollViewer.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+
+            //PrintDebugData("ChangeNonLandingMode");
+        }
+
+        private void ExtendVBarOnVerticalLayout()
+        {
+            //left side
+            LeftGrid.Width = this.ActualWidth;
+            LeftFrame.Width = this.ActualWidth;
+
+            //right side
+            vBar.Width = vBarWidthNormal;
+            //extend vBar
+            foreach (var item in viewModel.VbarItems)
+            {
+                item.CompleteStory();
+            }
+        }
+
+        //for debug
+        private void PrintDebugData(string function)
+        {
+            _log?.Info($"this.ActualWidth = {this.ActualWidth} in {function}");
+            _log?.Info($"vBar.ActualWidth = {vBar.ActualWidth}");
+            _log?.Info($"RightGrid.ActualWidth = {RightGrid.ActualWidth}");
+            _log?.Info($"LeftFrame.ActualWidth = {LeftFrame.ActualWidth}");
         }
 
         private void ChangeToLandingMode()
         {
-            gridNav.Margin = new Thickness(25);
-
-            LeftFrame.Width = this.ActualWidth - 20;
-
-            if (null != viewModel.DefaultLeftView)
+            if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal)
             {
-                //_log.Info($"viewModel.LeftView = {viewModel.LeftView}");
-                viewModel.DefaultLeftView.Width = this.ActualWidth - vBar.ActualWidth - 140;
+                vBar.Width = vBarWidthNormal;  //show the vBar
+                LeftFrame.Width = this.ActualWidth - vBar.Width - 58;
+                LeftFrame.Height = this.ActualHeight - 40;
+                
+                vBar.Margin = new Thickness(0, 0, 0, 10);
             }
         }
 
         private void ChangeToVerticalLayout()
         {
             topStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
-            //vBar.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-            rightFrameSV.Height = this.ActualHeight - LeftFrame.ActualHeight - 20;
+
+            //landing Mode
+            //topViewScrollViewer.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
         }
 
         private void ChangeToHorizontalLayout()
         {
             topStackPanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
-            //vBar.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
-            rightFrameSV.Height = RightGrid.Height;
+
+            //landing Mode
+            //topViewScrollViewer.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Hidden;
+        }
+
+        private void vBar_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal && !viewModel.IsLandingMode)
+            {
+                AdjustHorizontalLayoutForNonLandingMode();
+            }
+        }
+
+        private void vBar_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (!isFirstEntryNonLandingMode && 
+                topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal && 
+                !viewModel.IsLandingMode)
+            {
+                AdjustHorizontalLayoutForNonLandingMode(false);
+            }
+            else
+                isFirstEntryNonLandingMode = false;
+
+            //leave landing mode from Vertical layout
+            if (!viewModel.IsLandingMode && topStackPanel.Orientation == System.Windows.Controls.Orientation.Vertical)
+                ExtendVBarOnVerticalLayout();
+        }
+
+        private void AdjustHorizontalLayoutForNonLandingMode(bool bVBarNormal = true)
+        {
+            vBar.Width = bVBarNormal ? vBarWidthNormal : vBarWidthRWD;
+            RightGrid.Width = rightGridWidth;
+            LeftGrid.Width = this.ActualWidth - vBar.Width - RightGrid.Width - 35;
+            LeftFrame.Width = LeftGrid.Width;
         }
     }
 }

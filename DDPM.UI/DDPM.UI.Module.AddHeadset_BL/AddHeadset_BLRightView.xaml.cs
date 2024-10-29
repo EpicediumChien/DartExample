@@ -14,9 +14,7 @@ namespace DDPM.UI.Module.AddHeadset_BL
         private readonly AddDeviceViewModel _vm;
 
         // 10/14 Derek add for RWD
-        private readonly Int16 breakPoints = 537;
-        private readonly int textBlockWidth = 250;
-        private readonly int textBlockWidthRWD = 220;
+        private readonly Int16 breakPoints = 910;
 
         //private readonly string Caption = "Bluetooth Connection";
         //private readonly string Caption2 = "For USB wireless receiver free and on-the-go connectivity";
@@ -67,36 +65,38 @@ namespace DDPM.UI.Module.AddHeadset_BL
         private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
 
-            if (this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints - 315)
                 ChangeToVerticalLayout();
             else
                 ChangeToHorizontalLayout();
+
+            AdjustBorderHeight();
+        }
+
+        private void AdjustBorderHeight()
+        {
+            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.ActualHeight;
         }
 
         private void ChangeToVerticalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Vertical;
 
-            //change Border size
-            //stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
-            // Derek 10/19 縮到最小的時候效果會好一些
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = stepsStackPanel.Width - 10;
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 180;
-
-            //change textBlock size
-            txtStep1.Width = txtStep2.Width = txtStep3.Width = textBlockWidthRWD;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = this.ActualWidth - 58;
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = this.ActualWidth - 110;
         }
 
         private void ChangeToHorizontalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Horizontal;
 
-            //restore Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 303;
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 262;
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = this.ActualWidth / 3 - 70;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = this.ActualWidth / 3 - 25;
+        }
 
-            //restore textBlock size
-            txtStep1.Width = txtStep2.Width = txtStep3.Width = textBlockWidth;
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            AdjustBorderHeight();
         }
     }
 }
