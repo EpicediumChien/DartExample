@@ -51,18 +51,9 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using IDs = DDPM.SA.Common.IDs;
-using System.IO.Compression;
-using Microsoft.Toolkit.Uwp.Notifications;
-using System.Runtime;
+
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using Point = System.Windows.Point;
-using DDPM.PowerMon;
-using static VcpCore.Common.User32;
-using static VcpCore.Common.User32;
-using System.Windows.Media.Media3D;
-using DDPM.SA.Common.Telemetry;
-using DDPM.SA.Common.Telemetry;
-using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -876,7 +867,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckNightLightStatus]");
                 return Task.FromResult(false);
             }
-            
+
             var temp = _ColorPresetPlugin.CheckNightLightStatus().Result;
 
             return Task.FromResult(temp);
@@ -3706,6 +3697,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _DisplayManagerPlugin.SetEnableLockOrientation(onoff);
                 return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
             }
+
+            //Telementry Collection
+            var rt = false;
+            var ApplicationSettings_Function = new ApplicationSettings_Function();
+            writelog("[DeviceMangerPlugin] Send Telementry for LockRotation...");
+            rt = ApplicationSettings_Function.Send_LockRotation_Telementry(_TelementryScheduler, _AllInfoMonitors, onoff);
+            if (rt) writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Success ...");
+            else writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Fail ...");
+
             return Task.FromResult(false);
         }
 
@@ -4933,7 +4933,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
                 //Telemetry
                 SendEasyArrangeTelemetry("Change_layout");
-
             }
             return Task.FromResult(false);
         }
@@ -5032,7 +5031,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //Only if Result==true will send Telemetry
                 if (e.Result)
                     SendEasyArrangeTelemetry("Custom_Layout");
-
             }
             else
             {
@@ -6600,18 +6598,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAppSpecificProfiles(Guid));
         }
+
         public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.DeleteMouseAllAssignedActions(Guid));
         }
+
         public async Task<string> GetMouseKeystrokeDisplayData(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseKeystrokeDisplayData(Guid));
         }
+
         public async Task<bool> StartMouseKeystrokeRecording(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.StartMouseKeystrokeRecording(Guid));
         }
+
         public async Task<bool> StopMouseKeystrokeRecording(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.StopMouseKeystrokeRecording(Guid));
@@ -6886,10 +6888,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbProgrammableKeys(Guid));
         }
+
         public Task<bool> DeleteKeyboardAllAssignedActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.DeleteKeyboardAllAssignedActions(Guid));
         }
+
         public Task<JArray> GetKbAssignableActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
@@ -9091,7 +9095,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("LauchNightLightStatusMonitor, Enter");
 
             writelog("LauchNightLightStatusMonitor, CheckNightLightStatus()");
-            CheckNightLightStatus();           
+            CheckNightLightStatus();
 
             writelog("LauchNightLightStatusMonitor, Exit");
         }
@@ -12340,7 +12344,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnNightLightStatusChangeHandler(object sender, string e)
         {
             NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-        }       
+        }
 
         #endregion
 
@@ -12945,6 +12949,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _TelementryScheduler.ReceiveTelemetryInfo("DisplayFeatures", pxpTelemetry.ToJson(), frequency);
             }
         }
+
         //Robert_Lin, 2024-10-27 Telemetry for EasyArrange
         private void SendEasyArrangeTelemetry(string eventValue, MonitorInfo? mi = null, Telementry_Frequency frequency = Telementry_Frequency.RealTime)
         {
@@ -12965,6 +12970,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _TelementryScheduler.ReceiveTelemetryInfo("DisplayFeatures", easyArrangeTelemetry.ToJson(), frequency);
             }
         }
+
         #endregion
 
         private void MonitorEvent_On(object sender, EventArgs e)

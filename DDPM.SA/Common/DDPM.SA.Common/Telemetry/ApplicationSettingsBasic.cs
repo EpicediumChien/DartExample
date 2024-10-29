@@ -3,18 +3,16 @@ using System.Collections.Generic;
 
 namespace DDPM.SA.Common
 {
-    public class ScreenTimeInfoBasic
+    public class ApplicationSettingsBasic
     {
-        public List<uint> ScreenTimeInfo { get; set; }
-
         public List<string> DisplayModelname { get; set; }
-
         public List<string> DisplayServiceTag { get; set; }
+        public List<string> D_Ctrl { get; set; }
 
-        public ScreenTimeInfoBasic()
+        public ApplicationSettingsBasic()
         {
-            ScreenTimeInfo = new List<uint>();
             DisplayModelname = new List<string>();
+            D_Ctrl = new List<string>();
             DisplayServiceTag = new List<string>();
         }
 
@@ -22,5 +20,10 @@ namespace DDPM.SA.Common
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+    }
+
+    public class ApplicationSettings_LockRotation : ApplicationSettingsBasic
+    {
+        public string LockRotation { get; set; }
     }
 }

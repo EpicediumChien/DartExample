@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DDPM.SA.Common
 {
@@ -8,12 +9,9 @@ namespace DDPM.SA.Common
         {
             var TelemetryDta_ScreenTimeInfo = new ScreenTimeInfoBasic();
 
-            foreach (var tmp in screetimes)
-                TelemetryDta_ScreenTimeInfo.ScreenTimeInfo += tmp.ToString() + ", ";
-            foreach (var tmp in Models)
-                TelemetryDta_ScreenTimeInfo.DisplayModelname += tmp + ", ";
-            foreach (var tmp in serviceTags)
-                TelemetryDta_ScreenTimeInfo.DisplayServiceTag += tmp + ", ";
+            TelemetryDta_ScreenTimeInfo.ScreenTimeInfo = screetimes.ToList();
+            TelemetryDta_ScreenTimeInfo.DisplayModelname = Models.ToList();
+            TelemetryDta_ScreenTimeInfo.DisplayServiceTag = serviceTags.ToList();
 
             return TelemetryDta_ScreenTimeInfo;
         }
