@@ -25,6 +25,9 @@ namespace DDPM.SA.Common
         Task<DDPMITConfig> ReadITConfigData(bool force_reload = false);
 
         Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list);
+
+        //For FW/SW update lock event
+        event EventHandler<bool> FWSWUpdateSettingChange;
     }
 
     /// <summary>

@@ -94,12 +94,12 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         #region ISettingsManagerSA implementation
 
-        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;        
 
         //Target to notify User setting
         private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
         {
-            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
+            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty || e.target_object == null)
                 return;
 
             EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
@@ -107,6 +107,19 @@ namespace DDPM.SA.Plugins.SettingsManager
             {
                 Handler.Invoke(this, e);
                 WriteLog($"ITSettingsActionEvent Invoked");
+            }
+
+            foreach (var item in e.IT_Feature_TriggerList)
+            {
+                if (item.Equals("Lock_Settings_Updates"))
+                {
+                    EventHandler<bool> Handler2 = FWSWUpdateSettingChange;//FW/SW plugin should register this event
+                    if (Handler != null)
+                    {
+                        Handler2.Invoke(this, e.target_object.Lock_Settings_Updates);
+                        WriteLog($"FWSWUpdateSettingChange Invoked");
+                    }
+                }
             }
         }
 
@@ -133,6 +146,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         #endregion
 
         #region ISettingsManagerIT implementation
+        public event EventHandler<bool> FWSWUpdateSettingChange;
 
         public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
         {
