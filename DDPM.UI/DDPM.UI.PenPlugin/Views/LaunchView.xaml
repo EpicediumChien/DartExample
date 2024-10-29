@@ -59,6 +59,20 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <UXControls:UXScrollViewer x:Name="topViewScrollViewer">
+            <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
+                <!-- LeftFrame -->
+
+                <!-- vBar + RightFrame -->
+                <StackPanel x:Name="stVbarRightFrame">
+                    <!--Vbar-->
+
+                    <!-- RightFrame -->
+                    <!-- Right side: Header + RightView -->
+                </StackPanel>
+            </StackPanel>
+        </UXControls:UXScrollViewer>
+        
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
