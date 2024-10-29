@@ -63,7 +63,7 @@ namespace DDPM.UI.Module.Color
 
       
         // add jim 20240604
-        public RegistryMonitor_NightLight registryMonitor_NightLight = null;
+        //public RegistryMonitor_NightLight registryMonitor_NightLight = null;
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
@@ -565,8 +565,13 @@ namespace DDPM.UI.Module.Color
 
             // Create a watcher and listen for events
             //startWatcher = new ManagementEventWatcher(scope, queryString);
-            startWatcher.EventArrived -= startWatcher_EventArrived;
-            startWatcher.Stop();
+
+            //avoid exception
+            if (startWatcher != null)
+            {
+                startWatcher.EventArrived -= startWatcher_EventArrived;
+                startWatcher.Stop();
+            }
         }
 
         // add jim 20240604
@@ -629,8 +634,12 @@ namespace DDPM.UI.Module.Color
 
             // Create a watcher and listen for events
             //endProcWatcher = new ManagementEventWatcher(scope, queryString);
-            endProcWatcher.EventArrived -= ProcessEnded;
-            endProcWatcher.Stop();
+
+            if (endProcWatcher != null)
+            {
+                endProcWatcher.EventArrived -= ProcessEnded;
+                endProcWatcher.Stop();
+            }
         }
 
         //  jim  add - modify  20240604
@@ -718,8 +727,12 @@ namespace DDPM.UI.Module.Color
 
                 DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
 
+                DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
+
                 // -- begin add jim 20240604
-                SyncNightlightStatus();
+                DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightStatus();   
+                //SyncNightlightStatus();
 
                 // jim remove
                 //WatchForProcessStart();
@@ -1021,6 +1034,16 @@ namespace DDPM.UI.Module.Color
             }         
         }
 
+        ~ColorViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+                DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent -= OnColoresetManualChangeHandler;
+                DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent -= OnNightLightStatusChangeHandler;
+            }
+        }
+
         private void OnColoresetManualChangeHandler(object sender, string e)
         {
             int index = 0;      
@@ -1082,7 +1105,17 @@ namespace DDPM.UI.Module.Color
 
                 RefreshUI();
             }));
-        }       
+        }
+
+        private void OnNightLightStatusChangeHandler(object sender, string e)
+        {
+            NightlightStatus = e;
+
+            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+            { 
+                RefreshUI();
+            }));
+        }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1121,6 +1154,10 @@ namespace DDPM.UI.Module.Color
                     //Result is failed.
                 }
             }
+
+            WatchForProcessStart();
+            WatchForProcessEnd();
+
             //UpdateHDRStatus();
         }
 
@@ -1167,7 +1204,8 @@ namespace DDPM.UI.Module.Color
 
             //UpdateHDRStatus();
         }
-
+        
+        /*
         private void SyncNightlightStatus()
         {
             // 20240627 jim modify
@@ -1241,7 +1279,9 @@ namespace DDPM.UI.Module.Color
                 }));
             }
         }
+        */
 
+        /*
         // add jim 20240604
         public void StopRegistryMonitor()
         {
@@ -1266,7 +1306,7 @@ namespace DDPM.UI.Module.Color
         {
             StopRegistryMonitor();
         }   
-
+        */
         private ObservableCollection<AppData> _appsList;
 
         public ObservableCollection<AppData> AppsList

@@ -510,7 +510,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
                 }
                 else
+                {
+                    //Robert_Lin, 2024-10-20 add log to trace the user settings file can not be loaded at starting up
+                    WriteLog($"@ReloadAppConfigData({force_reload}): _settings_path is empty, return default settings.");
                     _settings = new DDPMSettings(ddpm_app, ddpm_user, ddpm_it);
+                }
 
                 if (_settings != null)
                 {
@@ -1026,7 +1030,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
                 if (monitorSettings != null)
                 {
-                    if (path.Substring(path.Length - 5, 5) != ".json")
+                    if (path.Length > 6)
+                    {
+                        if ((path.Substring(path.Length - 5, 5).ToUpper() != ".json".ToUpper()))
+                        {
+                            path = path + ".json";
+                        }
+                    }
+                    else
                     {
                         path = path + ".json";
                     }

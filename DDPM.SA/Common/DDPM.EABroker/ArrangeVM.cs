@@ -46,14 +46,15 @@ namespace DDPM.EABroker
         private Screen? _workScreen = null;
 
         //EzSettings
-        private bool _isOnlyShift = false; //EzSettings.IsOnlyAllowWhenShiftKeyPressed
-        private bool _isAwsEnabled = true; //EzSettings.IsAwsEnabled
-        private bool _isWithoutGap = true; //EzSettings.IsWidthoutGap
-        private bool _isSpanMultiMonitors = false; //EzSettings.IsSpanAcrossMultiMonitors
+        private bool _isOnlyShift = EzSettings.Default_IsOnlyAllowWhenShiftKeyPressed;
+        private bool _isAwsEnabled = EzSettings.Default_IsAwsEnabled;
+        private bool _isWithoutGap = EzSettings.Default_IsWidthoutGap;
+        private bool _isSpanMultiMonitors = EzSettings.Default_IsSpanAcrossMultiMonitors;
         private bool _isShiftPressed = false;
 
         //Hovering
         private CellObj? _hoveringCellObj = null;
+        private string _hoveringWindow = "";
 
         //AWS Window
         private AwsWindow _awsWindow;
@@ -64,13 +65,18 @@ namespace DDPM.EABroker
         private double _yAwsWindow = 0;
 
         //AWS Icons
+        private ISplitCtrl _awsIcon0;
         private ISplitCtrl _awsIcon1;
         private ISplitCtrl _awsIcon2;
         private ISplitCtrl _awsIcon3;
         private ISplitCtrl _awsIcon4;
 
         private ISplitCtrl? _hoveringAwsIcon; //Point to one of {_awsIcon1 ~ _awsIcon4 }
+        private CellObj? _hoveringAwsCellObj;
 
+        //AWS Buddy Window
+        private bool _isAwsBuddyWindowVisible = true;
+        private AwsBuddyWindow _awsBuddyWindow;
 
         //WorkWindows
         private List<EAWorkWindow> _workWindows = new List<EAWorkWindow>();
@@ -92,6 +98,14 @@ namespace DDPM.EABroker
 
         //Invoked when AWS Window visibility changed
         public EventHandler<bool> AwsWindowVisibilityChanged;
+
+        public EventHandler<bool> AwsBuddyWindowVisibilityChanged;
+
+        public EventHandler<ISplitCtrl> HoveringAwsIconChanged;
+
+        public EventHandler<CellObj> HoveringCellObjChanged;
+        public EventHandler<CellObj> HoveringAwsCellObjChanged;
+
         #endregion
 
         #region Init
@@ -103,6 +117,7 @@ namespace DDPM.EABroker
             _displayService = dispMgr;
             _easyArrangeService = eaService;
 
+            ReloadEzSettingsFromUserSettingsFile();
         }
         #endregion
 
@@ -301,7 +316,7 @@ namespace DDPM.EABroker
         #endregion
 
         #region Moving Support
-        public void RefreshCellRects()
+        public void RefreshCellRects(bool calledByFadeFinished = false)
         {
             if (IsAwsWindowVisible)
             {
@@ -310,7 +325,7 @@ namespace DDPM.EABroker
                     _awsWindow.RefreshCellRects();
                 }
             }
-            if (IsWorkWindowVisible)
+            if ((IsWorkWindowVisible) || (calledByFadeFinished))
             {
                 foreach (EAWorkWindow workWin in _workWindows)
                 {
@@ -340,9 +355,17 @@ namespace DDPM.EABroker
                             HoveringWindow = "aws";
                             HoveringCellObj = cellObj;
                             HoveringSplit = HoveringAwsIcon;
+                            HoveringAwsCellObj = cellObj;
 
                             hoveringCell = cellObj;
                             WriteLog($" * HoveringCell=AWS{cellObj.Name}");
+
+                            if (_awsBuddyWindow != null)
+                            {
+                                _awsBuddyWindow.MoveToScreen(_awsWindow.HoveringScreen);
+                                _awsBuddyWindow.SetWorkSplit(HoveringSplit, cellObj.Name);
+                                //_awsBuddyWindow.RefreshCellRects();
+                            }
                             return cellObj;
                         }
                         else
@@ -371,7 +394,7 @@ namespace DDPM.EABroker
                 }
             }
             HoveringCellObj = null;
-            WriteLog($" * HoveringCell=null");
+            //WriteLog($" * HoveringCell=null");
             return null;
         }
 
@@ -380,8 +403,18 @@ namespace DDPM.EABroker
             get => _hoveringCellObj;
             set
             {
+                //Add changed detection
+                bool isChanged = (_hoveringCellObj != value);
                 SetProperty(ref _hoveringCellObj, value);
                 OnPropertyChanged("HoveringCell");
+
+                if (isChanged) 
+                {
+                    if (HoveringCellObjChanged != null)
+                    {
+                        Task.Run(() => HoveringCellObjChanged.Invoke(this, _hoveringCellObj));
+                    }
+                }
             }
         }
 
@@ -446,7 +479,6 @@ namespace DDPM.EABroker
             }
         }
 
-
         public bool ReloadEzSettingsFromUserSettingsFile()
         {
             if (_deviceManagerSA != null)
@@ -458,8 +490,17 @@ namespace DDPM.EABroker
                     IsAwsEnabled = ezSettings.IsAwsEnabled;
                     IsWithoutGap = ezSettings.IsWidthoutGap;
                     IsSpanMultiMonitors = ezSettings.IsSpanAcrossMultiMonitors;
+
+                    ////Robert_Lin, 2024-10-20 Debug purpose, need to comment out in release build
+                    //IsAwsEnabled = true;
+
+                    WriteLog($"@ArrangeVM.ReloadEzSettingsFromUserSettingsFile(): IsOnlyShift={IsOnlyShift}, IsAwsEnabled={IsAwsEnabled}, IsWithoutGap={IsWithoutGap}, IsSpanMultiMonitors={IsSpanMultiMonitors}");
                     return true;
                 }
+            }
+            else
+            {
+                WriteLog($"@ArrangeVM.ReloadEzSettingsFromUserSettingsFile(): IDeviceManagerSA is null");
             }
             return false;
         }
@@ -690,6 +731,11 @@ namespace DDPM.EABroker
                         _awsWindow = new AwsWindow(this);
                         WriteLog("After new AwsWindow)");
                         _awsWindow.Show();
+
+                        _awsBuddyWindow = new AwsBuddyWindow(this);
+                        _awsBuddyWindow.Show();
+
+                        _awsIcon0 = new SplitCtrl0B();
                     }
                     catch (Exception eA)
                     {
@@ -745,6 +791,7 @@ namespace DDPM.EABroker
                     {
                         Task.Run(() => AwsWindowVisibilityChanged.Invoke(this, newValue));
                     }
+                    OnPropertyChanged("IsAwsBuddyWindowVisible");
                 }
                 return _isAwsWindowVisible;
             }
@@ -767,6 +814,16 @@ namespace DDPM.EABroker
         #region AWS Icons
         public static double cxIcon => 120;
         public static double cyIcon => 90;
+
+        public ISplitCtrl AwsIcon0
+        {
+            get => _awsIcon0;
+            set
+            {
+                SetProperty(ref _awsIcon0, value);
+                OnPropertyChanged("AwsIcon0Info");
+            }
+        }
 
         public ISplitCtrl AwsIcon1
         {
@@ -808,7 +865,29 @@ namespace DDPM.EABroker
         public ISplitCtrl? HoveringAwsIcon
         {
             get => _hoveringAwsIcon;
-            set => SetProperty(ref _hoveringAwsIcon, value);
+            set
+            {
+                bool isChanged = (_hoveringAwsIcon != value);
+                SetProperty(ref _hoveringAwsIcon, value);
+                OnPropertyChanged("HoveringAwsIconText");
+                if (isChanged) 
+                {
+                    if (HoveringAwsIconChanged != null)
+                    {
+                        Task.Run(() => HoveringAwsIconChanged.Invoke(this, _hoveringAwsIcon));
+                    }
+                }
+            }
+        }
+
+        public string HoveringAwsIconText
+        {
+            get
+            {
+                if (HoveringAwsIcon == null)
+                    return "(null)";
+                return $"{HoveringAwsIcon.CtrlClass}[{HoveringAwsIcon.FriendlyName}]";
+            }
         }
 
         //Robert_Lin, 2024-10-15 access to UI, may need move to Dispatcher thread
@@ -871,13 +950,24 @@ namespace DDPM.EABroker
             return splitCtrl;
         }
 
+        public void OnPropertyChanged_AwsIconInfos()
+        {
+            OnPropertyChanged("AwsIcon1Info");
+            OnPropertyChanged("AwsIcon2Info");
+            OnPropertyChanged("AwsIcon3Info");
+            OnPropertyChanged("AwsIcon4Info");
+        }
+
         public string AwsIcon1Info
         {
             get
             {
                 if (_awsIcon1 == null)
                     return "(null)";
-                return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
+                if (_awsIcon1.IsAddedCustomLayout)
+                    return $"{_awsIcon1.FriendlyName}, Cells: Cells: {CellListText(_awsIcon1.CellList)}, CellBorders: {CellBordersText(_awsIcon1.CellBorders)}";
+                else
+                    return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
             }
         }
         public string AwsIcon2Info
@@ -886,7 +976,10 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon2 == null)
                     return "(null)";
-                return $"{_awsIcon2.FriendlyName}, Cells: {CellListText(_awsIcon2.CellList)}";
+                if (_awsIcon2.IsAddedCustomLayout)
+                    return $"{_awsIcon2.FriendlyName}, Cells: {CellBordersText(_awsIcon2.CellBorders)}";
+                else
+                    return $"{_awsIcon2.FriendlyName}, Cells: {CellListText(_awsIcon2.CellList)}";
             }
         }
         public string AwsIcon3Info
@@ -895,7 +988,10 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon3 == null)
                     return "(null)";
-                return $"{_awsIcon3.FriendlyName}, Cells: {CellListText(_awsIcon3.CellList)}";
+                if (_awsIcon3.IsAddedCustomLayout)
+                    return $"{_awsIcon3.FriendlyName}, Cells: {CellBordersText(_awsIcon3.CellBorders)}";
+                else
+                    return $"{_awsIcon3.FriendlyName}, Cells: {CellListText(_awsIcon3.CellList)}";
             }
         }
         public string AwsIcon4Info
@@ -904,7 +1000,10 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon4 == null)
                     return "(null)";
-                return $"{_awsIcon4.FriendlyName}, Cells: {CellListText(_awsIcon4.CellList)}";
+                if (_awsIcon4.IsAddedCustomLayout)
+                    return $"{_awsIcon4.FriendlyName}, Cells: {CellBordersText(_awsIcon4.CellBorders)}";
+                else
+                    return $"{_awsIcon4.FriendlyName}, Cells: {CellListText(_awsIcon4.CellList)}";
             }
         }
 
@@ -928,7 +1027,46 @@ namespace DDPM.EABroker
             outString += "]";
             return outString;
         }
+        private string CellBordersText(List<CellBorder> cbList)
+        {
+            string outString = "[";
+            int idx = 0;
+            foreach (CellBorder cb in cbList)
+            {
+                if (idx > 0)
+                    outString += ",";
+                if (cb.rect == Rect.Empty)
+                {
+                    outString += $"{{\"{cb.CellName}\": EMPTY}} ";
+                }
+                else
+                {
+                    outString += $"{{\"{cb.CellName}\":{ArrangeVM.FormatRect(cb.rect)}}} ";
+                }
+            }
+            outString += "]";
+            return outString;
+        }
 
+        public CellObj? HoveringAwsCellObj
+        {
+            get => _hoveringAwsCellObj;
+            set
+            {
+                //Add changed detection
+                bool isChanged = (_hoveringAwsCellObj != value);
+                SetProperty(ref _hoveringAwsCellObj, value);
+                OnPropertyChanged("HoveringAwsCell");
+
+                if (isChanged)
+                {
+                    if (HoveringAwsCellObjChanged != null)
+                    {
+                        Task.Run(() => HoveringAwsCellObjChanged.Invoke(this, _hoveringAwsCellObj));
+                    }
+                }
+            }
+        }
         #endregion
 
         #region UI Rect Functions
@@ -979,7 +1117,16 @@ namespace DDPM.EABroker
         //"" : no hovering Window;
         //"w0" : WorkWindows[0]; "w1" : WorkWindows[1], ...
         //"aws : AWS Window
-        public string HoveringWindow { get; set; } = "";
+
+        public string HoveringWindow 
+        {
+            get => _hoveringWindow;
+            set 
+            {
+                SetProperty(ref _hoveringWindow, value);
+                OnPropertyChanged("IsAwsBuddyWindowVisible");
+            } 
+        }
         #endregion
 
         #region HoveringSplit
@@ -992,7 +1139,92 @@ namespace DDPM.EABroker
                 _hoveringSplit = value;
             }
         }
+
+        public string HoveringSplitText
+        {
+            get
+            {
+                if (HoveringSplit == null)
+                    return "(null)";
+                return $"{HoveringSplit.CtrlClass}[{HoveringSplit.FriendlyName}]";
+            }
+        }
         #endregion HoveringSplit
 
+        #region AWS Buddy Window
+        public bool IsAwsBuddyWindowVisible
+        {
+            get
+            {
+                bool newValue = _isAwsBuddyWindowVisible;
+
+                if (!IsMoving)
+                {
+                    newValue = false;
+                }
+                else if (!_isAwsWindowVisible)
+                {
+                    newValue = false;
+                }
+                else
+                {
+                    newValue = (HoveringWindow == "aws");
+                }
+                if (newValue != _isAwsBuddyWindowVisible)
+                {
+                    _isAwsBuddyWindowVisible = newValue;
+                    if (AwsBuddyWindowVisibilityChanged != null)
+                    {
+                        Task.Run(() => AwsBuddyWindowVisibilityChanged.Invoke(this, newValue));
+                    }
+                }
+                return _isAwsBuddyWindowVisible;
+            }
+        }
+        #endregion
+
+        #region Telemetry
+        public void SendTelemetry_EasyArrangeLayout()
+        {
+            if (_easyArrangeService != null)
+            {
+                if (HoveringSplit != null)
+                {
+                    MonitorInfo? monitorInfo = null;
+                    if (WorkScreen != null)
+                    {
+                        List<MonitorInfo> monitorInfos = GetMonitorsFromDeviceName(WorkScreen.DeviceName);
+                        if ((monitorInfos != null) && (monitorInfos.Count > 0))
+                        {
+                            monitorInfo = monitorInfos[0];
+                        }
+                    }
+                    string eventValue = GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(HoveringSplit);
+                    _easyArrangeService.SendEasyArrangeLayoutTelemetry(eventValue, monitorInfo);
+                }
+            }
+        }
+        /// <summary>
+        /// CellCount SplitKey => return value
+        /// 0         'B'         "custom-layout"
+        /// 2                     "2-windows"
+        /// 3                     "3-windows"
+        /// 4                     "4-windows"
+        /// 5                     "5-windows"
+        /// 6                     "6-windows"
+        /// 7                     "7ormore-windows"
+        /// </summary>
+        /// <param name="splitCtrl"></param>
+        /// <returns></returns>
+        private string GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(ISplitCtrl splitCtrl)
+        {
+            if ((splitCtrl.CellCount == 0) && (splitCtrl.SplitKey == 'B'))
+                return "custom-layout";
+            if (splitCtrl.CellCount == 7)
+                return "7ormore-windows";
+            return $"{splitCtrl.CellCount}-windows";
+
+        }
+        #endregion Telemetry
     }
 }

@@ -1,16 +1,18 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.RemoteManagement.Common.Interfaces;
+using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
-using System.Xml.XPath;
-using System.Threading;
-using Windows.UI.Composition.Interactions;
+using VcpCore.Common;
+using static DDPM.SA.Common.ICLICommandTable;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
@@ -18,29 +20,37 @@ namespace DDPM.SA.Plugins.CMAManager
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ICMAManagerSA) })] //for DeviceManager of user subagent
-    [PublishedInterface(new[] { typeof(ICMAManagerIT) })] //for CLI subagent
-    public class CMAManagerPlugin : BaseAgentPlugin, IDisposableObservable, ICMAManagerSA, ICMAManagerIT
+    [PublishedInterface(new[] { typeof(IRemoteManagement) })] //for CLI subagent
+    public class CMAManagerPlugin : BaseAgentPlugin, IDisposableObservable, ICMAManagerSA, IRemoteManagement
     {
-        private static List<CMAResult> _result_list = new List<CMAResult>();
+        private static List<RemoteManagementResult> _result_list = new List<RemoteManagementResult>();
         private readonly object _resultLock = new object();
-        //private ISettingsManagerIT? _SettingsPluginIT;
-        //private readonly object _pluginConditionLock = new object();
-        //private PluginCondition _SettingsITPluginCondition;
 
         #region Basic code for plugin
-        public const string PluginLogId = "CMAManager";
+        public const string PluginLogId = "DDPMRemoteManager";
+
+        private Queue<TaskInfo> taskInfoQueue = new Queue<TaskInfo>();
+        private bool QueueProcessingFlag = false;
+        private NotifyArgs notifyArgs = new NotifyArgs();
 
         #region Private Members
 
-        private const string pluginName = "CMAManagerPlugin";
+        private const string pluginName = "DDPMRemoteManagerPlugin";
         private const string pluginVersion = "1.0.0";
-        private const string pluginDescription = "This plugin implements CMA Manager Plugin.";
+        private const string pluginDescription = "This plugin implements Remote Manager Plugin.";
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
-        private const string publisherSupport = "This plugin implements CMA Manager Plugin.";
+        private const string publisherSupport = "This plugin implements Remote Manager Plugin.";
 
         private IAgent _agent;
-        private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();        
+        private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
+
+        private ICliManagerIT _CliManagerPlugin;
+        private readonly object _PluginConditionLock_CliManager = new object();
+        private List<string> commandinputs = new List<string>();
+
+        // add @ 20241023 device manager for check connect disconnect devices
+        private DeviceControlPannel deviceControlPannel;
 
         private enum log_type
         {
@@ -55,6 +65,8 @@ namespace DDPM.SA.Plugins.CMAManager
         public CMAManagerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+            deviceControlPannel = new DeviceControlPannel();
+
             WriteLog($"CMA ManagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
         #endregion
@@ -65,9 +77,11 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
-            PluginCondition = new PluginStartedCondition();
-            WriteLog("Cli Manager plugin report started");
+            //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
 
+            PluginCondition = new PluginStartedCondition();
+            WriteLog("[CMA Manager plugin] report started");
+            InitializeCliManagerPlugin();
             //InitializeSettingsITPlugin();
         }
         #endregion
@@ -101,6 +115,9 @@ namespace DDPM.SA.Plugins.CMAManager
         #endregion
 
         #region Event Handler
+        public event EventHandler<NotifyArgs> Notify;
+        public event EventHandler<NotifyArgs> DisplayConnected;
+        public event EventHandler<NotifyArgs> DisplayDisconnected;
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -115,7 +132,7 @@ namespace DDPM.SA.Plugins.CMAManager
             //    WriteLog("[Info] Settings Manager IT plugin with ISettingsManagerIT started.");
             //}
 
-            if (e.ChangedPlugins.OfType<ICMAManagerSA>().Any())
+/*            if (e.ChangedPlugins.OfType<ICMAManagerSA>().Any())
             {
                 WriteLog("[Info] CMA Manager plugin with ICMAManagerSA started.");
             }
@@ -123,6 +140,12 @@ namespace DDPM.SA.Plugins.CMAManager
             if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
             {
                 WriteLog("[Info]  CMA Manager plugin with ICMAManagerIT started.");
+            }*/
+
+            if(e.ChangedPlugins.OfType<ICliManagerIT>().Any())
+            {
+                WriteLog("[Info]  CLI Manager plugin with ICliManagerIT started.");
+                InitializeCliManagerPlugin();
             }
         }
         #endregion
@@ -145,12 +168,373 @@ namespace DDPM.SA.Plugins.CMAManager
         #endregion
         #endregion
 
-        #region ICMAManagerIT implementation
-        public Task<CMAResult> PerformCMARequest(CMARequestArgs request)
+        #region IRemoteManagement implementation
+        internal struct TaskInfo {
+            public string sid;
+            public string gid;
+            public int tid;
+            public int eventtype;
+            public string command;
+            public string jsonconfig;
+        }
+
+        private string createCommandGet(CmaCommand.CmaTask task)
         {
+            string command = string.Empty;
+
+            command = command + ("get ");
+
+            if (Params.App.ConnectedDevices.ToLower().Equals(task.command.ToLower()))
+            {
+                command = command + ("app=" + task.command);
+                command = command + (" value=" + task.devicetype);
+            }
+            else if (Params.App.DeviceData.ToLower().Equals(task.command.ToLower()))
+            {
+                command = command + ("app=" + task.command);
+
+                if (!Params.DeviceType.APP.ToLower().Equals(task.devicetype.ToLower()))
+                {
+                    command = command + (" value=" + task.devicetype);
+                }
+                
+            }
+            else
+            {
+                command = command + (task.devicetype + "=" + task.command);
+
+                if (task.value != null && task.value.Length > 0)
+                {
+                    command = command + (" value=" + task.value);
+                }
+            }
+
+
+            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+
+            if (option.index != null && option.index.Length > 0)
+            {
+                command = command + (" index=" + option.index);
+            }
+
+            if (option.servicetag != null && option.servicetag.Length > 0)
+            {
+                command = command + (" servicetag=" + option.servicetag);
+            }
+
+            if (option.modelname != null && option.modelname.Length > 0)
+            {
+                command = command + (" model=" + option.modelname);
+            }
+
+            return command;
+        }
+
+        private string createCommandSet(CmaCommand.CmaTask task)
+        {
+            string command = string.Empty;
+
+            command = command + ("set ");
+
+            if (!Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
+            {
+                command = command + (task.devicetype + "=" + task.command);
+                command = command + (" value=" + task.value);
+            }
+            else
+            {
+                command = command + ("app=" + task.command);
+                command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
+            }
+
+            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+
+            if (option.index != null && option.index.Length > 0)
+            {
+                command = command + (" index=" + option.index);
+            }
+
+            if (option.servicetag != null && option.servicetag.Length > 0)
+            {
+                command = command + (" servicetag=" + option.servicetag);
+            }
+
+            if (option.modelname != null && option.modelname.Length > 0)
+            {
+                command = command + (" model=" + option.modelname);
+            }
+
+            return command;
+        }
+
+        private string createCommandFw(CmaCommand.CmaTask task)
+        {
+
+            const string ForceWithNotice = "forcewithnotice";
+            const string ForceWithNonotice = "forcewithnonotice";
+            const string Defer = "defer";
+
+            string command = string.Empty;
+
+            command = command + ("set ");
+
+            if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
+            {
+                command = command + ("dock=silentfwupdate");
+            }
+            else
+            {
+                command = command + ("app=firmwareupdate");
+                //command = command + (" value=" + task.devicetype + ",forcewithnotice");
+
+                command = command + (" value=" + task.devicetype);
+
+                bool hasOption = false;
+
+                if (ForceWithNotice.ToLower().Equals(task.value.ToLower()))
+                {
+                    command = command + (",forcewithnotice");
+                    hasOption = true;
+                }
+
+                if (ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
+                {
+                    command = command + (",forcewithnonotice");
+                    hasOption = true;
+                }
+
+                if (Defer.ToLower().Equals(task.value.ToLower()))
+                {
+                    command = command + (",Defer");
+                    hasOption = true;
+                }
+
+                if (!hasOption)
+                {
+                    command = command + (",forcewithnotice");
+                }
+
+                CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+
+/*                if (option.forcewithnotice != null && option.forcewithnotice)
+                {
+                    command = command + (",forcewithnotice");
+                    hasOption = true;
+                }*/
+
+/*                if (option.forcewithnonotice != null && option.forcewithnonotice)
+                {
+                    command = command + (",forcewithnonotice");
+                    hasOption = true;
+                }
+
+                if (option.defer != null && option.defer)
+                {
+                    command = command + (",defer");
+                    hasOption = true;
+                }*/
+
+                
+            }
+
+            
+
+            return command;
+        }
+
+        private string createCommandLock(Boolean isLock, CmaCommand.CmaTask task)
+        {
+            string command = string.Empty;
+
+            command = command + ("set ");
+
+/*            if (!Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
+            {
+                command = command + (task.devicetype + "=" + task.command);
+                command = command + (" value=" + task.value);
+            }
+            else
+            {
+                command = command + ("app=" + task.command);
+                command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
+            }
+
+            CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+
+            if (option.index != null && option.index.Length > 0)
+            {
+                command = command + (" index=" + option.index);
+            }
+
+            if (option.servicetag != null && option.servicetag.Length > 0)
+            {
+                command = command + (" servicetag=" + option.servicetag);
+            }
+
+            if (option.modelname != null && option.modelname.Length > 0)
+            {
+                command = command + (" model=" + option.modelname);
+            }*/
+
+            return command;
+        }
+
+        private void initCommandTask(String guid, String request)
+        {
+
+            CmaCommand cmd = new CmaCommand(guid, request);
+
+            WriteLog($"[CMA] initCommandTask request = {request}");
+
+            List<CmaCommand.CmaTask> tasks = new List<CmaCommand.CmaTask>();
+
+            foreach (var s in cmd.req)
+            {
+                tasks.Add(new CmaCommand.CmaTask(cmd.sid, s.ToString().ToLower()));
+            }
+
+            foreach (CmaCommand.CmaTask task in tasks)
+            {
+                string command = "";
+                int eventtype = 0;
+
+                if ("get".Equals(task.active.ToLower()))
+                {
+                    eventtype = 1;
+                    command = createCommandGet(task);
+                }
+
+                if ("set".Equals(task.active.ToLower()))
+                {
+                    eventtype = 2;
+                    command = createCommandSet(task);
+
+                    
+                }
+
+                if ("fw".Equals(task.active.ToLower()))
+                {
+                    eventtype = 5;
+
+                    if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
+                    {
+                        command = command + ("set ");
+                        command = command + ("dock=silentfwupdate");
+                    }
+                    else
+                    {
+                        command = command + ("set ");
+                        command = command + ("app=firmwareupdate");
+                        command = command + (" value=" + task.devicetype + ",forcewithnotice");
+                    }
+
+                }
+
+                commandinputs.Add(command);
+
+                TaskInfo taskInfo = new TaskInfo();
+                taskInfo.sid = task.sid;
+                taskInfo.gid = guid;
+                taskInfo.tid = task.tid;
+                taskInfo.eventtype = eventtype;
+                taskInfo.command = command;
+                taskInfo.jsonconfig = task.value;       
+
+                taskInfoQueue.Enqueue(taskInfo);
+            }
+        }
+
+        private async Task<NotifyArgs> runCommandTaskAsync(TaskInfo taskInfo)
+        {
+            if (null != _CliManagerPlugin && !string.IsNullOrEmpty(taskInfo.command))
+            {
+                Boolean isSuccess = true;
+                string responseMsg = String.Empty;
+                string currentResult = String.Empty;
+                CLIEventResult? cliResult = null;
+                JObject? cliResp = null;
+                while (taskInfoQueue.Count > 0)
+                {
+                    if (cliResp == null)
+                    {
+                        taskInfo = taskInfoQueue.Peek();
+                        Console.WriteLine($"Processing tid: {taskInfo.tid} TargetFeature: {taskInfo.command}");
+                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
+                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
+                        commandLineInput.isCliRunAdmin = true;
+                        commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
+
+                        Console.WriteLine("[CMA] runCommandTask taskInfo.command = " + taskInfo.command);
+
+                        //_CliManagerPlugin.PerformCommandLineRelay
+                        if (cliResult == null)
+                        {
+                            cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
+                            cliResult.serialize_Json_response = cliResult.serialize_Json_response;
+                            cliResp = JObject.Parse(cliResult.serialize_Json_response);
+                            responseMsg = (string?)cliResp["Message"] ?? string.Empty;
+                        }
+                        else
+                        {
+                            CLIEventResult newResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
+                            cliResult.serialize_Json_response = cliResult.serialize_Json_response + "," + newResult.serialize_Json_response;
+                            cliResp = JObject.Parse(newResult.serialize_Json_response);
+                            responseMsg = responseMsg + "," + (string?)cliResp["Message"] ?? string.Empty;
+                        }
+                        // TODO
+
+                        currentResult = (string?)cliResp["Result"] ?? string.Empty;
+
+                        if (!currentResult.Equals("Success")&&!currentResult.Equals("PASS"))
+                        {
+                            isSuccess = false;
+                        }
+
+                        taskInfoQueue.Dequeue();
+                        cliResp = null;
+                    }
+                }
+                NotifyArgs args = new NotifyArgs();
+                args.eventType = taskInfo.eventtype.ToString();
+
+                try
+                {
+
+                    if (isSuccess)
+                    {
+                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
+                    }
+                    else
+                    {
+                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
+                    }
+                }
+                catch
+                {
+                    responseMsg = "Exception: Unknow Result";
+                    args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
+                }
+
+                Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult?.command_guid_string + "\n args.notification = " + args.notification);
+                //Console.WriteLine("[CMA] );
+
+                OnEventNotify(args);
+
+                return args;
+            }
+
+            return new NotifyArgs();
+        }
+        
+        public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
+        {
+            // 
+            Guid uniqueAgentGuid = Guid.NewGuid();
+
+
             //Assign request ID per call
-            CMAResult result = new CMAResult();
-            result.cma_request_id = new Guid();
+            RemoteManagementResult result = new RemoteManagementResult();
+            result.cma_request_id = uniqueAgentGuid;
 
             if (request == null)
             {
@@ -159,37 +543,42 @@ namespace DDPM.SA.Plugins.CMAManager
                 return Task.FromResult(result);
             }
 
-            OnInvokeCMARequestEvent(request, result.cma_request_id);
-            int time = 0;
-            while(true)
+            WriteLog($"[CMA] initCommandTask request.cma_request = {request.remote_request}]");
+
+            try
             {
-                Thread.Sleep(1000);
-                time++;
-                lock(_resultLock)
-                {
-                    int idx = _result_list.FindIndex(x => x.cma_request_id.Equals(result.cma_request_id));
-                    if(idx >= 0)
-                    {
-                        result.message = _result_list[idx].message;
-                        result.output_result = _result_list[idx].output_result;
-                        return Task.FromResult(result);
-                    }
-                }
-                if (time > 60)//use 60 sec as default
-                    return Task.FromResult(response_timeout(result.cma_request_id));
+                initCommandTask(uniqueAgentGuid.ToString(), request.remote_request);
+
+                TaskInfo taskInfo = taskInfoQueue.Peek();
+                WriteLog($"[CMA]  before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo));
             }
+            catch (Exception e) {
+
+                NotifyArgs args = new NotifyArgs();
+                args.eventType = Params.EventType.UNKNOW_ERROR.ToString();
+                args.notification = e.ToString() + "; " + request.remote_request;
+                OnEventNotify(args);
+            }
+
+            result.message = "Request Got";
+            result.output_result = "Executing";
+
+            return Task.FromResult(result);
+
+
         }
 
-        private CMAResult response_timeout(Guid id)
+        private RemoteManagementResult response_timeout(Guid id)
         {
-            CMAResult result = new CMAResult();
+            RemoteManagementResult result = new RemoteManagementResult();
             result.cma_request_id = id;
             result.message = "Wait for result timeout";
             result.output_result = "FAIL";
             return result;
         }
 
-        private void OnInvokeCMARequestEvent(CMARequestArgs request, Guid id)
+        private void OnInvokeCMARequestEvent(RemoteRequestArgs request, Guid id)
         {
             EventHandler<CMAEventArgs> Handler = CMARequestEvent;
             if (Handler != null)
@@ -203,8 +592,54 @@ namespace DDPM.SA.Plugins.CMAManager
         }
         #endregion
 
+
+        private void InitializeCliManagerPlugin()
+        {
+            if (_CliManagerPlugin != null)
+                return;
+
+            _CliManagerPlugin = _agent.PluginManager.FindPluginByType<ICliManagerIT>(PluginResolution.Dynamic);
+
+            if (_CliManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnCliManagerPluginConditionChangeHandler;
+                GetCurrentCliManagerPluginCondition();
+            }
+        }
+
+        private void OnCliManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentCliManagerPluginCondition();
+        }
+
+        private void GetCurrentCliManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_CliManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+
+                lock (_PluginConditionLock_CliManager)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentCliManagerPluginCondition)} - CliManager Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentCliManagerPluginCondition)} - CliManager Plugin is in a running/started condition");
+                        
+                       /* if (!relay_registered && _DevManagerPlugin != null)
+                        {
+                            DoRelayRegister();
+                        }*/
+                    }
+                }
+            });
+        }
+
+
         #region ICMAManagerSA implementation
-        public Task WriteResult(CMAResult result)
+        public Task WriteResult(RemoteManagementResult result)
         {
             lock(_resultLock)
             {
@@ -214,6 +649,83 @@ namespace DDPM.SA.Plugins.CMAManager
         }
 
         public event EventHandler<CMAEventArgs> CMARequestEvent;
-        #endregion        
+
+        public Task Update_DeviceChanged(CMADeviceChanges data)
+        {
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed");
+
+            // TODO: implement decice connect/disconnect information
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed data.type = " + data.type);
+
+            foreach (MonitorInfo info in data.mos) {
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo ToString = " + info.ToString());
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo AliasDeviceName = " + info.AliasDeviceName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo Index = " + info.Index);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo CapabilityString = " + info.CapabilityString);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DisplayName = " + info.DisplayName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DDCisON = " + info.DDCisON);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid = " + info.edid);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo FwVersion = " + info.FwVersion);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputSource = " + info.inputSource);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputCable = " + info.inputCable);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName = " + info.modelName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo series = " + info.series);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.PID = " + info.edid.PID);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ModelNam = " + info.edid.ModelName);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.SerialNumber = " + info.edid.SerialNumber);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ServiceTag = " + info.edid.ServiceTag);
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName =========================================");
+
+            }
+
+           
+            NotifyArgs args = deviceControlPannel.OnDeviceChnaged(data);
+
+            args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \"\",\"data\": [" + args.notification + "]}]}";
+
+            if (Params.EventType.DISPLAY_CONNECT.ToString().Equals(args.eventType))
+            {
+                OnEventDisplayConnect(args);
+            }
+            else 
+            {
+                OnEventDisplayDisconnect(args);
+            }
+
+            //OnEventNotify(args);
+
+            return Task.CompletedTask;
+        }
+        #endregion
+
+        private void OnEventNotify(NotifyArgs e)
+        {
+            EventHandler<NotifyArgs> Handler = Notify;
+            if (Handler != null)
+            {
+                WriteLog($"[CMA] OnEventNotify e.notification = {e.notification}");
+                Handler.Invoke(this, e);
+            }
+        }
+
+        private void OnEventDisplayConnect(NotifyArgs e)
+        {
+            EventHandler<NotifyArgs> Handler = DisplayConnected;
+            if (Handler != null)
+            {
+                WriteLog($"[CMA] OnEventDisplayConnect e.notification = {e.notification}");
+                Handler.Invoke(this, e);
+            }
+        }
+
+        private void OnEventDisplayDisconnect(NotifyArgs e)
+        {
+            EventHandler<NotifyArgs> Handler = DisplayDisconnected;
+            if (Handler != null)
+            {
+                WriteLog($"[CMA] OnEventDisplayDisonnect e.notification = {e.notification}");
+                Handler.Invoke(this, e);
+            }
+        }
     }
 }

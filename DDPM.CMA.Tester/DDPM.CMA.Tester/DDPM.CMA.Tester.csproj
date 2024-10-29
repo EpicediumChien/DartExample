@@ -2,213 +2,26 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
-    <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
-    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
+	<None Remove="json\ActHours.json" />
+	<None Remove="json\deviceConfig.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DCF.Agent">
-      <HintPath>..\CommonDll\DCF.Agent.dll</HintPath>
-    </Reference>
-    <Reference Include="DCF.Common">
-      <HintPath>..\CommonDll\DCF.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="DCF.Interfaces">
-      <HintPath>..\CommonDll\DCF.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="DCF.UX.WPF">
-      <HintPath>..\CommonDll\DCF.UX.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="DdmLibrary">
-      <HintPath>..\CommonDll\DdmLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Common">
-      <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Obfuscation">
-      <HintPath>..\CommonDll\DDPM.SA.Obfuscation.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Plugins.CLIManager">
-      <HintPath>..\CommonDll\DDPM.SA.Plugins.CLIManager.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Plugins.CMAManager">
-      <HintPath>..\CommonDll\DDPM.SA.Plugins.CMAManager.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Plugins.FWUpdate">
-      <HintPath>..\CommonDll\DDPM.SA.Plugins.FWUpdate.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Plugins.PlatinumSDK">
-      <HintPath>..\CommonDll\DDPM.SA.Plugins.PlatinumSDK.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Plugins.SettingsManager">
-      <HintPath>..\CommonDll\DDPM.SA.Plugins.SettingsManager.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.SA.Plugins.SWUpdate">
-      <HintPath>..\CommonDll\DDPM.SA.Plugins.SWUpdate.dll</HintPath>
-    </Reference>
-    <Reference Include="DDPM.Subagent">
-      <HintPath>..\CommonDll\DDPM.Subagent.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.Client.Framework.Security">
-      <HintPath>..\CommonDll\Dell.Client.Framework.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.Client.Framework.Security.Interfaces">
-      <HintPath>..\CommonDll\Dell.Client.Framework.Security.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.DTM.Platinum.ClientRequestHandler.Interfaces">
-      <HintPath>..\CommonDll\Dell.DTM.Platinum.ClientRequestHandler.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.DTM.PlatinumClient">
-      <HintPath>..\CommonDll\Dell.DTM.PlatinumClient.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.DTM.TransmissionData">
-      <HintPath>..\CommonDll\Dell.DTM.TransmissionData.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.RPC.Transport">
-      <HintPath>..\CommonDll\Dell.RPC.Transport.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.TechHub.Sdk.Common.Identifiers">
-      <HintPath>..\CommonDll\Dell.TechHub.Sdk.Common.Identifiers.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.TechHub.Sdk.Common_NET">
-      <HintPath>..\CommonDll\Dell.TechHub.Sdk.Common_NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.TechHub.Sdk.Exceptions">
-      <HintPath>..\CommonDll\Dell.TechHub.Sdk.Exceptions.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.Common">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.DellTechHubSettings">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.DellTechHubSettings.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.DynamicObjectGenerator">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.DynamicObjectGenerator.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.RemotePlugin.Client">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.RemotePlugin.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.RemotePlugin.Common">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.RemotePlugin.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.RemotePlugin.Interfaces">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.RemotePlugin.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.SubAgentControl.Client">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.SubAgentControl.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.SubAgentControl.Common">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.SubAgentControl.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Dell.UnifiedAgent.SubAgentControl.Interfaces">
-      <HintPath>..\CommonDll\Dell.UnifiedAgent.SubAgentControl.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="DPeMPublic.Common">
-      <HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="MessagePack">
-      <HintPath>..\CommonDll\MessagePack.dll</HintPath>
-    </Reference>
-    <Reference Include="MessagePack.Annotations">
-      <HintPath>..\CommonDll\MessagePack.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-      <HintPath>..\CommonDll\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection">
-      <HintPath>..\CommonDll\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <HintPath>..\CommonDll\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging">
-      <HintPath>..\CommonDll\Microsoft.Extensions.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>..\CommonDll\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Options">
-      <HintPath>..\CommonDll\Microsoft.Extensions.Options.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>..\CommonDll\Microsoft.Extensions.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.NET.StringTools">
-      <HintPath>..\CommonDll\Microsoft.NET.StringTools.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <HintPath>..\CommonDll\Microsoft.Toolkit.Uwp.Notifications.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Threading">
-      <HintPath>..\CommonDll\Microsoft.VisualStudio.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Validation">
-      <HintPath>..\CommonDll\Microsoft.VisualStudio.Validation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Core">
-      <HintPath>..\CommonDll\Microsoft.Web.WebView2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.WinForms">
-      <HintPath>..\CommonDll\Microsoft.Web.WebView2.WinForms.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.WebView2.Wpf">
-      <HintPath>..\CommonDll\Microsoft.Web.WebView2.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Windows.SDK.NET">
-      <HintPath>..\CommonDll\Microsoft.Windows.SDK.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack">
-      <HintPath>..\CommonDll\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
-      <HintPath>..\CommonDll\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
-    <Reference Include="Nerdbank.Streams">
-      <HintPath>..\CommonDll\Nerdbank.Streams.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\CommonDll\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Stateless">
-      <HintPath>..\CommonDll\stateless.dll</HintPath>
-    </Reference>
-    <Reference Include="StreamJsonRpc">
-      <HintPath>..\CommonDll\StreamJsonRpc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing.Common">
-      <HintPath>..\CommonDll\System.Drawing.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Pipelines">
-      <HintPath>..\CommonDll\System.IO.Pipelines.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Linq.Async">
-      <HintPath>..\CommonDll\System.Linq.Async.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Management">
-      <HintPath>..\CommonDll\System.Management.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reflection.MetadataLoadContext">
-      <HintPath>..\CommonDll\System.Reflection.MetadataLoadContext.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ServiceProcess.ServiceController">
-      <HintPath>..\CommonDll\System.ServiceProcess.ServiceController.dll</HintPath>
-    </Reference>
-    <Reference Include="VcpCore.Common">
-      <HintPath>..\CommonDll\VcpCore.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="VcpCore.Interfaces">
-      <HintPath>..\CommonDll\VcpCore.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="WinRT.Runtime">
-      <HintPath>..\CommonDll\WinRT.Runtime.dll</HintPath>
-    </Reference>
+	<Content Include="json\DeviceConfig.json" />
+    <Content Include="json\ActHours.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DDPM.RemoteManagement.Common" Version="2.0.0.1" />
+    <PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
+    <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
+    <PackageReference Include="DellClientFramework" Version="6.4.11.2" />
   </ItemGroup>
 
 </Project>

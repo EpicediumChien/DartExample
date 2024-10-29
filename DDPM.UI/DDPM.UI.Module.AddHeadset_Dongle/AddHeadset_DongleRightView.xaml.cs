@@ -12,10 +12,9 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
         private readonly AddDeviceViewModel _vm;
 
         // 10/15 Derek for RWD
-        private readonly int alertTextOriWidth = 300, alertTextWidthRWD = 200;
-        private readonly Int16 breakPoints = 537;
-        private readonly int textBlockWidth = 250;
-        private readonly int textBlockWidthRWD = 220;
+        private readonly Int16 breakPoints = 910;
+        private Double textBlockWidth = 250;
+        private Double borderHeight = 240, borderWidth = 303;
 
         //private readonly string Step1 = "Connect your USB wireless receiver to your system";
         //private readonly string Step2 = "Power OFF headset. Hold mic mute button and power ON again.";
@@ -37,37 +36,41 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
         //10/13 Derek 需要根据breakpoints来调整布局
         private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints - 315)
                 ChangeToVerticalLayout();
             else
                 ChangeToHorizontalLayout();
 
             //bdrAlert.Width = this.ActualWidth;
             txtAlert.Width = bdrAlert.ActualWidth - 50;
+
+            AdjustBorderHeight();
+        }
+
+        private void AdjustBorderHeight()
+        {
+            stepsBorder1.Height = stepsBorder3.Height = stepsBorder2.ActualHeight;
         }
 
         private void ChangeToVerticalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Vertical;
 
-            //change Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 400;
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 180;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = this.ActualWidth - 58;
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = this.ActualWidth - 110;
+        }
 
-            //change textBlock size
-            txtStep1.Width = txtStep2.Width = txtStep3.Width = textBlockWidthRWD;
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            AdjustBorderHeight();
         }
 
         private void ChangeToHorizontalLayout()
         {
             stepsStackPanel.Orientation = Orientation.Horizontal;
 
-            //restore Border size
-            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = 303;
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = 262;
-
-            //restore textBlock size
-            txtStep1.Width = txtStep2.Width = txtStep3.Width = textBlockWidth;
+            txtStep1.Width = txtStep2.Width = txtStep3.Width = this.ActualWidth / 3 - 70;
+            stepsBorder1.Width = stepsBorder2.Width = stepsBorder3.Width = this.ActualWidth / 3 - 25;
         }
     }
 }

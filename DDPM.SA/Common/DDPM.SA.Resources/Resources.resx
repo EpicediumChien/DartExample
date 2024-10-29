@@ -210,4 +210,271 @@
   <data name="can_be_updated_to" xml:space="preserve">
     <value>can be updated to</value>
   </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="UpdateWillBeApplied" xml:space="preserve">
+    <value>Update will be applied</value>
+  </data>
+  <data name="UpdateAvailable_Info" xml:space="preserve">
+    <value>Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.</value>
+  </data>
+  <data name="UpdateWillBeApplied_Info" xml:space="preserve">
+    <value>Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="Defer" xml:space="preserve">
+    <value>Defer</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="Service_not_running_Try_again" xml:space="preserve">
+    <value>Service not running. Try again</value>
+  </data>
+  <data name="Timeout_error" xml:space="preserve">
+    <value>Timeout error</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Please double click mouse left button to start firmware update</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Please press \"U\" key on keyboard to start firmware update</value>
+  </data>
+  <data name="A0_Device_connected" xml:space="preserve">
+    <value>Device connected</value>
+  </data>
+  <data name="A1_Firmware_update_started" xml:space="preserve">
+    <value>Firmware update started</value>
+  </data>
+  <data name="A2_Firmware_update_successful" xml:space="preserve">
+    <value>Firmware update successful</value>
+  </data>
+  <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>USB wireless receiver firmware is unable to support device firmware upgrade</value>
+  </data>
+  <data name="update_failed_with_unknown_error" xml:space="preserve">
+    <value>update failed with unknown error</value>
+  </data>
+  <data name="User_aborted_firmware_update" xml:space="preserve">
+    <value>User aborted firmware update</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Installing</value>
+  </data>
+  <data name="Timeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
+  <data name="Downloading_and_installing" xml:space="preserve">
+    <value>Downloading and installing</value>
+  </data>
+  <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
+    <value>DDPM will reopen soon after update</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="Software_Update" xml:space="preserve">
+    <value>Software Update</value>
+  </data>
+  <data name="Firmware_Update" xml:space="preserve">
+    <value>Firmware Update</value>
+  </data>
+  <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
+    <value>Updating Software. Do not power off this PC.</value>
+  </data>
+  <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
+    <value>Updating firmware. Do not remove or power off the device. Leave the device undisturbed</value>
+  </data>
+  <data name="Unable_to_detect_target_device" xml:space="preserve">
+    <value>Unable to detect target device</value>
+  </data>
+  <data name="AI_Auto_Framing" xml:space="preserve">
+    <value>AI Auto-Framing</value>
+  </data>
+  <data name="ON" xml:space="preserve">
+    <value>ON</value>
+  </data>
+  <data name="OFF" xml:space="preserve">
+    <value>OFF</value>
+  </data>
+  <data name="Presets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="Auto_framing" xml:space="preserve">
+    <value>Auto-framing</value>
+  </data>
+  <data name="Field_of_View" xml:space="preserve">
+    <value>Field of View</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Smooth</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Vibrant</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Warm</value>
+  </data>
+  <data name="Standard_0" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Native_0" xml:space="preserve">
+    <value>Native</value>
+  </data>
+  <data name="Multimedia_0" xml:space="preserve">
+    <value>Multimedia</value>
+  </data>
+  <data name="Movie_0" xml:space="preserve">
+    <value>Movie</value>
+  </data>
+  <data name="Nature_0" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="Game_0" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Game_1" xml:space="preserve">
+    <value>Game1</value>
+  </data>
+  <data name="Sport_0" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="Text_0" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Warm_0" xml:space="preserve">
+    <value>Warm</value>
+  </data>
+  <data name="Cool_0" xml:space="preserve">
+    <value>Cool</value>
+  </data>
+  <data name="Custom_Color" xml:space="preserve">
+    <value>Custom Color</value>
+  </data>
+  <data name="ComfortView_0" xml:space="preserve">
+    <value>ComfortView</value>
+  </data>
+  <data name="Game_2" xml:space="preserve">
+    <value>Game2</value>
+  </data>
+  <data name="Game_3" xml:space="preserve">
+    <value>Game3</value>
+  </data>
+  <data name="Desktop_0" xml:space="preserve">
+    <value>Desktop</value>
+  </data>
+  <data name="Reference_0" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="Metro_0" xml:space="preserve">
+    <value>Metro</value>
+  </data>
+  <data name="Paper_0" xml:space="preserve">
+    <value>Paper</value>
+  </data>
+  <data name="Standard_HDR" xml:space="preserve">
+    <value>Standard HDR</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>Movie HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>Game HDR</value>
+  </data>
+  <data name="Vivid_HDR" xml:space="preserve">
+    <value>Vivid HDR</value>
+  </data>
+  <data name="Custom_1" xml:space="preserve">
+    <value>Custom 1</value>
+  </data>
+  <data name="Custom_2" xml:space="preserve">
+    <value>Custom 2</value>
+  </data>
+  <data name="Custom_3" xml:space="preserve">
+    <value>Custom 3</value>
+  </data>
+  <data name="User_1" xml:space="preserve">
+    <value>User 1</value>
+  </data>
+  <data name="User_2" xml:space="preserve">
+    <value>User 2</value>
+  </data>
+  <data name="User_3" xml:space="preserve">
+    <value>User 3</value>
+  </data>
+  <data name="SPORTS_Game" xml:space="preserve">
+    <value>SPORTS Game</value>
+  </data>
+  <data name="Custom_layout" xml:space="preserve">
+    <value>Custom layout</value>
+  </data>
+  <data name="Cancel_0" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Save_0" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Arrange_Windows" xml:space="preserve">
+    <value>Arrange Windows</value>
+  </data>
+  <data name="EA_MSG_0" xml:space="preserve">
+    <value>Adjust your current window arrangement, edit the name (if desired), and click “Save”  to store the arrangement.</value>
+  </data>
+  <data name="Battery_Low" xml:space="preserve">
+    <value>Battery Low</value>
+  </data>
+  <data name="Caps_Lock_On" xml:space="preserve">
+    <value>Caps Lock On</value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lock Off</value>
+  </data>
+  <data name="Easy_Memory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+  <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>Go to Widget Settings</value>
+  </data>
+  <data name="is_muted" xml:space="preserve">
+    <value>is muted</value>
+  </data>
+  <data name="is_Unmuted" xml:space="preserve">
+    <value>is Unmuted</value>
+  </data>
+  <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Num Lock Off</value>
+  </data>
+  <data name="Num_Lock_On" xml:space="preserve">
+    <value>Num Lock On</value>
+  </data>
+  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>Presence detection sensor is covered</value>
+  </data>
+  <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>To access Quick Settings Widget again, press and hold [Alt + Z] on your keyboard.</value>
+  </data>
+  <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Scroll Lock Off</value>
+  </data>
+  <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Scroll Lock On</value>
+  </data>
+  <data name="Export_MSG_0" xml:space="preserve">
+    <value>The same monitor is detected, do you want to import settings for</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>Walk Away Lock</value>
+  </data>
 </root>

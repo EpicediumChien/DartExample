@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.2.2" />
+		<PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -17,6 +17,9 @@
 	<ItemGroup>
 	  <Reference Include="DDPM.Peripherals.interface">
 	    <HintPath>..\..\dll\DDPM.Peripherals.interface.dll</HintPath>
+	  </Reference>
+	  <Reference Include="DPeMPublic.Common">
+	    <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

@@ -20,6 +20,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.CLIManager
@@ -213,7 +214,8 @@ namespace DDPM.SA.Plugin.CLIManager
                     }
                 }
                 counter++;
-                if (counter >= 60)//means timeout
+                //1028 change to timeout value that be customized by each command.Default is 60s.
+                if (counter >= commandLineInput.nTimeOutValue)//60)//means timeout
                 {
                     result.command_guid_string = arg.command_guid_string;
                     result.serialize_Json_response = Response_NoResultTimeout(commandLineInput);
@@ -235,7 +237,7 @@ namespace DDPM.SA.Plugin.CLIManager
             rst.ExitCode = (int)CLI_ExitCode.IT_Command_Not_Support;
             rst.command_guid_string = command_guid;
 
-            CLI_RESPONSE response = new CLI_RESPONSE();//for fail return using
+            APP_RESPONSE response = new APP_RESPONSE();//for fail return using
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
 
@@ -370,7 +372,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
                     //break;
-                case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
+                case "INAPPEXPORTIMPORT":      //INAPPEXPORTIMPORT       DDPMW-1335
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else

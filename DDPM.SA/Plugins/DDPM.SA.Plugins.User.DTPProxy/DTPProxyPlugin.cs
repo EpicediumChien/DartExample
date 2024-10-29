@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using DPeMPublic.Common.Enums;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -62,6 +63,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private Type _dockInterfaceType;
         private Type _headsetInterfaceType;
         private Type _webcamInterfaceType;
+        private Type _dongleInterfaceType;
         private MethodInfo _mouseMethodInfo;
         private MethodInfo _keyboardMethodInfo;
         private MethodInfo _penMethodInfo;
@@ -69,10 +71,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private MethodInfo _dockMethodInfo;
         private MethodInfo _headsetMethodInfo;
         private MethodInfo _webcamMethodInfo;
+        private MethodInfo _dongleMethodInfo;
 
         private ItemId _itemID;
         private ICommodity _comdity;
-        private const string PenItemID = "DellPeripheral.Pen.0";
+        private const string PenItemID = "DellPeripheral.Pen";
+        private const string PenItemID0 = "DellPeripheral.Pen.0";
+        private const string KeyboardItemID = "DellPeripheral.Keyboard";
+        private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
 
         public const string PluginLogId = "DTPProxy";
 
@@ -103,9 +109,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             OnNotify(new DeviceChangedEventArgs());
         }
 
-        public async Task<int> GetDpiValue(string itemID)
+
+
+        #region mouse
+        public async Task<int> GetDpiValue(string Guid)
         {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return -1; }
 
             if (_mouseMethodInfo != null)
             {
@@ -129,10 +139,138 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-
-        public async Task SetDPIValue(string itemID, int newValue)
+        public async Task<JArray> GetMouseAssignableActions(string Guid)
         {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
+        public async Task<JArray> GetMouseProgrammableKeys(string Guid)
+        {
+            Debug.Write($"GetMouseProgrammableKeys - Guid: {Guid}");
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProgrammableKeys");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
+        public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "DeleteAllAssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<JArray> GetAppSpecificProfiles(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
+        public async Task<string> GetMouseKeystrokeDisplayData(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return string.Empty; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "KeystrokeDisplayData");
+                Debug.WriteLine($"{value ?? ""}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return string.Empty;
+            }
+        }
+        public async Task<bool> StartMouseKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "StartKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<bool> StopMouseKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "StopKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+
+        public async Task SetDpiValue(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
 
             if (_mouseMethodInfo != null)
             {
@@ -153,42 +291,273 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task SetMouseAction(string Guid, byte[] newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignedAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+            }
+        }
+        public async Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "CurrentSelectedAppSpecificProfile", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+            }
+        }
+        public async Task DeleteMouseAssignedAction(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "DeleteAssignedAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+            }
+        }
+        public async Task SetMouseAssignDialogAction(string Guid, byte[] newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignDialogAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+            }
+        }
+        public async Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_mouseInterfaceType, commodity, "AssignKeystrokeAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+            }
+        }
+
+        #endregion
+
+        #region keyboard
+
+        //IKeyboardCommodity.DeleteAssignedAction
+
+        public async Task DeleteKeyboardAssignedAction(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "DeleteAssignedAction", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        //ProgrammableKeys
+        public async Task<JArray> GetKbProgrammableKeys(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "ProgrammableKeys");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
+        public async Task<bool> DeleteKeyboardAllAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "DeleteAllAssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+
+        public async Task<JArray> GetKbAssignableActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                return new JArray();
+            }
+        }
+        public async Task<JArray> GetKeyboardDeviceItemsEx()
+        {
+            _itemID = new ItemId(KeyboardItemID);
+
+            if (_keyboardMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_keyboardInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return new JArray();
+            }
+
+        }
+
+
+        public async Task SetKbAssignKeystrokeAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return; }
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignKeystrokeAction", Encoding.UTF8.GetBytes(newValue));
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task SetKbAssignDialogAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignDialogAction", Encoding.UTF8.GetBytes(newValue));
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        public async Task SetKbAssignedAction(string Guid, string newValue)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_keyboardInterfaceType, commodity, "AssignedAction", Encoding.UTF8.GetBytes(newValue));
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        #endregion
+
 
         #region Webcam
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "PresetProfiles");
-                Debug.WriteLine($"{value}");
-                return (JArray)value;
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
         public async Task<JArray> GetCustomProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return (JArray)""; }
+            { return new JArray(); }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_webcamInterfaceType, commodity, "CustomProfiles");
-                Debug.WriteLine($"{value}");
-                return (JArray)value;
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                return (JArray)"";
+                return new JArray();
             }
         }
 
@@ -245,33 +614,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetBrightnessValue(string itemID, int newValue)
+        public async Task<string> GetCameraFirmwareVersion(string Guid)
         {
-            _itemID = new ItemId(itemID);
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetBrightnessValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetBrightnessValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-            }
-
-        }
-
-        public async Task<string> GetCameraFirmwareVersion(string itemID)
-        {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return string.Empty; }
 
             if (_webcamMethodInfo != null)
             {
@@ -296,10 +642,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> CheckIsPropertyFOVSupported(string itemID)
+        public async Task<bool> GetIsPropertyFOVSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -325,10 +670,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<int> GetFieldOfViewValue(string itemID)
+        public async Task<int> GetFieldOfView(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
             if (_webcamMethodInfo != null)
@@ -354,10 +698,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> CheckIsPropertyHDRSupported(string itemID)
+        public async Task<bool> GetIsPropertyHDRSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -383,10 +726,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> GetIsHDROnValue(string itemID)
+        public async Task<bool> GetIsHDROn(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -398,8 +740,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"[GetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[GetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[GetIsHDROn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsHDROn]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
@@ -412,36 +754,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task SetIsHDROnValue(string itemID, bool newValue)
+        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
-            { return; }
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "IsHDROn", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetIsHDROnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetIsHDROnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-            }
-
-        }
-
-        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID)
-        {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -467,10 +782,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<int> GetAntiFlickerValue(string itemID)
+        public async Task<int> GetAntiFlicker(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return -1; }
 
             if (_webcamMethodInfo != null)
@@ -496,36 +810,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task SetAntiFlickerValue(string itemID, int newValue)
+        public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
-            { return; }
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-            }
-
-        }
-
-        public async Task<bool> CheckIsPropertyAutoFramingSupported(string itemID)
-        {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -551,10 +838,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
-        public async Task<bool> GetIsAutoFramingOnValue(string itemID)
+        public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
+            if (!await GetItemIDAsync("Webcam", Guid))
             { return false; }
 
             if (_webcamMethodInfo != null)
@@ -576,32 +862,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
-            }
-
-        }
-
-        public async Task SetIsAutoFramingOnValue(string itemID, bool newValue)
-        {
-            //_itemID = new ItemId(itemID);
-            if (!await GetItemIDAsync("Webcam", itemID))
-            { return; }
-
-            if (_webcamMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
-                writelog($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
             }
 
         }
@@ -1334,20 +1594,37 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> GetItemIDAsync(string type, string guid)
         {
+            if (string.IsNullOrEmpty(type))
+            {
+                writelog($"Type is empty!");
+                return false;
+            }
+            if (string.IsNullOrEmpty(guid))
+            {
+                writelog($"Guid is empty!");
+                return false;
+            }
+
             MethodInfo methodInfo = type switch
             {
+                "Mouse" => _mouseMethodInfo,
+                "Keyboard" => _keyboardMethodInfo,
                 "Pen" => _penMethodInfo,
                 "Webcam" => _webcamMethodInfo,
                 "Headset" => _headsetMethodInfo,
                 "Speaker" => _speakerMethodInfo,
+                "Dongle" => _dongleMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
             {
+                "Mouse" => _mouseInterfaceType,
+                "Keyboard" => _keyboardInterfaceType,
                 "Pen" => _penInterfaceType,
                 "Webcam" => _webcamInterfaceType,
                 "Headset" => _headsetInterfaceType,
                 "Speaker" => _speakerInterfaceType,
+                "Dongle" => _dongleInterfaceType,
                 _ => null
             };
 
@@ -1355,7 +1632,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (methodInfo == null)
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface to get Guid");
-                writelog($"Could not retrieve the Commodity Interface to get Guid");
+                writelog($"Could not retrieve the Commodity methodInfo to get Guid");
+                return false;
+            }
+
+            if (interfaceType == null)
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface to get Guid");
+                writelog($"Could not retrieve the Commodity interfaceType to get Guid");
                 return false;
             }
 
@@ -1387,11 +1671,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task<string> PairingPen()
         {
-            _itemID = new ItemId("DellPeripheral.Pen");
+            _itemID = new ItemId(PenItemID);
             if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
                 var value = GetPropertyValue(_penInterfaceType, commodity, "Pair");
-                Debug.WriteLine($"Pen Pair value: {value}");
+                Debug.WriteLine($"Pen Pair value: {value ?? ""}");
                 return (string)value;
             }
             else
@@ -1401,10 +1685,59 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return "";
             }
         }
+        public async Task UnPairPen(string Guid)
+        {
+            if (!await GetItemIDAsync("Pen", Guid))
+            { return; }
 
-        public async Task<string> GetEraserDoublePressValues()
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "UnPair", true);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[UnPairPen]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[UnPairPen]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
+        }
+
+        public async Task<JArray> GetPenDeviceItemsEx()
         {
             _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "DeviceItemsEx");
+                    return value == null ? new JArray() : (JArray)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return new JArray();
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return new JArray();
+            }
+
+        }
+        public async Task<string> GetEraserDoublePressValues()
+        {
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1428,9 +1761,61 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
+        public async Task<string> GetEraserSinglePressValues()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserSinglePressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
+        public async Task<string> GetEraserLongPressValues()
+        {
+            _itemID = new ItemId(PenItemID0);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressValues");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return "";
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetEraserLongPressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetEraserLongPressValues]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return "";
+            }
+
+        }
         public async Task<string> GetSideSwitchSinglePressValues()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1456,7 +1841,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetMenuSinglePressValues()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1482,7 +1867,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetLaunchableAppValues()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1508,7 +1893,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetEraserDoublePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1534,7 +1919,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetEraserSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1560,7 +1945,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetEraserLongPressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1586,7 +1971,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetSideTopSwitchSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1612,7 +1997,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetSideBottomSwitchSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1638,7 +2023,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<string> GetMenuSinglePressSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1664,7 +2049,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<bool> GetMenuCenterRightClickSetting()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1690,7 +2075,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<bool> GetIsSideTopButtonHoverClick()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1716,7 +2101,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         public async Task<bool> GetIsSideBottomButtonHoverClick()
         {
-            _itemID = new ItemId(PenItemID);
+            _itemID = new ItemId(PenItemID0);
 
             if (_penMethodInfo != null)
             {
@@ -1925,29 +2310,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue)
-        {
-            _itemID = new ItemId(itemID);
-
-            if (_penMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-            }
-        }
-        public async Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue)
+        public async Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
 
@@ -2018,261 +2381,2130 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #endregion
 
+        #region Headset set
+
+        public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation", newValue);
+                    writelog(" [Headset] SetMicNoiseCancellationAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetMicNoiseCancellationAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetSidetoneAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Sidetone", newValue);
+                    writelog(" [Headset] SetSidetoneAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetSidetoneAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBusyLightAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BusyLight", newValue);
+                    writelog(" [Headset] SetBusyLightAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBusyLightAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetVoiceGuidanceAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance", newValue);
+                    writelog(" [Headset] SetVoiceGuidanceAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetVoiceGuidanceAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetSelectedPresetAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset", newValue);
+                    writelog(" [Headset] SetSelectedPresetAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetSelectedPresetAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetSidetoneLevelAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel", newValue);
+                    writelog(" [Headset] SetSidetoneLevelAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetSidetoneLevelAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBandsGainAsync(string guidString, byte[] newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "BandsGain", newValue);
+                    writelog(" [Headset] SetBandsGainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBandsGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAncModeAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "AncMode", newValue);
+                    writelog(" [Headset] SetAncModeAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetAncModeAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAncGainAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "AncGain", newValue);
+                    writelog(" [Headset] SetAncGainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetAncGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWearDetectionAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "WearDetection", newValue);
+                    writelog(" [Headset] SetWearDetectionAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetWearDetectionAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetMicNCIncomingAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming", newValue);
+                    writelog(" [Headset] SetMicNCIncomingAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetMicNCIncomingAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetUnPairAsync(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "UnPair", newValue);
+                    writelog(" [Headset] SetUnPairAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetUnPairAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guidString, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                    writelog(" [Headset] SetFactoryResetAsyncValueForHeadset Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetFactoryResetAsyncValueForHeadset failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion Headset set
+
+        #region Headset Get
+
+        public async Task<JArray> GetDeviceItemsExAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceItemsEx");
+                    writelog($"[Headset] GetDeviceItemsExAsync succeeded for {guid}");
+                    return (JArray)value;
+                }
+
+                writelog($"[Headset] GetDeviceItemsExAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetDeviceItemsExAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<DeviceInterfaceType> GetInterfaceTypeAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return default;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "InterfaceType");
+                    writelog($"[Headset] GetInterfaceTypeAsync succeeded for {guid}");
+                    return (DeviceInterfaceType)value;
+                }
+
+                writelog($"[Headset] GetInterfaceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return default;
+            }
+        }
+
+        public async Task<string> GetDeviceNameAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceName");
+                    writelog($"[Headset] GetDeviceNameAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetDeviceNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetDeviceIdAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceId");
+                    writelog($"[Headset] GetDeviceIdAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetDeviceIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPluginIdAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PluginId");
+                    writelog($"[Headset] GetPluginIdAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPluginIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPluginIdAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetODMIdAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "ODMId");
+                    writelog($"[Headset] GetODMIdAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetODMIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetModelNumberAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "ModelNumber");
+                    writelog($"[Headset] GetModelNumberAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetModelNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetModelNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetInstanceNumberAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "InstanceNumber");
+                    writelog($"[Headset] GetInstanceNumberAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetInstanceNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetInstanceIdAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "InstanceId");
+                    writelog($"[Headset] GetInstanceIdAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetInstanceIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetFirmwareVersionAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "FirmwareVersion");
+                    writelog($"[Headset] GetFirmwareVersionAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetFirmwareVersionAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetDeviceTypeAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceType");
+                    writelog($"[Headset] GetDeviceTypeAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetParentDeviceTypeAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "ParentDeviceType");
+                    writelog($"[Headset] GetParentDeviceTypeAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetParentDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> GetIsBatteryLevelSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBatteryLevelSupported");
+                    writelog($"[Headset] GetIsBatteryLevelSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsBatteryLevelSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetBatteryLevelAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "BatteryLevel");
+                    writelog($"[Headset] GetBatteryLevelAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetBatteryLevelAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetDeviceBatteryStatusAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "DeviceBatteryStatus");
+                    writelog($"[Headset] GetDeviceBatteryStatusAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetDeviceBatteryStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetPairingStatusAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairingStatus");
+                    writelog($"[Headset] GetPairingStatusAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetPairingStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetMaxPairingSlotsAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "MaxPairingSlots");
+                    writelog($"[Headset] GetMaxPairingSlotsAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetMaxPairingSlotsAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetPairedDeviceCountAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "PairedDeviceCount");
+                    writelog($"[Headset] GetPairedDeviceCountAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetPairedDeviceCountAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+        #region Headset Get (continued)
+
+        public async Task<int> GetTotalNumberOfPairedHostNameAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "TotalNumberOfPairedHostName");
+                    writelog($"[Headset] GetTotalNumberOfPairedHostNameAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetTotalNumberOfPairedHostNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<string> GetSerialNumberAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "SerialNumber");
+                    writelog($"[Headset] GetSerialNumberAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Headset] GetSerialNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> GetIsReadyAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsReady");
+                    writelog($"[Headset] GetIsReadyAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsReadyAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsReadyAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsDirtyAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsDirty");
+                    writelog($"[Headset] GetIsDirtyAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsDirtyAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsMicNoiseCancellationSupported");
+                    writelog($"[Headset] GetIsMicNoiseCancellationSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsMicNoiseCancellationSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsSidetoneSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsSidetoneSupported");
+                    writelog($"[Headset] GetIsSidetoneSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsSidetoneSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBusyLightSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsBusyLightSupported");
+                    writelog($"[Headset] GetIsBusyLightSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsBusyLightSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsVoiceGuidanceSupported");
+                    writelog($"[Headset] GetIsVoiceGuidanceSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsVoiceGuidanceSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsPresetsSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsPresetsSupported");
+                    writelog($"[Headset] GetIsPresetsSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsPresetsSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsEqualizerSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsEqualizerSupported");
+                    writelog($"[Headset] GetIsEqualizerSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "ConnectionType");
+                    writelog($"[Headset] GetConnectionTypeAsync succeeded for {guid}");
+                    return (HeadsetConnectionType)value;
+                }
+
+                writelog($"[Headset] GetConnectionTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+        }
+
+        public async Task<bool> GetIsANCSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsANCSupported");
+                    writelog($"[Headset] GetIsANCSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsANCSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionSupported");
+                    writelog($"[Headset] GetIsWearDetectionSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsWearDetectionSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionSensitivitySupported");
+                    writelog($"[Headset] GetIsWearDetectionSensitivitySupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsWearDetectionSensitivitySupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionPauseMusicSupported");
+                    writelog($"[Headset] GetIsWearDetectionPauseMusicSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsWearDetectionPauseMusicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionMuteMicSupported");
+                    writelog($"[Headset] GetIsWearDetectionMuteMicSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsWearDetectionMuteMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
+                    writelog($"[Headset] GetIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetMicNoiseCancellationAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "MicNoiseCancellation");
+                    writelog($"[Headset] GetMicNoiseCancellationAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetMicNoiseCancellationAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetMicNCIncomingAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "MicNCIncoming");
+                    writelog($"[Headset] GetMicNCIncomingAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetMicNCIncomingAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetSidetoneAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "Sidetone");
+                    writelog($"[Headset] GetSidetoneAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetSidetoneAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetSidetoneAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBusyLightAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "BusyLight");
+                    writelog($"[Headset] GetBusyLightAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetBusyLightAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBusyLightAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetVoiceGuidanceAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "VoiceGuidance");
+                    writelog($"[Headset] GetVoiceGuidanceAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetVoiceGuidanceAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetSelectedPresetAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "SelectedPreset");
+                    writelog($"[Headset] GetSelectedPresetAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetSelectedPresetAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetSidetoneLevelAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "SidetoneLevel");
+                    writelog($"[Headset] GetSidetoneLevelAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetSidetoneLevelAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetMuteStatusAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "MuteStatus");
+                    writelog($"[Headset] GetMuteStatusAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetMuteStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<byte[]> GetBandsGainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "BandsGain");
+                    writelog($"[Headset] GetBandsGainAsync succeeded for {guid}");
+                    return (byte[])value;
+                }
+
+                writelog($"[Headset] GetBandsGainAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetAncModeAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "AncMode");
+                    writelog($"[Headset] GetAncModeAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetAncModeAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetAncModeAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAncGainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "AncGain");
+                    writelog($"[Headset] GetAncGainAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetAncGainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetAncGainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetWearDetectionAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "WearDetection");
+                    writelog($"[Headset] GetWearDetectionAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetWearDetectionAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "IsMicNCIncomingSupported");
+                    writelog($"[Headset] GetIsMicNCIncomingSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Headset] GetIsMicNCIncomingSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion Headset Get
+
+        #endregion
+
         #region WiredAudio
 
-        public async Task SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
-        {
-            Trace.WriteLine("SetFactoryResetAsyncValue **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Headset", Guid))
-            { return; }
 
-            if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+        public async Task<bool> SetBassAsync(string guid, int newValue)
+        {
+            try
             {
-                SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "Bass", newValue);
+                    writelog(" [Speaker] SetBassAsync Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                writelog($"[Speaker] SetBassAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "MidRange", newValue);
+                    writelog(" [Speaker] SetMidRangeAsync Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetMidRangeAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetTrebleAsync(string guid, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "Treble", newValue);
+                    writelog(" [Speaker] SetTrebleAsync Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetTrebleAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "Profile", newValue);
+                    writelog(" [Speaker] SetProfileForSpeaker Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetProfileForSpeakerAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable", newValue);
+                    writelog(" [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetIsWiredAudioMicMuteSoundEnableAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone", newValue);
+                    writelog(" [Speaker] SetWiredAudioVolumeAdjustmentToneAsync Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetWiredAudioVolumeAdjustmentToneAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable", newValue);
+                    writelog(" [Speaker] SetIsWiredAudioIMicNSEnableAsync Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetIsWiredAudioIMicNSEnableAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                { return false; }
+
+                if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_speakerInterfaceType, commodity, "ResetToDefault", true);
+                    writelog(" [Speaker] SetResetToDefaultAsyncForSoundbar Success ! ");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] SetResetToDefaultAsyncForSoundbar failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        /////////////////////////Get////////////////////////////////
+
+        public async Task<string> GetProfileAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "Profile");
+                    writelog($"[Speaker] GetProfileAsync succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Speaker] GetProfileAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<int> GetBassAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "Bass");
+                    writelog($"[Speaker] GetBassAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Speaker] GetBassAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetBassAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetMidRangeAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "MidRange");
+                    writelog($"[Speaker] GetMidRangeAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Speaker] GetMidRangeAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetTrebleAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "Treble");
+                    writelog($"[Speaker] GetTrebleAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Speaker] GetTrebleAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable");
+                    writelog($"[Speaker] GetIsWiredAudioMicMuteSoundEnableAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone");
+                    writelog($"[Speaker] GetWiredAudioVolumeAdjustmentToneAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable");
+                    writelog($"[Speaker] GetIsWiredAudioIMicNSEnableAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsWiredAudioIMicNSEnableAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                {
+                    writelog(" [Speaker] Failed to retrieve guid.");
+                    return false;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsAudioEqualizerSupported");
+                    writelog($"[Speaker] GetIsAudioEqualizerSupportedAsync succeeded for {guid}");
+                    return (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsAudioEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsAudioEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
             }
         }
 
         #endregion
 
-        #region WiredAudio
-        public async Task SetBassAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine("SetBassAsync **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
+        #region Dongle
 
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
+        public async Task<string> GetFirmwareVersionAsyncForDongle(string guid)
+        {
+            try
             {
-                SetPropertyValue(_speakerInterfaceType, commodity, "Bass", newValue);
+                if (!await GetItemIDAsync("Dongle", guid))
+                {
+                    writelog(" [Dongle] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dongleInterfaceType, commodity, "FirmwareVersion");
+                    writelog($"[Dongle] GetFirmwareVersionAsyncForDongle succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Dongle] GetFirmwareVersionAsyncForDongle failed: Could not retrieve commodity interface for {guid}");
+                return null;
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[Dongle] GetFirmwareVersionAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
             }
         }
 
-        public async Task<int> GetBassAsync(string Guid)
+        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string guid)
         {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return -1; }
+            try
+            {
+                if (!await GetItemIDAsync("Dongle", guid))
+                {
+                    writelog(" [Dongle] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dongleInterfaceType, commodity, "ConnectedDeviceInfo");
+                    writelog($"[Dongle] GetConnectedDeviceInfoAsyncForDongle succeeded for {guid}");
+                    return (string)value;
+                }
 
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_speakerInterfaceType, commodity, "Bass");
-                Trace.WriteLine("GetBassAsync **********" + Guid + " || " + value.ToString());
-                return (int)value;
+                writelog($"[Dongle] GetConnectedDeviceInfoAsyncForDongle failed: Could not retrieve commodity interface for {guid}");
+                return null;
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"[GetBassAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"[GetBassAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                return -1;
+                writelog($"[Dongle] GetConnectedDeviceInfoAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
             }
         }
 
-        public async Task SetMidRangeAsync(string Guid, int newValue)
+        public async Task<string> GetDeviceIdAsyncForDongle(string guid)
         {
-            Trace.WriteLine("SetMidRangeAsync **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
+            try
+            {
+                if (!await GetItemIDAsync("Dongle", guid))
+                {
+                    writelog(" [Dongle] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dongleInterfaceType, commodity, "DeviceId");
+                    writelog($"[Dongle] GetDeviceIdAsyncForDongle succeeded for {guid}");
+                    return (string)value;
+                }
 
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_speakerInterfaceType, commodity, "MidRange", newValue);
+                writelog($"[Dongle] GetDeviceIdAsyncForDongle failed: Could not retrieve commodity interface for {guid}");
+                return null;
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[Dongle] GetDeviceIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
             }
         }
 
-        public async Task<int> GetMidRangeAsync(string Guid)
+        public async Task<string> GetPluginIdAsyncForDongle(string guid)
         {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return -1; }
+            try
+            {
+                if (!await GetItemIDAsync("Dongle", guid))
+                {
+                    writelog(" [Dongle] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dongleInterfaceType, commodity, "PluginId");
+                    writelog($"[Dongle] GetPluginIdAsyncForDongle succeeded for {guid}");
+                    return (string)value;
+                }
 
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_speakerInterfaceType, commodity, "MidRange");
-                Trace.WriteLine("GetBassAsync **********" + Guid + " || " + value.ToString());
-                return (int)value;
+                writelog($"[Dongle] GetPluginIdAsyncForDongle failed: Could not retrieve commodity interface for {guid}");
+                return null;
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"[GetBasGetMidRangeAsyncsAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"[GetMidRangeAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                return -1;
-            }
-        }
-        public async Task SetTrebleAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine("SetTrebleAsync **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_speakerInterfaceType, commodity, "Treble", newValue);
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
+                writelog($"[Dongle] GetPluginIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
             }
         }
 
-        public async Task<int> GetTrebleAsync(string Guid)
+        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string guid)
         {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return -1; }
+            try
+            {
+                if (!await GetItemIDAsync("Dongle", guid))
+                {
+                    writelog(" [Dongle] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dongleInterfaceType, commodity, "DeviceItemsEx");
+                    writelog($"[Dongle] GetDeviceItemsExAsyncForDongle succeeded for {guid}");
+                    return (JArray)value;
+                }
 
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_speakerInterfaceType, commodity, "Treble");
-                Trace.WriteLine("GetTrebleAsync **********" + Guid + " || " + value.ToString());
-                return (int)value;
+                writelog($"[Dongle] GetDeviceItemsExAsyncForDongle failed: Could not retrieve commodity interface for {guid}");
+                return null;
             }
-            else
+            catch (Exception ex)
             {
-                Debug.WriteLine($"[GetTrebleAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"[GetTrebleAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                return -1;
+                writelog($"[Dongle] GetDeviceItemsExAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                return null;
             }
         }
 
-        //--------------------------------------
-        public async Task SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
-        {
-            Trace.WriteLine("SetIsWiredAudioMicMuteSoundEnableAsync **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable", newValue);
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
-        {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return false; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable");
-                Trace.WriteLine("GetIsWiredAudioMicMuteSoundEnableAsync **********" + Guid + " || " + value.ToString());
-                return (bool)value;
-            }
-            else
-            {
-                Debug.WriteLine($"[GetIsWiredAudioMicMuteSoundEnableAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWiredAudioMicMuteSoundEnableAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                return false;
-            }
-        }
-
-        //--------------------------------------
-        public async Task SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
-        {
-            Trace.WriteLine("SetIsWiredAudioIMicNSEnableValue **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone", newValue);
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
-        {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return -1; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_speakerInterfaceType, commodity, "WiredAudioVolumeAdjustmentTone");
-                Trace.WriteLine("GetWiredAudioVolumeAdjustmentToneAsync **********" + Guid + " || " + value.ToString());
-                return (int)value;
-            }
-            else
-            {
-                Debug.WriteLine($"[GetWiredAudioVolumeAdjustmentToneAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"[GetWiredAudioVolumeAdjustmentToneAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                return -1;
-            }
-        }
-
-        //--------------------------------------
-        public async Task SetIsWiredAudioIMicNSEnableValue(string Guid, bool newValue)
-        {
-            Trace.WriteLine("SetIsWiredAudioIMicNSEnableValue **********" + Guid + " || " + newValue.ToString());
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable", newValue);
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-            }
-        }
-
-        public async Task<bool> GetIsWiredAudioIMicNSEnableValueAsync(string Guid)
-        {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return false; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable");
-                Trace.WriteLine("GetIsWiredAudioIMicNSEnableValueAsync **********" + Guid + " || " + value.ToString());
-                return (bool)value;
-            }
-            else
-            {
-                Debug.WriteLine($"[GetIsWiredAudioIMicNSEnableValueAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"[GetIsWiredAudioIMicNSEnableValueAsync]Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                return false;
-            }
-        }
-        //--------------------------------------
-        public async Task SetResetToDefaultValueAsync(string Guid, bool newValue)
-        {
-            if (!await GetItemIDAsync("Speaker", Guid))
-            { return; }
-
-            if (await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo) is ICommodity commodity)
-            {
-                SetPropertyValue(_speakerInterfaceType, commodity, "ResetToDefault", newValue);
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_speakerInterfaceType} for the {_itemID} item.");
-            }
-        }
 
         #endregion
 
@@ -2368,8 +4600,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
-                writelog($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
+                Debug.WriteLine($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
+                writelog($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
                 return null;
             }
         }
@@ -2385,10 +4617,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 _ = Task.Run(async () =>
                 {
-                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
-                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
 
+                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
                     if (_mouseInterfaceType != null)
                     {
                         _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
@@ -2399,6 +4631,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     else
                     {
                         writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
+                    writelog($"Find IKeyboardCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _keyboardInterfaceType = FindCommodityInterfaceType("IKeyboardCommodity");
+                    if (_keyboardInterfaceType != null)
+                    {
+                        _keyboardMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                        .MakeGenericMethod(_keyboardInterfaceType);
+                        writelog($"Find IKeyboardCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IKeyboardCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
                     writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
@@ -2434,6 +4679,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         _headsetMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                                     .MakeGenericMethod(_headsetInterfaceType);
+
                         writelog($"Find IHeadsetCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
                     else
@@ -2452,6 +4698,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     else
                     {
                         writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
+                    writelog($"Find IDongleCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _dongleInterfaceType = FindCommodityInterfaceType("IDongleCommodity");
+                    if (_dongleInterfaceType != null)
+                    {
+                        _dongleMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                    .MakeGenericMethod(_dongleInterfaceType);
+                        writelog($"Find IDongleCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
                     _ = RegisterEventAsync();
@@ -2493,9 +4752,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     _headsetcom.IsReadyChanged += _headsetcomdity_IsReadyChanged;
                     _headsetcom.FirmwareVersionChanged += _headsetcomdity_FirmwareVersionChanged;
-                    //_headsetcom.AncModeChanged += _comdity_AncModeChange;
-                    //_headsetcom.Connected += _comdity_Connected;
-                    //_headsetcom.Disconnected += _comdity_Disconnected;
+                    _headsetcom.AncModeChanged += _headsetcomdity_AncModeChange;
+                    _headsetcom.Connected += _comdity_Connected;
+                    _headsetcom.Disconnected += _comdity_Disconnected;
                     writelog($"Headset Commodity event registered");
                 }
                 catch (Exception e)
@@ -2510,14 +4769,36 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    _speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
-                    _speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
-                    _speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
+                    //_speakercom.IsIMicNSEnabledChanged += _speakercomdity_IsIMicNSEnabledChanged;
+                    //_speakercom.VolumeAdjustmentToneChanged += _speakercomdity_VolumeAdjustmentToneChanged;
+                    //_speakercom.IsMicMuteSoundEnabledChanged += _speakercomdity_IsMicMuteSoundEnabledChanged;
+                    //_speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
+                    //EventHandler<MuteStatusChangedArgs> MuteStatusChanged;
+                    //AddMuteStatusChangedEventAsync
+                    _speakercom.Connected += _comdity_Connected;
+                    _speakercom.Disconnected += _comdity_Disconnected;
+                    _speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
                     writelog($"Speaker Commodity event registered");
                 }
                 catch (Exception e)
                 {
                     writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IDongleCommodity>(new ItemId("DellPeripheral.Dongle"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IDongleCommodity _donglecom)
+            {
+                try
+                {
+                    _donglecom.Connected += _comdity_Connected;
+                    _donglecom.Disconnected += _comdity_Disconnected;
+                    writelog($"Dongle Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
 
@@ -2557,7 +4838,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                Debug.WriteLine($"{commodity.GetType().Name}");
+                Debug.WriteLine($"commodity: {commodity.GetType().Name} Property: {property}");
                 return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
             }
             catch (Exception ex)
@@ -2570,7 +4851,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
         {
-            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value}");
+            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
@@ -2583,18 +4864,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
-            var payloadBytes = (byte[])value;
-            var payloadSize = payloadBytes.Length;
-            var byteArray = new byte[payloadSize + 4];
-            BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
-            payloadBytes.CopyTo(byteArray, 4);
-
             Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
             try
             {
-                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
-                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
             }
             catch (Exception ex)
             {
@@ -2611,34 +4884,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             Debug.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
 
-        #region Headset
+        #region Headset Event
 
         private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "IsReadyChanged";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"IsReadyChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "FirmwareVersionChanged";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"FirmwareVersionChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         private void _headsetcomdity_AncModeChange(object sender, AncModeChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "AncModeChange";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"AncModeChange Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         #endregion
 
@@ -2646,30 +4907,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void _speakercomdity_IsIMicNSEnabledChanged(object sender, IsIMicNSEnabledChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "IsIMicNSEnabledChanged";
-            OnNotify(_EventArgs);
-            Debug.WriteLine($"IsIMicNSEnabledChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Speaker] IsIMicNSEnabledChanged {e.IsIMicNSEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsIMicNSEnabledChanged {e.IsIMicNSEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void _speakercomdity_VolumeAdjustmentToneChanged(object sender, VolumeAdjustmentToneChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "VolumeAdjustmentToneChanged(";
-            Debug.WriteLine($"VolumeAdjustmentToneChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Speaker] VolumeAdjustmentToneChanged {e.VolumeAdjustmentTone} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] VolumeAdjustmentToneChanged {e.VolumeAdjustmentTone} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
 
         private void _speakercomdity_IsMicMuteSoundEnabledChanged(object sender, IsMicMuteSoundEnabledChangedArgs e)
         {
-            DeviceChangedEventArgs _EventArgs = new();
-            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-            //_EventArgs.device_peripherals = deviceInfo;
-            _EventArgs.changedProperty = "IsMicMuteSoundEnabledChanged(";
-            Debug.WriteLine($"IsMicMuteSoundEnabledChanged Device ID: {e.DeviceId} ");
+            Debug.WriteLine($"[Speaker] IsMicMuteSoundEnabledChanged {e.IsMicMuteSoundEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMicMuteSoundEnabledChanged {e.IsMicMuteSoundEnabled} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+        }
+
+        private void _speakercomdity_IsMuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            Debug.WriteLine($"[Speaker] IsMuteStatusChanged {e.MuteStatus} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
+            writelog($"[Speaker] IsMuteStatusChanged {e.MuteStatus} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
         }
         #endregion
     }

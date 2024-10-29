@@ -445,5 +445,23 @@ namespace DDPM.UI.Common.UserControls
         }
 
         #endregion
+
+        #region Custom List
+        public void RefreshCustomEAID()
+        {
+            if (SplitOwner == eSplitOwner.EaCustom)
+            {
+                int idx = 0;
+                foreach(SplitItem spIem in SplitList)
+                {
+                    if (spIem.ISplitCtrl != null)
+                    {
+                        spIem.ISplitCtrl.EAID = EAEMConstants.EAID_FirstCustom + idx;
+                        idx++;
+                    }
+                }
+            }
+        }
+        #endregion Custom List
     }
 }

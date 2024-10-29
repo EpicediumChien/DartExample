@@ -26,6 +26,7 @@ namespace DDPM.UI.Common
         public static readonly string On = GetString("On");
         public static readonly string Off = GetString("Off");
         public static readonly string RestoreToDefault = GetString("RestoreToDefault");
+        public static readonly string RestoreToDefaultActions = GetString("RestoreToDefaultActions");
         public static readonly string Unpair = GetString("Unpair");
         public static readonly string PollingRateInfoTip1 = GetString("Mouse.13");
         public static readonly string PollingRateInfoTip2 = GetString("Mouse.14");
@@ -112,7 +113,7 @@ namespace DDPM.UI.Common
         public static readonly string FirmwareVersion = GetString("FirmwareVersion"); //"Firmware Version"
         public static readonly string ServiceTag = GetString("ServiceTag"); //"Service Tag"
         public static readonly string ManufactureMonth = GetString("ManufactureMonth"); //"Manufactured"
-        public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
+        //public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
 
         //strings for Action
         public static readonly string None = GetString("None");//None
@@ -524,7 +525,6 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughHeadsetWL7024_Main3 = GetString("WalkThroughHeadsetWL7024_Main.3");
         public static readonly string WalkThroughHeadsetWL7024_Sub3 = GetString("WalkThroughHeadsetWL7024_Sub.3");
 
-
         //OpenAction
         public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
         public static readonly string OpenFileDesc = "Click the browse button to select a file";
@@ -569,6 +569,7 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
         public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
         public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+
         // Pair/Unpair
         public static readonly string Caption = "Are you sure?";
         public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";

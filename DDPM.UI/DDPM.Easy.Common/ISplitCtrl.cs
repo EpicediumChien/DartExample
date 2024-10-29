@@ -15,9 +15,10 @@ namespace DDPM.Easy.Common
     {
         #region Collection of support SplitCtrl classes
 
-        //All support class of EasyArrange
+        //EasyArrange preset layouts
         public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
         {
+            // 2 Windows
             new SplitCtrl2A(), new SplitCtrl2B(), new SplitCtrl2C(), new SplitCtrl2D(),
             new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
             new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
@@ -178,7 +179,6 @@ namespace DDPM.Easy.Common
         public List<CellObj> CellList { get; set; }
 
        // public void UpdateSettingsToCells();
-
         #endregion Cell list
 
         #region CellBorders

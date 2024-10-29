@@ -160,10 +160,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             //_vm.SetTouchScrollSensitivityLevel();
         }
 
-        private void btnPair_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
         /// <summary>
         /// Node move, Mouse Left Button Down event
         /// </summary>
@@ -474,7 +470,9 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         public void SetNodeValue(Image node, double value)
         {
             if (value < -6 || value > 4)
-                throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 4 and -6");
+            {
+                return;//throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 4 and -6");
+            }
 
             double minValue = 0;
             double maxValue = 150;

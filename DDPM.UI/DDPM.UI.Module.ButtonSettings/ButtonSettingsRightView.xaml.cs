@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -22,8 +23,7 @@ namespace DDPM.UI.Module.ButtonSettings
         private readonly SolidColorBrush buttonFocusedBKColor2 = new(System.Windows.Media.Color.FromArgb(0x99, 0x20, 0x4A, 0x82));
         private readonly Dictionary<string, string> ButtonCaptions = new();
 
-        //private string SelectedMouseAction = "";
-        //int SelectedActionID = -1;
+        int SelectedActionID = -1;
         private string ActiveActionSection = "";
 
         public ButtonSettingsRightView(MouseViewModel vm)
@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.ButtonSettings
             ButtonCaptions.Add(MouseButtonName.SideButtonBack.ToString(), Strings.SideButtonBCaption);
 
             txtMessage.Text = Strings.ButtonCustomizeMessage;
-            txtRestore.Text = Strings.ButtonCustomizeRestoreCaption;
+            //txtRestore.Text = _vm.SelectedApp == "AllApp" ? Strings.RestoreToDefaultActions : Strings.ButtonCustomizeRestoreCaption;
             txtSuggestedActions.Text = Strings.SuggestedActionsCaption;
             txtProductivityActions.Text = Strings.ProductivityActionsCaption;
             txtWindowsActions.Text = Strings.WindowsActionsCaption;
@@ -60,11 +60,13 @@ namespace DDPM.UI.Module.ButtonSettings
                 txtCaption.Text = Strings.ButtonCustomizeCaption;
                 imgBack.Visibility = Visibility.Collapsed;
                 Section1.Visibility = Visibility.Visible;
-                //SelectedActionID = -1;
+                SelectedActionID = -1;
             }
             else
             {
                 Section1.Visibility = Visibility.Collapsed;
+                SelectedActionID = _vm.SelectedActionID;
+                //RefreshAction();
                 LoadButtonInfo();
             }
         }
@@ -84,11 +86,12 @@ namespace DDPM.UI.Module.ButtonSettings
                 SectionOffice.Visibility = Visibility.Collapsed;
                 RefreshAction();
 
-                if (_vm.SuggestedActions.Contains(_vm.SelectedActionID))
+                if (_vm.SuggestedActions.Contains(SelectedActionID))
                 {
                     RefreshAction("Suggested");
-                    var sections = GetActionSection(_vm.SelectedActionID);
-                    if (sections.Length > 1) { RefreshAction(sections[1]); }
+                    var sections = GetActionSection(SelectedActionID);
+                    if (sections.Length > 1)
+                    { RefreshAction(sections[1]); }
                     if (ActiveActionSection != "Suggested")
                         OpenSectionPanel("SuggestedPanel", true);
 
@@ -98,7 +101,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 {
                     var cat = ActionCategory.None;
                     if (_vm.SelectedActionID != -1)
-                        cat = Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
+                        cat = Actions.KnMActions[SelectedActionID].Category!.Value;
                     if (cat == ActionCategory.None)
                     {
                         if (ActiveActionSection != "")
@@ -160,7 +163,8 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtSearchText.Text.Trim() == "") { txtSearchText.Text = ""; }
+            if (txtSearchText.Text.Trim() == "")
+            { txtSearchText.Text = ""; }
             if (txtSearchText.Text == "")
             {
                 if (_vm.SelectedApp == "AllApp")
@@ -215,18 +219,19 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void btnRestoreClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
-            {
-                restoreModalDialog.Owner = parentWindow;
-            }
+            //RestoreModalDialog restoreModalDialog = new();
+            //Window parentWindow = Window.GetWindow(this);
+            //if (parentWindow != null)
+            //{
+            //    restoreModalDialog.Owner = parentWindow;
+            //}
 
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
-            {
-                _vm!.RestoreToDefault();
-            }
+            //bool? dialogResult = restoreModalDialog.ShowDialog();
+            //if (dialogResult == true)
+            //{
+            //    _vm!.RestoreToDefault();
+            //}
+            _vm!.RestoreToDefault();
         }
 
         private void UnfocusSearchBox(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -239,7 +244,8 @@ namespace DDPM.UI.Module.ButtonSettings
             txtCaption.Focus();
             if (sender is Border border)
             {
-                if (border.ActualHeight > 60) { return; }
+                if (border.ActualHeight > 60)
+                { return; }
 
                 var section = border.Name.Replace("bdr", "");
                 if (ActiveActionSection != section)
@@ -268,7 +274,8 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", "").Replace("_A", ""));
-            if (id == _vm.SelectedActionID) { return; }
+            if (id == SelectedActionID)
+            { return; }
 
             var section = GetActionSection(id);
             var parameter = "";
@@ -297,12 +304,19 @@ namespace DDPM.UI.Module.ButtonSettings
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
+
+                if (action == AdvancedAction.AssignKeystroke)
+                { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
+
                 if (modalDialog.ShowDialog()!.Value)
                 {
+                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
                     parameter = modalDialog.Parameter;
                 }
                 else
                 {
+                    DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
                     Initialize();
                     return;
                 }
@@ -314,7 +328,7 @@ namespace DDPM.UI.Module.ButtonSettings
             {
                 RefreshAction(section[1]);
             }
-            var sectionOld = GetActionSection(_vm.SelectedActionID);
+            var sectionOld = GetActionSection(SelectedActionID);
             if (sectionOld[0] != section[0] && sectionOld[0] != "")
             {
                 RefreshAction(sectionOld[0]);
@@ -323,7 +337,7 @@ namespace DDPM.UI.Module.ButtonSettings
                     RefreshAction(sectionOld[1]);
                 }
             }
-            //SelectedActionID = id;
+            SelectedActionID = id;
             if (id == 0 || SectionAction.Visibility == Visibility.Collapsed)
                 Initialize();
         }
@@ -354,6 +368,9 @@ namespace DDPM.UI.Module.ButtonSettings
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
+            if (action == AdvancedAction.AssignKeystroke)
+            { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
+
             if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
             {
                 _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
@@ -407,7 +424,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 rb.Name = $"Radio{id}";
                 rb.Content = id > 100 ? Actions.OfficeActions[id].Caption : Actions.KnMActions[id].Caption;
                 if (rb.Tag.ToString() != "search")
-                    rb.IsChecked = id == _vm.SelectedActionID;
+                    rb.IsChecked = id == SelectedActionID;
             }
             else if (sender is ActionButton btn)
             {
@@ -437,7 +454,7 @@ namespace DDPM.UI.Module.ButtonSettings
             else if (sender is StackPanel sp)
             {
                 id = (int)((StackPanel)sender).DataContext;
-                sp.Visibility = id == _vm.SelectedActionID && id != _vm.SelectedMouseAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
+                sp.Visibility = id == SelectedActionID && id != _vm.SelectedMouseAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -455,7 +472,8 @@ namespace DDPM.UI.Module.ButtonSettings
                 To = 1,
                 Duration = new Duration(TimeSpan.FromSeconds(0.3))
             };
-            if (isFromKeyClick) { visibilityAnimation.Completed += SectionOpened; }
+            if (isFromKeyClick)
+            { visibilityAnimation.Completed += SectionOpened; }
 
             AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
 
@@ -487,7 +505,8 @@ namespace DDPM.UI.Module.ButtonSettings
             //visibilityAnimation.Completed += SectionOpened;
             //AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
             AnimatedPanel!.Visibility = Visibility.Collapsed;
-            if (isAuto) { ScrollAction(section, 0); }
+            if (isAuto)
+            { ScrollAction(section, 0); }
 
             var img = (Image)FindName($"img{section}");
             img.RenderTransform = new RotateTransform();
@@ -508,26 +527,27 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void ScrollAction(string section = "", double offset = -1)
         {
-            if (section == "") { section = ActiveActionSection; }
+            if (section == "")
+            { section = ActiveActionSection; }
             if (offset == -1)
             {
                 int index = 0;
                 switch (ActiveActionSection)
                 {
                     case "Productivity":
-                        index = _vm.ProductivityActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.ProductivityActions.IndexOf(SelectedActionID);
                         break;
 
                     case "Windows":
-                        index = _vm.WindowsActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.WindowsActions.IndexOf(SelectedActionID);
                         break;
 
                     case "Multimedia":
-                        index = _vm.MultimediaActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.MultimediaActions.IndexOf(SelectedActionID);
                         break;
 
                     case "Office":
-                        index = _vm.MultimediaActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.MultimediaActions.IndexOf(SelectedActionID);
                         index = _vm.SelectedApp switch
                         {
                             "Word" => _vm.WordActions.IndexOf(_vm.SelectedActionID),
@@ -556,7 +576,8 @@ namespace DDPM.UI.Module.ButtonSettings
             var img = (System.Windows.Controls.Image)sender;
             var section = img.Name.Replace("img", "");
             txtCaption.Focus();
-            if (section != ActiveActionSection) { return; }
+            if (section != ActiveActionSection)
+            { return; }
 
             DoubleAnimation rotateAnimation;
             if (ActiveActionSection == "")

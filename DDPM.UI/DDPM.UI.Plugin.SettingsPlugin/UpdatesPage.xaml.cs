@@ -16,7 +16,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     public partial class UpdatesPage : UserControl
     {
         // 10/15 Derek for RWD
-        private readonly Int16 breakPoints = 537;
+        private readonly Int16 breakPoints = 910;
 
         public UpdatesPage()
         {
@@ -55,7 +55,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CallFWU(SettingsPageViewModel vm)
         {
-            List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo).Result;
+            List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
             bool b = false;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
             {
@@ -68,7 +68,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 {
-                    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo).Result;
+                    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
                 }
                 string path = "DDPM.exe";
                 string processName = "DDPM";
@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (this.ActualWidth <= breakPoints)
+            if (this.ActualWidth <= breakPoints - 212 - 50)
                 ChangeToVerticalLayout();
             else
                 ChangeToHorizontalLayout();

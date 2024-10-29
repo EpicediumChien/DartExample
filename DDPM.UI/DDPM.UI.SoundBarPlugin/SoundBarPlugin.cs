@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -96,11 +97,26 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("LogicalWiredAudio"))
+            try
             {
-                if (e.type == DeviceChangedType.Peripherals_UnPlug)
-                    GetPeripheralsAsync();
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("LogicalWiredAudio"))
+                {
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    {
+                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == _viewModel.CurrentInstanceID.GetHashCode())
+                        {
+                            _viewModel.OnGoBackClicked();
+                            return;
+                        }
+                        GetPeripheralsAsync();
+                    }
+                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                }
+            }
+            catch (Exception ex)
+            {
+                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
+                _log.Error(ex, message);
             }
         }
 
@@ -193,7 +209,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            //_deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
             //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = null;
         }
@@ -201,7 +218,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            //_deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
             //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = Cursors.Wait;
         }
@@ -211,14 +229,16 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            { }
+            Mouse.OverrideCursor = null;
         }
 
         #endregion Interface IConsolePluginSupportsActivations
 
         ~SoundBarPlugin()
         {
-            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }

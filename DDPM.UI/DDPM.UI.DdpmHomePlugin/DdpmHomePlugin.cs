@@ -16,6 +16,7 @@ using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using NGA.ThickClient.Interfaces;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -94,18 +95,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         public static List<WalkThroughInfo> WalkThroughQueue { get; private set; } = new List<WalkThroughInfo>();
         private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
         {
-            { "DDPM", 1 },
-            { "Displays", 2 },
-            { "Webcam", 3 },
-            { "Keyboard", 4 },
-            { "Mice", 5 },
-            { "Stylus", 6 },
-            { "Headset", 7 },
-            { "Speakerphone", 8 },
-            { "Soundbar", 9 },
-            { "Audio", 10 },
-            { "Docks", 11 }
+            { "Consent", 1}, //Add by Derek 2024/10/24
+            { "DDPM", 2 },
+            { "Displays", 3 },
+            { "Webcam", 4 },
+            { "Keyboard", 5 },
+            { "Mice", 6 },
+            { "Stylus", 7 },
+            { "Headset", 8 },
+            { "Speakerphone", 9 },
+            { "Soundbar", 10 },
+            { "Audio", 11 },
+            { "Docks", 12 }
         };
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -116,6 +119,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _pluginManager = pluginManager;
             _log = console.CreateLog("DDPMHOME");
             _log.Info($"{nameof(DdpmHomePlugin)} - Constructed");
+            _log.Info($"current process ID: {Process.GetCurrentProcess().Id}");
 
             //DdpmCommonHelper.MyConsole = console;
 
@@ -133,6 +137,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 AddIconsToMasthead(masthead);
             }
         }
+
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
         {
@@ -208,7 +213,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Task.Run(async () => await GetDdpmDevicesAsync(_deviceManager));
 
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
-                            _deviceManager.Reset0x52TimerTick(2000);
+                            //Derek_Du, 2024-10-21 add send process ID to SA
+                            Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
                             await GetDdpmDevicesAsync(_deviceManager);
 
 
@@ -799,17 +805,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 return;
 
             if (_log != null)
-                _log.Info("DdpmHomePlugin Dispose.");
+                _log.Info("DdpmHomePlugin Dispose(bool disposing).");
 
             if (disposing && _deviceManager != null)
             {
+                //_log.Info("disposing && _deviceManager != null");
+
                 if (_IDeviceManagerPluginCondition != null)
                 {
+                    //_log.Info("_IDeviceManagerPluginCondition != null");
+
                     var pluginCondition = ((IFrameworkPluginConditionNotification)_IDeviceManagerPluginCondition).CurrentConditionAsync();
                     if (pluginCondition != null)
                     {
+                        //_log.Info("pluginCondition != null");
+
                         if (pluginCondition is PluginRunningCondition)
+                        {
+                            //_log.Info("pluginCondition is PluginRunningCondition");
                             _deviceManager.Reset0x52TimerTick(8000);
+                        }
+                        //else
+                        //{
+                        //    _log.Info("pluginCondition is not PluginRunningCondition");
+                        //}
                     }
                 }
             }
@@ -975,14 +994,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
             object regValue;
             _userId = GetActiveUserID();
-            string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{_userId}";
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{_userId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+
+            //Derek 10/24 for Consent screen to share DDPM data with Dell 
+            string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
+            string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
 
             var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
 
             try
             {
+                if (null == _deviceManager)
+                    return;
+
+                //Derek 10/25 for Consent, please don't remove it
+                //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
+
+                //if (!Convert.ToBoolean(regValue))
+                //{
+                //    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
+                //        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
+                //}
+
+
                 regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
 
                 if (!Convert.ToBoolean(regValue))

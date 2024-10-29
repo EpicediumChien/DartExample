@@ -143,7 +143,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
                 DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
-            string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{_currentDeviceModel}";
             DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
             IConsole? console = WalkThroughPlugin.PluginIoc.GetService<IConsole>();

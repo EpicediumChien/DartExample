@@ -4,6 +4,7 @@ using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
 using System.Windows;
@@ -27,9 +28,11 @@ namespace DDPM.UI.Module.ButtonSettings.Test
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
-            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object, deviceManagerMock.Object);
+            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object);
             buttonSettingsRightView = new ButtonSettingsRightView(mouseViewModel);
             privateObject = new PrivateObject(buttonSettingsRightView);
+            DdpmCommonHelper.DeviceManagerSA= deviceManagerMock.Object;
+            deviceManagerMock.Setup(x => x.SetCurrentSelectedAppSpecificProfile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("A"));
         }
 
         [Test]
@@ -69,9 +72,10 @@ namespace DDPM.UI.Module.ButtonSettings.Test
             Assert.That(section1.Visibility, Is.EqualTo(Visibility.Visible));
             //Assert.That(selectedActionID, Is.EqualTo(-1));
 
-            mouseViewModel.MouseAction.ButtonActions.Add(MouseButtonName.ScrollWheelClick, new SelectedMouseAction(1, new AssignedAction(1)));
+            mouseViewModel.MouseAction.ButtonActions.Add(MouseButtonName.ScrollWheelClick, new SelectedMouseAction(-1, new AssignedAction(1)));
             string selectedButton = "ScrollWheelClick";
             mouseViewModel.SelectedButton = selectedButton;
+            mouseViewModel.SelectedApp = "AllApp";
             buttonSettingsRightView.Initialize();
             section1 = (StackPanel)privateObject.GetFieldOrProperty("Section1");
             //selectedActionID = privateObject.GetFieldOrProperty("SelectedActionID");

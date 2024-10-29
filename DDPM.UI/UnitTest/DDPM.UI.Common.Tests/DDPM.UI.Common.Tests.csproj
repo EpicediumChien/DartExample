@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Module.AddHeadset_BL\DDPM.UI.Module.AddHeadset_BL.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Module.Brightness\DDPM.UI.Module.Brightness.csproj" />
     <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
   </ItemGroup>
 

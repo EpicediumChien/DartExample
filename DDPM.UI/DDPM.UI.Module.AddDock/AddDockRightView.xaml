@@ -6,7 +6,8 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top">
+             d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top"
+             Loaded="UserControl_Loaded">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -41,7 +42,7 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,0,13">
                         <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/WiredConnection.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                        <UXControls:UXTextBlock Name="txtStep1" Margin="15,10,15,0" Style="{StaticResource TextStyle1}" 
+                        <UXControls:UXTextBlock Name="txtStep1" Margin="15,10,10,10" Style="{StaticResource TextStyle1}" 
                                                 Text="{Binding [AddDevice.Dock.0], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextWrapping="WrapWithOverflow"/>
                     </StackPanel>

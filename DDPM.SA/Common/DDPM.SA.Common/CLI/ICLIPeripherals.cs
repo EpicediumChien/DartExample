@@ -49,10 +49,10 @@ namespace DDPM.SA.Common
             switch (targetFeature)
             {
                 case "FIELDOFVIEW":
-                    Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyFOVSupportedByDTP(Guid).Result)
+                    //Guid = "DellPeripheral.Webcam.0";
+                    if (_devMgr.GetIsPropertyFOVSupportedByDTP(Guid).Result)
                     {
-                        retvalue = _devMgr.GetFieldOfViewValueByDTP(Guid).Result;
+                        retvalue = _devMgr.GetFieldOfView(Guid).Result;
                         Value = retvalue.ToString();
                         Result = "PASS";
                         Message = "N/A";
@@ -66,10 +66,10 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "HDR":
-                    Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
+                    //Guid = "DellPeripheral.Webcam.0";
+                    if (_devMgr.GetIsPropertyHDRSupported(Guid).Result)
                     {
-                        retcode = _devMgr.GetIsHDROnValueByDTP(Guid).Result;
+                        retcode = _devMgr.GetIsHDROn(Guid).Result;
                         Value = (retcode) ? "ON" : "OFF";
                         Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                         Result = "PASS";
@@ -84,8 +84,8 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "ANTIFLICKER":
-                    Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(Guid).Result)
+                    //Guid = "DellPeripheral.Webcam.0";
+                    if (_devMgr.GetIsPropertyAntiFlickerSupported(Guid).Result)
                     {
                         retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
                         Value = retvalue.ToString();
@@ -102,10 +102,10 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "AIAUTOFRAMING":
-                    Guid = "DellPeripheral.Webcam.0";
-                    if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(Guid).Result)
+                    //Guid = "DellPeripheral.Webcam.0";
+                    if (_devMgr.GetIsPropertyAutoFramingSupported(Guid).Result)
                     {
-                        retcode = _devMgr.GetIsAutoFramingOnValueByDTP(Guid).Result;
+                        retcode = _devMgr.GetIsAutoFramingOn(Guid).Result;
                         Value = (retcode) ? "ON" : "OFF";
                         Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                         Result = "PASS";
@@ -334,86 +334,86 @@ namespace DDPM.SA.Common
     {
         internal static readonly List<string> Keyboard = new()//Dean 0626 SAST issue
         {
-            "BACKLIGHTINGCONTROLS",
-            "BACKLIGHTINGLEVEL",
-            "BACKLIGHTTABINDEX",
-            "BATTERYLEVEL",
-            "BATTERYSTATUS",
-            "COLLABSKEYSSUPPORTED",
-            "COLORCODE",
+            //"BACKLIGHTINGCONTROLS",
+            //"BACKLIGHTINGLEVEL",
+            //"BACKLIGHTTABINDEX",
+            //"BATTERYLEVEL",
+            //"BATTERYSTATUS",
+            //"COLLABSKEYSSUPPORTED",
+            //"COLORCODE",
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "ISBATTERYLEVELSUPPORTED",
-            "ISCOLLABORATIONBLINKEFFECTENABLE",
+            //"INSTANCEID",
+            //"ISBATTERYLEVELSUPPORTED",
+            //"ISCOLLABORATIONBLINKEFFECTENABLE",
             "ISCOLLABORATIONCAMERAENABLE",
             "ISCOLLABORATIONCHATENABLE",
-            "ISCOLLABORATIONDOUBLETAPENABLE",
-            "ISCOLLABORATIONKEYENABLE",
+            //"ISCOLLABORATIONDOUBLETAPENABLE",
+            //"ISCOLLABORATIONKEYENABLE",
             "ISCOLLABORATIONMICENABLE",
             "ISCOLLABORATIONSCREENSHAREENABLE",
-            "ISCOLLABSKEYSSUPPORTED",
-            "ISILLUMINATIONSUPPORTED",
-            "PAIREDDEVICECOUNT",
-            "PAIREDHOSTNAME1",
-            "PAIREDHOSTNAME2",
-            "PAIREDHOSTNAME3",
-            "VISIBLEPAIREDHOSTNAME1",
-            "VISIBLEPAIREDHOSTNAME2",
-            "VISIBLEPAIREDHOSTNAME3"
+            //"ISCOLLABSKEYSSUPPORTED",
+            //"ISILLUMINATIONSUPPORTED",
+            //"PAIREDDEVICECOUNT",
+            //"PAIREDHOSTNAME1",
+            //"PAIREDHOSTNAME2",
+            //"PAIREDHOSTNAME3",
+            //"VISIBLEPAIREDHOSTNAME1",
+            //"VISIBLEPAIREDHOSTNAME2",
+            //"VISIBLEPAIREDHOSTNAME3"
         };
 
         internal static readonly List<string> Mouse = new()//Dean 0626 SAST issue
         {
-            "BATTERYLEVEL",
-            "BATTERYSTATUS",
-            "COLORCODE",
-            "DPIDELTA",
-            "DPILEVEL",
-            "DPIVALUE",
-            "DPIMAX",
-            "DPIMIN",
+            //"BATTERYLEVEL",
+            //"BATTERYSTATUS",
+            //"COLORCODE",
+            //"DPIDELTA",
+            //"DPILEVEL",
+            //"DPIVALUE",
+            //"DPIMAX",
+            //"DPIMIN",
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "ISBATTERYLEVELSUPPORTED",
-            "ISDPILEVELCHANGEPENDING",
-            "ISDPILEVELSUPPORTED",
-            "ISDPIVALUECHANGEPENDING",
-            "ISDPIVALUESUPPORTED",
-            "ISREPORTRATESUPPORTED",
-            "ISTOUCHSCROLLSENSITIVITYSUPPORTED",
-            "MOUSEPRIMARYBUTTON",
-            "PAIREDDEVICECOUNT",
-            "PAIREDHOSTNAME1",
-            "PAIREDHOSTNAME2",
-            "PAIREDHOSTNAME3",
-            "REPORTRATE",
-            "STATUS",
-            "TOUCHSCROLLSENSITIVITYLEVEL",
-            "TOUCHSENSITIVITYLEVELVALUE",
-            "VISIBLEPAIREDHOSTNAME1",
-            "VISIBLEPAIREDHOSTNAME2",
-            "VISIBLEPAIREDHOSTNAME3"
+            //"INSTANCEID",
+            //"ISBATTERYLEVELSUPPORTED",
+            //"ISDPILEVELCHANGEPENDING",
+            //"ISDPILEVELSUPPORTED",
+            //"ISDPIVALUECHANGEPENDING",
+            //"ISDPIVALUESUPPORTED",
+            //"ISREPORTRATESUPPORTED",
+            //"ISTOUCHSCROLLSENSITIVITYSUPPORTED",
+            //"MOUSEPRIMARYBUTTON",
+            //"PAIREDDEVICECOUNT",
+            //"PAIREDHOSTNAME1",
+            //"PAIREDHOSTNAME2",
+            //"PAIREDHOSTNAME3",
+            //"REPORTRATE",
+            //"STATUS",
+            //"TOUCHSCROLLSENSITIVITYLEVEL",
+            //"TOUCHSENSITIVITYLEVELVALUE",
+            //"VISIBLEPAIREDHOSTNAME1",
+            //"VISIBLEPAIREDHOSTNAME2",
+            //"VISIBLEPAIREDHOSTNAME3"
         };
 
         internal static readonly List<string> Webcam = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "ISBATTERYLEVELSUPPORTED",
+            //"INSTANCEID",
+            //"ISBATTERYLEVELSUPPORTED",
          };
 
         internal static readonly List<string> Pen = new()
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "",
+            //"INSTANCEID",
+            //"",
         };
 
         internal static readonly List<string> Headset = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "MUTESTATUS",
+            //"INSTANCEID",
+            //"MUTESTATUS",
             "ANCMODE",
             "MICNOISECANCELLATION",
             "WEARDETECTION",
@@ -425,8 +425,8 @@ namespace DDPM.SA.Common
         internal static readonly List<string> Audio = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "MUTESTATUS",
+            //"INSTANCEID",
+            //"MUTESTATUS",
             "ANCMODE",
             "MICNOISECANCELLATION",
             "WEARDETECTION",
@@ -438,8 +438,8 @@ namespace DDPM.SA.Common
         internal static readonly List<string> Dock = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "",
+            //"INSTANCEID",
+            //"",
         };
 
         internal static readonly Dictionary<string, List<string>> DeviceProperties = new()//Dean 0626 SAST issue

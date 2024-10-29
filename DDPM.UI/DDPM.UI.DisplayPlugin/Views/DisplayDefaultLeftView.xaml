@@ -10,7 +10,8 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
-             d:DesignHeight="650" d:DesignWidth="900">
+             d:DesignHeight="650" d:DesignWidth="900"
+             SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
 
         <ResourceDictionary>
@@ -21,6 +22,7 @@
             <!-- 20240617  jim add -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -51,12 +53,8 @@
                     <!-- Width="1378" Height="735"
                 -->
                     <Grid>
-                        <!-- Source="/DDPM.UI.Resources;component/Resources/Monitors/u2424h.png"
-                        Image Source="{Binding DeviceImage}" Stretch="None"
-                        -->
+                        <Image Grid.Column="0" Source="{Binding DeviceImage}" Stretch="UniformToFill" Margin="35,45,35,45" x:Name="devImg">
 
-                        <Image Source="{Binding DeviceImage}" Stretch="UniformToFill">
-                            
                             <!-- Robert_Lin, 2024-9-30 The LeftView Product image don't need to show tooltip -->
                             <!-- 
                         <Image.ToolTip>

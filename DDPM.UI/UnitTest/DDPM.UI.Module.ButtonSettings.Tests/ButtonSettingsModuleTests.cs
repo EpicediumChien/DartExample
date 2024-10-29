@@ -1,10 +1,12 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
 using System.Windows.Controls;
@@ -28,9 +30,11 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
 
-            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object, deviceManagerMock.Object);
+            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object);
             buttonSettingsModule = new ButtonSettingsModule(mouseViewModel);
             privateObject = new PrivateObject(buttonSettingsModule);
+            DdpmCommonHelper.DeviceManagerSA= deviceManagerMock.Object;
+            deviceManagerMock.Setup(x => x.SetCurrentSelectedAppSpecificProfile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(""));
         }
 
         [Test]

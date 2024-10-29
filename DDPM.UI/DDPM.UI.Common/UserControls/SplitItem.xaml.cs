@@ -289,15 +289,31 @@ namespace DDPM.UI.Common.UserControls
                 if (ISplitCtrl != null)
                 {
                     eaid = ISplitCtrl.EAID;
-                    foreach(CellObj objCell in ISplitCtrl.CellList)
+                    if ((CellCount == 0) && (SplitKey == 'B'))
                     {
-                        CellJson cj = new CellJson();
-                        cj.Name = objCell.Name;
-                        cj.x = objCell.rcRatio.Left;
-                        cj.y = objCell.rcRatio.Top;
-                        cj.w = objCell.rcRatio.Width;
-                        cj.h = objCell.rcRatio.Height;
-                        cells.Add(cj);
+                        foreach (CellBorder cellBorder in ISplitCtrl.CellBorders)
+                        {
+                            CellJson cj = new CellJson();
+                            cj.Name = cellBorder.Name;
+                            cj.x = cellBorder.rcRatio.Left;
+                            cj.y = cellBorder.rcRatio.Top;
+                            cj.w = cellBorder.rcRatio.Width;
+                            cj.h = cellBorder.rcRatio.Height;
+                            cells.Add(cj);
+                        }
+                    }
+                    else
+                    {
+                        foreach (CellObj objCell in ISplitCtrl.CellList)
+                        {
+                            CellJson cj = new CellJson();
+                            cj.Name = objCell.Name;
+                            cj.x = objCell.rcRatio.Left;
+                            cj.y = objCell.rcRatio.Top;
+                            cj.w = objCell.rcRatio.Width;
+                            cj.h = objCell.rcRatio.Height;
+                            cells.Add(cj);
+                        }
                     }
                 }
                 return new SA.Common.Display.SplitJson()
@@ -344,16 +360,16 @@ namespace DDPM.UI.Common.UserControls
         public void ReplaceByEAArgs(EAArgs args)
         {
             //Check if it need to change ISplitCtrl
-            if ((CellCount != args.CellCount) || (SplitKey !=  args.SplitKey))
+            if ((CellCount != args.SplitJson.CellCount) || (SplitKey !=  args.SplitJson.SplitKey))
             {
-                if ((args.CellCount == 0) && (args.SplitKey == 'B'))
+                if ((args.SplitJson.CellCount == 0) && (args.SplitJson.SplitKey == 'B'))
                 {
                     ISplitCtrl ispNew = new SplitCtrl0B();
                     InnerContent = ispNew.UC;
                 }
                 else
                 {
-                    ISplitCtrl? ispNew = ISplitCtrl.Create(args.CellCount, args.SplitKey);
+                    ISplitCtrl? ispNew = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
                     if (ispNew == null)
                         return;
                     InnerContent = ispNew.UC;
@@ -363,8 +379,8 @@ namespace DDPM.UI.Common.UserControls
                 return;
 
             //Copy data
-            ISplitCtrl.Settings = new List<double>(args.Settings);
-            ISplitCtrl.FriendlyName = args.CustomName;
+            ISplitCtrl.Settings = new List<double>(args.SplitJson.Settings);
+            ISplitCtrl.FriendlyName = args.SplitJson.CustomName;
             //CustomId = args.CustomId;
 
             vm.NotifyPropertyChanged_TooltipText();

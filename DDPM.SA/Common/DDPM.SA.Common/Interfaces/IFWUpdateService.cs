@@ -19,8 +19,8 @@ namespace DDPM.SA.Common
         event EventHandler<DokcUODUpdateInfoPackage> CallSaveUODFWDeviceInfos;
 
         event EventHandler CallCheckUODFWInfos;
-
         event EventHandler<PopupContentPackage> CallPopup;
+        event EventHandler<(string, string, bool)> CallOSD;
 
         /// <summary>
         /// for CLI use
@@ -33,12 +33,10 @@ namespace DDPM.SA.Common
 
         //Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay);
-
-        Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay);
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, bool reScan, bool isUItrigger, List<string> giuds, List<string> serviceTags, string minVersion);
 
 
-        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath);
+        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath);
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay);
         Task<bool> RestartService();
 
@@ -48,9 +46,9 @@ namespace DDPM.SA.Common
 
         void SetDelayFWUpdateInfoPackage(FWUpdateInfoPackage DelayFWUpdateInfoPackage);
 
-        void DelayEvent(object e);
+        void DelayEvent();
 
-        void UpdateEvent(object e);
+        void UpdateEvent();
         void SetSkipCA(bool isSkipCA);
     }
 }

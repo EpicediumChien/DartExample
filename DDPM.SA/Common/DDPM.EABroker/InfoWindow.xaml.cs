@@ -95,7 +95,6 @@ namespace DDPM.EABroker
         {
             _vm.hWndForeground = hWnd;
             _vm.RefreshScreenScale();
-            _vm.RefreshWorkScreen();
 
             //Step_1, determine the moving window is allowed to move
             //
@@ -132,10 +131,16 @@ namespace DDPM.EABroker
                     _vm.StartMovingMsg = $"GetProcessPathName causes an exception: {e1.Message}";
                     _vm.WriteLog("GetProcessPathName() causes EXCEPTION", e1);
 
-                    //Temporary allow to continue moving
-                    _vm.IsMoving = true;
-                    //Robert_Lin Debug, let it contine
-                    //return;
+                    //Robert_Lin, 2024-10-26, Option 1: when moving an administrator window
+                    // the WorkWindow will display the selected layout on the target screen
+                    //=> comment-out below will "Not display"
+                    //_vm.IsMoving = true;
+
+                    //Robert_Lin 2024-10-26,Option 2:
+                    // Comment out below 2 statements will show Workwindow when user moving a
+                    // administrator window. (but Admin window will not be moved)
+                    _vm.IsMoving = false;
+                    return;
                 }
             }
             else
@@ -143,6 +148,8 @@ namespace DDPM.EABroker
                 _vm.StartMovingMsg = $"GetProcessFromWindowHandle err: {msg}";
                 _vm.WriteLog($"@OnWindowStartMovingProc, {_vm.StartMovingMsg}");
             }
+
+            _vm.RefreshWorkScreen();
 
             //Step_2, Set flags to show windows
             //
@@ -216,8 +223,13 @@ namespace DDPM.EABroker
                 rcArrange.Inflate(6, 6);
             }
             if (!rcArrange.IsEmpty)
+            {
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
-
+                if (_vm != null)
+                {
+                    _vm.SendTelemetry_EasyArrangeLayout();
+                }
+            }
         }
 
 
@@ -229,26 +241,29 @@ namespace DDPM.EABroker
                 return;
             }
             _vm.xCursor = x; _vm.yCursor = y;
-            Screen? cursorScreen = _vm.GetScreenFromCursor();
+            //Screen? cursorScreen = _vm.GetScreenFromCursor();
+            Screen? cursorScreen = Screen.FromPoint(new System.Drawing.Point(x, y));
             _vm.WorkScreen = cursorScreen;
 
             if (!_vm.IsMoving)
                 return;
 
+            this.Dispatcher.Invoke(() =>
+            {
 
 
+                //if (!_vmArrange.IsWorkUIShowing)
+                //    return;
 
-            //if (!_vmArrange.IsWorkUIShowing)
-            //    return;
+                //if (_isRefresCellsCountAfterStartMoving <= 20)
+                //{
+                //    _isRefresCellsCountAfterStartMoving++;
+                //    _vmArrange.RefreshCellRects();
+                //}
 
-            //if (_isRefresCellsCountAfterStartMoving <= 20)
-            //{
-            //    _isRefresCellsCountAfterStartMoving++;
-            //    _vmArrange.RefreshCellRects();
-            //}
-
-            CellObj orgCell = _vm.HoveringCellObj;
-            CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
+                CellObj orgCell = _vm.HoveringCellObj;
+             CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
+            //CellObj? newCell = null; // _vm.DetermineHoveringCellObj(x, y);
 
             if (orgCell != _vm.HoveringCellObj)
             {
@@ -261,18 +276,21 @@ namespace DDPM.EABroker
 
                 Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
             }
-            //if (_vm.HoveringCellObj != null)
-            //{
-            //    _vm.HoveringCell = _vm.HoveringCellObj.Name;
-            //}
-            //else
-            //{
-            //    _vmArrange.HoveringCell = "";
-            //}
-            //if (_workingSplit != null)
-            //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
+                //if (_vm.HoveringCellObj != null)
+                //{
+                //    _vm.HoveringCell = _vm.HoveringCellObj.Name;
+                //}
+                //else
+                //{
+                //    _vmArrange.HoveringCell = "";
+                //}
+                //if (_workingSplit != null)
+                //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
 
-            //Set WorkWins to topmost
+                //Set WorkWins to topmost
+
+            });
+
         }
 
         #endregion Window Event Handlers

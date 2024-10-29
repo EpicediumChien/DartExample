@@ -1074,6 +1074,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
+            Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();  //monitorInfo1.CapabilityDic = capabilityDic;  里面包含EF
+            capabilityDic.Add("66", new List<string> { "value1" });
+            capabilityDic.Add("EF", new List<string> { "value2" });
+            monitorInfo1.CapabilityDic = capabilityDic;
+
             if (type == ALSFeatureQueryType.MMS)
             {
                 var SetALSFeatureValue_result1 = displayPlugin.SetALSFeatureValue(monitorInfo1, ref param, type, value).Result;
@@ -1612,6 +1617,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             string value = "ON";
             bool IsMMSEnable = true;
             bool IsMMSEDisable = false;
+
+            Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();  //monitorInfo1.CapabilityDic = capabilityDic;  里面包含EF
+            capabilityDic.Add("66", new List<string> { "value1" });
+            capabilityDic.Add("EF", new List<string> { "value2" });
+            monitorInfo1.CapabilityDic = capabilityDic;
+
             if (SetVCPCapabilityValue)
             {
                 var result = privatedispalypluginObject.Invoke("SetALSMMS", monitorInfo1, aconfig, value);
@@ -1803,6 +1814,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
+            Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();  //monitorInfo1.CapabilityDic = capabilityDic;  里面包含66
+            capabilityDic.Add("66", new List<string> { "value1" });
+            capabilityDic.Add("EF", new List<string> { "value2" });
+            monitorInfo1.CapabilityDic = capabilityDic;
+
             string value = "ON";
             bool setALSAutoBrightness = true;
             bool setALSAutoBrightnessDisable = false;
@@ -1906,6 +1922,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel() { level_name = "Mid", level_value = 0 };
             brightnessrangelevellist.Add(brightnessrangelevel);
 
+            Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();  //monitorInfo1.CapabilityDic = capabilityDic;  里面包含66
+            capabilityDic.Add("66", new List<string> { "value1" });
+            capabilityDic.Add("EF", new List<string> { "value2" });
+            monitorInfo1.CapabilityDic = capabilityDic;
+
             if (ObjGetvcp != null && ObjGetvcp.result)
             {
                 if (SetVCPCapabilityValue)
@@ -1945,7 +1966,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             List<AutoBrightnessRangeLevel> brightnessrangelevellist = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 };
             brightnessrangelevellist.Add(brightnessrangelevel);
-
+            monitorInfo1.CapabilityString = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)E5 E7(02 03) E2(00 02 04 0C 0D 0F) 66"; //CapabilityString Contains 66
             if (ObjGetvcp != null && ObjGetvcp.result)
             {
                 var result = privatedispalypluginObject.Invoke("GetALSAll", monitorInfo1, aconfig);
@@ -2014,7 +2035,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             List<AutoBrightnessRangeLevel> brightnessrangelevellist = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel() { level_name = "Mid", level_value = 0 };
             brightnessrangelevellist.Add(brightnessrangelevel);
-
+            monitorInfo1.CapabilityString = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)E5 E7(02 03) E2(00 02 04 0C 0D 0F) 66"; //CapabilityString Contains 66
             if (SetVCPCapabilityValue)
             {
                 var result = privatedispalypluginObject.Invoke("SetALSAll", monitorInfo1, monitorALS, value);

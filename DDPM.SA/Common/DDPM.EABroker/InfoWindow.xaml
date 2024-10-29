@@ -55,14 +55,27 @@
                 <TextBlock Text="PathName=" />
                 <TextBlock Text="{Binding PathNameForeground}" />
             </WrapPanel>
-            <!-- AWS Window -->
+            <!-- EzSettings -->
             <WrapPanel>
+                <TextBlock Text=", IsAwsEanbled="/>
+                <TextBlock Text="{Binding IsAwsEnabled}" />
                 <TextBlock Text=", IsOnlyShift=" />
                 <TextBlock Text="{Binding IsOnlyShift}" />
                 <TextBlock Text=", IsShiftPressed=" />
                 <TextBlock Text="{Binding IsShiftPressed}" />
-                <TextBlock Text=", IsAwsEanbled="/>
-                <TextBlock Text="{Binding IsAwsEnabled}" />
+            </WrapPanel>
+            <!-- Hovering -->
+            <WrapPanel>
+                <TextBlock Text=", HoveringWindow=" />
+                <TextBlock Text="{Binding HoveringWindow}" />
+                <TextBlock Text=", HoveringAwsIconText="/>
+                <TextBlock Text="{Binding HoveringAwsIconText}"/>
+                <TextBlock Text=", HoveringCell="/>
+                <TextBlock Text="{Binding HoveringCell}"/>
+
+            </WrapPanel>
+            <!-- AWS Window -->
+            <WrapPanel>
                 <TextBlock Text=", IsAwsVisible=" />
                 <TextBlock Text="{Binding IsAwsWindowVisible}" />
                 <TextBlock Text=", AwsPos(" />
@@ -72,15 +85,11 @@
                 <TextBlock Text="), " />
 
             </WrapPanel>
-            <!-- WorkWindows -->
+            <!-- AwsBuddyWindow -->
             <WrapPanel>
-                <TextBlock Text="IsWorkUIEnabled=" />
-                <TextBlock Text="{Binding IsWorkUIEnabled}" />
-                <TextBlock Text=", IsWorkWindowVisible=" />
-                <TextBlock Text="{Binding IsWorkWindowVisible}" />
-                <TextBlock Text=", WorkWindowUsedCount=" />
-                <TextBlock Text="{Binding WorkWindowUsedCount}" />
-
+                <TextBlock Text="IsAwsBuddyWindowVisible=" />
+                <TextBlock Text="{Binding IsAwsBuddyWindowVisible}" />
+                
             </WrapPanel>
         </StackPanel>
         <!-- Row 1: AWS Icons -->
@@ -107,6 +116,10 @@
             <WrapPanel>
                 <TextBlock Text="WorkWindowCount="/>
                 <TextBlock Text="{Binding WorkWindowUsedCount}"/>
+                <TextBlock Text=", IsWorkUIEnabled=" />
+                <TextBlock Text="{Binding IsWorkUIEnabled}" />
+                <TextBlock Text=", IsWorkWindowVisible=" />
+                <TextBlock Text="{Binding IsWorkWindowVisible}" />
             </WrapPanel>
             <ListBox ItemsSource="{Binding WorkWinCellInfos}"/>
         </StackPanel>

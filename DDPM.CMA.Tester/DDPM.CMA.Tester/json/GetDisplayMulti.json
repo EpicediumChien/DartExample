@@ -1,0 +1,19 @@
+{
+  "sid": "1727362335",
+  "req": [
+    {
+      "tid": 1,
+      "active": "get",
+      "devicetype": "DISPLAY",
+      "command": "ActiveHours",
+      "options": {}
+    },
+    {
+      "tid": 2,
+      "active": "get",
+      "devicetype": "DISPLAY",
+      "command": "Brightnesslevel",
+      "options": {}
+    }
+  ]
+}

@@ -117,7 +117,9 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessStart_Stop();
             vm.WatchForProcessEnd_Stop();
 
-            vm.StopRegistryMonitor();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLight();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_ICC();
+            //vm.StopRegistryMonitor();
 
             //Lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -331,10 +333,11 @@ namespace DDPM.UI.Module.Color
 
         private void nightlight_config_Click(object sender, RoutedEventArgs e)
         {
-            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+            //string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
-            ColorViewModel vm = (ColorViewModel)DataContext;
+            //ColorViewModel vm = (ColorViewModel)DataContext;
 
+            /*
             if (vm.registryMonitor_NightLight == null)
             {
                 vm.registryMonitor_NightLight = new RegistryMonitor_NightLight(keyName);
@@ -342,13 +345,15 @@ namespace DDPM.UI.Module.Color
                 vm.registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(vm.OnError_NightLight);
                 vm.registryMonitor_NightLight.Start();
             }
+            */
 
             var psi = new System.Diagnostics.ProcessStartInfo();
 
             psi.FileName = "ms-settings:nightlight";
             psi.UseShellExecute = true;
 
-            System.Diagnostics.Process.Start(psi);
+            //System.Diagnostics.Process.Start(psi);
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
         }
 
         private void ICC_profile_config_Click(object sender, RoutedEventArgs e)
@@ -358,7 +363,8 @@ namespace DDPM.UI.Module.Color
             psi.FileName = "ms-settings:display";
             psi.UseShellExecute = true;
 
-            System.Diagnostics.Process.Start(psi);
+            //System.Diagnostics.Process.Start(psi);
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
         }
 
         private void expanderHasExpanded(object sender, RoutedEventArgs args)

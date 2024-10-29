@@ -263,3 +263,15 @@ testcoverage/
 /DdpmSwUpdater/CommonDll/DDPM.SA.Obfuscation.dll
 /DdpmSwUpdater/CommonDll/VcpCore.Common.deps.json
 /DdpmSwUpdater/CommonDll/VcpCore.Common.dll
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.QAM.deps.json
+/DDPM.UI/CommonDll/Dell.TechHub.Sdk.Common_NET.dll
+/DDPM.UI/CommonDll/Dell.Client.Framework.Security.xml
+/DDPM.UI/CommonDll/Dell.Client.Framework.Security.Interfaces.xml
+/DDPM.UI/CommonDll/Dell.Client.Framework.Security.Interfaces.dll
+/DDPM.UI/CommonDll/Dell.Client.Framework.Security.dll
+/DDPM.UI/CommonDll/DCF.Agent.dll
+/DDPM.UI/CommonDll/DCF.Common.dll
+/DDPM.UI/CommonDll/DCF.Interfaces.dll
+/DDPM.UI/CommonDll/DdmLibrary.dll
+/DDPM.SA/dll/DDPM.Easy.Common.dll

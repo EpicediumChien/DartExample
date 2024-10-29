@@ -49,35 +49,35 @@ namespace DDPM.UI.Common
 
     public enum KeyName
     {
-        F1 = 0,
-        F2 = 1,
-        F3 = 2,
-        F4 = 3,
-        F5 = 4,
-        F6 = 5,
-        F7 = 6,
-        F8 = 7,
-        F9 = 8,
-        F10 = 9,
-        F11 = 10,
-        F12 = 11,
-        PrtSc,
-        ScrollLock,
-        PauseBreak,
-        Calculator,
+        F1 = 1,
+        F2,
+        F3,
+        F4,
+        F5,
+        F6,
+        F7,
+        F8,
+        F9,
+        F10,
+        F11,
+        F12,
+        PrtSc = 13,
         Home,
         End,
         PgUp,
-        PgDown
+        PgDown,
+        Calculator,
+        ScrollLock,
+        PauseBreak,
     }
 
     public enum MouseButtonName
     {
+        SideButtonForward = 65,
+        SideButtonBack,
         ScrollWheelClick,
         ScrollTiltLeft,
-        ScrollTiltRight,
-        SideButtonForward,
-        SideButtonBack
+        ScrollTiltRight
     }
 
     public enum AdvancedAction
