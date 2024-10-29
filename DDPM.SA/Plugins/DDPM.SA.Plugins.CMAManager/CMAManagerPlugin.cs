@@ -9,16 +9,10 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
 using IDs = DDPM.SA.Common.IDs;
-using DDPM.SA.Common.Interfaces;
-using DDPM.RemoteManagement.Common.Interfaces;
-using System.Windows.Documents;
-using System.Collections;
-using Newtonsoft.Json;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
