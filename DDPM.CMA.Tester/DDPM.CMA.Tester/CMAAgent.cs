@@ -178,75 +178,66 @@ namespace DDPM.CMA.Tester
 
                 Console.WriteLine("Enter the number to run ?");
                 string input = Console.ReadLine() ?? string.Empty;
-                string pattern = "^[1-6]$";
-                while (!Regex.IsMatch(input, pattern))
+                requestNumList.Clear();
+                stopwatch.Reset();
+                switch (Convert.ToInt32(input))
                 {
-                    Console.WriteLine("Enter the number to run ?");
-                    input = Console.ReadLine() ?? string.Empty;
+                    case 1:
+                        cmaRequest.remote_request = jsonDevice;
+                        break;
+
+                    case 2:
+                        cmaRequest.remote_request = jsonFwDisplay;
+                        break;
+
+                    case 3:
+                        cmaRequest.remote_request = jsonDeviceData;
+                        break;
+
+                    case 4:
+                        cmaRequest.remote_request = jsonDeviceConfig2;
+                        break;
+
+                    case 5:
+                        cmaRequest.remote_request = jsonReport;
+                        break;
+
+                    case 6:
+                        cmaRequest.remote_request = jsongetdisplaymulti;
+                        break;
+
+                    case 7:
+                        cmaRequest.remote_request = jsonfwdock;
+                        break;
+
+                    case 8:
+                        cmaRequest.remote_request = jsonfwkb;
+                        break;
+
+                    case 9:
+                        cmaRequest.remote_request = jsonfwmouse;
+                        break;
+
+                    case 21:
+                        cmaRequest.remote_request = test;
+                        break;
+
+                    case 22:
+                        cmaRequest.remote_request = jsondeviceconfig3;
+                        break;
+
+                    case 23:
+                        cmaRequest.remote_request = jsondevicedatadisplay;
+                        break;
+
+                    default:
+                        isRunning = false;
+                        break;
                 }
-                if (Regex.IsMatch(input, pattern))
-                {
-                    requestNumList.Clear();
-                    stopwatch.Reset();
-                    switch (Convert.ToInt32(input))
-                    {
-                        case 1:
-                            cmaRequest.remote_request = jsonDevice;
-                            break;
-
-                        case 2:
-                            cmaRequest.remote_request = jsonFwDisplay;
-                            break;
-
-                        case 3:
-                            cmaRequest.remote_request = jsonDeviceData;
-                            break;
-
-                        case 4:
-                            cmaRequest.remote_request = jsonDeviceConfig2;
-                            break;
-
-                        case 5:
-                            cmaRequest.remote_request = jsonReport;
-                            break;
-
-                        case 6:
-                            cmaRequest.remote_request = jsongetdisplaymulti;
-                            break;
-
-                        case 7:
-                            cmaRequest.remote_request = jsonfwdock;
-                            break;
-
-                        case 8:
-                            cmaRequest.remote_request = jsonfwkb;
-                            break;
-
-                        case 9:
-                            cmaRequest.remote_request = jsonfwmouse;
-                            break;
-
-                        case 21:
-                            cmaRequest.remote_request = test;
-                            break;
-
-                        case 22:
-                            cmaRequest.remote_request = jsondeviceconfig3;
-                            break;
-
-                        case 23:
-                            cmaRequest.remote_request = jsondevicedatadisplay;
-                            break;
-
-                        default:
-                            isRunning = false;
-                            break;
-                    }
-                    stopwatch.Start();
-                    Console.WriteLine($"json String = {cmaRequest.remote_request}");
-                    _CMAManagerPlugin.Info(cmaRequest);
-                    while (!isresponse) { }
-                }
+                stopwatch.Start();
+                Console.WriteLine($"json String = {cmaRequest.remote_request}");
+                _CMAManagerPlugin.Info(cmaRequest);
+                while (!isresponse) { }
             }
         }
 
