@@ -207,7 +207,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _isSubagentActive = true;
         private bool userClosedPopup = false;
 
-        private static PowerMonitor _pwr_Mon = null;
+        private static PowerEventControl _pwr_Mon = null;
         #endregion
 
         #region Constructor
@@ -265,9 +265,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (_pwr_Mon == null)
                 {
-                    _pwr_Mon = new PowerMonitor(Log);
+                    _pwr_Mon = new PowerEventControl(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
-                    _pwr_Mon.ShowDialog();
+                    _pwr_Mon.Enable_Event();
                 }
                 System.Windows.Threading.Dispatcher.Run();
             });
