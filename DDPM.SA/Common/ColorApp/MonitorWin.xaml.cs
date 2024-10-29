@@ -70,6 +70,7 @@ namespace DDPM.ColorApp
         // jim add 20240605
         public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
         {
+            Pre_reqKey = -1;
             b_AUTO_ColorPresetConfig = blAUTO;
             b_SmartHDR_ON = blSmartHDR_ON;
             _supported_preset = ColorPresetSupportList;

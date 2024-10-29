@@ -375,7 +375,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, bool reScan, bool isUItrigger, List<string> giuds, List<string> serviceTags, string minVersion)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, bool reScan, bool isUItrigger, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
         {
             _isDefer = isDefer;
             _isForce = isForce;
@@ -383,7 +383,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _IsUITrigger = isUItrigger;
             if (reScan)
             {
-                _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay, giuds, serviceTags, minVersion).Result;
+                _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay, giuds, serviceTags, models, minVersion).Result;
             }
             return Task.FromResult(_fWUpdateInfoPackage);
         }
@@ -394,7 +394,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        private Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, List<string> giuds, List<string> serviceTags, string minVersion)
+        private Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
         {
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
@@ -522,7 +522,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (_isDefer || _isForce)
                         {
-                            Filter(giuds, serviceTags, minVersion);
+                            Filter(giuds, serviceTags, models, minVersion);
                         }
                         HandleUpdateInfo();
                     }
@@ -543,7 +543,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _IsUITrigger = false;
             return Task.FromResult(new List<FWUpdateInfo>());
         }
-
         private void HandleUpdateInfo()
         {
             _logs.DebugMsg_1("HandleUpdateInfo");
@@ -607,7 +606,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1("HandleUpdateInfo done");
             }
         }
-        private void Filter(List<string> giuds, List<string> serviceTags, string minVersion)
+        private void Filter(List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
         {
             _logs.DebugMsg_1($"{nameof(Filter)} start");
             _forCLI_FWUpdateInfoPackage = new FWUpdateInfoPackage();
@@ -649,6 +648,25 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         FWU_List.Add(fWUpdateInfo);
                     }
                     _logs.DebugMsg_1($"{nameof(Filter)} no filter done");
+                }
+                if (models != null)
+                {
+                    _logs.DebugMsg_1($"{nameof(Filter)} models go");
+                    if (FWU_List.Count > 0)
+                    {
+                        List<FWUpdateInfo> FWU_ListByModel = new List<FWUpdateInfo>();
+                        foreach (string s in models)
+                        {
+                            foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.DeviceId.Equals(s)))
+                            {
+                                _logs.DebugMsg_1($"{nameof(Filter)} models : {s}");
+                                FWU_ListByModel.Add(fWUpdateInfo);
+                            }
+                        }
+                        FWU_List.Clear();
+                        FWU_List = FWU_ListByModel;
+                    }
+                    _logs.DebugMsg_1($"{nameof(Filter)} models done");
                 }
                 if (!string.IsNullOrEmpty(minVersion))
                 {
@@ -718,7 +736,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             _logs.DebugMsg_1($"{nameof(Filter)} done");
         }
-
         /// <summary>
         /// 從伺服端下載更新檔，下載後會接續執行安裝方法
         /// </summary>
