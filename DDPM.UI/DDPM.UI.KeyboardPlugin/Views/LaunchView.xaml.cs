@@ -33,11 +33,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             InitializeComponent();
             _vm = (KeyboardViewModel?)Keyboardplugin.PluginIoc?.GetService<IPeripheralViewModel>();
 
-            if(_vm != null)
+            if (_vm != null)
             {
                 DataContext = _vm;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                if(_vm.EOLList.Contains(_vm.Model))
+                if (_vm.EOLList.Contains(_vm.Model))
                 {
                     Battery.Visibility = Visibility.Collapsed;
                     btnRestore.Visibility = Visibility.Collapsed;
@@ -61,7 +61,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             //txtDongleHost.Text = Strings.USBWirelessReceiver;
 
             InitializeKeyImage();
-            if(_vm!.IsRestoreEnable)
+            if (_vm!.IsRestoreEnable)
             {
                 btnRestore.Visibility = Visibility.Visible;
             }
@@ -72,7 +72,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             _vm.IsAllKeysVisible = Visibility.Visible;
             _vm.ActiveModule = null;
 
-            if(_vm.ConnectionType == "Wired")
+            if (_vm.ConnectionType == "Wired")
                 btnUnpair.Visibility = Visibility.Collapsed;
 
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -150,7 +150,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             moduleGroup.AddHeader(Strings.KeyCustomizationCaption, new KeyCustomizationModule(_vm!));
             groups.Add(moduleGroup);
 
-            if(_vm!.IsCollabsKeysSupported)
+            if (_vm!.IsCollabsKeysSupported)
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -160,7 +160,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 moduleGroup.AddHeader(Strings.CollaborationCaption, new CollaborationModule(_vm));
                 groups.Add(moduleGroup);
             }
-            if(_vm.IsIlluminationSupported)
+            if (_vm.IsIlluminationSupported)
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -182,16 +182,16 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             //if(newItem.Id == _vm!.VbarSelectedIndex) { return; }
 
-            if(_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm!.VbarSelectedIndex + 1])
+            if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm!.VbarSelectedIndex + 1])
             {
                 _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
                 _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
 
                 InvokeGotoTwoViewModeAnimation();
 
-                if(newItem.Id == 0)
+                if (newItem.Id == 0)
                 {
-                    if(_vm.VbarSelectedIndex != -1)
+                    if (_vm.VbarSelectedIndex != -1)
                         InvokeEnlargeAnimation();
                     _vm.ActiveModule?.OnActivated();
                 }
@@ -203,7 +203,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
             _vm.VbarSelectedIndex = newItem.Id;
 
-            if(_vm.RightViewHeaders != null)
+            if (_vm.RightViewHeaders != null)
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
@@ -212,7 +212,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
 
-            if(_vm!.VbarSelectedIndex > 0)
+            if (_vm!.VbarSelectedIndex > 0)
             { _vm.IsAllKeysVisible = Visibility.Hidden; }
             else
             { _vm.IsAllKeysVisible = Visibility.Visible; }
@@ -224,7 +224,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)
         {
-            if(sender == null)
+            if (sender == null)
                 return;
 
             //int newSelId = rightViewHeaderCtrl.SelectedIndex;
@@ -246,7 +246,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             Dispatcher.Invoke(new Action(() =>
             {
                 Storyboard sb = (Storyboard)this.FindResource("StoryGotoTwoView");
-                if(sb != null)
+                if (sb != null)
                 {
                     sb.Completed += (o, s) =>
                     {
@@ -262,7 +262,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             Dispatcher.Invoke(new Action(() =>
             {
                 Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
-                if(sb != null)
+                if (sb != null)
                 {
                     sb.Completed += (o, s) =>
                     {
@@ -278,7 +278,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             Dispatcher.Invoke(new Action(() =>
             {
                 Storyboard sb = (Storyboard)this.FindResource("StoryEnlarge");
-                if(sb != null)
+                if (sb != null)
                 {
                     sb.Completed += (o, s) =>
                     {
@@ -293,17 +293,17 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(_vm!.ConnectionType == "Dongle")
+            if (_vm!.ConnectionType == "Dongle")
             {
                 UnpairModalDialog unpairModalDialog = new(eDeviceCategory.KB);
                 Window parentWindow = Window.GetWindow(this);
-                if(parentWindow != null)
+                if (parentWindow != null)
                 {
                     unpairModalDialog.Owner = parentWindow;
                 }
 
                 bool? dialogResult = unpairModalDialog.ShowDialog();
-                if(dialogResult == true)
+                if (dialogResult == true)
                 {
                     _vm.Unpair();
                 }
@@ -313,7 +313,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 Version win10Version = new(10, 0);
                 Version currentVersion = Environment.OSVersion.Version;
 #pragma warning disable CA1416
-                if(currentVersion >= win10Version)
+                if (currentVersion >= win10Version)
                 {
                     Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
                     {
@@ -333,16 +333,16 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(_vm!.VbarSelectedIndex == -1)
+            if (_vm!.VbarSelectedIndex == -1)
             { return; }
 
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
             InvokeGotoTwoViewModeAnimation();
-            if(_vm.ConnectionType != "Wired")
+            if (_vm.ConnectionType != "Wired")
                 btnUnpair.Visibility = Visibility.Visible;
 
-            if(_vm.IsRestoreEnable)
+            if (_vm.IsRestoreEnable)
             {
                 btnRestore.Visibility = Visibility.Visible;
             }
@@ -351,7 +351,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 btnRestore.Visibility = Visibility.Collapsed;
             }
 
-            if(_vm.VbarSelectedIndex > 0)
+            if (_vm.VbarSelectedIndex > 0)
             { InvokeEnlargeAnimation(); }
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
@@ -364,13 +364,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             RestoreModalDialog restoreModalDialog = new();
             Window parentWindow = Window.GetWindow(this);
-            if(parentWindow != null)
+            if (parentWindow != null)
             {
                 restoreModalDialog.Owner = parentWindow;
             }
 
             bool? dialogResult = restoreModalDialog.ShowDialog();
-            if(dialogResult == true)
+            if (dialogResult == true)
             {
                 _vm!.RestoreToDefault();
                 ((Border)sender).Visibility = Visibility.Collapsed;
@@ -379,13 +379,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if(_vm!.ConnectionType == "Dongle")
+            if (_vm!.ConnectionType == "Dongle")
             {
                 txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
                 txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                 DongleConnection.Visibility = Visibility.Visible;
             }
-            else if(_vm!.ConnectionType == "Bluetooth")
+            else if (_vm!.ConnectionType == "Bluetooth")
             {
                 SetBLConnectionStatus();
                 BLConnection.Visibility = Visibility.Visible;
@@ -395,6 +395,9 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private void SetBLConnectionStatus()
         {
             string hostName = Dns.GetHostName();
+            if (hostName.Length > 15)
+                hostName = hostName.Substring(0, 15);
+
             txt1.Style = ConnectionStyle2;
             imgBL1.Source = img2;
             txtBLHost1.Style = ConnectionStyle2;
@@ -405,14 +408,14 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             imgBL3.Source = img2;
             txtBLHost3.Style = ConnectionStyle2;
 
-            switch(_vm!.Model)
+            switch (_vm!.Model)
             {
                 case "KB700":
                 case "KB740":
                     Host1.Visibility = Visibility.Collapsed;
                     txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                     txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    if(txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                    if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
                         imgBL2.Source = img1;
@@ -430,7 +433,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     Host3.Visibility = Visibility.Collapsed;
                     txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                     txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    if(txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                    if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
                         imgBL1.Source = img1;
@@ -453,6 +456,12 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     txtBLHost2.Style = ConnectionStyle1;
                     break;
             }
+            if (txtBLHost1.Text.Length > 15)
+                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+            if (txtBLHost2.Text.Length > 15)
+                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+            if (txtBLHost3.Text.Length > 15)
+                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
         }
 
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -463,7 +472,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void InitializeKeyImage()
         {
-            switch(_vm!.Model.ToUpper())
+            switch (_vm!.Model.ToUpper())
             {
                 case "KB700":
                 case "KB7221W":
@@ -557,13 +566,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private void KeyClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var keyName = ((Image)sender).Name;
-            if(_vm!.SelectedKey != "")
+            if (_vm!.SelectedKey != "")
                 _vm.RefreshKeyImageFile(_vm.SelectedKey);
 
             _vm.SelectedKey = keyName;
             _vm.RefreshKeyImageFile(keyName, false, true);
 
-            if(_vm.VbarSelectedIndex == 0)
+            if (_vm.VbarSelectedIndex == 0)
             {
                 _vm.ActiveModule!.OnActivated();
             }

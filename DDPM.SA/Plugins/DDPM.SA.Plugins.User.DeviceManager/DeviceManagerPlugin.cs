@@ -207,7 +207,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _isSubagentActive = true;
         private bool userClosedPopup = false;
 
-        private static PowerMonitor _pwr_Mon = null;
+        private static PowerEventControl _pwr_Mon = null;
         #endregion
 
         #region Constructor
@@ -265,9 +265,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (_pwr_Mon == null)
                 {
-                    _pwr_Mon = new PowerMonitor(Log);
+                    _pwr_Mon = new PowerEventControl(Log);
                     _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
-                    _pwr_Mon.ShowDialog();
+                    _pwr_Mon.Enable_Event();
                 }
                 System.Windows.Threading.Dispatcher.Run();
             });
@@ -6981,6 +6981,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
+        }
+        public async Task<string> GetSupportedResolutions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSupportedResolutions(Guid));
+        }
+        public async Task<string> GetSelectedResolution(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetSelectedResolution(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string guid, bool newValue)

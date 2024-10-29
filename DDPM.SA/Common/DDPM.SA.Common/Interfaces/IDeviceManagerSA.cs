@@ -761,32 +761,21 @@ namespace DDPM.SA.Common
         #region Webcam
 
         Task<JArray> GetPresetProfiles(string Guid);
-
         Task<JArray> GetCustomProfiles(string Guid);
-
         Task<string> GetProfile(string Guid);
-
         Task<string> GetProfileName(string Guid);
-
         Task<int> GetBrightness(string Guid);
-
         Task<string> GetCameraFirmwareVersionByDTP(string Guid);
-
         Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
-
         Task<int> GetFieldOfView(string Guid);
-
         Task<bool> GetIsPropertyHDRSupported(string Guid);
-
         Task<bool> GetIsHDROn(string Guid);
-
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
-
         Task<int> GetAntiFlickerValueByDTP(string Guid);
-
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
-
         Task<bool> GetIsAutoFramingOn(string Guid);
+        Task<string> GetSupportedResolutions(string Guid);
+        Task<string> GetSelectedResolution(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 

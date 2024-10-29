@@ -36,7 +36,7 @@ namespace DDPM.UI.Common.Tests
             selectedFPSs.Add("2", "b");
             webcamSettings = new WebcamSettings();
             webcamSettings.Resolutions = resolutions;
-            webcamSettings.SelectedFPSs=selectedFPSs;
+            webcamSettings.SelectedFPSs = selectedFPSs;
         }
 
         [Test]
@@ -50,9 +50,9 @@ namespace DDPM.UI.Common.Tests
         public void TestExportWebcamSettings()
         {
             // Act
-            var DeviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
-            DeviceManagerSAMock.Setup(x=>x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            DeviceManagerSAMock.Setup(x => x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             webcamSettings.SelectedResolution = "1";
             var result = WebcamSettings.ExportWebcamSettings(webcamSettings, "model");
             // Assert
@@ -63,7 +63,7 @@ namespace DDPM.UI.Common.Tests
         public void TestImportWebcamSettings()
         {
             // Act
-            var result = WebcamSettings.ImportWebcamSettings("model");
+            var result = WebcamSettings.ImportWebcamSettings("model", new DeviceInfo());
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -74,8 +74,8 @@ namespace DDPM.UI.Common.Tests
         public void TestId()
         {
             // Act
-            var webcamProfile=new WebcamProfile();
-            webcamProfile.Id= "Id";
+            var webcamProfile = new WebcamProfile();
+            webcamProfile.Id = "Id";
             // Assert
             Assert.That(webcamProfile.Id, Is.EqualTo("Id"));
         }
