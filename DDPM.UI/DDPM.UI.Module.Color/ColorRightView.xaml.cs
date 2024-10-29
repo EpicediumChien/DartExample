@@ -382,7 +382,31 @@ namespace DDPM.UI.Module.Color
                     //ColorViewModel vm = (ColorViewModel)DataContext;
                     DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
-                    int i = 0;
+                    //int i = 0;
+
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+
+                    int index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+
+                    if (index >= 0)
+                    {
+                        int nVCPE2_Value = Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual;
+                        string strColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(nVCPE2_Value).Result;
+
+                        string strSync_ColorPresetName_Manual = string.Empty;
+                        //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                        strSync_ColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName_Manual).Result;
+
+                        if (!string.IsNullOrEmpty(strSync_ColorPresetName_Manual))
+                        {
+                            int idx = vm.ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_ColorPresetName_Manual.ToUpper()));
+                            if (idx >= 0)
+                            {
+                                vm.ColorPresetSelectedIndex = idx;                                
+                            }
+                        }
+                    }
+
                 }));
             }
             else if (expander_sender.Name == "Expander_Auto")
@@ -393,7 +417,7 @@ namespace DDPM.UI.Module.Color
                 {
                     DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
-                    int j = 0;
+                    //int j = 0;
                 })); 
             
             }

@@ -719,8 +719,8 @@ namespace DDPM.UI.Module.Color
 
                 UpdateHDRStatus();
 
-                if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
-                    Is_Game_DeviceName = true;
+                //if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
+                //    Is_Game_DeviceName = true;
 
                 //OSD control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
@@ -835,15 +835,20 @@ namespace DDPM.UI.Module.Color
                     else 
                         strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
 
-                    string strSync_ColorPresetName = string.Empty;
+                    //string strSync_ColorPresetName = string.Empty;
                     //strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
-                    strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+                    //strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+
+                    strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
 
                     //int pIdx = SupportColorPresets.FindIndex(x =>
                     //                    x.Trim() == value.ColorPresetName.Trim());
 
+                    //int pIdx = SupportColorPresets.FindIndex(x =>
+                    //                    x.Trim() == strSync_ColorPresetName.Trim());
+
                     int pIdx = SupportColorPresets.FindIndex(x =>
-                                        x.Trim() == strSync_ColorPresetName.Trim());
+                                        x.Trim() == strSync_CurrentColorPreset.Trim());
 
 
                     Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ?
