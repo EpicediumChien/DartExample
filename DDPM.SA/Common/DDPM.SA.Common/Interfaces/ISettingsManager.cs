@@ -28,6 +28,8 @@ namespace DDPM.SA.Common
 
         //For FW/SW update lock event
         event EventHandler<bool> FWSWUpdateSettingChange;
+
+        Task<List<string>> GetInfos(bool force_reload = false);
     }
 
     /// <summary>
