@@ -21,5 +21,10 @@ namespace DDPM.UI.Module.AddDock
             //txtCaption.Text = Caption;
             //txtStep1.Text = Step1;
         }
+
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            txtStep1.Width = this.ActualWidth - 80;
+        }
     }
 }

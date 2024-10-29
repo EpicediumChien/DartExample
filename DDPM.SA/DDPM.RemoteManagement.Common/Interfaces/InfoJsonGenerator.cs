@@ -1,0 +1,187 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DDPM.RemoteManagement.Common.Interfaces
+{
+    public class InfoJsonGenerator
+    {
+
+        public string sid { get; set; }
+        public string req { get; set; }
+
+        public InfoJsonGenerator(string _sid, List<string> _list)
+        {
+            try
+            {
+                sid = _sid;
+                req = "[" + GenReq(_list) + "]";
+            }
+            catch
+            {
+                throw new Exception("Data can't be null");
+            }
+        }
+
+        private string GenReq(List<string> lst)
+        {
+            string result = "";
+            for (int i = 0; i < lst.Count; i++)
+            {
+                //Console.WriteLine($"{i} = {(lst.ToArray())[i].ToString()}");
+
+                if (i > 0)
+                {
+                    result = result + ",";
+                }
+
+                result = result + (lst.ToArray())[i].ToString();
+
+            }
+
+            return result;
+        }
+
+        public string ToString()
+        {
+            string result = String.Empty;
+
+            result = result + "\"sid\":\"" + sid + "\",";
+            result = result + "\"req\":" + req;
+
+            return "{" + result + "}";
+        }
+
+        public class TaskJson
+        {
+            public int tid { get; set; }
+            public string active { get; set; }
+            public string devicetype { get; set; }
+            public string command { get; set; }
+
+            public string value { get; set; }
+            public string options { get; set; }
+
+
+
+            public string ToString()
+            {
+                string result = string.Empty;
+
+                if (tid != null)
+                {
+                    result = result + $"\"tid\":{tid},";
+                }
+
+
+
+                if (!String.IsNullOrEmpty(active))
+                {
+                    result = result + $"\"active\":\"{active}\",";
+                }
+
+
+
+                if (!String.IsNullOrEmpty(devicetype))
+                {
+                    result = result + $"\"devicetype\":\"{devicetype}\",";
+                }
+
+
+
+                if (!String.IsNullOrEmpty(command))
+                {
+                    result = result + $"\"command\":\"{command}\",";
+                }
+
+                if (!String.IsNullOrEmpty(value))
+                {
+                    result = result + $"\"value\":\"{value}\",";
+                }
+
+
+                /*                if (!String.IsNullOrEmpty(options))
+                                {
+                                    result = result + "\"options\":{" + options + "}";
+                                }*/
+                result = result + "\"options\":{" + options + "}";
+
+                return result;
+            }
+
+
+            public class Options
+            {
+                public string index { get; set; }
+                public string servicetag { get; set; }
+                public string modelname { get; set; }
+                //public string serialnumber { get; set; }
+
+                // attribut for fwupdate
+                public string minversion { get; set; }
+
+
+                public string toString()
+                {
+
+                    bool hasValue = false;
+                    string result = "";
+
+
+
+                    if (!String.IsNullOrEmpty(index))
+                    {
+                        if (hasValue)
+                        {
+                            result = result + ",";
+                        }
+                        result = result + $"\"index\":\"{index}\"";
+                        hasValue = true;
+                    }
+
+                    if (!String.IsNullOrEmpty(servicetag))
+                    {
+                        if (hasValue)
+                        {
+                            result = result + ",";
+                        }
+                        result = result + $"\"servicetag\":\"{servicetag}\"";
+                        hasValue = true;
+                    }
+
+                    if (!String.IsNullOrEmpty(modelname))
+                    {
+                        if (hasValue)
+                        {
+                            result = result + ",";
+                        }
+                        result = result + $"\"devicemodel\":\"{modelname}\"";
+                        hasValue = true;
+                    }
+
+                    /*                if (!String.IsNullOrEmpty(serialnumber))
+                                    {
+                        result = result + $"\"serialnumber\":\"{serialnumber}\",";
+                    }
+                    */
+
+                    if (!String.IsNullOrEmpty(minversion))
+                    {
+                        if (hasValue)
+                        {
+                            result = result + ",";
+                        }
+                        result = result + $"\"minversion\":\"{minversion}\"";
+                        hasValue = true;
+                    }
+
+                    //result = result + "\"otherKey\":\"\"";
+
+                    return result;
+                }
+            }
+        }
+    }
+}

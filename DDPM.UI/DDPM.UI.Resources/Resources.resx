@@ -2148,7 +2148,127 @@
   <data name="RestoreToDefaultActions" xml:space="preserve">
     <value>Restore to default actions</value>
   </data>
-  <data name="AddDevice.KnM.14" xml:space="preserve">
-    <value>Wireless Receiver Connection</value>
+  <data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>Game Enhance Mode</value>
+  </data>
+  <data name="Response_Time" xml:space="preserve">
+    <value>Response Time</value>
+  </data>
+  <data name="Dark_Stabilizer" xml:space="preserve">
+    <value>Dark Stabilizer</value>
+  </data>
+  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>Dark Stabilizer Toggle</value>
+  </data>
+  <data name="Dual_Resolution" xml:space="preserve">
+    <value>Dual Resolution</value>
+  </data>
+  <data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>Dual Resolution Toggle</value>
+  </data>
+  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>Resolution and Refresh Rate</value>
+  </data>
+  <data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>Toggle Vision Engine</value>
+  </data>
+  <data name="Third_Party_Licenses" xml:space="preserve">
+    <value>Third Party Licenses</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="Need_help" xml:space="preserve">
+    <value>Need help? For more information on this software, click the button below.</value>
+  </data>
+  <data name="Learn_more" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="On_screen_notifications" xml:space="preserve">
+    <value>On screen notifications</value>
+  </data>
+  <data name="All_Devices" xml:space="preserve">
+    <value>All Devices</value>
+  </data>
+  <data name="Low_battery_level" xml:space="preserve">
+    <value>Low battery level</value>
+  </data>
+  <data name="Device_specific" xml:space="preserve">
+    <value>Device-specific</value>
+  </data>
+  <data name="Keyboard_lock_key" xml:space="preserve">
+    <value>Keyboard lock key</value>
+  </data>
+  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>Webcam WB7022 Presence Detection sensor cover state</value>
+  </data>
+  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>Headset, speakerphone and soundbar mute/unmute</value>
+  </data>
+  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>Display Color Preset and Easy Memory</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Save_diagnostic_report" xml:space="preserve">
+    <value>Save diagnostic report</value>
+  </data>
+  <data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>Save monitor asset report</value>
+  </data>
+  <data name="Widget_Settings" xml:space="preserve">
+    <value>Widget Settings</value>
+  </data>
+  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>Activate Quick Access widget during Zoom conference calls</value>
+  </data>
+  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>Widget will automatically appear when meeting begins to customize settings for supported webcams</value>
+  </data>
+  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>Enable shortcut reminder for Quick Accesswidget</value>
+  </data>
+  <data name="Critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="Recommended" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="VisionEngine_Night" xml:space="preserve">
+    <value>Night</value>
+  </data>
+  <data name="VisionEngine_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+  <data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>Chroma</value>
+  </data>
+  <data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>Crosshair</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Software version</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Driver version</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Preview Changes</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Stop Preview</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>This feature enables our eyes to adapt to a desired setting.</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Disconnect all USB storage devices from monitor.</value>
   </data>
 </root>

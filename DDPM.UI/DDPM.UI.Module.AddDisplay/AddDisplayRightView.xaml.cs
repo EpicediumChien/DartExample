@@ -21,5 +21,9 @@ namespace DDPM.UI.Module.AddDisplay
             //txtCaption.Text = Caption;
             //txtStep1.Text = Step1;
         }
+        private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            txtStep1.Width = this.ActualWidth - 80;
+        }
     }
 }

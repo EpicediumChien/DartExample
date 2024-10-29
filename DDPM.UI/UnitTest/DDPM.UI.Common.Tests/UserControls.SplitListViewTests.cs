@@ -38,7 +38,14 @@ namespace DDPM.UI.Common.Tests
         [SetUp]
         public void Setup()
         {
-            deviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            deviceManagerSAMock =new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
             splitListView = new SplitListView();
             privateObject = new PrivateObject(splitListView);
@@ -519,6 +526,30 @@ namespace DDPM.UI.Common.Tests
             splitListView.AddButtonClickCommand = addButtonClickCommandMock.Object;
             // Assert
             Assert.That(splitListView.AddButtonClickCommand, Is.EqualTo(addButtonClickCommandMock.Object));
+        }
+
+
+        [Test]
+        public void TestRefreshCustomEAID()
+        {
+            var SplitCtrlMock = new Mock<ISplitCtrl>();
+            var vmSplitItem = new SplitItemViewModel() { SplitOwner = eSplitOwner.EaCustom, SplitCtrl = SplitCtrlMock.Object };
+            var splitItem = new SplitItem();
+            PrivateObject prisplitItem=new PrivateObject(splitItem);
+            prisplitItem.SetFieldOrProperty("vm", vmSplitItem);
+            var vmSplitListView = new SplitListViewModel() { SplitOwner = eSplitOwner.EaWin, SplitList = new ObservableCollection<SplitItem>() { splitItem } };
+            privateObject.SetFieldOrProperty("vm", vmSplitListView);
+
+            splitListView.SplitOwner = eSplitOwner.EaCustom;
+            try
+            {
+                splitListView.RefreshCustomEAID();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
         }
     }
 }

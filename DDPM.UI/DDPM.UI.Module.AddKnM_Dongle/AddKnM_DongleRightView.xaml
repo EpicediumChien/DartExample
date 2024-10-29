@@ -10,7 +10,8 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:AddDeviceViewModel}"
              d:DesignHeight="527" d:DesignWidth="958" 
-             SizeChanged="UserControl_SizeChanged">
+             SizeChanged="UserControl_SizeChanged"
+             Loaded="UserControl_Loaded">
 
   <UserControl.Resources>
     <ResourceDictionary>

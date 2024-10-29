@@ -127,6 +127,7 @@ namespace DDPM.Easy.Common
 
 
         public Rect rect { get; set; } = new Rect();
+        public Rect rcRatio { get; set; } = new Rect();
 
         public Border Border { get { return bd; } }
 

@@ -13,6 +13,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+                <!-- re-add by Derek 10/23 to avoid the controls' style error -->
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -25,7 +27,7 @@
             <!-- RightGroupBorder -->
             <Grid>
                 <StackPanel>
-                    <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
+                    <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
                             <Grid Height="50"
                                   Margin="0,8">

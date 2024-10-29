@@ -15,6 +15,7 @@ using DDPM.UI.Common.ViewModels;
 using System.Windows.Controls;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
+using System.Windows;
 
 namespace DDPM.UI.Module.EzArrange.Tests
 {
@@ -39,6 +40,13 @@ namespace DDPM.UI.Module.EzArrange.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
@@ -52,7 +60,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
             log = logMock.Object;
             vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange);
             HomeDevice.DeviceManagerSA= deviceManagerSAMock.Object;
-            deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true }));
+            deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true ,value=true}));
             ezArrangeModule = new EzArrangeModule(new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "AA" } } });
             privateObject = new PrivateObject(ezArrangeModule);
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DDPM.SA.Plugins.CMAManager
+namespace DDPM.RemoteManagement.Common.Interfaces
 {
     public static class Params
     {
@@ -33,24 +33,29 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public static class DeviceType
         {
-            public const string DISPLAY = "DISPLAY";
-            public const string APP = "APP";
-            public const string WEBCAM = "WEBCAM";
-            public const string AUDIO = "AUDIO";
-            public const string KEYBOARD = "KEYBOARD";
-            public const string MOUSE = "MOUSE";
-            public const string PEN = "PEN";
-            public const string DOCK = "DOCK";
+            public const string DISPLAY = "display";
+            public const string APP = "app";
+            public const string WEBCAM = "webcam";
+            public const string AUDIO = "audio";
+            public const string KEYBOARD = "keyboard";
+            public const string MOUSE = "mouse";
+            public const string PEN = "pen";
+            public const string DOCK = "dock";
         }
 
+        // 0 : success
+        // 1 - 99 : Not Fail
+        // 100+ : Fail or Error
         public static class Response
         {
             public const int STATUS_COMMAND_SUCCESS = 0;
 
-            public const int STATUS_COMMAND_TIMEOUT = 500;
-            public const int STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS = 501;
+            // 51 - 59 : fw update result not fail
+            public const int STATUS_FW_UPDATE_AT_MINVERSION_OR_LATER = 51;
+            public const int STATUS_FW_UPDATE_AT_LATEST = 52;
 
 
+            // 101 - 129 : fw update Fail or Error
             public const int STATUS_FW_UPDATE_DEVICE_NOT_FOUND = 101;
             public const int STATUS_FW_UPDATE_PENDING = 102;
 
@@ -58,11 +63,45 @@ namespace DDPM.SA.Plugins.CMAManager
             public const int STATUS_FW_UPDATE_TIMEOUT_ERROR = 105;
             public const int STATUS_FW_UPDATE_CORRUPTION = 106;
             public const int STATUS_FW_UPDATE_FAILED = 107;
-            public const int STATUS_FW_UPDATE_AT_MINVERSION_OR_LATER = 108;
-            public const int STATUS_FW_UPDATE_AT_LATEST = 109;
+
+            // 500+ : Command Fail or Error
+            public const int STATUS_COMMAND_TIMEOUT = 500;
+            public const int STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS = 501;
+
+            public static int UNKNOW_ERROR = 9999;
 
         }
 
+
+        public static class Lock
+        {
+            public const string InAppUpdate = "inappupdate";
+            public const string InAppRestoreDefault = "inapprestoredefault";
+            public const string RestoreFactoryDefaults = "restorefactorydefaults";
+            public const string ScreenNotification = "screennotification ";
+            public const string TelemetryConsent = "telemetryconsent";
+            public const string InAppBriCont = "InAppBriCont";
+            //public const string InAppUpdate = "inappupdate";  // #5.13.7
+            //public const string InAppUpdate = "inappupdate";  // #5.13.8
+            public const string PrimaryMonitorSync = "PrimaryMonitorSync";
+            public const string ResolutionRefreshRate = "ResolutionRefreshRate";
+            public const string USBCPrioritization = "USBCPrioritization";
+            //public const string InAppUpdate = "inappupdate";  // #5.13.12
+            public const string InAppUSBKVM = "InAppUSBKVM";
+            public const string InAppColorPreset = "InAppColorPreset ";
+            public const string PowerNap = "PowerNap";
+            public const string InAppExportSettings = "InAppExportSettings";
+            public const string CollabScreenShare = "CollabScreenShare ";
+            public const string hdr = "hdr";
+            public const string AntiFlicker = "AntiFlicker";
+            public const string MicSwitch = "MicSwitch";
+            public const string AIAutoFraming = "AIAutoFraming";
+            //public const string InAppUpdate = "inappupdate";  // #5.13.22
+            //public const string InAppUpdate = "inappupdate";  // #5.13.23
+            //public const string InAppUpdate = "inappupdate";  // #5.13.24
+            //public const string InAppUpdate = "inappupdate";  // #5.13.25
+
+        }
 
         public static class Dock
         {

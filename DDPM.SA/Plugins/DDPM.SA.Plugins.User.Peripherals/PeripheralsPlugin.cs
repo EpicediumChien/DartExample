@@ -2385,32 +2385,39 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             _updateHelper = new UpdateHelper();
             UpdateAvailable = isAnyUpdateAvailable;
             _updateHelper.UpdateItems = new List<UpdateItemInfo>();
-            _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems.Count = {_iUpdateManager.AllUpdateItems.Count}");
-            foreach (var updateItem in _iUpdateManager.AllUpdateItems)
+            if (_iUpdateManager != null && _iUpdateManager.AllUpdateItems != null)
             {
-                _updateItems = new UpdateItemInfo() { UpdateType = updateItem.Type.ToString(), UpdateSeverity = updateItem.Severity.ToString(), NewVersion = updateItem.NewVersion, Description = updateItem.Description };
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems.Count = {_iUpdateManager.AllUpdateItems.Count}");
+                foreach (var updateItem in _iUpdateManager.AllUpdateItems)
+                {
+                    _updateItems = new UpdateItemInfo() { UpdateType = updateItem.Type.ToString(), UpdateSeverity = updateItem.Severity.ToString(), NewVersion = updateItem.NewVersion, Description = updateItem.Description };
 
-                _updateItems.CurrentVersion = updateItem.CurrentVersion;
-                _updateItems.DeviceId = updateItem.DeviceId;
-                _updateItems.DeviceIndex = updateItem.DeviceIndex;
-                _updateItems.DeviceModelNumber = updateItem.DeviceModelNumber;
-                _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceModelNumber = {_updateItems.DeviceModelNumber}");
-                _updateItems.DeviceName = updateItem.DeviceName;
-                _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceName = {_updateItems.DeviceName}");
-                _updateItems.DevicePath = updateItem.DevicePath;
-                _updateItems.DeviceType = updateItem.DeviceType;
-                _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceType = {_updateItems.DeviceType}");
-                _updateItems.FrimwareUpdatePath = updateItem.FrimwareUpdatePath;
-                _updateItems.InstallPath = updateItem.InstallPath;
-                _updateItems.InstanceId = updateItem.InstanceId;
-                _updateItems.Priority = updateItem.Priority;
-                _updateItems.ServerPath = updateItem.ServerPath;
-                _updateItems.SupplierID = updateItem.SupplierID;
-                //_updateItems.SHA512 = updateItem.SHA512;
-                _updateItems.Thumbprint = updateItem.Thumbprint;
+                    _updateItems.CurrentVersion = updateItem.CurrentVersion;
+                    _updateItems.DeviceId = updateItem.DeviceId;
+                    _updateItems.DeviceIndex = updateItem.DeviceIndex;
+                    _updateItems.DeviceModelNumber = updateItem.DeviceModelNumber;
+                    _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceModelNumber = {_updateItems.DeviceModelNumber}");
+                    _updateItems.DeviceName = updateItem.DeviceName;
+                    _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceName = {_updateItems.DeviceName}");
+                    _updateItems.DevicePath = updateItem.DevicePath;
+                    _updateItems.DeviceType = updateItem.DeviceType;
+                    _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceType = {_updateItems.DeviceType}");
+                    _updateItems.FrimwareUpdatePath = updateItem.FrimwareUpdatePath;
+                    _updateItems.InstallPath = updateItem.InstallPath;
+                    _updateItems.InstanceId = updateItem.InstanceId;
+                    _updateItems.Priority = updateItem.Priority;
+                    _updateItems.ServerPath = updateItem.ServerPath;
+                    _updateItems.SupplierID = updateItem.SupplierID;
+                    //_updateItems.SHA512 = updateItem.SHA512;
+                    _updateItems.Thumbprint = updateItem.Thumbprint;
 
 
-                _updateHelper.UpdateItems.Add(_updateItems);
+                    _updateHelper.UpdateItems.Add(_updateItems);
+                }
+            }
+            else
+            {
+                _logs.DebugMsg_1($"[PeripheralsPlugin] _iUpdateManager.AllUpdateItems is null");
             }
 
             Console.WriteLine(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.");
