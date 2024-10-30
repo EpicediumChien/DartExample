@@ -8433,6 +8433,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (devHandler != null)
                 devHandler.Invoke(this, arg);
 
+            if (_NKVMPlugin != null)
+            {
+                var Cancellation = new CancellationTokenSource();
+                var CancellationToken = Cancellation.Token;
+                _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
+                SupportedNKVMMonitors();
+            }
+
             Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
 
