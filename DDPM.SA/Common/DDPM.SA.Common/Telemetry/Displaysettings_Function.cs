@@ -166,5 +166,53 @@ namespace DDPM.SA.Common
             return rt;
         }
 
+
+        public bool Send_InputSource_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, string val, string currentResolution, string maxResolution)
+        {
+            var rt = false;
+            if (monitorInfo != null)
+            {
+                var TelemetryDta_InputSource = new Displaysettings_InputSource();
+                TelemetryDta_InputSource.InputSource = val;
+                TelemetryDta_InputSource.CommunicationPath = "Video";
+                TelemetryDta_InputSource.GraphicCardName = string.Empty;
+                TelemetryDta_InputSource.MonitorName = monitorInfo.AliasDeviceName;
+                TelemetryDta_InputSource.D_Ctrl = monitorInfo.D_Ctrl;
+                TelemetryDta_InputSource.SupplierID = monitorInfo.SupplierID;
+                TelemetryDta_InputSource.FirmwareVersion = monitorInfo.FwVersion;
+                TelemetryDta_InputSource.DisplayModelname = monitorInfo.modelName;
+                TelemetryDta_InputSource.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                TelemetryDta_InputSource.DsiplayResolution = currentResolution;
+                TelemetryDta_InputSource.MaxDisplayResolution = maxResolution;
+
+                if (plugin != null)
+                    rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_InputSource.ToJson(), Telementry_Frequency.RealTime).Result;
+            }
+            return rt;
+        }
+
+        public bool Send_USB_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, string val, string currentResolution, string maxResolution)
+        {
+            var rt = false;
+            if (monitorInfo != null)
+            {
+                var TelemetryDta_USB = new Displaysettings_USB();
+                TelemetryDta_USB.USBAssociation = val;
+                TelemetryDta_USB.CommunicationPath = "Video";
+                TelemetryDta_USB.GraphicCardName = string.Empty;
+                TelemetryDta_USB.MonitorName = monitorInfo.AliasDeviceName;
+                TelemetryDta_USB.D_Ctrl = monitorInfo.D_Ctrl;
+                TelemetryDta_USB.SupplierID = monitorInfo.SupplierID;
+                TelemetryDta_USB.FirmwareVersion = monitorInfo.FwVersion;
+                TelemetryDta_USB.DisplayModelname = monitorInfo.modelName;
+                TelemetryDta_USB.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                TelemetryDta_USB.DsiplayResolution = currentResolution;
+                TelemetryDta_USB.MaxDisplayResolution = maxResolution;
+
+                if (plugin != null)
+                    rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_USB.ToJson(), Telementry_Frequency.RealTime).Result;
+            }
+            return rt;
+        }
     }
 }
