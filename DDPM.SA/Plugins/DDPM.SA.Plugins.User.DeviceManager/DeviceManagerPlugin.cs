@@ -52,6 +52,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
+using static DDPM.SA.Common.Telementry_GeneralFunction;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -234,8 +235,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //telemetry [Application Settings ==>AppMode : "Dark","Light"]
                 Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
                 //Telementry Collection
-                var rt = false;
-                var hotkeyTelemetry_Function = new HotkeyTelemetry_Function();
+                //var rt = false;
+                var applicationSettings_Function = new ApplicationSettings_Function();
                 string appModeTelementryData = string.Empty;
                 switch (oSTheme)
                 {
@@ -250,7 +251,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
                 writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
-                Task.Run(() => hotkeyTelemetry_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+                Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
                 /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
                  else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
                 previousOsTheme = oSTheme;
@@ -7563,7 +7564,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
             //Telementry Collection [Application Settings ==>AppMode : "Dark","Light"]  
-            var hotkeyTelemetry_Function = new HotkeyTelemetry_Function();
+            var applicationSettings_Function = new ApplicationSettings_Function();
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
             string appModeTelementryData = string.Empty;
             switch (oSTheme)
@@ -7579,7 +7580,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             Debug.WriteLine($"SettingsReady:AppModeTelemetry=> {appModeTelementryData}");
             writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
-            Task.Run(() => hotkeyTelemetry_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+            Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
             previousOsTheme = oSTheme;
         }
 
@@ -9785,7 +9786,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ReloadHotkeyConfigData();
             //Telementry Collection
             var rt = false;
-            var hotkeyTelemetry_Function = new HotkeyTelemetry_Function();
+            var applicationSettings_Function = new ApplicationSettings_Function();
             if (mo != null)
             {
                 string hotkeyTelementryData = string.Empty;
@@ -9812,7 +9813,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 Debug.WriteLine($"HotkeyTelemetry:{mo.edid.SerialNumber}:{info.Job}=> {hotkeyTelementryData}");
                 writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
-                rt = hotkeyTelemetry_Function.Send_Hotkey_Telementry(_TelementryScheduler, mo, hotkeyTelementryData, info.Job);
+                rt = applicationSettings_Function.Send_Hotkey_Telementry(_TelementryScheduler, _AllInfoMonitors, hotkeyTelementryData, info.Job);
                 if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for HotkeyTelemetry Success ...");
                 else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for HotkeyTelemetry Fail ...");
             }
