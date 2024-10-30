@@ -28,6 +28,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -35,8 +36,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -51,6 +54,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
+using static DDPM.SA.Common.Telementry_GeneralFunction;
 using IDs = DDPM.SA.Common.IDs;
 using System.Runtime;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -209,6 +213,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static int _millisecond = 8000;
         private static OSD_Controler _OSD_Controler = new OSD_Controler();
 
+
+        private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
         #endregion
 
         #region Constructor
@@ -219,10 +225,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Elapsed += OnPowerNapTimedRaise;
             _PowerNapTimer.AutoReset = true;
             _PowerNapTimer.Enabled = true;
-
+            UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
+        }
+
+        private void UXSystemParametersChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
+            {
+                OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                if (previousOsTheme == oSTheme) return;
+                //telemetry [Application Settings ==>AppMode : "Dark","Light"]
+                Debug.WriteLine($"UXSystemParametersChanged:current theme= {oSTheme.ToString()}");
+                //Telementry Collection
+                //var rt = false;
+                var applicationSettings_Function = new ApplicationSettings_Function();
+                string appModeTelementryData = string.Empty;
+                switch (oSTheme)
+                {
+                    case OSThemeEnum.Light:
+                        appModeTelementryData = "Light";
+                        break;
+                    case OSThemeEnum.Dark:
+                        appModeTelementryData = "Dark";
+                        break;
+                    default:
+                        break;
+                }
+                Debug.WriteLine($"AppModeTelemetry=> {appModeTelementryData}");
+                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
+                Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+                /* if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Success ...");
+                 else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode Fail ...");*/
+                previousOsTheme = oSTheme;
+            }
         }
 
         #endregion
@@ -7499,6 +7537,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
+            //Telementry Collection [Application Settings ==>AppMode : "Dark","Light"]  
+            var applicationSettings_Function = new ApplicationSettings_Function();
+            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            string appModeTelementryData = string.Empty;
+            switch (oSTheme)
+            {
+                case OSThemeEnum.Light:
+                    appModeTelementryData = "Light";
+                    break;
+                case OSThemeEnum.Dark:
+                    appModeTelementryData = "Dark";
+                    break;
+                default:
+                    break;
+            }
+            Debug.WriteLine($"SettingsReady:AppModeTelemetry=> {appModeTelementryData}");
+            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
+            Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+            previousOsTheme = oSTheme;
+
+            //Telementry Collection [Application Settings ==>UsedLanguage]
+            CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            appModeTelementryData = installedUICulture.Name;
+            Debug.WriteLine($"SettingsReady:UsedLanguageTelemetry=> {appModeTelementryData}");
+            Task.Run(() => applicationSettings_Function.Send_UsedLanguage_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+
+            //Telementry Collection
+            var usedLanguage_Function = new UsedLanguage_Function();
+            Task.Run(() => usedLanguage_Function.Send_UsedLanguage_Telementry(_TelementryScheduler, appModeTelementryData)).ConfigureAwait(false);
+
         }
 
         #region OutReport
@@ -9721,6 +9789,39 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             ReloadHotkeyConfigData();
+            //Telementry Collection
+            var rt = false;
+            var applicationSettings_Function = new ApplicationSettings_Function();
+            if (mo != null)
+            {
+                string hotkeyTelementryData = string.Empty;
+                switch (info.Job)
+                {
+                    case HotkeyType.ToggleInputSource:
+                        hotkeyTelementryData = HotkeyTelementryHelper.toHotKeyText(info.Hotkey);
+                        break;
+                    case HotkeyType.SwitchInputSource:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.ChangePIPPosition:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.ToggleEzRecentSetting:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.VisionEngineToggle:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                    case HotkeyType.DarkStabilizerToggle:
+                        hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
+                        break;
+                }
+                Debug.WriteLine($"HotkeyTelemetry:{mo.edid.SerialNumber}:{info.Job}=> {hotkeyTelementryData}");
+                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
+                rt = applicationSettings_Function.Send_Hotkey_Telementry(_TelementryScheduler, _AllInfoMonitors, hotkeyTelementryData, info.Job);
+                if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for HotkeyTelemetry Success ...");
+                else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for HotkeyTelemetry Fail ...");
+            }
 
             return Task.FromResult(true);
         }
@@ -11140,6 +11241,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _powerNapJobQueue.Clear();
             _screenSaver = false;
             _PowerNapTimer.Start();
+
+            //Telementry Collection
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+            MonitorInfo monitorInfo = _AllInfoMonitors.SingleOrDefault(x => x.edid.SerialNumber.Equals(powerNapSetting.SerialNumber));
+            if (monitorInfo != null)
+            {
+                if (powerNapSetting.Status)
+                {
+                    string powerNapTelementryData = string.Empty;
+                    switch (powerNapSetting.RunType)
+                    {
+                        case PowerNapType.Off:
+                            powerNapTelementryData = "Off";
+                            break;
+                        case PowerNapType.ReduceBrightness:
+                            powerNapTelementryData = "Reduce_brightness";
+                            break;
+                        case PowerNapType.SleepIfRunning:
+                            powerNapTelementryData = "Sleep";
+                            break;
+                    }
+                    Debug.WriteLine($"powerNapTelementry:{monitorInfo.edid.SerialNumber}=> {powerNapTelementryData}");
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
+                    rt = Displaysettings_Function.Send_PowerNap_Telementry(_TelementryScheduler, monitorInfo, powerNapTelementryData, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                    if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Success ...");
+                    else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Fail ...");
+                }
+            }
             return Task.FromResult(true);
         }
 
