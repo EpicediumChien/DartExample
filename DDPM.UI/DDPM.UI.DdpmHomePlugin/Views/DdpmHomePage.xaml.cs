@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -126,6 +127,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
             //To get into RenderingDone() when UI is render done.
             Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
+
+            Window parentWindow = Window.GetWindow(this);
+            double windowLeft = 0;
+            double windowTop = 0;
+            ConsentModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+            if (parentWindow != null)
+            {
+                modalDialog.Owner = parentWindow;
+                windowLeft = parentWindow.Left;
+                windowTop = parentWindow.Top + 40;
+            }
+            modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+            modalDialog.Left = windowLeft;
+            modalDialog.Top = windowTop;
+            modalDialog.ShowDialog();
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
@@ -378,7 +394,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
             double cxItem = (cxView - (minGap * 4.000)) / 3.000;
             double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce*3);
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce * 3);
             return sizeItem;
         }
 
@@ -665,12 +681,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                if (e.OriginalSource == null) return;
+                if (e.OriginalSource == null)
+                    return;
                 System.Windows.Controls.ListViewItem lvItem = (System.Windows.Controls.ListViewItem)e.OriginalSource;
-                if (lvItem == null) return;
-                if (lvItem.DataContext == null) return;
+                if (lvItem == null)
+                    return;
+                if (lvItem.DataContext == null)
+                    return;
                 HomeDevice homeDevice = lvItem.DataContext as HomeDevice;
-                if (homeDevice == null) return;
+                if (homeDevice == null)
+                    return;
                 e.Handled = true;
                 NavigateToDeviceLandingPage(homeDevice);
             }
@@ -940,18 +960,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void batteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //sender is BatteryIndicator
-            if (sender == null) return;
+            if (sender == null)
+                return;
             BatteryIndicator bi = (BatteryIndicator)sender;
 
             //ViewModel of BatteryIndicator is HomeDevice
-            if (bi.DataContext == null) return;
+            if (bi.DataContext == null)
+                return;
             HomeDevice homeDevice = bi.DataContext as HomeDevice;
 
             //If the device is Display
             if (homeDevice.DeviceCategory == eDeviceCategory.Display)
                 return;
 
-            if (homeDevice.DeviceInfo == null) return;
+            if (homeDevice.DeviceInfo == null)
+                return;
             DeviceInfo di = homeDevice.DeviceInfo as DeviceInfo;
 
             homeDevice.IsConnectionHoverViewShow = true;
@@ -967,20 +990,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void batteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //sender is BatteryIndicator
-            if (sender == null) return;
+            if (sender == null)
+                return;
             BatteryIndicator bi = (BatteryIndicator)sender;
 
             //ViewModel of BatteryIndicator is HomeDevice
-            if (bi.DataContext == null) return;
+            if (bi.DataContext == null)
+                return;
             HomeDevice homeDevice = bi.DataContext as HomeDevice;
 
-            if (homeDevice == null) return;
+            if (homeDevice == null)
+                return;
 
             //If the device is Display
             if (homeDevice.DeviceCategory == eDeviceCategory.Display)
                 return;
 
-            if (homeDevice.DeviceInfo == null) return;
+            if (homeDevice.DeviceInfo == null)
+                return;
             DeviceInfo di = homeDevice.DeviceInfo as DeviceInfo;
 
             homeDevice.IsConnectionHoverViewShow = false;
