@@ -6038,6 +6038,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "")
         {
+            writelog("[SW_DownloadAndInstall], start.");
+            try
+            {
+                if (swUpdateInfos != null && swUpdateInfos.Count > 0)
+                {
+                    writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
+                    string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                    string SW_Available_date = swUpdateInfos[0].Available_date;
+                    bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date).Result;
+                    writelog($"[SW_DownloadAndInstall], WriteRegistryData ret : {b}");
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[SW_DownloadAndInstall], Error : {ex.Message}");
+            }
             return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result);
         }
 
@@ -6130,6 +6146,108 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"[DeleteDdpmSwUpdaterFolder], Error : {ex.Message}");
             }
+        }
+        private void TelemetryDdpmSwUpdater()
+        {
+            writelog("[TelemetryDdpmSwUpdater], start.");
+            if (_TelementryScheduler != null && _SettingsPlugin != null)
+            {
+                try
+                {
+                    string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                    string UpdateVersion = string.Empty;
+                    string Results = string.Empty;
+                    string FailureMessage = string.Empty;
+                    string SW_Update_date = string.Empty;
+                    string SW_Available_date = string.Empty;
+                    string ErrorCode = string.Empty;
+                    object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(UpdateVersion)).Result;
+                    writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData UpdateVersion o = {o}.");
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        UpdateVersion = o.ToString();
+                    }
+                    o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(Results)).Result;
+                    writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData Results o = {o}.");
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        Results = o.ToString();
+                    }
+                    o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(FailureMessage)).Result;
+                    writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData FailureMessage o = {o}.");
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        FailureMessage = o.ToString();
+                    }
+                    o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Update_date)).Result;
+                    writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData SW_Update_date o = {o}.");
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        SW_Update_date = o.ToString();
+                    }
+                    o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date)).Result;
+                    writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData SW_Available_date o = {o}.");
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        SW_Available_date = o.ToString();
+                    }
+                    o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(ErrorCode)).Result;
+                    writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData ErrorCode o = {o}.");
+                    if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                    {
+                        ErrorCode = o.ToString();
+                    }
+                    if (!string.IsNullOrEmpty(UpdateVersion) &&
+                        !string.IsNullOrEmpty(Results) &&
+                        !string.IsNullOrEmpty(FailureMessage) &&
+                        !string.IsNullOrEmpty(SW_Update_date) &&
+                        !string.IsNullOrEmpty(SW_Available_date)&&
+                        !string.IsNullOrEmpty(ErrorCode))
+                    {
+                        //Telementry Collection
+                        var rt = false;
+                        var ApplicationSettings_Function = new ApplicationSettings_Function();
+                        
+                        if (FailureMessage.Equals(SWUErrorCode.NoError.ToString()))
+                        {
+                            writelog("[TelemetryDdpmSwUpdater] Send Telementry for SoftwareUpdate...");
+                            rt = ApplicationSettings_Function.Send_SoftwareUpdate_Telementry(_TelementryScheduler, _AllInfoMonitors, UpdateVersion, Results, SW_Available_date, SW_Update_date);
+                            
+                        }
+                        else
+                        {
+                            writelog("[TelemetryDdpmSwUpdater] Send Telementry for SoftwareFailure...");
+                            rt = ApplicationSettings_Function.Send_SoftwareFailure_Telementry(_TelementryScheduler, _AllInfoMonitors, ErrorCode, FailureMessage, SW_Available_date, SW_Update_date);
+                        }
+                        if (rt)
+                        {
+                            writelog("[TelemetryDdpmSwUpdater] Send Telementry Success ...");
+                            bool b = false;
+                            b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(UpdateVersion), "").Result;
+                            writelog($"[TelemetryDdpmSwUpdater],WriteRegistryData UpdateVersion b = {b}.");
+                            b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(Results), "").Result;
+                            writelog($"[TelemetryDdpmSwUpdater],WriteRegistryData Results b = {b}.");
+                            b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(FailureMessage), "").Result;
+                            writelog($"[TelemetryDdpmSwUpdater],WriteRegistryData FailureMessage b = {b}.");
+                            b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Update_date), "").Result;
+                            writelog($"[TelemetryDdpmSwUpdater],WriteRegistryData SW_Update_date b = {b}.");
+                            b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), "").Result;
+                            writelog($"[TelemetryDdpmSwUpdater],WriteRegistryData SW_Available_date b = {b}.");
+                            b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(ErrorCode), "").Result;
+                            writelog($"[TelemetryDdpmSwUpdater],WriteRegistryData ErrorCode b = {b}.");
+                        }
+                        else
+                        {
+                            writelog("[TelemetryDdpmSwUpdater] Send Telementry Fail ...");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[TelemetryDdpmSwUpdater], Error : {ex.Message}");
+                }
+            }
+            writelog("[TelemetryDdpmSwUpdater], done.");
         }
 
         #endregion
@@ -7694,6 +7812,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
+            TelemetryDdpmSwUpdater();
         }
 
         #region OutReport
@@ -9609,6 +9728,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                            TelemetryDdpmSwUpdater();
                         }
                         else
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
@@ -9621,6 +9741,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                            TelemetryDdpmSwUpdater();
                         }
                         else
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");

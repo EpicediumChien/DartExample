@@ -32,7 +32,7 @@ namespace DDPM.SA.Common.Telemetry
                     }
                 }
                 if (plugin != null)
-                    rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_DisplayDeviceFirmware.ToJson(), Telementry_Frequency.RealTime).Result;
+                    rt = plugin.ReceiveTelemetryInfo("MonitorFW_Update", TelemetryDta_DisplayDeviceFirmware.ToJson(), Telementry_Frequency.RealTime).Result;
             }
             return rt;
         }
@@ -58,7 +58,7 @@ namespace DDPM.SA.Common.Telemetry
                     }
                 }
                 if (plugin != null)
-                    rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_PeripheralsDeviceFirmware.ToJson(), Telementry_Frequency.RealTime).Result;
+                    rt = plugin.ReceiveTelemetryInfo("Complex", TelemetryDta_PeripheralsDeviceFirmware.ToJson(), Telementry_Frequency.RealTime).Result;
             }
             return rt;
         }

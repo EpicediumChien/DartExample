@@ -257,5 +257,61 @@ namespace DDPM.SA.Common
 
             return rt;
         }
+        public bool Send_SoftwareUpdate_Telementry(ITelementryScheduler plugin, List<MonitorInfo> monitorInfos, string UpdateVersion, string Results, string SW_Available_date, string SW_Update_date)
+        {
+            var rt = false;
+            List<string> models = new List<string>();
+            List<string> D_Ctrls = new List<string>();
+            List<string> DisplayServiceTags = new List<string>();
+
+            foreach (var monitorInfo in monitorInfos)
+            {
+                models.Add(monitorInfo.modelName);
+                D_Ctrls.Add(monitorInfo.D_Ctrl);
+                DisplayServiceTags.Add(monitorInfo.edid.ServiceTag);
+            }
+
+            var TelemetryDta_SaveMonitorAssetReport_Reminder = new ApplicationSettings_SoftwareUpdateBasic();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.DisplayModelname = models.ToList();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.D_Ctrl = D_Ctrls.ToList();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.DisplayServiceTag = DisplayServiceTags.ToList();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.UpdateVersion = UpdateVersion;
+            TelemetryDta_SaveMonitorAssetReport_Reminder.Results = Results;
+            TelemetryDta_SaveMonitorAssetReport_Reminder.SW_Available_date = SW_Available_date;
+            TelemetryDta_SaveMonitorAssetReport_Reminder.SW_Update_date = SW_Update_date;
+
+            if (plugin != null)
+                rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_SaveMonitorAssetReport_Reminder.ToJson(), Telementry_Frequency.RealTime).Result;
+
+            return rt;
+        }
+        public bool Send_SoftwareFailure_Telementry(ITelementryScheduler plugin, List<MonitorInfo> monitorInfos, string ErrorCode, string FailureMessage, string SW_Available_date, string SW_Update_date)
+        {
+            var rt = false;
+            List<string> models = new List<string>();
+            List<string> D_Ctrls = new List<string>();
+            List<string> DisplayServiceTags = new List<string>();
+
+            foreach (var monitorInfo in monitorInfos)
+            {
+                models.Add(monitorInfo.modelName);
+                D_Ctrls.Add(monitorInfo.D_Ctrl);
+                DisplayServiceTags.Add(monitorInfo.edid.ServiceTag);
+            }
+
+            var TelemetryDta_SaveMonitorAssetReport_Reminder = new ApplicationSettings_SoftwareFailureBasic();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.DisplayModelname = models.ToList();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.D_Ctrl = D_Ctrls.ToList();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.DisplayServiceTag = DisplayServiceTags.ToList();
+            TelemetryDta_SaveMonitorAssetReport_Reminder.ErrorCode = ErrorCode;
+            TelemetryDta_SaveMonitorAssetReport_Reminder.FailureMessage = FailureMessage;
+            TelemetryDta_SaveMonitorAssetReport_Reminder.SW_Available_date = SW_Available_date;
+            TelemetryDta_SaveMonitorAssetReport_Reminder.SW_Update_date = SW_Update_date;
+
+            if (plugin != null)
+                rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_SaveMonitorAssetReport_Reminder.ToJson(), Telementry_Frequency.RealTime).Result;
+
+            return rt;
+        }
     }
 }

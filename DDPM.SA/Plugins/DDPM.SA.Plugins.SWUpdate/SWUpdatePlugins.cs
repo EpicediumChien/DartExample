@@ -260,7 +260,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                             SHA512 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA512,
                             Thumbprint = swUpdateHelper.Softwares[i].DdpmSwUpdater_Thumbprint,
                             SoftwareName = "DDPM",
-                            FileSavepath = swUpdateHelper.Softwares[i].InstallPath
+                            FileSavepath = swUpdateHelper.Softwares[i].InstallPath,
+                            Available_date = _SWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
                         };
                         if (SWUpdateInfo.NeedUpdated)
                         {

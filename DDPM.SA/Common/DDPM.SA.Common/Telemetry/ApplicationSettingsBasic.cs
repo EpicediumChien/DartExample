@@ -63,4 +63,56 @@ namespace DDPM.SA.Common
     {
         public string SaveMonitorAssetReport { get; set; }
     }
+    public class ApplicationSettings_SoftwareUpdateBasic
+    {
+        public string UpdateVersion { get; set; }
+        public string Results { get; set; }
+        public List<string> DisplayModelname { get; set; }
+        public List<string> DisplayServiceTag { get; set; }
+        public List<string> D_Ctrl { get; set; }
+        public string SW_Available_date { get; set; }
+        public string SW_Update_date { get; set; }
+
+        public ApplicationSettings_SoftwareUpdateBasic()
+        {
+            UpdateVersion = string.Empty;
+            Results = string.Empty;
+            DisplayModelname = new List<string>();
+            DisplayServiceTag = new List<string>();
+            D_Ctrl = new List<string>();
+            SW_Available_date = string.Empty;
+            SW_Update_date = string.Empty;
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+    }
+    public class ApplicationSettings_SoftwareFailureBasic
+    {
+        public string ErrorCode { get; set; }
+        public string FailureMessage { get; set; }
+        public List<string> DisplayModelname { get; set; }
+        public List<string> DisplayServiceTag { get; set; }
+        public List<string> D_Ctrl { get; set; }
+        public string SW_Available_date { get; set; }
+        public string SW_Update_date { get; set; }
+
+        public ApplicationSettings_SoftwareFailureBasic()
+        {
+            ErrorCode = string.Empty;
+            FailureMessage = string.Empty;
+            DisplayModelname = new List<string>();
+            DisplayServiceTag = new List<string>();
+            D_Ctrl = new List<string>();
+            SW_Available_date = string.Empty;
+            SW_Update_date = string.Empty;
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+    }
 }
