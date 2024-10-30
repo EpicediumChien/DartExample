@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -25,6 +26,7 @@ using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 
 namespace DDPM.UI.Plugin.ViewModels
@@ -71,13 +73,14 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool[] FOV_IsSelected { get; set; } = new bool[3];
         public Dictionary<string, string> ProfileIDs = new();
 
-        
+
         public List<UI_Delay_WalkAwayLock> Delay_ItemsCollection { get; set; }
 
         public List<UI_SnoozeLength> SnoozeLength_ItemsCollection { get; set; }
 
         #endregion Variables
 
+        public WebcamSettings WebcamSettings = new(new SA.Common.DeviceInfo());
         public WebcamProfile CurrentProfile = new();
         public List<string> FPSs = new();
         public List<WebcamOperation> WCOperations = new();
@@ -145,8 +148,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isChecked_ProximitySensor = value;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                 //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
-                OnPropertyChanged("IsChecked_ProximitySensor"); 
-                OnPropertyChanged("ProximitySensorStatus_String");             
+                OnPropertyChanged("IsChecked_ProximitySensor");
+                OnPropertyChanged("ProximitySensorStatus_String");
 
             }
         }
@@ -211,7 +214,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isChecked_Snooze = value;
                 if (_isChecked_Snooze)
-                {  
+                {
                     if (_SelectedSnoozeLength != null)
                     {
                         if (_SelectedSnoozeLength.SnoozeLength == 30)
@@ -245,7 +248,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
 
 
-                    }                    
+                    }
                 }
                 //    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
                 //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
@@ -256,11 +259,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 else //(_isChecked_Snooze == false)
                 {
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -100);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);                   
+                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, CurrentDeviceInfo!.ID);
                 }
 
                 OnPropertyChanged("IsChecked_Snooze");
-                OnPropertyChanged("SnoozeStatus_String");              
+                OnPropertyChanged("SnoozeStatus_String");
             }
         }
 
@@ -473,40 +476,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void InitializeWebcam()
         {
-            WebcamSettings = WebcamSettings.ImportWebcamSettings(Model);
-            if (string.IsNullOrEmpty(WebcamSettings.SelectedResolution))
-            {
-                foreach (var res in CurrentDeviceInfo!.SupportedResolutions)
-                {
-                    var sts = res.Split(';');
-                    if (!WebcamSettings.SupportedFPSs.ContainsKey(sts[2]))
-                    { WebcamSettings.SupportedFPSs.Add(sts[2], new List<string>()); }
-                    if (!WebcamSettings.SupportedFPSs[sts[2]].Contains(sts[1]))
-                    { WebcamSettings.SupportedFPSs[sts[2]].Add(sts[1]); }
-                    if (!WebcamSettings.Resolutions.ContainsKey(sts[2]))
-                    {
-                        WebcamSettings.Resolutions.Add(sts[2], sts[0]);
-                    }
-
-                }
-                WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
-                WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
-
-                var customProfiles = CurrentDeviceInfo.CustomProfiles.ToObject<List<WebcamProfile>>()!.ToList();
-                for (var l = customProfiles.Count - 1; l >= 0; l--)
-                {
-                    WebcamSettings.CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
-                }
-                foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
-                {
-                    profile.Focus = CurrentDeviceInfo.FocusMin;
-                    WebcamSettings.PresetProfiles.Add(profile.Name, profile);
-                    ProfileIDs.Add(profile.Name, profile.Id);
-                }
-                WebcamSettings.SelectedProfileName = WebcamSettings.PresetProfiles.Values.ToList()[0].Name;
-
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
-            }
+            WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
 
             //var id = CurrentDeviceID.ToString();
             //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(id);
@@ -517,7 +487,6 @@ namespace DDPM.UI.Plugin.ViewModels
             //    WebcamSettings.PresetProfiles.Add(profile.Name, profile);
             //    ProfileIDs.Add(profile.Name, profile.Id);
             //}
-
 
             for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
             {
@@ -532,7 +501,6 @@ namespace DDPM.UI.Plugin.ViewModels
             SetResolution_Selected(i);
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
-
         }
 
         public void RefreshProfiles()
@@ -902,6 +870,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(PanArrowVisibility));
             }
         }
         public void SetZoom()
@@ -1500,7 +1469,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(MessageBoxVisibility));
             }
         }
-        public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;    
+        public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
 
     }
 

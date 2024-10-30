@@ -1,0 +1,12 @@
+﻿{
+  "req": [
+    {
+      "tid": 1,
+      "active": "get",
+      "devicetype": "DISPLAY",
+      "command": "ActiveHours",
+      "options": {}
+    }
+  ],
+  "sid": "1727362336"
+}

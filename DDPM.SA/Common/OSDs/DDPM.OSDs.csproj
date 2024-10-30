@@ -27,6 +27,7 @@
     <None Remove="Img\Mute.png" />
     <None Remove="Img\NumLockOff.png" />
     <None Remove="Img\NumLockOn.png" />
+    <None Remove="Img\Pencil.png" />
     <None Remove="Img\ScrollLock Off.png" />
     <None Remove="Img\ScrollLock On.png" />
     <None Remove="Img\ScrollLockOff.png" />
@@ -58,6 +59,7 @@
     </Resource>
     <Resource Include="Img\NumLockOff.png" />
     <Resource Include="Img\NumLockOn.png" />
+    <Resource Include="Img\Pencil.png" />
     <Resource Include="Img\ScrollLockOff.png" />
     <Resource Include="Img\ScrollLockOn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

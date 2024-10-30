@@ -8,7 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DDPM.RemoteManagement.Common" Version="2.0.0.3" />
+	<None Remove="json\ActHours.json" />
+	<None Remove="json\deviceConfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Content Include="json\DeviceConfig.json" />
+    <Content Include="json\ActHours.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DDPM.RemoteManagement.Common" Version="2.0.0.4" />
     <PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
     <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
     <PackageReference Include="DellClientFramework" Version="6.4.11.2" />

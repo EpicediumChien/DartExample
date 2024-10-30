@@ -1,7 +1,4 @@
-﻿using DdmLibrary;
-using System;
-using System.Management;
-using VcpCore.Common;
+﻿using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
@@ -15,7 +12,6 @@ namespace DDPM.SA.Common
                 var TelemetryDta_Brightness = new Displaysettings_Brightness();
                 TelemetryDta_Brightness.Brightness = val;
                 TelemetryDta_Brightness.CommunicationPath = "Video";
-                TelemetryDta_Brightness.GraphicCardName = string.Empty;
                 TelemetryDta_Brightness.MonitorName = monitorInfo.AliasDeviceName;
                 TelemetryDta_Brightness.D_Ctrl = monitorInfo.D_Ctrl;
                 TelemetryDta_Brightness.SupplierID = monitorInfo.SupplierID;
@@ -39,7 +35,6 @@ namespace DDPM.SA.Common
                 var TelemetryDta_Luminance = new Displaysettings_Luminance();
                 TelemetryDta_Luminance.Luminance = val;
                 TelemetryDta_Luminance.CommunicationPath = "Video";
-                TelemetryDta_Luminance.GraphicCardName = string.Empty;
                 TelemetryDta_Luminance.MonitorName = monitorInfo.AliasDeviceName;
                 TelemetryDta_Luminance.D_Ctrl = monitorInfo.D_Ctrl;
                 TelemetryDta_Luminance.SupplierID = monitorInfo.SupplierID;
@@ -63,7 +58,6 @@ namespace DDPM.SA.Common
                 var TelemetryDta_Contrast = new Displaysettings_Contrast();
                 TelemetryDta_Contrast.Contrast = val;
                 TelemetryDta_Contrast.CommunicationPath = "Video";
-                TelemetryDta_Contrast.GraphicCardName = string.Empty;
                 TelemetryDta_Contrast.MonitorName = monitorInfo.AliasDeviceName;
                 TelemetryDta_Contrast.D_Ctrl = monitorInfo.D_Ctrl;
                 TelemetryDta_Contrast.SupplierID = monitorInfo.SupplierID;

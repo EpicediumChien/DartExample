@@ -106,24 +106,17 @@ namespace DDPM.SA.Common
         Task<string> GetProfile(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
-
         Task<string> GetCameraFirmwareVersion(string Guid);
-
         Task<bool> GetIsPropertyFOVSupported(string Guid);
-
         Task<int> GetFieldOfView(string Guid);
-
         Task<bool> GetIsPropertyHDRSupported(string Guid);
-
         Task<bool> GetIsHDROn(string Guid);
-
         Task<bool> CheckIsPropertyAntiFlickerSupported(string Guid);
-
         Task<int> GetAntiFlicker(string Guid);
-
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
-
         Task<bool> GetIsAutoFramingOn(string Guid);
+        Task<string> GetSupportedResolutions(string Guid);
+        Task<string> GetSelectedResolution(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
