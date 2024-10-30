@@ -1356,7 +1356,51 @@ namespace DDPM.UI.Resources {
                 return ResourceManager.GetString("Color.9", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   查詢類似 Help us improve 的當地語系化字串。
+        /// </summary>
+        internal static string Consent_1
+        {
+            get
+            {
+                return ResourceManager.GetString("Consent.1", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   查詢類似 Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about  的當地語系化字串。
+        /// </summary>
+        internal static string Consent_2
+        {
+            get
+            {
+                return ResourceManager.GetString("Consent.2", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   查詢類似 No, I don&apos;t consent 的當地語系化字串。
+        /// </summary>
+        internal static string ConsentNo
+        {
+            get
+            {
+                return ResourceManager.GetString("ConsentNo", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   查詢類似 Yes, I consent 的當地語系化字串。
+        /// </summary>
+        internal static string ConsentYes
+        {
+            get
+            {
+                return ResourceManager.GetString("ConsentYes", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Confirm.
         /// </summary>
