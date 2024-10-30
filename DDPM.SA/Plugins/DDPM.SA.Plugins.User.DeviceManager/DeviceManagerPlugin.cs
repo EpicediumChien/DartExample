@@ -55,6 +55,8 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using System.Runtime;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -531,7 +533,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         // 20240619 jim modify
-        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true)
+        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, string reqAppName = null, bool showOSD = true)
         {
             writelog("DeviceManagerPlugin received WriteColorPreset requested ...");
 
@@ -577,7 +579,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Trace.Write($"ColorPreset_Name = {ColorPreset_Name}");
             //}
             //return Task.FromResult(r);
+
+
+            //Telementry Collection
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+          
+            if (colorPresetRunType == 1) //Auto
+            {
+                if (!string.IsNullOrEmpty(reqAppName) && !string.IsNullOrEmpty(ColorPreset_Name))
+                {
+                    writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Auto...");
+                    rt = Displaysettings_Function.Send_Color_Preset_Auto_Telementry(_TelementryScheduler, m, reqAppName + "_" + ColorPreset_Name, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                    if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Auto Success ...");
+                    else writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Auto Fail ...");
+                }              
+            }
+            else //Manual
+            {
+                if (!string.IsNullOrEmpty(ColorPreset_Name))
+                {
+                    writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Manual...");
+                    rt = Displaysettings_Function.Send_Color_Preset_Manual_Telementry(_TelementryScheduler, m, ColorPreset_Name, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                    if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Manual Success ...");
+                    else writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Manual Fail ...");
+                }               
+            }           
+
             return r;
+        }
+
+        public Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
+        {
+            writelog("DeviceManagerPlugin received Send_NightLightStatus_Telementry_SA requested ...");
+
+            bool blRet = true;
+
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();                   
+            
+            if (!string.IsNullOrEmpty(NightLightStatus))
+            {
+                writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus...");
+                rt = Displaysettings_Function.Send_NightLightStatus_Telementry(_TelementryScheduler, m, NightLightStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus Fail ...");
+            }
+            
+
+            return Task.FromResult(blRet);
         }
 
         // 20240619 jim modify
