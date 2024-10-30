@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -20,13 +21,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
     [ExcludeFromCodeCoverage]
     public partial class DdpmHomePage : System.Windows.Controls.UserControl
     {
-        private IDdpmHomePageViewModel? _ddpmHomePageViewModel;
+        private DdpmHomePageViewModel? _ddpmHomePageViewModel;
 
         public DdpmHomePage()
         {
             InitializeComponent();
 
-            _ddpmHomePageViewModel = DdpmHomePlugin.PluginIoc?.GetService<IDdpmHomePageViewModel>();
+            _ddpmHomePageViewModel = (DdpmHomePageViewModel?)(DdpmHomePlugin.PluginIoc?.GetService<IDdpmHomePageViewModel>());
 
             if (_ddpmHomePageViewModel != null)
             {
@@ -38,6 +39,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //{
                 //    debugRwdParams.Visibility = Visibility.Visible;
                 //}
+                _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
             }
         }
 
@@ -127,21 +129,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
             //To get into RenderingDone() when UI is render done.
             Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
-
-            Window parentWindow = Window.GetWindow(this);
-            double windowLeft = 0;
-            double windowTop = 0;
-            ConsentModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
-            if (parentWindow != null)
-            {
-                modalDialog.Owner = parentWindow;
-                windowLeft = parentWindow.Left;
-                windowTop = parentWindow.Top + 40;
-            }
-            modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-            modalDialog.Left = windowLeft;
-            modalDialog.Top = windowTop;
-            modalDialog.ShowDialog();
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
@@ -1028,6 +1015,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             };
             dispTimer.Interval = new TimeSpan(200);
             dispTimer.Start();
+        }
+
+        private void _ddpmHomePageViewModel_ShowConsent(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() => {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                ConsentModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top + 40;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+                if (modalDialog.ShowDialog()!.Value)
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
+                }
+                else
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
+                }
+            });
         }
     }
 }

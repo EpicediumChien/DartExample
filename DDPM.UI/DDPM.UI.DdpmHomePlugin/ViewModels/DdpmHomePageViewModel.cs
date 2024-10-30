@@ -487,6 +487,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             set => SetProperty(ref _isPleaseWaitVisible, value);
         }
 
+        public event EventHandler<EventArgs> ShowConsentRequested;
+        public void ShowConsent()
+        {
+            ShowConsentRequested?.Invoke(this, EventArgs.Empty);
+        }
+
         public void Invoke_PleaseWait()
         {
             BackgroundWorker bw = new BackgroundWorker
