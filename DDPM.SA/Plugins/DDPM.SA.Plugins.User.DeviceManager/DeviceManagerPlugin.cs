@@ -6196,6 +6196,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
                 {
                     writelog("[DisplayExportSettings]Export is Success");
+                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Export");
+                    ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                    if (_TelementryScheduler != null)
+                    {
+                        if (_AllInfoMonitors != null)
+                        {
+                            if (_AllInfoMonitors.Count > 0)
+                            {
+                                if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Export"))
+                                {
+                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                }
+                                writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                            }
+                            else
+                            {
+                                writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                            }
+                        }
+                        else
+                        {
+                            writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                    }
                     return Task.FromResult(true);
                 }
                 else
@@ -6305,6 +6333,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         writelog("[DisplayImportSettings] Import Success");
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Import");
+                                        ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                                        if (_TelementryScheduler != null)
+                                        {
+                                            if (_AllInfoMonitors != null)
+                                            {
+                                                if (_AllInfoMonitors.Count > 0)
+                                                {
+                                                    if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Import"))
+                                                    {
+                                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                                    }
+                                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                                }
+                                                else
+                                                {
+                                                    writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                                        }
                                         return Task.FromResult(true);
                                     }
                                     else
@@ -6387,6 +6443,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         writelog("[DisplayImportSettings]import is Success");
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Import");
+                                        ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                                        if (_TelementryScheduler != null)
+                                        {
+                                            if (_AllInfoMonitors != null)
+                                            {
+                                                if (_AllInfoMonitors.Count > 0)
+                                                {
+                                                    if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Import"))
+                                                    {
+                                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                                    }
+                                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                                }
+                                                else
+                                                {
+                                                    writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                                        }
                                         return Task.FromResult(true);
                                     }
                                     else
@@ -7361,13 +7445,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        public Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo,string mode, string val)
+        public Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo, string mode, string val)
         {
+            writelog("[SentKVMtoTelementry] SentKVMToTelementry");
             DisplayFeatures_Functions displayFeatures_Functions = new DisplayFeatures_Functions();
             DisplayPropertiesInfo displayInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
-            if (displayFeatures_Functions.SentKVMToTelementry(Log, _TelementryScheduler, monitorInfo, displayInfo, mode, val))
+            if (_TelementryScheduler != null)
             {
-                return Task.FromResult(true);
+                if (displayFeatures_Functions.SentKVMToTelementry(Log, _TelementryScheduler, monitorInfo, displayInfo, mode, val))
+                {
+                    writelog("[SentKVMtoTelementry] SentKVMToTelementry is success");
+                    return Task.FromResult(true);
+                }
+                writelog("[SentKVMtoTelementry] SentKVMToTelementry is fail");
+            }
+            else
+            {
+                writelog("[SentKVMtoTelementry] _TelementryScheduler is null");
             }
             return Task.FromResult(false);
         }

@@ -26,4 +26,9 @@ namespace DDPM.SA.Common
     {
         public string LockRotation { get; set; }
     }
+
+    public class ApplicationSettings_Settings : ApplicationSettingsBasic 
+    {
+        public string App_Copy_Settings { get; set; }
+    }
 }
