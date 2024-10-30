@@ -592,6 +592,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Dell Display and Peripheral Manager 的當地語系化字串。
+        /// </summary>
+        internal static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Assign Keystroke 的當地語系化字串。
         /// </summary>
         internal static string AssignKeystroke {
@@ -1353,6 +1362,42 @@ namespace DDPM.UI.Resources {
         internal static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Help us improve 的當地語系化字串。
+        /// </summary>
+        internal static string Consent_1 {
+            get {
+                return ResourceManager.GetString("Consent.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about  的當地語系化字串。
+        /// </summary>
+        internal static string Consent_2 {
+            get {
+                return ResourceManager.GetString("Consent.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 No, I don&apos;t consent 的當地語系化字串。
+        /// </summary>
+        internal static string ConsentNo {
+            get {
+                return ResourceManager.GetString("ConsentNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Yes, I consent 的當地語系化字串。
+        /// </summary>
+        internal static string ConsentYes {
+            get {
+                return ResourceManager.GetString("ConsentYes", resourceCulture);
             }
         }
         
