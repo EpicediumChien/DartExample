@@ -41,6 +41,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8406,8 +8407,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (dockCount >= 2)
             {
                 //0704 Bruce 使用另一種Popup顯示
-                PopupBaseManage popupBaseManage = new PopupBaseManage();
-                popupBaseManage.FWU_Show("Warning", "Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).", "", "", null, true, 5);
+                //PopupBaseManage popupBaseManage = new PopupBaseManage();
+                //popupBaseManage.FWU_Show("Warning", "Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).", "", "", null, true, 5);
+                PopupContentPackage popupContentPackage = new PopupContentPackage()
+                {
+                    Title = "Warning",
+                    Info = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.",
+                    IsInfo = true,
+                    IsOnlyUpdate = false,
+                    StayOpen = true,
+                    Timeout = 5,
+                };
+                CallPopup(this, popupContentPackage);
+                // 顯示Toast通知
                 //0614 Bruce 先使用ToastContentBuilder做通知，之後修改回客戶的模板
                 //ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
                 //toastContentBuilder.AddArgument("DDPM");

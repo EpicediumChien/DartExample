@@ -17,12 +17,6 @@ namespace DDPM.SA.Common.Method
         {
             _logs = logs;
         }
-        /// <summary>
-        /// Only for DdpmSwUpdater use.
-        /// </summary>
-        public Unzip()
-        {
-        }
         public bool CheckFileIsZip(string filePath)
         {
             string extension = Path.GetExtension(filePath).ToLower();
