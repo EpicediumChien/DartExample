@@ -96,5 +96,6 @@ namespace DDPM.SA.Common.Settings
         #endregion EasyMemory
 
         public HotkeySettings HotkeySettings { get; set; } = new HotkeySettings();
+        public bool isDisplayConsentPage { get; set; } = false;//DDPMW-1254
     }
 }

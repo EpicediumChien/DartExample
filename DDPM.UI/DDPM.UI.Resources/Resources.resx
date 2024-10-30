@@ -187,7 +187,7 @@
     <value>Update available</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
+    <value>Dell Display and Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Check for updates</value>
@@ -2273,5 +2273,20 @@
   </data>
   <data name="AddDevice.KnM.14" xml:space="preserve">
     <value>Wireless Receiver Connection</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>No, I don't consent</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>Yes, I consent</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>Help us improve</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about </value>
   </data>
 </root>

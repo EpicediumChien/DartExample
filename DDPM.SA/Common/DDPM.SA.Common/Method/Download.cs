@@ -17,12 +17,6 @@ namespace DDPM.SA.Common.Method
         {
             _logs = logs;
         }
-        /// <summary>
-        /// Only for DdpmSwUpdater use.
-        /// </summary>
-        public Download()
-        {
-        }
 
         public bool DownloadFile(string URLPath, string SavePath, out string FailInfo, bool isSkipCA = false)
         {
@@ -71,8 +65,8 @@ namespace DDPM.SA.Common.Method
             }
             catch (Exception ex)
             {
-                FailInfo = "Network fail";
-                _logs?.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.ToString());
+                FailInfo = $"Network fail : {ex.Message}";
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.Message);
                 return false;
             }
         }
