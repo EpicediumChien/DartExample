@@ -72,5 +72,29 @@ namespace DDPM.SA.Common
             }
             return rt;
         }
+
+        public bool Send_PowerNap_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, string val, string currentResolution, string maxResolution)
+        {
+            var rt = false;
+            if (monitorInfo != null)
+            {
+                var TelemetryDta_PowerNap = new Displaysettings_PowerNap();
+                TelemetryDta_PowerNap.PowerNap = val;
+                TelemetryDta_PowerNap.CommunicationPath = "Video";
+                TelemetryDta_PowerNap.GraphicCardName = string.Empty;
+                TelemetryDta_PowerNap.MonitorName = monitorInfo.AliasDeviceName;
+                TelemetryDta_PowerNap.D_Ctrl = monitorInfo.D_Ctrl;
+                TelemetryDta_PowerNap.SupplierID = monitorInfo.SupplierID;
+                TelemetryDta_PowerNap.FirmwareVersion = monitorInfo.FwVersion;
+                TelemetryDta_PowerNap.DisplayModelname = monitorInfo.modelName;
+                TelemetryDta_PowerNap.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                TelemetryDta_PowerNap.DsiplayResolution = currentResolution;
+                TelemetryDta_PowerNap.MaxDisplayResolution = maxResolution;
+
+                if (plugin != null)
+                    rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_PowerNap.ToJson(), Telementry_Frequency.RealTime).Result;
+            }
+            return rt;
+        }
     }
 }

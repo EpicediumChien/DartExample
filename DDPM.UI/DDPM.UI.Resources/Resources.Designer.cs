@@ -592,6 +592,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Dell Display and Peripheral Manager 的當地語系化字串。
+        /// </summary>
+        internal static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Assign Keystroke 的當地語系化字串。
         ///   Looks up a localized string similar to Assign Keystroke.
         /// </summary>
         internal static string AssignKeystroke {
@@ -1357,6 +1367,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Continue 的當地語系化字串。
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         internal static string Continue {
@@ -4831,7 +4842,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dell Display and  Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
+        ///   查詢類似 Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled. 的當地語系化字串。
         /// </summary>
         internal static string Updates_1 {
             get {

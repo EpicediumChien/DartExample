@@ -109,6 +109,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             { "Docks", 12 }
         };
 
+        private GlobalSettingParam _globalSettings = null;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -219,6 +221,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             await GetDdpmDevicesAsync(_deviceManager);
 
+                            //1030 get global settings for telemetry consent page using
+                            _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
+                            //1030 Dean
+                            //For Hess to read global setting "_globalSettings"
+                            //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
+                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null)
+                            {
+                                //consent page
+                            }
 
                             if (_deviceManager == null)
                             {
@@ -313,6 +324,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             ShowDdpmHome();
                         }
                     }
+
+                    //For existing monitor to check if need to pop-up message to import setting
+                    /*await Task.Run(() =>
+                    {
+                        int time = 0;
+                        while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
+                        {
+                            Thread.Sleep(2000);
+                        }
+                    });*/
                 }
                 else
                 {

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DDPM.SA.Common.Telemetry;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace DDPM.SA.Common
@@ -26,4 +27,42 @@ namespace DDPM.SA.Common
     {
         public string LockRotation { get; set; }
     }
+    public class ApplicationSettings_Toggle_2_input_sources_hotkey : ApplicationSettingsBasic
+    {
+        public string Toggle_2_input_sources_hotkey { get; set; } = string.Empty;
+    }
+
+    public class ApplicationSettings_Video_swap_hotkey : ApplicationSettingsBasic
+    {
+        public string Video_swap_hotkey { get; set; } = string.Empty;
+    }
+
+    public class ApplicationSettings_PIP_Toggle_hotkey : ApplicationSettingsBasic
+    {
+        public string PIP_Toggle_hotkey { get; set; } = string.Empty;
+    }
+    public class ApplicationSettings_EasyArrangeRecentHotkey : ApplicationSettingsBasic
+    {
+        public string EasyArrangeRecentHotkey { get; set; } = string.Empty;
+    }
+
+    public class ApplicationSettings_VisionEngineHotkey : ApplicationSettingsBasic
+    {
+        public string VisionEngineHotkey { get; set; } = string.Empty;
+    }
+    public class ApplicationSettings_BlackStablizer_hotkey : ApplicationSettingsBasic
+    {
+        public string BlackStablizer_hotkey { get; set; } = string.Empty;
+    }
+
+    public class ApplicationSettings_AppMode : ApplicationSettingsBasic
+    {
+        public string AppMode { get; set; } = string.Empty;
+    }
+
+    public class ApplicationSettings_UsedLanguage : ApplicationSettingsBasic
+    {
+        public string UsedLanguage { get; set; } = string.Empty;
+    }
+
 }

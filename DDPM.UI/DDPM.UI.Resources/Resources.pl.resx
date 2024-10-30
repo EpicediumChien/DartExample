@@ -313,7 +313,7 @@
     <value>Podłączanie pióra</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Przyłóż końcówkę pióra do ekranu</value>
+    <value>Przyłóż końcówkę pióra do ekranu programu Dell Display and Peripheral Manager</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Naciśnij i przytrzymaj górny przycisk przez 3 sekundy. Poczekaj na wykrycie urządzenia przez system Windows.</value>
@@ -322,7 +322,7 @@
     <value>Zezwól na sparowanie urządzenia lub uruchom ustawienia systemu Windows i wybierz odpowiednie urządzenie po jego wykryciu.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Wybierz opcję „Tak”, aby potwierdzić parowanie w polu monitu o sparowanie pióra</value>
+    <value>Wybierz opcję „Tak”, aby potwierdzić parowanie w polu monitu</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>Bezprzewodowa łączność bez odbiornika USB i łączność w trasie</value>
@@ -661,7 +661,7 @@
     <value>Oświetlenie nocne </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>Wyświetlaj komfortowe kolory pomagające zasnąć.</value>
+    <value>Pokazuje cieplejsze kolory, aby pomóc Ci zasnąć w nocy</value>
   </data>
   <data name="Color.11" xml:space="preserve">
     <value>Zarządzanie kolorami</value>
@@ -853,7 +853,7 @@
     <value>Niska</value>
   </data>
   <data name="HeadsetAutomatedActions.3" xml:space="preserve">
-    <value>Normalna</value>
+    <value>Normalnie</value>
   </data>
   <data name="HeadsetAutomatedActions.4" xml:space="preserve">
     <value>Po wyjęciu zestawu słuchawkowego:</value>
@@ -1168,7 +1168,7 @@
     <value>Microsoft Teams</value>
   </data>
   <data name="SpeakerInteractions.3" xml:space="preserve">
-    <value>Zoom</value>
+    <value>Przybliżenie</value>
   </data>
   <data name="SpeakerInteractions.4" xml:space="preserve">
     <value>Google Meet</value>
@@ -1204,7 +1204,7 @@
     <value>Kl./s</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>Steruje ostrością i stylem obrazu, dostosowując liczbę przechwytywanych obrazów na sekundę</value>
+    <value>Steruje ostrością i stylem obrazu, dostosowując liczbę przechwytywanych obrazów na sekundę.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>Lokalizacja plików multimedialnych</value>
@@ -1363,7 +1363,7 @@
     <value>Nadaj priorytet zewnętrznej kamerze internetowej</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>Automatyczne przełączanie między kamerą internetową Dell UltraSharp i innymi kamerami internetowymi (zintegrowanymi i zewnętrznymi). Funkcja Windows Hello używa aktywnej kamery internetowej do rozpoznawania twarzy. Uwaga: w danym momencie może być włączona i dostępna tylko jedna kamera.</value>
+    <value>Automatyczne przełączanie między kamerą internetową Dell UltraSharp i innymi kamerami internetowymi (zintegrowanymi i zewnętrznymi). Funkcja Windows Hello używa aktywnej kamery internetowej do rozpoznawania twarzy.\n\nUwaga: w danym momencie może być włączona i dostępna tylko jedna kamera.</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Czułość przewijania dotykowego</value>
@@ -1420,7 +1420,7 @@
     <value>Jasność/kontrast</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>Właściwości ekranu</value>
+    <value>Właściwości</value>
   </data>
   <data name="Layout" xml:space="preserve">
     <value>Układ</value>
@@ -1598,5 +1598,455 @@
   </data>
   <data name="Undo" xml:space="preserve">
     <value>Cofnij</value>
+  </data>
+  <data name="Tooltip.5" xml:space="preserve">
+    <value>Układy klawiatury z klawiszem Copilot mogą być dostępne w różnym czasie, w zależności od języka i regionu.</value>
+  </data>
+  <data name="ITLockToolTip.0" xml:space="preserve">
+    <value>To ustawienie jest zablokowane przez administratora IT.</value>
+  </data>
+  <data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>Umożliwia włączanie i wyłączanie mikrofonu kamery. Kamera szybko uruchomi się ponownie po włączeniu/wyłączeniu tej funkcji.</value>
+  </data>
+  <data name="Camera.6" xml:space="preserve">
+    <value>Wybierz opcję</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>Dodaj nowe ustawienie domyślne</value>
+  </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>Czekaj, trwa wprowadzanie zmian</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>Kamera jest używana przez inną aplikację</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>Odłącz i podłącz kamerę, a następnie spróbuj ponownie</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>Zaczekaj na usunięcie kamery</value>
+  </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>Wznów nagrywanie</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>Zakończ nagrywanie</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>Otwórz folder Multimedia</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>Rozpocznij nagrywanie</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>Wstrzymaj nagrywanie</value>
+  </data>
+  <data name="WebCameraSettings.27" xml:space="preserve">
+    <value>Dostosowuje rozmiar ramki</value>
+  </data>
+  <data name="EazyMemory.0" xml:space="preserve">
+    <value>Automatyczne uruchamianie:</value>
+  </data>
+  <data name="EazyMemory.1" xml:space="preserve">
+    <value>Czas uruchomienia:</value>
+  </data>
+  <data name="EazyMemory.2" xml:space="preserve">
+    <value>Aplikacja/dokument:</value>
+  </data>
+  <data name="EazyMemory.3" xml:space="preserve">
+    <value>Zastosuj</value>
+  </data>
+  <data name="EazyMemory.4" xml:space="preserve">
+    <value>Nd.</value>
+  </data>
+  <data name="EazyMemory.5" xml:space="preserve">
+    <value>Błąd</value>
+  </data>
+  <data name="EazyMemory.6" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="EazyMemory.7" xml:space="preserve">
+    <value>Uwaga</value>
+  </data>
+  <data name="EazyMemory.8" xml:space="preserve">
+    <value>Możesz zapisać maksymalnie 9 profili. Usuń istniejący profil lub edytuj go w menu głównym.</value>
+  </data>
+  <data name="EazyMemory.9" xml:space="preserve">
+    <value>Zduplikowane wpisy. Wprowadź inną dokumentację lub aplikacje dla profilu Easy Memory.</value>
+  </data>
+  <data name="EazyMemory.10" xml:space="preserve">
+    <value>Możesz rozmieścić okna na ekranie i kliknąć ikonę +.\r\nMożesz też wybrać istniejący układ poniżej i kliknąć ikonę ołówka, aby go edytować.</value>
+  </data>
+  <data name="EazyMemory.11" xml:space="preserve">
+    <value>Inny profil jest ustawiony tak, aby był uruchamiany po włączeniu komputera. Czy chcesz go zastąpić tym profilem?</value>
+  </data>
+  <data name="EazyMemory.12" xml:space="preserve">
+    <value>Wybierz opcję uruchamiania</value>
+  </data>
+  <data name="EazyMemory.13" xml:space="preserve">
+    <value>Uruchamiaj po włączeniu komputera</value>
+  </data>
+  <data name="EazyMemory.14" xml:space="preserve">
+    <value>Ręcznie wybierz utworzone profile</value>
+  </data>
+  <data name="EazyMemory.15" xml:space="preserve">
+    <value>Czas automatycznego uruchomienia</value>
+  </data>
+  <data name="EazyMemory.16" xml:space="preserve">
+    <value>Zakończ</value>
+  </data>
+  <data name="EazyMemory.17" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="EazyMemory.18" xml:space="preserve">
+    <value>Nazwij profil</value>
+  </data>
+  <data name="EazyMemory.19" xml:space="preserve">
+    <value>Wybierz układ</value>
+  </data>
+  <data name="EazyMemory.20" xml:space="preserve">
+    <value>Okno 0</value>
+  </data>
+  <data name="EazyMemory.21" xml:space="preserve">
+    <value>Okno 1</value>
+  </data>
+  <data name="EazyMemory.22" xml:space="preserve">
+    <value>Okno 2</value>
+  </data>
+  <data name="EazyMemory.23" xml:space="preserve">
+    <value>Okno 3</value>
+  </data>
+  <data name="EazyMemory.24" xml:space="preserve">
+    <value>Okno 4</value>
+  </data>
+  <data name="EazyMemory.25" xml:space="preserve">
+    <value>Okno 5</value>
+  </data>
+  <data name="EazyMemory.26" xml:space="preserve">
+    <value>Okno 6</value>
+  </data>
+  <data name="EazyMemory.27" xml:space="preserve">
+    <value>Okno 7</value>
+  </data>
+  <data name="EazyMemory.28" xml:space="preserve">
+    <value>Okno 8</value>
+  </data>
+  <data name="EazyMemory.29" xml:space="preserve">
+    <value>Okno 9</value>
+  </data>
+  <data name="EazyMemory.30" xml:space="preserve">
+    <value>Okno 10</value>
+  </data>
+  <data name="EazyMemory.31" xml:space="preserve">
+    <value>Okno 11</value>
+  </data>
+  <data name="EazyMemory.32" xml:space="preserve">
+    <value>Okno 12</value>
+  </data>
+  <data name="EazyMemory.33" xml:space="preserve">
+    <value>Wybierz z folderu</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>Dostosuj widok</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>Easy Arrange</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>Zarządzaj danymi wejściowymi</value>
+  </data>
+  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>Prędkość przewijania dotykowego</value>
+  </data>
+  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>Przycisk główny</value>
+  </data>
+  <data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>Przyciski konfigurowalne</value>
+  </data>
+  <data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>Wygodne sterowanie spotkaniami</value>
+  </data>
+  <data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>Ustawienia podświetlenia</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>Włączanie/wyłączanie wyciszenia za pomocą mikrofonu na wysięgniku</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>Włączanie/wyłączanie wyciszenia za pomocą mikrofonu na wysięgniku</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>Wygodne przyciski</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>Aktywna redukcja szumów</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Szybkie ustawienia w aplikacji Zoom</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>Łatwe ustawienia wstępne</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>Automatyczne kadrowanie SI</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>High Dynamic Range</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>Funkcje bezpieczeństwa</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>Witamy w\r\nDell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>Zobacz swoje urządzenie, sposób jego połączenia i poziom naładowania baterii (jeśli połączenie jest bezprzewodowe)</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>Najedź kursorem na kafelek połączenia urządzenia bezprzewodowego, aby dowiedzieć się więcej</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>Kliknij urządzenie, aby dostosować jego ustawienia</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>Kliknij ikonę koła zębatego, aby uzyskać dostęp do ustawień aplikacji oraz aktualizacji oprogramowania i oprogramowania wewnętrznego</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>Dodaj urządzenie</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>Wyświetl urządzenie</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>Kafelek połączenia</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>Ustawienia urządzenia</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>Ustawienia aplikacji</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>Wyświetlaj wszystkie obsługiwane wyświetlacze i urządzenia peryferyjne firmy Dell w jednym miejscu, personalizuj ustawienia i aktualizuj oprogramowanie wewnętrzne</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>Kliknij ikonę +, aby znaleźć instrukcje dotyczące podłączania obsługiwanego urządzenia firmy Dell</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>Spersonalizuj sposób korzystania z ekranu, dostosowując poziomy jasności/kontrastu, profile kolorów i nie tylko</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>Poświęć mniej czasu na zmianę rozmiaru wielu okien. Wybierz układ Easy Arrange, a następnie kliknij i przeciągnij okna na miejsce. Jeśli chcesz ponownie użyć tego konkretnego układu okien, zapisz go za pomocą funkcji Easy Memory</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>Łatwo korzystaj z monitora z wieloma komputerami dzięki ustawieniom źródła sygnału wejściowego lub ustawień KVM USB/sieci. Mysz, klawiaturę i akcesoria można też podłączyć do monitora przez port USB, aby korzystać z nich na wielu komputerach</value>
+  </data>
+  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>Możesz dostosować klawisze na klawiaturze, przypisując do nich określone działania.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>Usprawnij swoje spotkania za pomocą skrótów w aplikacjach Zoom i Teams.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>Ustaw poziom podświetlenia klawiatury, dostosowując go ręcznie lub włączając dostosowanie do oświetlenia otoczenia.</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>Wygodne sterowanie spotkaniami</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>Przyciski konfigurowalne</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>Usprawnij swoje spotkania za pomocą skrótów w aplikacjach Zoom i Teams.</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>Możesz dostosować klawisze na klawiaturze, przypisując do nich określone działania.</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>Zmień szybkość przewijania dotykowego podświetlonych obszarów w aplikacji</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>Wybierz, czy chcesz, aby przycisk główny był lewym czy prawym przyciskiem w aplikacji</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>Opóźnienie częstotliwości</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>Dostosuj kliknięcie kółka przewijania</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>Działania specyficzne dla aplikacji</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>Zwiększ szybkość i precyzję myszy, zwiększając jej częstotliwość odpytywania w aplikacji</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>Przypisz ulubione działania do kliknięcia przycisku przewijania</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>Przypisz niestandardowe działania do kliknięcia kółkiem przewijania podczas korzystania z niektórych aplikacji</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>Dostosuj przyciski</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>Działania specyficzne dla aplikacji</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>Przypisz swoje ulubione działania do oznaczonych przycisków w aplikacji</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>Przypisz niestandardowe działania do przycisków myszy podczas korzystania z określonych aplikacji</value>
+  </data>
+  <data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>Znajdź pióro za pomocą kafelka</value>
+  </data>
+  <data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>Ładowanie baterii pióra</value>
+  </data>
+  <data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>Dostosowywanie działania pióra</value>
+  </data>
+  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>Aby sparować pióro z kafelkiem:\n1. Włącz Bluetooth na swoim urządzeniu mobilnym.\n2. Zeskanuj kod QR, aby pobrać kafelek na urządzenie mobilne.\n3. Aby sparować pióro z kafelkiem, naciśnij i przytrzymaj dwa przyciski boczne pióra przez 3 sekundy.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>Pióro jest naładowane w X%.\n\nAby naładować pióro w pełni, podłącz je do ekranu tabletu. Po zakończeniu ładowania pióra otrzymasz powiadomienie.\n\nPowiadomienia o niskim poziomie naładowania baterii pojawiają się, gdy poziom naładowania spadnie poniżej 10%.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>W aplikacji możesz dostosować działanie przycisków pióra i ustawić czułość końcówki i nachylenia\r\n</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>Dzięki nowemu widżetowi Szybkie ustawienia możesz łatwo zarządzać kluczowymi ustawieniami kamery podczas połączenia w aplikacji Zoom</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>Wybierz ustawienie wstępne, które odzwierciedla sposób, w jaki chcesz wyglądać w kamerze, lub utwórz własne</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>Włącz automatyczne kadrowanie SI, aby kamera utrzymywała Cię w środku kadru, gdy się poruszasz</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>Włącz funkcję High Dynamic Range, aby poprawić jakość obrazu, zwłaszcza w trudnych warunkach oświetleniowych</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>Włącz funkcję wykrywania obecności, aby kamera wybudzała ekran, gdy się zbliżasz, i blokowała go, gdy odchodzisz</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Szybkie ustawienia w aplikacji Zoom</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>Łatwe ustawienia wstępne</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>High Dynamic Range</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>Dzięki nowemu widżetowi Szybkie ustawienia możesz łatwo zarządzać kluczowymi ustawieniami kamery podczas połączenia w aplikacji Zoom</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>Wybierz ustawienie wstępne, które odzwierciedla sposób, w jaki chcesz wyglądać w kamerze, lub utwórz własne</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>Wygodne przyciski</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>Złóż mikrofon, aby go wyciszyć, i rozłóż go, aby wyłączyć wyciszenie.\r\n\r\nW razie potrzeby włącz funkcję w aplikacji, aby odbierać połączenia przychodzące po rozłożeniu mikrofonu na wysięgniku.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>Zarządzaj programem Microsoft Teams i statusem wyciszenia za pomocą jednego naciśnięcia przycisku dla każdego z nich. Dostosuj głośność dźwięku i inne funkcje za pomocą innych, wygodnych przycisków.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>Wygodne przyciski</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>Włączanie/wyłączanie wyciszenia za pomocą mikrofonu na wysięgniku</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>Zarządzaj połączeniami, stanem wyciszenia i głośnością dźwięku za pomocą wygodnych przycisków na wbudowanym panelu sterowania zestawu słuchawkowego</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>Złóż mikrofon, aby go wyciszyć, i rozłóż go, aby wyłączyć wyciszenie.\r\n\r\nW razie potrzeby włącz funkcję w aplikacji, aby odbierać połączenia przychodzące po rozłożeniu mikrofonu na wysięgniku.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>Złóż mikrofon, aby go wyciszyć, i rozłóż go, aby wyłączyć wyciszenie.\r\n\r\nW razie potrzeby włącz funkcję w aplikacji, aby odbierać połączenia przychodzące po rozłożeniu mikrofonu na wysięgniku.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>Zarządzaj programem Microsoft Teams i statusem wyciszenia za pomocą jednego naciśnięcia przycisku dla każdego z nich. Dostosuj głośność dźwięku i inne funkcje za pomocą innych, wygodnych przycisków.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>Naciśnij przycisk ANC na zestawie słuchawkowym lub wybierz jedną z opcji w aplikacji, aby zarządzać poziomem słyszanych szumów otoczenia.\r\n\r\nJeśli wybierzesz opcję Przezroczystość, użyj suwaka w aplikacji, aby dostosować poziom szumów.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>Wygodne przyciski</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>Włączanie/wyłączanie wyciszenia za pomocą mikrofonu na wysięgniku</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>Aktywna redukcja szumów</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>Zarządzaj połączeniami, stanem wyciszenia i głośnością dźwięku za pomocą wygodnych przycisków na wbudowanym panelu sterującym zestawu słuchawkowego. Dostosuj poziom słyszanego szumu z zewnątrz za pomocą przycisku ANC z boku. </value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>Złóż mikrofon, aby go wyciszyć, i rozłóż go, aby wyłączyć wyciszenie.\r\n\r\nW razie potrzeby włącz funkcję w aplikacji, aby odbierać połączenia przychodzące po rozłożeniu mikrofonu na wysięgniku.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>Naciśnij przycisk ANC na zestawie słuchawkowym lub wybierz jedną z opcji w aplikacji, aby zarządzać poziomem słyszanych szumów otoczenia.\r\n\r\nJeśli wybierzesz opcję Przezroczystość, użyj suwaka w aplikacji, aby dostosować poziom szumów.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>Przesuwaj palcem w górę i w dół, aby zarządzać głośnością; dotknij dwukrotnie, aby odebrać lub zakończyć połączenie — i nie tylko.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>Wygodne przyciski na zestawie słuchawkowym umożliwiają zarządzanie stanem wyciszenia, aktywną redukcją szumów (ANC) i aplikacją Microsoft Teams</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>Naciśnij przycisk ANC na zestawie słuchawkowym lub wybierz jedną z opcji w aplikacji, aby zarządzać poziomem słyszanych szumów otoczenia.\r\n\r\nJeśli wybierzesz opcję Przezroczystość, użyj suwaka w aplikacji, aby dostosować poziom szumów.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>Naładuj zestaw słuchawkowy, umieszczając go w stacji ładującej lub podłączając go do komputera za pomocą dostarczonego przewodu USB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>Przesuń i dotknij, aby sterować funkcjami</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>Wygodne przyciski</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>Aktywna redukcja szumów</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>Proste ładowanie</value>
+  </data>
+  <data name="EazyMemory.34" xml:space="preserve">
+    <value>Przypisz programy</value>
+  </data>
+  <data name="EazyMemory.35" xml:space="preserve">
+    <value>Opcje uruchamiania</value>
+  </data>
+  <data name="EazyMemory.36" xml:space="preserve">
+    <value>Zapisz różne profile i przywróć je ręcznie o zaplanowanej godzinie lub podczas uruchamiania systemu.\r\n\r\nZacznij od przypisania nazwy do profilu Easy Memory i wybrania układu.</value>
+  </data>
+  <data name="EazyMemory.37" xml:space="preserve">
+    <value>Przypisz aplikacje/dokumenty do okien lub przeciągnij ikonę aplikacji na odpowiednią partycję.\r\n\r\nUwaga: użyteczność EasyArrange Memory może się różnić w zależności od typu aplikacji i sposobu uruchamiania.</value>
+  </data>
+  <data name="EazyMemory.38" xml:space="preserve">
+    <value>Wybierz typ uruchomienia</value>
+  </data>
+  <data name="EazyMemory.39" xml:space="preserve">
+    <value>KONFIGURACJA EASY MEMORY</value>
+  </data>
+  <data name="WalkThrough.0" xml:space="preserve">
+    <value>WYRÓŻNIONA FUNKCJA</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nie</value>
   </data>
 </root>
