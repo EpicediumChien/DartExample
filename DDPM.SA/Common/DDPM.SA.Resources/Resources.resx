@@ -477,4 +477,10 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Walk Away Lock</value>
   </data>
+  <data name="App_Name" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>The same monitor is detected, do you want to import settings for %1?</value>
+  </data>
 </root>

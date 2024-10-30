@@ -1723,7 +1723,8 @@ namespace VcpCore.Plugins
                                     int count = 0;
                                     while (count < 10)
                                     {
-                                        TokenNew.ThrowIfCancellationRequested();
+                                        if (!TokenNew.IsCancellationRequested)//Dean add to avoid exception 1029
+                                            TokenNew.ThrowIfCancellationRequested();
                                         Thread.Sleep(1000);
                                         List<MonitorInfo_complex> mos = _GetMonitors(TokenNew);
                                         if (mos.Count > 0)
