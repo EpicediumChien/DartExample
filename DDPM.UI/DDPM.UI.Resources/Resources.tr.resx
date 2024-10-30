@@ -130,7 +130,7 @@
     <value>Ekran Ayarları</value>
   </data>
   <data name="EasyArrange" xml:space="preserve">
-    <value>Kolay Düzenleme</value>
+    <value>Easy Arrange</value>
   </data>
   <data name="FirmwareVersion" xml:space="preserve">
     <value>Bellenim Sürümü</value>
@@ -313,7 +313,7 @@
     <value>Kaleminizi Bağlama</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Kaleminizin ucunu ekrana dokundurun</value>
+    <value>Kaleminizin ucunu Dell Display and Peripheral Manager ekranınıza dokundurun</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Üst düğmeyi 3 saniye boyunca basılı tutun. Aygıtın Windows tarafından bulunmasını bekleyin.</value>
@@ -322,7 +322,7 @@
     <value>Aygıtın eşleştirilmesine izin verin veya Windows ayarlarını başlatın ve bulunduktan sonra ilgili aygıtı seçin.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Kaleminizi eşleştirmek isterseniz mesaj kutusunda eşleştirmeyi onaylamak için &quot;Evet&quot;i seçin</value>
+    <value>Mesaj kutusunda eşleştirmeyi onaylamak için &quot;Evet&quot;i seçin</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>USB kablosuz alıcı ve hareket halinde bağlantı için</value>
@@ -646,7 +646,7 @@
     <value>Windows Ayarları</value>
   </data>
   <data name="Color.4" xml:space="preserve">
-    <value>Renk ön ayarını aşağıdakilere göre otomatik ayarlayın:</value>
+    <value>Renk ön ayarını şuna göre otomatik ayarlayın:</value>
   </data>
   <data name="Color.5" xml:space="preserve">
     <value>ICC profili</value>
@@ -661,7 +661,7 @@
     <value>Gece lambası </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>Uyumanıza yardımcı olması için ekranınızda rahat renkleri gösterin.</value>
+    <value>Geceleri daha iyi uyuyabilmeniz için sıcak renkler gösterir</value>
   </data>
   <data name="Color.11" xml:space="preserve">
     <value>Renk Yönetimi</value>
@@ -1177,7 +1177,7 @@
     <value>Skype Kurumsal</value>
   </data>
   <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 Geri sayımı</value>
+    <value>3-2-1 Geri Sayımı</value>
   </data>
   <data name="WebCameraCapture.1" xml:space="preserve">
     <value>Çerçeveleme Kılavuzu</value>
@@ -1204,7 +1204,7 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>Bir saniyede çekilen görüntü sayısını ayarlayarak video netliğini ve stilini kontrol eder</value>
+    <value>Saniye başına çekilen görüntü sayısını ayarlayarak video netliğini ve stilini kontrol eder.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>Ortam Dosyalarının Konumu</value>
@@ -1363,7 +1363,7 @@
     <value>Harici Web Kamerasını Önceliklendir</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>Dell UltraSharp Web Kamerası ve diğer web kameraları (entegre ve harici) arasında otomatik geçiş yapar. Windows Hello, yüz tanıma için aktif web kamerasını kullanır. Not: Aynı anda yalnızca bir kamera etkinleştirilebilir ve bir kameraya erişilebilir.</value>
+    <value>Dell UltraSharp Webcam ve diğer web kameraları (entegre ve harici) arasında otomatik geçiş yapar. Windows Hello, yüz tanıma için aktif web kamerasını kullanır.\n\nNot: Aynı anda yalnızca bir kamera etkinleştirilebilir ve bir kameraya erişilebilir.</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Dokunmatik Kaydırma Hassasiyeti</value>
@@ -1420,7 +1420,7 @@
     <value>Parlaklık/Kontrast</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>Görüntü Özellikleri</value>
+    <value>Özellikler</value>
   </data>
   <data name="Layout" xml:space="preserve">
     <value>Düzen</value>
@@ -1598,5 +1598,455 @@
   </data>
   <data name="Undo" xml:space="preserve">
     <value>Geri al</value>
+  </data>
+  <data name="Tooltip.5" xml:space="preserve">
+    <value>Copilot tuşunu içeren klavye düzenleri, dile ve bölgeye bağlı olarak farklı zamanlarda kullanılabilir hale gelebilir.</value>
+  </data>
+  <data name="ITLockToolTip.0" xml:space="preserve">
+    <value>Bu ayar BT yöneticiniz tarafından kilitlenmiş.</value>
+  </data>
+  <data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>Kameranızın mikrofonunu etkinleştirir. Bu özellik AÇIK/KAPALI konuma getirildiğinde kamera hızlıca yeniden başlatılır.</value>
+  </data>
+  <data name="Camera.6" xml:space="preserve">
+    <value>Bir seçenek belirleyin</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>Yeni ön ayar ekleyin</value>
+  </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>Değişiklikler uygulanırken lütfen bekleyin</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>Başka bir uygulama kameranızı kullanıyor</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>Lütfen kameranızı çıkarıp taktıktan sonra tekrar deneyin</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>Kameranız kaldırılırken lütfen bekleyin</value>
+  </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>Kayda Devam Et</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>Kaydı Durdur</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>Ortam Klasörünü Aç</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>Kaydı Başlat</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>Kaydı Duraklat</value>
+  </data>
+  <data name="WebCameraSettings.27" xml:space="preserve">
+    <value>Çerçeve boyutunu ayarlar</value>
+  </data>
+  <data name="EazyMemory.0" xml:space="preserve">
+    <value>Otomatik Başlatma:</value>
+  </data>
+  <data name="EazyMemory.1" xml:space="preserve">
+    <value>Zamana Göre Başlatma:</value>
+  </data>
+  <data name="EazyMemory.2" xml:space="preserve">
+    <value>Uygulama/Belge:</value>
+  </data>
+  <data name="EazyMemory.3" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
+  <data name="EazyMemory.4" xml:space="preserve">
+    <value>Yok</value>
+  </data>
+  <data name="EazyMemory.5" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="EazyMemory.6" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="EazyMemory.7" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+  <data name="EazyMemory.8" xml:space="preserve">
+    <value>En fazla 9 profil kaydedebilirsiniz. Ana menüden mevcut bir profili silin veya düzenleyin.</value>
+  </data>
+  <data name="EazyMemory.9" xml:space="preserve">
+    <value>Yinelenen girişler. Kolay Bellek profili için farklı belgeler veya uygulamalar girin.</value>
+  </data>
+  <data name="EazyMemory.10" xml:space="preserve">
+    <value>Ekranınızdaki pencereleri düzenleyebilir ve + simgesine tıklayabilirsiniz.\r\nAlternatif olarak aşağıdan mevcut bir düzeni seçin ve düzeni değiştirmek için kalem simgesine tıklayın.</value>
+  </data>
+  <data name="EazyMemory.11" xml:space="preserve">
+    <value>Bilgisayar başlatılırken başka bir profil açılacak şekilde ayarlanmıştır. Onu bu profille değiştirmek istiyor musunuz?</value>
+  </data>
+  <data name="EazyMemory.12" xml:space="preserve">
+    <value>Bir başlangıç seçeneği belirleyin</value>
+  </data>
+  <data name="EazyMemory.13" xml:space="preserve">
+    <value>Bilgisayar açılırken başlat</value>
+  </data>
+  <data name="EazyMemory.14" xml:space="preserve">
+    <value>Oluşturulan profilleri el ile seç</value>
+  </data>
+  <data name="EazyMemory.15" xml:space="preserve">
+    <value>Zamana göre otomatik olarak başlat</value>
+  </data>
+  <data name="EazyMemory.16" xml:space="preserve">
+    <value>Son</value>
+  </data>
+  <data name="EazyMemory.17" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="EazyMemory.18" xml:space="preserve">
+    <value>Profili adlandırın</value>
+  </data>
+  <data name="EazyMemory.19" xml:space="preserve">
+    <value>Bir düzen seçin</value>
+  </data>
+  <data name="EazyMemory.20" xml:space="preserve">
+    <value>Pencere 0</value>
+  </data>
+  <data name="EazyMemory.21" xml:space="preserve">
+    <value>Pencere 1</value>
+  </data>
+  <data name="EazyMemory.22" xml:space="preserve">
+    <value>Pencere 2</value>
+  </data>
+  <data name="EazyMemory.23" xml:space="preserve">
+    <value>Pencere 3</value>
+  </data>
+  <data name="EazyMemory.24" xml:space="preserve">
+    <value>Pencere 4</value>
+  </data>
+  <data name="EazyMemory.25" xml:space="preserve">
+    <value>Pencere 5</value>
+  </data>
+  <data name="EazyMemory.26" xml:space="preserve">
+    <value>Pencere 6</value>
+  </data>
+  <data name="EazyMemory.27" xml:space="preserve">
+    <value>Pencere 7</value>
+  </data>
+  <data name="EazyMemory.28" xml:space="preserve">
+    <value>Pencere 8</value>
+  </data>
+  <data name="EazyMemory.29" xml:space="preserve">
+    <value>Pencere 9</value>
+  </data>
+  <data name="EazyMemory.30" xml:space="preserve">
+    <value>Pencere 10</value>
+  </data>
+  <data name="EazyMemory.31" xml:space="preserve">
+    <value>Pencere 11</value>
+  </data>
+  <data name="EazyMemory.32" xml:space="preserve">
+    <value>Pencere 12</value>
+  </data>
+  <data name="EazyMemory.33" xml:space="preserve">
+    <value>Klasörden seç</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>Görünümünüzü özelleştirme</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>Easy Arrange</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>Girişlerinizi yönetme</value>
+  </data>
+  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>Dokunmatik Kaydırma Hızı</value>
+  </data>
+  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>Birincil düğme</value>
+  </data>
+  <data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>Özelleştirilebilir Tuşlar</value>
+  </data>
+  <data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>Kullanışlı Toplantı Kontrolleri</value>
+  </data>
+  <data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>Aydınlatma Ayarları</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>Çubuk mikrofonu kullanarak sesi kapatma/açma</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>Çubuk mikrofonu kullanarak sesi kapatma/açma</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>Kullanışlı düğmeler</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>Etkin Gürültü Engelleme</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Zoom&apos;da Hızlı Ayarlar</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>Kolay Ön Ayarlar</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>Yapay Zeka Otomatik Çerçeveleme</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>Yüksek Dinamik Aralık</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>Güvenlik Özellikleri</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager&apos;a\r\nhoş geldiniz</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>Aygıtınızı, bağlantısını ve aygıt kablosuzsa pil seviyesini görün</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>Daha fazla bilgi edinmek için imlecinizi kablosuz aygıtın bağlantı kutucuğunun üzerine getirin</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>Ayarlarını değiştirmek için aygıtınıza tıklayın</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>Uygulama ayarları ile yazılım ve bellenim güncellemelerine erişmek için dişli simgesine tıklayın</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>Aygıt Ekleyin</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>Aygıtınızı Görüntüleyin</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>Bağlantı Kutucuğu</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>Aygıt Ayarları</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>Uygulama Ayarları</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>Desteklenen tüm Dell Ekran ve Çevre Birimlerinizi tek bir yerde görün, ayarlarınızı kişiselleştirin ve belleniminizi güncel tutun</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>Desteklenen bir Dell aygıtını bağlamaya dair talimatlar için + simgesine tıklayın</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>Parlaklık/kontrast seviyelerinizi, renk profillerinizi ve daha fazlasını ayarlayarak görüntüleme deneyiminizi kişiselleştirin</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>Birden fazla pencereyi yeniden boyutlandırırken daha az zaman harcayın. Bir Easy Arrange Düzeni seçin ve ardından tıklayıp sürükleyerek pencerelerinizi yerlerine getirin. Bu pencere düzenlemesini yeniden kullanmak istiyorsanız onu Kolay Bellek ile kaydedin</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>Giriş Kaynağı veya USB/Ağ KVM ayarları aracılığıyla monitörünüzü birden fazla bilgisayarla kolayca kullanın. Ayrıca farenizi, klavyenizi ve aksesuarlarınızı USB ile monitörünüze bağlayarak onları birden fazla bilgisayarınızla kullanın</value>
+  </data>
+  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>Eylemler atayarak klavyenizdeki tuşları özelleştirebilirsiniz.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>Zoom ve Teams içindeki kısayollarla toplantılarınızı kolaylaştırın.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>Klavye aydınlatma düzeyinizi el ile ayarlayabilir ya da çevre ışığına göre kendini ayarlamasını seçebilirsiniz.</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>Kullanışlı Toplantı Kontrolleri</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>Özelleştirilebilir Tuşlar</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>Zoom ve Teams içindeki kısayollarla toplantılarınızı kolaylaştırın.</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>Eylemler atayarak klavyenizdeki tuşları özelleştirebilirsiniz.</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>Uygulama içinden, vurgulanan alanların dokunmatik kaydırma hızını değiştirin</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>Uygulama içinden, birincil düğmenizin soldaki mi yoksa sağdaki mi olacağını seçin</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>Yoklama Hızı</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>Kaydırma Tekerleği Tıklamasını Özelleştirme</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>Uygulamaya özel eylemler</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>Uygulama içinden yoklama hızını artırarak farenizin hızını ve hassasiyetini geliştirin</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>Kaydırma düğmesine tıkladığınızda kullanmak istediğiniz eylemleri atayın</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>Belli uygulamalarda kullanılmak üzere Kaydırma Tekerleği Tıklaması için özel eylemler atayın</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>Düğmeleri Özelleştirme</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>Uygulamaya özel eylemler</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>Uygulama içinden, sık kullanılan eylemlerinizi belirtilen düğmelere atayın</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>Belli uygulamalarda kullanılmak üzere fare düğmeleriniz için özel eylemler atayın</value>
+  </data>
+  <data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>Tile ile kaleminizi bulma</value>
+  </data>
+  <data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>Kaleminizin pilini şarj etme</value>
+  </data>
+  <data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>Kaleminizin davranışlarını özelleştirme</value>
+  </data>
+  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>Kaleminizi Tile ile eşleştirmek için:\n1. Mobil aygıtınızda Bluetooth&apos;u etkinleştirin.\n2. Tile uygulamasını mobil aygıtınıza indirmek için QR kodunu tarayın.\n3. Kalemi Tile ile eşleştirmek için kalemin iki yan düğmesini 3 saniye boyunca basılı tutun.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>Kaleminiz %X oranında şarj edildi.\n\nKaleminizin tam olarak şarj olabilmesi için tabletinizin ekranına takılı olduğundan emin olun. Kalemin şarj işlemi tamamlandığında size bildirilecektir.\n\nPil şarjı %10&apos;un altına düştüğünde düşük pil bildirimleri gösterilir.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>Uygulama içinden kaleminizin düğme hareketlerini özelleştirebilir, uç ve eğme hassasiyetini ayarlayabilirsiniz\r\n</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>Yeni Hızlı Ayarlar parçacığımızla Zoom aramaları sırasında kameranızın temel ayarlarını kolayca yönetin</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>Kamerada nasıl görünmek istediğinizi yansıtan bir ön ayar seçin veya kendiniz oluşturun</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>Hareket ederken yüzünüzü çerçevenin ortasında tutmak için Yapay Zeka Otomatik Çerçeveleme özelliğini etkinleştirin</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>Işığın çok yoğun veya çok az olduğu ortamlarda görüntü kalitesini artırmak için Yüksek Dinamik Aralık özelliğini açın</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>Kameranızın siz yaklaştığınızda ekranı uyandırması ve uzaklaştığınızda kilitlemesi için Varlık Algılama özelliğini açın</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Zoom&apos;da Hızlı Ayarlar</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>Kolay Ön Ayarlar</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>Yüksek Dinamik Aralık</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>Yeni Hızlı Ayarlar parçacığımızla Zoom aramaları sırasında kameranızın temel ayarlarını kolayca yönetin</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>Kamerada nasıl görünmek istediğinizi yansıtan bir ön ayar seçin veya kendiniz oluşturun</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>Kullanışlı düğmeler</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>Mikrofonu yukarı doğru katlayıp indirerek sesi kapatın ya da açın.\r\n\r\nİstendiğinde çubuk mikrofonu açarak gelen aramaları yanıtlama özelliği uygulama içinden etkinleştirilebilir.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>Microsoft Teams&apos;i ve sessize alma durumunuzu her biri için tek bir düğmeye basarak yönetin. Diğer kullanışlı düğmelerle ses seviyenizi ve daha fazla özelliği ayarlayın.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>Kullanışlı düğmeler</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>Çubuk mikrofonu kullanarak sesi kapatma/açma</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>Kulaklığınızın dahili kontrolündeki kullanışlı düğmelerle aramalarınızı, sessize alma durumunuzu ve ses seviyenizi yönetin</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>Mikrofonu yukarı doğru katlayıp indirerek sesi kapatın ya da açın.\r\n\r\nİstendiğinde çubuk mikrofonu açarak gelen aramaları yanıtlama özelliği uygulama içinden etkinleştirilebilir.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>Mikrofonu yukarı doğru katlayıp indirerek sesi kapatın ya da açın.\r\n\r\nİstendiğinde çubuk mikrofonu açarak gelen aramaları yanıtlama özelliği uygulama içinden etkinleştirilebilir.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>Microsoft Teams&apos;i ve sessize alma durumunuzu her biri için tek bir düğmeye basarak yönetin. Diğer kullanışlı düğmelerle ses seviyenizi ve daha fazla özelliği ayarlayın.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>Dış gürültüyü engelleme düzeyini yönetmek için kulaklığınızdaki ANC düğmesine basın veya uygulamadaki tercihler arasından seçim yapın.\r\n\r\nŞeffaflık özelliğini seçtiyseniz gürültü düzeyini özelleştirmek için uygulamadaki kaydırıcıyı kullanın.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>Kullanışlı düğmeler</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>Çubuk mikrofonu kullanarak sesi kapatma/açma</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>Etkin Gürültü Engelleme</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>Kulaklığınızın dahili kontrolündeki kullanışlı düğmelerle aramalarınızı, sessize alma durumunu ve ses seviyesini yönetin. Yan taraftaki ANC düğmesiyle dış gürültünün engellenme düzeyini ayarlayın. </value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>Mikrofonu yukarı doğru katlayıp indirerek sesi kapatın ya da açın.\r\n\r\nİstendiğinde çubuk mikrofonu açarak gelen aramaları yanıtlama özelliği uygulama içinden etkinleştirilebilir.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>Dış gürültüyü engelleme düzeyini yönetmek için kulaklığınızdaki ANC düğmesine basın veya uygulamadaki tercihler arasından seçim yapın.\r\n\r\nŞeffaflık özelliğini seçtiyseniz gürültü düzeyini özelleştirmek için uygulamadaki kaydırıcıyı kullanın.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>Yukarı ve aşağı kaydırarak ses seviyenizi yönetin; çift dokunuşla aramaları yanıtlayıp sonlandırın ve çok daha fazlasını kontrol edin.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>Kulaklığınızdaki kullanışlı düğmelerle sessize alma durumunuzu, etkin gürültü engellemenizi (ANC) ve Microsoft Teams uygulamanızı yönetin.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>Dış gürültüyü engelleme düzeyini yönetmek için kulaklığınızdaki ANC düğmesine basın veya uygulamadaki tercihler arasından seçim yapın.\r\n\r\nŞeffaflık özelliğini seçtiyseniz gürültü düzeyini özelleştirmek için uygulamadaki kaydırıcıyı kullanın.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>Kulaklığınızı, şarj istasyonuna yerleştirerek veya sağlanan USB kablosuyla bilgisayarınıza bağlayarak şarj edin</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>Özellikleri kontrol etmek için kaydırma ve dokunma</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>Kullanışlı düğmeler</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>Etkin Gürültü Engelleme</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>Basit şarj işlemi</value>
+  </data>
+  <data name="EazyMemory.34" xml:space="preserve">
+    <value>Program atama</value>
+  </data>
+  <data name="EazyMemory.35" xml:space="preserve">
+    <value>Başlatma seçenekleri</value>
+  </data>
+  <data name="EazyMemory.36" xml:space="preserve">
+    <value>Farklı profiller kaydedin ve bunları manuel olarak, planlanan zamana göre veya sistem başlangıcında geri yükleyin.\r\n\r\nKolay Bellek Profiliniz için bir ad belirleyerek ve bir düzen seçerek başlayın.</value>
+  </data>
+  <data name="EazyMemory.37" xml:space="preserve">
+    <value>Uygulama ve belgeleri pencerelere atayın veya uygulama simgesini ilgili bölüme sürükleyin.\r\n\r\nNot: Kolay Düzenleme Belleği kullanılabilirliği, uygulama türüne ve başlatma davranışına göre değişebilir.</value>
+  </data>
+  <data name="EazyMemory.38" xml:space="preserve">
+    <value>Bir başlangıç türü seçin</value>
+  </data>
+  <data name="EazyMemory.39" xml:space="preserve">
+    <value>KOLAY BELLEK KURULUMU</value>
+  </data>
+  <data name="WalkThrough.0" xml:space="preserve">
+    <value>ÖNE ÇIKAN ÖZELLİKLER</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Evet</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Hayır</value>
   </data>
 </root>

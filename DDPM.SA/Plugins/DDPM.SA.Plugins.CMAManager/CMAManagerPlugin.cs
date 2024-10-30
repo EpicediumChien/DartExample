@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using Windows.ApplicationModel;
 using static DDPM.SA.Common.ICLICommandTable;
 using static DDPM.SA.Plugins.CMAManager.CMAManagerPlugin;
 using IDs = DDPM.SA.Common.IDs;
@@ -430,76 +431,87 @@ namespace DDPM.SA.Plugins.CMAManager
             }
         }
 
-        private async Task<NotifyArgs> runCommandTaskAsync(TaskInfo taskInfo)
+        private async Task<NotifyArgs> runCommandTaskAsync(string sid, string gid)
         {
-            if (null != _CliManagerPlugin && !string.IsNullOrEmpty(taskInfo.command))
+            Boolean isSuccess = false;
+            string responseMsg = String.Empty;
+            string responseResult = String.Empty;
+            string finalResult = String.Empty;
+
+            TaskInfo taskInfo = new TaskInfo();
+
+            ICLICommandTable iCLICommandTable;
+            CommandLineInput commandLineInput;
+
+            CLIEventResult? cliResult = null;
+            JObject? cliResp = null;
+            int count = 0;
+
+            if (null != _CliManagerPlugin)
             {
-                Boolean isSuccess = true;
-                string responseMsg = String.Empty;
-                string currentResult = String.Empty;
-                CLIEventResult? cliResult = null;
-                JObject? cliResp = null;
+                WriteLog($"[CMA] runCommandTaskAsync taskInfoQueue.Count = {taskInfoQueue.Count}");
+                
                 while (taskInfoQueue.Count > 0)
                 {
-                    if (cliResp == null)
+                    WriteLog($"[CMA] runCommandTaskAsync taskInfoQueue.Count = {taskInfoQueue.Count}");
+
+                    isSuccess = false;
+                    responseMsg = String.Empty;
+                    responseResult = String.Empty;
+
+                    taskInfo = taskInfoQueue.Peek();
+
+                    iCLICommandTable = new ICLICommandTable(null);
+                    commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
+                    commandLineInput.isCliRunAdmin = true;
+                    commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
+
+                    cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
+
+                    try 
                     {
-                        taskInfo = taskInfoQueue.Peek();
-                        Console.WriteLine($"Processing tid: {taskInfo.tid} TargetFeature: {taskInfo.command}");
-                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
-                        commandLineInput.isCliRunAdmin = true;
-                        commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
+                        cliResp = JObject.Parse(cliResult.serialize_Json_response);
+                        responseMsg = (string?)cliResp["Message"] ?? string.Empty;
+                        responseResult = (string)cliResp["Result"] ?? string.Empty;
 
-                        Console.WriteLine("[CMA] runCommandTask taskInfo.command = " + taskInfo.command);
-
-                        //_CliManagerPlugin.PerformCommandLineRelay
-                        if (cliResult == null)
+                        if (responseResult.Equals("Success"))
                         {
-                            cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
-                            cliResult.serialize_Json_response = cliResult.serialize_Json_response;
-                            cliResp = JObject.Parse(cliResult.serialize_Json_response);
-                            responseMsg = (string?)cliResp["Message"] ?? string.Empty;
+                            isSuccess = true;
+                        }
+
+                        if (responseResult.Equals("PASS"))
+                        {
+                            isSuccess = true;
+                        }
+
+                        if (count > 0)
+                        {
+                            finalResult = finalResult + ",";
+                        }
+
+
+                        if (isSuccess)
+                        {
+                            finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}";
                         }
                         else
                         {
-                            CLIEventResult newResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
-                            cliResult.serialize_Json_response = cliResult.serialize_Json_response + "," + newResult.serialize_Json_response;
-                            cliResp = JObject.Parse(newResult.serialize_Json_response);
-                            responseMsg = responseMsg + "," + (string?)cliResp["Message"] ?? string.Empty;
+                            finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}";
                         }
-                        // TODO
-
-                        currentResult = (string?)cliResp["Result"] ?? string.Empty;
-
-                        if (!currentResult.Equals("Success")&&!currentResult.Equals("PASS"))
-                        {
-                            isSuccess = false;
-                        }
-
-                        taskInfoQueue.Dequeue();
-                        cliResp = null;
                     }
+                    catch
+                    {
+                        responseMsg = "Exception: Unknow Result";
+                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}";
+                    }
+                    count = count + 1;
+                    taskInfoQueue.Dequeue();
+
                 }
+
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = taskInfo.eventtype.ToString();
-
-                try
-                {
-
-                    if (isSuccess)
-                    {
-                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
-                    }
-                    else
-                    {
-                        args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}]}";
-                    }
-                }
-                catch
-                {
-                    responseMsg = "Exception: Unknow Result";
-                    args.notification = "{\"sid\": \"" + taskInfo.sid + "\",\"gid\": \"" + taskInfo.gid + "\",\"response\": [{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}]}";
-                }
+                args.notification = "{\"sid\": \"" + sid + "\",\"gid\": \"" + gid + "\",\"response\": [" + finalResult + "]}";
 
                 Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult?.command_guid_string + "\n args.notification = " + args.notification);
                 //Console.WriteLine("[CMA] );
@@ -537,7 +549,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 TaskInfo taskInfo = taskInfoQueue.Peek();
                 WriteLog($"[CMA]  before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
-                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo));
+                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
             }
             catch (Exception e) {
 

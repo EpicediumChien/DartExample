@@ -50,14 +50,18 @@ namespace DDPM.SA.Common
         public uint Luminance { get; set; } = 0x0;
     }
 
-    public class Displaysettings_InputSource : DisplaysettingsBasic 
+    public class Displaysettings_InputSource : DisplaysettingsBasic
     {
         public string InputSource { get; set; } = string.Empty;
     }
 
-    public class Displaysettings_USB : DisplaysettingsBasic 
+    public class Displaysettings_USB : DisplaysettingsBasic
     {
-        public string USBAssociation { get; set;} = string.Empty;
+        public string USBAssociation { get; set; } = string.Empty;
+    }
+    public class Displaysettings_PowerNap : DisplaysettingsBasic
+    {
+        public string PowerNap { get; set; } = string.Empty;
     }
 
     public class Displaysettings_Color_Preset_Manual : DisplaysettingsBasic

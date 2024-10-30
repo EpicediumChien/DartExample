@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -244,7 +245,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     currentVersion = currentVersion.Replace(".", "");
                 }
-                SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo, _SettingsPlugin, null);
+                SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo, _SettingsPlugin, null, _logs);
                 _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
                 if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
                 {
@@ -342,6 +343,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 if (isUpdate)
                 {
                     title = "Update will be applied";
+                    title = LangHelper.Instance["UpdateWillBeApplied"];
                 }
                 NotificationFWupdate(title, s, isOnlyInfo, isUpdate);
                 _logs.DebugMsg_1("HandleUpdateInfo done");
@@ -534,12 +536,30 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="e"></param>
         private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
+            _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} start");
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-            //TimeSpan difference = DateTime.Now - _SWUpdateInfoPackage.TheLastCheckTime;
-            //int checkTime = 24;
-            //if (difference.TotalHours > checkTime)
+            if (_SettingsPlugin != null)
             {
-                CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
+                if (!data.Lock_Settings_Updates)
+                {
+                    //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
+                    //int checkTime = 5;
+                    //if (difference.TotalMinutes > checkTime)
+                    {
+                        CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                    }
+                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
+                }
+                else
+                {
+                    _checkUpdateScheduleTimer.Stop();
+                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
             }
         }
 
@@ -882,6 +902,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
+                        _SettingsPlugin.FWSWUpdateSettingChange += UpdateLockSettingChange;
                     }
                     else
                     {
@@ -889,6 +910,26 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }
                 }
             });
+        }
+        private void UpdateLockSettingChange(object o, bool isLockUpdate)
+        {
+            _logs.DebugMsg_1($"UpdateLockSettingChange start");
+            if (_checkUpdateScheduleTimer != null)
+            {
+                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is no null");
+                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer isLockUpdate:{isLockUpdate}");
+                if (isLockUpdate)
+                {
+                    _checkUpdateScheduleTimer.Stop();
+                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is stop");
+                }
+                else
+                {
+                    _checkUpdateScheduleTimer.Start();
+                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is start");
+                }
+            }
+            _logs.DebugMsg_1($"UpdateLockSettingChange done");
         }
     }
 }
