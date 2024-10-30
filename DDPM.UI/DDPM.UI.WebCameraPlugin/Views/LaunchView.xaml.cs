@@ -151,9 +151,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Preview();
         }
 
+        private bool isProfilePropertyChanged = false;
         private void ProfilePropertyChanged(object? sender, EventArgs e)
         {
             txtPreset.Text = $"{Strings.Preset}: {LangHelper.Instance["None"]}";
+            isProfilePropertyChanged = true;
         }
 
         private void WebcamSettingChanged(object? sender, EventArgs e)
@@ -722,7 +724,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 try
                 {
                     if (_vm.MediaFrameReader != null)
-                     _vm.MediaFrameReader.Dispose();
+                        _vm.MediaFrameReader.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -748,8 +750,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             { btnPreset_Click(this, null); }
             btnPreset.IsEnabled = false;
             StartRecord();
-
         }
+
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             StopRecord();
@@ -768,11 +770,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var profileName = ((UXTextBlock)sender).Tag.ToString()!;
-            if (profileName != _vm!.CurrentProfileName)
+            if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
             {
                 //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                 _vm!.CurrentProfileName = profileName;
                 _vm.SetProfile();
+                isProfilePropertyChanged = false;
             }
             btnPreset_Click(this, null);
         }

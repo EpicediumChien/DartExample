@@ -334,86 +334,86 @@ namespace DDPM.SA.Common
     {
         internal static readonly List<string> Keyboard = new()//Dean 0626 SAST issue
         {
-            "BACKLIGHTINGCONTROLS",
-            "BACKLIGHTINGLEVEL",
-            "BACKLIGHTTABINDEX",
-            "BATTERYLEVEL",
-            "BATTERYSTATUS",
-            "COLLABSKEYSSUPPORTED",
-            "COLORCODE",
+            //"BACKLIGHTINGCONTROLS",
+            //"BACKLIGHTINGLEVEL",
+            //"BACKLIGHTTABINDEX",
+            //"BATTERYLEVEL",
+            //"BATTERYSTATUS",
+            //"COLLABSKEYSSUPPORTED",
+            //"COLORCODE",
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "ISBATTERYLEVELSUPPORTED",
-            "ISCOLLABORATIONBLINKEFFECTENABLE",
+            //"INSTANCEID",
+            //"ISBATTERYLEVELSUPPORTED",
+            //"ISCOLLABORATIONBLINKEFFECTENABLE",
             "ISCOLLABORATIONCAMERAENABLE",
             "ISCOLLABORATIONCHATENABLE",
-            "ISCOLLABORATIONDOUBLETAPENABLE",
-            "ISCOLLABORATIONKEYENABLE",
+            //"ISCOLLABORATIONDOUBLETAPENABLE",
+            //"ISCOLLABORATIONKEYENABLE",
             "ISCOLLABORATIONMICENABLE",
             "ISCOLLABORATIONSCREENSHAREENABLE",
-            "ISCOLLABSKEYSSUPPORTED",
-            "ISILLUMINATIONSUPPORTED",
-            "PAIREDDEVICECOUNT",
-            "PAIREDHOSTNAME1",
-            "PAIREDHOSTNAME2",
-            "PAIREDHOSTNAME3",
-            "VISIBLEPAIREDHOSTNAME1",
-            "VISIBLEPAIREDHOSTNAME2",
-            "VISIBLEPAIREDHOSTNAME3"
+            //"ISCOLLABSKEYSSUPPORTED",
+            //"ISILLUMINATIONSUPPORTED",
+            //"PAIREDDEVICECOUNT",
+            //"PAIREDHOSTNAME1",
+            //"PAIREDHOSTNAME2",
+            //"PAIREDHOSTNAME3",
+            //"VISIBLEPAIREDHOSTNAME1",
+            //"VISIBLEPAIREDHOSTNAME2",
+            //"VISIBLEPAIREDHOSTNAME3"
         };
 
         internal static readonly List<string> Mouse = new()//Dean 0626 SAST issue
         {
-            "BATTERYLEVEL",
-            "BATTERYSTATUS",
-            "COLORCODE",
-            "DPIDELTA",
-            "DPILEVEL",
-            "DPIVALUE",
-            "DPIMAX",
-            "DPIMIN",
+            //"BATTERYLEVEL",
+            //"BATTERYSTATUS",
+            //"COLORCODE",
+            //"DPIDELTA",
+            //"DPILEVEL",
+            //"DPIVALUE",
+            //"DPIMAX",
+            //"DPIMIN",
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "ISBATTERYLEVELSUPPORTED",
-            "ISDPILEVELCHANGEPENDING",
-            "ISDPILEVELSUPPORTED",
-            "ISDPIVALUECHANGEPENDING",
-            "ISDPIVALUESUPPORTED",
-            "ISREPORTRATESUPPORTED",
-            "ISTOUCHSCROLLSENSITIVITYSUPPORTED",
-            "MOUSEPRIMARYBUTTON",
-            "PAIREDDEVICECOUNT",
-            "PAIREDHOSTNAME1",
-            "PAIREDHOSTNAME2",
-            "PAIREDHOSTNAME3",
-            "REPORTRATE",
-            "STATUS",
-            "TOUCHSCROLLSENSITIVITYLEVEL",
-            "TOUCHSENSITIVITYLEVELVALUE",
-            "VISIBLEPAIREDHOSTNAME1",
-            "VISIBLEPAIREDHOSTNAME2",
-            "VISIBLEPAIREDHOSTNAME3"
+            //"INSTANCEID",
+            //"ISBATTERYLEVELSUPPORTED",
+            //"ISDPILEVELCHANGEPENDING",
+            //"ISDPILEVELSUPPORTED",
+            //"ISDPIVALUECHANGEPENDING",
+            //"ISDPIVALUESUPPORTED",
+            //"ISREPORTRATESUPPORTED",
+            //"ISTOUCHSCROLLSENSITIVITYSUPPORTED",
+            //"MOUSEPRIMARYBUTTON",
+            //"PAIREDDEVICECOUNT",
+            //"PAIREDHOSTNAME1",
+            //"PAIREDHOSTNAME2",
+            //"PAIREDHOSTNAME3",
+            //"REPORTRATE",
+            //"STATUS",
+            //"TOUCHSCROLLSENSITIVITYLEVEL",
+            //"TOUCHSENSITIVITYLEVELVALUE",
+            //"VISIBLEPAIREDHOSTNAME1",
+            //"VISIBLEPAIREDHOSTNAME2",
+            //"VISIBLEPAIREDHOSTNAME3"
         };
 
         internal static readonly List<string> Webcam = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "ISBATTERYLEVELSUPPORTED",
+            //"INSTANCEID",
+            //"ISBATTERYLEVELSUPPORTED",
          };
 
         internal static readonly List<string> Pen = new()
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "",
+            //"INSTANCEID",
+            //"",
         };
 
         internal static readonly List<string> Headset = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "MUTESTATUS",
+            //"INSTANCEID",
+            //"MUTESTATUS",
             "ANCMODE",
             "MICNOISECANCELLATION",
             "WEARDETECTION",
@@ -425,8 +425,8 @@ namespace DDPM.SA.Common
         internal static readonly List<string> Audio = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "MUTESTATUS",
+            //"INSTANCEID",
+            //"MUTESTATUS",
             "ANCMODE",
             "MICNOISECANCELLATION",
             "WEARDETECTION",
@@ -438,8 +438,8 @@ namespace DDPM.SA.Common
         internal static readonly List<string> Dock = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
-            "INSTANCEID",
-            "",
+            //"INSTANCEID",
+            //"",
         };
 
         internal static readonly Dictionary<string, List<string>> DeviceProperties = new()//Dean 0626 SAST issue

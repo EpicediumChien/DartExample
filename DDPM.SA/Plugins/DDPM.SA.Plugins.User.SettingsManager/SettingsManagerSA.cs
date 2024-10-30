@@ -128,6 +128,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static DDPMITConfig _DDPMITConfig {  get; set; } = new DDPMITConfig();
 
+        private static bool _isAllSettingsReady = false;
         #endregion Private Members
 
         #region Constructor
@@ -301,6 +302,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             updateITandGlobalSetting();
 
             SettingReadyEvent?.Invoke(this, new EventArgs());
+            _isAllSettingsReady = true;
+        }
+
+        public Task<bool> QuerySettingsStatus()
+        {
+            return Task.FromResult(_isAllSettingsReady);
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -1639,9 +1646,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 impexpSettings = JsonConvert.DeserializeObject<DDPMImpExpSettings>(value);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ;
+                WriteLog("[RunImpExpDeserializeObject] ex : " + ex.Message.ToString());
+                WriteLog("[RunImpExpDeserializeObject] value is " + value);
             }
 
             return impexpSettings;
@@ -1714,7 +1722,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         return ImpSettings;
                     try
                     {
-                        
+
                         WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
@@ -1723,10 +1731,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         ;
                     }
                 }
+                else
+                {
+                    WriteLog("[ReadImportSettingsFile] path : " + path);
+                }
             }
             return ImpSettings;
         }
-
         public Task<DDMImpSettings> ReadDDMImpSettingsFile(string path) 
         {
             DDMImpSettings ImpSettings = new DDMImpSettings();

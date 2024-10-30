@@ -103,7 +103,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 {
                     if (e.type == DeviceChangedType.Peripherals_UnPlug)
                     {
-                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == _viewModel.CurrentInstanceID.GetHashCode())
                         {
                             _viewModel.OnGoBackClicked();
                             return;

@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using VcpCore.Common;
@@ -356,6 +357,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             try
             {
                 _IsUITrigger = isUITrigger;
+                string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
                 string saveFolderName = Guid.NewGuid().ToString();
                 string savePath;
@@ -363,7 +365,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 if (string.IsNullOrEmpty(installPath))
                 {
-                    savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                    savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
                 }
                 else
                 {
@@ -449,22 +451,28 @@ namespace DDPM.SA.Plugins.SWUpdate
                         continue;
                     }
                     string exeFilePath;
-                    if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                    using (FileLock fileLock = new FileLock(_installationFileStoragePath, PathCheckOption.None, lockNow: true))
                     {
-                        _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
-                        _notificationStr = $"Software update unsuccessful.";
-                        NotificationFWupdate("Error", _notificationStr);
-                        continue;
-                    }
-                    swUpdateInfos[i].InstallPaths = exeFilePath;
-                    swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]).Result;
-                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
-                    {
-                        NotificationFWupdate("SW info", _notificationStr);
-                    }
-                    else
-                    {
-                        NotificationFWupdate("Error", _notificationStr);
+                        if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                        {
+                            _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
+                            _notificationStr = $"Software update unsuccessful.";
+                            NotificationFWupdate("Error", _notificationStr);
+                            continue;
+                        }
+                        using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
+                        {
+                            swUpdateInfos[i].InstallPaths = exeFilePath;
+                            swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]).Result;
+                        }
+                        if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
+                        {
+                            NotificationFWupdate("SW info", _notificationStr);
+                        }
+                        else
+                        {
+                            NotificationFWupdate("Error", _notificationStr);
+                        }
                     }
                 }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");
