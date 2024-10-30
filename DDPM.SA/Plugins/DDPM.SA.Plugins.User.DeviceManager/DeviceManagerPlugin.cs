@@ -1503,31 +1503,45 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool r = false;
 
-            r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
-
-            //Telementry Collection
-            var Displaysettings_Function = new Displaysettings_Function();
-            //0712 Jason add
-            if (r && FunctionName == "Input Select")
+            if (monitorInfoX != null)
             {
-                if (_NKVMPlugin != null)
+                if (!string.IsNullOrEmpty(val))
                 {
-                    ObjGetVCP obj = new ObjGetVCP();
-                    obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
-                    if (obj.result)
+                    r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+
+                    //Telementry Collection
+                    var Displaysettings_Function = new Displaysettings_Function();
+                    //0712 Jason add
+                    if (r && FunctionName == "Input Select")
                     {
-                        _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)obj.value).Wait();
+                        if (_NKVMPlugin != null)
+                        {
+                            ObjGetVCP obj = new ObjGetVCP();
+                            obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
+                            if (obj.result)
+                            {
+                                _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)obj.value).Wait();
+                            }
+                        }
+                        if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
+                        {
+                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Success ...");
+                        }
+                        else
+                        {
+                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Fail ...");
+                        }
+                        _AllInfoMonitors = GetMonitors().Result;
                     }
-                }
-                if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
-                {
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Success ...");
                 }
                 else
                 {
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Fail ...");
+                    writelog("[DeviceMangerPlugin] [SetVCPCapability] val is null or empty...");
                 }
-                _AllInfoMonitors = GetMonitors().Result;
+            }
+            else
+            {
+                writelog("[DeviceMangerPlugin] [SetVCPCapability] monitorInfoX is null ...");
             }
 
             return Task.FromResult(r);

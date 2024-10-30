@@ -948,63 +948,84 @@ namespace NetworkKVM.Plugins
 
             if (File.Exists(strFullPath))
             {
-                try
+                if (!string.IsNullOrEmpty(namedpipeName))
                 {
-                    IntPtr NkvmdHandle = IntPtr.Zero;
-                    string processName = "DDM";
-                    Process[] processes = Process.GetProcessesByName(processName);
-
-                    if (processes.Length == 0)
+                    try
                     {
-                        Console.WriteLine("No process found with the name: " + processName);
+                        //                        IntPtr NkvmdHandle = IntPtr.Zero;
+                        //                        string processName = "DDM";
+                        //                        Process[] processes = Process.GetProcessesByName(processName);
 
-                        Process procNew = new Process();
-                        procNew.StartInfo.FileName = strFullPath;
-                        //procNew.Start();
+                        //                        if (processes.Length == 0)
+                        //                        {
+                        //                            Console.WriteLine("No process found with the name: " + processName);
+                        //                            _logs.DebugMsg("No process found with the name: " + processName);
 
-                        //Check process with inbox thumbprint and without argument via startInfo
-                        DDPMFileSecurity.StartProcessSafely(Log, procNew.StartInfo, true);
+                        //                            Process procNew = new Process();
+                        //                            procNew.StartInfo.FileName = strFullPath;
+                        //                            procNew.StartInfo.Arguments = $"/Connect " + namedpipeName;
+                        //                            _logs.DebugMsg("[NetworkKVM]New Connect " + namedpipeName);
+                        //#if DEBUG
+                        //                            procNew.Start();
+                        //#else
+                        //                            //Check process with inbox thumbprint and without argument via startInfo
+                        //                            DDPMFileSecurity.StartProcessSafely(Log, procNew.StartInfo, true);
+                        //#endif
+                        //                        }
+                        //                        else
+                        //                        {
+                        //                            foreach (Process process in processes)
+                        //                            {
+                        //                                if (process.ProcessName == processName)
+                        //                                {
+                        //                                    NkvmdHandle = process.Handle;
+                        //                                    Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
+                        //                                    process.StartInfo.FileName = strFullPath;
+                        //                                    process.StartInfo.Arguments = $"/Connect " + namedpipeName;
+                        //                                    _logs.DebugMsg("[NetworkKVM] Connect " + namedpipeName);
+                        //#if DEBUG
+                        //                                    process.Start();
+                        //#else
+                        //                                    //Check process with inbox thumbprint and without argument via startInfo
+                        //                                    DDPMFileSecurity.StartProcessSafely(Log, procNew.StartInfo, true);
+                        //#endif
+                        //                                    break;
+                        //                                }
+                        //                            }
+                        //                        }
+
+                        Process proc = new Process();
+                        proc.StartInfo.FileName = strFullPath;
+                        proc.StartInfo.Arguments = $"/Connect " + namedpipeName;
+                        _logs.DebugMsg("[NetworkKVM] Connect " + namedpipeName);
+#if DEBUG
+                        proc.Start();
+#else
+                        //Check process with inbox thumbprint and with argument via startInfo
+                        DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true);
+#endif
+
+                        return Task.FromResult(true);
                     }
-                    else
+                    catch (System.Exception ex)
                     {
-                        foreach (Process process in processes)
-                        {
-                            if (process.ProcessName == processName)
-                            {
-                                NkvmdHandle = process.Handle;
-                                Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
-                                break;
-                            }
-                        }
+                        Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
+                        _logs.DebugMsg($"ERROR : Run NKVM ==> {ex.ToString()}");
+                        Thread.Sleep(1000);
+                        Disconnect();
+                        return Task.FromResult(false);
                     }
-
-                    Process proc = new Process();
-                    proc.StartInfo.FileName = strFullPath;
-                    proc.StartInfo.Arguments = $"/Connect " + namedpipeName;
-                    _logs.DebugMsg("[NetworkKVM] Connect " + namedpipeName);
-                    //proc.Start();
-
-                    //Check process with inbox thumbprint and with argument via startInfo
-                    DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true);
-
-                    return Task.FromResult(true);
-                }
-                catch (System.Exception ex)
-                {
-                    Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
-                    Thread.Sleep(1000);
-                    Disconnect();
-                    return Task.FromResult(false);
                 }
             }
             else
             {
+                _logs.DebugMsg("[NetworkKVM] Not Find NKVM");
                 Disconnect();
             }
             return Task.FromResult(false);
         }
 
-        #endregion INKVM implementation
+#endregion INKVM implementation
 
         #region Private Methods
 
