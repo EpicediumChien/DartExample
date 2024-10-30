@@ -187,7 +187,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " + 
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " +
                 millisecond.ToString() + $" requested, process ID[{processID}]");
 
             if (-0xFF != processID)
@@ -199,7 +199,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
 
         private Task<bool> CreateProcessExitEvent(int processID)
-        { 
+        {
             bool result = true;
 
             try
@@ -217,7 +217,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
             }
 
-            return Task.FromResult(result); 
+            return Task.FromResult(result);
         }
 
         private async void Process_Exited(object sender, EventArgs e)
@@ -1933,6 +1933,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #region Bruce display properties implementation
 
+        public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
+        {
+            DisplaySupportedProperties rc = null;
+            if (_DisplayPropertiesPlugin != null)
+                rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+
+            return Task.FromResult(rc);
+        }
+
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
         {
             string setParam = "USB-C Prioritization";
@@ -2307,6 +2316,83 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 return (false);
             }
+        }
+
+        public Task<string> GetMonitorCurrentResolution(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayPropertiesPlugin != null)
+            {
+                var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isCurrent)
+                        {
+                            rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(rc);
+        }
+
+        public Task<string> GetMonitorMaxResolution(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayPropertiesPlugin != null)
+            {
+                var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isRecommended)
+                        {
+                            rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(rc);
+        }
+
+        public Task<string> GetMonitorRefreshRate(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayPropertiesPlugin != null)
+            {
+                var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isCurrent)
+                        {
+                            rc = tmp.Frequency.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(rc);
+        }
+
+        public Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName)
+        {
+            if (_DisplayPropertiesPlugin != null)
+            {
+                DisplayOrientation rc = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(DisplayName).Result;
+                return Task.FromResult(rc);
+            }
+
+            return Task.FromResult(DisplayOrientation.Unknow);
         }
 
         #endregion

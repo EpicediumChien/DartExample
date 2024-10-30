@@ -1030,7 +1030,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
                 if (monitorSettings != null)
                 {
-                    if (path.Substring(path.Length - 5, 5) != ".json")
+                    if (path.Length > 6)
+                    {
+                        if ((path.Substring(path.Length - 5, 5).ToUpper() != ".json".ToUpper()))
+                        {
+                            path = path + ".json";
+                        }
+                    }
+                    else
                     {
                         path = path + ".json";
                     }
@@ -1632,9 +1639,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 impexpSettings = JsonConvert.DeserializeObject<DDPMImpExpSettings>(value);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ;
+                WriteLog("[RunImpExpDeserializeObject] ex : " + ex.Message.ToString());
+                WriteLog("[RunImpExpDeserializeObject] value is " + value);
             }
 
             return impexpSettings;
@@ -1707,7 +1715,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         return ImpSettings;
                     try
                     {
-                        
+
                         WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
@@ -1716,10 +1724,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         ;
                     }
                 }
+                else
+                {
+                    WriteLog("[ReadImportSettingsFile] path : " + path);
+                }
             }
             return ImpSettings;
         }
-
         public Task<DDMImpSettings> ReadDDMImpSettingsFile(string path) 
         {
             DDMImpSettings ImpSettings = new DDMImpSettings();

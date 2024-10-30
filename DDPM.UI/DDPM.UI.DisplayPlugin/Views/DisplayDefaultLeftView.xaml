@@ -53,12 +53,8 @@
                     <!-- Width="1378" Height="735"
                 -->
                     <Grid>
-                        <!-- Source="/DDPM.UI.Resources;component/Resources/Monitors/u2424h.png"
-                        Image Source="{Binding DeviceImage}" Stretch="None"
-                        -->
+                        <Image Grid.Column="0" Source="{Binding DeviceImage}" Stretch="UniformToFill" Margin="35,45,35,45" x:Name="devImg">
 
-                        <Image Source="{Binding DeviceImage}" Stretch="UniformToFill"  Margin="25,20,45,25" x:Name="devImg">
-                            
                             <!-- Robert_Lin, 2024-9-30 The LeftView Product image don't need to show tooltip -->
                             <!-- 
                         <Image.ToolTip>

@@ -117,7 +117,9 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessStart_Stop();
             vm.WatchForProcessEnd_Stop();
 
-            vm.StopRegistryMonitor();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLight();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_ICC();
+            //vm.StopRegistryMonitor();
 
             //Lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -331,10 +333,11 @@ namespace DDPM.UI.Module.Color
 
         private void nightlight_config_Click(object sender, RoutedEventArgs e)
         {
-            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+            //string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
-            ColorViewModel vm = (ColorViewModel)DataContext;
+            //ColorViewModel vm = (ColorViewModel)DataContext;
 
+            /*
             if (vm.registryMonitor_NightLight == null)
             {
                 vm.registryMonitor_NightLight = new RegistryMonitor_NightLight(keyName);
@@ -342,6 +345,7 @@ namespace DDPM.UI.Module.Color
                 vm.registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(vm.OnError_NightLight);
                 vm.registryMonitor_NightLight.Start();
             }
+            */
 
             var psi = new System.Diagnostics.ProcessStartInfo();
 
@@ -376,9 +380,42 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
+                    if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
-                    int i = 0;
+                    //int i = 0;
+
+                    if (!vm.Is_ColorPreset_ManualFirst)
+                    {
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+
+                        int index=-1;
+
+                        if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                            index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+
+                        if (index >= 0)
+                        {
+                            int nVCPE2_Value = Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual;
+                            string strColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(nVCPE2_Value).Result;
+
+                            string strSync_ColorPresetName_Manual = string.Empty;
+                            //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                            if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
+                                strSync_ColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName_Manual).Result;
+
+                            if (!string.IsNullOrEmpty(strSync_ColorPresetName_Manual))
+                            {
+                                int idx = vm.ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_ColorPresetName_Manual.ToUpper()));
+                                if (idx >= 0)
+                                {
+                                    vm.ColorPresetSelectedIndex = idx;
+                                }
+                            }
+                        }
+                    }
+                    else
+                        vm.Is_ColorPreset_ManualFirst = false;
                 }));
             }
             else if (expander_sender.Name == "Expander_Auto")
@@ -387,9 +424,10 @@ namespace DDPM.UI.Module.Color
 
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
+                    if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
-                    int j = 0;
+                    //int j = 0;
                 })); 
             
             }

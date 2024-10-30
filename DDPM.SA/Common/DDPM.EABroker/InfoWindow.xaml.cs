@@ -131,10 +131,16 @@ namespace DDPM.EABroker
                     _vm.StartMovingMsg = $"GetProcessPathName causes an exception: {e1.Message}";
                     _vm.WriteLog("GetProcessPathName() causes EXCEPTION", e1);
 
-                    //Temporary allow to continue moving
-                    _vm.IsMoving = true;
-                    //Robert_Lin Debug, let it contine
-                    //return;
+                    //Robert_Lin, 2024-10-26, Option 1: when moving an administrator window
+                    // the WorkWindow will display the selected layout on the target screen
+                    //=> comment-out below will "Not display"
+                    //_vm.IsMoving = true;
+
+                    //Robert_Lin 2024-10-26,Option 2:
+                    // Comment out below 2 statements will show Workwindow when user moving a
+                    // administrator window. (but Admin window will not be moved)
+                    _vm.IsMoving = false;
+                    return;
                 }
             }
             else
@@ -217,8 +223,13 @@ namespace DDPM.EABroker
                 rcArrange.Inflate(6, 6);
             }
             if (!rcArrange.IsEmpty)
+            {
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
-
+                if (_vm != null)
+                {
+                    _vm.SendTelemetry_EasyArrangeLayout();
+                }
+            }
         }
 
 

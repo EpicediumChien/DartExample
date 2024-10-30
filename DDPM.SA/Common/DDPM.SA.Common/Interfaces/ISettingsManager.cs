@@ -25,6 +25,7 @@ namespace DDPM.SA.Common
         Task<DDPMITConfig> ReadITConfigData(bool force_reload = false);
 
         Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list);
+
     }
 
     /// <summary>
@@ -34,6 +35,8 @@ namespace DDPM.SA.Common
     public interface ISettingsManagerSA : IFrameworkPlugin
     {
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        //For FW/SW update lock event
+        event EventHandler<bool> FWSWUpdateSettingChange;
 
         Task<DDPMITConfig> GetITGlobalConfigs(bool force_reload = false);
 

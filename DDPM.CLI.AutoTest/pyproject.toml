@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ddpm-cli-auto-test"
+version = "0.1.0"
+description = ""
+authors = ["Rex Cai <Rex_Cai@wistron.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13,<3.14"
+pandas = "^2.2.3"
+openpyxl = "^3.1.5"
+pyinstaller = "^6.11.0"
+colorlog = "^6.8.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

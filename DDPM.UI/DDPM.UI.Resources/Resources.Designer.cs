@@ -88,6 +88,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Activate Quick Access widget during Zoom conference calls 的當地語系化字串。
+        /// </summary>
+        internal static string Activate_Quick_Access_widget_during_Zoom_conference_calls {
+            get {
+                return ResourceManager.GetString("Activate_Quick_Access_widget_during_Zoom_conference_calls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Adaptive Light 的當地語系化字串。
         /// </summary>
         internal static string AdaptiveLight {
@@ -273,6 +282,15 @@ namespace DDPM.UI.Resources {
         internal static string AddDevice_KnM_13 {
             get {
                 return ResourceManager.GetString("AddDevice.KnM.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Wireless Receiver Connection 的當地語系化字串。
+        /// </summary>
+        internal static string AddDevice_KnM_14 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.14", resourceCulture);
             }
         }
         
@@ -507,6 +525,15 @@ namespace DDPM.UI.Resources {
         internal static string AdvancedSettings {
             get {
                 return ResourceManager.GetString("AdvancedSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 All Devices 的當地語系化字串。
+        /// </summary>
+        internal static string All_Devices {
+            get {
+                return ResourceManager.GetString("All_Devices", resourceCulture);
             }
         }
         
@@ -1366,6 +1393,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Critical 的當地語系化字串。
+        /// </summary>
+        internal static string Critical {
+            get {
+                return ResourceManager.GetString("Critical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Custom 的當地語系化字串。
         /// </summary>
         internal static string Custom {
@@ -1393,6 +1429,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Dark Stabilizer 的當地語系化字串。
+        /// </summary>
+        internal static string Dark_Stabilizer {
+            get {
+                return ResourceManager.GetString("Dark_Stabilizer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Dark Stabilizer Toggle 的當地語系化字串。
+        /// </summary>
+        internal static string Dark_Stabilizer_Toggle {
+            get {
+                return ResourceManager.GetString("Dark_Stabilizer_Toggle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Default 的當地語系化字串。
         /// </summary>
         internal static string Default {
@@ -1407,6 +1461,15 @@ namespace DDPM.UI.Resources {
         internal static string DefineBySystem {
             get {
                 return ResourceManager.GetString("DefineBySystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Device-specific 的當地語系化字串。
+        /// </summary>
+        internal static string Device_specific {
+            get {
+                return ResourceManager.GetString("Device_specific", resourceCulture);
             }
         }
         
@@ -1429,11 +1492,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Disconnect all USB storage devices from monitor. 的當地語系化字串。
+        /// </summary>
+        internal static string Disconnect_all_USB_storage_devices_from_monitor {
+            get {
+                return ResourceManager.GetString("Disconnect_all_USB_storage_devices_from_monitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Display 的當地語系化字串。
         /// </summary>
         internal static string Display {
             get {
                 return ResourceManager.GetString("Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Display Color Preset and Easy Memory 的當地語系化字串。
+        /// </summary>
+        internal static string Display_Color_Preset_and_Easy_Memory {
+            get {
+                return ResourceManager.GetString("Display_Color_Preset_and_Easy_Memory", resourceCulture);
             }
         }
         
@@ -1677,6 +1758,33 @@ namespace DDPM.UI.Resources {
         internal static string Documents {
             get {
                 return ResourceManager.GetString("Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Driver version 的當地語系化字串。
+        /// </summary>
+        internal static string Driver_version {
+            get {
+                return ResourceManager.GetString("Driver_version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Dual Resolution 的當地語系化字串。
+        /// </summary>
+        internal static string Dual_Resolution {
+            get {
+                return ResourceManager.GetString("Dual_Resolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Dual Resolution Toggle 的當地語系化字串。
+        /// </summary>
+        internal static string Dual_Resolution_Toggle {
+            get {
+                return ResourceManager.GetString("Dual_Resolution_Toggle", resourceCulture);
             }
         }
         
@@ -2077,6 +2185,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Enable shortcut reminder for Quick Accesswidget 的當地語系化字串。
+        /// </summary>
+        internal static string Enable_shortcut_reminder_for_Quick_Accesswidget {
+            get {
+                return ResourceManager.GetString("Enable_shortcut_reminder_for_Quick_Accesswidget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 There are no advanced features on this device 的當地語系化字串。
         /// </summary>
         internal static string EOL_0 {
@@ -2158,6 +2275,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Game Enhance Mode 的當地語系化字串。
+        /// </summary>
+        internal static string Game_Enhance_Mode {
+            get {
+                return ResourceManager.GetString("Game_Enhance_Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Gaming 的當地語系化字串。
         /// </summary>
         internal static string Gaming {
@@ -2172,6 +2298,15 @@ namespace DDPM.UI.Resources {
         internal static string General {
             get {
                 return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Headset, speakerphone and soundbar mute/unmute 的當地語系化字串。
+        /// </summary>
+        internal static string Headset_speakerphone_and_soundbar_mute_unmute {
+            get {
+                return ResourceManager.GetString("Headset_speakerphone_and_soundbar_mute_unmute", resourceCulture);
             }
         }
         
@@ -2644,6 +2779,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Help 的當地語系化字串。
+        /// </summary>
+        internal static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 High 的當地語系化字串。
         /// </summary>
         internal static string High {
@@ -2901,6 +3045,15 @@ namespace DDPM.UI.Resources {
         internal static string Keyboard_4 {
             get {
                 return ResourceManager.GetString("Keyboard.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Keyboard lock key 的當地語系化字串。
+        /// </summary>
+        internal static string Keyboard_lock_key {
+            get {
+                return ResourceManager.GetString("Keyboard_lock_key", resourceCulture);
             }
         }
         
@@ -3249,6 +3402,15 @@ namespace DDPM.UI.Resources {
         /// <summary>
         ///   查詢類似 Learn more 的當地語系化字串。
         /// </summary>
+        internal static string Learn_more {
+            get {
+                return ResourceManager.GetString("Learn_more", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Learn more 的當地語系化字串。
+        /// </summary>
         internal static string LearnMore {
             get {
                 return ResourceManager.GetString("LearnMore", resourceCulture);
@@ -3270,6 +3432,15 @@ namespace DDPM.UI.Resources {
         internal static string Lock {
             get {
                 return ResourceManager.GetString("Lock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Low battery level 的當地語系化字串。
+        /// </summary>
+        internal static string Low_battery_level {
+            get {
+                return ResourceManager.GetString("Low_battery_level", resourceCulture);
             }
         }
         
@@ -3535,6 +3706,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Need help? For more information on this software, click the button below. 的當地語系化字串。
+        /// </summary>
+        internal static string Need_help {
+            get {
+                return ResourceManager.GetString("Need_help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 No 的當地語系化字串。
         /// </summary>
         internal static string No {
@@ -3585,6 +3765,15 @@ namespace DDPM.UI.Resources {
         internal static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 On screen notifications 的當地語系化字串。
+        /// </summary>
+        internal static string On_screen_notifications {
+            get {
+                return ResourceManager.GetString("On_screen_notifications", resourceCulture);
             }
         }
         
@@ -3648,6 +3837,15 @@ namespace DDPM.UI.Resources {
         internal static string OpenWebPage {
             get {
                 return ResourceManager.GetString("OpenWebPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Optional 的當地語系化字串。
+        /// </summary>
+        internal static string Optional {
+            get {
+                return ResourceManager.GetString("Optional", resourceCulture);
             }
         }
         
@@ -3958,6 +4156,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Preview Changes 的當地語系化字串。
+        /// </summary>
+        internal static string Preview_Changes {
+            get {
+                return ResourceManager.GetString("Preview_Changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Quick Note 的當地語系化字串。
         /// </summary>
         internal static string QuickNote {
@@ -4012,6 +4219,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Recommended 的當地語系化字串。
+        /// </summary>
+        internal static string Recommended {
+            get {
+                return ResourceManager.GetString("Recommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Redo 的當地語系化字串。
         /// </summary>
         internal static string Redo {
@@ -4030,11 +4246,38 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Reports 的當地語系化字串。
+        /// </summary>
+        internal static string Reports {
+            get {
+                return ResourceManager.GetString("Reports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Reset 的當地語系化字串。
         /// </summary>
         internal static string Reset {
             get {
                 return ResourceManager.GetString("Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Resolution and Refresh Rate 的當地語系化字串。
+        /// </summary>
+        internal static string Resolution_and_Refresh_Rate {
+            get {
+                return ResourceManager.GetString("Resolution_and_Refresh_Rate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Response Time 的當地語系化字串。
+        /// </summary>
+        internal static string Response_Time {
+            get {
+                return ResourceManager.GetString("Response_Time", resourceCulture);
             }
         }
         
@@ -4080,6 +4323,24 @@ namespace DDPM.UI.Resources {
         internal static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Save diagnostic report 的當地語系化字串。
+        /// </summary>
+        internal static string Save_diagnostic_report {
+            get {
+                return ResourceManager.GetString("Save_diagnostic_report", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Save monitor asset report 的當地語系化字串。
+        /// </summary>
+        internal static string Save_monitor_asset_report {
+            get {
+                return ResourceManager.GetString("Save_monitor_asset_report", resourceCulture);
             }
         }
         
@@ -4197,6 +4458,15 @@ namespace DDPM.UI.Resources {
         internal static string SmartHDR {
             get {
                 return ResourceManager.GetString("SmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Software version 的當地語系化字串。
+        /// </summary>
+        internal static string Software_version {
+            get {
+                return ResourceManager.GetString("Software_version", resourceCulture);
             }
         }
         
@@ -4390,6 +4660,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Stop Preview 的當地語系化字串。
+        /// </summary>
+        internal static string Stop_Preview {
+            get {
+                return ResourceManager.GetString("Stop_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Success 的當地語系化字串。
         /// </summary>
         internal static string Success {
@@ -4422,6 +4701,24 @@ namespace DDPM.UI.Resources {
         internal static string TaskView {
             get {
                 return ResourceManager.GetString("TaskView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Third Party Licenses 的當地語系化字串。
+        /// </summary>
+        internal static string Third_Party_Licenses {
+            get {
+                return ResourceManager.GetString("Third_Party_Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Toggle Vision Engine 的當地語系化字串。
+        /// </summary>
+        internal static string Toggle_Vision_Engine {
+            get {
+                return ResourceManager.GetString("Toggle_Vision_Engine", resourceCulture);
             }
         }
         
@@ -4476,6 +4773,15 @@ namespace DDPM.UI.Resources {
         internal static string Tooltip_5 {
             get {
                 return ResourceManager.GetString("Tooltip.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 This feature enables our eyes to adapt to a desired setting. 的當地語系化字串。
+        /// </summary>
+        internal static string Tooltips_Schedule {
+            get {
+                return ResourceManager.GetString("Tooltips_Schedule", resourceCulture);
             }
         }
         
@@ -4629,6 +4935,51 @@ namespace DDPM.UI.Resources {
         internal static string VisionEngine {
             get {
                 return ResourceManager.GetString("VisionEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Bino 的當地語系化字串。
+        /// </summary>
+        internal static string VisionEngine_Bino {
+            get {
+                return ResourceManager.GetString("VisionEngine_Bino", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Chroma 的當地語系化字串。
+        /// </summary>
+        internal static string VisionEngine_Chroma {
+            get {
+                return ResourceManager.GetString("VisionEngine_Chroma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Clear 的當地語系化字串。
+        /// </summary>
+        internal static string VisionEngine_Clear {
+            get {
+                return ResourceManager.GetString("VisionEngine_Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Crosshair 的當地語系化字串。
+        /// </summary>
+        internal static string VisionEngine_Crosshair {
+            get {
+                return ResourceManager.GetString("VisionEngine_Crosshair", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Night 的當地語系化字串。
+        /// </summary>
+        internal static string VisionEngine_Night {
+            get {
+                return ResourceManager.GetString("VisionEngine_Night", resourceCulture);
             }
         }
         
@@ -5479,6 +5830,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Webcam WB7022 Presence Detection sensor cover state 的當地語系化字串。
+        /// </summary>
+        internal static string Webcam_WB7022_Presence_Detection_sensor_cover_state {
+            get {
+                return ResourceManager.GetString("Webcam_WB7022_Presence_Detection_sensor_cover_state", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 3-2-1 Countdown 的當地語系化字串。
         /// </summary>
         internal static string WebCameraCapture_0 {
@@ -6060,6 +6420,24 @@ namespace DDPM.UI.Resources {
         internal static string WebCameraSettings_9 {
             get {
                 return ResourceManager.GetString("WebCameraSettings.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Widget Settings 的當地語系化字串。
+        /// </summary>
+        internal static string Widget_Settings {
+            get {
+                return ResourceManager.GetString("Widget_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Widget will automatically appear when meeting begins to customize settings for supported webcams 的當地語系化字串。
+        /// </summary>
+        internal static string Widget_will_automatically_appear_when_meeting_begins {
+            get {
+                return ResourceManager.GetString("Widget_will_automatically_appear_when_meeting_begins", resourceCulture);
             }
         }
         

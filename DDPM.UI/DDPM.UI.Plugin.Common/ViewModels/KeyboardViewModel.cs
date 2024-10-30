@@ -1083,6 +1083,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void RestoreToDefault()
         {
+            DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAllAssignedActions(CurrentDeviceID.ToString());
             foreach (var keyAction in KeyboardAction.KeyActions.Values)
             {
                 keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID);

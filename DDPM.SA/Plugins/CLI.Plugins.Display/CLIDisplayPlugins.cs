@@ -1,4 +1,5 @@
 ﻿using CLI.Plugins.Display;
+using DDPM.RemoteManagement.Common.Interfaces;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
@@ -14066,7 +14067,21 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> ExportSettings(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
-            string filepath = commandLineInput.Options[0].Option_Value;
+            string filepath = string.Empty;
+            if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
+            {
+                filepath = commandLineInput.Options[0].Option_Value;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+            
             bool retcode = false;
 
             if (_AllInfoMonitors == null)
@@ -14091,7 +14106,16 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
                     writelog($"DisplayImportSettings set entry");
-                    //retcode = devMgr.DisplayImportSettings(monitor, false, filepath).Result;
+                    if (!File.Exists(filepath))
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "file is not exist.";
+                    }
+                    else
+                    {
+                        retcode = devMgr.DisplayImportSettings(monitor, false, filepath).Result;
+                    } 
+                     
 
                     cli_Response.Result = retcode == true ? "PASS" : "FAIL";
                     //cli_Response.Value = $"IMPORTSETTINGS";
@@ -14100,7 +14124,7 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
-            if (commandLineInput.Command == "GET" && commandLineInput.TargetFeature == "EXPORTSETTINGS")
+            else if (commandLineInput.Command == "GET" && commandLineInput.TargetFeature == "EXPORTSETTINGS")
             {
                 List<int> _monitorIndeies = new List<int>();
                 if (_AllInfoMonitors == null)
@@ -14126,6 +14150,15 @@ namespace DDPM.CLI.Plugins.Display
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
             writelog($"Display Import Export Settings exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
