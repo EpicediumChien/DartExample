@@ -52,9 +52,11 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using IDs = DDPM.SA.Common.IDs;
-
+using System.Runtime;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using Point = System.Windows.Point;
+using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
+using System.Windows.Resources;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -178,11 +180,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Bruce 07-30 Added total screens
         private int _lastScreenCount;
 
-        private enum log_type
-        {
-            info = 0,
-            error
-        }
+        //private enum log_type
+        //{
+        //    info = 0,
+        //    error
+        //}
 
         private readonly object _MoLock = new object();
 
@@ -203,7 +205,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool userClosedPopup = false;
 
         private static PowerEventControl _pwr_Mon = null;
-
+        private static DisplayDeviceHelper _disDevHelper = null;
+        private static int _millisecond = 8000;
         private static OSD_Controler _OSD_Controler = new OSD_Controler();
 
         #endregion
@@ -272,6 +275,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
+
+            _disDevHelper = new DisplayDeviceHelper(Log);            
         }
 
         #endregion
@@ -1200,6 +1205,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + $" requested, process ID[{processID}]");
 
             _DisplayManagerPlugin.Reset0x52TimerTick(millisecond, processID);
+            _millisecond = millisecond;
 
             return Task.FromResult(Task.CompletedTask);
         }
@@ -4350,51 +4356,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 });
             }
-            /*自訂Popup通知
-            // 將 popupContentPackage.Object 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(popupContentPackage.Object);
-            // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
-            // 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
-            string title = popupContentPackage.Title;
-            string info = popupContentPackage.Info;
-            bool isInfo = popupContentPackage.IsInfo;
-            bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
-            bool stayOpen = popupContentPackage.StayOpen;
-            int timeout = popupContentPackage.Timeout;
-            object ob;
-            if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
-            {
-                ob = sWUpdateInfoPackage;
-            }
-            else
-            {
-                ob = fWUpdateInfoPackage;
-            }
-            if (!string.IsNullOrEmpty(info))
-            {
-                Task.Run(() =>
-                {
-                    PopupBaseManage popupBaseManage = new PopupBaseManage();
-                    popupBaseManage.LeftButtonClick += UpdateEvent;
-                    popupBaseManage.RightButtonClick += DelayEvent;
-                    if (isInfo)
-                    {
-                        popupBaseManage.FWU_Show(title, info, "", "", ob, stayOpen, timeout);
-                    }
-                    else if (isOnlyUpdate)
-                    {
-                        popupBaseManage.Default_Event += UpdateEvent;
-                        popupBaseManage.FWU_Show(title, info, "Update", "", ob, stayOpen, timeout);
-                    }
-                    else
-                    {
-                        popupBaseManage.Default_Event += DelayEvent;
-                        popupBaseManage.FWU_Show(title, info, "Update", "Delay", ob, stayOpen, timeout);
-                    }
-                });
-            }*/
         }
 
         private void CheckInput(ToastNotificationActivatedEventArgsCompat e)
@@ -4412,6 +4373,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     DelayEvent(this, ret[1]);
                 }
             }
+            else if (ret.Length == 1)
+            {
+                if (e.Argument.StartsWith("left_btn"))
+                {
+                    writelog("*** left_button_action");
+                }
+                else if (e.Argument.StartsWith("right_btn"))
+                {
+                    writelog("*** right_button_action");
+                }
+            }            
         }
 
         private void UpdateEvent(object o, string ob)
@@ -8103,6 +8075,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
+
+                                        Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
                                     }
                                     catch (Exception ex)
                                     {
@@ -8174,6 +8148,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
         {
+            if(e == null || e.monitors == null)
+            {
+                writelog("DeviceMangerPlugin brocast OnDisplaychanged ...null object, return directly");
+                return;
+            }
             writelog($"DeviceMangerPlugin brocast OnDisplaychanged ...(monitor count {e.monitors.Count})");
 
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
@@ -8191,6 +8170,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DeviceChangedEventArgs> devHandler = DeviceChanged;
             if (devHandler != null)
                 devHandler.Invoke(this, arg);
+
+            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
 
         private void OnPeripheralsNotify(DeviceChangedEventArgs data)
