@@ -187,7 +187,7 @@
     <value>Доступно обновление</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Peripheral Manager закроется и снова откроется по завершении обновлений. После запуска обновлений их нельзя отменить.</value>
+    <value>Dell Display and Peripheral Manager закроется и снова откроется по завершении обновлений. После запуска обновлений их нельзя отменить.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Проверить наличие обновлений</value>
@@ -313,7 +313,7 @@
     <value>Подключение пера</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Прикоснитесь кончиком пера к экрану</value>
+    <value>Прикоснитесь кончиком пера к экрану Dell Display and Peripheral Manager</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Нажмите и удерживайте верхнюю кнопку в течение 3 секунд. Подождите, пока устройство не будет обнаружено Windows.</value>
@@ -481,7 +481,7 @@
     <value>Основной монитор для синхронизации  </value>
   </data>
   <data name="Brightness.13" xml:space="preserve">
-    <value>Синхронизация яркости, контрастности, цветовой предустановки и температуры цвета основного монитора с другими ALS-мониторами </value>
+    <value>Синхронизация яркости, контрастности, цветовой предустановки и температуры цвета основного монитора с другими ALS-мониторами</value>
   </data>
   <data name="Scheduled" xml:space="preserve">
     <value>Запланировано</value>
@@ -661,7 +661,7 @@
     <value>Ночное освещение </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>Отображать на экране комфортные цвета, которые помогут вам заснуть.</value>
+    <value>Отображение более теплых цветов, чтобы не мешать спать</value>
   </data>
   <data name="Color.11" xml:space="preserve">
     <value>Управление цветом</value>
@@ -1168,7 +1168,7 @@
     <value>Microsoft Teams</value>
   </data>
   <data name="SpeakerInteractions.3" xml:space="preserve">
-    <value>Zoom</value>
+    <value>Масштабирование</value>
   </data>
   <data name="SpeakerInteractions.4" xml:space="preserve">
     <value>Google Meet</value>
@@ -1204,7 +1204,7 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>Управляет четкостью и стилем отображения видео при помощи регулировки количества захватов изображений в секунду</value>
+    <value>Управляет четкостью и стилем отображения видео при помощи регулировки количества захватов изображений в секунду.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>Местоположение медиафайлов</value>
@@ -1363,7 +1363,7 @@
     <value>Определение приоритета внешней веб-камеры</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>Автоматическое переключение между веб-камерой Dell UltraSharp и другими веб-камерами (встроенными и внешними). Windows Hello будет использовать активную веб-камеру для распознавания лица. Примечание. Одновременно может быть включена и доступна только одна камера.</value>
+    <value>Автоматическое переключение между веб-камерой Dell UltraSharp и другими веб-камерами (встроенными и внешними). Windows Hello будет использовать активную веб-камеру для распознавания лица.\n\nПримечание. Одновременно может быть включена и доступна только одна камера.</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Чувствительность сенсорной прокрутки</value>
@@ -1420,7 +1420,7 @@
     <value>Яркость/Контрастность</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>Свойства отображения</value>
+    <value>Свойства</value>
   </data>
   <data name="Layout" xml:space="preserve">
     <value>Компоновка</value>
@@ -1598,5 +1598,455 @@
   </data>
   <data name="Undo" xml:space="preserve">
     <value>Отменить</value>
+  </data>
+  <data name="Tooltip.5" xml:space="preserve">
+    <value>Раскладки клавиатуры с клавишей Copilot могут стать доступны в разное время в зависимости от языка и региона.</value>
+  </data>
+  <data name="ITLockToolTip.0" xml:space="preserve">
+    <value>Этот параметр заблокирован ИТ-администратором.</value>
+  </data>
+  <data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>Включает микрофон камеры. Камера быстро перезапустится при ВКЛЮЧЕНИИ/ВЫКЛЮЧЕНИИ этой функции.</value>
+  </data>
+  <data name="Camera.6" xml:space="preserve">
+    <value>Выберите вариант</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>Добавить новую предустановку</value>
+  </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>Подождите, пока мы применяем изменения</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>Камера используется другим приложением</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>Отключите и подключите камеру и повторите попытку</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>Дождитесь, пока мы удалим вашу камеру</value>
+  </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>Возобновить запись</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>Остановить запись</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>Откройте папку мультимедиа</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>Начать запись</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>Приостановить запись</value>
+  </data>
+  <data name="WebCameraSettings.27" xml:space="preserve">
+    <value>Регулировка размера кадра</value>
+  </data>
+  <data name="EazyMemory.0" xml:space="preserve">
+    <value>Автоматический запуск:</value>
+  </data>
+  <data name="EazyMemory.1" xml:space="preserve">
+    <value>Запуск по времени:</value>
+  </data>
+  <data name="EazyMemory.2" xml:space="preserve">
+    <value>Приложение/документ:</value>
+  </data>
+  <data name="EazyMemory.3" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="EazyMemory.4" xml:space="preserve">
+    <value>Неприменимо</value>
+  </data>
+  <data name="EazyMemory.5" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="EazyMemory.6" xml:space="preserve">
+    <value>Профиль</value>
+  </data>
+  <data name="EazyMemory.7" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="EazyMemory.8" xml:space="preserve">
+    <value>Можно сохранить только до 9 профилей. Удалите существующий профиль или отредактируйте его в главном меню.</value>
+  </data>
+  <data name="EazyMemory.9" xml:space="preserve">
+    <value>Повторяющиеся записи. Введите другую документацию или приложения для профиля Easy Memory.</value>
+  </data>
+  <data name="EazyMemory.10" xml:space="preserve">
+    <value>Можно расположить окна на экране и нажать значок +.\r\nИли выберите существующую компоновку ниже и нажмите значок карандаша, чтобы изменить компоновку.</value>
+  </data>
+  <data name="EazyMemory.11" xml:space="preserve">
+    <value>Другой профиль настроен для запуска во время включения ПК. Заменить его этим профилем?</value>
+  </data>
+  <data name="EazyMemory.12" xml:space="preserve">
+    <value>Выберите вариант запуска</value>
+  </data>
+  <data name="EazyMemory.13" xml:space="preserve">
+    <value>Запуск во время включения ПК</value>
+  </data>
+  <data name="EazyMemory.14" xml:space="preserve">
+    <value>Вручную выберите созданные профили</value>
+  </data>
+  <data name="EazyMemory.15" xml:space="preserve">
+    <value>Запускать автоматически по времени</value>
+  </data>
+  <data name="EazyMemory.16" xml:space="preserve">
+    <value>Завершить</value>
+  </data>
+  <data name="EazyMemory.17" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="EazyMemory.18" xml:space="preserve">
+    <value>Присвойте профилю имя</value>
+  </data>
+  <data name="EazyMemory.19" xml:space="preserve">
+    <value>Выберите компоновку</value>
+  </data>
+  <data name="EazyMemory.20" xml:space="preserve">
+    <value>Окно 0</value>
+  </data>
+  <data name="EazyMemory.21" xml:space="preserve">
+    <value>Окно 1</value>
+  </data>
+  <data name="EazyMemory.22" xml:space="preserve">
+    <value>Окно 2</value>
+  </data>
+  <data name="EazyMemory.23" xml:space="preserve">
+    <value>Окно 3</value>
+  </data>
+  <data name="EazyMemory.24" xml:space="preserve">
+    <value>Окно 4</value>
+  </data>
+  <data name="EazyMemory.25" xml:space="preserve">
+    <value>Окно 5</value>
+  </data>
+  <data name="EazyMemory.26" xml:space="preserve">
+    <value>Окно 6</value>
+  </data>
+  <data name="EazyMemory.27" xml:space="preserve">
+    <value>Окно 7</value>
+  </data>
+  <data name="EazyMemory.28" xml:space="preserve">
+    <value>Окно 8</value>
+  </data>
+  <data name="EazyMemory.29" xml:space="preserve">
+    <value>Окно 9</value>
+  </data>
+  <data name="EazyMemory.30" xml:space="preserve">
+    <value>Окно 10</value>
+  </data>
+  <data name="EazyMemory.31" xml:space="preserve">
+    <value>Окно 11</value>
+  </data>
+  <data name="EazyMemory.32" xml:space="preserve">
+    <value>Окно 12</value>
+  </data>
+  <data name="EazyMemory.33" xml:space="preserve">
+    <value>Выбор из папки</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>Настроить просмотр</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>EasyArrange</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>Управление устройствами ввода</value>
+  </data>
+  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>Скорость сенсорной прокрутки</value>
+  </data>
+  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>Основная кнопка</value>
+  </data>
+  <data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>Настраиваемые клавиши</value>
+  </data>
+  <data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>Удобные элементы управления совещанием</value>
+  </data>
+  <data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>Настройки освещения</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>Отключение/включение звука с помощью микрофона на штанге</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>Отключение/включение звука с помощью микрофона на штанге</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>Удобные кнопки</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>Активное шумоподавление</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Быстрые настройки в Zoom</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>Простые предустановки</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>Автоцентровка на базе ИИ</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>Высокий динамический диапазон</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>Функции безопасности</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>Добро пожаловать в\r\nDell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>Просматривайте устройство, его подключения и уровень заряда аккумулятора (если используется беспроводная связь)</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>Поместите курсор на иконку соединения беспроводного устройства, чтобы получить дополнительную информацию</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>Нажмите на устройство, чтобы отрегулировать его настройки</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>Нажмите на значок шестеренки для доступа к настройкам приложения и обновлению программного обеспечения и микропрограммы</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>Добавить устройство</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>Просмотр устройства</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>Плитка подключения</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>Параметры устройства</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>Просматривайте все поддерживаемые мониторы и периферийные устройства Dell, настраивайте параметры по вашему вкусу и обеспечивайте актуальность программного обеспечения</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>Нажмите значок +, чтобы найти инструкции по подключению поддерживаемого устройства Dell</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>Настройте качество просмотра под себя, отрегулировав уровень яркости/контрастности, профили цвета и многое другое</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>Тратьте меньше времени на изменение размера нескольких окон. Выберите компоновку Easy Arrange, затем нажмите и перетащите окна на место. Если вы хотите повторно использовать эту конкретную компоновку окон, сохраните ее с помощью функции Easy Memory</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>Легко используйте монитор с несколькими ПК через настройки источника ввода или USB/сетевых KVM. Кроме того, подключите мышь, клавиатуру и аксессуары к монитору через USB, чтобы использовать их с несколькими ПК</value>
+  </data>
+  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>Вы можете настроить клавиши вашей клавиатуры, назначив им соответствующие действия.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>Оптимизируйте совещания с помощью сочетаний клавиш в Zoom и Teams.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>Установите уровень подсветки клавиатуры, отрегулировав его вручную или настроив адаптацию к окружающему освещению.</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>Удобные элементы управления совещанием</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>Настраиваемые клавиши</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>Оптимизируйте совещания с помощью сочетаний клавиш в Zoom и Teams.</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>Вы можете настроить клавиши вашей клавиатуры, назначив им соответствующие действия.</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>Измените скорость сенсорной прокрутки выделенных областей в приложении</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>Выберите, какая кнопка будет основной в приложении — левая или правая</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>Частота опроса</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>Настроить нажатие колеса прокрутки</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>Действия для конкретных приложений</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>Повысьте скорость и точность мыши, увеличив частоту опроса в приложении</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>Назначьте избранные действия при нажатии кнопки прокрутки</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>Назначьте пользовательские действия нажатию колесика мыши при использовании определенных приложений</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>Настроить кнопки</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>Действия для конкретных приложений</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>Назначьте избранные действия указанным кнопкам в приложении</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>Назначьте пользовательские действия кнопкам мыши при использовании определенных приложений</value>
+  </data>
+  <data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>Найдите свое перо с помощью Tile</value>
+  </data>
+  <data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>Зарядка аккумулятора пера</value>
+  </data>
+  <data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>Настройте поведение вашего пера</value>
+  </data>
+  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>Чтобы выполнить сопряжение пера с Tile, выполните следующие действия.\n1. Включите Bluetooth на мобильном устройстве.\n2. Отсканируйте QR-код, чтобы скачать Tile на мобильное устройство.\n3. Нажмите и удерживайте две боковые кнопки на пере в течение 3 секунд, чтобы выполнить сопряжение с Tile.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>Перо заряжено на X%.\n\nЧтобы полностью зарядить перо, убедитесь, что оно прикреплено к экрану планшета. После завершения зарядки пера вы получите уведомление.\n\nУведомления о низком заряде аккумулятора появятся, когда заряд аккумулятора опустится ниже 10%.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>В приложении можно настроить действия кнопок пера и чувствительность наконечника и наклона\r\n</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>С помощью нового виджета «Быстрые настройки» можно легко управлять ключевыми параметрами камеры во время вызова Zoom</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>Выберите предустановку, которая совпадает с тем, как вы хотите выглядеть в кадре, или создайте собственную</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>Включите функцию автоцентровки на основе ИИ, чтобы ваше лицо оставалось в центре кадра, если вы перемещаетесь</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>Включите расширенный динамический диапазон для повышения качества изображения, особенно при экстремальном освещении</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>Включите функцию обнаружения присутствия, чтобы камера выводила экран из спящего режима, когда вы подходите, и блокировала его, когда вы отходите</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Быстрые настройки в Zoom</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>Простые предустановки</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>Высокий динамический диапазон</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>С помощью нового виджета «Быстрые настройки» можно легко управлять ключевыми параметрами камеры во время вызова Zoom</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>Выберите предустановку, которая совпадает с тем, как вы хотите выглядеть в кадре, или создайте собственную</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>Удобные кнопки</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>Сложите микрофон вверх, чтобы отключить звук, и разложите его, чтобы включить звук.\r\n\r\nПри необходимости включите функцию в приложении для ответа на входящие вызовы при раскладывании микрофона на штанге.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>Управляйте Microsoft Teams и состоянием отключения звука одним нажатием кнопки. Регулируйте громкость звука и получайте доступ к другим функциям с помощью остальных удобных кнопок.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>Удобные кнопки</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>Отключение/включение звука с помощью микрофона на штанге</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>Управляйте вызовами, отключением звука и громкостью звука с помощью удобных кнопок на встроенном контроллере гарнитуры</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>Сложите микрофон вверх, чтобы отключить звук, и разложите его, чтобы включить звук.\r\n\r\nПри необходимости включите функцию в приложении для ответа на входящие вызовы при раскладывании микрофона на штанге.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>Сложите микрофон вверх, чтобы отключить звук, и разложите его, чтобы включить звук.\r\n\r\nПри необходимости включите функцию в приложении для ответа на входящие вызовы при раскладывании микрофона на штанге.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>Управляйте Microsoft Teams и состоянием отключения звука одним нажатием кнопки. Регулируйте громкость звука и получайте доступ к другим функциям с помощью остальных удобных кнопок.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>Нажмите кнопку ANC на гарнитуре или выберите один из вариантов в приложении, чтобы управлять уровнем внешнего шума, который вы слышите.\r\n\r\nЕсли вы выбрали «Прозрачность», используйте ползунок в приложении для настройки уровня шума.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>Удобные кнопки</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>Отключение/включение звука с помощью микрофона на штанге</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>Активное шумоподавление</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>Управляйте вызовами, отключением звука и громкостью звука с помощью удобных кнопок на встроенном контроллере гарнитуры. Отрегулируйте уровень слышимого внешнего шума с помощью кнопки ANC на боковой панели. </value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>Сложите микрофон вверх, чтобы отключить звук, и разложите его, чтобы включить звук.\r\n\r\nПри необходимости включите функцию в приложении для ответа на входящие вызовы при раскладывании микрофона на штанге.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>Нажмите кнопку ANC на гарнитуре или выберите один из вариантов в приложении, чтобы управлять уровнем внешнего шума, который вы слышите.\r\n\r\nЕсли вы выбрали «Прозрачность», используйте ползунок в приложении для настройки уровня шума.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>Проведите пальцем вверх и вниз, чтобы управлять громкостью, дважды коснитесь, чтобы отвечать на вызовы и завершать вызовы, и многое другое.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>Управляйте отключением звука, функцией активного шумоподавления (ANC) и доступом к Microsoft Teams с помощью удобных кнопок на вашей гарнитуре</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>Нажмите кнопку ANC на гарнитуре или выберите один из вариантов в приложении, чтобы управлять уровнем внешнего шума, который вы слышите.\r\n\r\nЕсли вы выбрали «Прозрачность», используйте ползунок в приложении для настройки уровня шума.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>Зарядите гарнитуру, установив ее на зарядную станцию или подключив к ПК с помощью входящего в комплект USB-кабеля</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>Проведите пальцем и коснитесь, чтобы управлять функциями</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>Удобные кнопки</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>Активное шумоподавление</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>Простая зарядка</value>
+  </data>
+  <data name="EazyMemory.34" xml:space="preserve">
+    <value>Назначение программ</value>
+  </data>
+  <data name="EazyMemory.35" xml:space="preserve">
+    <value>Варианты запуска</value>
+  </data>
+  <data name="EazyMemory.36" xml:space="preserve">
+    <value>Сохраняйте различные профили и восстанавливайте их вручную, в запланированное время или при запуске системы.\r\n\r\nДля начала назначьте имя профилю Easy Memory и выберите компоновку.</value>
+  </data>
+  <data name="EazyMemory.37" xml:space="preserve">
+    <value>Назначьте приложения/документы Windows или перетащите значок приложения в соответствующий раздел.\r\n\r\nПримечание. Функциональность Easy Arrange Memory может различаться в зависимости от типа приложения и поведения запуска.</value>
+  </data>
+  <data name="EazyMemory.38" xml:space="preserve">
+    <value>Выберите тип запуска</value>
+  </data>
+  <data name="EazyMemory.39" xml:space="preserve">
+    <value>ПРОСТАЯ НАСТРОЙКА ПАМЯТИ</value>
+  </data>
+  <data name="WalkThrough.0" xml:space="preserve">
+    <value>ОБЗОР ФУНКЦИИ</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Нет</value>
   </data>
 </root>
