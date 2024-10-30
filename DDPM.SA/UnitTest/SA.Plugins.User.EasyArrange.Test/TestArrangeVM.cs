@@ -259,5 +259,127 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.That(hoveringCellObj2, Is.EqualTo(HoveringCellObj_Result2));
         }
 
+        [Test]
+        public void TestHoveringCell()
+        {
+            string hoveringCell1 = "Test HoveringCell";
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringCell", hoveringCell1);
+            var HoveringCell_Result1 = arrangeVM.HoveringCell;          //_hoveringCell "Test HoveringCell"
+            Assert.That(hoveringCell1, Is.EqualTo(HoveringCell_Result1));
+
+            string hoveringCell2 = "";
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringCell", hoveringCell2);
+            var HoveringCell_Result2 = arrangeVM.HoveringCell;          //_hoveringCell default
+            Assert.That(hoveringCell2, Is.EqualTo(HoveringCell_Result2));
+        }
+
+        [Test]
+        public void TestHoveringScreen()
+        {
+            string HoveringScreen1 = "Test HoveringScreen";
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringScreen", HoveringScreen1);
+            var HoveringScreen_Result1 = arrangeVM.HoveringScreen;          //_hoveringScreen "Test HoveringScreen";
+            Assert.That(HoveringScreen1, Is.EqualTo(HoveringScreen_Result1));
+
+            string HoveringScreen2 = "";
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringScreen", HoveringScreen2);
+            var HoveringScreen_Result2 = arrangeVM.HoveringScreen;          //_hoveringScreen default
+            Assert.That(HoveringScreen2, Is.EqualTo(HoveringScreen_Result2));
+        }
+
+        [Test]
+        public void TestIsAwsEnabled()
+        {
+            bool isAwsEnabled = false;
+            EzSettings ezSettings = new EzSettings()
+            {
+                IsWidthoutGap = true,
+                IsOnlyAllowWhenShiftKeyPressed = false,
+                IsSpanAcrossMultiMonitors = false,
+                IsAwsEnabled = false,
+            };
+            privateArrangeVMObject.SetFieldOrProperty("_ezSettings", null);
+            var IsAwsEnabled_Result1 = arrangeVM.IsAwsEnabled;          //_ezSettings null;
+            Assert.That(isAwsEnabled, Is.EqualTo(IsAwsEnabled_Result1));
+
+            privateArrangeVMObject.SetFieldOrProperty("_ezSettings", ezSettings);
+            var IsAwsEnabled_Result2 = arrangeVM.IsAwsEnabled;          //_ezSettings not null;IsAwsEnabled = false,
+            Assert.That(isAwsEnabled, Is.EqualTo(IsAwsEnabled_Result2));
+        }
+
+        [Test]
+        public void TestIsAwsWindowVisible()
+        {
+            bool IsAwsWindowVisible1 = true;
+            bool IsAwsWindowVisible2 = false;
+            EzSettings ezSettings = new EzSettings()
+            {
+                IsWidthoutGap = true,
+                IsOnlyAllowWhenShiftKeyPressed = false,
+                IsSpanAcrossMultiMonitors = false,
+                IsAwsEnabled = true,
+            };
+            privateArrangeVMObject.SetFieldOrProperty("_isAwsWindowVisible", true);
+            privateArrangeVMObject.SetFieldOrProperty("_isMoving", true);
+            privateArrangeVMObject.SetFieldOrProperty("_ezSettings", ezSettings);
+            var IsAwsWindowVisible_Result1 = arrangeVM.IsAwsWindowVisible;          //_isAwsWindowVisible,  _isMoving,IsAwsEnabled,true, _ezSettings not null, IsOnlyAllowWhenShiftKeyPressed = false,newValue = true;
+            Assert.That(IsAwsWindowVisible1, Is.EqualTo(IsAwsWindowVisible_Result1));
+
+            privateArrangeVMObject.SetFieldOrProperty("_isAwsWindowVisible", false);
+            privateArrangeVMObject.SetFieldOrProperty("_isMoving", false);
+            privateArrangeVMObject.SetFieldOrProperty("_ezSettings", ezSettings);
+            var IsAwsWindowVisible_Result2 = arrangeVM.IsAwsWindowVisible;          //_isAwsWindowVisible, _isMoving, default false
+            Assert.That(IsAwsWindowVisible2, Is.EqualTo(IsAwsWindowVisible_Result2));
+        }
+
+        [Test]
+        public void TestAwsWindow()
+        {
+            ArrangeVM vm = new ArrangeVM();
+            AwsWindow awsWindow;
+            awsWindow = new AwsWindow(vm);
+            arrangeVM.AwsWindow = awsWindow;  //set AwsWindow
+            var AwsWindow_Result1 = arrangeVM.AwsWindow;     //get AwsWindow     
+            Assert.IsNotNull(AwsWindow_Result1);
+        }
+
+        [Test]
+        public void TestHoveringSplit()
+        {
+            Mock<ISplitCtrl> mockSplitCtrl = new Mock<ISplitCtrl>();
+            var mockSplitCtrlObj = mockSplitCtrl.Object;
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringSplit", mockSplitCtrlObj);
+            var HoveringSplit_Result1 = arrangeVM.HoveringSplit;
+            Assert.IsNotNull(HoveringSplit_Result1);
+        }
+
+        [Test]
+        public void TestHoveringWindow()
+        {
+            string TestHoveringWindow = "";
+            arrangeVM.HoveringWindow = TestHoveringWindow;  //set HoveringWindow
+            var HoveringWindow_Result1 = arrangeVM.HoveringWindow;     //get HoveringWindow     
+            Assert.IsNotNull(HoveringWindow_Result1);
+        }
+
+        [Test]
+        public void TestAddWorkWindow()
+        {
+            List<EAWorkWindow> workWindows2 = new List<EAWorkWindow>();
+            privateArrangeVMObject.SetFieldOrProperty("_workWindows2", workWindows2);
+            List<MonitorInfo> _monitors = new List<MonitorInfo>();
+            Screen screen = Screen.PrimaryScreen;
+            string displayName = Screen.PrimaryScreen.DeviceName;
+            monitorInfo1.DisplayName = displayName;
+            _monitors.Add(monitorInfo1);
+
+            ArrangeVM arrangeVM1 = new ArrangeVM();
+            EAWorkWindow workWindow1 = new EAWorkWindow(arrangeVM1, screen, _monitors);
+
+            arrangeVM.AddWorkWindow(workWindow1);   //Add workWindow1 to WorkWindow list
+            var AddWorkWindow_Result = (List<EAWorkWindow>)privateArrangeVMObject.GetFieldOrProperty("_workWindows2");
+            Assert.IsNotNull(AddWorkWindow_Result);
+        }
+
     }
 }
