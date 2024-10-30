@@ -51,6 +51,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -3646,57 +3647,89 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
         {
-            return Task.FromResult(_DisplayManagerPlugin.GetDisplayPropertiesInfo(monitorInfos).Result);
+            DisplayPropertiesInfo ret = new DisplayPropertiesInfo();
+            if (_DisplayManagerPlugin != null)
+            {
+                ret = _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitorInfos).Result;
+            }
+            return Task.FromResult(ret);
         }
 
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, DDPM.SA.Common.Properties properties, DisplayOrientation orientation)
         {
-            bool result = _DisplayManagerPlugin.SetDisplayPropertiest(monitorInfos, properties, orientation).Result;
-            return Task.FromResult(result);
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                ret = _DisplayManagerPlugin.SetDisplayPropertiest(monitorInfos, properties, orientation).Result;
+            }
+            return Task.FromResult(ret);
         }
 
-        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
+        public Task<bool> SetResolutions(MonitorInfo monitorInfo, Properties properties)
         {
-            displayInOut = false;
-            bool result = _DisplayManagerPlugin.SetResolutions(monitorInfos, properties).Result;
-            return Task.FromResult(result);
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                displayInOut = false;
+                ret = _DisplayManagerPlugin.SetResolutions(monitorInfo, properties).Result;
+                //Telementry Collection
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfo, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for GamingRefreshRate Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for GamingRefreshRate Fail ...");
+            }
+            return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
+        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
         {
-            bool result = _DisplayManagerPlugin.SetOrientation(monitorInfos, orientation).Result;
-            return Task.FromResult(result);
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
+            }
+            return Task.FromResult(ret);
         }
 
         public Task<bool> CallWindowsDisplaySetting()
         {
-            return Task.FromResult(_DisplayManagerPlugin.CallWindowsDisplaySetting().Result);
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                ret = _DisplayManagerPlugin.CallWindowsDisplaySetting().Result;
+            }
+            return Task.FromResult(ret);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfo)
         {
-            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfos).Result);
+            bool ret = false;
+            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfo).Result);
         }
 
-        public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
+        public Task<bool> SetHDRStatus(MonitorInfo monitorInfo, bool onoff)
         {
-            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfos, onoff).Result);
+            bool ret = false;
+            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfo, onoff).Result);
         }
 
-        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
+        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfo, USBCPrioritizationType type)
         {
-            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfos, type).Result);
+            bool ret = false;
+            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfo, type).Result);
         }
 
         //0606 Bruce 新增鎖定自動旋轉方向
         public Task<bool> LockRotate(bool onoff)
         {
+            bool ret = false;
             DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (config != null)
+            if (config != null && _DisplayManagerPlugin != null)
             {
                 config.UserSettings.LockRotate = onoff;
                 _DisplayManagerPlugin.SetEnableLockOrientation(onoff);
-                return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
+                ret = _SettingsPlugin.SetAppConfigData(config).Result;
             }
 
             //Telementry Collection
@@ -3707,39 +3740,46 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (rt) writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Success ...");
             else writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Fail ...");
 
-            return Task.FromResult(false);
+            return Task.FromResult(ret);
         }
 
         //0606 Bruce 新增鎖定自動旋轉方向
         public Task<bool> GetLockRotateStatus()
         {
+            bool ret = false;
             try
             {
                 if (_SettingsPlugin != null && _DisplayManagerPlugin != null)
                 {
                     DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
                     _DisplayManagerPlugin.SetEnableLockOrientation(config.UserSettings.LockRotate);
-                    return Task.FromResult(config.UserSettings.LockRotate);
-                }
-                else
-                {
-                    return Task.FromResult(false);
+                    ret = config.UserSettings.LockRotate;
                 }
             }
             catch
             {
-                return Task.FromResult(false);
             }
+            return Task.FromResult(ret);
         }
 
         public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
         {
-            return Task.FromResult(_DisplayManagerPlugin.GetOSDOrientation(monitorInfo).Result);
+            string ret = "";
+            if (_DisplayManagerPlugin != null)
+            {
+                ret = _DisplayManagerPlugin.GetOSDOrientation(monitorInfo).Result;
+            }
+            return Task.FromResult(ret);
         }
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
-            return Task.FromResult(_DisplayManagerPlugin.SetOSDOrientation(monitorInfo, orientation).Result);
+            bool? ret = null;
+            if (_DisplayManagerPlugin != null)
+            {
+                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, orientation).Result;
+            }
+            return Task.FromResult(ret);
         }
 
         #endregion
@@ -3917,6 +3957,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
+                List<DeviceInfo> deviceInfos = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
+                if (deviceInfos == null)
+                {
+                    deviceInfos = new List<DeviceInfo>();
+                }
                 DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
@@ -3925,7 +3970,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
 
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -3944,6 +3989,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _FWUpdatePlugin.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
+            }
+            //Telementry Collection
+            var rt = false;
+            var ApplicationSettings_Function = new DeviceFirmware_Functions();
+            List<FWUpdateInfo> DisplayList = tmpFWUpdateInfos.FindAll(o => o.IsDisplay);
+            List<FWUpdateInfo> PeripheralsList = tmpFWUpdateInfos.FindAll(o => o.IsDisplay == false);
+            if (DisplayList != null && DisplayList.Count > 0)
+            {
+                writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware...");
+                rt = ApplicationSettings_Function.Send_DisplayDeviceFirmware_Telementry(_TelementryScheduler, DisplayList);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware Fail ...");
+            }
+            if (PeripheralsList != null && PeripheralsList.Count > 0)
+            {
+                rt = false;
+                writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware...");
+                rt = ApplicationSettings_Function.Send_PeripheralsDeviceFirmware_Telementry(_TelementryScheduler, PeripheralsList);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware Fail ...");
             }
             return Task.FromResult(tmpFWUpdateInfos);
         }
@@ -4149,6 +4214,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             UpdateHelper updateHelper;
             DisplayUpdateHelper displayUpdateHelper;
+            List<DeviceInfo> deviceInfos;
             try
             {
                 updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
@@ -4156,6 +4222,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
+                }
+                deviceInfos = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
+                if (deviceInfos == null)
+                {
+                    deviceInfos = new List<DeviceInfo>();
                 }
             }
             catch (Exception ex)
@@ -4189,7 +4260,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 SetDelayFWUpdateInfoPackage();
-                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, true, false, false, null, false, displayUpdateHelper, false, true, false, null, null, null, "").Result;
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, true, false, false, null, false, displayUpdateHelper, false, true, false, null, null, null, "").Result;
                 return Task.FromResult(true);
             }
             catch (Exception ex)
@@ -4438,7 +4509,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_FWUpdatePlugin != null)
                     {
                         writelog("[UpdateEvent], go to _FWUpdatePlugin.UpdateEvent.");
-                        _FWUpdatePlugin.UpdateEvent();
+                        List<FWUpdateInfo> fWUpdateInfos = new List<FWUpdateInfo>();
+                        fWUpdateInfos = _FWUpdatePlugin.UpdateEvent().Result;
+                        List<FWUpdateInfo> DisplayList = fWUpdateInfos.FindAll(o => o.IsDisplay);
+                        List<FWUpdateInfo> PeripheralsList = fWUpdateInfos.FindAll(o => o.IsDisplay == false);
+                        //Telementry Collection
+                        var rt = false;
+                        var ApplicationSettings_Function = new DeviceFirmware_Functions();
+                        if (DisplayList != null && DisplayList.Count > 0)
+                        {
+                            writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware...");
+                            rt = ApplicationSettings_Function.Send_DisplayDeviceFirmware_Telementry(_TelementryScheduler, DisplayList);
+                            if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware Success ...");
+                            else writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware Fail ...");
+                        }
+                        if (PeripheralsList != null && PeripheralsList.Count > 0)
+                        {
+                            rt = false;
+                            writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware...");
+                            rt = ApplicationSettings_Function.Send_PeripheralsDeviceFirmware_Telementry(_TelementryScheduler, PeripheralsList);
+                            if (rt) writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware Success ...");
+                            else writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware Fail ...");
+                        }
                     }
                 }
             }
@@ -6521,6 +6613,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
+                //Telementry Collection
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                rt = Displaysettings_Function.Send_GamingEnhancementMode_Telementry(_TelementryScheduler, monitorInfo, GameEnhancementMode, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for GamingEnhancementMode Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for GamingEnhancementMode Fail ...");
                 return Task.FromResult(_DisplayManagerPlugin.SetGameEnhancementMode(monitorInfo, GameEnhancementMode).Result);
             }
 
@@ -6531,6 +6629,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                rt = Displaysettings_Function.Send_GamingResponseTime_Telementry(_TelementryScheduler, monitorInfo, ResponseTime, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for GamingResponseTime Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for GamingResponseTime Fail ...");
                 return Task.FromResult(_DisplayManagerPlugin.SetGaming_ResponseTime(monitorInfo, ResponseTime).Result);
             }
             return Task.FromResult(false);
@@ -6540,6 +6643,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                rt = Displaysettings_Function.Send_GamingDarkStabilizer_Telementry(_TelementryScheduler, monitorInfo, DarkStabilizer, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for GamingDarkStabilizer Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for GamingDarkStabilizer Fail ...");
                 return Task.FromResult(_DisplayManagerPlugin.SetGaming_DarkStabilizer(monitorInfo, DarkStabilizer).Result);
             }
             return Task.FromResult(false);
@@ -6549,6 +6657,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                rt = Displaysettings_Function.Send_GamingHDRType_Telementry(_TelementryScheduler, monitorInfo, HDRType, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for GamingHDRType Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for GamingHDRType Fail ...");
                 return Task.FromResult(_DisplayManagerPlugin.SetGaming_HDRType(monitorInfo, HDRType).Result);
             }
             return Task.FromResult(false);
@@ -6576,6 +6689,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                rt = Displaysettings_Function.Send_GamingVisionEngine_Telementry(_TelementryScheduler, monitorInfo, VisionEngineType, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for GamingVisionEngine Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for GamingVisionEngine Fail ...");
                 return Task.FromResult(_DisplayManagerPlugin.SwitchGaming_VisionEngineType(monitorInfo, VisionEngineType).Result);
             }
             return Task.FromResult(false);
@@ -7353,6 +7471,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level = isDisplay;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for DisplayLowBatteryLevel...");
+                rt = ApplicationSettings_Function.Send_LowBatteryLevel_Telementry(_TelementryScheduler, _AllInfoMonitors, isDisplay);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayLowBatteryLevel Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for DisplayLowBatteryLevel Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7365,6 +7490,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key = isDisplay;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for DisplayKeyboardLockKey...");
+                rt = ApplicationSettings_Function.Send_KeyboardLockKey_Telementry(_TelementryScheduler, _AllInfoMonitors, isDisplay);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayKeyboardLockKey Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for DisplayKeyboardLockKey Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7377,6 +7509,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = isDisplay;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for DisplayWB7022CoverState...");
+                rt = ApplicationSettings_Function.Send_WB7022CoverState_Telementry(_TelementryScheduler, _AllInfoMonitors, isDisplay);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayWB7022CoverState Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for DisplayWB7022CoverState Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7389,6 +7528,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_General.Display_MuteState = isDisplay;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for DisplayMuteState...");
+                rt = ApplicationSettings_Function.Send_MuteState_Telementry(_TelementryScheduler, _AllInfoMonitors, isDisplay);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayMuteState Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for DisplayMuteState Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7401,6 +7547,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory = isDisplay;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for DisplayColorPresetAndEasyMemory...");
+                rt = ApplicationSettings_Function.Send_ColorPresetAndEasyMemory_Telementry(_TelementryScheduler, _AllInfoMonitors, isDisplay);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for DisplayColorPresetAndEasyMemory Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for DisplayColorPresetAndEasyMemory Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7413,6 +7566,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = isEnable;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget...");
+                rt = ApplicationSettings_Function.Send_EnableQuickAccessWidget_Telementry(_TelementryScheduler, _AllInfoMonitors, isEnable);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7425,6 +7585,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = isEnable;
                 ret = SaveGlobalSettingParam();
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget_Reminder...");
+                rt = ApplicationSettings_Function.Send_EnableQuickAccessWidget_Reminder_Telementry(_TelementryScheduler, _AllInfoMonitors, isEnable);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget_Reminder Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for EnableQuickAccessWidget_Reminder Fail ...");
             }
             GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
@@ -7540,6 +7707,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (monitorAssetReports != null && monitorAssetReports.Count > 0)
                 {
                     ret = SaveMonitorAssetReport(monitorAssetReports, savePath);
+                    //Telementry Collection
+                    var rt = false;
+                    var ApplicationSettings_Function = new ApplicationSettings_Function();
+                    writelog("[DeviceMangerPlugin] Send Telementry for SaveMonitorAssetReport...");
+                    rt = ApplicationSettings_Function.Send_SaveMonitorAssetReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
+                    if (rt) writelog("[DeviceMangerPlugin] Send Telementry for SaveMonitorAssetReport Success ...");
+                    else writelog("[DeviceMangerPlugin] Send Telementry for SaveMonitorAssetReport Fail ...");
                 }
             }
             return Task.FromResult(ret);
@@ -7701,6 +7875,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Directory.Delete(saveFolderPath, true);
             }
             writelog($"{nameof(SaveLogFile)} end");
+            //Telementry Collection
+            var rt = false;
+            var ApplicationSettings_Function = new ApplicationSettings_Function();
+            writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport...");
+            rt = ApplicationSettings_Function.Send_SaveDiagnosticReport_Telementry(_TelementryScheduler, _AllInfoMonitors, 1);
+            if (rt) writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Success ...");
+            else writelog("[DeviceMangerPlugin] Send Telementry for SaveDiagnosticReport Fail ...");
             return Task.FromResult(ret);
         }
 
