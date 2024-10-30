@@ -39,6 +39,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -7582,6 +7583,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for AppMode...");
             Task.Run(() => applicationSettings_Function.Send_AppMode_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
             previousOsTheme = oSTheme;
+
+            //Telementry Collection [Application Settings ==>UsedLanguage]
+            CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            appModeTelementryData = installedUICulture.Name;
+            Debug.WriteLine($"SettingsReady:UsedLanguageTelemetry=> {appModeTelementryData}");
+            Task.Run(() => applicationSettings_Function.Send_UsedLanguage_Telementry(_TelementryScheduler, _AllInfoMonitors, appModeTelementryData)).ConfigureAwait(false);
+
+            //Telementry Collection
+            var usedLanguage_Function = new UsedLanguage_Function();
+            Task.Run(() => usedLanguage_Function.Send_UsedLanguage_Telementry(_TelementryScheduler, appModeTelementryData)).ConfigureAwait(false);
+
         }
 
         #region OutReport

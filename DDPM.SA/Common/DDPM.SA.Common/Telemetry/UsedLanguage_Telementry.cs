@@ -33,7 +33,7 @@ namespace DDPM.SA.Common.Telemetry
             TelemetryDta_UsedLanguage.Language = val;
 
             if (plugin != null)
-                rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_UsedLanguage.ToJson(), Telementry_Frequency.FirstDayofMonth).Result;
+                rt = plugin.ReceiveTelemetryInfo("UsedLanguage", TelemetryDta_UsedLanguage.ToJson(), Telementry_Frequency.FirstDayofMonth).Result;
 
             return rt;
         }
