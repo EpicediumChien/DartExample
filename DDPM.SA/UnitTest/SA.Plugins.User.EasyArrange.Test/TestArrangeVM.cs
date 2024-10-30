@@ -211,5 +211,53 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.That(screenScale2, Is.EqualTo(ScreenScale_Result2));
         }
 
+        [Test]
+        public void TestWorkingScreen()
+        {
+            Screen? Primaryscreen;
+            Primaryscreen = Screen.PrimaryScreen;
+            privateArrangeVMObject.SetFieldOrProperty("_workingScreen", null);
+            var WorkingScreen_Result1 = arrangeVM.WorkingScreen;          //_workingScreen as null
+            Assert.IsNull(WorkingScreen_Result1);
+
+            Primaryscreen = Screen.PrimaryScreen;
+            privateArrangeVMObject.SetFieldOrProperty("_workingScreen", Primaryscreen);
+            var WorkingScreen_Result2 = arrangeVM.WorkingScreen;         //_workingScreen as Primaryscreen
+            Assert.IsNotNull(WorkingScreen_Result2);
+            Assert.That(Primaryscreen, Is.EqualTo(WorkingScreen_Result2));
+        }
+
+        [Test]
+        public void TestRefreshScreenScale()
+        {
+            double screenScale1 = 1.00;
+            var result = arrangeVM.RefreshScreenScale();
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void TestHoveringCellObj()
+        {
+            Border border = new Border()
+            {
+                BorderThickness = new Thickness(2),
+                BorderBrush = System.Windows.Media.Brushes.Black  // set Border Property
+            };
+            CellObj hoveringCellObj1 = new CellObj("Cell 1", border)
+            {
+                Name = "Cell 1",
+                rc = new Rect(10, 20, 50, 60),
+                rcRatio = new Rect(0.2, 0.3, 0.4, 0.5),
+            };
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringCellObj", hoveringCellObj1);
+            var HoveringCellObj_Result1 = arrangeVM.HoveringCellObj;          //_hoveringCellObj as new hoveringCellObj1
+            Assert.That(hoveringCellObj1, Is.EqualTo(HoveringCellObj_Result1));
+
+            CellObj? hoveringCellObj2 = null;
+            privateArrangeVMObject.SetFieldOrProperty("_hoveringCellObj", hoveringCellObj2);
+            var HoveringCellObj_Result2 = arrangeVM.HoveringCellObj;          //_hoveringCellObj as default
+            Assert.That(hoveringCellObj2, Is.EqualTo(HoveringCellObj_Result2));
+        }
+
     }
 }

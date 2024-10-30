@@ -97,6 +97,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager.
+        /// </summary>
+        internal static string App_Name {
+            get {
+                return ResourceManager.GetString("App_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arrange Windows.
         /// </summary>
         internal static string Arrange_Windows {
@@ -502,6 +511,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for %1?.
+        /// </summary>
+        internal static string ImpExp_Message_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installing.
         /// </summary>
         internal static string Installing {
@@ -846,6 +864,15 @@ namespace DDPM.SA.Resources {
         /// <summary>
         ///   Looks up a localized string similar to SW info.
         /// </summary>
+        internal static string Standard_HDR {
+            get {
+                return ResourceManager.GetString("Standard_HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SW info.
+        /// </summary>
         internal static string SW_info {
             get {
                 return ResourceManager.GetString("SW_info", resourceCulture);
@@ -854,6 +881,15 @@ namespace DDPM.SA.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Text.
+        /// </summary>
+        internal static string Text_0 {
+            get {
+                return ResourceManager.GetString("Text_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout.
         /// </summary>
         internal static string Text_0 {
             get {
@@ -1093,6 +1129,15 @@ namespace DDPM.SA.Resources {
         internal static string Warm {
             get {
                 return ResourceManager.GetString("Warm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warm.
+        /// </summary>
+        internal static string Warm_0 {
+            get {
+                return ResourceManager.GetString("Warm_0", resourceCulture);
             }
         }
         

@@ -15,6 +15,7 @@ using DDPM.EABroker;
 using DDPM.SA.Common.Interfaces;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Common;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
 
 namespace DDPM.SA.Plugins.User.EasyArrange.Test
 {
@@ -30,7 +31,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         private Mock<IDisplayService> DisplayManagerService { get; } = new();
         private Mock<IDeviceManagerSA> DeviceManagerService { get; } = new();
         private Mock<IEasyArrangeService> EasyArrangeService { get; } = new();
-        
+
         private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
@@ -43,6 +44,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             inputSource = "HDMI-1",
             modelName = "TestU2724DE",
             series = "Dell UltraSharp (U) Series Monitors",
+            D_Ctrl = "Test D_Ctrl",
+            SupplierID = "Test SupplierID",
             //CapabilityDic = capabilityDic;
             CapabilityDic = new Dictionary<string, List<string>>(),
             edid = new EDID()
@@ -139,21 +142,39 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         public void TestCheckIfReadyToStartEABorker()
         {
             bool CheckIfReadyToStartEABorker1 = true;
+            bool CheckIfReadyToStartEABorker2 = false;
             PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
             privateEApluginObject.SetFieldOrProperty("_displayManagerPluginUsable", true);
             privateEApluginObject.SetFieldOrProperty("_deviceManagerPluginUsable", true);
+            privateEApluginObject.SetFieldOrProperty("_settingsManagerPluginUsable", true);
             privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", false);
-            var CheckIfReadyToStartEABorker_result1 = (bool)privateEApluginObject.Invoke("CheckIfReadyToStartEABorker");
+            var CheckIfReadyToStartEABorker_result1 = (bool)privateEApluginObject.Invoke("CheckIfReadyToStartEABorker");  //_displayManagerPluginUsable ,_deviceManagerPluginUsable,_settingsManagerPluginUsable,true
             Assert.IsNotNull(CheckIfReadyToStartEABorker_result1);
             Assert.That(CheckIfReadyToStartEABorker1, Is.EqualTo(CheckIfReadyToStartEABorker_result1));
 
-            bool CheckIfReadyToStartEABorker2=false;
             privateEApluginObject.SetFieldOrProperty("_displayManagerPluginUsable", false);
-            privateEApluginObject.SetFieldOrProperty("_deviceManagerPluginUsable", false); 
+            privateEApluginObject.SetFieldOrProperty("_deviceManagerPluginUsable", false);
+            privateEApluginObject.SetFieldOrProperty("_settingsManagerPluginUsable", true);
             privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", false);
-            var CheckIfReadyToStartEABorker_result2 = (bool)privateEApluginObject.Invoke("CheckIfReadyToStartEABorker");
+            var CheckIfReadyToStartEABorker_result2 = (bool)privateEApluginObject.Invoke("CheckIfReadyToStartEABorker");  //_displayManagerPluginUsable false ,_deviceManagerPluginUsable false, _settingsManagerPluginUsable true
             Assert.IsNotNull(CheckIfReadyToStartEABorker_result2);
             Assert.That(CheckIfReadyToStartEABorker2, Is.EqualTo(CheckIfReadyToStartEABorker_result2));
+
+            privateEApluginObject.SetFieldOrProperty("_displayManagerPluginUsable", true);
+            privateEApluginObject.SetFieldOrProperty("_deviceManagerPluginUsable", true);
+            privateEApluginObject.SetFieldOrProperty("_settingsManagerPluginUsable", true);
+            privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", true);
+            var CheckIfReadyToStartEABorker_result3 = (bool)privateEApluginObject.Invoke("CheckIfReadyToStartEABorker");  //_displayManagerPluginUsable true ,_deviceManagerPluginUsable true, _settingsManagerPluginUsable true
+            Assert.IsNotNull(CheckIfReadyToStartEABorker_result3);
+            Assert.That(CheckIfReadyToStartEABorker2, Is.EqualTo(CheckIfReadyToStartEABorker_result3));
+
+            privateEApluginObject.SetFieldOrProperty("_displayManagerPluginUsable", false);
+            privateEApluginObject.SetFieldOrProperty("_deviceManagerPluginUsable", false);
+            privateEApluginObject.SetFieldOrProperty("_settingsManagerPluginUsable", false);
+            privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", false);
+            var CheckIfReadyToStartEABorker_result4 = (bool)privateEApluginObject.Invoke("CheckIfReadyToStartEABorker");  //_displayManagerPluginUsable false ,_deviceManagerPluginUsable false, _settingsManagerPluginUsable false
+            Assert.IsNotNull(CheckIfReadyToStartEABorker_result4);
+            Assert.That(CheckIfReadyToStartEABorker2, Is.EqualTo(CheckIfReadyToStartEABorker_result4));
         }
 
 
@@ -174,10 +195,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestSetEAWrokSplit()
         {
-            bool SetEAWrokSplit1=false ;
-            bool SetEAWrokSplit2=true ;
-            int cellCount=1;
-            char splitKey='A';
+            bool SetEAWrokSplit1 = false;
+            bool SetEAWrokSplit2 = true;
+            int cellCount = 1;
+            char splitKey = 'A';
 
             var EApluginAgentObj = EApluginAgent.Object;
             var DeviceManagerServiceObj = DeviceManagerService.Object;
@@ -187,24 +208,32 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             DDPM.EABroker.EABroker EaBroker = new EABroker.EABroker(EApluginAgentObj, DeviceManagerServiceObj, DisplayManagerServiceObj, EasyArrangeServiceObj);
             privateEApluginObject.SetFieldOrProperty("_eaBroker", null);
 
-            var SetEAWrokSplit1_Result1 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey).Result;  //_eaBroker null, workWin  null
-            Assert.That(SetEAWrokSplit1,Is.EqualTo(SetEAWrokSplit1_Result1));
+            var SetEAWrokSplit1_Result1 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey).Result;  //_eaBroker null
+            Assert.That(SetEAWrokSplit1, Is.EqualTo(SetEAWrokSplit1_Result1));
 
-            List<MonitorInfo> _monitors = new List<MonitorInfo>();  
+            List<MonitorInfo> _monitors = new List<MonitorInfo>();
             Screen screen = Screen.PrimaryScreen;
             string displayName = Screen.PrimaryScreen.DeviceName;
             monitorInfo1.DisplayName = displayName;
             _monitors.Add(monitorInfo1);
 
-            ArrangeVM arrangeVM = new ArrangeVM();         
+            ArrangeVM arrangeVM = new ArrangeVM();
             //privateEApluginObject.SetFieldOrProperty("_vmArrange", arrangeVM);  //EAPlugin.cs
             PrivateObject privateArrangeVMObject = new PrivateObject(arrangeVM);
             var workWindow1 = new EAWorkWindow(arrangeVM, screen, _monitors);
             workWindow1.IsUsed = true;
             List<EAWorkWindow> _workWindows22 = new List<EAWorkWindow>() { workWindow1 };
-           // privateArrangeVMObject.SetFieldOrProperty("_workWindows2", _workWindows22); // ArrangeVM.cs
+            // privateArrangeVMObject.SetFieldOrProperty("_workWindows2", _workWindows22); // ArrangeVM.cs
+
+            DDPM.EABroker.ArrangeVM arrangeVM1 = new EABroker.ArrangeVM();
+            DDPM.EABroker.EAWorkWindow eAWorkWindow = new EABroker.EAWorkWindow(arrangeVM1, false);
+            List<DDPM.EABroker.EAWorkWindow> workWindows = new List<DDPM.EABroker.EAWorkWindow>() { eAWorkWindow };
+
+            DDPM.EABroker.ArrangeVM arrangeVM2 = new EABroker.ArrangeVM();  //DDPM.EABroker.ArrangeVM.cs
+            PrivateObject privateArrangeVMObject2 = new PrivateObject(arrangeVM2);
+            privateArrangeVMObject2.SetFieldOrProperty("_workWindows", null);
             privateEApluginObject.SetFieldOrProperty("_eaBroker", EaBroker);
-            var SetEAWrokSplit1_Result3 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey).Result;  //_eaBroker not null, _workWindows2 not null
+            var SetEAWrokSplit1_Result3 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey).Result;  //_eaBroker not null
             Assert.That(SetEAWrokSplit2, Is.EqualTo(SetEAWrokSplit1_Result3));
         }
 
@@ -223,10 +252,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
                 CustomName = "TestCustomName",
                 Result = true,
                 Message = "OK",
-                SplitJson=new SplitJson() { CellCount=1, SplitKey = 'A', Settings = new List<double>(), CustomName = "TestCustomName", CustomId = 1234567, EAID=0, Cells =new CellJson[] { } },
+                SplitJson = new SplitJson() { CellCount = 1, SplitKey = 'A', Settings = new List<double>(), CustomName = "TestCustomName", CustomId = 1234567, EAID = 0, Cells = new CellJson[] { } },
             };
             PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
-            privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted",false);
+            privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", false);
             var EditCommand_Result1 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted false,
             Assert.That(EditCommand_Result1, Is.False);
 
@@ -272,14 +301,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
                 var ReloadEzSettings_Result2 = EAplugin.ReloadEzSettings().Result;   //_deviceManagerPluginNull not  null, _eaBroker null
                 Assert.That(ReloadEzSettings1, Is.EqualTo(ReloadEzSettings_Result2));   //method update
             }
-            var EApluginAgentObj= EApluginAgent.Object;
-            var DeviceManagerServiceObj= DeviceManagerService.Object;   
-            var DisplayManagerServiceObj= DisplayManagerService.Object;
-            var EasyArrangeServiceObj= EasyArrangeService.Object;   
+            var EApluginAgentObj = EApluginAgent.Object;
+            var DeviceManagerServiceObj = DeviceManagerService.Object;
+            var DisplayManagerServiceObj = DisplayManagerService.Object;
+            var EasyArrangeServiceObj = EasyArrangeService.Object;
 
-            DDPM.EABroker.EABroker EaBroker=new EABroker.EABroker(EApluginAgentObj, DeviceManagerServiceObj, DisplayManagerServiceObj, EasyArrangeServiceObj);
+            DDPM.EABroker.EABroker EaBroker = new EABroker.EABroker(EApluginAgentObj, DeviceManagerServiceObj, DisplayManagerServiceObj, EasyArrangeServiceObj);
             privateEApluginObject.SetFieldOrProperty("_eaBroker", EaBroker);
-            privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", _deviceManagerPluginNull); 
+            privateEApluginObject.SetFieldOrProperty("_deviceManagerPlugin", _deviceManagerPluginNull);
             if (_deviceManagerPluginNull == null)
             {
                 var ReloadEzSettings_Result3 = EAplugin.ReloadEzSettings().Result;       // _eaBroker not null ,_deviceManagerPluginNull null
@@ -293,7 +322,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             PrivateObject privateArrangeVMObject = new PrivateObject(arrangeVM2);
             Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
             mockDeviceManagerSA.Setup(x => x.ReadEzSettings()).Returns(Task.FromResult(ezSettings)); //DDPM.EABroker.ArrangeVM.cs  ReloadEzSettingsFromUserSettingsFile method
-            var mockDeviceManagerSAObj= mockDeviceManagerSA.Object;
+            var mockDeviceManagerSAObj = mockDeviceManagerSA.Object;
             privateArrangeVMObject.SetFieldOrProperty("_deviceManagerSA", mockDeviceManagerSAObj);
             if (DeviceManagerPluginObj != null)
             {
@@ -305,13 +334,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestSetEASelectedLayout()
         {
-            SplitJson spJson= new SplitJson() 
-            { 
-                CellCount=0,
-                CustomId=0,
-                CustomName="TestCustName",
-                SplitKey='A',
-                Settings=new List<double>()
+            SplitJson spJson = new SplitJson()
+            {
+                CellCount = 0,
+                CustomId = 0,
+                CustomName = "TestCustName",
+                SplitKey = 'A',
+                Settings = new List<double>()
             };
             bool SetEASelectedLayout1 = false;
             bool SetEASelectedLayout2 = true;
@@ -371,18 +400,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             privateEApluginObject.SetFieldOrProperty("_displayManagerPlugin", DisplayManagerPluginObj);
             ArrangeVM arrangeVM = new ArrangeVM();
             //privateEApluginObject.SetFieldOrProperty("_vmArrange", arrangeVM); 
-            EAplugin.EABroker_Start();  
+            EAplugin.EABroker_Start();
             Assert.IsTrue(true);
         }
 
         [Test]
         public void Test_displayManagerPlugin_Displaychanged()
         {
-            object? sender=new object();
-            List<MonitorInfo> Monitors=new List<MonitorInfo>();
-            DisplaychangedEventArgs e = new DisplaychangedEventArgs() { count=0,monitors= Monitors };
+            object? sender = new object();
+            List<MonitorInfo> Monitors = new List<MonitorInfo>();
+            DisplaychangedEventArgs e = new DisplaychangedEventArgs() { count = 0, monitors = Monitors };
             PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
-            privateEApluginObject.Invoke("_displayManagerPlugin_Displaychanged", sender,e);
+            privateEApluginObject.Invoke("_displayManagerPlugin_Displaychanged", sender, e);
             Assert.IsTrue(true);
         }
 
@@ -452,9 +481,86 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.IsNull(Getmonitor_result1);
 
             privateEAplugin.SetFieldOrProperty("_displayManagerPlugin", DisplayManagerPluginObj);
-            var Getmonitor_result2=(List<MonitorInfo>)privateEAplugin.Invoke("GetMonitors");  //_displayManagerPlugin not  null
+            var Getmonitor_result2 = (List<MonitorInfo>)privateEAplugin.Invoke("GetMonitors");  //_displayManagerPlugin not  null
             Assert.IsNotNull(Getmonitor_result2);
-            Assert.Greater(Getmonitor_result2.Count,0);
+            Assert.Greater(Getmonitor_result2.Count, 0);
+        }
+
+        [Test]
+        public void TestInitializeSettingsManagerPlugin()
+        {
+            Mock<ISettingsManagerDev> Mock_SettingsManagerDev = new Mock<ISettingsManagerDev>();
+            var SettingsManagerDevObj = Mock_SettingsManagerDev.Object;
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
+            privateEApluginObject.SetFieldOrProperty("_settingsManagerPlugin", SettingsManagerDevObj);
+            var result = privateEApluginObject.Invoke("InitializeSettingsManagerPlugin");
+            var SettingsManagerDev_result = (ISettingsManagerDev)privateEApluginObject.GetFieldOrProperty("_settingsManagerPlugin");
+            Assert.IsNotNull(SettingsManagerDev_result);
+            Assert.That(SettingsManagerDev_result, Is.EqualTo(SettingsManagerDevObj));
+        }
+
+        [Test]
+        public void TestInitializeTelementrySchedulerPlugin()
+        {
+            Mock<ITelementryScheduler> Mock_TelementryScheduler = new Mock<ITelementryScheduler>();
+            var Mock_TelementrySchedulerObj = Mock_TelementryScheduler.Object;
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
+            privateEApluginObject.SetFieldOrProperty("_telementrySchedulerPlugin", Mock_TelementrySchedulerObj);
+            var result = privateEApluginObject.Invoke("InitializeTelementrySchedulerPlugin");
+            var TelementryScheduler_result = (ITelementryScheduler)privateEApluginObject.GetFieldOrProperty("_telementrySchedulerPlugin");
+            Assert.IsNotNull(TelementryScheduler_result);
+            Assert.That(TelementryScheduler_result, Is.EqualTo(Mock_TelementrySchedulerObj));
+        }
+
+        [Test]
+        public void Test_GlobalSettingParam()
+        {
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
+            GlobalSettingParam globalSettingParamDes = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About() { SWVersion = "0000", DriverVersion = "0000", },
+                GlobalSetting_General = new GlobalSetting_General() { Low_Battery_Level = true, Keyboard_Lock_Key = false, Webcam_WB7022_Presence_Detection_Sensor_Cover_State = true, Display_Color_Preset_and_Easy_Memory = true, Display_MuteState = true },
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings() { EnableQuickAccessWidget = false, EnableQuickAccessWidget_Reminder = false }
+            };
+            privateEApluginObject.SetFieldOrProperty("_globalSettingParam", globalSettingParamDes);
+            var GlobalSettingParam_result = (GlobalSettingParam)privateEApluginObject.GetFieldOrProperty("_GlobalSettingParam");
+            Assert.IsNotNull(GlobalSettingParam_result);
+        }
+
+        [Test]
+        public void TestWriteLog()
+        {
+            Mock<ILog> mockLog = new Mock<ILog>();
+            var logObj = mockLog.Object;
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
+            privateEApluginObject.SetFieldOrProperty("_log", logObj);
+            string message = "Test error message";
+            var exception = new Exception("Test exception");
+            EAplugin.WriteLog(message, exception);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestSendEasyArrangeLayoutTelemetry()
+        {
+            string eventValue = "Test EasyArrangeLayout";
+            MonitorInfo mi = monitorInfo1;
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
+            ITelementryScheduler? telementrySchedulerNull = null;
+            privateEApluginObject.SetFieldOrProperty("_telementrySchedulerPlugin", telementrySchedulerNull);  //_telementrySchedulerPlugin null
+            EAplugin.SendEasyArrangeLayoutTelemetry(eventValue, mi);
+            Assert.IsTrue(true);
+
+            Mock<ITelementryScheduler> Mock_TelementryScheduler = new Mock<ITelementryScheduler>();
+            var Mock_TelementrySchedulerObj = Mock_TelementryScheduler.Object;
+            privateEApluginObject.SetFieldOrProperty("_telementrySchedulerPlugin", Mock_TelementrySchedulerObj);  //_telementrySchedulerPlugin not null, _telementrySchedulerPluginUsable true
+            privateEApluginObject.SetFieldOrProperty("_telementrySchedulerPluginUsable", true);
+            EAplugin.SendEasyArrangeLayoutTelemetry(eventValue, mi);
+            Assert.IsTrue(true);
+
+            privateEApluginObject.SetFieldOrProperty("_telementrySchedulerPluginUsable", false);  //_telementrySchedulerPlugin not null, _telementrySchedulerPluginUsable false
+            EAplugin.SendEasyArrangeLayoutTelemetry(eventValue, mi);
+            Assert.IsTrue(true);
         }
 
         [OneTimeTearDown]

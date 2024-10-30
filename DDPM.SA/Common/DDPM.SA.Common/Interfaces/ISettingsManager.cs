@@ -56,6 +56,7 @@ namespace DDPM.SA.Common
         Task<List<string>> GetInfos(bool force_reload = false);
 
         Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
+        
     }
 
     /// <summary>
@@ -136,5 +137,7 @@ namespace DDPM.SA.Common
         Task AddInfo(string info);
 
         Task<List<string>> GetInfos(bool force_reload = false);
+
+        Task<bool> QuerySettingsStatus();
     }
 }
