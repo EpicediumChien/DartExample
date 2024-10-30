@@ -307,11 +307,13 @@ namespace DDPM.UI.Module.Kvm
 
         private void SaveInput(object sender, RoutedEventArgs e)
         {
+            bool bt = false;
             if (vm.isPipSmall)
             {
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                 if (bpxp)
                 {
+                    bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Small").Result;
                     Thread.Sleep(500);
                 }
             }
@@ -320,6 +322,7 @@ namespace DDPM.UI.Module.Kvm
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeLarge(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                 if (bpxp)
                 {
+                    bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Large").Result;
                     Thread.Sleep(500);
                 }
             }
@@ -328,6 +331,18 @@ namespace DDPM.UI.Module.Kvm
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
                 if (bpxp)
                 {
+                    if (vm.PxPCode >= 0x23 && vm.PxPCode <= 0x2F)
+                    {
+                        bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "2-PBP").Result;
+                    }
+                    else if (vm.PxPCode >= 0x31 && vm.PxPCode <= 0x35)
+                    {
+                        bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "3-PBP").Result;
+                    }
+                    else if (vm.PxPCode >= 0x41 && vm.PxPCode <= 0x42)
+                    {
+                        bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "4-PBP").Result;
+                    }
                     Thread.Sleep(500);
                 }
             }
@@ -336,6 +351,7 @@ namespace DDPM.UI.Module.Kvm
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                 if (bpxp)
                 {
+                    bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "Full").Result;
                     Thread.Sleep(500);
                 }
             }

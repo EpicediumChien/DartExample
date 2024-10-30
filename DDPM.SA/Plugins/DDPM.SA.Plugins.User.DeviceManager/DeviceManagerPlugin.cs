@@ -1509,6 +1509,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
 
+            //Telementry Collection
+            var Displaysettings_Function = new Displaysettings_Function();
             //0712 Jason add
             if (r && FunctionName == "Input Select")
             {
@@ -1520,6 +1522,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)obj.value).Wait();
                     }
+                }
+                if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
+                {
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Success ...");
+                }
+                else
+                {
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Fail ...");
                 }
                 _AllInfoMonitors = GetMonitors().Result;
             }
@@ -1761,6 +1771,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             return Task.FromResult(true);
                         }
                     }
+                }
+                //Telementry Collection
+                var Displaysettings_Function = new Displaysettings_Function();
+                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
+                {
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Success ...");
+                }
+                else
+                {
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Fail ...");
                 }
             }
 
@@ -4645,6 +4665,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             setting.KVM.isOnUSBKVM = isON;
                             if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
                             {
+                                if (isON)
+                                {
+                                    bool b = SentKVMtoTelementry(monitorInfo, "KVMMode", "USB").Result;
+                                }
                                 return Task.FromResult(true);
                             }
                             break;
@@ -4757,6 +4781,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
                                 //_NKVMPlugin.OnNKVM().Wait();
+                                bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                             }
                             else
                             {
@@ -7302,6 +7327,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #endregion
+
+        public Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo,string mode, string val)
+        {
+            DisplayFeatures_Functions displayFeatures_Functions = new DisplayFeatures_Functions();
+            DisplayPropertiesInfo displayInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
+            if (displayFeatures_Functions.SentKVMToTelementry(Log, _TelementryScheduler, monitorInfo, displayInfo, mode, val))
+            {
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
 
         #endregion
 

@@ -261,6 +261,7 @@ namespace DDPM.UI.Module.Kvm
                         _isNKVM = false;
                         //isOnNKVM(false);
                     }
+                    bool b = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM").Result;
                 }
             }
         }
