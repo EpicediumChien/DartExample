@@ -22,8 +22,8 @@ namespace DDPM.UI.Common.UserControls
         public DeviceBasePageViewModel ViewModel { get { return viewModel; } }
 
         //Derek 10/17 for RWD
-        private readonly Int16 breakPoints = 900;
-        private readonly Int16 vBarWidthNormal = 230, vBarWidthRWD = 76;
+        private readonly int breakPoints = 1050;
+        private readonly Int16 vBarWidthNormal = 230, vBarWidthRWD = 70;
         private readonly Int16 rightGridWidth = 660;
         private bool isFirstEntryNonLandingMode = true;
 
@@ -48,8 +48,7 @@ namespace DDPM.UI.Common.UserControls
             //tooltipServiceTag.Text = Strings.ServiceTag;
             //tooltipManufactureMonth.Text = Strings.ManufactureMonth;
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            breakPoints = DdpmCommonHelper.GetBreakPoints();
         }
 
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
@@ -334,10 +333,10 @@ namespace DDPM.UI.Common.UserControls
             if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal)
             {
                 vBar.Width = vBarWidthNormal;  //show the vBar
-                LeftFrame.Width = this.ActualWidth - vBar.Width - 58;
+                LeftFrame.Width = this.ActualWidth - vBar.Width - 15;
                 LeftFrame.Height = this.ActualHeight - 40;
                 
-                vBar.Margin = new Thickness(0, 0, 0, 10);
+                //vBar.Margin = new Thickness(0, 0, 0, 10);
             }
         }
 
@@ -385,7 +384,7 @@ namespace DDPM.UI.Common.UserControls
         {
             vBar.Width = bVBarNormal ? vBarWidthNormal : vBarWidthRWD;
             RightGrid.Width = rightGridWidth;
-            LeftGrid.Width = this.ActualWidth - vBar.Width - RightGrid.Width - 35;
+            LeftGrid.Width = this.ActualWidth - vBar.Width - RightGrid.Width - 20;
             LeftFrame.Width = LeftGrid.Width;
         }
     }
