@@ -313,7 +313,7 @@
     <value>連接手寫筆</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>以手寫筆筆尖輕觸螢幕</value>
+    <value>以手寫筆筆尖輕觸 Dell Display and Peripheral Manager 畫面</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>按住頂端三秒，等待 Windows 搜索裝置。</value>
@@ -322,7 +322,7 @@
     <value>允許裝置配對或啟動 Windows 設定，搜尋到後即可選取個別裝置。</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>在配對觸控筆的提示方塊中選取「是」以確認配對</value>
+    <value>在提示方塊中選取「是」以確認配對</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>USB 無線接收器免費行動連線能力</value>
@@ -661,7 +661,7 @@
     <value>夜間光線 </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>在顯示器上顯示舒適的色彩，幫助您入睡。</value>
+    <value>顯示較暖色彩以助夜間入眠</value>
   </data>
   <data name="Color.11" xml:space="preserve">
     <value>色彩管理</value>
@@ -1204,7 +1204,7 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>透過調整每秒擷取的映像數量來控制視訊清晰度和風格</value>
+    <value>透過調整每秒擷取的影像數量來控制視訊清晰度和風格。</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>媒體檔案位置</value>
@@ -1363,7 +1363,7 @@
     <value>優先使用外接網路攝影機</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>自動在 Dell Ultrasharp Webcam 和其他網路攝影機 (內建和外接) 之間切換。Windows Hello 會使用主動式網路攝影機進行臉部辨識。請注意：一次只能啟動和使用一台攝影機。</value>
+    <value>自動在 Dell UltraSharp Webcam 和其他網路攝影機 (內建和外接) 之間切換。Windows Hello 會使用主動式網路攝影機進行臉部辨識。\n\n請注意：一次只能啟動和使用一台攝影機。</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>觸控捲動靈敏度</value>
@@ -1420,7 +1420,7 @@
     <value>亮度/對比度</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>顯示器內容</value>
+    <value>內容</value>
   </data>
   <data name="Layout" xml:space="preserve">
     <value>配置</value>
@@ -1598,5 +1598,455 @@
   </data>
   <data name="Undo" xml:space="preserve">
     <value>復原</value>
+  </data>
+  <data name="Tooltip.5" xml:space="preserve">
+    <value>視語言和地區而定，具備 Copilot 鍵的鍵盤配置可能在不同時間開始提供。</value>
+  </data>
+  <data name="ITLockToolTip.0" xml:space="preserve">
+    <value>此設定已由 IT 管理員鎖定。</value>
+  </data>
+  <data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>啟用相機的麥克風。開啟/關閉此功能時，相機會快速重新開機。</value>
+  </data>
+  <data name="Camera.6" xml:space="preserve">
+    <value>選取選項</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>新增預設</value>
+  </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>請稍候，我們正在套用變更</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>另一個應用程式正在使用您的相機</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>請拔下您的相機再插回，然後再試一次</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>請稍候，我們正在移除您的相機</value>
+  </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>恢復錄製</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>停止錄製</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>開啟媒體資料夾</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>開始錄製</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>暫停錄製</value>
+  </data>
+  <data name="WebCameraSettings.27" xml:space="preserve">
+    <value>調整畫面框大小</value>
+  </data>
+  <data name="EazyMemory.0" xml:space="preserve">
+    <value>自動啟動：</value>
+  </data>
+  <data name="EazyMemory.1" xml:space="preserve">
+    <value>依時間啟動：</value>
+  </data>
+  <data name="EazyMemory.2" xml:space="preserve">
+    <value>應用程式/文件：</value>
+  </data>
+  <data name="EazyMemory.3" xml:space="preserve">
+    <value>套用</value>
+  </data>
+  <data name="EazyMemory.4" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="EazyMemory.5" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="EazyMemory.6" xml:space="preserve">
+    <value>設定檔</value>
+  </data>
+  <data name="EazyMemory.7" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="EazyMemory.8" xml:space="preserve">
+    <value>您最多只能儲存 9 個設定檔。請刪除現有設定檔或在主功能表中進行編輯。</value>
+  </data>
+  <data name="EazyMemory.9" xml:space="preserve">
+    <value>重複項目。請為 Easy Memory 設定檔輸入不同的文件或應用程式。</value>
+  </data>
+  <data name="EazyMemory.10" xml:space="preserve">
+    <value>您可以將螢幕上的視窗整齊排列，然後按下 + 圖示。\r\n或者，選擇下面的現有配置，然後按一下鉛筆圖示以編輯配置。</value>
+  </data>
+  <data name="EazyMemory.11" xml:space="preserve">
+    <value>已設定在電腦啟動時開啟另一個設定檔。是否要更換為此設定檔？</value>
+  </data>
+  <data name="EazyMemory.12" xml:space="preserve">
+    <value>選取啟動選項</value>
+  </data>
+  <data name="EazyMemory.13" xml:space="preserve">
+    <value>在電腦啟動時開啟</value>
+  </data>
+  <data name="EazyMemory.14" xml:space="preserve">
+    <value>手動選取建立的設定檔</value>
+  </data>
+  <data name="EazyMemory.15" xml:space="preserve">
+    <value>依時間自動開啟</value>
+  </data>
+  <data name="EazyMemory.16" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="EazyMemory.17" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="EazyMemory.18" xml:space="preserve">
+    <value>為設定檔命名</value>
+  </data>
+  <data name="EazyMemory.19" xml:space="preserve">
+    <value>選取配置</value>
+  </data>
+  <data name="EazyMemory.20" xml:space="preserve">
+    <value>視窗 0</value>
+  </data>
+  <data name="EazyMemory.21" xml:space="preserve">
+    <value>視窗 1</value>
+  </data>
+  <data name="EazyMemory.22" xml:space="preserve">
+    <value>視窗 2</value>
+  </data>
+  <data name="EazyMemory.23" xml:space="preserve">
+    <value>視窗 3</value>
+  </data>
+  <data name="EazyMemory.24" xml:space="preserve">
+    <value>視窗 4</value>
+  </data>
+  <data name="EazyMemory.25" xml:space="preserve">
+    <value>視窗 5</value>
+  </data>
+  <data name="EazyMemory.26" xml:space="preserve">
+    <value>視窗 6</value>
+  </data>
+  <data name="EazyMemory.27" xml:space="preserve">
+    <value>視窗 7</value>
+  </data>
+  <data name="EazyMemory.28" xml:space="preserve">
+    <value>視窗 8</value>
+  </data>
+  <data name="EazyMemory.29" xml:space="preserve">
+    <value>視窗 9</value>
+  </data>
+  <data name="EazyMemory.30" xml:space="preserve">
+    <value>視窗 10</value>
+  </data>
+  <data name="EazyMemory.31" xml:space="preserve">
+    <value>視窗 11</value>
+  </data>
+  <data name="EazyMemory.32" xml:space="preserve">
+    <value>視窗 12</value>
+  </data>
+  <data name="EazyMemory.33" xml:space="preserve">
+    <value>從資料夾中選取</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>自訂檢視</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>EasyArrange</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>管理您的輸入</value>
+  </data>
+  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>觸控捲動速度</value>
+  </data>
+  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>主要按鈕</value>
+  </data>
+  <data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>可自訂的按鍵</value>
+  </data>
+  <data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>便利的會議控制項</value>
+  </data>
+  <data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>照明設定</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>使用懸吊式麥克風來靜音/取消靜音</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>使用懸吊式麥克風來靜音/取消靜音</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>便利的按鈕</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>主動降噪</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Zoom 中的快速設定</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>簡易預設</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>AI 自動構圖</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>高動態範圍</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>安全功能</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>歡迎使用\r\nDell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>查看您的裝置、連接方式及電池電量 (若是無線)</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>將游標停留在無線裝置的連線動態磚上，以瞭解詳細資料</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>按一下您的裝置以調整設定</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>按一下齒輪圖示以存取應用程式設定及軟體與韌體更新</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>新增裝置</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>檢視您的裝置</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>連線動態磚</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>裝置設定</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>應用程式設定</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>集中查看所有支援的 Dell 顯示器和週邊設備，個人化各種設定並更新韌體</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>按一下 + 圖示，即可尋找相關說明，瞭解如何連線支援的 Dell 裝置</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>調整亮度/對比度、色彩設定檔等，以個人化您的觀賞體驗</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>快速調整多個視窗的大小。選擇「EasyArrange」配置，然後按一下視窗並拖曳至定位。如果您想重複使用這組視窗排列方式，可使用「Easy Memory」儲存</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>透過「輸入來源」或「USB/網路 KVM」設定，輕鬆搭配多台電腦使用顯示器。此外，您還可以透過 USB 將滑鼠、鍵盤及配件連接至您的顯示器，以搭配多台電腦使用</value>
+  </data>
+  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>您可以自訂鍵盤上的按鍵，指定要使用的動作。</value>
+  </data>
+  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>使用 Zoom 和 Teams 中的快捷鍵簡化會議。</value>
+  </data>
+  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>設定鍵盤的照明亮度，可手動調整或設定根據周圍光線自動調整。</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>便利的會議控制項</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>可自訂的按鍵</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>使用 Zoom 和 Teams 中的快捷鍵簡化會議。</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>您可以自訂鍵盤上的按鍵，指定要使用的動作。</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>變更應用程式中反白顯示區域的觸控捲動速度</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>選擇應用程式中的主按鈕要使用左鍵或右鍵</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>輪詢率</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>自訂按一下滾輪的動作</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>特定應用程式的動作</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>提高應用程式中的滑鼠輪詢率來強化滑鼠速度和精準度</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>指定您按一下滾輪時要執行的動作</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>指定使用特定應用程式時，按一下滾輪要執行的自訂動作</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>自訂按鈕</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>特定應用程式的動作</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>將您愛用的操作指定給應用程式中框起的按鈕</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>指定使用特定應用程式時，滑鼠按鈕要執行的自訂動作</value>
+  </data>
+  <data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>用動態磚尋找您的手寫筆</value>
+  </data>
+  <data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>為手寫筆的電池充電</value>
+  </data>
+  <data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>自訂手寫筆的行為</value>
+  </data>
+  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>如需將手寫筆與動態磚配對：\n1. 在您的行動裝置上啟用藍牙。\n2. 掃描 QR 代碼以下載動態磚至您的行動裝置。\n3. 按住手寫筆上的兩個側邊按鈕 3 秒以配對至動態磚。</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>您的手寫筆已充電至 X%。\n\n要完全充飽您的手寫筆，請確實將其吸附平板電腦螢幕。充電完成時會通知您。\n\n當電池電力低於 10% 時，會出現電力偏低通知。</value>
+  </data>
+  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>在應用程式中，您可以自訂手寫筆按鈕的動作，並設定筆尖和傾斜靈敏度\r\n</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>使用全新的「快速設定」小工具，在 Zoom 通話期間輕鬆管理相機的關鍵設定</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>根據您想要相機如何呈現影像來選取預設設定，或建立自己的設定</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>啟用「AI 自動構圖」，在您移動時仍將臉部保持在畫面中央</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>啟用「高動態範圍」，提升極端照明條件下的影像品質</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>開啟「在場感應」，由相機在您接近時喚醒螢幕，離開時鎖定螢幕</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Zoom 中的快速設定</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>簡易預設</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>高動態範圍</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>使用全新的「快速設定」小工具，在 Zoom 通話期間輕鬆管理相機的關鍵設定</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>根據您想要相機如何呈現影像來選取預設設定，或建立自己的設定</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>便利的按鈕</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>向上折疊麥克風以靜音，展開麥克風以取消靜音。\r\n\r\n若有需要，可在應用程式中開啟功能，在您展開懸吊式麥克風時接聽來電。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>各用一個按鈕來管理 Microsoft Teams 和您的靜音狀態。使用其他便利按鈕還能調整您的音訊音量和其他功能。</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>便利的按鈕</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>使用懸吊式麥克風來靜音/取消靜音</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>使用耳機內建控制功能的便利按鈕來管理通話、靜音狀態及音訊音量</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>向上折疊麥克風以靜音，展開麥克風以取消靜音。\r\n\r\n若有需要，可在應用程式中開啟功能，在您展開懸吊式麥克風時接聽來電。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>向上折疊麥克風以靜音，展開麥克風以取消靜音。\r\n\r\n若有需要，可在應用程式中開啟功能，在您展開懸吊式麥克風時接聽來電。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>各用一個按鈕來管理 Microsoft Teams 和您的靜音狀態。使用其他便利按鈕還能調整您的音訊音量和其他功能。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>按下耳機上的 ANC 按鈕或從應用程式中的選項選擇，以管理您聽到的外部噪音量。\r\n\r\n如果選擇「透明度」，請使用應用程式中的滑桿來自訂噪音量。</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>便利的按鈕</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>使用懸吊式麥克風來靜音/取消靜音</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>主動降噪</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>使用耳機內建控制功能的便利按鈕來管理通話、靜音狀態及音訊音量。用側邊的 ANC 按鈕調整您要聽到多少外部噪音。 </value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>向上折疊麥克風以靜音，展開麥克風以取消靜音。\r\n\r\n若有需要，可在應用程式中開啟功能，在您展開懸吊式麥克風時接聽來電。</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>按下耳機上的 ANC 按鈕或從應用程式中的選項選擇，以管理您聽到的外部噪音量。\r\n\r\n如果選擇「透明度」，請使用應用程式中的滑桿來自訂噪音量。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>上下滑動以管理您的音量；輕觸兩下以接聽和結束通話；還有其他功能。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>使用耳機上的便利按鈕來管理您的靜音狀態、主動降噪 (ANC) 以及 Microsoft Teams</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>按下耳機上的 ANC 按鈕或從應用程式中的選項選擇，以管理您聽到的外部噪音量。\r\n\r\n如果選擇「透明度」，請使用應用程式中的滑桿來自訂噪音量。</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>將耳機放在充電座上，或使用隨附的 USB 纜線連接至電腦，即可為耳機充電</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>滑動和輕觸以控制各種功能</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>便利的按鈕</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>主動降噪</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>充電簡單</value>
+  </data>
+  <data name="EazyMemory.34" xml:space="preserve">
+    <value>指定程式</value>
+  </data>
+  <data name="EazyMemory.35" xml:space="preserve">
+    <value>啟動選項</value>
+  </data>
+  <data name="EazyMemory.36" xml:space="preserve">
+    <value>儲存不同的設定檔，並依排程時間、系統啟動時間，或是手動啟用。\r\n\r\n首先為您的 Easy Memory 設定檔指定一個名稱，然後選擇一個配置。</value>
+  </data>
+  <data name="EazyMemory.37" xml:space="preserve">
+    <value>將應用程式/文件指定至視窗，或將應用程式圖示拖曳至對應的分區。\r\n\r\n注意：EasyArrange Memory 的可用性可能會因應用程式類型和啟動行為而有所不同。</value>
+  </data>
+  <data name="EazyMemory.38" xml:space="preserve">
+    <value>選取啟動類型</value>
+  </data>
+  <data name="EazyMemory.39" xml:space="preserve">
+    <value>EASY MEMORY 設定</value>
+  </data>
+  <data name="WalkThrough.0" xml:space="preserve">
+    <value>重要特色</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
   </data>
 </root>

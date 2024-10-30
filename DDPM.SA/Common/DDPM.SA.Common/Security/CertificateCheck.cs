@@ -21,12 +21,6 @@ namespace DDPM.SA.Common.Security
         {
             _logs = logs;
         }
-        /// <summary>
-        /// Only for MiniInstaller use.
-        /// </summary>
-        public CertificateCheck()
-        {
-        }
         public bool CheckFile_SHA512(string CertificateFilePath, string Stande_SHA512, out string Info)
         {
             bool ret = false;

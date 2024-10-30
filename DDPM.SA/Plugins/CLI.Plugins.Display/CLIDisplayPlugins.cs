@@ -10459,7 +10459,7 @@ namespace DDPM.CLI.Plugins.Display
             if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
             {
                 string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                if (ss_1.Length == 2 )
+                if (ss_1.Length == 2)
                 {
                     if (!string.IsNullOrEmpty(ss_1[0]) && !string.IsNullOrEmpty(ss_1[1]))
                     {
@@ -10488,9 +10488,12 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         // modiffy end @ 20241022
 
-                        string[] jsonString_2 = jsonString.Split("\"Device\":");
+                        jsonString = jsonString.ToUpper();
+                        Trace.WriteLine(jsonString);
+
+                        string[] jsonString_2 = jsonString.Split("\"DEVICE\":");
                         int i = 0;
-                        int count = jsonString.Split("Index").Length - 1;
+                        int count = jsonString.Split("INDEX").Length - 1;
 
                         switch (ss_1[0].ToUpper())
                         {
@@ -10502,9 +10505,9 @@ namespace DDPM.CLI.Plugins.Display
 
                                         if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
                                         {
-                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"COMMAND\": \"GET\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TARGETFEATURE\": \"DEVICEDATA\",\r\n  \"RESULT\": \"PASS\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("\"MESSAGE\": \"N/A\"\r\n}", "");
                                         }
                                         break;
                                     }
@@ -10518,13 +10521,13 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
-                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalMouse\"", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace("\"DEVICE\":", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LOGICALMOUSE\"", "");
                                         if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
                                         {
-                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"COMMAND\": \"GET\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TARGETFEATURE\": \"DEVICEDATA\",\r\n  \"RESULT\": \"PASS\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("\"MESSAGE\": \"N/A\"\r\n}", "");
                                         }
                                         break;
                                     }
@@ -10537,13 +10540,13 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
-                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LogicalKeyboard\"", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace("\"DEVICE\":", "");
+                                        jsonString_2[i] = jsonString_2[i].Replace(" \"LOGICALKEYBOARD\"", "");
                                         if (jsonString_2[i].Contains("GET", StringComparison.OrdinalIgnoreCase) && count > 0)
                                         {
-                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"Command\": \"GET\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TargetFeature\": \"DEVICEDATA\",\r\n  \"Result\": \"PASS\",", "");
-                                            jsonString_2[i] = jsonString_2[i].Replace("\"Message\": \"N/A\"\r\n}", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("{\r\n  \"COMMAND\": \"GET\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("  \"TARGETFEATURE\": \"DEVICEDATA\",\r\n  \"RESULT\": \"PASS\",", "");
+                                            jsonString_2[i] = jsonString_2[i].Replace("\"MESSAGE\": \"N/A\"\r\n}", "");
                                         }
                                         break;
                                     }
@@ -10601,7 +10604,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                     switch (property.Name.ToString())
                                     {
-                                        case "ScreenOrientation":
+                                        case "SCREENORIENTATION":
                                             writelog($"ScreenOrientation entry");
                                             if (monitor.CapabilityDic.ContainsKey("AA"))
                                             {
@@ -10617,7 +10620,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "ActiveInputSource":
+                                        case "ACTIVEINPUTSOURCE":
                                             writelog($"ActiveInputSource entry");
                                             if (monitor.CapabilityDic.ContainsKey("60"))
                                             {
@@ -10633,12 +10636,12 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "OptimalResolution":
+                                        case "OPTIMALRESOLUTION":
                                             writelog($"OptimalResolution entry");
                                             if (monitor.CapabilityDic.ContainsKey("AA"))
                                             {
                                                 string[] ss = property.Value.ToString().Split(" ");
-                                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00Hz")[0]) };
+                                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
                                                 retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
                                                 if (!retcode) ispass = false;
                                                 else ApplyConfiguration.OptimalResolution = property.Value.ToString();
@@ -10659,7 +10662,7 @@ namespace DDPM.CLI.Plugins.Display
                                         //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
                                         //    break;
 
-                                        case "ContrastLevel":
+                                        case "CONTRASTLEVEL":
                                             writelog($"ContrastLevel entry");
                                             if (monitor.CapabilityDic.ContainsKey("12"))
                                             {
@@ -10675,7 +10678,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "BrightnessLevel":
+                                        case "BRIGHTNESSLEVEL":
                                             writelog($"BrightnessLevel entry");
                                             if (monitor.CapabilityDic.ContainsKey("12"))
                                             {
@@ -10691,7 +10694,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "LuminanceLevel":
+                                        case "LUMINANCELEVEL":
                                             writelog($"LuminanceLevel entry");
                                             if (!monitor.CapabilityDic.ContainsKey("12"))
                                             {
@@ -10707,7 +10710,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "AutoBrightness":
+                                        case "AUTOBRIGHTNESS":
                                             writelog($"AutoBrightness entry");
                                             if (monitor.CapabilityDic.ContainsKey("66"))
                                             {
@@ -10723,7 +10726,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "AutoBrightnessRangeLevel":
+                                        case "AUTOBRIGHTNESSRANGELEVEL":
                                             writelog($"AutoBrightnessRangeLevel entry");
                                             if (monitor.CapabilityDic.ContainsKey("66"))
                                             {
@@ -10739,7 +10742,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "AutoColorTemp":
+                                        case "AUTOCOLORTEMP":
                                             writelog($"AutoColorTemp entry");
                                             if (monitor.CapabilityDic.ContainsKey("66"))
                                             {
@@ -10755,7 +10758,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "PrimaryMonitorForSync":
+                                        case "PRIMARYMONITORFORSYNC":
                                             writelog($"PrimaryMonitorForSync entry");
                                             if (monitor.CapabilityDic.ContainsKey("66"))
                                             {
@@ -10771,7 +10774,7 @@ namespace DDPM.CLI.Plugins.Display
                                             }
                                             break;
 
-                                        case "USB_CPrioritization":
+                                        case "USB_CPRIORITIZATION":
                                             if (displayPropertiesInfo.SupportedUSBCPrioritization)
                                             {
                                                 USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
@@ -10791,7 +10794,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             break;
 
-                                        case "SpeakerMicrophone":
+                                        case "SPEAKERMICROPHONE":
                                             writelog($"SpeakerMicrophone entry");
                                             if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
                                             {
@@ -10816,7 +10819,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             break;
 
-                                        case "SpeakerVolume":
+                                        case "SPEAKERVOLUME":
                                             writelog($"SpeakerVolume entry");
                                             if (monitor.CapabilityDic.ContainsKey("62"))
                                             {
@@ -10840,7 +10843,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             break;
 
-                                        case "MicrophoneControl":
+                                        case "MICROPHONECONTROL":
                                             writelog($"MicrophoneControl entry");
                                             if (monitor.CapabilityDic.ContainsKey("8D"))
                                             {
@@ -10860,7 +10863,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             break;
 
-                                        case "Uniformity":
+                                        case "UNIFORMITY":
                                             writelog($"Uniformity entry");
                                             if (monitor.CapabilityDic.ContainsKey("E4"))
                                             {
@@ -10878,7 +10881,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             break;
 
-                                        case "PowerNap":
+                                        case "POWERNAP":
                                             writelog($"PowerNap entry");
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -10893,7 +10896,7 @@ namespace DDPM.CLI.Plugins.Display
                                             writelog($"PowerNap={ApplyConfiguration.PowerNap}");
                                             break;
 
-                                        case "OSD_language":
+                                        case "OSD_LANGUAGE":
                                             writelog($"OSD_language entry");
                                             if (monitor.CapabilityDic.ContainsKey("CC"))
                                             {
@@ -10974,7 +10977,7 @@ namespace DDPM.CLI.Plugins.Display
                         return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
                     }
                 }
-                
+
             }
             else
             {
