@@ -68,6 +68,6 @@ namespace DDPM.SA.Common
 
     public class ApplicationSettings_Settings : ApplicationSettingsBasic 
     {
-        public string App_Copy_Settings { get; set; }
+        public string App_Copy_Settings { get; set; } = string.Empty;
     }
 }
