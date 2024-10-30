@@ -2432,6 +2432,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
+        public async Task ResetToDefault_Pen()
+        {
+        }
 
         #endregion
 
