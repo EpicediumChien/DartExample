@@ -108,6 +108,8 @@ namespace ColorPreset.Plugins
         public event EventHandler<string>? Coloreset_manual_ChangeEvent;
         public event EventHandler<string>? NightLightStatus_ChangeEvent;
 
+        private IDeviceManagerSA _DeviceManagerPlugin_SA = null;
+
         private enum log_type
         {
             info = 0,
@@ -402,7 +404,10 @@ namespace ColorPreset.Plugins
             //{
             //    Log.Info($"ColorPresetPlugin  Launch_MonitorBorker requested ...");
             //}
+
             writelog("ColorPresetPlugin Launch_MonitorBorker requested ...");
+
+            _DeviceManagerPlugin_SA = _DeviceManagerPlugin;
 
             if (m != null)
             {
@@ -433,6 +438,8 @@ namespace ColorPreset.Plugins
         public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false, List<string> ColorPresetSupportList = null)
         {
             writelog("ColorPresetPlugin AutoSetColorPresetForMonitorConfig requested ...");
+
+            _DeviceManagerPlugin_SA= _DeviceManagerPlugin;
 
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
@@ -934,6 +941,9 @@ namespace ColorPreset.Plugins
                                 //}));
 
                                 NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "On", System.Threading.CancellationToken.None);
+                                
+                                if (_DeviceManagerPlugin_SA!=null && Active_monitorInfo != null)
+                                    _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo,"On");
                             }
                             else if (ch == 0x13)
                             {
@@ -945,6 +955,9 @@ namespace ColorPreset.Plugins
                                 //    NightlightStatus = "Off";
                                 //}));
                                 NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+
+                                if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
+                                    _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "Off");
                             }
                         }
                     }
@@ -956,6 +969,9 @@ namespace ColorPreset.Plugins
                         //    NightlightStatus = "Off";
                         //}));
                         NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+
+                        if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
+                            _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "Off");
                     }
                 }
                 else
@@ -966,6 +982,9 @@ namespace ColorPreset.Plugins
                     //    NightlightStatus = "Off";
                     //}));
                     NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+
+                    if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
+                        _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "Off");
                 }
             }
             else
@@ -976,6 +995,9 @@ namespace ColorPreset.Plugins
                 //    NightlightStatus = "Off";
                 //}));
                 NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+
+                if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
+                    _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "Off");
             }
 
             return System.Threading.Tasks.Task.FromResult(true);

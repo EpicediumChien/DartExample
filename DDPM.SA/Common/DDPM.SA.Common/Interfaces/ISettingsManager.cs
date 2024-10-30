@@ -56,6 +56,7 @@ namespace DDPM.SA.Common
         Task<List<string>> GetInfos(bool force_reload = false);
 
         Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
+        
     }
 
     /// <summary>
@@ -106,7 +107,7 @@ namespace DDPM.SA.Common
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
 
-        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
+        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true);
 
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
@@ -136,5 +137,7 @@ namespace DDPM.SA.Common
         Task AddInfo(string info);
 
         Task<List<string>> GetInfos(bool force_reload = false);
+
+        Task<bool> QuerySettingsStatus();
     }
 }

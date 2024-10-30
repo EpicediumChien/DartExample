@@ -124,7 +124,7 @@
     <value>Adaptives Licht</value>
   </data>
   <data name="Display" xml:space="preserve">
-    <value>Anzeige</value>
+    <value>Display</value>
   </data>
   <data name="DisplaySettings" xml:space="preserve">
     <value>Anzeigeeinstellungen</value>
@@ -187,7 +187,7 @@
     <value>Aktualisierung verfügbar</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Display and  Peripheral Manager wird geschlossen und wieder geöffnet, sobald die Updates abgeschlossen sind. Sobald Updates gestartet wurden, können sie nicht mehr abgebrochen werden.</value>
+    <value>Dell Display and Peripheral Manager wird geschlossen und wieder geöffnet, sobald die Updates abgeschlossen sind. Sobald Updates gestartet wurden, können sie nicht mehr abgebrochen werden.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Auf Updates prüfen</value>
@@ -220,7 +220,7 @@
     <value>Gerät hinzufügen</value>
   </data>
   <data name="AddDevice.Display" xml:space="preserve">
-    <value>Anzeige</value>
+    <value>Display</value>
   </data>
   <data name="AddDevice.Webcam" xml:space="preserve">
     <value>Webcam</value>
@@ -313,7 +313,7 @@
     <value>Verbinden des Stifts</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Berühren Sie den Bildschirm mit der Stiftspitze.</value>
+    <value>Berühren Sie mit der Stiftspitze den Bildschirm von Dell Display und Peripheral Manager.</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Halten Sie die obere Taste 3 Sekunden lang gedrückt. Warten Sie, bis das Gerät von Windows erkannt wird.</value>
@@ -322,7 +322,7 @@
     <value>Lassen Sie die Kopplung des Geräts zu oder starten Sie die Windows-Einstellungen und wählen Sie das entsprechende Gerät aus, sobald es erkannt wurde.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Wählen Sie „Ja“ aus, um die Kopplung im Eingabeaufforderungsfeld für die Kopplung des Stifts zu bestätigen.</value>
+    <value>Wählen Sie „Ja“ aus, um die Kopplung im Eingabeaufforderungsfeld zu bestätigen.</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>Für Konnektivität mit kabellosen USB-Empfängern und unterwegs</value>
@@ -661,7 +661,7 @@
     <value>Nachtlicht </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>Zeigen Sie angenehme Farben auf Ihrem Bildschirm an, um Ihren Schlaf zu verbessern.</value>
+    <value>Zeigt wärmere Farben an, damit Sie nachts besser schlafen können.</value>
   </data>
   <data name="Color.11" xml:space="preserve">
     <value>Farbmanagement</value>
@@ -1204,7 +1204,7 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>Steuert die Klarheit und den Stil von Videos durch Anpassen der Anzahl der pro Sekunde erfassten Bilder</value>
+    <value>Steuert die Klarheit und den Stil von Videos durch Anpassen der Anzahl der pro Sekunde erfassten Bilder.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>Speicherort der Mediendateien</value>
@@ -1363,7 +1363,7 @@
     <value>Externe Webcam priorisieren</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>Wechselt automatisch zwischen der Dell UltraSharp Webcam und anderen Webcams (integriert und extern). Windows Hello verwendet die aktive Webcam für die Gesichtserkennung. Hinweis: Es kann jeweils nur eine Kamera aktiviert und zugänglich sein.</value>
+    <value>Wechselt automatisch zwischen der Dell UltraSharp Webcam und anderen Webcams (integriert und extern). Windows Hello verwendet die aktive Webcam für die Gesichtserkennung.\n\nHinweis: Es kann jeweils nur eine Kamera aktiviert und zugänglich sein.</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Touch-Scroll-Empfindlichkeit</value>
@@ -1420,7 +1420,7 @@
     <value>Helligkeit/Kontrast</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>Anzeigeeigenschaften</value>
+    <value>Eigenschaften</value>
   </data>
   <data name="Layout" xml:space="preserve">
     <value>Layout</value>
@@ -1598,5 +1598,455 @@
   </data>
   <data name="Undo" xml:space="preserve">
     <value>Rückgängig machen</value>
+  </data>
+  <data name="Tooltip.5" xml:space="preserve">
+    <value>Tastaturlayouts mit der Copilot-Taste werden je nach Sprache und Region zu unterschiedlichen Zeiten verfügbar gemacht.</value>
+  </data>
+  <data name="ITLockToolTip.0" xml:space="preserve">
+    <value>Diese Einstellung wurde von Ihrem IT-Administrator gesperrt.</value>
+  </data>
+  <data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>Aktiviert das Mikrofon der Kamera. Die Kamera wird beim Ein- und Ausschalten dieser Funktion schnell neu gestartet.</value>
+  </data>
+  <data name="Camera.6" xml:space="preserve">
+    <value>Option auswählen</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>Neue Voreinstellung hinzufügen</value>
+  </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>Bitte warten Sie, während die Änderungen übernommen werden</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>Die Kamera wird von einer anderen Anwendung verwendet</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>Trennen Sie die Kamera, schließen Sie sie wieder an und versuchen Sie es erneut.</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>Bitte warten Sie, bis wir Ihre Kamera entfernt haben.</value>
+  </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>Aufnahme fortsetzen</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>Aufnahme beenden</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>Medienordner öffnen</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>Aufnahme starten</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>Aufnahme anhalten</value>
+  </data>
+  <data name="WebCameraSettings.27" xml:space="preserve">
+    <value>Passt die Bildgröße an</value>
+  </data>
+  <data name="EazyMemory.0" xml:space="preserve">
+    <value>Automatischer Start:</value>
+  </data>
+  <data name="EazyMemory.1" xml:space="preserve">
+    <value>Start nach Zeit:</value>
+  </data>
+  <data name="EazyMemory.2" xml:space="preserve">
+    <value>App/Dokument:</value>
+  </data>
+  <data name="EazyMemory.3" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="EazyMemory.4" xml:space="preserve">
+    <value>k. A.</value>
+  </data>
+  <data name="EazyMemory.5" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="EazyMemory.6" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="EazyMemory.7" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="EazyMemory.8" xml:space="preserve">
+    <value>Sie können nur bis zu 9 Profile speichern. Löschen Sie ein vorhandenes Profil oder bearbeiten Sie es im Hauptmenü.</value>
+  </data>
+  <data name="EazyMemory.9" xml:space="preserve">
+    <value>Doppelte Einträge. Geben Sie verschiedene Dokumentationen oder Anwendungen für das Easy Memory-Profil ein.</value>
+  </data>
+  <data name="EazyMemory.10" xml:space="preserve">
+    <value>Sie können die Fenster auf Ihrem Bildschirm anordnen und auf das Symbol + klicken.\r\nAlternativ können Sie unten ein vorhandenes Layout auswählen und auf das Bleistiftsymbol klicken, um das Layout zu bearbeiten.</value>
+  </data>
+  <data name="EazyMemory.11" xml:space="preserve">
+    <value>Ein anderes Profil wird während des PC-Starts gestartet. Möchten Sie es durch dieses Profil ersetzen?</value>
+  </data>
+  <data name="EazyMemory.12" xml:space="preserve">
+    <value>Wählen Sie eine Startoption aus:</value>
+  </data>
+  <data name="EazyMemory.13" xml:space="preserve">
+    <value>Beim Systemstart starten</value>
+  </data>
+  <data name="EazyMemory.14" xml:space="preserve">
+    <value>Erstellte Profile manuell auswählen</value>
+  </data>
+  <data name="EazyMemory.15" xml:space="preserve">
+    <value>Automatisch nach Zeit starten</value>
+  </data>
+  <data name="EazyMemory.16" xml:space="preserve">
+    <value>Fertigstellen</value>
+  </data>
+  <data name="EazyMemory.17" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="EazyMemory.18" xml:space="preserve">
+    <value>Name des Profils eingeben</value>
+  </data>
+  <data name="EazyMemory.19" xml:space="preserve">
+    <value>Layout auswählen.</value>
+  </data>
+  <data name="EazyMemory.20" xml:space="preserve">
+    <value>Fenster 0</value>
+  </data>
+  <data name="EazyMemory.21" xml:space="preserve">
+    <value>Fenster 1</value>
+  </data>
+  <data name="EazyMemory.22" xml:space="preserve">
+    <value>Fenster 2</value>
+  </data>
+  <data name="EazyMemory.23" xml:space="preserve">
+    <value>Fenster 3</value>
+  </data>
+  <data name="EazyMemory.24" xml:space="preserve">
+    <value>Fenster 4</value>
+  </data>
+  <data name="EazyMemory.25" xml:space="preserve">
+    <value>Fenster 5</value>
+  </data>
+  <data name="EazyMemory.26" xml:space="preserve">
+    <value>Fenster 6</value>
+  </data>
+  <data name="EazyMemory.27" xml:space="preserve">
+    <value>Fenster 7</value>
+  </data>
+  <data name="EazyMemory.28" xml:space="preserve">
+    <value>Fenster 8</value>
+  </data>
+  <data name="EazyMemory.29" xml:space="preserve">
+    <value>Fenster 9</value>
+  </data>
+  <data name="EazyMemory.30" xml:space="preserve">
+    <value>Fenster 10</value>
+  </data>
+  <data name="EazyMemory.31" xml:space="preserve">
+    <value>Fenster 11</value>
+  </data>
+  <data name="EazyMemory.32" xml:space="preserve">
+    <value>Fenster 12</value>
+  </data>
+  <data name="EazyMemory.33" xml:space="preserve">
+    <value>Aus Ordner auswählen</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>Ansicht anpassen</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>EasyArrange</value>
+  </data>
+  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>Eingaben verwalten</value>
+  </data>
+  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>Touch-Scroll-Geschwindigkeit</value>
+  </data>
+  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>Primäre Taste</value>
+  </data>
+  <data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>Nutzerdefinierte Tasten</value>
+  </data>
+  <data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>Praktische Steuerelemente für Meetings</value>
+  </data>
+  <data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>Beleuchtungseinstellungen</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>Stummschalten/Aufheben der Stummschaltung über Boom-Mikrofon</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>Stummschalten/Aufheben der Stummschaltung über Boom-Mikrofon</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>Praktische Tasten</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>Aktive Rauschunterdrückung</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Schnelleinstellungen in Zoom</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>Einfache Voreinstellungen</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>Automatisches Framing durch KI</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>High Dynamic Range (HDR)</value>
+  </data>
+  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>Sicherheitsfunktionen</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>Willkommen bei\r\nDell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>Überblick über Ihr Gerät, alle Verbindungen und den Akkustand (falls drahtlos)</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>Bewegen Sie den Mauszeiger über die Verbindungskachel eines Wireless-Geräts, um weitere Details zu erfahren.</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>Klicken Sie auf Ihr Gerät, um seine Einstellungen anzupassen.</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>Klicken Sie auf das Zahnradsymbol, um App-Einstellungen sowie Software- und Firmwareupdates anzupassen.</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>Gerät hinzufügen</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>Ihr Gerät anzeigen</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>Verbindungskachel</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>Geräteeinstellungen</value>
+  </data>
+  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>Anwendungseinstellungen</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>Hier sehen Sie alle unterstützten Dell Bildschirme und Peripheriegeräte an einem Ort, können Ihre Einstellungen personalisieren und Ihre Firmware auf dem neuesten Stand halten.</value>
+  </data>
+  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>Klicken Sie auf das Plus-Symbol (+), um Anweisungen zum Anschließen eines unterstützten Dell Geräts zu erhalten</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>Personalisieren Sie Ihre Anzeige, indem Sie Helligkeit/Kontrast, Farbprofile und mehr anpassen.</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>Verbringen Sie weniger Zeit mit der Größenänderung mehrerer Fenster. Wählen Sie ein EasyArrange-Layout aus, klicken Sie auf Ihre Fenster und ziehen Sie sie an die gewünschte Stelle. Wenn Sie diese bestimmte Fensteranordnung wiederverwenden möchten, speichern Sie sie mit Easy Memory.</value>
+  </data>
+  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>Verwenden Sie Ihren Monitor ganz einfach mit mehreren PCs über die Eingangsquellen- oder die USB-/Netzwerk-KVM-Einstellungen. Darüber hinaus können Sie Ihre Maus, Ihre Tastatur und Ihr Zubehör über USB an Ihren Monitor anschließen, um sie mit mehreren PCs zu verwenden.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>Sie können die Tasten auf Ihrer Tastatur anpassen, indem Sie Aktionen zuweisen.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>Optimieren Sie Ihre Meetings mit Tastaturbefehlen in Zoom und Teams.</value>
+  </data>
+  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>Stellen Sie die Beleuchtungsstärke Ihrer Tastatur ein, indem Sie sie manuell anpassen oder festlegen, dass sie sich an das Umgebungslicht anpasst.</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>Praktische Steuerelemente für Meetings</value>
+  </data>
+  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>Nutzerdefinierte Tasten</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>Optimieren Sie Ihre Meetings mit Tastaturbefehlen in Zoom und Teams.</value>
+  </data>
+  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>Sie können die Tasten auf Ihrer Tastatur anpassen, indem Sie Aktionen zuweisen.</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>Sie können die Touch-Scroll-Geschwindigkeit der hervorgehobenen Bereiche in der App ändern.</value>
+  </data>
+  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>Wählen Sie aus, ob die primäre Taste die linke oder rechte Taste in der App sein soll.</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>Abfragerate</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>Passen Sie die Klickfunktion des Scrollrads an.</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>App-spezifische Aktionen</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>Verbessern Sie die Geschwindigkeit und Präzision Ihrer Maus, indem Sie die Abtastrate in der App erhöhen.</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>Weisen Sie dem Klicken auf die Scrolltaste Ihre bevorzugten Aktionen zu.</value>
+  </data>
+  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>Legen Sie nutzerdefinierte Aktionen für das Klicken auf das Scrollrad in bestimmten Anwendungen fest.</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>Schaltflächen anpassen</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>App-spezifische Aktionen</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>Weisen Sie den umrandeten Schaltflächen in der App Ihre bevorzugten Aktionen zu.</value>
+  </data>
+  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>Legen Sie nutzerdefinierte Aktionen für das Klicken auf die Maustasten in bestimmten Anwendungen fest.</value>
+  </data>
+  <data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>Finden Sie Ihren Stift mit Tile.</value>
+  </data>
+  <data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>Aufladen des Stiftakkus</value>
+  </data>
+  <data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>Verhalten des Stifts anpassen</value>
+  </data>
+  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>So koppeln Sie den Stift mit Tile:\n1. Aktivieren Sie Bluetooth auf Ihrem Mobilgerät.\n2. Scannen Sie den QR-Code, um Tile auf Ihr Mobilgerät herunterzuladen.\n3. Halten Sie die beiden seitlichen Tasten am Stift 3 Sekunden lang gedrückt, um ihn mit Tile zu koppeln.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>Ihr Stift ist zu X % geladen.\n\nUm den Stift vollständig aufzuladen, stellen Sie sicher, dass er am Display Ihres Tablets befestigt ist. Sie werden benachrichtigt, sobald der Ladevorgang des Stifts abgeschlossen ist.\n\nSobald die Akkuladung unter 10 % liegt, werden Benachrichtigungen über niedrigen Akkustand angezeigt.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>In der App können Sie die Aktionen für die Tasten Ihres Stifts anpassen und die Spitzen- und Neigungsempfindlichkeit einstellen.\r\n</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>Mit unserem neuen Schnelleinstellungen-Widget können Sie die wichtigsten Einstellungen Ihrer Kamera während eines Zoom-Anrufs ganz einfach anpassen.</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>Wählen Sie eine Voreinstellung, die Ihrem gewünschten Erscheinungsbild vor der Kamera entspricht, oder erstellen Sie Ihre eigene.</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>Aktivieren Sie KI-Auto-Framing, damit Ihr Gesicht auch dann in der Mitte des Bildes bleibt , wenn Sie sich bewegen.</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>Aktivieren Sie High Dynamic Range zur Verbesserung der Bildqualität, insbesondere bei extremen Lichtverhältnissen.</value>
+  </data>
+  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>Aktivieren Sie die Anwesenheitserkennung, damit Ihre Kamera den Bildschirm aktiviert, wenn Sie sich ihm nähern, und ihn sperrt, wenn Sie sich entfernen.</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Schnelleinstellungen in Zoom</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>Einfache Voreinstellungen</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>High Dynamic Range (HDR)</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>Mit unserem neuen Schnelleinstellungen-Widget können Sie die wichtigsten Einstellungen Ihrer Kamera während eines Zoom-Anrufs ganz einfach anpassen.</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>Wählen Sie eine Voreinstellung, die Ihrem gewünschten Erscheinungsbild vor der Kamera entspricht, oder erstellen Sie Ihre eigene.</value>
+  </data>
+  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>Praktische Tasten</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>Klappen Sie das Mikrofon hoch, um es stumm zu schalten, und klappen Sie es wieder herunter, um die Stummschaltung aufzuheben.\r\n\r\nSchalten Sie auf Wunsch eine Funktion in der App ein, um eingehende Anrufe beim Herunterklappen des Boom-Mikrofons anzunehmen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>Steuern Sie Microsoft Teams und Ihren Stummschaltungsstatus mit jeweils einem einzigen Tastendruck. Passen Sie Ihre Audiolautstärke und weitere Funktionen mit anderen praktischen Tasten an.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>Praktische Tasten</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>Stummschalten/Aufheben der Stummschaltung über Boom-Mikrofon</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>Steuern Sie Ihre Anrufe, den Stummschaltungsstatus und die Lautstärke mit den praktischen Tasten an der Inline-Steuerung Ihres Headsets.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>Klappen Sie das Mikrofon hoch, um es stumm zu schalten, und klappen Sie es wieder herunter, um die Stummschaltung aufzuheben.\r\n\r\nSchalten Sie auf Wunsch eine Funktion in der App ein, um eingehende Anrufe beim Herunterklappen des Boom-Mikrofons anzunehmen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>Klappen Sie das Mikrofon hoch, um es stumm zu schalten, und klappen Sie es wieder herunter, um die Stummschaltung aufzuheben.\r\n\r\nSchalten Sie auf Wunsch eine Funktion in der App ein, um eingehende Anrufe beim Herunterklappen des Boom-Mikrofons anzunehmen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>Steuern Sie Microsoft Teams und Ihren Stummschaltungsstatus mit jeweils einem einzigen Tastendruck. Passen Sie Ihre Audiolautstärke und weitere Funktionen mit anderen praktischen Tasten an.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>Drücken Sie die ANC-Taste an Ihrem Headset oder wählen Sie eine der Optionen in der App aus, um zu steuern, wie viel Geräusche von außen Sie hören.\r\n\r\nWenn Sie „Transparenz“ auswählen, verwenden Sie den Schieberegler in der App, um den Geräuschpegel anzupassen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>Praktische Tasten</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>Stummschalten/Aufheben der Stummschaltung über Boom-Mikrofon</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>Aktive Rauschunterdrückung</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>Steuern Sie Ihre Anrufe, den Stummschaltungsstatus und die Lautstärke mit den praktischen Tasten an der Inline-Steuerung Ihres Headsets. Mit der seitlichen ANC-Taste können Sie festlegen, wie viel Geräusche von außen Sie hören möchten. </value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>Klappen Sie das Mikrofon hoch, um es stumm zu schalten, und klappen Sie es wieder herunter, um die Stummschaltung aufzuheben.\r\n\r\nSchalten Sie auf Wunsch eine Funktion in der App ein, um eingehende Anrufe beim Herunterklappen des Boom-Mikrofons anzunehmen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>Drücken Sie die ANC-Taste an Ihrem Headset oder wählen Sie eine der Optionen in der App aus, um zu steuern, wie viel Geräusche von außen Sie hören.\r\n\r\nWenn Sie „Transparenz“ auswählen, verwenden Sie den Schieberegler in der App, um den Geräuschpegel anzupassen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>Wischen Sie nach oben und unten, um die Lautstärke zu steuern. Tippen Sie doppelt, um Anrufe anzunehmen und zu beenden; und vieles mehr.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>Steuern Sie Ihren Stummschaltungsstatus, die aktive Geräuschunterdrückung (ANC) und Microsoft Teams mit den praktischen Tasten am Headset.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>Drücken Sie die ANC-Taste an Ihrem Headset oder wählen Sie eine der Optionen in der App aus, um zu steuern, wie viel Geräusche von außen Sie hören.\r\n\r\nWenn Sie „Transparenz“ auswählen, verwenden Sie den Schieberegler in der App, um den Geräuschpegel anzupassen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>Laden Sie Ihr Headset auf, indem Sie es auf die Ladestation legen oder es über das mitgelieferte USB-Kabel an Ihren PC anschließen.</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>Steuerung der Funktionen durch Wischen und Tippen</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>Praktische Tasten</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>Aktive Rauschunterdrückung</value>
+  </data>
+  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>Einfaches Aufladen</value>
+  </data>
+  <data name="EazyMemory.34" xml:space="preserve">
+    <value>Programme zuweisen</value>
+  </data>
+  <data name="EazyMemory.35" xml:space="preserve">
+    <value>Startoptionen</value>
+  </data>
+  <data name="EazyMemory.36" xml:space="preserve">
+    <value>Sie können verschiedene Profile speichern und sie manuell, nach Zeitplan oder beim Systemstart wiederherstellen.\r\n\r\nBeginnen Sie, indem Sie Ihrem Easy Memory-Profil einen Namen geben und ein Layout auswählen.</value>
+  </data>
+  <data name="EazyMemory.37" xml:space="preserve">
+    <value>Weisen Sie bestimmte Anwendungen/Dokumente Fenstern zu oder ziehen Sie das Anwendungssymbol auf die entsprechende Partition.\r\n\r\nHinweis: Die Nutzbarkeit des EasyArrange-Speichers kann je nach Anwendungstyp und Startverhalten variieren.</value>
+  </data>
+  <data name="EazyMemory.38" xml:space="preserve">
+    <value>Starttyp auswählen</value>
+  </data>
+  <data name="EazyMemory.39" xml:space="preserve">
+    <value>EINFACHE EINRICHTUNG VON EASY MEMORY</value>
+  </data>
+  <data name="WalkThrough.0" xml:space="preserve">
+    <value>FUNKTIONSHIGHLIGHT</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nein</value>
   </data>
 </root>

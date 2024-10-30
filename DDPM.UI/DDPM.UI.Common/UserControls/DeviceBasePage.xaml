@@ -29,6 +29,23 @@
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
             <SolidColorBrush x:Key="RightBaseBkColor" Color="#99193457" />
+
+            <!-- Dashed Brush for Focus border -->
+            <DrawingBrush x:Key="FocusDotBrush" Viewport="0,0,1,1" ViewportUnits="Absolute" TileMode="Tile">
+                <DrawingBrush.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="#B6B6B6">
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry Rect="0,0,50,50" />
+                                    <RectangleGeometry Rect="50,50,50,50" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingBrush.Drawing>
+            </DrawingBrush>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -99,16 +116,19 @@
                                         </Style>
                                     </Border.Style>
 
-                                    <Grid Width="24" Height="24" Cursor="Hand" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown">
+                                    <!--Robert_Lin, 2024-1030 fix PIMS-314264 Click no action when click non-arrow (Polylines) area => Grid.Background=FakeTransparent
+                                    and remove Custor="Hand" 
+                                    -->
+                                    <Grid Width="24" Height="24"  MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" Background="{StaticResource FakeTransparent}">
                                         <!--2024/06/19 Elie, Fix the issue where canot go back to homepage.-->
                                         <Polyline Points="12,5 5,12 12,19"
-                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
-                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                                  Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                                         <Polyline Points="5,12 19,12"
-                                      Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
-                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-
-                                        <Grid.Style>
+                                                  Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
+                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                        <!-- Robert_Lin, 2024-1030 remove the hover effect -->
+                                        <!--<Grid.Style>
                                             <Style TargetType="Grid">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
@@ -122,7 +142,7 @@
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Grid.Style>
+                                        </Grid.Style>-->
                                     </Grid>
                                 </Border>
 

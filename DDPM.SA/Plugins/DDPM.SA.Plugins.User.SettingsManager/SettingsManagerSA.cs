@@ -128,6 +128,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static DDPMITConfig _DDPMITConfig {  get; set; } = new DDPMITConfig();
 
+        private static bool _isAllSettingsReady = false;
         #endregion Private Members
 
         #region Constructor
@@ -301,6 +302,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             updateITandGlobalSetting();
 
             SettingReadyEvent?.Invoke(this, new EventArgs());
+            _isAllSettingsReady = true;
+        }
+
+        public Task<bool> QuerySettingsStatus()
+        {
+            return Task.FromResult(_isAllSettingsReady);
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -370,6 +377,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (tmp.global_setting != null)
                 {
                     _GlobalSettingParam = _DDPMITConfig.global_setting;
+                    WriteGlobalSettings(_GlobalSettingParam, false);
                 }
             }
 
@@ -1814,17 +1822,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult(_GlobalSettingParam);
         }
 
-        public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam)
+        public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true)
         {
             bool result = WriteSettings_Common(globalSettingParam, "global");
-            
+
             //apply setting to system IT config
             if (_GlobalSettingParam != null && result)
             {
                 if (_SysSettingsPlugin != null)
                 {
-                    result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
-                    WriteLog("Call sys plugin to write global setting failed.");
+                    if (writeToSys)
+                    {
+                        result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
+                        WriteLog("Call sys plugin to write global setting failed.");
+                    }
                 }
             }
 

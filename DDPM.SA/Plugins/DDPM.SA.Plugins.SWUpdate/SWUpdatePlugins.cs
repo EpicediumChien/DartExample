@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -343,6 +344,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 if (isUpdate)
                 {
                     title = "Update will be applied";
+                    title = LangHelper.Instance["UpdateWillBeApplied"];
                 }
                 NotificationFWupdate(title, s, isOnlyInfo, isUpdate);
                 _logs.DebugMsg_1("HandleUpdateInfo done");
