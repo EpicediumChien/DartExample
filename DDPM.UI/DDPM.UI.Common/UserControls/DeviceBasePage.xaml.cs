@@ -401,7 +401,7 @@ namespace DDPM.UI.Common.UserControls
 
         private void LeftFrame_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            vbarList.ItemsSource = vbarList1.ItemsSource;
+            vbarListRight.ItemsSource = vbarListLeft.ItemsSource;
 
             //vbarList.Items.Clear();
             //if (vbarList1.Items.Count > 0)
