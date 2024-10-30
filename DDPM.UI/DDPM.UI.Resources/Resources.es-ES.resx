@@ -187,7 +187,7 @@
     <value>Actualización disponible</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Peripheral Manager se cerrará y volverá a abrir una vez que se hayan completado las actualizaciones. Una vez iniciadas las actualizaciones, no se pueden cancelar.</value>
+    <value>Dell Display and  Peripheral Manager se cerrará y volverá a abrir una vez que se hayan completado las actualizaciones. Una vez iniciadas las actualizaciones, no se pueden cancelar.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Buscar actualizaciones</value>

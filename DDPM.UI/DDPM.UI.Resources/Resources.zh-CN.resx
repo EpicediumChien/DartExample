@@ -187,7 +187,7 @@
     <value>可用的更新</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>更新完成后，Dell Peripheral Manager 将关闭并重新打开。更新一旦开始，将无法取消。</value>
+    <value>更新完成后，Dell Display and  Peripheral Manager 将关闭并重新打开。更新一旦开始，将无法取消。</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>检查是否有更新</value>
