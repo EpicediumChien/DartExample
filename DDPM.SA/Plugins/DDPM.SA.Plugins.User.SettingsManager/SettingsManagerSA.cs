@@ -128,6 +128,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static DDPMITConfig _DDPMITConfig {  get; set; } = new DDPMITConfig();
 
+        private static bool _isAllSettingsReady = false;
         #endregion Private Members
 
         #region Constructor
@@ -301,6 +302,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             updateITandGlobalSetting();
 
             SettingReadyEvent?.Invoke(this, new EventArgs());
+            _isAllSettingsReady = true;
+        }
+
+        public Task<bool> QuerySettingsStatus()
+        {
+            return Task.FromResult(_isAllSettingsReady);
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
