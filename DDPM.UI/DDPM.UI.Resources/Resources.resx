@@ -2289,4 +2289,13 @@
   <data name="Consent.2" xml:space="preserve">
     <value>Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about </value>
   </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>Do not prompt again for the same model</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>Do you want to import the application settings for ease of use?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>A new monitor %1 is detected.</value>
+  </data>
 </root>

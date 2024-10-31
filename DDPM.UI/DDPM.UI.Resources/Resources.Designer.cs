@@ -2941,11 +2941,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not prompt again for the same model.
+        /// </summary>
+        internal static string ImpExp_CheckBox_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_CheckBox.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatically apply the settings when the same model is detected.
         /// </summary>
         internal static string ImpExp_Message_0 {
             get {
                 return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to import the application settings for ease of use?.
+        /// </summary>
+        internal static string ImpExp_Message_1 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.1", resourceCulture);
             }
         }
         
@@ -2973,6 +2991,15 @@ namespace DDPM.UI.Resources {
         internal static string ImpExp_SuccessMsg_1 {
             get {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new monitor %1 is detected..
+        /// </summary>
+        internal static string ImpExp_Title_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Title.0", resourceCulture);
             }
         }
         
