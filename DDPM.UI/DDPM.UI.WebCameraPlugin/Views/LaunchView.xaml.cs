@@ -71,6 +71,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private DispatcherTimer RecordingTimer;
         private bool _running = false;
         private MediaCapture _mediaCapture;
+        private SoftwareBitmap backBitmapBuffer;        
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
@@ -501,7 +502,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// MediaFrameReader FrameArrived event
         /// </summary>
         private void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
-        {
+        {  
             using var latestFrameReference = sender.TryAcquireLatestFrame();
 
             var videoMediaFrame = latestFrameReference?.VideoMediaFrame;
@@ -515,15 +516,38 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
                 }
 
+                // Swap the processed frame to backBuffer and dispose of the unused image.
+                softwareBitmap = Interlocked.Exchange(ref backBitmapBuffer, softwareBitmap);
+                softwareBitmap?.Dispose();
+                
                 CameraImage.Dispatcher.BeginInvoke(async () =>
                 {
                     if (_running)
                         return;
                     _running = true;
-                    CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
+
+                    // Keep draining frames from the backbuffer until the backbuffer is empty.
+                    SoftwareBitmap latestBitmap;
+                    while ((latestBitmap = Interlocked.Exchange(ref backBitmapBuffer, null)) != null)
+                    {
+                        CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(latestBitmap);
+                        //var imageSource = (SoftwareBitmapSource)CameraImage.Source;
+                        //await imageSource.SetBitmapAsync(latestBitmap);
+                        latestBitmap.Dispose();
+                    }
+
+                    //CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
                     _running = false;
                 });
+                
+             
             }
+
+            if (latestFrameReference != null)
+            {
+                latestFrameReference.Dispose();
+            }
+
         }
 
         /// <summary>
