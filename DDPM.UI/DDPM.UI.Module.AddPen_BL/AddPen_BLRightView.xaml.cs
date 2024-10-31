@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
 using System.Net;
 using System.Windows.Controls;
@@ -19,7 +20,7 @@ namespace DDPM.UI.Module.AddPen_BL
         //private readonly string Step3_1 = "Windows Settings";
 
         // 10/15 Derek for RWD  -- not tested yet due to no device
-        private readonly Int16 breakPoints = 910;
+        private readonly int breakPoints = 1050;
 
         public AddPen_BLRightView(AddDeviceViewModel vm)
         {
@@ -33,8 +34,7 @@ namespace DDPM.UI.Module.AddPen_BL
             //txtStep3.Text = Step3;
             //txtStep3_1.Text = Step3_1;
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            breakPoints = DdpmCommonHelper.GetBreakPoints();
         }
 
         private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e)

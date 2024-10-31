@@ -110,6 +110,11 @@ namespace DDPM.SA.Common
         //public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
         public string ServiceTag { get; set; }
+        public string SupplierID { get; set; }
+        public string D_Ctrl { get; set; }
+        public string Connectivity { get; set; }
+        public string Update_date { get; set; }
+        public string Available_date { get; set; }
 
         public bool Equals(FWUpdateInfo fwUpdateInfo)
         {
@@ -164,6 +169,8 @@ namespace DDPM.SA.Common
         [JsonPropertyName("support_platform")]
         public string SupportedPlatform { get; set; }
         public string ServiceTag { get; set; }
+        public string SupplierID { get; set; }
+        public string D_Ctrl { get; set; }
     }
 
     /// <summary>
