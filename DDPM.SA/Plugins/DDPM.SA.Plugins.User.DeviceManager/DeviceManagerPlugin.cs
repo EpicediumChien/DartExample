@@ -4256,6 +4256,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(o.ToString());
         }
 
+        public Task<bool> CallDDPMUI()
+        {
+            bool ret = false;
+            try
+            {
+
+            }
+            catch
+            {
+
+            }
+            return Task.FromResult(ret);
+        }
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
