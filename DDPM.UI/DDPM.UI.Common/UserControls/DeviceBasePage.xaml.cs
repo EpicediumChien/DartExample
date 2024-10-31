@@ -3,6 +3,7 @@ using DDPM.UI.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -297,6 +298,9 @@ namespace DDPM.UI.Common.UserControls
                 {
                     item.ResetStory();
                 }
+
+                vbarListLeft.ItemsSource = null;
+                vbarListLeft.ItemsSource = viewModel.VbarItems;
             }
             else
             {
@@ -319,7 +323,7 @@ namespace DDPM.UI.Common.UserControls
             LeftFrame.Width = this.ActualWidth;
 
             //right side
-            vBar.Width = vBarWidthNormal;
+            vBarRight.Width = vBarWidthNormal;
             //extend vBar
             foreach (var item in viewModel.VbarItems)
             {
@@ -327,13 +331,16 @@ namespace DDPM.UI.Common.UserControls
             }
 
             stVbarRightFrame.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+
+            vbarListRight.ItemsSource = null;
+            vbarListRight.ItemsSource = viewModel.VbarItems;
         }
 
         //for debug
         private void PrintDebugData(string function)
         {
             _log?.Info($"this.ActualWidth = {this.ActualWidth} in {function}");
-            _log?.Info($"vBar.ActualWidth = {vBar.ActualWidth}");
+            _log?.Info($"vBar.ActualWidth = {vBarRight.ActualWidth}");
             _log?.Info($"RightGrid.ActualWidth = {RightGrid.ActualWidth}");
             _log?.Info($"LeftFrame.ActualWidth = {LeftFrame.ActualWidth}");
         }
@@ -342,8 +349,8 @@ namespace DDPM.UI.Common.UserControls
         {
             if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal)
             {
-                vBar.Width = vBarWidthNormal;  //show the vBar
-                LeftFrame.Width = this.ActualWidth - vBar.Width - 15;
+                vBarRight.Width = vBarWidthNormal;  //show the vBar
+                LeftFrame.Width = this.ActualWidth - vBarRight.Width - 15;
                 LeftFrame.Height = this.ActualHeight - 40;
 
                 //vBar.Margin = new Thickness(0, 0, 0, 10);
@@ -392,26 +399,11 @@ namespace DDPM.UI.Common.UserControls
 
         private void AdjustHorizontalLayoutForNonLandingMode(bool bVBarNormal = true)
         {
-            vBar.Width = bVBarNormal ? vBarWidthNormal : vBarWidthRWD;
+            vBarRight.Width = bVBarNormal ? vBarWidthNormal : vBarWidthRWD;
             RightGrid.Width = rightGridWidth;
             //LeftGrid.Width = this.ActualWidth - vBar.Width - RightGrid.Width - 20;
             LeftGrid.Width = this.ActualWidth - RightGrid.Width - 20;
             LeftFrame.Width = LeftGrid.Width;
-        }
-
-        private void LeftFrame_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            vbarListRight.ItemsSource = vbarListLeft.ItemsSource;
-
-            //vbarList.Items.Clear();
-            //if (vbarList1.Items.Count > 0)
-            //{
-            //    // Copy items from vbarList1 to vbarList
-            //    foreach (var item in vbarList1.Items)
-            //    {
-            //        vbarList.ItemsSource = vbarList1.ItemsSource;
-            //    }
-            //}
         }
 
         private void ShowVBar(bool bShowLeft = true)
@@ -420,13 +412,13 @@ namespace DDPM.UI.Common.UserControls
             {
                 //System.Windows.MessageBox.Show("left");
                 vBarLeft.Visibility = Visibility.Visible;
-                vBar.Visibility = Visibility.Collapsed;
+                vBarRight.Visibility = Visibility.Collapsed;
             }
             else 
             {
                 //System.Windows.MessageBox.Show("right");
                 vBarLeft.Visibility = Visibility.Collapsed;
-                vBar.Visibility = Visibility.Visible;
+                vBarRight.Visibility = Visibility.Visible;
             }
         }
     }
