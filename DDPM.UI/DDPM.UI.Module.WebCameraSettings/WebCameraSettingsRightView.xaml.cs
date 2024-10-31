@@ -58,6 +58,12 @@ namespace DDPM.UI.Module.WebCameraSettings
 
             if (_vm.CurrentDeviceInfo.IsPropertyZoomSupported)
                 InitializeAutofocus();
+
+            if (_vm.Model != "WB7022")
+            {
+                bdrPrioritize.Visibility = Visibility.Collapsed;
+                brdHello.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void InitializeFOV()
