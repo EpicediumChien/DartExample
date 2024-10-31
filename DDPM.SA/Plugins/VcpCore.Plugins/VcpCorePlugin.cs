@@ -1718,60 +1718,74 @@ namespace VcpCore.Plugins
                                 _Isinitializing = false;
                                 var T = Task.Run(() =>
                                 {
-                                    _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier start ...");
-
-                                    int count = 0;
-                                    while (count < 10)
+                                    try
                                     {
-                                        if (!TokenNew.IsCancellationRequested)//Dean add to avoid exception 1029
-                                            TokenNew.ThrowIfCancellationRequested();
-                                        Thread.Sleep(1000);
-                                        List<MonitorInfo_complex> mos = _GetMonitors(TokenNew);
-                                        if (mos.Count > 0)
-                                        {
-                                            _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier catch monitors ...");
-                                            _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
-                                            _AllInfoMonitors = mos.ToList();
-                                            Initialize2TypesMonitorInfo(true);
-                                            _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
-                                            Initialize0x52toEmpty();
+                                        _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier start ...");
 
-                                            //----//
-                                            List<MonitorInfo> _tmp = new List<MonitorInfo>();
-                                            //_tmp.Clear();//Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
-                                            foreach (var monitorInfoX in _AllInfoMonitors)
+                                        int count = 0;
+                                        while (count < 10)
+                                        {
+                                            TokenNew.ThrowIfCancellationRequested();
+                                            Thread.Sleep(1000);
+                                            List<MonitorInfo_complex> mos = _GetMonitors(TokenNew);
+                                            if (mos.Count > 0)
                                             {
-                                                MonitorInfo minfo = new MonitorInfo()
+                                                _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Get monitors ...");
+                                                _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
+                                                _AllInfoMonitors = mos.ToList();
+                                                Initialize2TypesMonitorInfo(true);
+                                                _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
+                                                Initialize0x52toEmpty();
+
+                                                //----//
+                                                List<MonitorInfo> _tmp = new List<MonitorInfo>();
+                                                //_tmp.Clear();//Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
+                                                foreach (var monitorInfoX in _AllInfoMonitors)
                                                 {
-                                                    AliasDeviceName = monitorInfoX.AliasDeviceName,
-                                                    IsDellMonitor = monitorInfoX.IsDellMonitor,
-                                                    Index = monitorInfoX.Index,
-                                                    CapabilityString = monitorInfoX.CapabilityString,
-                                                    DDCisON = monitorInfoX.DDCisON,
-                                                    DisplayName = monitorInfoX.DisplayName,
-                                                    edid = monitorInfoX.edid,
-                                                    FwVersion = monitorInfoX.FwVersion,
-                                                    inputSource = monitorInfoX.inputSource,
-                                                    inputCable = monitorInfoX.inputCable,
-                                                    CapabilityDic = monitorInfoX.CapabilityDic,
-                                                    modelName = monitorInfoX.modelName,
-                                                    series = monitorInfoX.series,
-                                                    MarketingName = monitorInfoX.MarketingName,
-                                                    ImageFileName = monitorInfoX.ImageFileName,
-                                                    SupplierID = monitorInfoX.SupplierID,
-                                                    D_Ctrl = monitorInfoX.D_Ctrl,
-                                                    scalingFactor = monitorInfoX.scalingFactor,
-                                                };
-                                                _tmp.Add(minfo);
+                                                    MonitorInfo minfo = new MonitorInfo()
+                                                    {
+                                                        AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                                        IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                                        Index = monitorInfoX.Index,
+                                                        CapabilityString = monitorInfoX.CapabilityString,
+                                                        DDCisON = monitorInfoX.DDCisON,
+                                                        DisplayName = monitorInfoX.DisplayName,
+                                                        edid = monitorInfoX.edid,
+                                                        FwVersion = monitorInfoX.FwVersion,
+                                                        inputSource = monitorInfoX.inputSource,
+                                                        inputCable = monitorInfoX.inputCable,
+                                                        CapabilityDic = monitorInfoX.CapabilityDic,
+                                                        modelName = monitorInfoX.modelName,
+                                                        series = monitorInfoX.series,
+                                                        MarketingName = monitorInfoX.MarketingName,
+                                                        ImageFileName = monitorInfoX.ImageFileName,
+                                                        SupplierID = monitorInfoX.SupplierID,
+                                                        D_Ctrl = monitorInfoX.D_Ctrl,
+                                                        scalingFactor = monitorInfoX.scalingFactor,
+                                                    };
+                                                    _tmp.Add(minfo);
+                                                }
+                                                DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs();
+                                                _displaychangedEventArgss.count = _AllInfoMonitors.Count;
+                                                _displaychangedEventArgss.monitors = new List<MonitorInfo>(_tmp);
+                                                OnDisplaychanged(_displaychangedEventArgss);
+                                                //----//
+                                                break;
                                             }
-                                            DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs();
-                                            _displaychangedEventArgss.count = _AllInfoMonitors.Count;
-                                            _displaychangedEventArgss.monitors = new List<MonitorInfo>(_tmp);
-                                            OnDisplaychanged(_displaychangedEventArgss);
-                                            //----//
-                                            break;
+                                            count++;
                                         }
-                                        count++;
+                                    }
+                                    catch (TaskCanceledException)
+                                    {
+                                        _logs.DebugMsg("[VcpCorePlugin] Monitor-Retrier into TaskCanceledException ...");
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        _logs.DebugMsg("[VcpCorePlugin] Monitor-Retrier into OperationCanceledException ...");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg($"[VcpCorePlugin] Monitor-Retrier into catch {ex.Message} ...");
                                     }
                                 }, TokenNew).ConfigureAwait(false);
                             }
