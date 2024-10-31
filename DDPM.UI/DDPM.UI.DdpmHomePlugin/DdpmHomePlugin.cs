@@ -29,6 +29,7 @@ using VcpCore.Common;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
 using static Dell.Client.Framework.Security.LocalAccounts;
+using static Dell.Client.Framework.UX.WPF.WinApi;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using DDPMConstants = DDPM.UI.Common.Constants;
 
@@ -227,9 +228,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
-                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null)
+                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
-                                //consent page
+                                if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                {
+                                    _viewModel.ShowConsent();
+                                    DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
+                                    DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
+                                }
                             }
 
                             if (_deviceManager == null)
@@ -373,14 +379,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         if (temp_mos.Count != _monitorInfos.Count)
                             return;
 
-                        //implement your function to display messagebox
-                        //MessageModalDialog dlg = new MessageModalDialog("111", "222", "333", "444", "555");
-                        //Window parentWindow = Window.GetWindow();
-                        //if (parentWindow != null)
-                        //{
-                        //    dlg.Owner = parentWindow;
-                        //}
-                        //return dlg.ShowDialog();
+                        //force return here to avoid page trigger, need Jason handle it
+                        return;
+                        if(_viewModel != null)
+                        {
+                            _viewModel.InvokeImportQuestion(info);
+                        }
                     }
                 }
             });

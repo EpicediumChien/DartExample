@@ -8668,7 +8668,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
-                                        Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
+                                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
                                     }
                                     catch (Exception ex)
                                     {
@@ -8771,7 +8772,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 SupportedNKVMMonitors();
             }
 
-            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
+            if(_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
 
         private void OnPeripheralsNotify(DeviceChangedEventArgs data)
@@ -10723,7 +10725,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.SwapIputPIPPBP:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Swap_IputPIPPBP));
+                    HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP)).SingleOrDefault();
+                    if (hotkeyInfo_SwapIputPIPPBP != null)
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo_SwapIputPIPPBP }, Swap_IputPIPPBP));
                     break;
 
                 case HotkeyType.ChangePIPPosition:
@@ -11090,14 +11094,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Swap_IputPIPPBP(MonitorInfo monitorInfo, Object[] param)
         {
-            Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP >begin");
+            string log_keys = string.Empty;
+            if (param != null && param.Count() > 0)
+            {
+                HotkeyInfo hotkey = (HotkeyInfo)param[0];
+                log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
+            }
+            Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP >begin [keys:{log_keys}]");
+            writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Swap_IputPIPPBP >begin [keys:{log_keys}]");
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 if (!IsPIPMode(monitorInfo))
                 {
                     //pxp off
                     Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
-                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
+                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off.[keys:{log_keys}]");
                     return;
                 }
                 //0 = main, 1 = sub1, 2 = sub2, 3 = sub3
@@ -11107,21 +11118,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 List<InputSourceObj> allInputs = new List<InputSourceObj>();
                 //inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
                 //[Dean] remove WinCopies utilties and fix code conflict
+                writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] inputList(count): {inputList.Count}.[keys:{log_keys}]");
                 foreach (var input in inputList)
                 {
                     allInputs.Add(new InputSourceObj((ushort)input.Value.Code, input.Value.InputName));
+                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] inputList[{input.Key}] ==> {input.Value.InputName}, {input.Value.Code}.[keys:{log_keys}]");
                 }
                 //debug
                 int idx = 0;
+                writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] subInputs(count): {subInputs.Count}.[keys:{log_keys}]");
                 foreach (var s in subInputs)
                 {
                     Debug.WriteLine($"subInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] subInputs[{idx}] ==> {s.Code}, {s.Name}.[keys:{log_keys}]");
                     idx++;
                 }
                 idx = 0;
+                writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] allInputs(count): {allInputs.Count}.[keys:{log_keys}]");
                 foreach (var s in allInputs)
                 {
                     Debug.WriteLine($"allInputs[{idx}] ==> {s.Code}, {s.Name}"); //Robert_Lin, 2024-10-16 add idx and Code
+                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] allInputs[{idx}] ==> {s.Code}, {s.Name}.[keys:{log_keys}]");
                     idx++;
                 }
                 //Robert_Lin, 2024-10-16, changed
@@ -11136,7 +11153,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
                 bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
-                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
+                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}](keys:{log_keys}) from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
                 /*if (subInputs != null && subInputs.Count > 0)
                 {
                     allInputs.AddRange(subInputs);
@@ -11161,6 +11178,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP >end; HotkeyFuncLock");
+                writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Swap_IputPIPPBP >end; HotkeyFuncLock [keys:{log_keys}]");
             }
         }
 
