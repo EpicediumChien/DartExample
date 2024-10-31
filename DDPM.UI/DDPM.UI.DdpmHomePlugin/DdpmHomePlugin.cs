@@ -227,9 +227,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
-                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null)
+                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
-                                //consent page
+                                if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                {
+                                    _viewModel.ShowConsent();
+                                    DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
+                                    DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
+                                }
                             }
 
                             if (_deviceManager == null)
