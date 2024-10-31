@@ -489,6 +489,6 @@
                     </StackPanel>
                 </Border>
             </Grid>
-        </Grid>
+    </Grid>
     </Grid>
 </UserControl>
