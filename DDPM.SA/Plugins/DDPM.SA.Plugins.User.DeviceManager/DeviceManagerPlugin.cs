@@ -4352,7 +4352,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 try
                 {
                     writelog($"RunDDPM start");
-                    Process.Start(DDPMPath);
+                    Process.Start(DDPMPath + "\\DDPM.exe");
                     writelog($"RunDDPM done");
                 }
                 catch (Exception ex)
@@ -6348,18 +6348,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         !string.IsNullOrEmpty(Results) &&
                         !string.IsNullOrEmpty(FailureMessage) &&
                         !string.IsNullOrEmpty(SW_Update_date) &&
-                        !string.IsNullOrEmpty(SW_Available_date)&&
+                        !string.IsNullOrEmpty(SW_Available_date) &&
                         !string.IsNullOrEmpty(ErrorCode))
                     {
                         //Telementry Collection
                         var rt = false;
                         var ApplicationSettings_Function = new ApplicationSettings_Function();
-                        
+
                         if (FailureMessage.Equals(SWUErrorCode.NoError.ToString()))
                         {
                             writelog("[TelemetryDdpmSwUpdater] Send Telementry for SoftwareUpdate...");
                             rt = ApplicationSettings_Function.Send_SoftwareUpdate_Telementry(_TelementryScheduler, _AllInfoMonitors, UpdateVersion, Results, SW_Available_date, SW_Update_date);
-                            
+
                         }
                         else
                         {

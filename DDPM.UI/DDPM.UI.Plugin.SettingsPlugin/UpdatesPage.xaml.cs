@@ -3,6 +3,7 @@ using DDPM.SA.Common.Alert;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,7 +74,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
                 {
                     string exePath = Assembly.GetExecutingAssembly().Location;
-                    Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(exePath));
+                    string folderPath = Path.GetDirectoryName(exePath);
+                    Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
                     t1.Start();
                 }
             }
