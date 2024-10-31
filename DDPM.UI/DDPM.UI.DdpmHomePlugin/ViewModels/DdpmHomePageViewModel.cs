@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
@@ -12,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.ServiceProcess;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using VcpCore.Common;
@@ -519,18 +522,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             while (sc.Status == ServiceControllerStatus.Stopped ||
                 sc.Status == ServiceControllerStatus.StopPending)
             {
-                PleaseWaitMessage = "DellTechHub service is not running";
+                PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
                 Thread.Sleep(200);
             }
             while (!IsDeviceManagerReady)
             {
-                PleaseWaitMessage = "DDPM.Subagent.DeviceManager is not ready";
+                PleaseWaitMessage = LangHelper.Instance["Wait_DevMgr"]; //"DDPM.Subagent.DeviceManager is not ready";
                 Thread.Sleep(200);
             }
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
-                PleaseWaitMessage = "No device detected";
+                PleaseWaitMessage = LangHelper.Instance["Wait_NoDevice"];// "No device detected";
                 Thread.Sleep(500);
                 if (sw.ElapsedMilliseconds > timeoutMsec)
                     break;
@@ -567,6 +570,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             {
                 homeDev.DumpInfoToLog(_log);
             }
+        }
+        #endregion
+
+        #region Import question with full page dialog
+        public EventHandler<MonitorInfo> ImportNotify;
+
+        public void InvokeImportQuestion(MonitorInfo mo)
+        {
+            EventHandler<MonitorInfo> handler = ImportNotify;
+            handler?.Invoke(this, mo);
         }
         #endregion
     }

@@ -1,0 +1,63 @@
+﻿<Window x:Class="DDPM.UI.Plugin.Common.ImportModalDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
+        mc:Ignorable="d"
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
+        Background="{DynamicResource bkImage}"
+        Title="ImportModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
+        WindowStartupLocation="Manual" WindowStyle="None">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="BorderNo" TargetType="Border">
+                <Setter Property="Background" Value="#0E1C2F" />
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="Width" Value="136.5" />
+                <Setter Property="Height" Value="40" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="#F5F6F7" />
+            </Style>
+            <Style x:Key="BorderYes" TargetType="Border">
+                <Setter Property="Background" Value="#0672CB" />
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="Width" Value="136.5" />
+                <Setter Property="Height" Value="40" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="#F5F6F7" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Border CornerRadius="4" Height="320" Width="801" BorderThickness="1" BorderBrush="#293B4D" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid>
+                <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <UXControls:UXTextBlock Name="txtCaption" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Light"
+                                        HorizontalAlignment="Left" FontFamily="Roboto" FontSize="40" Margin="0" />
+                    <UXControls:UXTextBlock Name="txtMessage" Foreground="#FFFFFF" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center"
+                                        HorizontalAlignment="Left" FontFamily="Roboto" FontSize="24" LineHeight="36" Width="660" Margin="0,10,0,0" >
+                    </UXControls:UXTextBlock>
+
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                        <Border Style="{StaticResource BorderNo}" Cursor="Hand" MouseLeftButtonDown="No_MouseLeftButtonDown">
+                            <UXControls:UXTextBlock Name="txtNo" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
+                                      HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
+                        </Border>
+                        <Border Style="{StaticResource BorderYes}" Cursor="Hand" Margin="6,0,0,0" MouseLeftButtonDown="Yes_MouseLeftButtonDown">
+                            <UXControls:UXTextBlock Name="txtYes" Foreground="#F5F6F7" VerticalAlignment="Center" FontWeight="Medium"
+                                      HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                        <UXControls:UXCheckBox Name="chkIgnore" Foreground="#F5F6F7"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
