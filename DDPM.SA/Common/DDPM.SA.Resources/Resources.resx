@@ -483,4 +483,13 @@
   <data name="ImpExp_Message.0" xml:space="preserve">
     <value>The same monitor is detected, do you want to import settings for %1?</value>
   </data>
+  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>Firmware update aborted. Ensure only one device of same model is connected to system.</value>
+  </data>
+  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>USB wireless receiver firmware is unable to support device firmware upgrade</value>
+  </data>
+  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>Firmware update in progress. Fail to abort.</value>
+  </data>
 </root>
