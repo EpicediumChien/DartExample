@@ -112,6 +112,7 @@ namespace DdpmSwUpdater
                         SHA512 = swUpdateHelper.Softwares[i].SHA512,
                         Thumbprint = swUpdateHelper.Softwares[i].Thumbprint
                     };
+                    LogManage.Version = SWUpdateInfo.TheLatestVersion;
                     swUpdateInfos.Add(SWUpdateInfo);
                 }
             }

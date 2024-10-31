@@ -8,7 +8,7 @@ namespace DDPM.UI.Plugin.Common
     /// </summary>
     public partial class MessageModalDialog : Window
     {
-        public MessageModalDialog(string Caption, string Message, string Button1Caption, string Button2Caption = "", double width = 417.0)
+        public MessageModalDialog(string Caption, string Message, string Button1Caption, string Button2Caption = "", string checkboxDescription = "", double width = 417.0)
         {
             InitializeComponent();
 

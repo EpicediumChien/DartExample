@@ -26,7 +26,11 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Border Background="#E00B172C" CornerRadius="4"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Border Background="#E00B172C" CornerRadius="4" Grid.Row="0"
                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 BorderThickness="1" BorderBrush="#293B4D">
@@ -48,6 +52,9 @@
                 </StackPanel>
             </StackPanel>
         </Border>
+        <StackPanel Grid.Row="1" Visibility="Collapsed">
+            <UXControls:UXCheckBox Name="uxCheckBox" IsChecked="True" Content="test string"/>
+        </StackPanel>
         <Image x:Name="CloseIcon" Margin="0,17,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/CloseX.png" Stretch="Fill"
                VerticalAlignment="Top" HorizontalAlignment="Right" Width="14" Height="14" MouseLeftButtonDown="No_MouseLeftButtonDown" Cursor="" />
     </Grid>
