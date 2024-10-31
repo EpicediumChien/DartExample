@@ -90,10 +90,10 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="470" Height="655" Margin="0,10,0,0">
+        <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="470" Margin="0,10,0,20">
             <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                 <Grid VerticalAlignment="Top" Margin="0,0,0,15">
-                    <Border x:Name="MainContentBorder" Background="#99132F54" CornerRadius="6" Width="438" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
+                    <Border x:Name="MainContentBorder" Background="#99132F54" CornerRadius="6" Width="438" VerticalAlignment="Top" Margin="0,0,0,0">
                         <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
                             <Grid>
                                 <UXControls:UXTextBlock x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
