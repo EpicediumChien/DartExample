@@ -4,6 +4,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using DDPM.UI.WalkThroughData;
@@ -108,6 +109,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             { "Audio", 11 },
             { "Docks", 12 }
         };
+
+        private GlobalSettingParam _globalSettings = null;
 
         /// <summary>
         /// Default constructor
@@ -219,6 +222,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             await GetDdpmDevicesAsync(_deviceManager);
 
+                            //1030 get global settings for telemetry consent page using
+                            _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
+                            //1030 Dean
+                            //For Hess to read global setting "_globalSettings"
+                            //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
+                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null)
+                            {
+                                //consent page
+                            }
 
                             if (_deviceManager == null)
                             {
@@ -245,6 +257,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                             _showPluginById = true;
                         }
+
+                        CheckIfNeedImportSetting_Display();
                     }
                 }
             }
@@ -313,6 +327,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             ShowDdpmHome();
                         }
                     }
+
+                    CheckIfNeedImportSetting_Display();
                 }
                 else
                 {
@@ -333,6 +349,41 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
                 }
             }
+        }
+        
+        private void CheckIfNeedImportSetting_Display()
+        {
+            //For existing monitor to check if need to pop-up message to import setting
+            Task.Run(() =>
+            {
+                if (_monitorInfos == null && _monitorInfos.Count == 0)
+                    return;
+                List<MonitorInfo> temp_mos = _monitorInfos;
+                //make sure no walkthrough page displaying
+                while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
+                {
+                    Thread.Sleep(5000);
+                }
+
+                foreach (MonitorInfo info in temp_mos)
+                {
+                    //if(can popup messagebox && not yet to import / already click no need import)
+                    {
+                        //avoid timing issue to cause monitor updated
+                        if (temp_mos.Count != _monitorInfos.Count)
+                            return;
+
+                        //implement your function to display messagebox
+                        //MessageModalDialog dlg = new MessageModalDialog("111", "222", "333", "444", "555");
+                        //Window parentWindow = Window.GetWindow();
+                        //if (parentWindow != null)
+                        //{
+                        //    dlg.Owner = parentWindow;
+                        //}
+                        //return dlg.ShowDialog();
+                    }
+                }
+            });
         }
 
         private void _deviceManager_notifyDeviceDisConnected(object? sender, EventArgs e)

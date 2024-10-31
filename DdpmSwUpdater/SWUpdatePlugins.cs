@@ -95,7 +95,7 @@ namespace DdpmSwUpdater
             InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             bool isSkipCA = GetCheckCAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey);
+            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
             LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
             List<SWUpdateInfo> swUpdateInfos = new List<SWUpdateInfo>();
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
@@ -112,6 +112,7 @@ namespace DdpmSwUpdater
                         SHA512 = swUpdateHelper.Softwares[i].SHA512,
                         Thumbprint = swUpdateHelper.Softwares[i].Thumbprint
                     };
+                    LogManage.Version = SWUpdateInfo.TheLatestVersion;
                     swUpdateInfos.Add(SWUpdateInfo);
                 }
             }
@@ -131,7 +132,7 @@ namespace DdpmSwUpdater
                 string saveFolderName = Guid.NewGuid().ToString();
                 string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck();
+                CertificateCheck caCheck = new CertificateCheck(LogManage.logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 LogManage.LogMessage($"Initialize download path start");
                 if (string.IsNullOrEmpty(installPath))
@@ -191,7 +192,7 @@ namespace DdpmSwUpdater
                     _downloadTimer.Interval = 1000;
                     _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
                     _downloadTimer.Start();
-                    download = new Download();
+                    download = new Download(LogManage.logs);
                     string downloadInfo = "";
                     // 將儲存路徑與從 URL 中提取的檔案名稱組合
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
@@ -204,11 +205,11 @@ namespace DdpmSwUpdater
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
                         }
-                        else if (downloadInfo.Equals("Network fail"))
+                        else if (downloadInfo.StartsWith("Network fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                         }
-                        LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " Download File Fail");
+                        LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " Download File Fail : " + downloadInfo);
                         continue;
                     }
                     LogManage.LogMessage($"Creat extractPath");
@@ -310,7 +311,7 @@ namespace DdpmSwUpdater
             {
                 _SWUpdateInfo = swUpdateInfo;
                 // 要運行的安裝程式路徑和命令行參數
-                string arguments = "/silent";
+                string arguments = "/silent /CreateDesktopIcon";
                 Process _clientProcess = new Process();
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
@@ -400,7 +401,7 @@ namespace DdpmSwUpdater
         }
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(LogManage.logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
@@ -418,7 +419,8 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} {nameof(Unzip)} Start");
             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.Unknow;
             bool ret = false;
-            Unzip unzip = new Unzip();
+            Unzip unzip = new Unzip(LogManage.logs);
+            CertificateCheck certificateCheck = new CertificateCheck(LogManage.logs);
             exeFilePath = "";
             string FileCAInfo = "Pass";
             if (unzip.CheckFileIsZip(filePath))
@@ -433,7 +435,6 @@ namespace DdpmSwUpdater
                         if (!string.IsNullOrEmpty(exeFilePath))
                         {
                             LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                            CertificateCheck certificateCheck = new CertificateCheck();
                             if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                             {
                                 ret = true;
@@ -464,7 +465,7 @@ namespace DdpmSwUpdater
                 if (CheckSHA(filePath, out FileCAInfo))
                 {
                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                    CertificateCheck certificateCheck = new CertificateCheck();
+                    
                     if (certificateCheck.CheckFile_Thumbprint(filePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                     {
                         ret = true;

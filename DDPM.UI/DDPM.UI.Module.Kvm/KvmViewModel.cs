@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.IO;
 using VcpCore.Common;
 using Windows.System;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -176,6 +177,7 @@ namespace DDPM.UI.Module.Kvm
         }
         //[DllImport("user32.dll", SetLastError = true)]
         //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        public readonly ILog _log;
         public IModuleOwner? ModuleOwner { get; set; }
         public KvmModule KvmModule { get; set; }
         public UInt16 PxPCode { get; set; } = 0;
@@ -261,6 +263,7 @@ namespace DDPM.UI.Module.Kvm
                         _isNKVM = false;
                         //isOnNKVM(false);
                     }
+                    bool b = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM").Result;
                 }
             }
         }

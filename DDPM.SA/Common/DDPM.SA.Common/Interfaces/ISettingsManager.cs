@@ -107,7 +107,7 @@ namespace DDPM.SA.Common
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
 
-        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
+        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true);
 
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
