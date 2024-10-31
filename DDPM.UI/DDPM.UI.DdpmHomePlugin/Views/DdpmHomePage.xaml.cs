@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -38,7 +39,41 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //{
                 //    debugRwdParams.Visibility = Visibility.Visible;
                 //}
+                DdpmHomePageViewModel vm = (DdpmHomePageViewModel)_ddpmHomePageViewModel;
+                vm.ImportNotify += ImportNotifyEventHandler;
             }
+        }
+
+        private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top + 40;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                modalDialog.ShowDialog();
+
+                if(modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                {
+                    //For jason to do import
+
+                    //ignore next check for this model
+                    if(modalDialog.isChecked)
+                    {
+
+                    }
+                }
+            });
         }
 
         //Unused

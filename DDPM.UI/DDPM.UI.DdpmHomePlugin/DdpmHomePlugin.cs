@@ -29,6 +29,7 @@ using VcpCore.Common;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
 using static Dell.Client.Framework.Security.LocalAccounts;
+using static Dell.Client.Framework.UX.WPF.WinApi;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using DDPMConstants = DDPM.UI.Common.Constants;
 
@@ -373,14 +374,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         if (temp_mos.Count != _monitorInfos.Count)
                             return;
 
-                        //implement your function to display messagebox
-                        //MessageModalDialog dlg = new MessageModalDialog("111", "222", "333", "444", "555");
-                        //Window parentWindow = Window.GetWindow();
-                        //if (parentWindow != null)
-                        //{
-                        //    dlg.Owner = parentWindow;
-                        //}
-                        //return dlg.ShowDialog();
+                        //force return here to avoid page trigger, need Jason handle it
+                        return;
+                        if(_viewModel != null)
+                        {
+                            _viewModel.InvokeImportQuestion(info);
+                        }
                     }
                 }
             });
