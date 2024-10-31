@@ -82,7 +82,7 @@
 
 
                 <!-- Buttons -->
-                <Grid Grid.Row="4" Margin="0, 93, 0, 0">
+                <Grid Grid.Row="4" Margin="72,532, 0, 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
