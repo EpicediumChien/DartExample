@@ -1,0 +1,13 @@
+{
+  "sid": "1728380251",
+  "req": [
+    {
+      "tid": 1,
+      "active": "set",
+      "devicetype": "display",
+      "command": "DeviceConfiguration",
+      "value": "",
+      "options": {}
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "sid": "1728380239",
+  "req": [
+    {
+      "tid": 1,
+      "active": "get",
+      "devicetype": "display",
+      "command": "ConnectedDevices",
+      "options": {}
+    }
+  ]
+}
