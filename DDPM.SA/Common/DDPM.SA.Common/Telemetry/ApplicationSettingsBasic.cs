@@ -65,4 +65,9 @@ namespace DDPM.SA.Common
         public string UsedLanguage { get; set; } = string.Empty;
     }
 
+
+    public class ApplicationSettings_Settings : ApplicationSettingsBasic 
+    {
+        public string App_Copy_Settings { get; set; } = string.Empty;
+    }
 }

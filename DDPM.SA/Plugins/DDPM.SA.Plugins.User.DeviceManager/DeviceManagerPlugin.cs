@@ -1435,6 +1435,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     ReviewAllMonitorToAvoidDuplicatedInfo();
 
                                     InitMonitorSettings();
+
+                                    Task.Run(() =>
+                                    {
+                                        //Telementry Collection
+                                        var rt = false;
+                                        var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                        rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                        if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                        else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                                    }).ConfigureAwait(false);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1549,41 +1560,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
-            //Telementry Collection
-            var rt = false;
-            var Displaysettings_Function = new Displaysettings_Function();
-            switch (code)
+            Task.Run(() =>
             {
-                case 0x10:
+                //Telementry Collection
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                switch (code)
+                {
+                    case 0x10:
 
-                    if (monitorInfo.CapabilityDic.ContainsKey("12"))
-                    {
-                        writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
-                        rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                        if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
-                        else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
-                    }
-                    else
-                    {
-                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
-                        rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                        if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
-                        else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
-                    }
-                    break;
+                        if (monitorInfo.CapabilityDic.ContainsKey("12"))
+                        {
+                            writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
+                            rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                            if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
+                            else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
+                        }
+                        else
+                        {
+                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
+                            rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                            if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
+                            else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
+                        }
+                        break;
 
-                case 0x12:
+                    case 0x12:
 
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
-                    rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                    if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
-                    else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
+                        rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                        if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
+                        else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
 
-                    break;
+                        break;
 
-                default:
-                    break;
-            }
+                    default:
+                        break;
+                }
+            }).ConfigureAwait(false);
 
             return Task.FromResult(r);
         }
@@ -1598,21 +1612,45 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool r = false;
 
-            r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
-
-            //0712 Jason add
-            if (r && FunctionName == "Input Select")
+            if (monitorInfoX != null)
             {
-                if (_NKVMPlugin != null)
+                if (!string.IsNullOrEmpty(val))
                 {
-                    ObjGetVCP obj = new ObjGetVCP();
-                    obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
-                    if (obj.result)
+                    r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+
+                    //Telementry Collection
+                    var Displaysettings_Function = new Displaysettings_Function();
+                    //0712 Jason add
+                    if (r && FunctionName == "Input Select")
                     {
-                        _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)obj.value).Wait();
+                        if (_NKVMPlugin != null)
+                        {
+                            ObjGetVCP obj = new ObjGetVCP();
+                            obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
+                            if (obj.result)
+                            {
+                                _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)obj.value).Wait();
+                            }
+                        }
+                        if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
+                        {
+                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Success ...");
+                        }
+                        else
+                        {
+                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Fail ...");
+                        }
+                        _AllInfoMonitors = GetMonitors().Result;
                     }
                 }
-                _AllInfoMonitors = GetMonitors().Result;
+                else
+                {
+                    writelog("[DeviceMangerPlugin] [SetVCPCapability] val is null or empty...");
+                }
+            }
+            else
+            {
+                writelog("[DeviceMangerPlugin] [SetVCPCapability] monitorInfoX is null ...");
             }
 
             return Task.FromResult(r);
@@ -1852,6 +1890,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             return Task.FromResult(true);
                         }
                     }
+                }
+                //Telementry Collection
+                var Displaysettings_Function = new Displaysettings_Function();
+                if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
+                {
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Success ...");
+                }
+                else
+                {
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for USB Association Fail ...");
                 }
             }
 
@@ -3793,13 +3841,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
             }
 
-            //Telementry Collection
-            var rt = false;
-            var ApplicationSettings_Function = new ApplicationSettings_Function();
-            writelog("[DeviceMangerPlugin] Send Telementry for LockRotation...");
-            rt = ApplicationSettings_Function.Send_LockRotation_Telementry(_TelementryScheduler, _AllInfoMonitors, onoff);
-            if (rt) writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Success ...");
-            else writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Fail ...");
+            Task.Run(() =>
+            {
+                //Telementry Collection
+                var rt = false;
+                var ApplicationSettings_Function = new ApplicationSettings_Function();
+                writelog("[DeviceMangerPlugin] Send Telementry for LockRotation...");
+                rt = ApplicationSettings_Function.Send_LockRotation_Telementry(_TelementryScheduler, _AllInfoMonitors, onoff);
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Fail ...");
+            }).ConfigureAwait(false);
 
             return Task.FromResult(false);
         }
@@ -4702,6 +4753,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             setting.KVM.isOnUSBKVM = isON;
                             if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
                             {
+                                if (isON)
+                                {
+                                    bool b = SentKVMtoTelementry(monitorInfo, "KVMMode", "USB").Result;
+                                }
                                 return Task.FromResult(true);
                             }
                             break;
@@ -4814,6 +4869,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
                                 //_NKVMPlugin.OnNKVM().Wait();
+                                bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                             }
                             else
                             {
@@ -6221,6 +6277,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
                 {
                     writelog("[DisplayExportSettings]Export is Success");
+                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Export");
+                    ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                    if (_TelementryScheduler != null)
+                    {
+                        if (_AllInfoMonitors != null)
+                        {
+                            if (_AllInfoMonitors.Count > 0)
+                            {
+                                if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Export"))
+                                {
+                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                }
+                                writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                            }
+                            else
+                            {
+                                writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                            }
+                        }
+                        else
+                        {
+                            writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                    }
                     return Task.FromResult(true);
                 }
                 else
@@ -6330,6 +6414,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         writelog("[DisplayImportSettings] Import Success");
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Import");
+                                        ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                                        if (_TelementryScheduler != null)
+                                        {
+                                            if (_AllInfoMonitors != null)
+                                            {
+                                                if (_AllInfoMonitors.Count > 0)
+                                                {
+                                                    if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Import"))
+                                                    {
+                                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                                    }
+                                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                                }
+                                                else
+                                                {
+                                                    writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                                        }
                                         return Task.FromResult(true);
                                     }
                                     else
@@ -6412,6 +6524,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         writelog("[DisplayImportSettings]import is Success");
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Import");
+                                        ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                                        if (_TelementryScheduler != null)
+                                        {
+                                            if (_AllInfoMonitors != null)
+                                            {
+                                                if (_AllInfoMonitors.Count > 0)
+                                                {
+                                                    if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Import"))
+                                                    {
+                                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                                    }
+                                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                                }
+                                                else
+                                                {
+                                                    writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                                        }
                                         return Task.FromResult(true);
                                     }
                                     else
@@ -7050,10 +7190,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
         }
+
         public async Task<string> GetSupportedResolutions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetSupportedResolutions(Guid));
         }
+
         public async Task<string> GetSelectedResolution(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetSelectedResolution(Guid));
@@ -7386,6 +7528,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        public Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo, string mode, string val)
+        {
+            writelog("[SentKVMtoTelementry] SentKVMToTelementry");
+            DisplayFeatures_Functions displayFeatures_Functions = new DisplayFeatures_Functions();
+            DisplayPropertiesInfo displayInfo = GetDisplayPropertiesInfo(monitorInfo).Result;
+            if (_TelementryScheduler != null)
+            {
+                if (displayFeatures_Functions.SentKVMToTelementry(Log, _TelementryScheduler, monitorInfo, displayInfo, mode, val))
+                {
+                    writelog("[SentKVMtoTelementry] SentKVMToTelementry is success");
+                    return Task.FromResult(true);
+                }
+                writelog("[SentKVMtoTelementry] SentKVMToTelementry is fail");
+            }
+            else
+            {
+                writelog("[SentKVMtoTelementry] _TelementryScheduler is null");
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion
 
         #region GlobalSetting
@@ -7491,12 +7654,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
 
                     if (!isEnable)
-                        _TelementryScheduler.ReceiveTelemetryInfo("AppTelemetry,", isEnable ? "Enabled" : "Disabled", Telementry_Frequency.RealTime);
+                        Task.Run(() => _TelementryScheduler.ReceiveTelemetryInfo("AppTelemetry,", isEnable ? "Enabled" : "Disabled", Telementry_Frequency.RealTime));
 
                     _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(isEnable);
 
                     if (isEnable)
-                        _TelementryScheduler.ReceiveTelemetryInfo("AppTelemetry", isEnable ? "Enabled" : "Disabled", Telementry_Frequency.RealTime);
+                        Task.Run(() => _TelementryScheduler.ReceiveTelemetryInfo("AppTelemetry", isEnable ? "Enabled" : "Disabled", Telementry_Frequency.RealTime));
                 }
                 else
                     writelog(nameof(Set_GlobalSetting_EnableTelemetryConsent) + " _TelementryScheduler is null");
@@ -8168,6 +8331,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
 
+                                        Task.Run(() =>
+                                        {
+                                            //Telementry Collection
+                                            var rt = false;
+                                            var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                            rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                            if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                            else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                                        }).ConfigureAwait(false);
+
                                         if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
                                         {
                                             //displayInOut = false;
@@ -8277,6 +8451,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DeviceChangedEventArgs> devHandler = DeviceChanged;
             if (devHandler != null)
                 devHandler.Invoke(this, arg);
+
+            if (_NKVMPlugin != null)
+            {
+                var Cancellation = new CancellationTokenSource();
+                var CancellationToken = Cancellation.Token;
+                _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
+                SupportedNKVMMonitors();
+            }
 
             Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
@@ -8572,6 +8754,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _displaychangedEventArgs.count = e.count;
             _displaychangedEventArgs.monitors = e.monitors;
             OnDisplaychanged(_displaychangedEventArgs);
+
+            Task.Run(() =>
+            {
+                //Telementry Collection
+                var rt = false;
+                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
+                if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+            }).ConfigureAwait(false);
         }
 
         private void show_colorpreset(object sender, VCPchangedEventArgs e)

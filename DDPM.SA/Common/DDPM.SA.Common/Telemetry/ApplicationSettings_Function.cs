@@ -171,5 +171,31 @@ namespace DDPM.SA.Common
             return rt;
         }
 
+
+        public bool Send_Settings_Telementry(ITelementryScheduler plugin, List<MonitorInfo> monitorInfos, string impexp)
+        {
+            var rt = false;
+            List<string> models = new List<string>();
+            List<string> D_Ctrls = new List<string>();
+            List<string> DisplayServiceTags = new List<string>();
+
+            foreach (var monitorInfo in monitorInfos)
+            {
+                models.Add(monitorInfo.modelName);
+                D_Ctrls.Add(monitorInfo.D_Ctrl);
+                DisplayServiceTags.Add(monitorInfo.edid.ServiceTag);
+            }
+
+            var TelemetryDta_Settings = new ApplicationSettings_Settings();
+            TelemetryDta_Settings.DisplayModelname = models.ToList();
+            TelemetryDta_Settings.D_Ctrl = D_Ctrls.ToList();
+            TelemetryDta_Settings.DisplayServiceTag = DisplayServiceTags.ToList();
+            TelemetryDta_Settings.App_Copy_Settings = impexp;
+
+            if (plugin != null)
+                rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_Settings.ToJson(), Telementry_Frequency.RealTime).Result;
+
+            return rt;
+        }
     }
 }

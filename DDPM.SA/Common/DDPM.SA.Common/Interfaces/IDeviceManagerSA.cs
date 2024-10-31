@@ -44,6 +44,8 @@ namespace DDPM.SA.Common
 
         Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
 
+        Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo, string mode, string val);
+
         #endregion TelemetryScheduler
 
         #region EaM
