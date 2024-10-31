@@ -109,7 +109,6 @@ namespace DDPM.SA.Common
         public string SHA256 { get; set; }
         //public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
-        public List<string> Thumbprint_List { get; set; }
         public string ServiceTag { get; set; }
         public string SupplierID { get; set; }
         public string D_Ctrl { get; set; }

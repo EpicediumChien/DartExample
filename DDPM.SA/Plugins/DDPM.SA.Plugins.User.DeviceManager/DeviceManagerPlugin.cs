@@ -4333,17 +4333,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         updateInfo.SHA256 = "";
                         //updateInfo.SHA512 = "";
                         updateInfo.Thumbprint = "";
-                        if (updateInfo.Thumbprint_List != null)
-                        {
-                            if (updateInfo.Thumbprint_List.Count > 0)
-                            {
-                                updateInfo.Thumbprint_List.Clear();
-                            }
-                        }
-                        else
-                        {
-                            updateInfo.Thumbprint_List = new List<string>();
-                        }
                     }
                     config.UserSettings.DelayFWUpdateInfoPackage = fwUpdateInfoPackage;
                     return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
