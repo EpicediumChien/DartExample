@@ -148,17 +148,18 @@ namespace DDPM.CMA.Tester
                 ReadJsonFileAsync("DeviceConfig3"),
                 ReadJsonFileAsync("ConfigLess"),
                 ReadJsonFileAsync("DeviceDataDisplay"),
-                ReadJsonFileAsync("Test")
-            }; 
+                ReadJsonFileAsync("Test"),
+                ReadJsonFileAsync("FwDisplayByOption")
+            };
 
             string[] loadResult = await Task.WhenAll(loadJsonTasks);
             string jsonActHours = loadResult[0].PlainJsonString();
             string jsonGetDisplayMulti = loadResult[1].PlainJsonString();
             string jsonFwDisplay = loadResult[2].PlainJsonString();
-            string jsonFwDock =    loadResult[3].PlainJsonString();
+            string jsonFwDock = loadResult[3].PlainJsonString();
             string jsonFwKb = loadResult[4].PlainJsonString();
             string jsonFwMouse = loadResult[5].PlainJsonString();
-            string jsonDevice =    loadResult[6].PlainJsonString();
+            string jsonDevice = loadResult[6].PlainJsonString();
             string jsonDeviceData = loadResult[7].PlainJsonString();
             string jsonReport = loadResult[8].PlainJsonString();
             string deviceConfig = loadResult[9].PlainJsonString();
@@ -167,6 +168,30 @@ namespace DDPM.CMA.Tester
             string configLess = loadResult[12].PlainJsonString();
             string jsonDeviceDataDisplay = loadResult[13].PlainJsonString();
             string test = loadResult[14].PlainJsonString();
+            string jsonFwDisplayByOption = loadResult[15].PlainJsonString();
+            //string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
+            //string jsonGetDisplayMulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
+
+            //string jsonFwDisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
+            //string jsonFwDock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
+            //string jsonFwKb = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""Keyboard"",""options"":{}}]}";
+            //string jsonFwMouse = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""MOUSE"",""options"":{}}]}";
+
+            //string jsonDevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""ConnectedDevices"",""options"":{}}]}";
+            //string jsonDeviceData = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
+
+
+            //string jsonReport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\temp"",""options"":{}}]}";
+
+            //string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
+            //string jsonDeviceConfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
+
+            //string configless = "{\"Index\": \"1\",\"DeviceType\": \"Display\",\"BrightnessLevel\": \"90%\",\"ContrastLevel\": \"90%\"}";
+            //string jsonDeviceConfig3 = "{\"sid\":\"1728380278\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + configless + ",\"options\":{}}]}";
+
+            //string test = @"{""sid"":""1729840262"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""c:\temp"",""options"":{""index"":""1"",""servicetag"":""aaaaa"",""devicemodel"":""dell ea"",""uod"":true,""forcewithnotice"":true,""updatesilent"":true,""minversion"":""1.0.0.5""}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ConnectedDevices"",""options"":{}}]}";
+
+            //string jsonDeviceDataDisplay = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""DeviceData"",""options"":{}}]}";
 
             RemoteRequestArgs cmaRequest = new RemoteRequestArgs();
 
@@ -249,6 +274,10 @@ namespace DDPM.CMA.Tester
 
                     case 23:
                         cmaRequest.remote_request = jsonDeviceDataDisplay;
+                        break;
+
+                    case 24:
+                        cmaRequest.remote_request = jsonFwDisplayByOption;
                         break;
 
                     default:

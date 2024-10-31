@@ -1,0 +1,16 @@
+{
+  "sid": "1728273742",
+  "req": [
+    {
+      "tid": 1,
+      "active": "fw",
+      "devicetype": "DISPLAY",
+      "options": {
+        "index": "1",
+        "servicetag": "",
+        "modelname": "",
+        "minversion": ""
+      }
+    }
+  ]
+}
