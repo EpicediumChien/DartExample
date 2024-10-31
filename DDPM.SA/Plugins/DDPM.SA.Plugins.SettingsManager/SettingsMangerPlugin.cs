@@ -330,6 +330,10 @@ namespace DDPM.SA.Plugins.SettingsManager
                 if (_settings != null && _settings.global_setting != null)
                 {
                     _settings.global_setting.isSetTelemetryOverInstaller = true;//config that no consent page shown in UI, DDPMW-1254
+                    if (result.ToUpper().Equals("TRUE"))
+                        _settings.global_setting.isTelemetryConsentOn = true;
+                    if (result.ToUpper().Equals("FALSE"))
+                        _settings.global_setting.isTelemetryConsentOn = false;
                     WriteGlobalSettingsToITConfig(_settings.global_setting);
                     WriteRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName, "DONE");
                 }

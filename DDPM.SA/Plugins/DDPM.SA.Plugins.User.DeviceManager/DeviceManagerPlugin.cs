@@ -8144,7 +8144,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
-                                        Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
+                                        if(_AllInfoMonitors.Count > 0)
+                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
                                     }
                                     catch (Exception ex)
                                     {
@@ -8239,7 +8240,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (devHandler != null)
                 devHandler.Invoke(this, arg);
 
-            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
+            if(_AllInfoMonitors.Count > 0)
+                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
 
         private void OnPeripheralsNotify(DeviceChangedEventArgs data)
