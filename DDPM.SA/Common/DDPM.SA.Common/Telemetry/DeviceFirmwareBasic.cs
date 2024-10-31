@@ -31,7 +31,7 @@ namespace DDPM.SA.Common
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
-    public class DisplayFirmware: DeviceFirmwareBasic
+    public class DisplayFirmware : DeviceFirmwareBasic
     {
         public string DisplayModelname { get; set; }
         public string DisplayServiceTag { get; set; }
@@ -40,6 +40,10 @@ namespace DDPM.SA.Common
     public class DisplayFirmware_List
     {
         public List<DisplayFirmware> DisplayFirmwareList { get; set; }
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
     }
     public class PeripheralsFirmware : DeviceFirmwareBasic
     {
@@ -49,5 +53,9 @@ namespace DDPM.SA.Common
     public class PeripheralsFirmware_List
     {
         public List<PeripheralsFirmware> PeripheralsFirmwareList { get; set; }
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
     }
 }
