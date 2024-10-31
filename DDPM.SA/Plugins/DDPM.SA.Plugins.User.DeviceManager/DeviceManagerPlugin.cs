@@ -316,7 +316,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);            
+            _disDevHelper = new DisplayDeviceHelper(Log);
         }
 
         #endregion
@@ -584,7 +584,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Telementry Collection
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
-          
+
             if (colorPresetRunType == 1) //Auto
             {
                 if (!string.IsNullOrEmpty(reqAppName) && !string.IsNullOrEmpty(ColorPreset_Name))
@@ -593,7 +593,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     rt = Displaysettings_Function.Send_Color_Preset_Auto_Telementry(_TelementryScheduler, m, reqAppName + "_" + ColorPreset_Name, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
                     if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Auto Success ...");
                     else writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Auto Fail ...");
-                }              
+                }
             }
             else //Manual
             {
@@ -603,8 +603,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     rt = Displaysettings_Function.Send_Color_Preset_Manual_Telementry(_TelementryScheduler, m, ColorPreset_Name, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
                     if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Manual Success ...");
                     else writelog("[DeviceMangerPlugin] Send Telementry for Color_Preset_Manual Fail ...");
-                }               
-            }           
+                }
+            }
 
             return r;
         }
@@ -616,8 +616,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool blRet = true;
 
             var rt = false;
-            var Displaysettings_Function = new Displaysettings_Function();                   
-            
+            var Displaysettings_Function = new Displaysettings_Function();
+
             if (!string.IsNullOrEmpty(NightLightStatus))
             {
                 writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus...");
@@ -625,7 +625,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (rt) writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus Success ...");
                 else writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus Fail ...");
             }
-            
+
 
             return Task.FromResult(blRet);
         }
@@ -4256,17 +4256,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(o.ToString());
         }
 
-        public Task<bool> CallDDPMUI()
+        public Task<bool> CallDDPMUI(string DDPMPath)
         {
+            writelog($"{nameof(CallDDPMUI)} start");
             bool ret = false;
-            try
+            if (!string.IsNullOrEmpty(DDPMPath))
             {
-
+                try
+                {
+                    writelog($"CloseDDPM start");
+                    string processName = "DDPM";
+                    Process[] processes = Process.GetProcessesByName(processName);
+                    writelog($"CloseDDPM processes.Length {processes.Length}");
+                    if (processes.Length > 0)
+                    {
+                        foreach (Process process in processes)
+                        {
+                            // Close process by sending a close message to its main window.
+                            process.CloseMainWindow();
+                            // Free resources associated with process.
+                            process.Close();
+                        }
+                    }
+                    writelog($"CloseDDPM done");
+                }
+                catch (Exception ex)
+                {
+                    writelog($"CloseDDPM Error:{ex.Message}");
+                }
+                Thread.Sleep(5000);
+                try
+                {
+                    writelog($"RunDDPM start");
+                    Process.Start(DDPMPath);
+                    writelog($"RunDDPM done");
+                }
+                catch (Exception ex)
+                {
+                    writelog($"RunDDPM Error:{ex.Message}");
+                }
             }
-            catch
-            {
-
-            }
+            writelog($"{nameof(CallDDPMUI)} done");
             return Task.FromResult(ret);
         }
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
@@ -4524,7 +4554,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog("*** right_button_action");
                 }
-            }            
+            }
         }
 
         private void UpdateEvent(object o, string ob)
@@ -8442,7 +8472,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
         {
-            if(e == null || e.monitors == null)
+            if (e == null || e.monitors == null)
             {
                 writelog("DeviceMangerPlugin brocast OnDisplaychanged ...null object, return directly");
                 return;
