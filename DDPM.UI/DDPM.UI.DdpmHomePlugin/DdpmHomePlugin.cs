@@ -4,6 +4,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using DDPM.UI.WalkThroughData;
@@ -226,9 +227,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
-                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null)
+                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
-                                //consent page
+                                if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                {
+                                    _viewModel.ShowConsent();
+                                    DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
+                                    DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
+                                }
                             }
 
                             if (_deviceManager == null)
@@ -256,6 +262,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                             _showPluginById = true;
                         }
+
+                        CheckIfNeedImportSetting_Display();
                     }
                 }
             }
@@ -325,15 +333,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
                     }
 
-                    //For existing monitor to check if need to pop-up message to import setting
-                    /*await Task.Run(() =>
-                    {
-                        int time = 0;
-                        while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
-                        {
-                            Thread.Sleep(2000);
-                        }
-                    });*/
+                    CheckIfNeedImportSetting_Display();
                 }
                 else
                 {
@@ -354,6 +354,41 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
                 }
             }
+        }
+        
+        private void CheckIfNeedImportSetting_Display()
+        {
+            //For existing monitor to check if need to pop-up message to import setting
+            Task.Run(() =>
+            {
+                if (_monitorInfos == null && _monitorInfos.Count == 0)
+                    return;
+                List<MonitorInfo> temp_mos = _monitorInfos;
+                //make sure no walkthrough page displaying
+                while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
+                {
+                    Thread.Sleep(5000);
+                }
+
+                foreach (MonitorInfo info in temp_mos)
+                {
+                    //if(can popup messagebox && not yet to import / already click no need import)
+                    {
+                        //avoid timing issue to cause monitor updated
+                        if (temp_mos.Count != _monitorInfos.Count)
+                            return;
+
+                        //implement your function to display messagebox
+                        //MessageModalDialog dlg = new MessageModalDialog("111", "222", "333", "444", "555");
+                        //Window parentWindow = Window.GetWindow();
+                        //if (parentWindow != null)
+                        //{
+                        //    dlg.Owner = parentWindow;
+                        //}
+                        //return dlg.ShowDialog();
+                    }
+                }
+            });
         }
 
         private void _deviceManager_notifyDeviceDisConnected(object? sender, EventArgs e)
