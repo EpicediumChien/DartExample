@@ -46,6 +46,7 @@
                 </DrawingBrush.Drawing>
             </DrawingBrush>
 
+            <CollectionViewSource x:Key="ItemsViewSource" Source="{Binding VbarItems}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -276,6 +277,26 @@
                                 </StackPanel>
                             </Grid>
                         </Grid>
+
+                        <!-- Left vBar -->
+                        <!-- ItemsSource="{Binding VbarItems}" -->
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" x:Name="vBarLeft" Visibility="Collapsed">
+                            <ItemsControl Name="vbarListLeft" Margin="0,10,5,0" HorizontalAlignment="Right" 
+                                          ItemsSource="{Binding Source={StaticResource ItemsViewSource}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <ContentPresenter />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="0,5" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Grid>
                     </Grid>
 
                     <!-- vBar + RightFrame -->
@@ -283,7 +304,8 @@
                         <!-- vBar -->
                         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" x:Name="vBar" 
                               MouseEnter="vBar_MouseEnter" MouseLeave="vBar_MouseLeave">
-                            <ItemsControl Name="vbarList" Margin="0,10,5,0" HorizontalAlignment="Right" ItemsSource="{Binding VbarItems}">
+                            <ItemsControl Name="vbarListRight" Margin="0,10,5,0" HorizontalAlignment="Right" 
+                                          ItemsSource="{Binding Source={StaticResource ItemsViewSource}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
