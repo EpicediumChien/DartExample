@@ -31,23 +31,31 @@ namespace DDPM.SA.Common
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
-    public class DisplayFirmware: DeviceFirmwareBasic
+    public class DisplayFirmware : DeviceFirmwareBasic
     {
         public string DisplayModelname { get; set; }
         public string DisplayServiceTag { get; set; }
         public string D_Ctrl { get; set; }
     }
-    public class DisplayFirmware_List : DisplayFirmware
+    public class DisplayFirmware_List
     {
         public List<DisplayFirmware> DisplayFirmwareList { get; set; }
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
     }
     public class PeripheralsFirmware : DeviceFirmwareBasic
     {
         public string DeviceModelNumber { get; set; }
         public string Connectivity { get; set; }
     }
-    public class PeripheralsFirmware_List : PeripheralsFirmware
+    public class PeripheralsFirmware_List
     {
-        public List<PeripheralsFirmware> DisplayFirmwareList { get; set; }
+        public List<PeripheralsFirmware> PeripheralsFirmwareList { get; set; }
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
     }
 }

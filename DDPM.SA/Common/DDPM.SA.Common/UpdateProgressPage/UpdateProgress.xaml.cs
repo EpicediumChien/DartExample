@@ -188,7 +188,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 UpdateTitle = "Firmware Update - " + e.DeviceName;
                 UpdateSubTitle = "Updating firmware. Do not remove or power off the device. Leave the device undisturbed.";
             }
-            UpdateVersion = e.TheLatestVersion;
+            UpdateVersion = $"Version {e.TheLatestVersion}";
             AlertVisibility = Visibility.Collapsed;
             if (e.ProcessName.Equals("Installing"))
             {

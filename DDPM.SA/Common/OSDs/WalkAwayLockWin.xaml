@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
     AllowsTransparency="True"
     Background="Transparent"
     Loaded="Window_Loaded"
@@ -77,7 +78,7 @@
                         FontSize="20"
                         FontWeight="Medium"
                         Foreground="#FFFFFF"
-                        Text="Walk Away Lock" />
+                        Text="{Binding [Walk_Away_Lock], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     <TextBlock
                         x:Name="ShowStringText"
                         Grid.Row="2"

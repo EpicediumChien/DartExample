@@ -90,8 +90,8 @@
             <local:BooleanToForegroundConverter x:Key="BooleanToForegroundConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="520" Height="655" Margin="0,10,0,0">
+    <Grid Margin="0,0,0,20">
+        <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="520" Margin="0,10,0,0">
             <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                 <Grid>
                     <Grid.ColumnDefinitions>

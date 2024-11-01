@@ -42,6 +42,7 @@ using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using System.ServiceProcess;
 using System.IO.Compression;
+using DDPM.SA.Resources.Helper;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -332,7 +333,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     if (UODFWUInfo.SaveTime == null)
                     {
-                        s = "Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.";
+                        s = LangHelper.Instance["Dock_FW_is_loaded"];
                         UODFWUInfo.SaveTime = DateTime.Now;
                         CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
                     }
@@ -340,7 +341,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (difference.TotalHours >= 24)
                         {
-                            s = "Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.";
+                            s = LangHelper.Instance["Dock_FW_is_loaded"];
                             UODFWUInfo.SaveTime = DateTime.Now;
                             CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
                         }
@@ -349,7 +350,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             if (!string.IsNullOrEmpty(s))
             {
-                NotificationFWupdate("Dock UOD FW update info", s);
+                NotificationFWupdate(LangHelper.Instance["Dock_UOD_FW_update_info"], s);
             }
         }
 
@@ -423,6 +424,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         if (deviceTypeList == null)
                         {
+                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                             {
                                 TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
@@ -450,20 +452,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         else if (deviceTypeList != null && !isOnlyDisplay)
                         {
-                            if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
+                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} in no null");
+                            if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)))
                             {
-                                List<string> thumbprint_List = new List<string>();
-                                if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint))
-                                {
-                                    foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
-                                    {
-                                        if (s.Length >= 10)
-                                        {
-                                            thumbprint_List.Add(s);
-                                            break;
-                                        }
-                                    }
-                                }
                                 FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                                 {
                                     TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
@@ -519,6 +510,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                     }
                 }
+                _logs.DebugMsg_1($"{nameof(_fWUpdateInfoPackage.FWUpdateInfo.Count)} : {_fWUpdateInfoPackage.FWUpdateInfo.Count}");
                 if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
                     if (!_IsUITrigger)

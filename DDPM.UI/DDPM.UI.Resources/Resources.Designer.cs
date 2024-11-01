@@ -2995,7 +2995,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new monitor %1 is detected..
+        ///   Looks up a localized string similar to An new monitor %1 is detected..
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {
@@ -5052,6 +5052,33 @@ namespace DDPM.UI.Resources {
         internal static string VisionEngine_Night {
             get {
                 return ResourceManager.GetString("VisionEngine_Night", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DDPM.Subagent.DeviceManager is not ready.
+        /// </summary>
+        internal static string Wait_DevMgr {
+            get {
+                return ResourceManager.GetString("Wait_DevMgr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DellTechHub service is not running.
+        /// </summary>
+        internal static string Wait_DTH {
+            get {
+                return ResourceManager.GetString("Wait_DTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No device detected.
+        /// </summary>
+        internal static string Wait_NoDevice {
+            get {
+                return ResourceManager.GetString("Wait_NoDevice", resourceCulture);
             }
         }
         
