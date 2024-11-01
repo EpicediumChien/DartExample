@@ -224,9 +224,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 command = command + (" servicetag=" + option.servicetag);
             }
 
-            if (option.modelname != null && option.modelname.Length > 0)
+            if (option.model != null && option.model.Length > 0)
             {
-                command = command + (" model=" + option.modelname);
+                command = command + (" model=" + option.model);
             }
 
             return command;
@@ -272,9 +272,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 command = command + (" servicetag=" + option.servicetag);
             }
 
-            if (option.modelname != null && option.modelname.Length > 0)
+            if (option.model != null && option.model.Length > 0)
             {
-                command = command + (" model=" + option.modelname);
+                command = command + (" model=" + option.model);
             }
 
             return command;
@@ -305,19 +305,19 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 bool hasOption = false;
 
-                if (Params.FwUpdateOptions.ForceWithNotice.ToLower().Equals(task.value.ToLower()))
+                if (Params.FwUpdateValues.ForceWithNotice.ToLower().Equals(task.value.ToLower()))
                 {
                     command = command + (",forcewithnotice");
                     hasOption = true;
                 }
 
-                if (Params.FwUpdateOptions.ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
+                if (Params.FwUpdateValues.ForceWithNonotice.ToLower().Equals(task.value.ToLower()))
                 {
                     command = command + (",forcewithnonotice");
                     hasOption = true;
                 }
 
-                if (Params.FwUpdateOptions.Defer.ToLower().Equals(task.value.ToLower()))
+                if (Params.FwUpdateValues.Defer.ToLower().Equals(task.value.ToLower()))
                 {
                     command = command + (",Defer");
                     hasOption = true;
@@ -328,7 +328,26 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (",forcewithnotice");
                 }
 
-                //CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+                CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
+                /*if (option.index != null && option.index.Length > 0)
+                {
+                    command = command + (" index=" + option.index);
+                }*/
+
+                if (option.servicetag != null && option.servicetag.Length > 0)
+                {
+                    command = command + (" value=" + option.servicetag + ",servicetag");
+                }
+
+                if (option.minversion != null && option.minversion.Length > 0)
+                {
+                    command = command + (" value=" + option.minversion + ",minversion");
+                }
+
+                if (option.model != null && option.model.Length > 0)
+                {
+                    command = command + (" value=\"" + option.model + "\",model");
+                }
             }
 
             return command;
@@ -502,7 +521,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     catch
                     {
                         responseMsg = "Exception: Unknow Result";
-                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult?.serialize_Json_response + "]}";
+                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 99,\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult?.serialize_Json_response + "]}";
                     }
                     count = count + 1;
                     taskInfoQueue.Dequeue();

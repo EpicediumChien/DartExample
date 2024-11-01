@@ -92,22 +92,17 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 servicetag = (string)options["servicetag"];
 
-                modelname = (string)options["modelname"];
+                minversion = (string)options["minversion"];
 
-                /*                forcewithnotice = (bool)options["forcewithnotice"];
+                model = (string)options["model"];
 
-                                forcewithnonotice = (bool)options["forcewithnonotice"];
-
-                                defer = (bool)options["defer"];*/
 
             }
 
             public string index { get; set; } = string.Empty;
             public string servicetag { get; set; } = string.Empty;
-            public string modelname { get; set; } = string.Empty;
-            /*            public bool forcewithnotice { get; set; } = false;
-                        public bool forcewithnonotice { get; set; } = false;
-                        public bool defer { get; set; } = false;*/
+            public string minversion { get; set; } = string.Empty;
+            public string model { get; set; } = string.Empty;
 
         }
 
