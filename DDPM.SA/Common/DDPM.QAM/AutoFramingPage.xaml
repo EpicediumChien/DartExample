@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"            
              xmlns:local="clr-namespace:DDPM.QAM"
              mc:Ignorable="d"
              Height="72"
@@ -25,7 +26,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" x:Name="SwitchText"
-                                           Text="OFF"
+                                           Text="{Binding [OFF], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                            Width="24"
                                            Height="20"
                                            VerticalAlignment="Center"
@@ -42,7 +43,7 @@
                                          Fill="White"
                                          HorizontalAlignment="Left"
                                          Margin="5,0,0,0" />
-                                
+
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked"
@@ -74,7 +75,7 @@
             <StackPanel HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                <UXControls:UXTextBlock Text="AI Auto-Framing"
+                <UXControls:UXTextBlock Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                         FontSize="16"
                                         Foreground="White"
                                         TextBlockSemanticColorType="Light"

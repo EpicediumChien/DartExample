@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock On</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock Off</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">

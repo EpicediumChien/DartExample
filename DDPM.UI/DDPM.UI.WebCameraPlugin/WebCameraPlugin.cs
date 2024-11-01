@@ -64,6 +64,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         if (_viewModel.IsMicEnumerationOnEnabled)
                         {
+                            _viewModel.AlertType = WebcamAlert.Alert3;
                             _viewModel!.OnGoBackClicked();
                         }
                     }
