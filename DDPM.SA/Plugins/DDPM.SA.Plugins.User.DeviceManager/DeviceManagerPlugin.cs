@@ -6259,57 +6259,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog("[DisplayExportSettings]monitorSettings is null");
                     }
                 }
-            }
-            else
-            {
-                writelog("[DisplayExportSettings]settings is null");
-            }
 
-            try
-            {
-                //expot settings
-                if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
+                try
                 {
-                    writelog("[DisplayExportSettings]Export is Success");
-                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Export");
-                    ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
-                    if (_TelementryScheduler != null)
+                    //expot settings
+                    if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, settings, path).Result)
                     {
-                        if (_AllInfoMonitors != null)
+                        writelog("[DisplayExportSettings]Export is Success");
+                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Export");
+                        ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                        if (_TelementryScheduler != null)
                         {
-                            if (_AllInfoMonitors.Count > 0)
+                            if (_AllInfoMonitors != null)
                             {
-                                if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Export"))
+                                if (_AllInfoMonitors.Count > 0)
                                 {
-                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                    if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Export"))
+                                    {
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                    }
+                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
                                 }
-                                writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                else
+                                {
+                                    writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                }
                             }
                             else
                             {
-                                writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
                             }
                         }
                         else
                         {
-                            writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                            writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                         }
+                        return Task.FromResult(true);
                     }
                     else
                     {
-                        writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                        writelog("[DisplayExportSettings]Export is fail");
                     }
-                    return Task.FromResult(true);
                 }
-                else
+                catch
                 {
-                    writelog("[DisplayExportSettings]Export is fail");
+                    writelog("[DisplayExportSettings]Export catch is fail");
+                    return Task.FromResult(false);
                 }
             }
-            catch
+            else
             {
-                writelog("[DisplayExportSettings]Export catch is fail");
-                return Task.FromResult(false);
+                writelog("[DisplayExportSettings]settings is null");
             }
             return Task.FromResult(false);
         }
