@@ -322,6 +322,7 @@ namespace DDPM.UI.Module.InputSource
                     _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
                     OnPropertyChanged("Items_Selected");
                     OnPropertyChanged("InputsList");
+                    DdpmCommonHelper.bInputSourceRenamed = true;
                 }
             }
 
@@ -342,14 +343,14 @@ namespace DDPM.UI.Module.InputSource
                 if (InputsList.Count > 0)
                 {
                     int idx = InputsList.FindIndex(x => x.inputSource == e.value);
-                    if(idx >= 0)
+                    if (idx >= 0)
                     {
                         InputSourceList item = InputsList[idx];
                         _selectInput = item;
                         OnPropertyChanged("Items_Selected");
                     }
                 }
-            }            
+            }
         }
         #endregion
     }
