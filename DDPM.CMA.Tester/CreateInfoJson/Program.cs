@@ -22,7 +22,7 @@ namespace CreateInfoJson
                 {
                     index = "1",
                     servicetag = "aaaaa",
-                    modelname = "dell ea",
+                    model = "dell ea",
                     minversion = "1.0.0.5"
                 }.toString()
             };

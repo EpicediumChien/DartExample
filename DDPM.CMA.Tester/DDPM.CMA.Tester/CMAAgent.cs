@@ -147,6 +147,10 @@ namespace DDPM.CMA.Tester
 
             string jsondevicedatadisplay = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""DeviceData"",""options"":{}}]}";
 
+            string fwdisplaytest = @"{""sid"":""1730373296"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""display"",""value"":""forcewithnotice"",""options"":{""index"":""1"",""servicetag"":""aaaaa"",""model"":""dell ea"",""minversion"":""1.0.0.5""}}]}";
+            string testlock = @"{""sid"":""1730375319"",""req"":[{""tid"":1,""active"":""lock"",""devicetype"":""app"",""command"":""inappupdate"",""options"":{}},{""tid"":2,""active"":""unlock"",""devicetype"":""app"",""command"":""telemetryconsent"",""value"":""True"",""options"":{}}]}";
+            
+            
             RemoteRequestArgs cmaRequest = new RemoteRequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
@@ -173,6 +177,9 @@ namespace DDPM.CMA.Tester
                 Console.WriteLine("21. Show 2 task.");
                 Console.WriteLine("22. DeviceConfiguration with only few attributes.");
                 Console.WriteLine("23. Show DeviceData - Display.");
+
+                Console.WriteLine("31. Show Fwupdate Display with options.");
+                Console.WriteLine("32. Show Lock/Unlock.");
 
                 Console.WriteLine("0. Exit.");
 
@@ -228,6 +235,14 @@ namespace DDPM.CMA.Tester
 
                     case 23:
                         cmaRequest.remote_request = jsondevicedatadisplay;
+                        break;
+
+                    case 31:
+                        cmaRequest.remote_request = fwdisplaytest;
+                        break;
+
+                    case 32:
+                        cmaRequest.remote_request = testlock;
                         break;
 
                     default:
