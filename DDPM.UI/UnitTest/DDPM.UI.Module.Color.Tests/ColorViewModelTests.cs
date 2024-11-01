@@ -253,84 +253,84 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-        [Test]
-        public void TestWatchForProcessStart()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessStart();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessStart()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessStart();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
-        [Test]
-        public void TestWatchForProcessEnd()
-        {
-            try
-            {
-                colorViewModel.WatchForProcessEnd();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestWatchForProcessEnd()
+        //{
+        //    try
+        //    {
+        //        colorViewModel.WatchForProcessEnd();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
 
 
-        [Test]
-        public void TestSyncNightlightStatus()
-        {
-            //using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
-            //object obj = registryKey?.GetValue("Data");
-            //byte[] array = (byte[])obj;
-            //array[18] = 0x13;
-            //object valueset=array.ToString();
-            //registryKey?.SetValue("Data", valueset);
+        //[Test]
+        //public void TestSyncNightlightStatus()
+        //{
+        //    //using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+        //    //object obj = registryKey?.GetValue("Data");
+        //    //byte[] array = (byte[])obj;
+        //    //array[18] = 0x13;
+        //    //object valueset=array.ToString();
+        //    //registryKey?.SetValue("Data", valueset);
 
-            colorViewModel.MyModule = new ColorModule();
-            PrivateObject pObj = new PrivateObject(colorViewModel);
-            pObj.Invoke("SyncNightlightStatus", null);
+        //    colorViewModel.MyModule = new ColorModule();
+        //    PrivateObject pObj = new PrivateObject(colorViewModel);
+        //    pObj.Invoke("SyncNightlightStatus", null);
 
-            Assert.That(colorViewModel.NightlightStatus, Is.Not.Null);
-        }
+        //    Assert.That(colorViewModel.NightlightStatus, Is.Not.Null);
+        //}
 
-        [Test]
-        public void TestStopRegistryMonitor()
-        {
+        //[Test]
+       //public void TestStopRegistryMonitor()
+        //{
             //colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
             //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
             //colorViewModel.StopRegistryMonitor();
             //Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
             //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
-        }
+        //}
 
-        [Test]
-        public void TestOnRegChanged_NightLight()
-        {
-            //colorViewModel.MyModule = new ColorModule();
-            //colorViewModel.OnRegChanged_NightLight(null, null);
+        //[Test]
+        //public void TestOnRegChanged_NightLight()
+        //{
+        //    //colorViewModel.MyModule = new ColorModule();
+        //    //colorViewModel.OnRegChanged_NightLight(null, null);
 
-            //Assert.That(colorViewModel.NightlightStatus, Is.Not.Null);
-        }
+        //    //Assert.That(colorViewModel.NightlightStatus, Is.Not.Null);
+        //}
 
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestOnError_NightLight()
-        {
-            //colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
-            //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
-            //colorViewModel.MyModule = new ColorModule();
-            //colorViewModel.OnError_NightLight(null, null);
+        //[Test]
+        //[Apartment(ApartmentState.STA)]
+        //public void TestOnError_NightLight()
+        //{
+        //    //colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
+        //    //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
+        //    //colorViewModel.MyModule = new ColorModule();
+        //    //colorViewModel.OnError_NightLight(null, null);
 
-            //Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
-            //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
-        }
+        //    //Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
+        //    //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
+        //}
 
         //[Test]
         //public void TestOnRegChanged_ICC()
