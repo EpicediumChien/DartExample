@@ -1,5 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using DDPM.SA.Common;
+using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using VcpCore.Common;
@@ -9,8 +11,9 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 {
     public class HDRSetting
     {
-        public bool GetWindowsHDRStatus(EDID monitorEdid, out bool blOnOff)
+        public bool GetWindowsHDRStatus(Logs _logs, EDID monitorEdid, out bool blOnOff)
         {
+            _logs?.DebugMsg_1($"{nameof(GetWindowsHDRStatus)} start");
             DISPLAYCONFIG_PATH_INFO path = new DISPLAYCONFIG_PATH_INFO();
             GetDisplayConfigPath(monitorEdid, out path);
             bool result = false;
@@ -24,24 +27,27 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 info.header.size = Marshal.SizeOf<DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO>();
                 info.header.adapterId = path.targetInfo.adapterId;
                 info.header.id = path.targetInfo.id;
-
-                if (_DisplayConfigGetDeviceInfo(ref info) == 0)
+                int ret = _DisplayConfigGetDeviceInfo(ref info);
+                _logs?.DebugMsg_1($"{nameof(GetWindowsHDRStatus)} ret : {ret}");
+                if (ret == 0)
                 {
                     blOnOff = info.advancedColorEnabled;
                     result = true;
                 }
             }
-            catch (Exception)// ex)
+            catch (Exception ex)
             {
+                _logs?.DebugMsg_1($"{nameof(SetWindowsHDRStatus)} Error : {ex.ToString()}");
             }
-
+            _logs?.DebugMsg_1($"{nameof(GetWindowsHDRStatus)} done");
             return result;
         }
 
         //https://csharp.hotexamples.com/es/examples/-/DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE/-/php-displayconfig_set_advanced_color_state-class-examples.html
         //https://github.com/dumbie/ArnoldVinkCode/blob/master/Desktop/Functions/AVDisplayMonitor/AVDisplayMonitorDisplayConfig.cs
-        public bool SetWindowsHDRStatus(EDID monitorEdid, bool bEnable)
+        public bool SetWindowsHDRStatus(Logs _logs, EDID monitorEdid, bool bEnable)
         {
+            _logs?.DebugMsg_1($"{nameof(SetWindowsHDRStatus)} start");
             DISPLAYCONFIG_PATH_INFO Path = new DISPLAYCONFIG_PATH_INFO();
             GetDisplayConfigPath(monitorEdid, out Path);
             bool result = false;
@@ -53,14 +59,16 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 deviceInfo.header.adapterId = Path.targetInfo.adapterId;
                 deviceInfo.header.id = Path.targetInfo.id;
                 deviceInfo.advancedColorEnabled = bEnable;
-
-                if (_DisplayConfigSetDeviceInfo(ref deviceInfo) == 0)
+                int ret = _DisplayConfigSetDeviceInfo(ref deviceInfo);
+                _logs?.DebugMsg_1($"{nameof(SetWindowsHDRStatus)} ret : {ret}");
+                if (ret == 0)
                     result = true;
             }
-            catch (Exception)// ex)
+            catch (Exception ex)
             {
-                //Console.WriteLine($"\t SetWindowsHDRStatus exception:{ex.ToString()}");
+                _logs?.DebugMsg_1($"{nameof(SetWindowsHDRStatus)} Error : {ex.ToString()}");
             }
+            _logs?.DebugMsg_1($"{nameof(SetWindowsHDRStatus)} done");
             return result;
         }
 
@@ -179,7 +187,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                             foreach (string s in valueStrings)
                                 outValue += (string)s;
 
-                            var tmp = registryKey2.GetValue("ContainerID", "");
+                            var tmp = registryKey2.GetValue("Driver", "");
                             if (tmp == null)
                             {
                                 return false;

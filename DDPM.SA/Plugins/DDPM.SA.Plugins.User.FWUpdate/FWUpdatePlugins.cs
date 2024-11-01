@@ -788,14 +788,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _fWUpdateInfo = fwUpdateInfos[i];
                     _updateErrorCode = FWUErrorCode.Unknow;
                     fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
-                    if (CheckSameDevice(fwUpdateInfos[i]))
+                    if (!fwUpdateInfos[i].IsDisplay)
                     {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
-                        continue;
+                        if (CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i]))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
+                            NotificationFWupdate("Error", _notificationStr);
+                            continue;
+                        }
                     }
-                    if (CheckPCBattery(fwUpdateInfos[i]))
+                    if (CheckPCBattery_IsStopUpdate(fwUpdateInfos[i]))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.PCBatteryTooLow;
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
                     string url = fwUpdateInfos[i].ServerPath;
@@ -890,6 +895,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
                     }
+                    _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " done");
                 }
                 // 檢查資料夾是否存在
                 if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
@@ -1009,29 +1015,34 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
 
         /// <summary>
-        /// Check if the same device is connected
+        /// Check whether there are multiple docks plugged in, multiple of the same model, and whether the device has sufficient power.
         /// </summary>
         /// <param name="currentFWInfo">Firmware information currently to be updated</param>
         /// <returns>Two Docks are connected at the same time return true; otherwise return false.</returns>
-        private bool CheckSameDevice(FWUpdateInfo currentFWInfo)
+        private bool CheckDeviceStatus_IsStopUpdate(FWUpdateInfo currentFWInfo)
         {
-            bool isDockUpdate = false;
-            if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
+            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} start");
+            bool ret = false;
+            CallGetDeviceInfos?.AsyncFireAndForget(this, new EventArgs(), System.Threading.CancellationToken.None);
+            int count = 0;
+            do
             {
-                isDockUpdate = true;
-            }
-            int dockCount = 0;
-            if (isDockUpdate)
+                Thread.Sleep(100);
+                count++;
+            } while (_DeviceInfos == null && count <= 5);
+
+            if (_DeviceInfos != null)
             {
-                CallGetDeviceInfos?.AsyncFireAndForget(this, new EventArgs(), System.Threading.CancellationToken.None);
-                int count = 0;
-                do
+                bool isDockUpdate = false;
+                if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
                 {
-                    Thread.Sleep(100);
-                    count++;
-                } while (_DeviceInfos == null && count <= 5);
-                if (_DeviceInfos != null)
+                    isDockUpdate = true;
+                }
+
+                if (isDockUpdate)
                 {
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} isDockUpdate: {isDockUpdate}");
+                    int dockCount = 0;
                     foreach (DeviceInfo device in _DeviceInfos)
                     {
                         if (device != null)
@@ -1046,17 +1057,44 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                         }
                     }
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dockCount: {dockCount}");
+                    if (dockCount >= 2)
+                    {
+                        _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
+                        ret = true;
+                    }
                 }
-                _DeviceInfos = null;
+                else
+                {
+                    List<DeviceInfo> deviceInfos = _DeviceInfos.FindAll(o => o.ModelNumber.Equals(currentFWInfo.Model));
+                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.Count : {deviceInfos.Count}");
+                    if (deviceInfos.Count >= 2)
+                    {
+                        _notificationStr = "Firmware update aborted. Ensure only one device of same model is connected to system.";
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.Model: {currentFWInfo.Model}: Multiple devices of the same model are plugged in");
+                        ret = true;
+                    }
+                    else if (deviceInfos.Count >= 1)
+                    {
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.IsBatteryLevelSupported : {deviceInfos[0].IsBatteryLevelSupported}");
+                        if (deviceInfos[0].IsBatteryLevelSupported)
+                        {
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfos[0].BatteryStatus}");
+                            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfos[0].BatteryLevel}");
+                            if (deviceInfos[0].BatteryLevel < 20)
+                            {
+                                _notificationStr = "Firmware update unsuccessful.";
+                                ret = true;
+                            }
+                        }
+                    }
+                }
             }
-            if (dockCount >= 2 && isDockUpdate)
-            {
-                _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
-                NotificationFWupdate("Error", _notificationStr);
-                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：" + _notificationStr); // 輸出錯誤訊息
-                return true;
-            }
-            return false;
+            _DeviceInfos = null;
+            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} ret : {ret}");
+            _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} done");
+            return ret;
         }
 
         /// <summary>
@@ -1064,8 +1102,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="currentFWInfo">Firmware information currently to be updated</param>
         /// <returns>Computer power is less than 10% returns true; otherwise it returns false.</returns>
-        private bool CheckPCBattery(FWUpdateInfo currentFWInfo)
+        private bool CheckPCBattery_IsStopUpdate(FWUpdateInfo currentFWInfo)
         {
+            _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} start");
+            bool ret = false;
             bool isDockUpdate = false;
             if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
             {
@@ -1073,16 +1113,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             BatteryInfo batteryInfo = new BatteryInfo();
             batteryInfo.GetBatteryInfo(out var battery);
-            _logs.DebugMsg_1(nameof(CheckPCBattery) + " battery life percent：" + battery.BatteryLifePercent);
+            _logs.DebugMsg_1(nameof(CheckPCBattery_IsStopUpdate) + " battery life percent：" + battery.BatteryLifePercent);
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
             if (isDockUpdate && battery.BatteryLifePercent <= 10)
             {
                 _notificationStr = $"{_fWUpdateInfo.DeviceName} update download cancel, because PC battery too low.";
                 NotificationFWupdate("Error", _notificationStr);
-                _logs.DebugMsg_1(nameof(CheckPCBattery) + " Error：" + _notificationStr); // 輸出錯誤訊息
-                return true;
+                _logs.DebugMsg_1(nameof(CheckPCBattery_IsStopUpdate) + " Error：" + _notificationStr); // 輸出錯誤訊息
+                ret = true;
             }
-            return false;
+            _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} done");
+            return ret;
         }
 
         /// <summary>
