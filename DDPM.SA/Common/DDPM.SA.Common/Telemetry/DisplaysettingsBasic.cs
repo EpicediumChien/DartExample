@@ -78,4 +78,28 @@ namespace DDPM.SA.Common
     {
         public string NightLightStatus { get; set; } = string.Empty;
     }
+    public class DisplayFeatures_GamingEnhancementMode : DisplaysettingsBasic
+    {
+        public string GamingEnhancementMode { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingResponseTime : DisplaysettingsBasic
+    {
+        public string GamingResponseTime { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingDarkStabilizer : DisplaysettingsBasic
+    {
+        public string GamingDarkStabilizer { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingHDRType : DisplaysettingsBasic
+    {
+        public string GamingHDRType { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingRefreshRate : DisplaysettingsBasic
+    {
+        public string GamingRefreshRate { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingVisionEngine : DisplaysettingsBasic
+    {
+        public string GamingVisionEngine { get; set; } = string.Empty;
+    }
 }

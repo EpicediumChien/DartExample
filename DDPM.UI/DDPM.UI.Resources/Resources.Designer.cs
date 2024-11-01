@@ -2941,11 +2941,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not prompt again for the same model.
+        /// </summary>
+        internal static string ImpExp_CheckBox_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_CheckBox.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatically apply the settings when the same model is detected.
         /// </summary>
         internal static string ImpExp_Message_0 {
             get {
                 return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to import the application settings for ease of use?.
+        /// </summary>
+        internal static string ImpExp_Message_1 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.1", resourceCulture);
             }
         }
         
@@ -2973,6 +2991,15 @@ namespace DDPM.UI.Resources {
         internal static string ImpExp_SuccessMsg_1 {
             get {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An new monitor %1 is detected..
+        /// </summary>
+        internal static string ImpExp_Title_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Title.0", resourceCulture);
             }
         }
         
@@ -5025,6 +5052,33 @@ namespace DDPM.UI.Resources {
         internal static string VisionEngine_Night {
             get {
                 return ResourceManager.GetString("VisionEngine_Night", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DDPM.Subagent.DeviceManager is not ready.
+        /// </summary>
+        internal static string Wait_DevMgr {
+            get {
+                return ResourceManager.GetString("Wait_DevMgr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DellTechHub service is not running.
+        /// </summary>
+        internal static string Wait_DTH {
+            get {
+                return ResourceManager.GetString("Wait_DTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No device detected.
+        /// </summary>
+        internal static string Wait_NoDevice {
+            get {
+                return ResourceManager.GetString("Wait_NoDevice", resourceCulture);
             }
         }
         
