@@ -2143,7 +2143,7 @@
     <value>Automatically apply the settings when the same model is detected</value>
   </data>
   <data name="DisplayDefault.0" xml:space="preserve">
-    <value>Do you want to reset your monitor to factory settings now?</value>
+    <value>Are you sure you want to restore all default settings on your device?</value>
   </data>
   <data name="RestoreToDefaultActions" xml:space="preserve">
     <value>Restore to default actions</value>
