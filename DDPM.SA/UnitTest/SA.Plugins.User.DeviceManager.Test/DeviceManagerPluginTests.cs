@@ -1321,7 +1321,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetResolutions(new MonitorInfo(), new DDPM.SA.Common.Properties()), $"SetResolutions() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetResolutions(monitorInfo, new DDPM.SA.Common.Properties()), $"SetResolutions() returns null");
         }
 
         [Test]
