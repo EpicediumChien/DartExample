@@ -11577,7 +11577,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
                 if (obLuminance.result)
                 {
-                    uint luminanceValue = ((uint)obLuminance.value) <= 1 ? 0 : (uint)obLuminance.value - 1;
+                    uint luminanceValue = ((uint)obLuminance.value) <= 5 ? 0 : (uint)obLuminance.value - 5;
                     bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
                     writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
                 }
@@ -11592,7 +11592,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
                 if (obLuminance.result && obLuminanceMax.result)
                 {
-                    uint luminanceValue = ((uint)obLuminance.value) + 1 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 1;
+                    uint luminanceValue = ((uint)obLuminance.value) + 5 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 5;
                     bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
                     writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
                 }
