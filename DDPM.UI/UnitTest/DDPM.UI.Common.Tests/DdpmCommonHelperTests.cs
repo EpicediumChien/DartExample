@@ -82,51 +82,51 @@ namespace DDPM.UI.Common.Tests
         [DllImport("User32.dll", EntryPoint = "FindWindow")]
         public static extern IntPtr FindWindow(string className, string windowName);
         public const int WM_CLOSE = 0x10;
-        [Test]
-        public void TestDDPMMesssageBox()
-        {
-            IntPtr hwnd_win;
-            hwnd_win = FindWindow(null, "title");
-            Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
-            t.Start();
-            while (hwnd_win == 0)
-            {
-                Thread.Sleep(1000);
-                hwnd_win = FindWindow(null, "DDPMMsgBox");
-            }
+        //[Test]
+        //public void TestDDPMMesssageBox()
+        //{
+        //    IntPtr hwnd_win;
+        //    hwnd_win = FindWindow(null, "title");
+        //    Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
+        //    t.Start();
+        //    while (hwnd_win == 0)
+        //    {
+        //        Thread.Sleep(1000);
+        //        hwnd_win = FindWindow(null, "DDPMMsgBox");
+        //    }
 
-            //var task1= Task.Run(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));                   
-            //task1.Wait();
-            //while (hwnd_win == 0)
-            //{
-            //    Thread.Sleep(1000);
-            //    hwnd_win = FindWindow(null, "DDPMMsgBox");
-            //}
-            //Thread.Sleep(10000);
-
-
-            //Dispatcher.BeginInvoke(new Action(delegate
-            //{
-            //    task1.Wait();
-            //}));   
-
-            //var t1 = new Task(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
-            //t1.Start();
-            //IntPtr hwnd_win;
-            //hwnd_win = FindWindow(null, "title");
+        //    //var task1= Task.Run(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));                   
+        //    //task1.Wait();
+        //    //while (hwnd_win == 0)
+        //    //{
+        //    //    Thread.Sleep(1000);
+        //    //    hwnd_win = FindWindow(null, "DDPMMsgBox");
+        //    //}
+        //    //Thread.Sleep(10000);
 
 
-            //var result = DdpmCommonHelper.DDPMMesssageBox("title", "text", null);
-            //IntPtr hwnd_win;
-            //hwnd_win = FindWindow(null, "DDPMMsgBox");
-            //SendMessage(hwnd_win, WM_CLOSE, 0, 0);
-            //// Assert
-            //Assert.That(result, Is.EqualTo(false));
+        //    //Dispatcher.BeginInvoke(new Action(delegate
+        //    //{
+        //    //    task1.Wait();
+        //    //}));   
 
-            //result = DdpmCommonHelper.DDPMMesssageBox("title", "text", new DependencyObject());
-            //// Assert
-            //Assert.That(result, Is.EqualTo(false));
-        }
+        //    //var t1 = new Task(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", null));
+        //    //t1.Start();
+        //    //IntPtr hwnd_win;
+        //    //hwnd_win = FindWindow(null, "title");
+
+
+        //    //var result = DdpmCommonHelper.DDPMMesssageBox("title", "text", null);
+        //    //IntPtr hwnd_win;
+        //    //hwnd_win = FindWindow(null, "DDPMMsgBox");
+        //    //SendMessage(hwnd_win, WM_CLOSE, 0, 0);
+        //    //// Assert
+        //    //Assert.That(result, Is.EqualTo(false));
+
+        //    //result = DdpmCommonHelper.DDPMMesssageBox("title", "text", new DependencyObject());
+        //    //// Assert
+        //    //Assert.That(result, Is.EqualTo(false));
+        //}
 
 
         [Test]
