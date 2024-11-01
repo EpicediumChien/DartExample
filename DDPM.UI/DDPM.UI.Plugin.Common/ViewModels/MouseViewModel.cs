@@ -280,8 +280,8 @@ namespace DDPM.UI.Plugin.ViewModels
             //_buttonCollection.Add(MouseButton.Left.ToString());
             //_buttonCollection.Add(MouseButton.Right.ToString());
             //ButtonCollection = _buttonCollection;
-            OnPropertyChanged(nameof(ButtonCollection));
             PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
+            OnPropertyChanged(nameof(ButtonCollection));
 
             if (SelectedApp != "AllApp")
                 SelectedApp = "AllApp";
@@ -444,7 +444,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         switch (property)
                         {
                             case "MousePrimaryButtonChanged":
-                                PrimaryButtonIndex = (int)di.MousePrimaryButton;
+                                PrimaryButtonIndex = di.MousePrimaryButton == MouseButton.Left ? 0 : 1;
                                 break;
 
                             case "TouchScrollSensitivityLevelChanged":
