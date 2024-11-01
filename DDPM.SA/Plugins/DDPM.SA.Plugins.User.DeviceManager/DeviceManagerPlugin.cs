@@ -63,6 +63,7 @@ using System.Runtime;
 using Point = System.Windows.Point;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
 using System.Windows.Resources;
+using DDPM.SA.Resources.Helper;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -8772,7 +8773,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 SupportedNKVMMonitors();
             }
 
-            if(_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
                 Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
 
@@ -11474,9 +11475,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 PopupBaseManage popupBaseManage = new PopupBaseManage();
                 popupBaseManage.LeftButtonClick += YesEvent;
                 popupBaseManage.RightButtonClick += NoEvent;
-                string title = @"Warning";
-                string info = @"Auto Brightness is currently enabled.Do you wish to override it?";
-                popupBaseManage.FWU_Show(title, info, "Yes", "No", o, true, -1);
+                string title = LangHelper.Instance["Warning"];
+                string info = LangHelper.Instance["Auto_Brightness_is_currently_enabled"];
+                popupBaseManage.FWU_Show(title, info, LangHelper.Instance["Yes"], LangHelper.Instance["No"], o, true, -1);
             });
         }
 
