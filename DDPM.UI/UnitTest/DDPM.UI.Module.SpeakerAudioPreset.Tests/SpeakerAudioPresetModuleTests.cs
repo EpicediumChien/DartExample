@@ -9,6 +9,7 @@ using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Windows.Controls;
+using static DDPM.UI.Plugin.ViewModels.SoundBarViewModel;
 
 namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
 {
@@ -41,8 +42,10 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             logMock = new Mock<ILog>();
             log = logMock.Object;
             vm = new SoundBarViewModel(console, log, deviceManager);
+            //vm.SpeakerInfoValueDTP.SpeakerProfile = "SpeakerProfile";
             CurrentDeviceInfo = new DeviceInfo() { IsWiredAudioIMicNSEnable = true, IsWiredAudioMicMuteSoundEnable = true, WiredAudioVolumeAdjustmentTone = 1 };
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
+            deviceManagerMock.Setup(x => x.GetProfileAsync(It.IsAny<string>())).Returns(Task.FromResult("SpeakerProfile"));
             speakerAudioPresetModule = new SpeakerAudioPresetModule(vm);
             privateObject = new PrivateObject(speakerAudioPresetModule);
         }
