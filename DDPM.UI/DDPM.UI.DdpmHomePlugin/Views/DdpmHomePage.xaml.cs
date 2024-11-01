@@ -1,6 +1,8 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -19,13 +21,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
     [ExcludeFromCodeCoverage]
     public partial class DdpmHomePage : System.Windows.Controls.UserControl
     {
-        private IDdpmHomePageViewModel? _ddpmHomePageViewModel;
+        private DdpmHomePageViewModel? _ddpmHomePageViewModel;
 
         public DdpmHomePage()
         {
             InitializeComponent();
 
-            _ddpmHomePageViewModel = DdpmHomePlugin.PluginIoc?.GetService<IDdpmHomePageViewModel>();
+            _ddpmHomePageViewModel = (DdpmHomePageViewModel?)(DdpmHomePlugin.PluginIoc?.GetService<IDdpmHomePageViewModel>());
 
             if (_ddpmHomePageViewModel != null)
             {
@@ -37,7 +39,41 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //{
                 //    debugRwdParams.Visibility = Visibility.Visible;
                 //}
+                _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
+                _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }
+        }
+
+        private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top + 40;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                modalDialog.ShowDialog();
+
+                if(modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                {
+                    //For jason to do import
+
+                    //ignore next check for this model
+                    if(modalDialog.isChecked)
+                    {
+
+                    }
+                }
+            });
         }
 
         //Unused
@@ -378,7 +414,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
             double cxItem = (cxView - (minGap * 4.000)) / 3.000;
             double cyItem = (cyView - (minGap * 2.000));
-            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce*3);
+            double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce * 3);
             return sizeItem;
         }
 
@@ -665,12 +701,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                if (e.OriginalSource == null) return;
+                if (e.OriginalSource == null)
+                    return;
                 System.Windows.Controls.ListViewItem lvItem = (System.Windows.Controls.ListViewItem)e.OriginalSource;
-                if (lvItem == null) return;
-                if (lvItem.DataContext == null) return;
+                if (lvItem == null)
+                    return;
+                if (lvItem.DataContext == null)
+                    return;
                 HomeDevice homeDevice = lvItem.DataContext as HomeDevice;
-                if (homeDevice == null) return;
+                if (homeDevice == null)
+                    return;
                 e.Handled = true;
                 NavigateToDeviceLandingPage(homeDevice);
             }
@@ -940,18 +980,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void batteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //sender is BatteryIndicator
-            if (sender == null) return;
+            if (sender == null)
+                return;
             BatteryIndicator bi = (BatteryIndicator)sender;
 
             //ViewModel of BatteryIndicator is HomeDevice
-            if (bi.DataContext == null) return;
+            if (bi.DataContext == null)
+                return;
             HomeDevice homeDevice = bi.DataContext as HomeDevice;
 
             //If the device is Display
             if (homeDevice.DeviceCategory == eDeviceCategory.Display)
                 return;
 
-            if (homeDevice.DeviceInfo == null) return;
+            if (homeDevice.DeviceInfo == null)
+                return;
             DeviceInfo di = homeDevice.DeviceInfo as DeviceInfo;
 
             homeDevice.IsConnectionHoverViewShow = true;
@@ -967,20 +1010,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void batteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //sender is BatteryIndicator
-            if (sender == null) return;
+            if (sender == null)
+                return;
             BatteryIndicator bi = (BatteryIndicator)sender;
 
             //ViewModel of BatteryIndicator is HomeDevice
-            if (bi.DataContext == null) return;
+            if (bi.DataContext == null)
+                return;
             HomeDevice homeDevice = bi.DataContext as HomeDevice;
 
-            if (homeDevice == null) return;
+            if (homeDevice == null)
+                return;
 
             //If the device is Display
             if (homeDevice.DeviceCategory == eDeviceCategory.Display)
                 return;
 
-            if (homeDevice.DeviceInfo == null) return;
+            if (homeDevice.DeviceInfo == null)
+                return;
             DeviceInfo di = homeDevice.DeviceInfo as DeviceInfo;
 
             homeDevice.IsConnectionHoverViewShow = false;
@@ -1001,6 +1048,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             };
             dispTimer.Interval = new TimeSpan(200);
             dispTimer.Start();
+        }
+
+        private void _ddpmHomePageViewModel_ShowConsent(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() => {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                ConsentModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top + 40;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+                if (modalDialog.ShowDialog()!.Value)
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
+                }
+                else
+                {
+                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
+                }
+            });
         }
     }
 }

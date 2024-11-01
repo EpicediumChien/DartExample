@@ -64,4 +64,42 @@ namespace DDPM.SA.Common
         public string PowerNap { get; set; } = string.Empty;
     }
 
+    public class Displaysettings_Color_Preset_Manual : DisplaysettingsBasic
+    {
+        public string Color_Preset_Manual { get; set; } = string.Empty;
+    }
+
+    public class Displaysettings_Color_Preset_Auto : DisplaysettingsBasic
+    {
+        public string Color_Preset_Auto { get; set; } = string.Empty;
+    }
+
+    public class Displaysettings_NightLightStatus : DisplaysettingsBasic
+    {
+        public string NightLightStatus { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingEnhancementMode : DisplaysettingsBasic
+    {
+        public string GamingEnhancementMode { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingResponseTime : DisplaysettingsBasic
+    {
+        public string GamingResponseTime { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingDarkStabilizer : DisplaysettingsBasic
+    {
+        public string GamingDarkStabilizer { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingHDRType : DisplaysettingsBasic
+    {
+        public string GamingHDRType { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingRefreshRate : DisplaysettingsBasic
+    {
+        public string GamingRefreshRate { get; set; } = string.Empty;
+    }
+    public class DisplayFeatures_GamingVisionEngine : DisplaysettingsBasic
+    {
+        public string GamingVisionEngine { get; set; } = string.Empty;
+    }
 }

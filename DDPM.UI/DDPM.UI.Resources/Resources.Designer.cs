@@ -592,6 +592,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager.
+        /// </summary>
+        internal static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assign Keystroke.
         /// </summary>
         internal static string AssignKeystroke {
@@ -1353,6 +1362,42 @@ namespace DDPM.UI.Resources {
         internal static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help us improve.
+        /// </summary>
+        internal static string Consent_1 {
+            get {
+                return ResourceManager.GetString("Consent.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about .
+        /// </summary>
+        internal static string Consent_2 {
+            get {
+                return ResourceManager.GetString("Consent.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, I don&apos;t consent.
+        /// </summary>
+        internal static string ConsentNo {
+            get {
+                return ResourceManager.GetString("ConsentNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, I consent.
+        /// </summary>
+        internal static string ConsentYes {
+            get {
+                return ResourceManager.GetString("ConsentYes", resourceCulture);
             }
         }
         
@@ -2896,11 +2941,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not prompt again for the same model.
+        /// </summary>
+        internal static string ImpExp_CheckBox_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_CheckBox.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatically apply the settings when the same model is detected.
         /// </summary>
         internal static string ImpExp_Message_0 {
             get {
                 return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to import the application settings for ease of use?.
+        /// </summary>
+        internal static string ImpExp_Message_1 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.1", resourceCulture);
             }
         }
         
@@ -2928,6 +2991,15 @@ namespace DDPM.UI.Resources {
         internal static string ImpExp_SuccessMsg_1 {
             get {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An new monitor %1 is detected..
+        /// </summary>
+        internal static string ImpExp_Title_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Title.0", resourceCulture);
             }
         }
         
@@ -4831,7 +4903,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
         /// </summary>
         internal static string Updates_1 {
             get {
@@ -4980,6 +5052,33 @@ namespace DDPM.UI.Resources {
         internal static string VisionEngine_Night {
             get {
                 return ResourceManager.GetString("VisionEngine_Night", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DDPM.Subagent.DeviceManager is not ready.
+        /// </summary>
+        internal static string Wait_DevMgr {
+            get {
+                return ResourceManager.GetString("Wait_DevMgr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DellTechHub service is not running.
+        /// </summary>
+        internal static string Wait_DTH {
+            get {
+                return ResourceManager.GetString("Wait_DTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No device detected.
+        /// </summary>
+        internal static string Wait_NoDevice {
+            get {
+                return ResourceManager.GetString("Wait_NoDevice", resourceCulture);
             }
         }
         

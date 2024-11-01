@@ -22,7 +22,7 @@ namespace DDPM.UI.Module.AddPen_Other
         private readonly string Step1 = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.1"];
 
         // 10/15 Derek for RWD
-        private readonly Int16 breakPoints = 910;
+        private readonly int breakPoints = 1050;
 
         public AddPen_OtherRightView(AddDeviceViewModel vm)
         {
@@ -34,8 +34,7 @@ namespace DDPM.UI.Module.AddPen_Other
             txtStep1.Text = string.Format(Step1, Dns.GetHostName());
             //txtStep2.Text = Step2;
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            breakPoints = DdpmCommonHelper.GetBreakPoints();
         }
 
         private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)

@@ -38,6 +38,8 @@ class CLIAutoTest():
         except:
             logger.error(f"Fail to exec {command}")
             return "{}"
+        finally:
+            time.sleep(5)
 
     def parse_output(self, output):
         model_match = re.findall(r'"Model":\s"([^"]+)', output)
@@ -60,7 +62,6 @@ class CLIAutoTest():
         return True
     
     def get_device_data(self, data: dict[str, list] = None):
-        # return False, "N/A"
         command = "/get -app=DeviceData"
         output = self.run(command)
         model, result = self.parse_output(output)
@@ -140,7 +141,6 @@ class CLIAutoTest():
 
                     self.append_result(data, command, model, output, result)
                     self.record_result(category, index, total_count, command, result)
-                    time.sleep(3)
                 
                 self.dfs.append([category, pd.DataFrame(data)])
 
@@ -209,8 +209,12 @@ def get_config():
         logger.error(f"Config file '{config_path}' not exist.")
         sys.exit(1)
     
-    with open(config_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to read Config file '{config_path}'.({e})")
+        sys.exit(1)
 
 def setup_logging():
     formatter = ColoredFormatter(

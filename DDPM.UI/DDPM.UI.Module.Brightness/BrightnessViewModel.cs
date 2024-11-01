@@ -2917,7 +2917,7 @@ namespace DDPM.UI.Module.Brightness
                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, false);
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, null,false);
                     }
                 });
 

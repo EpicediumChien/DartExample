@@ -72,7 +72,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             return SetForegroundWindow(hWnd);
         }
-
+        public static string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
         #region Private Members
 
         private const string pluginName = "FWUpdatePlugin";
@@ -375,7 +375,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, bool reScan, bool isUItrigger, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, bool reScan, bool isUItrigger, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
         {
             _isDefer = isDefer;
             _isForce = isForce;
@@ -383,7 +383,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _IsUITrigger = isUItrigger;
             if (reScan)
             {
-                _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay, giuds, serviceTags, models, minVersion).Result;
+                _ = CheckUpdate(updateHelper, deviceInfos, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay, giuds, serviceTags, models, minVersion).Result;
             }
             return Task.FromResult(_fWUpdateInfoPackage);
         }
@@ -394,7 +394,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        private Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
+        private Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, bool isShowNotify, List<DeviceType>? deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper, bool isOnlyDisplay, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
         {
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
@@ -402,7 +402,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _fWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
-                if (updateHelper != null && updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
+                if (updateHelper != null && updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0 &&
+                    deviceInfos != null && deviceInfos.Count > 0)
                 {
                     _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
@@ -412,20 +413,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             newVer = Convert.ToInt32(newVer, 16).ToString();
                         }
+                        DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.Equals(updateHelper.UpdateItems[i].DeviceId));
+                        string deviceConnectivity = string.Empty;
+                        string deviceSupplierID = string.Empty;
+                        if (deviceInfo != null)
+                        {
+                            deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
+                            deviceSupplierID = GetODM(deviceInfo.OdmId);
+                        }
                         if (deviceTypeList == null)
                         {
-                            List<string> thumbprint_List = new List<string>();
-                            if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
-                            {
-                                foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
-                                {
-                                    if (s.Length >= 10)
-                                    {
-                                        thumbprint_List.Add(s);
-                                        break;
-                                    }
-                                }
-                            }
+                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                             {
                                 TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
@@ -441,30 +439,21 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
                                 //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                 Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
-                                Thumbprint_List = thumbprint_List,
                                 IsUOD = (isUODMode &&
                                 (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                 updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
-                                IsDisplay = false
+                                IsDisplay = false,
+                                SupplierID = deviceSupplierID,
+                                Connectivity = deviceConnectivity,
+                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
                             };
                             _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                         }
                         else if (deviceTypeList != null && !isOnlyDisplay)
                         {
-                            if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)) && updateHelper.UpdateItems[i].Thumbprint.Contains(";"))
+                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} in no null");
+                            if (deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType)))
                             {
-                                List<string> thumbprint_List = new List<string>();
-                                if (!string.IsNullOrEmpty(updateHelper.UpdateItems[i].Thumbprint))
-                                {
-                                    foreach (string s in updateHelper.UpdateItems[i].Thumbprint.Split(";"))
-                                    {
-                                        if (s.Length >= 10)
-                                        {
-                                            thumbprint_List.Add(s);
-                                            break;
-                                        }
-                                    }
-                                }
                                 FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                                 {
                                     TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
@@ -480,11 +469,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
                                     //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                     Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
-                                    Thumbprint_List = thumbprint_List,
                                     IsUOD = (isUODMode &&
                                     (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                     updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
-                                    IsDisplay = false
+                                    IsDisplay = false,
+                                    SupplierID = deviceSupplierID,
+                                    Connectivity = deviceConnectivity,
+                                    Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
                                 };
                                 _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                             }
@@ -502,20 +493,23 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceVersion = displayUpdateHelper.Firmwares[i].CurrentVersion,
                             NeedUpdated = true,
                             DeviceType = DeviceType.Unknown,
-                            IsDisplay = true,
                             ServerPath = displayUpdateHelper.Firmwares[i].url,
                             Model = displayUpdateHelper.Firmwares[i].id,
                             DeviceName = displayUpdateHelper.Firmwares[i].id,
                             SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                             //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
                             Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
-                            Thumbprint_List = new List<string>(),
                             ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
-                            IsUOD = false
+                            IsUOD = false,
+                            IsDisplay = true,
+                            SupplierID = displayUpdateHelper.Firmwares[i].SupplierID,
+                            D_Ctrl = displayUpdateHelper.Firmwares[i].D_Ctrl,
+                            Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
                         };
                         _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                     }
                 }
+                _logs.DebugMsg_1($"{nameof(_fWUpdateInfoPackage.FWUpdateInfo.Count)} : {_fWUpdateInfoPackage.FWUpdateInfo.Count}");
                 if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
                     if (!_IsUITrigger)
@@ -880,6 +874,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 fwUpdateInfos[i].InstallPaths = exeFilePath;
                                 fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
+                                fwUpdateInfos[i].Update_date = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                             }
                             if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
                             {
@@ -1244,8 +1239,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void UpdateEvent()
+        public Task<List<FWUpdateInfo>> UpdateEvent()
         {
+            List<FWUpdateInfo> ret = new List<FWUpdateInfo>();
             _logs.DebugMsg_1(nameof(UpdateEvent));
             try
             {
@@ -1268,7 +1264,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         if (fWUpdateInfo != null && fWUpdateInfo.Count > 0)
                         {
-                            DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, false, "").Result, System.Threading.CancellationToken.None);
+                            ret = DownloadAndInstall(fWUpdateInfo, false, "").Result;
+                            DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, ret, System.Threading.CancellationToken.None);
                         }
                     }
                 }
@@ -1278,6 +1275,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"{nameof(UpdateEvent)} Error:{ex.Message}");
             }
             _logs.DebugMsg_1($"{nameof(UpdateEvent)} done");
+            return Task.FromResult(ret);
         }
         public void SetSkipCA(bool isSkipCA)
         {
@@ -1962,38 +1960,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint start.");
                             CertificateCheck certificateCheck = new CertificateCheck(_logs);
-                            if (_fWUpdateInfo.Thumbprint_List != null && _fWUpdateInfo.Thumbprint_List.Count > 0)
+                            if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
                             {
-                                if (certificateCheck.CheckFile_Thumbprint_List(exeFilePath, _fWUpdateInfo.Thumbprint_List, out FileCAInfo))
-                                {
-                                    ret = true;
-                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check Thumbprint list done.");
-                                }
-                                else
-                                {
-#if IL_NotReady
-                                    ret = true;//Wait IL R14 force true
-                                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint list fail. Ex: {FileCAInfo}");
-#endif
-                                }
+                                ret = true;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
                             }
                             else
                             {
 #if IL_NotReady
-                                if (certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out FileCAInfo))
-                                {
-                                    ret = true;
-                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} check done.");
-                                }
-                                else
-                                {
-                                    ret = true;//Wait IL R14 force true
-                                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
-                                }
+                                ret = true;//Wait IL R14 force true
 #endif
+                                _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File check Thumbprint fail. Ex: {FileCAInfo}");
                             }
+
                         }
                     }
                     else
@@ -2125,6 +2105,48 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             }
             _logs.DebugMsg_1($"UpdateLockSettingChange done");
+        }
+        private string GetODM(int index)
+        {
+            _logs.DebugMsg_1($"GetODM start");
+            _logs.DebugMsg_1($"GetODM index : {index}");
+            string ret = "Unknow";
+            if (index - 1 < ODM.Length)
+            {
+                _logs.DebugMsg_1($"GetODM search go");
+                ret = ODM[index - 1];
+            }
+            _logs.DebugMsg_1($"GetODM ret : {ret}");
+            _logs.DebugMsg_1($"GetODM done");
+            return ret;
+        }
+        private string GetConnected(DeviceType deviceType)
+        {
+            _logs.DebugMsg_1($"GetConnected start");
+            _logs.DebugMsg_1($"GetConnected deviceType : {deviceType}");
+            string ConnectionType = "Unknow";
+            switch (deviceType)
+            {
+                case DeviceType.PhysicalWired:
+                case DeviceType.PhysicalWebcam:
+                case DeviceType.PhysicalWiredAudio:
+                case DeviceType.PhysicalWiredDock:
+                    ConnectionType = "Wired";
+                    break;
+                case DeviceType.PhysicalDongle:
+                case DeviceType.PhysicalAudioDongle:
+                    ConnectionType = "RF";
+                    break;
+
+                case DeviceType.PhysicalBluetooth:
+                case DeviceType.PhysicalBluetoothAudio:
+                case DeviceType.PhysicalPen:
+                    ConnectionType = "Bluetooth";
+                    break;
+            }
+            _logs.DebugMsg_1($"GetConnected ConnectionType : {ConnectionType}");
+            _logs.DebugMsg_1($"GetConnected done");
+            return ConnectionType;
         }
     }
 }

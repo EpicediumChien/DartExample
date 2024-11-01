@@ -95,6 +95,71 @@ namespace DDPM.SA.Common.Telemetry
             return result;
         }
 
+        public bool SentKVMToTelementry(ILog _log, ITelementryScheduler _TelementryScheduler, MonitorInfo monitorInfo, DisplayPropertiesInfo displayInfo, string mode, string val)
+        {
+            bool result = false;
+            try
+            {
+                if (_TelementryScheduler == null)
+                    return result;
+                Properties currentProperties = displayInfo.SupportedProperties.Properties.FirstOrDefault(p => p.isCurrent);
+                var basicInfo = CreateBasicDisplayInfo(monitorInfo, currentProperties, displayInfo);
+                if (basicInfo == null)
+                    return result;
+                _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] SentKVMToTelementry Start.");
+                if (!string.IsNullOrEmpty(mode))
+                {
+                    switch (mode)
+                    {
+                        case "KVMMode":
+                            var DisplayFeatures_Kvm = new DisplayFeatures_KVM();
+                            DisplayFeatures_Kvm.KVMMode = val;
+
+                            CopyBasicInfo(DisplayFeatures_Kvm, basicInfo);
+                            if (_TelementryScheduler.ReceiveTelemetryInfo("DisplayFeatures", DisplayFeatures_Kvm.ToJson(), Telementry_Frequency.RealTime).Result)
+                            {
+                                result = true;
+                                Trace.WriteLine("KVM : " + DisplayFeatures_Kvm.ToJson());
+                                _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] SentKVMToTelementry KVMMode Success.");
+                            }
+                            else
+                            {
+                                Trace.WriteLine("KVM : " + DisplayFeatures_Kvm.ToJson());
+                                _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] SentKVMToTelementry KVMMode Fail.");
+                            }
+                            break;
+                        case "USBKVMMode":
+                            var DisplayFeatures_UsbKvmmode = new DisplayFeatures_USBKVMMode();
+                            DisplayFeatures_UsbKvmmode.USBKVMMode = val;
+
+                            CopyBasicInfo(DisplayFeatures_UsbKvmmode, basicInfo);
+                            if (_TelementryScheduler.ReceiveTelemetryInfo("DisplayFeatures", DisplayFeatures_UsbKvmmode.ToJson(), Telementry_Frequency.RealTime).Result)
+                            {
+                                result = true;
+                                Trace.WriteLine("USBKVMMode : " + DisplayFeatures_UsbKvmmode.ToJson());
+                                _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] SentKVMToTelementry USBKVMMode Success.");
+                            }
+                            else
+                            {
+                                Trace.WriteLine("USBKVMMode : " + DisplayFeatures_UsbKvmmode.ToJson());
+                                _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] SentKVMToTelementry USBKVMMode Fail.");
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] mode is null or empty.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Info($"[DeviceManagerPlugin] [DisplayFeatures_Functions] SentInfoToTelementry failed - Exception: {ex.Message}");
+                return result;
+            }
+            return result;
+        }
+
         private void CopyBasicInfo(DisplayFeaturesBasic target, DisplayFeaturesBasic basicInfo)
         {
             target.CommunicationPath = basicInfo.CommunicationPath;

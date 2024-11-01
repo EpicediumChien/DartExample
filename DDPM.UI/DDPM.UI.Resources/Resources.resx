@@ -187,7 +187,7 @@
     <value>Update available</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
+    <value>Dell Display and Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Check for updates</value>
@@ -2273,5 +2273,38 @@
   </data>
   <data name="AddDevice.KnM.14" xml:space="preserve">
     <value>Wireless Receiver Connection</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>No, I don't consent</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>Yes, I consent</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>Help us improve</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>Do not prompt again for the same model</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>Do you want to import the application settings for ease of use?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>An new monitor %1 is detected.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>DDPM.Subagent.DeviceManager is not ready</value>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>DellTechHub service is not running</value>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>No device detected</value>
   </data>
 </root>

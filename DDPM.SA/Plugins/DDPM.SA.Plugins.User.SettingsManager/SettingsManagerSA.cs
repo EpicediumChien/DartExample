@@ -377,6 +377,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (tmp.global_setting != null)
                 {
                     _GlobalSettingParam = _DDPMITConfig.global_setting;
+                    WriteGlobalSettings(_GlobalSettingParam, false);
                 }
             }
 
@@ -1821,17 +1822,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult(_GlobalSettingParam);
         }
 
-        public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam)
+        public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true)
         {
             bool result = WriteSettings_Common(globalSettingParam, "global");
-            
+
             //apply setting to system IT config
             if (_GlobalSettingParam != null && result)
             {
                 if (_SysSettingsPlugin != null)
                 {
-                    result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
-                    WriteLog("Call sys plugin to write global setting failed.");
+                    if (writeToSys)
+                    {
+                        result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
+                        WriteLog("Call sys plugin to write global setting failed.");
+                    }
                 }
             }
 

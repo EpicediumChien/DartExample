@@ -44,6 +44,8 @@ namespace DDPM.SA.Common
 
         Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
 
+        Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo, string mode, string val);
+
         #endregion TelemetryScheduler
 
         #region EaM
@@ -81,7 +83,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, string reqAppName = null, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -129,6 +131,8 @@ namespace DDPM.SA.Common
 
         Task<bool> StopRegistryMonitor_NightLight();
         Task<bool> StopRegistryMonitor_ICC();
+
+        Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
 
         #endregion public for ColorPreset
 
@@ -540,6 +544,7 @@ namespace DDPM.SA.Common
         Task<bool> SetServerURL(string url);
 
         Task<string> GetServerURL();
+        Task<bool> CallDDPMUI(string DDPMPath);
 
         #endregion public for FW Update by Bruce
 
