@@ -12,7 +12,8 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:MouseViewModel}"
-             d:DesignHeight="671" d:DesignWidth="1374">
+             d:DesignHeight="671" d:DesignWidth="1374"
+             SizeChanged="UserControl_SizeChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -73,7 +74,7 @@
                                             SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                             ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                             SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
-                <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" />
+                <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged"/>
             </Grid>
             <!-- Layer 2 : Nav and Vbar -->
             <Grid Grid.Column="0">
@@ -158,15 +159,15 @@
             <!--Name & Model-->
             <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
                         <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
                             </Image.InputBindings>
                         </Image>
-                        <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
-                                                Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+                        <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                                x:Name="devName" Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
