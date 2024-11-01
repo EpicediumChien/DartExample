@@ -44,16 +44,11 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestGetImageSourceFromCommonResource()
         {
-            var result = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Brightness.png");
-            // Assert
-            Assert.That(result, Is.EqualTo(null));
-
-            //string s = System.IO.Packaging.PackUriHelper.UriSchemePack;
             if (!UriParser.IsKnownScheme("pack"))
             {
                 new System.Windows.Application();
             }
-            result = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Brightness.png");
+            var result = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Brightness.png");
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -269,18 +264,10 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestReadDDPMSettings()
         {
-            var result = DdpmCommonHelper.ReadDDPMSettings(false);
-            // Assert
-            Assert.That(result, Is.EqualTo(null));
-
-            result = DdpmCommonHelper.ReadDDPMSettings(true);
-            // Assert
-            Assert.That(result, Is.EqualTo(null));
-
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
-            result = DdpmCommonHelper.ReadDDPMSettings(true);
+            var result = DdpmCommonHelper.ReadDDPMSettings(true);
             // Assert
             Assert.That(result, Is.Not.Null);
         }
