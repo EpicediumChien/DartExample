@@ -4320,6 +4320,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(o.ToString());
         }
 
+        public Task<bool> CallDDPMUI(string DDPMPath)
+        {
+            writelog($"{nameof(CallDDPMUI)} start");
+            bool ret = false;
+            if (!string.IsNullOrEmpty(DDPMPath))
+            {
+                try
+                {
+                    writelog($"CloseDDPM start");
+                    string processName = "DDPM";
+                    Process[] processes = Process.GetProcessesByName(processName);
+                    writelog($"CloseDDPM processes.Length {processes.Length}");
+                    if (processes.Length > 0)
+                    {
+                        foreach (Process process in processes)
+                        {
+                            // Close process by sending a close message to its main window.
+                            process.CloseMainWindow();
+                            // Free resources associated with process.
+                            process.Close();
+                        }
+                    }
+                    writelog($"CloseDDPM done");
+                }
+                catch (Exception ex)
+                {
+                    writelog($"CloseDDPM Error:{ex.Message}");
+                }
+                Thread.Sleep(5000);
+                try
+                {
+                    writelog($"RunDDPM start");
+                    Process.Start(DDPMPath + "\\DDPM.exe");
+                    writelog($"RunDDPM done");
+                }
+                catch (Exception ex)
+                {
+                    writelog($"RunDDPM Error:{ex.Message}");
+                }
+            }
+            writelog($"{nameof(CallDDPMUI)} done");
+            return Task.FromResult(ret);
+        }
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -8625,7 +8668,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
-                                        Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
+                                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
                                     }
                                     catch (Exception ex)
                                     {
@@ -8728,7 +8772,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 SupportedNKVMMonitors();
             }
 
-            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
+            if(_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
         }
 
         private void OnPeripheralsNotify(DeviceChangedEventArgs data)
