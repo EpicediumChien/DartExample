@@ -151,7 +151,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isMinMaxOnlyChecked = false;
             }
             OnPropertyChanged("IntelligentMicNoiseCancellationStatus");
+            OnPropertyChanged("IntelligentMicNoiseCancellationStatus_String");
             OnPropertyChanged("MuteSoundNotificationStatus");
+            OnPropertyChanged("MuteSoundNotificationStatus_String");
             OnPropertyChanged("VolumeAdjustmentToneStatus");
             OnPropertyChanged("VolumeAdjustmentTone_String");
             OnPropertyChanged("IsEveryLevelChecked");
@@ -349,16 +351,29 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isDefaultChecked; }
             set
             {
-                if (_isDefaultChecked != value)
+                if (_isDefaultChecked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isDefaultChecked != value && value)
                 {
                     _isDefaultChecked = value;
+
                     if (_isDefaultChecked)
                     {
                         _log.Info($"[SoundBarViewModel] IsDefaultChecked ... {value.ToString()}");
                         _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _default).Wait();
-                        IsSpeechChecked = false;
-                        IsBassBoostChecked = false;
-                        IsTrebleBoostChecked = false;
+
+                        // 確保其他按鈕取消選中
+                        _isSpeechChecked = false;
+                        _isBassBoostChecked = false;
+                        _isTrebleBoostChecked = false;
+
+                        // 只通知其他按鈕已變更狀態
+                        OnPropertyChanged(nameof(IsSpeechChecked));
+                        OnPropertyChanged(nameof(IsBassBoostChecked));
+                        OnPropertyChanged(nameof(IsTrebleBoostChecked));
                     }
                     OnPropertyChanged();
                 }
@@ -372,16 +387,27 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isSpeechChecked; }
             set
             {
-                if (_isSpeechChecked != value)
+                if (_isSpeechChecked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isSpeechChecked != value && value)
                 {
                     _isSpeechChecked = value;
+
                     if (_isSpeechChecked)
                     {
                         _log.Info($"[SoundBarViewModel] IsSpeechChecked ... {value.ToString()}");
                         _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _speech).Wait();
-                        IsDefaultChecked = false;
-                        IsBassBoostChecked = false;
-                        IsTrebleBoostChecked = false;
+
+                        _isDefaultChecked = false;
+                        _isBassBoostChecked = false;
+                        _isTrebleBoostChecked = false;
+
+                        OnPropertyChanged(nameof(IsDefaultChecked));
+                        OnPropertyChanged(nameof(IsBassBoostChecked));
+                        OnPropertyChanged(nameof(IsTrebleBoostChecked));
                     }
                     OnPropertyChanged();
                 }
@@ -395,16 +421,27 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isBassBoostChecked; }
             set
             {
-                if (_isBassBoostChecked != value)
+                if (_isBassBoostChecked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isBassBoostChecked != value && value)
                 {
                     _isBassBoostChecked = value;
+
                     if (_isBassBoostChecked)
                     {
                         _log.Info($"[SoundBarViewModel] IsBassBoostChecked ... {value.ToString()}");
                         _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _bassBoost).Wait();
-                        IsDefaultChecked = false;
-                        IsSpeechChecked = false;
-                        IsTrebleBoostChecked = false;
+
+                        _isDefaultChecked = false;
+                        _isSpeechChecked = false;
+                        _isTrebleBoostChecked = false;
+
+                        OnPropertyChanged(nameof(IsDefaultChecked));
+                        OnPropertyChanged(nameof(IsSpeechChecked));
+                        OnPropertyChanged(nameof(IsTrebleBoostChecked));
                     }
                     OnPropertyChanged();
                 }
@@ -418,16 +455,27 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isTrebleBoostChecked; }
             set
             {
-                if (_isTrebleBoostChecked != value)
+                if (_isTrebleBoostChecked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isTrebleBoostChecked != value && value)
                 {
                     _isTrebleBoostChecked = value;
+
                     if (_isTrebleBoostChecked)
                     {
                         _log.Info($"[SoundBarViewModel] IsTrebleBoostChecked ... {value.ToString()}");
                         _deviceManager.SetProfileForSpeaker(CurrentDeviceInfo!.ID.ToString(), _trebleBoost).Wait();
-                        IsDefaultChecked = false;
-                        IsSpeechChecked = false;
-                        IsBassBoostChecked = false;
+
+                        _isDefaultChecked = false;
+                        _isSpeechChecked = false;
+                        _isBassBoostChecked = false;
+
+                        OnPropertyChanged(nameof(IsDefaultChecked));
+                        OnPropertyChanged(nameof(IsSpeechChecked));
+                        OnPropertyChanged(nameof(IsBassBoostChecked));
                     }
                     OnPropertyChanged();
                 }
