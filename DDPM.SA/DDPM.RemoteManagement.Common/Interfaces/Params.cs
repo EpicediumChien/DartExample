@@ -101,7 +101,7 @@
 
         }
 
-        public static class FwUpdateOptions
+        public static class FwUpdateValues
         {
             public const string ForceWithNotice = "forcewithnotice";
             public const string ForceWithNonotice = "forcewithnonotice";

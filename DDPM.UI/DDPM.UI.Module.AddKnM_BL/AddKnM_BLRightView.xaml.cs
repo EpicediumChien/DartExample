@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
 using System.Windows.Controls;
 
@@ -12,7 +13,7 @@ namespace DDPM.UI.Module.AddKnM_BL
         private readonly AddDeviceViewModel _vm;
 
         // 10/15 Derek for RWD
-        private readonly Int16 breakPoints = 910;
+        private readonly int breakPoints = 1050;
 
         //private readonly string Caption = "Bluetooth Connection";
         //private readonly string Caption2 = "Add Bluetooth device by pairing it through Windows settings";
@@ -33,8 +34,7 @@ namespace DDPM.UI.Module.AddKnM_BL
             //txtStep3.Text = Step3;
             //txtStep3_1.Text = Step3_1;
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            breakPoints = DdpmCommonHelper.GetBreakPoints();
         }
 
         private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -46,6 +46,7 @@
                 </DrawingBrush.Drawing>
             </DrawingBrush>
 
+            <CollectionViewSource x:Key="ItemsViewSource" Source="{Binding VbarItems}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -64,7 +65,7 @@
                 <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
                     <!-- LeftFrame -->
                     <Grid x:Name="LeftGrid">
-                        <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="20"/>
+                        <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="0"/>
 
                         <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
                         <Grid Name="markeyNameWidthGrid">
@@ -276,14 +277,36 @@
                                 </StackPanel>
                             </Grid>
                         </Grid>
+
+                        <!-- Left vBar -->
+                        <!-- ItemsSource="{Binding VbarItems}" -->
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" 
+                              x:Name="vBarLeft" Visibility="Collapsed" Width="{Binding vBarWidthRWD}">
+                            <ItemsControl Name="vbarListLeft" Margin="0,10,5,0" HorizontalAlignment="Right" 
+                                          ItemsSource="{Binding Source={StaticResource ItemsViewSource}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <ContentPresenter />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="0,5" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Grid>
                     </Grid>
 
                     <!-- vBar + RightFrame -->
                     <StackPanel x:Name="stVbarRightFrame">
                         <!-- vBar -->
-                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" x:Name="vBar" 
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,15" x:Name="vBarRight" 
                               MouseEnter="vBar_MouseEnter" MouseLeave="vBar_MouseLeave">
-                            <ItemsControl Name="vbarList" Margin="0,10,5,0" HorizontalAlignment="Right" ItemsSource="{Binding VbarItems}">
+                            <ItemsControl Name="vbarListRight" Margin="0,10,5,0" HorizontalAlignment="Right" 
+                                          ItemsSource="{Binding Source={StaticResource ItemsViewSource}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -311,7 +334,7 @@
                                     </Grid.RowDefinitions>
 
                                     <!-- RightViewHeader control -->
-                                    <common:RightViewHeaderCtrl Grid.Row="0" x:Name="rightViewHeaderCtrl" Margin="0,10,0,0"
+                                    <common:RightViewHeaderCtrl Grid.Row="0" x:Name="rightViewHeaderCtrl" Margin="0,20,0,0"
                                     SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                     ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                     SelectionChanged="rightViewHeaderCtrl_SelectionChanged"/>

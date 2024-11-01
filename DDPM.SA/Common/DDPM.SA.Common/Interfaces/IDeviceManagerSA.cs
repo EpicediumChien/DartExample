@@ -544,6 +544,7 @@ namespace DDPM.SA.Common
         Task<bool> SetServerURL(string url);
 
         Task<string> GetServerURL();
+        Task<bool> CallDDPMUI(string DDPMPath);
 
         #endregion public for FW Update by Bruce
 

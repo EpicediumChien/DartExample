@@ -48,12 +48,12 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <Viewbox Margin="32" Grid.Row="0" Stretch="Uniform">
+                <Viewbox Margin="0" Grid.Row="0" Stretch="Uniform">
 
                     <!-- Width="1378" Height="735"
                 -->
                     <Grid>
-                        <Image Grid.Column="0" Source="{Binding DeviceImage}" Stretch="UniformToFill" Margin="35,45,35,45" x:Name="devImg">
+                        <Image Grid.Column="0" Source="{Binding DeviceImage}" Stretch="UniformToFill" Margin="0" x:Name="devImg">
 
                             <!-- Robert_Lin, 2024-9-30 The LeftView Product image don't need to show tooltip -->
                             <!-- 

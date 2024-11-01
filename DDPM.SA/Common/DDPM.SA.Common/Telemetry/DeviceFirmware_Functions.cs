@@ -15,6 +15,7 @@ namespace DDPM.SA.Common.Telemetry
             if (fWUpdateInfos != null)
             {
                 DisplayFirmware_List TelemetryDta_DisplayDeviceFirmware = new DisplayFirmware_List();
+                TelemetryDta_DisplayDeviceFirmware.DisplayFirmwareList = new List<DisplayFirmware>();
                 foreach (FWUpdateInfo fWUpdateInfo in fWUpdateInfos)
                 {
                     if (fWUpdateInfo.IsDisplay)
@@ -29,6 +30,7 @@ namespace DDPM.SA.Common.Telemetry
                         displayFirmware.SupplierID = fWUpdateInfo.SupplierID;
                         displayFirmware.FW_Available_date = fWUpdateInfo.Available_date;
                         displayFirmware.FW_Update_date = fWUpdateInfo.Update_date;
+                        TelemetryDta_DisplayDeviceFirmware.DisplayFirmwareList.Add(displayFirmware);
                     }
                 }
                 if (plugin != null)
@@ -42,6 +44,7 @@ namespace DDPM.SA.Common.Telemetry
             if (fWUpdateInfos != null)
             {
                 PeripheralsFirmware_List TelemetryDta_PeripheralsDeviceFirmware = new PeripheralsFirmware_List();
+                TelemetryDta_PeripheralsDeviceFirmware.PeripheralsFirmwareList = new List<PeripheralsFirmware>();
                 foreach (FWUpdateInfo fWUpdateInfo in fWUpdateInfos)
                 {
                     if (!fWUpdateInfo.IsDisplay)
@@ -55,6 +58,7 @@ namespace DDPM.SA.Common.Telemetry
                         peripheralsFirmware.SupplierID = fWUpdateInfo.SupplierID;
                         peripheralsFirmware.FW_Available_date = fWUpdateInfo.Available_date;
                         peripheralsFirmware.FW_Update_date = fWUpdateInfo.Update_date;
+                        TelemetryDta_PeripheralsDeviceFirmware.PeripheralsFirmwareList.Add(peripheralsFirmware);
                     }
                 }
                 if (plugin != null)
