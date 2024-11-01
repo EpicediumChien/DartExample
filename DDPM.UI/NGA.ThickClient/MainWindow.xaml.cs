@@ -134,10 +134,11 @@ namespace NGA.ThickClient
             ReAdjustWindowSize();
 
             //Derek 10/26
-            int minWidth = 950;
             if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                minWidth = width;
-            this.MinWidth = minWidth;
+                this.MinWidth = width;
+
+            if (System.Windows.Application.Current?.TryFindResource("minHeight") is Int16 height)
+                this.MinHeight = height;
         }
 
         private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
