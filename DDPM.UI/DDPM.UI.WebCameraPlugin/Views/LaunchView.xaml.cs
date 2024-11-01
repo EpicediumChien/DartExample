@@ -71,7 +71,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private DispatcherTimer RecordingTimer;
         private bool _running = false;
         private MediaCapture _mediaCapture;
-        private SoftwareBitmap backBitmapBuffer;        
+        private SoftwareBitmap backBitmapBuffer;
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
@@ -502,7 +502,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// MediaFrameReader FrameArrived event
         /// </summary>
         private void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
-        {  
+        {
             using var latestFrameReference = sender.TryAcquireLatestFrame();
 
             var videoMediaFrame = latestFrameReference?.VideoMediaFrame;
@@ -519,7 +519,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 // Swap the processed frame to backBuffer and dispose of the unused image.
                 softwareBitmap = Interlocked.Exchange(ref backBitmapBuffer, softwareBitmap);
                 softwareBitmap?.Dispose();
-                
+
                 CameraImage.Dispatcher.BeginInvoke(async () =>
                 {
                     if (_running)
@@ -539,8 +539,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     //CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
                     _running = false;
                 });
-                
-             
+
+
             }
 
             if (latestFrameReference != null)
@@ -909,39 +909,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
 
-        private async Task InitializeCameraAsync()
-        {
-            try
-            {
-                _vm!.MediaCapture = new MediaCapture();
+        //private async Task InitializeCameraAsync()
+        //{
+        //    try
+        //    {
+        //        _vm!.MediaCapture = new MediaCapture();
 
-                // Find available video devices (cameras)
-                var cameraDevices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
-                if (cameraDevices.Count == 0)
-                {
-                    MessageBox.Show("No camera devices found.");
-                    return;
-                }
+        //        // Find available video devices (cameras)
+        //        var cameraDevices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+        //        if (cameraDevices.Count == 0)
+        //        {
+        //            MessageBox.Show("No camera devices found.");
+        //            return;
+        //        }
 
-                // Initialize with the first available camera
-                var settings = new MediaCaptureInitializationSettings
-                {
-                    VideoDeviceId = cameraDevices[0].Id // You can select specific camera by ID
-                };
-                await _vm.MediaCapture.InitializeAsync(settings);
+        //        // Initialize with the first available camera
+        //        var settings = new MediaCaptureInitializationSettings
+        //        {
+        //            VideoDeviceId = cameraDevices[0].Id // You can select specific camera by ID
+        //        };
+        //        await _vm.MediaCapture.InitializeAsync(settings);
 
-                // Set the camera resolution
-                //SetCameraResolution(1280, 720); // Desired resolution (e.g., 1280x720)
+        //        // Set the camera resolution
+        //        //SetCameraResolution(1280, 720); // Desired resolution (e.g., 1280x720)
 
-                // Start the preview
-                await _mediaCapture.StartPreviewAsync();
+        //        // Start the preview
+        //        await _mediaCapture.StartPreviewAsync();
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error initializing camera: {ex.Message}");
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error initializing camera: {ex.Message}");
+        //    }
+        //}
 
         private void ChangePan(object sender, MouseButtonEventArgs e)
         {

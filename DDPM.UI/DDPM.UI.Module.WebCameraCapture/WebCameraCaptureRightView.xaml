@@ -17,6 +17,22 @@
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <PluginCommon:HeightConverter x:Key="HeightConverter" />
+      <Style x:Key="OpenButtonStyle" TargetType="common:ActionButton">
+        <Setter Property="Background" Value="#0D121A" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="2" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="White" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Style.Triggers>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="BorderBrush" Value="#A3A3A3" />
+            <Setter Property="Foreground" Value="#6E6E6E" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid Margin="0,0,0,15">
@@ -191,7 +207,17 @@
               <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
               <StackPanel Orientation="Horizontal" Margin="15,15,15,0">
                 <UXControls:UXTextBox Name="txtCaptureFolder" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40" Background="#141D28" Foreground="#7E7E7E" IsReadOnly="True" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" Padding="8,10,0,0" />
-                <UXControls:UXButton Margin="8,0,8,0" ButtonType="Secondary" Click="Open_Click" Content="{Binding [WebCameraCapture.2], Source={x:Static lang:LangHelper.Instance}}" Width="97" Height="40" Foreground="White" BorderBrush="White" FontFamily="Roboto" Cursor="Hand" />
+                <common:ActionButton Name="btnOpen" Margin="8,0,8,0" Style="{StaticResource OpenButtonStyle}" MouseLeftButtonDown="Open_Click"  Width="97" Height="40" FontFamily="Roboto" Cursor="Hand" IsEnabled="{Binding IsNotRecording}">
+                  <!--<UXControls:UXButton.Style>
+                    <Style TargetType="UXControls:UXButton">
+                      <Style.Triggers>
+                        <Trigger Property="IsEnabled"  Value="false">
+                          <Setter Property="Opacity"  Value="0.5" />
+                        </Trigger>
+                      </Style.Triggers>
+                    </Style>
+                  </UXControls:UXButton.Style>-->
+                </common:ActionButton>
                 <UXControls:UXButton ButtonType="Primary" Click="Change_Click" Content="{Binding [WebCameraCapture.3], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" FontFamily="Roboto" Cursor="Hand" />
               </StackPanel>
             </StackPanel>
