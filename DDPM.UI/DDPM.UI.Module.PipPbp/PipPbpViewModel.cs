@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
@@ -10,11 +11,36 @@ using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using VcpCore.Common;
+using Windows.UI.ViewManagement;
 
 namespace DDPM.UI.Module.PipPbp
 {
+    public class VideoSwapComboBoxInputSourceItem : InputInfo
+    {
+        public string InputSourceKey { get; set; } = "";
+        public string DisplayName 
+        {
+            get
+            {
+                if (InputName == InputSourceKey)
+                {
+                    return InputSourceKey;
+                }
+                else
+                {
+                    return InputSourceKey + " - " + InputName;
+                }
+            }
+        }
+
+        public InputSourceObj ConvertToInputSourceObj()
+        {
+            return new InputSourceObj((ushort)Code, InputSourceKey);
+        }
+    }
     public class PipPbpViewModel : ObservableObject
     {
         public HomeDevice SelectedHomeDevice;
@@ -139,54 +165,99 @@ namespace DDPM.UI.Module.PipPbp
                     Log?.Info("  => CurrentPxpMode error");
                 }
 
-                //Get inputSourceList
-                LogInfo("@ Query InputSourceList...");
-                Dictionary<string, InputInfo> inputList = null;
-                inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
-                Log?.Info($"  => InputSourceList.Count={inputList.Count}");
+                //Build  VideoSwapItems
+                //Robert_Lin, 2024-10-31, To fix PIMS, the comboBox display itemtext is not always InputSource name.
+                //For example: If user input a custom name in InputSource Module for HDMI as "To Sony TV"
+                //then the comboBox should display "HDMI - To Sony TV".
+                //If user never input custom name, then is should display InputSource name, that is "HDMI"
+                //
+                //NEW Code:
+                Worker_RefreshInputSourceList(sender, e);
 
-                //Convert to the type of my ViewModel
-                List<InputSourceObj> inputSourceList = new List<InputSourceObj>();
-                string str1 = "";
+                /*
+                LogInfo("@ Build VideoSwapItems...");
+                Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                Log?.Info($"  => InputList.Count={inputList.Count}");
+                //Where the inputList example:
+                // Key    InputInfo:InputName, USBUpstream, Code
+                // HDMI   "To Sony TV", "USB1", 0xxy
+
+                //In below code section, we will build a List<VideoSwapComboBoxInputSourceItem> as the ItemSource of ComboBoxes
+                //
+                List<VideoSwapComboBoxInputSourceItem> videoSwapList = new List<VideoSwapComboBoxInputSourceItem>();
                 if (inputList != null)
                 {
-                    foreach (var item in inputList)
+                    foreach (var inputItem in inputList)
                     {
-                        //Robert_Lin, 2024-9-11, Fix for InputInfo class has added VCP Code by Jason.
-                        //InputSourceObj inputObj = new InputSourceObj(item.Value.InputName);
-                        InputSourceObj inputObj = new InputSourceObj((UInt16)item.Value.Code, item.Value.InputName);
-                        inputSourceList.Add(inputObj);
-                        str1 += item.Value.InputName;
-                        str1 += ", ";
+                        VideoSwapComboBoxInputSourceItem cbItem = new VideoSwapComboBoxInputSourceItem()
+                        {
+                            InputSourceKey = inputItem.Key,
+                            InputName = inputItem.Value.InputName,
+                            USBUpstream = inputItem.Value.USBUpstream,
+                            Code = inputItem.Value.Code
+                        };
+                        videoSwapList.Add(cbItem);
                     }
                 }
-                InputSourceList = inputSourceList;
-                str1 = str1.TrimEnd(' ');
-                str1 = str1.TrimEnd(',');
-                LogInfo($"  InputSourceList={str1}");
+                //Assign to ViewModel.VideoSwapItems
+                VideoSwapItems = videoSwapList;
+                */
+                //OLD Code
+                //LogInfo("@ Query InputSourceList...");
+                //Dictionary<string, InputInfo> inputList = null;
+                //inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                //Log?.Info($"  => InputSourceList.Count={inputList.Count}");
+
+                ////Convert to the type of my ViewModel
+                //List<InputSourceObj> inputSourceList = new List<InputSourceObj>();
+                //string str1 = "";
+                //if (inputList != null)
+                //{
+                //    foreach (var item in inputList)
+                //    {
+                //        //Robert_Lin, 2024-9-11, Fix for InputInfo class has added VCP Code by Jason.
+                //        //InputSourceObj inputObj = new InputSourceObj(item.Value.InputName);
+                //        InputSourceObj inputObj = new InputSourceObj((UInt16)item.Value.Code, item.Value.InputName);
+                //        inputSourceList.Add(inputObj);
+                //        str1 += item.Value.InputName;
+                //        str1 += ", ";
+                //    }
+                //}
+                //InputSourceList = inputSourceList;
+                //str1 = str1.TrimEnd(' ');
+                //str1 = str1.TrimEnd(',');
+                //LogInfo($"  InputSourceList={str1}");
 
                 //Debug
                 //if ((InputSourceList == null) || (InputSourceList.Count <= 0))
                 //    InputSourceList = GetFakeInputSourceList();
 
+                /* Move to Worker_RefreshInputSourceList()
+                 * 
                 //Get current Main InputSource from MonitorInfo
                 //
                 string currentInput = mi.inputSource;
                 LogInfo($"  MonitorInfo.InputSource={currentInput}");
-                //MainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
-                _mainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
-                OnPropertyChanged("MainInputSource");
+
+                //Robert_Lin, 2024-10-31, Change to VideoSwapComboBoxInputSourceItem type
+                if (VideoSwapItems != null)
+                {
+                    _mainInputSource = VideoSwapItems.Find(x => x.InputSourceKey.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                    OnPropertyChanged("MainInputSource");
+                }
                 if (_mainInputSource == null)
                 {
                     LogInfo("  Set MainInputSource=null}");
                 }
                 else
                 {
-                    LogInfo($"  Set MainInputSource={_mainInputSource.Name}");
+                    LogInfo($"  Set MainInputSource={_mainInputSource.DisplayName}");
                 }
 
                 //Get Sub inputs
                 Log?.Info("@ Query SubInputSources...");
+
+                //Get current monitor SubInputs input source
                 //List<UInt16> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(mi).Result;
                 List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(mi).Result;
 
@@ -196,10 +267,11 @@ namespace DDPM.UI.Module.PipPbp
                     SubInputs = subInputs;
 
                     //Build SubInputs
-                    if (subInputs.Count > 0)
+                    if ((subInputs.Count > 0) && (VideoSwapItems != null))
                     {
+                        Sub1InputSource = VideoSwapItems.Find(x => x.Code == (uint)subInputs[0].Code);
                         //Sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
-                        _sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
+                        //_sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
                         OnPropertyChanged("Sub1InputSource");
                         if (_sub1InputSource == null)
                         {
@@ -207,13 +279,13 @@ namespace DDPM.UI.Module.PipPbp
                         }
                         else
                         {
-                            LogInfo($"  Set Sub1InputSource={_sub1InputSource.Name}");
+                            LogInfo($"  Set Sub1InputSource={_sub1InputSource.DisplayName}");
                         }
 
                         if (subInputs.Count > 1)
                         {
                             //Sub2InputSource = InputSourceList.Find(x => x.Code == subInputs[1].Code);
-                            _sub2InputSource = InputSourceList.Find(x => x.Code == subInputs[1].Code);
+                            _sub2InputSource = VideoSwapItems.Find(x => x.Code == subInputs[1].Code);
                             OnPropertyChanged("Sub2InputSource");
                             if (_sub2InputSource == null)
                             {
@@ -221,14 +293,14 @@ namespace DDPM.UI.Module.PipPbp
                             }
                             else
                             {
-                                LogInfo($"  Set Sub2InputSource={_sub2InputSource.Name}");
+                                LogInfo($"  Set Sub2InputSource={_sub2InputSource.DisplayName}");
                             }
                         }
 
                         if (subInputs.Count > 2)
                         {
                             //Sub3InputSource = InputSourceList.Find(x => x.Code == subInputs[2].Code);
-                            _sub3InputSource = InputSourceList.Find(x => x.Code == subInputs[2].Code);
+                            _sub3InputSource = VideoSwapItems.Find(x => x.Code == subInputs[2].Code);
                             OnPropertyChanged("Sub3InputSource");
                             if (_sub3InputSource == null)
                             {
@@ -236,7 +308,7 @@ namespace DDPM.UI.Module.PipPbp
                             }
                             else
                             {
-                                LogInfo($"  Set Sub3InputSource={_sub3InputSource.Name}");
+                                LogInfo($"  Set Sub3InputSource={_sub3InputSource.DisplayName}");
                             }
                         }
                     }
@@ -246,6 +318,7 @@ namespace DDPM.UI.Module.PipPbp
                     //Not support SubInput or fail to query
                     LogInfo("=> SubInputSources error");
                 }
+                */
                 e.Result = "OK";
             }
             catch (Exception)
@@ -293,9 +366,161 @@ namespace DDPM.UI.Module.PipPbp
             }
         }
 
+        public void Invoke_RefreshInputSourceList()
+        {
+            BackgroundWorker bw = new BackgroundWorker
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Worker_RefreshInputSourceList;
+            bw.RunWorkerCompleted += delegate
+            {
+                IsBusy = false;
+            };
+            IsBusy = true;
+            bw.RunWorkerAsync();
+        }
+        /// <summary>
+        /// Called wheh OnActivte(), refresh for InputSource, SubInputs changed
+        /// </summary>
+        private void Worker_RefreshInputSourceList(object? sender, DoWorkEventArgs e)
+        {
+            if (SelectedHomeDevice == null)
+            {
+                e.Result = "SelectedHomeDevice is null";
+                return;
+            }
+            if (SelectedHomeDevice.MonitorInfo == null)
+            {
+                e.Result = "SelectedHomeDevice.MonitorInfo is null";
+                return;
+            }
+
+            LogInfo("@ Refresh InputSourceList...");
+            Stopwatch sw = Stopwatch.StartNew();
+            sw.Start();
+            Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(SelectedHomeDevice.MonitorInfo).Result;
+            Log?.Info($"  * InputList.Count={inputList.Count}");
+            //Where the inputList example:
+            // Key    InputInfo:InputName, USBUpstream, Code
+            // HDMI   "To Sony TV", "USB1", 0xxy
+
+            //In below code section, we will build a List<VideoSwapComboBoxInputSourceItem> as the ItemSource of ComboBoxes
+            //
+            List<VideoSwapComboBoxInputSourceItem> videoSwapList = new List<VideoSwapComboBoxInputSourceItem>();
+            int idxSource = 0;
+            if (inputList != null)
+            {
+                foreach (var inputItem in inputList)
+                {
+                    VideoSwapComboBoxInputSourceItem cbItem = new VideoSwapComboBoxInputSourceItem()
+                    {
+                        InputSourceKey = inputItem.Key,
+                        InputName = inputItem.Value.InputName,
+                        USBUpstream = inputItem.Value.USBUpstream,
+                        Code = inputItem.Value.Code
+                    };
+                    videoSwapList.Add(cbItem);
+                    LogInfo($"  [{idxSource}] {cbItem.DisplayName}");
+                    idxSource++;
+                }
+            }
+            //Assign to ViewModel.VideoSwapItems
+            VideoSwapItems = videoSwapList;
+
+            //Get current Main InputSource from MonitorInfo
+            //
+            string currentInput = SelectedHomeDevice.MonitorInfo.inputSource;
+            LogInfo($"  * Main.InputSource={currentInput}");
+
+            //Robert_Lin, 2024-10-31, Change to VideoSwapComboBoxInputSourceItem type
+            if (VideoSwapItems != null)
+            {
+                _mainInputSource = VideoSwapItems.Find(x => x.InputSourceKey.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                OnPropertyChanged("MainInputSource");
+            }
+            if (_mainInputSource == null)
+            {
+                LogInfo("  Set MainInputSource=null}");
+            }
+            else
+            {
+                LogInfo($"  Set MainInputSource={_mainInputSource.DisplayName}");
+            }
+
+            //Get Sub inputs
+            Log?.Info("@ Query SubInputSources...");
+
+            //Get current monitor SubInputs input source
+            //List<UInt16> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(mi).Result;
+            List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(SelectedHomeDevice.MonitorInfo).Result;
+
+            if (subInputs != null)
+            {
+                Log?.Info($"  * SubInputSources.Count={subInputs.Count}");
+                SubInputs = subInputs;
+
+                //Build SubInputs
+                if ((subInputs.Count > 0) && (VideoSwapItems != null))
+                {
+                    Sub1InputSource = VideoSwapItems.Find(x => x.Code == (uint)subInputs[0].Code);
+                    //Sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
+                    //_sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
+                    OnPropertyChanged("Sub1InputSource");
+                    if (_sub1InputSource == null)
+                    {
+                        LogInfo("  Set Sub1InputSource=null}");
+                    }
+                    else
+                    {
+                        LogInfo($"  Set Sub1InputSource={_sub1InputSource.DisplayName}");
+                    }
+
+                    if (subInputs.Count > 1)
+                    {
+                        //Sub2InputSource = InputSourceList.Find(x => x.Code == subInputs[1].Code);
+                        _sub2InputSource = VideoSwapItems.Find(x => x.Code == subInputs[1].Code);
+                        OnPropertyChanged("Sub2InputSource");
+                        if (_sub2InputSource == null)
+                        {
+                            LogInfo("  Set Sub2InputSource=null}");
+                        }
+                        else
+                        {
+                            LogInfo($"  Set Sub2InputSource={_sub2InputSource.DisplayName}");
+                        }
+                    }
+
+                    if (subInputs.Count > 2)
+                    {
+                        //Sub3InputSource = InputSourceList.Find(x => x.Code == subInputs[2].Code);
+                        _sub3InputSource = VideoSwapItems.Find(x => x.Code == subInputs[2].Code);
+                        OnPropertyChanged("Sub3InputSource");
+                        if (_sub3InputSource == null)
+                        {
+                            LogInfo("  Set Sub3InputSource=null}");
+                        }
+                        else
+                        {
+                            LogInfo($"  Set Sub3InputSource={_sub3InputSource.DisplayName}");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //Not support SubInput or fail to query
+                LogInfo("=> SubInputSources error");
+            }
+            sw.Stop();
+            LogInfo($"  * RefreshInputSourceList done, elapsed {sw.ElapsedMilliseconds} msec.");
+            e.Result = "OK";
+        }
         #endregion RefreshData - Init and SelectedHomeDevice changed
 
-        #region FullView Demo
+        #region FullView Demo -- Unused, to be removed
+#if ProVideFullViewDemo
 
         private string _test1Value = "AAA";
 
@@ -334,7 +559,7 @@ namespace DDPM.UI.Module.PipPbp
             get => _gotoPrevCommand;
             set => SetProperty(ref _gotoPrevCommand, value);
         }
-
+#endif //ProVideFullViewDemo
         #endregion FullView Demo
 
         #region ClickCommand of SplitItems
@@ -735,8 +960,26 @@ namespace DDPM.UI.Module.PipPbp
 
         #region InputSourceList
 
+        //Robert_Lin, 2024-10-31 change type to VideoSwapComboBoxInputSourceItem
+        //
+        private List<VideoSwapComboBoxInputSourceItem> _videoSwapItems = new List<VideoSwapComboBoxInputSourceItem>();
+
+        public List<VideoSwapComboBoxInputSourceItem> VideoSwapItems
+        {
+            get => _videoSwapItems;
+            set
+            {
+                SetProperty(ref _videoSwapItems, value);
+                OnPropertyChanged("VideoSwapItemCount");
+            }
+        }
+
+        public int VideoSwapItemCount => _videoSwapItems.Count;
+
+        //Robert_Lin, 2024-10-31, Unused, to be removed
         private List<InputSourceObj> _inputSourceList = new List<InputSourceObj>();
 
+        //Robert_Lin, 2024-10-31, Unused, to be removed
         public List<InputSourceObj> InputSourceList
         {
             get => _inputSourceList;
@@ -744,14 +987,16 @@ namespace DDPM.UI.Module.PipPbp
             {
                 SetProperty(ref _inputSourceList, value);
                 OnPropertyChanged("InputSourceCount");
-                OnPropertyChanged("IsVideoSwapComboBoxesVisible");
-                OnPropertyChanged("IsVideoSwapButtonEnabled");
-                OnPropertyChanged("IsVideoSwapButtonVisible");
-                OnPropertyChanged("IsUsbSwitchButtonVisible");
-                OnPropertyChanged("IsUsbSwitchButtonEnabled");
+                //OnPropertyChanged("IsVideoSwapComboBoxesVisible");
+                //OnPropertyChanged("IsVideoSwapButtonEnabled");
+                //OnPropertyChanged("IsVideoSwapButtonVisible");
+                //OnPropertyChanged("IsUsbSwitchButtonVisible");
+                //OnPropertyChanged("IsUsbSwitchButtonEnabled");
             }
         }
 
+
+        //Robert_Lin, 2024-10-31, Unused, to be removed
         //Debug purpose
         private List<InputInfo> GetFakeInputSourceList()
         {
@@ -762,10 +1007,12 @@ namespace DDPM.UI.Module.PipPbp
             return fakeList;
         }
 
+        //Robert_Lin, 2024-10-31, Unused, to be removed
         private void OnMainInputSourceSelectionChanged()
         {
         }
 
+        //Robert_Lin, 2024-10-31, Unused, to be removed
         private int InputSourceCount
         {
             get
@@ -778,9 +1025,10 @@ namespace DDPM.UI.Module.PipPbp
 
         #region Main Input Source
 
-        private InputSourceObj _mainInputSource;
-
-        public InputSourceObj MainInputSource
+        //Robert_Lin,2024-10-31, change type to VideoSwapComboBoxInputSourceItem
+        //NEW Code:
+        private VideoSwapComboBoxInputSourceItem _mainInputSource;
+        public VideoSwapComboBoxInputSourceItem MainInputSource
         {
             get => _mainInputSource;
             set
@@ -805,11 +1053,11 @@ namespace DDPM.UI.Module.PipPbp
                         {
                             bool res = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(
                                  DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                 "Input Select", _mainInputSource.Name).Result;
+                                 "Input Select", _mainInputSource.InputSourceKey).Result;
                             if (res)
                             {
                                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.inputSource =
-                                _mainInputSource.Name;
+                                _mainInputSource.InputSourceKey;
                                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.UpdateBatteryIndicator();
                             }
                         }
@@ -824,27 +1072,60 @@ namespace DDPM.UI.Module.PipPbp
             }
         }
 
+        //OLD Code:
+        //private InputSourceObj _mainInputSource;
+        //public InputSourceObj MainInputSource
+        //{
+        //    get => _mainInputSource;
+        //    set
+        //    {
+        //        bool isNeedUpdateToDevice =
+        //        //It's  NOT the first time set value (we assume it's assigned from RefreshData())
+        //        (_mainInputSource != null) &&
+        //        //AND value is changed
+        //        (_mainInputSource != value);
+
+        //        SetProperty(ref _mainInputSource, value);
+        //        if (isNeedUpdateToDevice)
+        //        {
+        //            BackgroundWorker bw = new BackgroundWorker()
+        //            {
+        //                WorkerReportsProgress = false,
+        //                WorkerSupportsCancellation = false
+        //            };
+        //            bw.DoWork += delegate
+        //            {
+        //                if (_mainInputSource != null)
+        //                {
+        //                    bool res = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(
+        //                         DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+        //                         "Input Select", _mainInputSource.Name).Result;
+        //                    if (res)
+        //                    {
+        //                        DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.inputSource =
+        //                        _mainInputSource.Name;
+        //                        DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.UpdateBatteryIndicator();
+        //                    }
+        //                }
+        //            };
+        //            bw.RunWorkerCompleted += delegate
+        //            {
+        //                IsBusy = false;
+        //            };
+        //            IsBusy = true;
+        //            bw.RunWorkerAsync();
+        //        }
+        //    }
+        //}
+
         #endregion Main Input Source
 
         #region Sub Input Sources
+        //Robert_Lin,2024-10-31, change type to VideoSwapComboBoxInputSourceItem
+        //NEW Code:
+        private VideoSwapComboBoxInputSourceItem? _sub1InputSource = null;
 
-        private List<InputSourceObj> _subInputs = new List<InputSourceObj>();
-
-        public List<InputSourceObj> SubInputs
-        {
-            get => _subInputs;
-            set
-            {
-                SetProperty(ref _subInputs, value);
-                OnPropertyChanged("HasSub1Input");
-                OnPropertyChanged("HasSub2Input");
-                OnPropertyChanged("HasSub3Input");
-            }
-        }
-
-        private InputSourceObj? _sub1InputSource;
-
-        public InputSourceObj? Sub1InputSource
+        public VideoSwapComboBoxInputSourceItem? Sub1InputSource
         {
             get => _sub1InputSource;
             set
@@ -867,7 +1148,7 @@ namespace DDPM.UI.Module.PipPbp
                     {
                         bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                            Sub1InputSource, null, null).Result;
+                            _sub1InputSource.ConvertToInputSourceObj(), null, null).Result;
                     };
                     bw.RunWorkerCompleted += delegate
                     {
@@ -878,10 +1159,8 @@ namespace DDPM.UI.Module.PipPbp
                 }
             }
         }
-
-        private InputSourceObj? _sub2InputSource;
-
-        public InputSourceObj? Sub2InputSource
+        private VideoSwapComboBoxInputSourceItem? _sub2InputSource;
+        public VideoSwapComboBoxInputSourceItem? Sub2InputSource
         {
             get => _sub2InputSource;
             set
@@ -904,7 +1183,7 @@ namespace DDPM.UI.Module.PipPbp
                     {
                         bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                            null, Sub2InputSource, null).Result;
+                            null, Sub2InputSource.ConvertToInputSourceObj(), null).Result;
                     };
                     bw.RunWorkerCompleted += delegate
                     {
@@ -916,9 +1195,8 @@ namespace DDPM.UI.Module.PipPbp
             }
         }
 
-        private InputSourceObj? _sub3InputSource;
-
-        public InputSourceObj? Sub3InputSource
+        private VideoSwapComboBoxInputSourceItem? _sub3InputSource;
+        public VideoSwapComboBoxInputSourceItem? Sub3InputSource
         {
             get => _sub3InputSource;
             set
@@ -941,7 +1219,7 @@ namespace DDPM.UI.Module.PipPbp
                     {
                         bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                            null, null, Sub3InputSource).Result;
+                            null, null, Sub3InputSource.ConvertToInputSourceObj()).Result;
                     };
                     bw.RunWorkerCompleted += delegate
                     {
@@ -950,6 +1228,132 @@ namespace DDPM.UI.Module.PipPbp
                     IsBusy = true;
                     bw.RunWorkerAsync();
                 }
+            }
+        }
+
+
+        //OLD Code:
+        //private InputSourceObj? _sub1InputSource;
+
+        //public InputSourceObj? Sub1InputSource
+        //{
+        //    get => _sub1InputSource;
+        //    set
+        //    {
+        //        bool isNeedUpdateToDevice =
+        //        //It's  NOT the first time set value (we assume it's assigned from RefreshData())
+        //        (_sub1InputSource != null) &&
+        //        //AND value is changed
+        //        (_sub1InputSource != value);
+
+        //        SetProperty(ref _sub1InputSource, value);
+        //        if (isNeedUpdateToDevice)
+        //        {
+        //            BackgroundWorker bw = new BackgroundWorker()
+        //            {
+        //                WorkerReportsProgress = false,
+        //                WorkerSupportsCancellation = false
+        //            };
+        //            bw.DoWork += delegate
+        //            {
+        //                bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+        //                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+        //                    Sub1InputSource, null, null).Result;
+        //            };
+        //            bw.RunWorkerCompleted += delegate
+        //            {
+        //                IsBusy = false;
+        //            };
+        //            IsBusy = true;
+        //            bw.RunWorkerAsync();
+        //        }
+        //    }
+        //}
+
+        //private InputSourceObj? _sub2InputSource;
+
+        //public InputSourceObj? Sub2InputSource
+        //{
+        //    get => _sub2InputSource;
+        //    set
+        //    {
+        //        bool isNeedUpdateToDevice =
+        //        //It's  NOT the first time set value (we assume it's assigned from RefreshData())
+        //        (_sub2InputSource != null) &&
+        //        //AND value is changed
+        //        (_sub2InputSource != value);
+
+        //        SetProperty(ref _sub2InputSource, value);
+        //        if (isNeedUpdateToDevice)
+        //        {
+        //            BackgroundWorker bw = new BackgroundWorker()
+        //            {
+        //                WorkerReportsProgress = false,
+        //                WorkerSupportsCancellation = false
+        //            };
+        //            bw.DoWork += delegate
+        //            {
+        //                bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+        //                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+        //                    null, Sub2InputSource, null).Result;
+        //            };
+        //            bw.RunWorkerCompleted += delegate
+        //            {
+        //                IsBusy = false;
+        //            };
+        //            IsBusy = true;
+        //            bw.RunWorkerAsync();
+        //        }
+        //    }
+        //}
+
+        //private InputSourceObj? _sub3InputSource;
+
+        //public InputSourceObj? Sub3InputSource
+        //{
+        //    get => _sub3InputSource;
+        //    set
+        //    {
+        //        bool isNeedUpdateToDevice =
+        //        //It's  NOT the first time set value (we assume it's assigned from RefreshData())
+        //        (_sub3InputSource != null) &&
+        //        //AND value is changed
+        //        (_sub3InputSource != value);
+
+        //        SetProperty(ref _sub3InputSource, value);
+        //        if (isNeedUpdateToDevice)
+        //        {
+        //            BackgroundWorker bw = new BackgroundWorker()
+        //            {
+        //                WorkerReportsProgress = false,
+        //                WorkerSupportsCancellation = false
+        //            };
+        //            bw.DoWork += delegate
+        //            {
+        //                bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+        //                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+        //                    null, null, Sub3InputSource).Result;
+        //            };
+        //            bw.RunWorkerCompleted += delegate
+        //            {
+        //                IsBusy = false;
+        //            };
+        //            IsBusy = true;
+        //            bw.RunWorkerAsync();
+        //        }
+        //    }
+        //}
+
+        private List<InputSourceObj> _subInputs = new List<InputSourceObj>();
+        public List<InputSourceObj> SubInputs
+        {
+            get => _subInputs;
+            set
+            {
+                SetProperty(ref _subInputs, value);
+                OnPropertyChanged("HasSub1Input");
+                OnPropertyChanged("HasSub2Input");
+                OnPropertyChanged("HasSub3Input");
             }
         }
 
