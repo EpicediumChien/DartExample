@@ -979,7 +979,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     G_ConnectedDevices_RESPONSE.PID = monitor.edid.PID.ToString();
-                                    G_ConnectedDevices_RESPONSE.Result = "Success";
+                                    G_ConnectedDevices_RESPONSE.Result = "Pass";
                                     index_per = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
@@ -1016,7 +1016,7 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                     {
                                         G_ConnectedDevices_RESPONSE.PID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.PID;
-                                        G_ConnectedDevices_RESPONSE.Result = "Succes";
+                                        G_ConnectedDevices_RESPONSE.Result = "Pass";
                                         index_per = int.Parse(change_0base_to_1base((_AllInfoMonitors[Convert.ToInt32(idx)].Index).ToString()));
                                         System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                         output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
@@ -1255,7 +1255,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 G_ConnectedDevices_RESPONSE.PID = monitor.edid.PID.ToString();
-                                G_ConnectedDevices_RESPONSE.Result = "Success";
+                                G_ConnectedDevices_RESPONSE.Result = "Pass";
                                 index_per = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
@@ -14073,6 +14073,7 @@ namespace DDPM.CLI.Plugins.Display
             string filepath = string.Empty;
             if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
             {
+                Trace.WriteLine(commandLineInput.Options[0].Option_Value);
                 filepath = commandLineInput.Options[0].Option_Value;
             }
             else

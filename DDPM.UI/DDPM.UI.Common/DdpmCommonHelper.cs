@@ -314,5 +314,16 @@ namespace DDPM.UI.Common
         {
             return UXSystemParameters.Instance.OSTheme == OSThemeEnum.Dark;
         }
+
+        //Derek 10/30
+        public static int GetBreakPoints()
+        {
+            int breakPoints = 1050;
+
+            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
+                breakPoints = width;
+
+            return breakPoints;
+        }
     }
 }
