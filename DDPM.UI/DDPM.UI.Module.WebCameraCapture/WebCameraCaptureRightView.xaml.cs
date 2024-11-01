@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Linq;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 
 namespace DDPM.UI.Module.WebCameraCapture
 {
@@ -29,6 +30,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             _vm = vm;
 
             txtCaptureFolder.Text = Utility.CheckTextLength(_vm.VideoCaptureFolder, 155, 14);
+            btnOpen.Caption = LangHelper.Instance["WebCameraCapture.2"];
             InitializeResolution();
             InitializeFPS();
         }
@@ -162,6 +164,11 @@ namespace DDPM.UI.Module.WebCameraCapture
                 else
                     _vm.Redo();
             }
+        }
+
+        private void Open_Click(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }
