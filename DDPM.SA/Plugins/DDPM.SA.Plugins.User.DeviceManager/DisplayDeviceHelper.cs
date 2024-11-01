@@ -88,8 +88,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             Title = "Dell Display and Peripheral Manager", //string table: App_Name
                             Description = desc,
-                            left_btn = "No",        //string table: No
-                            right_btn = "Yes"       //string table: Yes
+                            left_btn = "Yes",        //string table: Yes
+                            right_btn = "No"       //string table: No
                         }
                     );
                 }
