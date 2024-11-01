@@ -100,6 +100,10 @@ namespace DDPM.UI.Module.PipPbp
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            else
+            {
+                vm.Invoke_RefreshInputSourceList();
+            }
             vm.OnActivated();
         }
 

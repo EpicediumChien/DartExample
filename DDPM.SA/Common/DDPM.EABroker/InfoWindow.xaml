@@ -29,6 +29,18 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
+        <!-- DashBoard -->
+        <Grid Grid.Row="0">
+            
+        </Grid>
+        <!-- TabControl -->
+        <TabControl Grid.Row="1">
+            <TabItem Header="General">
+                
+            </TabItem>
+            
+        </TabControl>
+        
         <!-- Row 0: Window Moving info -->
         <StackPanel Grid.Row="0">
             <!-- Moving Window -->

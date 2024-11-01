@@ -116,11 +116,11 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         if (vm.FavoriteInput_Selected == null)
                         {
                             vm.FavoriteInput_Selected = vm.InputsList.Single(x => x.inputSource.Equals(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                            hotkeyInfo.InputSource.Add(new InputSourceObj(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                            hotkeyInfo.InputSource.Add(new InputSourceObj((ushort)vm.FavoriteInput_Selected.inputCode, vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                         }
                         else
                         {
-                            hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputSource));
+                            hotkeyInfo.InputSource.Add(new InputSourceObj((ushort)vm.FavoriteInput_Selected.inputCode, vm.FavoriteInput_Selected.inputSource));
                         }
                         if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                         {
@@ -186,16 +186,16 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         if (vm.SwitchInput1_Selected == null && vm.SwitchInput2_Selected == null)
                         {
                             //save hotkey inputsource default
-                            hotkeyInfo.InputSource.Add(new InputSourceObj(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                            hotkeyInfo.InputSource.Add(new InputSourceObj(vm.InputsList.First(x => !x.inputDisplayText.Equals(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource)).inputSource));
                             vm.SwitchInput1_Selected = vm.InputsList.Single(x => x.inputSource.Equals(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                             vm.SwitchInput2_Selected = vm.InputsList.First(x => !x.inputSource.Equals(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                            hotkeyInfo.InputSource.Add(new InputSourceObj((ushort)vm.SwitchInput1_Selected.inputCode, vm.SwitchInput1_Selected.inputSource));
+                            hotkeyInfo.InputSource.Add(new InputSourceObj((ushort)vm.SwitchInput2_Selected.inputCode, vm.SwitchInput2_Selected.inputSource));
                         }
                         else
                         {
                             //save hotkey inputsource
-                            hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput1_Selected.inputSource));
-                            hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput2_Selected.inputSource));
+                            hotkeyInfo.InputSource.Add(new InputSourceObj((ushort)vm.SwitchInput1_Selected.inputCode, vm.SwitchInput1_Selected.inputSource));
+                            hotkeyInfo.InputSource.Add(new InputSourceObj((ushort)vm.SwitchInput2_Selected.inputCode, vm.SwitchInput2_Selected.inputSource));
                         }
 
                         if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
@@ -441,7 +441,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 InputSourceList? inputSourceList = cb.SelectedItem as InputSourceList;
                 if (inputSourceList != null)
                 {
-                    vm.SaveHotkeySettings(new InputSourceObj(inputSourceList.inputSource), inputSourceList.inputCode);
+                    vm.SaveHotkeySettings(new InputSourceObj((ushort)inputSourceList.inputCode, inputSourceList.inputSource), "FavoriteCombobox");
                     vm.FavoriteInput_Selected = inputSourceList;
                 }
             }
@@ -462,7 +462,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 InputSourceList? inputSourceList = cb.SelectedItem as InputSourceList;
                 if (inputSourceList != null)
                 {
-                    vm.SaveHotkeySettings(new InputSourceObj(inputSourceList.inputSource), inputSourceList.inputCode);
+                    vm.SaveHotkeySettings(new InputSourceObj((ushort)inputSourceList.inputCode, inputSourceList.inputSource), "SwitchCombobox1");
                     vm.SwitchInput1_Selected = inputSourceList;
                 }
             }
@@ -482,13 +482,22 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 InputSourceList? inputSourceList = cb.SelectedItem as InputSourceList;
                 if (inputSourceList != null)
                 {
-                    vm.SaveHotkeySettings(new InputSourceObj(inputSourceList.inputSource), inputSourceList.inputCode);
+                    vm.SaveHotkeySettings(new InputSourceObj((ushort)inputSourceList.inputCode, inputSourceList.inputSource), "SwitchCombobox2");
                     vm.SwitchInput2_Selected = inputSourceList;
                 }
             }
             else
             {
                 //Debug.WriteLine("internal changes the selected");
+            }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.bInputSourceRenamed)
+            {
+                DdpmCommonHelper.bInputSourceRenamed = false;
+                vm.Invoke_RefreshData();
             }
         }
     }

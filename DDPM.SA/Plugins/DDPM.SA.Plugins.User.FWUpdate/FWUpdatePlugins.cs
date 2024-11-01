@@ -42,6 +42,7 @@ using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using System.ServiceProcess;
 using System.IO.Compression;
+using DDPM.SA.Resources.Helper;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -332,7 +333,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     if (UODFWUInfo.SaveTime == null)
                     {
-                        s = "Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.";
+                        s = LangHelper.Instance["Dock_FW_is_loaded"];
                         UODFWUInfo.SaveTime = DateTime.Now;
                         CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
                     }
@@ -340,7 +341,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (difference.TotalHours >= 24)
                         {
-                            s = "Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.";
+                            s = LangHelper.Instance["Dock_FW_is_loaded"];
                             UODFWUInfo.SaveTime = DateTime.Now;
                             CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
                         }
@@ -349,7 +350,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             if (!string.IsNullOrEmpty(s))
             {
-                NotificationFWupdate("Dock UOD FW update info", s);
+                NotificationFWupdate(LangHelper.Instance["Dock_UOD_FW_update_info"], s);
             }
         }
 

@@ -101,11 +101,6 @@ namespace DDPM.RemoteManagement.Common.Interfaces
                     result = result + $"\"value\":\"{value}\",";
                 }
 
-
-                /*                if (!String.IsNullOrEmpty(options))
-                                {
-                                    result = result + "\"options\":{" + options + "}";
-                                }*/
                 result = result + "\"options\":{" + options + "}";
 
                 return result;
@@ -116,7 +111,7 @@ namespace DDPM.RemoteManagement.Common.Interfaces
             {
                 public string index { get; set; }
                 public string servicetag { get; set; }
-                public string modelname { get; set; }
+                public string model { get; set; }
                 //public string serialnumber { get; set; }
 
                 // attribut for fwupdate
@@ -128,7 +123,6 @@ namespace DDPM.RemoteManagement.Common.Interfaces
 
                     bool hasValue = false;
                     string result = "";
-
 
 
                     if (!String.IsNullOrEmpty(index))
@@ -151,13 +145,13 @@ namespace DDPM.RemoteManagement.Common.Interfaces
                         hasValue = true;
                     }
 
-                    if (!String.IsNullOrEmpty(modelname))
+                    if (!String.IsNullOrEmpty(model))
                     {
                         if (hasValue)
                         {
                             result = result + ",";
                         }
-                        result = result + $"\"devicemodel\":\"{modelname}\"";
+                        result = result + $"\"model\":\"{model}\"";
                         hasValue = true;
                     }
 
@@ -177,7 +171,6 @@ namespace DDPM.RemoteManagement.Common.Interfaces
                         hasValue = true;
                     }
 
-                    //result = result + "\"otherKey\":\"\"";
 
                     return result;
                 }
