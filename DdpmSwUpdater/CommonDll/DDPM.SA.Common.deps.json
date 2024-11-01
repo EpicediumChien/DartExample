@@ -10,7 +10,7 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
-          "DDPM.RemoteManagement.Common": "2.0.0.4",
+          "DDPM.RemoteManagement.Common": "2.0.0.6",
           "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.2.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
@@ -412,7 +412,7 @@
         }
       },
       "System.ValueTuple/4.5.0": {},
-      "DDPM.RemoteManagement.Common/2.0.0.4": {
+      "DDPM.RemoteManagement.Common/2.0.0.6": {
         "dependencies": {
           "DellClientFramework": "6.4.11.2"
         },
@@ -785,7 +785,7 @@
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
     },
-    "DDPM.RemoteManagement.Common/2.0.0.4": {
+    "DDPM.RemoteManagement.Common/2.0.0.6": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
