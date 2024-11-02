@@ -571,7 +571,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (_isForce)
                         {
                             _logs.DebugMsg_1($"HandleUpdateInfo _isForce : {_isForce}");
-                            _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
+                            _logs.DebugMsg_1($"HandleUpdateInfo _ForceFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
                             _ForceFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                             isUpdate = true;
                             s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
@@ -581,7 +581,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"HandleUpdateInfo _isDefer : {_isDefer}");
                             if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                             {
-                                _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
+                                _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
                                 _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                                 s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
                             }
@@ -591,7 +591,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage go");
                             if (_DelayFWUpdateInfoPackage.SaveTime != null)
                             {
-                                _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage _DelayFWUpdateInfoPackage.SaveTime : {_DelayFWUpdateInfoPackage.SaveTime}");
+                                _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.SaveTime : {_DelayFWUpdateInfoPackage.SaveTime}");
                                 FWUpdateInfo? delayFUpdateInfo = _DelayFWUpdateInfoPackage.FWUpdateInfo.Find(o => o.Equals(fwUpdateInfo));
                                 if (delayFUpdateInfo != null)
                                 {
