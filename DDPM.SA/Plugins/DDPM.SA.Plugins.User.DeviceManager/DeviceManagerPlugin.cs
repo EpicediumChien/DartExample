@@ -22,6 +22,7 @@ using DDPM.SA.Common.Screen;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Telemetry;
 using DDPM.SA.Common.UpdateProgressPage;
+using DDPM.SA.Resources.Helper;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -39,12 +40,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,15 +54,11 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-using static VcpCore.Common.User32;
+using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
 using IDs = DDPM.SA.Common.IDs;
-using System.Runtime;
+
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using Point = System.Windows.Point;
-using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
-using System.Windows.Resources;
-using DDPM.SA.Resources.Helper;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -216,8 +211,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static int _millisecond = 8000;
         private static OSD_Controler _OSD_Controler = new OSD_Controler();
 
-
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+
         #endregion
 
         #region Constructor
@@ -251,9 +246,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case OSThemeEnum.Light:
                         appModeTelementryData = "Light";
                         break;
+
                     case OSThemeEnum.Dark:
                         appModeTelementryData = "Dark";
                         break;
+
                     default:
                         break;
                 }
@@ -581,7 +578,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //}
             //return Task.FromResult(r);
 
-
             //Telementry Collection
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
@@ -626,7 +622,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (rt) writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus Success ...");
                 else writelog("[DeviceMangerPlugin] Send Telementry for NightLightStatus Fail ...");
             }
-
 
             return Task.FromResult(blRet);
         }
@@ -4364,6 +4359,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"{nameof(CallDDPMUI)} done");
             return Task.FromResult(ret);
         }
+
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -6295,6 +6291,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeleteDdpmSwUpdaterFolder], Error : {ex.Message}");
             }
         }
+
         private void TelemetryDdpmSwUpdater()
         {
             writelog("[TelemetryDdpmSwUpdater], start.");
@@ -6360,7 +6357,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog("[TelemetryDdpmSwUpdater] Send Telementry for SoftwareUpdate...");
                             rt = ApplicationSettings_Function.Send_SoftwareUpdate_Telementry(_TelementryScheduler, _AllInfoMonitors, UpdateVersion, Results, SW_Available_date, SW_Update_date);
-
                         }
                         else
                         {
@@ -10348,18 +10344,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case HotkeyType.ToggleInputSource:
                         hotkeyTelementryData = HotkeyTelementryHelper.toHotKeyText(info.Hotkey);
                         break;
+
                     case HotkeyType.SwitchInputSource:
                         hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
                         break;
+
                     case HotkeyType.ChangePIPPosition:
                         hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
                         break;
+
                     case HotkeyType.ToggleEzRecentSetting:
                         hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
                         break;
+
                     case HotkeyType.VisionEngineToggle:
                         hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
                         break;
+
                     case HotkeyType.DarkStabilizerToggle:
                         hotkeyTelementryData = HotkeyTelementryHelper.getHotkeyNoStr(info.Hotkey);
                         break;
@@ -11820,9 +11821,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         case PowerNapType.Off:
                             powerNapTelementryData = "Off";
                             break;
+
                         case PowerNapType.ReduceBrightness:
                             powerNapTelementryData = "Reduce_brightness";
                             break;
+
                         case PowerNapType.SleepIfRunning:
                             powerNapTelementryData = "Sleep";
                             break;
@@ -13688,12 +13691,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //var token = _cancellationTokenSource_tmp.Token;
 
                         //Call VCP to catch updated monitor info
-                        if (_AllInfoMonitors != null)
-                            _AllInfoMonitors.Clear();
-                        else
-                            _AllInfoMonitors = new List<MonitorInfo>();
+                        //if (_AllInfoMonitors != null)
+                        //    _AllInfoMonitors.Clear();
+                        //else
+                        _AllInfoMonitors = new List<MonitorInfo>();
                         writelog("_DisplayManagerPlugin.Re_GetMonitors with token");
-                        _AllInfoMonitors.AddRange((Re_GetMonitors().Result).ToList());
+                        //_AllInfoMonitors.AddRange((Re_GetMonitors().Result).ToList());
+                        SystemEvents_DisplaySettingsChanged(sender, e);
                     }
                     catch (Exception ex)
                     {
