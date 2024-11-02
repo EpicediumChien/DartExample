@@ -2307,4 +2307,13 @@
   <data name="Wait_NoDevice" xml:space="preserve">
     <value>No device detected</value>
   </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>Invalid URL</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Right</value>
+  </data>
 </root>

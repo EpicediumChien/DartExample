@@ -1,0 +1,20 @@
+{
+  "sid": "1730375319",
+  "req": [
+    {
+      "tid": 1,
+      "active": "lock",
+      "devicetype": "app",
+      "command": "inappupdate",
+      "options": {}
+    },
+    {
+      "tid": 2,
+      "active": "unlock",
+      "devicetype": "app",
+      "command": "telemetryconsent",
+      "value": "True",
+      "options": {}
+    }
+  ]
+}
