@@ -11234,9 +11234,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
                 Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}]");
-                if (list == null || list.Count == 0)//hotkey.InputSource.Count == 0)
+                if (list == null || list.Count != 2)//hotkey.InputSource.Count == 0)
                 {
-                    //hotkey.InputSource Count must not 0
+                    //hotkey.InputSource Count must 2
                     Debug.WriteLine($"Switch_InputSource InputSource count is 0");
                     return;
                 }
