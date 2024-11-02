@@ -112,6 +112,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// 從SettingsManager取得的延遲更新包，用於比對是否延遲次數為0
         /// </summary>
         private FWUpdateInfoPackage _DelayFWUpdateInfoPackage;
+        /// <summary>
+        /// 
+        /// </summary>
+        private FWUpdateInfoPackage _ForceFWUpdateInfoPackage;
 
         /// <summary>
         /// 從DeviceManager取得的連接的裝置資訊列表，用於更新韌體前確認是否有插入多個Dock
@@ -203,6 +207,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             InitializeSettingsPlugin();
             _fWUpdateInfoPackage = new FWUpdateInfoPackage();
             _forCLI_FWUpdateInfoPackage = new FWUpdateInfoPackage();
+            _ForceFWUpdateInfoPackage= new FWUpdateInfoPackage();
+            _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
             _checkUpdateScheduleTimer = new Timer();
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
@@ -558,31 +564,43 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (_isForce)
                         {
+                            _logs.DebugMsg_1($"HandleUpdateInfo _isForce : {_isForce}");
+                            _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
+                            _ForceFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                             isUpdate = true;
                             s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
                         }
                         else if (_isDefer)
                         {
+                            _logs.DebugMsg_1($"HandleUpdateInfo _isDefer : {_isDefer}");
                             if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                             {
+                                _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
                                 _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                                 s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
                             }
                         }
                         else if (_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                         {
+                            _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage go");
                             if (_DelayFWUpdateInfoPackage.SaveTime != null)
                             {
+                                _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage _DelayFWUpdateInfoPackage.SaveTime : {_DelayFWUpdateInfoPackage.SaveTime}");
                                 FWUpdateInfo? delayFUpdateInfo = _DelayFWUpdateInfoPackage.FWUpdateInfo.Find(o => o.Equals(fwUpdateInfo));
                                 if (delayFUpdateInfo != null)
                                 {
+                                    _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage delayFUpdateInfo.Model : {delayFUpdateInfo.Model}");
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable > 0)
                                     {
+                                        _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.DelayTimesAvailable : {_DelayFWUpdateInfoPackage.DelayTimesAvailable}");
                                         s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
+                                        _ForceFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                                     }
                                     else if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable <= 0)
                                     {
+                                        _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.DelayTimesAvailable<=0 : {_DelayFWUpdateInfoPackage.DelayTimesAvailable}");
+                                        _ForceFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                                         isUpdate = true;
                                         s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
                                     }
@@ -1247,6 +1265,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
                     //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
+                    if (_ForceFWUpdateInfoPackage != null && _ForceFWUpdateInfoPackage.FWUpdateInfo != null)
+                    {
+                        _ForceFWUpdateInfoPackage.FWUpdateInfo.Clear();
+                    }
                     if (_fWUpdateInfoPackage != null)
                     {
                         if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count > 0)
@@ -1293,10 +1315,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
                     //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
-                    if (_fWUpdateInfoPackage != null && _fWUpdateInfoPackage.FWUpdateInfo != null && _DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.FWUpdateInfo != null)
+                    if (_fWUpdateInfoPackage != null && _fWUpdateInfoPackage.FWUpdateInfo != null && _ForceFWUpdateInfoPackage != null && _ForceFWUpdateInfoPackage.FWUpdateInfo != null)
                     {
                         List<FWUpdateInfo> fWUpdateInfo = new List<FWUpdateInfo>();
-                        foreach (FWUpdateInfo delayFWUpdate in _DelayFWUpdateInfoPackage.FWUpdateInfo)
+                        foreach (FWUpdateInfo delayFWUpdate in _ForceFWUpdateInfoPackage.FWUpdateInfo)
                         {
                             FWUpdateInfo? temp = _fWUpdateInfoPackage.FWUpdateInfo.Find(o => o.Equals(delayFWUpdate));
                             if (temp != null)
@@ -1546,11 +1568,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _notificationStr = ret;
                     sendMessageToEvent(updateProgressInfo);
                 }
-                if (_DelayFWUpdateInfoPackage != null && _updateErrorCode == FWUErrorCode.NoError)
+                if (_ForceFWUpdateInfoPackage != null && _ForceFWUpdateInfoPackage.FWUpdateInfo != null && _updateErrorCode == FWUErrorCode.NoError)
                 {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _ForceFWUpdateInfoPackage.FWUpdateInfo.RemoveAll :{fwUpdateInfo.Model}");
+                    _ForceFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.Equals(fwUpdateInfo));
+                }
+                if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.FWUpdateInfo != null && _updateErrorCode == FWUErrorCode.NoError)
+                {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll :{fwUpdateInfo.Model}");
                     _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.Equals(fwUpdateInfo));
                 }
-                _logs.DebugMsg_1($"{_notificationStr}");
+                _logs.DebugMsg_1($"{nameof(Install)} _notificationStr {_notificationStr}");
+                _logs.DebugMsg_1($"{nameof(Install)} done");
                 return _updateErrorCode;
             }
             catch (Exception ex)
