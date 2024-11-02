@@ -1217,21 +1217,19 @@ namespace NetworkKVM.Plugins
                                     _logs.DebugMsg("[NetworkKVM] Get :" + response);
                                     if (!string.IsNullOrEmpty(response))
                                     {
-                                        List<string> all_response = new List<string>();
-                                        var matches = Regex.Matches(response, @"\{.*?\}");
-                                        if (matches != null)
+                                        if (response == "Disconnect")
                                         {
-                                            foreach (Match match in matches)
+                                            Disconnect();
+                                            //CreateNamedPipe();
+                                        }
+                                        else
+                                        {
+                                            var matches = Regex.Matches(response, @"\{.*?\}");
+                                            if (matches != null)
                                             {
-                                                _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
-                                                //all_response.Add(match.Value);
-                                                if (response == "Disconnect")
+                                                foreach (Match match in matches)
                                                 {
-                                                    Disconnect();
-                                                    //CreateNamedPipe();
-                                                }
-                                                else
-                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
                                                     JsonstringParse(match.Value).Wait(); //read json type
                                                 }
                                             }
@@ -1313,21 +1311,19 @@ namespace NetworkKVM.Plugins
                                     _logs.DebugMsg("[NetworkKVM] Get :" + response);
                                     if (!string.IsNullOrEmpty(response))
                                     {
-                                        List<string> all_response = new List<string>();
-                                        var matches = Regex.Matches(response, @"\{.*?\}");
-                                        if (matches != null)
+                                        if (response == "Disconnect")
                                         {
-                                            foreach (Match match in matches)
+                                            Disconnect();
+                                            //CreateNamedPipe();
+                                        }
+                                        else
+                                        {
+                                            var matches = Regex.Matches(response, @"\{.*?\}");
+                                            if (matches != null)
                                             {
-                                                _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
-                                                //all_response.Add(match.Value);
-                                                if (response == "Disconnect")
+                                                foreach (Match match in matches)
                                                 {
-                                                    Disconnect();
-                                                    //CreateNamedPipe();
-                                                }
-                                                else
-                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
                                                     JsonstringParse(match.Value).Wait(); //read json type
                                                 }
                                             }
