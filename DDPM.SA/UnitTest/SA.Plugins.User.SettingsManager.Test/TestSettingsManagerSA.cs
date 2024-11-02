@@ -1326,7 +1326,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
             privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
-            var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, path).Result;
+            var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, _allMonitorSettings["TestU2724DD"], path).Result;
             Assert.That(result, Is.False);
             File.Delete(settings_path_target_file);
             File.Delete(DisplayImportSettings_path2);
