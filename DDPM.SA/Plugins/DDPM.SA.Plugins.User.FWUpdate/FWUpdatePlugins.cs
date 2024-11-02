@@ -1439,6 +1439,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!string.IsNullOrEmpty(AppDataPath))
                 {
                     string path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                    if (fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock || fwUpdateInfo.DeviceType == DeviceType.LogicalDock)
+                    {
+                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\Dock_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                    }
+                    
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
