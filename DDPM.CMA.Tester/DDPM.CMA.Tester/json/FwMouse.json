@@ -1,0 +1,11 @@
+{
+  "sid": "1728273741",
+  "req": [
+    {
+      "tid": 1,
+      "active": "fw",
+      "devicetype": "MOUSE",
+      "options": {}
+    }
+  ]
+}

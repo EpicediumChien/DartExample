@@ -12284,10 +12284,19 @@ namespace DDPM.CLI.Plugins.Display
                         elable_ea = true;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
                     }
-                    else
+                    else if(commandLineInput.Options[0].Option_Value == "DISABLE")
                     {
                         elable_ea = false;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
+                    }
+                    else
+                    {
+                        //CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
                     }
 
                     await devMgr.SetAppConfigData(ddpmSettings);
