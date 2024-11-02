@@ -18,11 +18,11 @@ namespace DDPM.UI.Plugin.ViewModels
         public IDeviceManagerSA _deviceManager;
         public DeviceInfo DeviceInfoDTP;
         public string _current_headset;
-
+        public readonly string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\QRCode";
+        public readonly string regKeyForQRCode = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.HeadsetQRCode";
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
-
         //public string modelTest;
         public HeadsetViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
@@ -40,7 +40,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public void DetectPageShow(string model)
         {
             //modelTest = model;
+            ReadQRCodeReg();
             AllResetHeadsetPage();
+
             switch (model.ToUpper())
             {
                 case "WL7024"://Mito
@@ -55,7 +57,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _automatedActionsSensitivityPageShow = true;
                     //Page 3
                     _voiceGuidancePageShow = true;
-                    _deviceSettingsDownloadDellAudioPageShow = true;
+                    //_deviceSettingsDownloadDellAudioPageShow = false;
                     break;
 
                 case "WL5024"://Pegasus
@@ -66,10 +68,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _wearDetectionPageShow = true;
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉
                     //Page 3
                     _voiceGuidancePageShow = true;
-                    _deviceSettingsDownloadDellAudioPageShow = true;
+                    //_deviceSettingsDownloadDellAudioPageShow = false;
                     break;
 
                 case "WH5024"://Winflo
@@ -77,7 +79,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = true;
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     break;
@@ -86,10 +88,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     _voiceGuidancePageShow = true;
-                    _deviceSettingsDownloadDellAudioPageShow = true;
+                    //_deviceSettingsDownloadDellAudioPageShow = false;
                     break;
 
                 case "WH3024"://Airmax
@@ -97,7 +99,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     //defult page
                     break;
@@ -107,6 +109,44 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CheckHeadsetFunc();
         }
+        public void ReadQRCodeReg()
+        {
+            object regValue = null;
+            try
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForQRCode).Result;
+
+                    if (regValue != null)
+                    {
+
+                        if (Convert.ToBoolean(regValue))
+                        {
+                            _deviceSettingsDownloadDellAudioPageShow = false;
+                            _log.Info($"[HeadsetViewModel] ReadQRCodeReg ....... success true");
+                        }
+                        else
+                        {
+                            _deviceSettingsDownloadDellAudioPageShow = true;
+                            _log.Info($"[HeadsetViewModel] ReadQRCodeReg ....... success false");
+                        }
+
+                    }
+                    else
+                    {
+                        _deviceSettingsDownloadDellAudioPageShow = true;
+                        _log.Info($"[HeadsetViewModel] ReadQRCodeReg ReadRegistryData ....... fail");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Info($"[HeadsetViewModel] ReadQRCodeReg ....... {ex.ToString()}");
+            }
+        }
+
+
         public void AllResetHeadsetPage()
         {
             _log.Info($"[HeadsetViewModel] AllResetHeadsetPage ...");
@@ -117,13 +157,9 @@ namespace DDPM.UI.Plugin.ViewModels
             _automatedActionsQuickPausePageShow = false;
             _automatedActionsSensitivityPageShow = false;
             _voiceGuidancePageShow = false;
-            _deviceSettingsDownloadDellAudioPageShow = false;
+            //_deviceSettingsDownloadDellAudioPageShow = false;
             _automatedActionsSensitivityUpPageShow = false;
             _automatedActionsAnswerCallPageShow = false;
-            _automatedActionsAnswerCallPageShow = false;
-            _automatedActionsAnswerCallPageShow = false;
-            _automatedActionsAnswerCallPageShow = false;
-
         }
 
         public void CheckHeadsetFunc()
@@ -1137,7 +1173,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsMultimediaChecked));
                     }
                     //_deviceManager.SetCollaborationMicEnable(value, CurrentDeviceInfo!.ID).Wait();
-                }               
+                }
+                OnPropertyChanged(nameof(IsCollaborationChecked));// 保留需連動其他 Button
             }
         }
 
@@ -1339,8 +1376,9 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsSpeechBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
-                    }
+                    }                  
                 }
+                OnPropertyChanged(nameof(IsCustomChecked));
             }
         }
 

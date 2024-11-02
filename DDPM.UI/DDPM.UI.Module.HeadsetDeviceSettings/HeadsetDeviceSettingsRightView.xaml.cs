@@ -16,31 +16,12 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
     public partial class HeadsetDeviceSettingsRightView : UserControl
     {
         private readonly HeadsetViewModel _vm;
-
-        private readonly string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\QRCode";
-        private readonly string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.HeadsetQRCode";
-        string regKeyForQRCode = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.QRCode";
-
+             
         public HeadsetDeviceSettingsRightView(HeadsetViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            object regValue = null ;
-
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForQRCode);
-
-                if (regValue != null)
-                {
-
-                    if (!Convert.ToBoolean(regValue))
-                    {
-                        _vm.DeviceSettingsDownloadDellAudioPageShow = false;
-                    }
-                }
-            }
         }
 
         private void CloseDescription(object sender, MouseButtonEventArgs e)
@@ -51,7 +32,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
 
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.regPath, _vm.regKeyForQRCode, true);
                 }
                 _vm._log.Info($"[HeadsetViewModel] CloseDescription ....... success");
             }
