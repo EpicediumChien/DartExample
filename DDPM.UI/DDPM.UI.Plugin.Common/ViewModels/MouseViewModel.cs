@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
@@ -22,7 +23,7 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        private Collection<string> _buttonCollection = new();
+        private Collection<string> _buttonCollection = new() { LangHelper.Instance["Left"], LangHelper.Instance["Right"] };
         private int _primaryButtonIndex = 0;
         private int _touchScrollSensitivityLevel = -1;
         private int _DPIValue = -1;
@@ -275,12 +276,12 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsReportRateSupported));
             ReportRate = CurrentDeviceInfo.ReportRate;
 
-            _buttonCollection.Clear();
-            _buttonCollection.Add(MouseButton.Left.ToString());
-            _buttonCollection.Add(MouseButton.Right.ToString());
-            ButtonCollection = _buttonCollection;
+            //_buttonCollection.Clear();
+            //_buttonCollection.Add(MouseButton.Left.ToString());
+            //_buttonCollection.Add(MouseButton.Right.ToString());
+            //ButtonCollection = _buttonCollection;
+            PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
             OnPropertyChanged(nameof(ButtonCollection));
-            PrimaryButtonIndex = (int)CurrentDeviceInfo.MousePrimaryButton;
 
             if (SelectedApp != "AllApp")
                 SelectedApp = "AllApp";
@@ -443,7 +444,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         switch (property)
                         {
                             case "MousePrimaryButtonChanged":
-                                PrimaryButtonIndex = (int)di.MousePrimaryButton;
+                                PrimaryButtonIndex = di.MousePrimaryButton == MouseButton.Left ? 0 : 1;
                                 break;
 
                             case "TouchScrollSensitivityLevelChanged":

@@ -622,12 +622,13 @@ namespace DDPM.UI.Common.Models
                 {
                     if (DeviceInfo != null)
                     {
+                        /* 1101 Bruce The customer confirms that the Dock does not use the Hover icon.
                         if (DeviceCategory == eDeviceCategory.Dock)
                         {
                             ConnectionHoverMode = "Dock";
                             SetDockView();
                         }
-                        else
+                        else*/
                         {
                             if (ConnectionType == "Dongle")
                             {

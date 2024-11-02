@@ -1,0 +1,17 @@
+{
+  "sid": "1730373296",
+  "req": [
+    {
+      "tid": 1,
+      "active": "fw",
+      "devicetype": "display",
+      "value": "forcewithnotice",
+      "options": {
+        "index": "1",
+        "servicetag": "aaaaa",
+        "model": "dell ea",
+        "minversion": "1.0.0.5"
+      }
+    }
+  ]
+}
