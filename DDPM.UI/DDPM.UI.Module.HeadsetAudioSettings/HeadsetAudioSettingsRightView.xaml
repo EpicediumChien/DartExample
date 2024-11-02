@@ -327,7 +327,7 @@
                                                                         </Border.Resources>
                                                                         <StackPanel>
                                                                             <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding NoiseOffInfoTip}" />
+                                                                                <TextBlock Text="{Binding CollaborationInfoTip}" />
                                                                             </StackPanel>
                                                                         </StackPanel>
                                                                     </Border>
@@ -363,7 +363,7 @@
                                                                         </Border.Resources>
                                                                         <StackPanel>
                                                                             <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding NoiseOffInfoTip}" />
+                                                                                <TextBlock Text="{Binding MultimediaInfoTip}" />
                                                                             </StackPanel>
                                                                         </StackPanel>
                                                                     </Border>

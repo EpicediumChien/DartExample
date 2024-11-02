@@ -11,9 +11,9 @@ namespace DDPM.UI.WalkThroughData
             public string? SubText { get; set; }
             public string? MainImageSource { get; set; }
         }
-        public static Dictionary<string, List<WalkThroughPageData>> GetDevicePages()
+        public static Dictionary<string, List<WalkThroughPageData>> GetDevicePages(int themeVar)
         {
-            return new Dictionary<string, List<WalkThroughPageData>>
+            var devicePages = new Dictionary<string, List<WalkThroughPageData>>
             {
                 //APP////////////////////////////////////////////////////////////////////////////////////////////////OK
                 // DDPM
@@ -66,40 +66,40 @@ namespace DDPM.UI.WalkThroughData
                 },
                 
                 // U2724DE For Test
-                { "U2724DE", new List<WalkThroughPageData>
-                    {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                    }
-                },
+                //{ "U2724DE", new List<WalkThroughPageData>
+                //    {
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                //    }
+                //},
 
                 // U2723DE For Test
-                { "U2723DE", new List<WalkThroughPageData>
-                    {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                    }
-                },
+                //{ "U2723DE", new List<WalkThroughPageData>
+                //    {
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                //    }
+                //},
 
                 // E2422H For Test
-                { "E2422H", new List<WalkThroughPageData>
-                    {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                    }
-                },
+                //{ "E2422H", new List<WalkThroughPageData>
+                //    {
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                //    }
+                //},
 
                 // P3225DE For Test
-                { "P3225DE", new List<WalkThroughPageData>
-                    {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                    }
-                },
+                //{ "P3225DE", new List<WalkThroughPageData>
+                //    {
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                //    }
+                //},
 
                 // U3225QE
                 { "U3225QE", new List<WalkThroughPageData>
@@ -171,7 +171,7 @@ namespace DDPM.UI.WalkThroughData
                 
                 //Pen////////////////////////////////////////////////////////////////////////////////////////////////OK
                 // Millenio DVT2 (XPS Stylus)
-                { "MillenioDVT2", new List<WalkThroughPageData>
+                { "PN9315A", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main0, SubText = Strings.WalkThroughPen_Sub0, MainImageSource = "WalkThrough/Pen/Millenio/Millenio_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main1, SubText = Strings.WalkThroughPen_Sub1, MainImageSource = "WalkThrough/Pen/Millenio/Millenio_2.png" },
@@ -180,7 +180,7 @@ namespace DDPM.UI.WalkThroughData
                 },
                 
                 // Caspian - Dell Premier Active Pen
-                { "Caspian", new List<WalkThroughPageData>
+                { "PN7522", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main0, SubText = Strings.WalkThroughPen_Sub0, MainImageSource = "WalkThrough/Pen/Caspian/Caspian_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main1, SubText = Strings.WalkThroughPen_Sub1, MainImageSource = "WalkThrough/Pen/Caspian/Caspian_2.png" },
@@ -318,6 +318,29 @@ namespace DDPM.UI.WalkThroughData
                     }
                 }
             };
+            if (themeVar != 1)
+            {
+                foreach (var pageList in devicePages.Values)
+                {
+                    foreach (var pageData in pageList)
+                    {
+                        if (!string.IsNullOrEmpty(pageData.MainImageSource))
+                        {
+                            // 將 圖片路徑改為 "xxx/xxx/Light_Mode/xxx/xxx.png"
+                            var segments = pageData.MainImageSource.Split('/');
+                            if (segments.Length > 2)
+                            {
+                                // 插入 "Light_Mode" 到第三個位置
+                                var newSegments = segments.ToList();
+                                newSegments.Insert(2, "Light_Mode");
+                                pageData.MainImageSource = string.Join("/", newSegments);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return devicePages;
         }
     }
 }

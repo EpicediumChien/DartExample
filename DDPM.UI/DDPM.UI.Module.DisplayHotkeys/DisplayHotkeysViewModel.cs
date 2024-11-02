@@ -372,12 +372,14 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                     }
                                     else
                                     {
-                                        _FavoriteInputSelect = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[0].Code));// hotkeyInfo.InputSource[0].Name));
+                                        _FavoriteInputSelect = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[0].Name));// hotkeyInfo.InputSource[0].Name));
                                     }
                                 }
                                 else
                                 {
-                                    _FavoriteInputSelect = InputsList.SingleOrDefault(x => x.inputSource.Equals(hotkeyData?.inputSource[0].Code));// hotkeyInfo.InputSource[0].Name));
+                                    _FavoriteInputSelect = InputsList.SingleOrDefault(x => x.inputSource.Equals(hotkeyData?.inputSource[0].Name));// hotkeyInfo.InputSource[0].Name));
+                                    if (_FavoriteInputSelect == null)
+                                        _FavoriteInputSelect = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                     Debug.WriteLine($"FavoriteInput_Selected: {FavoriteInput_Selected?.inputDisplayText}");
                                     //_FavoriteInput_Selected_Index = 2;
                                 }
@@ -389,17 +391,17 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         {
                             _FavoriteInputSelect = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                             //_FavoriteInput_Selected_Index = 0;
-                            /*if (_FavoriteInputSelect != null)
+                            if (_FavoriteInputSelect != null)
                             {
                                 SaveHotkeySettings(new InputSourceObj((ushort)_FavoriteInputSelect.inputCode, _FavoriteInputSelect.inputSource), "FavoriteCombobox");
-                            }*/
+                            }
                         }
                     }
                     else
                     {
                         _FavoriteInputSelect = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                        /*if (_FavoriteInputSelect != null)
-                            SaveHotkeySettings(new InputSourceObj(_FavoriteInputSelect.inputSource), "FavoriteCombobox");*/
+                        if (_FavoriteInputSelect != null)
+                            SaveHotkeySettings(new InputSourceObj(_FavoriteInputSelect.inputSource), "FavoriteCombobox");
                     }
                     //switch input
                     if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
@@ -435,12 +437,36 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                     {
                                         _switchInput1Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[0].Name));//hotkeyInfo.InputSource[0].Name));
                                         _switchInput2Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[1].Name));//hotkeyInfo.InputSource[1].Name));
+                                        if (_switchInput1Selected == null || _switchInput2Selected == null)
+                                        {
+                                            //set default
+                                            _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                                            if (_switchInput1Selected != null)
+                                                _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                            if (_switchInput1Selected != null && _switchInput2Selected != null)
+                                            {
+                                                SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
+                                                SaveHotkeySettings(new InputSourceObj((ushort)_switchInput2Selected.inputCode, _switchInput2Selected.inputSource), "SwitchCombobox2");
+                                            }
+                                        }
                                     }
                                 }
                                 else
                                 {
                                     _switchInput1Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(hotkeyData2?.inputSource[0].Name));//hotkeyInfo.InputSource[0].Name));
                                     _switchInput2Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(hotkeyData2?.inputSource[1].Name));//hotkeyInfo.InputSource[1].Name));
+                                    if (_switchInput1Selected == null || _switchInput2Selected == null)
+                                    {
+                                        //set default
+                                        _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                                        if (_switchInput1Selected != null)
+                                            _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                        if (_switchInput1Selected != null && _switchInput2Selected != null)
+                                        {
+                                            SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
+                                            SaveHotkeySettings(new InputSourceObj((ushort)_switchInput2Selected.inputCode, _switchInput2Selected.inputSource), "SwitchCombobox2");
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -466,11 +492,11 @@ namespace DDPM.UI.Module.DisplayHotkeys
                             _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                             if (_switchInput1Selected != null)
                                 _switchInput2Selected = InputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
-                            /*if (_switchInput1Selected != null && _switchInput2Selected != null)
+                            if (_switchInput1Selected != null && _switchInput2Selected != null)
                             {
                                 SaveHotkeySettings(new InputSourceObj(_switchInput1Selected.inputSource), "SwitchCombobox1");
                                 SaveHotkeySettings(new InputSourceObj(_switchInput2Selected.inputSource), "SwitchCombobox2");
-                            }*/
+                            }
                         }
                     }
                 }

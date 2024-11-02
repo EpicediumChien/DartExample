@@ -218,9 +218,8 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             else if (e.ProcessName.Contains("Timeout"))
             {
-                //ProgressValue = 0;
                 //ProgressStr = $"Downloading and installing... 0%";
-                ProgressStr_2 = $"Unable to detect target device… {ProgressValue}s";
+                ProgressStr_2 = $"Unable to detect target device… {(int)e.ProcessProgress}s";
                 ProgressStr_2_Color = "#E6AC28";
                 Progress_IsAnimated = false;
             }
