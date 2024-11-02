@@ -298,7 +298,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 foreach (DeviceInfo deviceInfo in DeviceInfos)
                 {
-                    if (GetDevicePNPDeviceID(deviceInfo.Name).Equals(UODFWUInfo.FWUpdateInfo.PNPDeviceID))
+                    if (GetDevicePNPDeviceID(deviceInfo.ModelNumber).Equals(UODFWUInfo.FWUpdateInfo.PNPDeviceID))
                     {
                         string Ver = deviceInfo.FirmwareVersion;
                         if (!int.TryParse(Ver, out _))
@@ -308,11 +308,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         string deviceVersion = Regex.Replace(Convert.ToInt32(Ver).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(Ver).ToString("D4").Length * 2) - 1);
                         if (deviceVersion.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
                         {
-                            s = $"{deviceInfo.Name} UOD update completed.";
+                            s = $"{deviceInfo.ModelNumber} UOD update completed.";
                         }
                         else
                         {
-                            s = $"{deviceInfo.Name} UOD update fail.";
+                            s = $"{deviceInfo.ModelNumber} UOD update fail.";
                         }
                         UODFWUInfo = new DokcUODUpdateInfoPackage();
                         CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
@@ -420,13 +420,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             newVer = Convert.ToInt32(newVer, 16).ToString();
                         }
-                        DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.Equals(updateHelper.UpdateItems[i].DeviceId));
+                        DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{","").Replace("}", "")));
                         string deviceConnectivity = string.Empty;
                         string deviceSupplierID = string.Empty;
                         if (deviceInfo != null)
                         {
+                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
+                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
+                            {
+                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
+                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
+                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
+                            }
                         }
                         if (deviceTypeList == null)
                         {
@@ -1578,7 +1585,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         ret = "Dock FW is loaded successful. Disconnect dock for completing FW application and reconnect dock after 1 min.";
                         _updateErrorCode = FWUErrorCode.NoError;
-                        fwUpdateInfo.PNPDeviceID = GetDevicePNPDeviceID(fwUpdateInfo.DeviceName);
+                        fwUpdateInfo.PNPDeviceID = GetDevicePNPDeviceID(fwUpdateInfo.Model);
                         DokcUODUpdateInfoPackage dokcUODUpdateInfoPackage = new DokcUODUpdateInfoPackage();
                         dokcUODUpdateInfoPackage.FWUpdateInfo = fwUpdateInfo;
                         CheckUODFWUInfo(dokcUODUpdateInfoPackage, null);
@@ -1700,7 +1707,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     DeviceName = _fWUpdateInfo.DeviceName,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                     ProcessName = "Timeout",
-                    ProcessProgress = _fwTimeOutCount,
+                    ProcessProgress = _timeOutCount,
                 };
                 sendMessageToEvent(fWUpdateInfo);
             }
