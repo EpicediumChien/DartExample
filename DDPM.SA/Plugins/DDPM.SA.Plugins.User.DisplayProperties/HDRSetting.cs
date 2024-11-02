@@ -9,8 +9,12 @@ using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
 {
-    public class HDRSetting
+    public class HDRSetting : IDisposable
     {
+        public void Dispose()
+        {
+            
+        }
         public bool GetWindowsHDRStatus(Logs _logs, EDID monitorEdid, out bool blOnOff)
         {
             _logs?.DebugMsg_1($"{nameof(GetWindowsHDRStatus)} start");
