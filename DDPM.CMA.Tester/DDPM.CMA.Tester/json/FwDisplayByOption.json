@@ -1,0 +1,16 @@
+{
+  "sid": "1728273742",
+  "req": [
+    {
+      "tid": 1,
+      "active": "fw",
+      "devicetype": "DISPLAY",
+      "options": {
+        "index": "1",
+        "servicetag": "9FTYF34",
+        "model": "DELLP3225DE",
+        "minversion": "13T109"
+      }
+    }
+  ]
+}
