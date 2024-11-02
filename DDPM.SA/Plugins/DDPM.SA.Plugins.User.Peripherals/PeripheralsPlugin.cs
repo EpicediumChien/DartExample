@@ -1420,11 +1420,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                 {
                                                     info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
                                                 }
-                                                if (string.IsNullOrEmpty(info.DockServiceTag))
+                                                if (string.IsNullOrEmpty(dockData.ServiceTag))
                                                 {
                                                     info.DockServiceTag = dockData.ServiceTag;
                                                 }
-                                                if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
+                                                if (string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
                                                 {
                                                     info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
                                                     info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();

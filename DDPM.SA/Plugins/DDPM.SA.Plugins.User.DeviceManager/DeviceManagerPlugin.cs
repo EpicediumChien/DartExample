@@ -4094,43 +4094,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "")
         {
+            writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 if (updateHelper == null || updateHelper.UpdateItems == null)
                 {
+                    writelog("[DeviceMangerPlugin] updateHelper is null");
                     updateHelper = new UpdateHelper();
                     updateHelper.UpdateItems = new List<UpdateItemInfo>();
                 }
                 List<DeviceInfo> deviceInfos = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
                 if (deviceInfos == null)
                 {
+                    writelog("[DeviceMangerPlugin] deviceInfos is null");
                     deviceInfos = new List<DeviceInfo>();
                 }
                 DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
+                    writelog("[DeviceMangerPlugin] displayUpdateHelper is null");
                     displayUpdateHelper = new DisplayUpdateHelper();
                     displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
                 }
-
-                //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
+                writelog("[DeviceMangerPlugin] _FWUpdatePlugin.GetFWUpdateInfo go");
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
             }
+            writelog("[DeviceMangerPlugin] GetFWUpdateInfo done, But all obj is null");
             return Task.FromResult(new FWUpdateInfoPackage());
         }
 
         public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "")
         {
+            writelog("[DeviceMangerPlugin] DownloadAndInstall start");
+            writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
             _UpdateProgress = null;
+            writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
             if (isUITrigger)
             {
+                writelog($"[DeviceMangerPlugin] CallUpdateProgressUI() go");
                 CallUpdateProgressUI().Wait();
             }
+            writelog($"[DeviceMangerPlugin] _FWUpdatePlugin.DownloadAndInstall go");
             List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, isUITrigger, installPath).Result;
             if (_UpdateProgress != null)
             {
+                writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
                 _FWUpdatePlugin.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
@@ -4160,12 +4170,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
         {
+            writelog("[DeviceMangerPlugin] Install start");
+            writelog($"[DeviceMangerPlugin] Install isOnlyDisplay : {isOnlyDisplay}");
             FWUErrorCode ret = FWUErrorCode.Unknow;
-            SetDelayFWUpdateInfoPackage();
-            //if (_UpdateProgress != null)
-            //{
-            ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
-            //}
+            if (_FWUpdatePlugin != null)
+            {
+                writelog($"[DeviceMangerPlugin] Install SetDelayFWUpdateInfoPackage go");
+                SetDelayFWUpdateInfoPackage();
+                //if (_UpdateProgress != null)
+                //{
+                writelog($"[DeviceMangerPlugin] Install _FWUpdatePlugin.Install go");
+                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+                //}
+
+            }
             return Task.FromResult(ret);
         }
 
@@ -4199,6 +4217,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SetSkipCA(bool isSkipCA)
         {
+            writelog("[DeviceMangerPlugin] SetSkipCA start");
+            writelog($"[DeviceMangerPlugin] SetSkipCA isSkipCA: {isSkipCA}");
             bool ret = false;
             string isSkipCA_int = isSkipCA ? "1" : "0";
             ret = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "SkipCA", isSkipCA_int).Result;
@@ -4215,11 +4235,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _SWUpdatePlugin.SetSkipCA(_IsSkipCA);
                 }
             }
+            writelog("[DeviceMangerPlugin] SetSkipCA done");
             return Task.FromResult(ret);
         }
 
         public Task<bool> GetSkipCA()
         {
+            writelog("[DeviceMangerPlugin] SetSkipCA start");
             object o = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "SkipCA").Result;
             writelog($"[GetSkipCA], o={o}.");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
@@ -4234,6 +4256,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _SWUpdatePlugin.SetSkipCA(_IsSkipCA);
                 }
             }
+            writelog($"[DeviceMangerPlugin] SetSkipCA isSkipCA: {_IsSkipCA}");
+            writelog("[DeviceMangerPlugin] SetSkipCA done");
             return Task.FromResult(_IsSkipCA);
         }
 
@@ -6518,57 +6542,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog("[DisplayExportSettings]monitorSettings is null");
                     }
                 }
-            }
-            else
-            {
-                writelog("[DisplayExportSettings]settings is null");
-            }
 
-            try
-            {
-                //expot settings
-                if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
+                try
                 {
-                    writelog("[DisplayExportSettings]Export is Success");
-                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Export");
-                    ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
-                    if (_TelementryScheduler != null)
+                    //expot settings
+                    if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, settings, path).Result)
                     {
-                        if (_AllInfoMonitors != null)
+                        writelog("[DisplayExportSettings]Export is Success");
+                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry : Export");
+                        ApplicationSettings_Function ApplicationSettings_Function = new ApplicationSettings_Function();
+                        if (_TelementryScheduler != null)
                         {
-                            if (_AllInfoMonitors.Count > 0)
+                            if (_AllInfoMonitors != null)
                             {
-                                if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Export"))
+                                if (_AllInfoMonitors.Count > 0)
                                 {
-                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                    if (ApplicationSettings_Function.Send_Settings_Telementry(_TelementryScheduler, _AllInfoMonitors, "Export"))
+                                    {
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
+                                    }
+                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
                                 }
-                                writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                else
+                                {
+                                    writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                }
                             }
                             else
                             {
-                                writelog("[SentSettingstoTelementry] _AllInfoMonitors count is 0");
+                                writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
                             }
                         }
                         else
                         {
-                            writelog("[SentSettingstoTelementry] _AllInfoMonitors is null");
+                            writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                         }
+                        return Task.FromResult(true);
                     }
                     else
                     {
-                        writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
+                        writelog("[DisplayExportSettings]Export is fail");
                     }
-                    return Task.FromResult(true);
                 }
-                else
+                catch
                 {
-                    writelog("[DisplayExportSettings]Export is fail");
+                    writelog("[DisplayExportSettings]Export catch is fail");
+                    return Task.FromResult(false);
                 }
             }
-            catch
+            else
             {
-                writelog("[DisplayExportSettings]Export catch is fail");
-                return Task.FromResult(false);
+                writelog("[DisplayExportSettings]settings is null");
             }
             return Task.FromResult(false);
         }
