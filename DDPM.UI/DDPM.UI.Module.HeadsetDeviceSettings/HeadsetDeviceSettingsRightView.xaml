@@ -195,7 +195,7 @@
 
                                     <!-- Title -->
                                     <UXControls:UXTextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding [HeadsetDeviceSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" FontWeight="Bold" Foreground="White" Margin="8,20,0,20" />
-                                    <Image Grid.Row="0" x:Name="DownDellAudioCloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" />
+                                    <Path Grid.Row="0" x:Name="DownDellAudioCloseIcon" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" Data="M20 1.025L18.975 0L10 9L1.025 0.0625L0 1.0875L8.9375 10L0.0625 18.9125L1.0875 20L10 11.0625L18.9125 20L19.9375 18.975L11 10L20 1.025Z" Fill="white"/>
                                     <!-- Icon and Description -->
                                     <Image Grid.Row="1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_DownDellAudio.png" Width="72" Height="72" HorizontalAlignment="Left" Margin="8,0,0,0" />
                                     <TextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="14" Foreground="White" Text="{Binding [HeadsetDeviceSettings.5], Source={x:Static lang:LangHelper.Instance}}" VerticalAlignment="Center" Width="368" HorizontalAlignment="Right" Margin="0,20,0,20" />

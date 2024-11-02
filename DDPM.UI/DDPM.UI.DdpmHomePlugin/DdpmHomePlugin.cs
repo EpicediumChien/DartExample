@@ -1059,7 +1059,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
             string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
 
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
 
             try
             {

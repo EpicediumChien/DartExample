@@ -137,7 +137,7 @@
 
                     <!-- Second Button Group -->
                     <Grid Grid.Column="1">
-                        <UXControls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, 0" Content="Skip" IconAnimation="Move" Click="SkipBtn_Click"/>
+                        <UXControls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, 0" Content="{Binding [WalkThrough.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" IconAnimation="Move" Click="SkipBtn_Click"/>
                     </Grid>
                 </Grid>
                 
