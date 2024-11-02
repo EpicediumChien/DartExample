@@ -17,6 +17,7 @@ namespace DDPM.UI.Module.WebCameraSettings
     public partial class WebCameraSettingsRightView : UserControl
     {
         private readonly WebCameraViewModel _vm;
+        //private readonly List<string> HelloExcludedList = new() { "WB3023", "WB5023" };
 
         public WebCameraSettingsRightView(WebCameraViewModel vm)
         {
@@ -58,6 +59,12 @@ namespace DDPM.UI.Module.WebCameraSettings
 
             if (_vm.CurrentDeviceInfo.IsPropertyZoomSupported)
                 InitializeAutofocus();
+
+            if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
+            {
+                bdrPrioritize.Visibility = Visibility.Collapsed;
+                brdHello.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void InitializeFOV()

@@ -432,7 +432,7 @@ namespace DDPM.SA.Common
                                 //other new global setting should be add to below
                                 //must match length to avoid some error parsing like OSD"LOCK"
                                 int value_keyword_idx = Supported_IT_Value_Keyword.FindIndex(x => x.ToUpper().Trim().Equals(value.ToUpper().Trim()));
-                                _Log.Info($"[ICLICommandTable] index of [Supported_IT_Value_Keyword] table is [{value_keyword_idx}]");
+                                _Log?.Info($"[ICLICommandTable] index of [Supported_IT_Value_Keyword] table is [{value_keyword_idx}]");
                                 if (value_keyword_idx >= 0)
                                 //if (value.Trim().ToUpper().Equals("LOCK") || value.Trim().ToUpper().Equals("UNLOCK"))
                                 {

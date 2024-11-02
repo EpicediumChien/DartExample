@@ -12,6 +12,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+	  <ProjectReference Include="..\DDPM.SA.Resources\DDPM.SA.Resources.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="DPeMPublic.Common">

@@ -1564,7 +1564,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to reset your monitor to factory settings now?.
+        ///   Looks up a localized string similar to Are you sure you want to restore all default settings on your device?.
         /// </summary>
         internal static string DisplayDefault_0 {
             get {
