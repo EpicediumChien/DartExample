@@ -127,6 +127,7 @@ namespace DdpmSwUpdater
             }
             LogManage.LogMessage($"swUpdateInfos ok");
             LogManage.LogMessage($"swUpdateInfos.Count {swUpdateInfos.Count}");
+            Thread.Sleep(5000);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
@@ -187,29 +188,40 @@ namespace DdpmSwUpdater
                         continue;
                     }
                     LogManage.LogMessage($"CheckFold2 ok");
-                    LogManage.LogMessage($"Download start");
                     _downloadTimer = new Timer();
                     _downloadTimer.Interval = 1000;
                     _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
-                    _downloadTimer.Start();
-                    download = new Download(LogManage.logs);
-                    string downloadInfo = "";
-                    // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                    string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                    bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, isSkipCA);
-                    _downloadTimer.Stop();
-                    LogManage.LogMessage($"Download done");
-                    if (!downloadRet)
+                    int count = 0;
+                    string _installationFileStoragePath = string.Empty;
+                    do
                     {
-                        if (downloadInfo.Equals("CA check fail"))
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
+                        LogManage.LogMessage($"Download start try count : {count++}");
+                        _downloadTimer.Start();
+                        download = new Download(LogManage.logs);
+                        string downloadInfo = "";
+                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                        _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, isSkipCA);
+                        _downloadTimer.Stop();
+                        LogManage.LogMessage($"Download done");
+                        if (!downloadRet)
                         {
-                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                            if (downloadInfo.Equals("CA check fail"))
+                            {
+                                swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                            }
+                            else if (downloadInfo.StartsWith("Network fail"))
+                            {
+                                swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                            }
+                            LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail : {downloadInfo}");
+                            //continue;
                         }
-                        else if (downloadInfo.StartsWith("Network fail"))
-                        {
-                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
-                        }
-                        LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " Download File Fail : " + downloadInfo);
+                    } while (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail && count < 3);
+                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail || string.IsNullOrEmpty(_installationFileStoragePath))
+                    {
+                        LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail retry 3 count");
                         continue;
                     }
                     LogManage.LogMessage($"Creat extractPath");
@@ -465,7 +477,7 @@ namespace DdpmSwUpdater
                 if (CheckSHA(filePath, out FileCAInfo))
                 {
                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check Thumbprint start.");
-                    
+
                     if (certificateCheck.CheckFile_Thumbprint(filePath, _SWUpdateInfo.Thumbprint, out FileCAInfo))
                     {
                         ret = true;

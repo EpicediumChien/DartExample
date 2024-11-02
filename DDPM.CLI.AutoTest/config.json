@@ -1,5 +1,6 @@
 {
     "cli_path": "D:/Projects/DDPM/DDPM.SA/bin/CLI.Subagent/Debug/net8.0-windows10.0.19041.0/CLI.Subagent.exe",
+    "delay": 10,
     "commands": {
         "Display":[
 			"/get -app=CONNECTEDDEVICES",
@@ -98,7 +99,7 @@
             "/set -Display=SpeakerMicrophone -value=enable",
             "/set -Display=SpeakerVolume -value=osdenable",
             "/set -Display=Microphone -value=osdenable",
-            "/set -Display=PowerNap -value=on",
+            "/set -Display=PowerNap -value=reducebrightness",
             "/set -display=InAppExportImport -value=unlock",
             "/set -Display=EasyArrangeLayout -value=enable",
             "/set -Display=Orientation -value=landscape",
@@ -409,7 +410,6 @@
             "/set -app=FIRMWAREUPDATE -value=MOUSE,FORCEWITHNOTICE -value=\"xxx\",GUID -value=0010,MINIVERSION -value=\"Dell Pro Compact Silent Mouse\",MODEL",
             "/set -app=FIRMWAREUPDATE -value=MOUSE,FORCEWITHNOTICE -value=\"00000000-0000-0000-0000-000000000000\",GUID -value=xxx,MINIVERSION -value=\"Dell Pro Compact Silent Mouse\",MODEL",
             "/set -app=FIRMWAREUPDATE -value=MOUSE,FORCEWITHNOTICE -value=\"00000000-0000-0000-0000-000000000000\",GUID -value=0010,MINIVERSION -value=\"xxx\",MODEL",
-
             "/set -app=FIRMWAREUPDATE -value=MOUSE,FORCEWITHNONOTICE -value=\"00000000-0000-0000-0000-000000000000\",GUI -value=0010,MINIVERSION -value=\"Dell Pro Compact Silent Mouse\",MODEL",
             "/set -app=FIRMWAREUPDATE -value=MOUSE,FORCEWITHNONOTICE -value=\"00000000-0000-0000-0000-000000000000\",GUID -value=0010,MINIVERSIO -value=\"Dell Pro Compact Silent Mouse\",MODEL",
             "/set -app=FIRMWAREUPDATE -value=MOUSE,FORCEWITHNONOTICE -value=\"00000000-0000-0000-0000-000000000000\",GUID -value=0010,MINIVERSION -value=\"Dell Pro Compact Silent Mouse\",MODE",

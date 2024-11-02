@@ -22,7 +22,7 @@ namespace DDPM.SA.Common.CLI
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
             response.Message = "Operation Completed";
-            response.Result = "Success";
+            response.Result = "Pass";
             response.Value = "N/A";
             rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
             rst.ExitCode = (int)CLI_ExitCode.success;
@@ -143,7 +143,7 @@ namespace DDPM.SA.Common.CLI
                 if (data_IT != null)
                 {
                     response.Message = "Operation Completed";
-                    response.Result = "Success";
+                    response.Result = "Pass";
                     response.Value = data_IT.Lock_Settings_Updates ? "Lock" : "Unlock";
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                     result.ExitCode = (int)CLI_ExitCode.success;
@@ -279,7 +279,7 @@ namespace DDPM.SA.Common.CLI
                 if (data_IT != null)
                 {
                     response.Message = "Operation Completed";
-                    response.Result = "Success";
+                    response.Result = "Pass";
                     switch (commandLineInput.TargetFeature)
                     {
                         case "INAPPUPDATE":
@@ -770,7 +770,7 @@ namespace DDPM.SA.Common.CLI
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
                 }
-                response.Result = "Completed";
+                response.Result = "Pass";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.success;
 
@@ -1110,7 +1110,7 @@ namespace DDPM.SA.Common.CLI
 
                 if (status)
                 {
-                    response.Result = "Completed";
+                    response.Result = "Pass";
                     response.Value = op.Option_Value;
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                     result.ExitCode = (int)CLI_ExitCode.success;

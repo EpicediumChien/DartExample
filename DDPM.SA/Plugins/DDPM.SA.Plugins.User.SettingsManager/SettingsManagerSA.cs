@@ -74,6 +74,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
         private static string folder_localappdata_Migration = "Migration";
+        private static string folder_localappdata_Export = "Export";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -109,6 +110,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private Dictionary<string, List<DDPMMonitorSettings>>? _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
         private string _display_path { get; set; } = string.Empty;
+        private string _export_path {  get; set; } = string.Empty;
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
         private List<HotkeySettings> _hotkeySettings { get; set; }
@@ -422,72 +424,90 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             List<DDPMMonitorSettings> monitorSettingList = new List<DDPMMonitorSettings>();
             //if (!relay_registered && _SysSettingsPlugin != null)
             //{
-                string folder = GetActiveUserLocalAppDataPath();
-                WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-                string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
-                //create display folder if not exist
-                _display_path = folder_appdatapath_display;
-                string folderInfo = string.Empty, info = string.Empty;
-                try
+            string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+            string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
+            string folder_appdatapath_export = folder + "\\" + folder_product + "\\" + folder_localappdata_Export;
+            //create display folder if not exist
+            _display_path = folder_appdatapath_display;
+            _export_path = folder_appdatapath_export;
+            string folderInfo = string.Empty, info = string.Empty;
+            try
+            {
+                DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info);
+                if (!Directory.Exists(_display_path))
                 {
-                    DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info);
-                    if (!Directory.Exists(_display_path))
-                    {
-                        DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
-                        WriteLog($"create folder {_display_path} success");
-                    }
+                    DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
+                    WriteLog($"create folder {_display_path} success");
                 }
-                catch
+            }
+            catch
+            {
+                WriteLog($"CreateDirectory with {_display_path} failed.");
+                _AllMonitorSettings = null;
+                binit = false;
+                return Task.FromResult(monitorSettingList);
+            }
+            try
+            {
+                DDPMFileSecurity.CheckFold(_export_path, out folderInfo, out info);
+                if (!Directory.Exists(_export_path))
                 {
-                    WriteLog($"CreateDirectory with {_display_path} failed.");
-                    _AllMonitorSettings = null;
-                    binit = false;
-                    return Task.FromResult(monitorSettingList);
+                    DirectoryInfo di = System.IO.Directory.CreateDirectory(_export_path);
+                    WriteLog($"create folder {_export_path} success");
                 }
-                //create monitor setting file if not exist
-                string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
-                WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
-                if (File.Exists(file_monitorconfig_path))
+            }
+            catch
+            {
+                WriteLog($"CreateDirectory with {_export_path} failed.");
+                _AllMonitorSettings = null;
+                binit = false;
+                return Task.FromResult(monitorSettingList);
+            }
+            //create monitor setting file if not exist
+            string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
+            WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
+            if (File.Exists(file_monitorconfig_path))
+            {
+                monitorSettingList = ReloadMonitorSettings(modelname).Result;
+                if (_AllMonitorSettings != null)
                 {
-                    monitorSettingList = ReloadMonitorSettings(modelname).Result;
-                    if (_AllMonitorSettings != null)
+                    //find monitor settings
+                    if (_AllMonitorSettings.ContainsKey(modelname))
                     {
-                        //find monitor settings
-                        if (_AllMonitorSettings.ContainsKey(modelname))
-                        {
-                            _AllMonitorSettings[modelname] = monitorSettingList;
-                            binit = true;
-                        }
-                        else
-                        {
-                            _AllMonitorSettings.Add(modelname, monitorSettingList);
-                            binit = true;
-                        }
+                        _AllMonitorSettings[modelname] = monitorSettingList;
+                        binit = true;
                     }
                     else
                     {
-                        _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
                         _AllMonitorSettings.Add(modelname, monitorSettingList);
                         binit = true;
                     }
                 }
                 else
                 {
-                    FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
-                    fileInfo.Create().Close();
-                    WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
-                    //init data to file
-                    if (WriteMonitorSettings(modelname, monitorSettingList).Result)
-                    {
-                        WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
-                        binit = true;
-                    }
-                    else
-                    {
-                        WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
-                        binit = false;
-                    }
+                    _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+                    _AllMonitorSettings.Add(modelname, monitorSettingList);
+                    binit = true;
                 }
+            }
+            else
+            {
+                FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
+                fileInfo.Create().Close();
+                WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
+                //init data to file
+                if (WriteMonitorSettings(modelname, monitorSettingList).Result)
+                {
+                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
+                    binit = true;
+                }
+                else
+                {
+                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
+                    binit = false;
+                }
+            }
             //}
             return Task.FromResult(monitorSettingList);
         }
@@ -1003,7 +1023,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #region DisplayImpExpSettings
 
-        public Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path)
+        public Task<bool> DisplayExportSettings(string modelname, string seriveTag, List<DDPMMonitorSettings> monitorSettings, string path)
         {
             WriteLog("[ExportSettingsFile] modelname: " + modelname);
             WriteLog("[ExportSettingsFile] seriveTag: " + seriveTag);
@@ -1034,7 +1054,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     WriteLog("[ExportSettingsFile] hotkeySettings is null ");
                 }
 
-                List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
+                //List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
 
                 if (monitorSettings != null)
                 {
@@ -1077,6 +1097,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             else
                             {
                                 WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
+                                return Task.FromResult<bool>(false);
+                            }
+
+                            string _exportpath = _export_path + "\\" + modelname + ".json";
+                            if (WriteImpExpSettings(_exportpath, impexpSettings))
+                            {
+                                WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file success");
+                                return Task.FromResult<bool>(true);
+                            }
+                            else
+                            {
+                                WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file failed");
                                 return Task.FromResult<bool>(false);
                             }
                         }
@@ -2462,6 +2494,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
          */
         public Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
         {
+            object resvalue = null;
             try
             {
                 if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
@@ -2469,7 +2502,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_SysSettingsPlugin == null)
                     {
                         WriteLog($"[User setting plugin] null system settings plugin, can't access local machine registry");
-                        return null;
+                        return Task.FromResult(resvalue);
                     }
                     object obj = _SysSettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
                     if (obj != null)
@@ -2481,13 +2514,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
-                    return null;
+                    return Task.FromResult(resvalue); ;
                 }
             }
             catch (Exception e)
             {
                 WriteLog($"[User setting plugin] WARNING: read registry cause exception ({e.Message})");
-                return null;
+                return Task.FromResult(resvalue); ;
             }
         }
 
