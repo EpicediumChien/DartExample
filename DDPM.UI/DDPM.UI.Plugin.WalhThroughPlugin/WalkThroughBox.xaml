@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.UI.Plugin.WalkThroughPlugin" 
         xmlns:controls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+        xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
         Title="WalkThroughBox"     
         Width="419"
         Height="226"
@@ -37,7 +38,7 @@
                 <!-- Next Button -->
                 <controls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="16,-144,0,0" IconAnimation="Move" Width="164" Height="40" Click="NextBtn_Click">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <controls:UXTextBlock Margin="8,0" Text="Next" Foreground="White"/>
+                        <controls:UXTextBlock Margin="8,0" Text="{Binding [NextStr_0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="White"/>
                         <Path x:Name="ArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
                             <Path.RenderTransform>
                                 <ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -67,7 +68,7 @@
                 </controls:UXButton>
 
                 <!-- Skip Button -->
-                <controls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, -144, 0, 0" Content="Skip" IconAnimation="Move" Click="SkipBtn_Click" />
+                <controls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, -144, 0, 0" Content="{Binding [WalkThrough.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" IconAnimation="Move" Click="SkipBtn_Click" />
             </StackPanel>
 
             <!-- ProgressBar -->

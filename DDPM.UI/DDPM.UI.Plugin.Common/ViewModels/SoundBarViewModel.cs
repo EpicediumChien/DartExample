@@ -375,7 +375,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -409,7 +408,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -443,7 +441,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsSpeechChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -477,7 +474,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsSpeechChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                     }
-                    OnPropertyChanged();
+
                 }
             }
         }

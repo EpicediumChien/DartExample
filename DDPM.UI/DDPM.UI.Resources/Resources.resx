@@ -2316,4 +2316,16 @@
   <data name="Right" xml:space="preserve">
     <value>Right</value>
   </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>Go to App</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>Applies when you're on a conference call</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>Applies when you're listening to multimedia, such as music or podcasts</value>
+  </data>
 </root>

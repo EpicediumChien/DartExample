@@ -2462,6 +2462,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
          */
         public Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
         {
+            object resvalue = null;
             try
             {
                 if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
@@ -2469,7 +2470,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_SysSettingsPlugin == null)
                     {
                         WriteLog($"[User setting plugin] null system settings plugin, can't access local machine registry");
-                        return null;
+                        return Task.FromResult(resvalue);
                     }
                     object obj = _SysSettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
                     if (obj != null)
@@ -2481,13 +2482,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
-                    return null;
+                    return Task.FromResult(resvalue); ;
                 }
             }
             catch (Exception e)
             {
                 WriteLog($"[User setting plugin] WARNING: read registry cause exception ({e.Message})");
-                return null;
+                return Task.FromResult(resvalue); ;
             }
         }
 
