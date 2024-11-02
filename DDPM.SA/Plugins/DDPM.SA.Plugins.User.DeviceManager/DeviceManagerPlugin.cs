@@ -12277,7 +12277,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             if (_AllInfoMonitors != null)
             {
-                foreach (MonitorInfo m in _AllInfoMonitors)
+                foreach (MonitorInfo m in _AllInfoMonitors.ToList())
                 {
                     monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
                     if (isInitMonitorSettings)
