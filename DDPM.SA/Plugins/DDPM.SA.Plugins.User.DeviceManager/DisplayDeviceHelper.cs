@@ -75,24 +75,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (msec == 8000)//means no UI pluged
             {
-                string model = "U2724DE";
-                string desc = "The same monitor is detected, do you want to import settings for %1?"; //string table: ImpExp_Message.0
-                //
-                //Need jason to implement import/export check here
-                //
-                //if(your criterial)
-                {
-                    desc = desc.Replace("%1", model);
-                    DisplayImportToast(
-                        new DisplayWindowsToast()
+                //if (mos != null)
+                //{
+                //    foreach (MonitorInfo monitorInfo in mos)
+                //    {
+                        string model = "U2724DE";
+                        string desc = "The same monitor is detected, do you want to import settings for %1?"; //string table: ImpExp_Message.0
+                        //
+                        //Need jason to implement import/export check here
+                        //
+                        //if(your criterial)
                         {
-                            Title = "Dell Display and Peripheral Manager", //string table: App_Name
-                            Description = desc,
-                            left_btn = "Yes",        //string table: Yes
-                            right_btn = "No"       //string table: No
+                            desc = desc.Replace("%1", model);
+                            DisplayImportToast(
+                                new DisplayWindowsToast()
+                                {
+                                    Title = "Dell Display and Peripheral Manager", //string table: App_Name
+                                    Description = desc,
+                                    left_btn = "Yes",        //string table: Yes
+                                    right_btn = "No"       //string table: No
+                                }
+                            );
                         }
-                    );
-                }
+                    //}
+                //}
+                //else 
+                //{
+                //    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] toast Show.");
+                //}
             }
         }
     }
