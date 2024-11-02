@@ -10599,6 +10599,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
                         {
                             Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
+                            writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
                             HotkeyType job = hotkeyInfo.Job;
                             ExecHotkeyJob(settings, job);
                         }
@@ -10636,22 +10637,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //check (2)
             MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
             Debug.WriteLine($"cursor mo ={monitorInfo?.edid.ServiceTag}");
+            HotkeyInfo hotkeyInfoTmp = settings.HotkeyInfo.SingleOrDefault(x => x.Job == job);
+            string hotkeyStr = string.Empty;
+            if (hotkeyInfoTmp != null)
+            {
+                hotkeyStr = string.Join("+", hotkeyInfoTmp.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
+            }
+            writelog($"ExecHotkeyJob[{job}:{hotkeyStr}] mouse cursor on Monitor [ModelName={monitorInfo?.edid.ModelName},ServiceTag={monitorInfo?.edid.ServiceTag}, SerialNumber={monitorInfo?.edid.SerialNumber}]");
+
             bool getTargetMo = false;
             if (monitorInfo == null)
             {
-                writelog($"[ExecHotkeyJob] null dell monitor get over mouse: locate at Screen({currentScreen.DeviceName})");
+                writelog($"[ExecHotkeyJob:{job}:{hotkeyStr}] null dell monitor get over mouse: locate at Screen({currentScreen.DeviceName})");
                 //check (1)
                 if (lastSelectedMonitor_UI == null)
                 {
-                    Debug.WriteLine($"[ExecHotkeyJob：{job}] UI didn't set any selected monitor");
-                    writelog($"[ExecHotkeyJob：{job}] UI didn't set any selected monitor");
+                    Debug.WriteLine($"[ExecHotkeyJob:{job}:{hotkeyStr}] UI didn't set any selected monitor");
+                    writelog($"[ExecHotkeyJob:{job}:{hotkeyStr}] UI didn't set any selected monitor");
                     return Task.FromResult(false);
                 }
                 monitorInfo = _AllInfoMonitors.Find(x => x.modelName.Equals(lastSelectedMonitor_UI.modelName) && x.edid.ServiceTag.Equals(lastSelectedMonitor_UI.edid.ServiceTag));
                 if (monitorInfo == null)
                 {
-                    writelog($"[ExecHotkeyJob：{job}] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
-                    Debug.WriteLine($"[ExecHotkeyJob：{job}] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
+                    writelog($"[ExecHotkeyJob:{job}:{hotkeyStr}] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
+                    Debug.WriteLine($"[ExecHotkeyJob:{job}:{hotkeyStr}] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
                     return Task.FromResult(false);
                 }
             }
@@ -10659,9 +10668,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 getTargetMo = true;
             }
-            Debug.WriteLine($"getTargetMo: {getTargetMo}");
-            Debug.WriteLine($"job: {job}");
-            writelog($"job: {job}");
+            if (getTargetMo)
+            {
+                Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from Mouse crusor), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+            }
+            else
+            {
+                Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+            }
+            writelog($"ExecHotkeyJob[{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
@@ -11211,12 +11226,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                HotkeyInfo hotkey = (HotkeyInfo)param[0];
-                List<InputSourceObj> list = (List<InputSourceObj>)param[1];// GetInputSourceHotKeyData(monitorInfo);
-                Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}]");
-                if (list == null || list.Count == 0)//hotkey.InputSource.Count == 0)
+                string log_keys = string.Empty;
+                if (param != null && param.Count() > 0)
                 {
-                    //hotkey.InputSource Count must not 0
+                    HotkeyInfo hotkey = (HotkeyInfo)param[0];
+                    log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
+                }
+                List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
+                Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}]");
+                if (list == null || list.Count != 2)//hotkey.InputSource.Count == 0)
+                {
+                    //hotkey.InputSource Count must 2
                     Debug.WriteLine($"Switch_InputSource InputSource count is 0");
                     return;
                 }
@@ -11234,11 +11254,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         Debug.WriteLine($"inputSourceObjs: {item.Name}={item.Code}");
                     }
-                    if (inputSourceObjs == null || list.Count == 0)
+                    if (inputSourceObjs == null || inputSourceObjs.Count() == 0)
                     {
                         //hotkey.InputSource Count must not 0.
                         Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
-                        writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],migration hotkeyInfo:inputsoure is empty or can't convert ");
+                        writelog($"Switch_InputSource[{log_keys}]:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],migration hotkeyInfo:inputsoure is empty or can't convert ");
                         return;
                     }
                     else
@@ -11257,7 +11277,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (switchTo != null)
                 {
                     bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
-                    writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
+                    writelog($"Switch_InputSource[{log_keys}]:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
                 }
             }
         }
@@ -11266,7 +11286,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                HotkeyInfo hotkey = (HotkeyInfo)param[0];
+                string log_keys = string.Empty;
+                if (param != null && param.Count() > 0)
+                {
+                    HotkeyInfo hotkey = (HotkeyInfo)param[0];
+                    log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
+                }
                 List<InputSourceObj> list = (List<InputSourceObj>)param[1];
                 //for magration that hotkeyInfo that inputsource name is empty
                 string changeInput = string.Empty;// hotkey.InputSource[0];
@@ -11288,7 +11313,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput}");
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput).Result;
                 Debug.WriteLine($"Favorite_InputSource => {setNextInput}");
-                writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput}]" + (setNextInput ? "success" : "fail"));
+                writelog($"Favorite_InputSource[{log_keys}]:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput}]" + (setNextInput ? "success" : "fail"));
             }
         }
 
