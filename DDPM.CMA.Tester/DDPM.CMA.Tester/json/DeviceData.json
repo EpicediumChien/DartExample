@@ -1,0 +1,12 @@
+{
+  "sid": "1728380255",
+  "req": [
+    {
+      "tid": 1,
+      "active": "get",
+      "devicetype": "APP",
+      "command": "DeviceData",
+      "options": {}
+    }
+  ]
+}
