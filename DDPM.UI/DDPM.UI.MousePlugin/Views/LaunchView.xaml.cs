@@ -621,5 +621,20 @@ namespace DDPM.UI.Plugin.MousePlugin
                 button.Foreground = buttonColorFocusedF;
             }
         }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
+        }
+
+        private void ChangeDevNameWidth()
+        {
+            devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+        }
+
+        private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
+        }
     }
 }
