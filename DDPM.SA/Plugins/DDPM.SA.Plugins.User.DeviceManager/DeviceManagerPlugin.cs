@@ -11208,7 +11208,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     HotkeyInfo hotkey = (HotkeyInfo)param[0];
                     log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
                 }
-                List<InputSourceObj> list = (List<InputSourceObj>)param[1];// GetInputSourceHotKeyData(monitorInfo);
+                List<InputSourceObj> list = (List<InputSourceObj>)param.ElementAtOrDefault(1);// GetInputSourceHotKeyData(monitorInfo);
                 Debug.WriteLine($"Switch_InputSource [{monitorInfo.edid.ServiceTag}]");
                 if (list == null || list.Count == 0)//hotkey.InputSource.Count == 0)
                 {
@@ -11230,7 +11230,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         Debug.WriteLine($"inputSourceObjs: {item.Name}={item.Code}");
                     }
-                    if (inputSourceObjs == null || list.Count == 0)
+                    if (inputSourceObjs == null || inputSourceObjs.Count() == 0)
                     {
                         //hotkey.InputSource Count must not 0.
                         Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
