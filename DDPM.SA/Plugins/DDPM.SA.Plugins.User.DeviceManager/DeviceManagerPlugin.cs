@@ -10681,55 +10681,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                    }
                     break;
 
                 case HotkeyType.BrightnessIncrease:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                    }
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                    }
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                    }
                     break;
 
                 case HotkeyType.LuminanceReduce:
@@ -10812,11 +10808,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        private bool isAutoBrightnessOn(MonitorInfo mo)
-        {
-            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
-            return result.IsEnable;
-        }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
