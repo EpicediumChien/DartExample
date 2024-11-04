@@ -506,18 +506,24 @@ namespace DDPM.SA.Common.Security
             chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
 
             bool isChainValid = chain.Build(certificate);
+
             if (isChainValid)
             {
+                _logs?.DebugMsg_1("Credential has been Build.");
                 ret = true;
-                _logs?.DebugMsg_1("Credential has not been revoked.");
+                foreach (X509ChainStatus status in chain.ChainStatus)
+                {
+                    if (status.Status == X509ChainStatusFlags.Revoked)
+                    {
+                        ret = false;
+                        _logs?.DebugMsg_1($"{status.StatusInformation} Credentials may be revoked");
+                        break;
+                    }
+                }
             }
             else
             {
-                _logs?.DebugMsg_1("Credentials may be revoked.");
-                foreach (X509ChainStatus status in chain.ChainStatus)
-                {
-                    _logs?.DebugMsg_1($"Error: {status.StatusInformation}");
-                }
+                _logs?.DebugMsg_1("Credentials has not been Build.");
             }
             return ret;
         }
