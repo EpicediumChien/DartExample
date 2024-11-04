@@ -60,7 +60,10 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         public void SetNodeValue(Image node, double value)
         {
             if (value < -2 || value > 2)
-                throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 2 and -2");
+            {
+                _vm._log!.Info($"[SpeakerAudioPresetRightView] SetNodeValue ...... Value must be between 2 and -2");
+                return;
+            }
 
             double minValue = 0;
             double maxValue = 150;
