@@ -10529,7 +10529,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (e.KeyCode == Keys.Scroll)
                     {
-                        bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                        bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.Scroll) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
                         if (isScrollLockOn)
                         {
@@ -10544,7 +10544,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (e.KeyCode == Keys.NumLock)
                     {
-                        bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                        bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.NumLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
                         if (isNumLockLockOn)
                         {
@@ -10554,7 +10554,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
                         }
-                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                        //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         //_OSDKeyLock = true;
                         //e.Handled = true;
                     }
@@ -10689,55 +10689,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                    }
                     break;
 
                 case HotkeyType.BrightnessIncrease:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                    }
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                    }
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                    }
                     break;
 
                 case HotkeyType.LuminanceReduce:
@@ -10820,11 +10816,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        private bool isAutoBrightnessOn(MonitorInfo mo)
-        {
-            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
-            return result.IsEnable;
-        }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
@@ -11195,14 +11186,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //OLD:
                 //List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
                 //NEW:
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
-                if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
-                {
-                    return;
-                }
-                Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
-                bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
-                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}](keys:{log_keys}) from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
+                /* List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
+                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
+                 {
+                     return;
+                 }*/
+                // Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
+                //bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
+                //SplitCountFromPxpMode==2 alway is this
+                bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)1).Result;
+                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}](keys:{log_keys}) from [0] to [1]" + (swapPxp ? "success" : "fail"));
                 /*if (subInputs != null && subInputs.Count > 0)
                 {
                     allInputs.AddRange(subInputs);
