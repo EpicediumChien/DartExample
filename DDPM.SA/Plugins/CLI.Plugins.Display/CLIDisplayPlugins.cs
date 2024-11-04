@@ -1062,7 +1062,7 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                     {
                                         G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
-                                        G_ConnectedDevices_RESPONSE.Result = "Succes";
+                                        G_ConnectedDevices_RESPONSE.Result = "Pass";
                                         index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
                                         System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                         output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
@@ -1292,7 +1292,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     G_ConnectedDevices_RESPONSE.PID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.PID;
-                                    G_ConnectedDevices_RESPONSE.Result = "Succes";
+                                    G_ConnectedDevices_RESPONSE.Result = "Pass";
                                     index_per = int.Parse(change_0base_to_1base((_AllInfoMonitors[Convert.ToInt32(idx)].Index).ToString()));
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
@@ -1338,7 +1338,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
-                                    G_ConnectedDevices_RESPONSE.Result = "Succes";
+                                    G_ConnectedDevices_RESPONSE.Result = "Pass";
                                     index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
@@ -1522,7 +1522,7 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
                     cli_Response.Value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
-                    cli_Response.Result = "Succes";
+                    cli_Response.Result = "Pass";
                     cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
@@ -6149,8 +6149,11 @@ namespace DDPM.CLI.Plugins.Display
             //    writelog("ProcessListMonitorsOptionAsync: input null IDeviceManagerSA");
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
+            int monitorCount = 0;
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
+
+             monitorCount = _AllInfoMonitors.Count;
 
             string output = string.Empty;
             int ret = 0;
@@ -6158,20 +6161,36 @@ namespace DDPM.CLI.Plugins.Display
 
             if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0)
             {
-                int i = 0;
-                foreach (MonitorInfo mo in _AllInfoMonitors)
+                bool flag = true;
+                while (flag)
                 {
-                    cLI_RESPONSE = new CLI_RESPONSE();
-                    cLI_RESPONSE.Command = commandLineInput.Command;
-                    cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-                    cLI_RESPONSE.Index = change_0base_to_1base(i++.ToString()) + ",";
-                    cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
-                    cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                    cLI_RESPONSE.Model = mo.edid.ModelName;
+                    int i = 0;
+                    output = string.Empty;
+                    ret = 0;
+                    foreach (MonitorInfo mo in _AllInfoMonitors.ToList())
+                    {
+                        cLI_RESPONSE = new CLI_RESPONSE();
+                        cLI_RESPONSE.Command = commandLineInput.Command;
+                        cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                        cLI_RESPONSE.Index = change_0base_to_1base(i++.ToString()) + ",";
+                        cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
+                        cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                        cLI_RESPONSE.Model = mo.edid.ModelName;
 
-                    var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
-                    ret += tmpRet.code;
-                    output += "\n" + tmpRet.result;
+                        var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
+                        if (tmpRet.code == 3)
+                        {
+                            _AllInfoMonitors = devMgr.GetMonitors().Result;
+                            break;
+                        }
+                        ret += tmpRet.code;
+                        output += "\n" + tmpRet.result;
+                    }
+                    if (i == monitorCount)
+                    {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             else
@@ -6341,19 +6360,26 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             for (int i = 0; i < commandLineInput.Options.Count; i++)
                             {
-                                if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Name) && commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                                 {
                                     //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;                                  
                                     USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    if (commandLineInput.Options[i].Option_Value.ToUpper().Equals("HIGHSPEED"))
+                                    if (!String.IsNullOrEmpty(commandLineInput.Options[i].Option_Value) && commandLineInput.Options[i].Option_Value.ToUpper().Equals("HIGHSPEED"))
                                     {
                                         commandLineInput.Options[i].Option_Value = "HighDataSpeed";
                                         USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
                                     }
                                     USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                                    if (displayPropertiesInfo.USBCPrioritizationType.ToString().ToUpper().Equals(commandLineInput.Options[i].Option_Value.ToUpper()))
+                                    {
+                                        ret = true;
+                                        break;
+                                    }
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
                                 }
                             }
+                            if(ret == false)
+                                return ((int)CLI_ExitCode.fail_SetVCPCapability, null);
                         }
                     }
                     else
@@ -12284,10 +12310,19 @@ namespace DDPM.CLI.Plugins.Display
                         elable_ea = true;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
                     }
-                    else
+                    else if(commandLineInput.Options[0].Option_Value == "DISABLE")
                     {
                         elable_ea = false;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
+                    }
+                    else
+                    {
+                        //CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
                     }
 
                     await devMgr.SetAppConfigData(ddpmSettings);

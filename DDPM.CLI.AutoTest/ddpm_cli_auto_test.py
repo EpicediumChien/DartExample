@@ -39,7 +39,7 @@ class CLIAutoTest():
             logger.error(f"Fail to exec {command}")
             return "{}"
         finally:
-            time.sleep(5)
+            time.sleep(self.config["delay"])
 
     def parse_output(self, output):
         model_match = re.findall(r'"Model":\s"([^"]+)', output)
@@ -252,11 +252,17 @@ if __name__ == "__main__":
 
     config = get_config()
 
-    if args.category and args.category not in config["commands"]:
-        logger.error(f"The category argument must be {', '.join(config["commands"])}.")
-        sys.exit(1)
+    if args.category:
+        input_categories = args.category.split(",")
 
-    categories = [args.category] if args.category else config["commands"]
+        for category in input_categories:
+            if category not in config["commands"]:
+                logger.error(f"{category} is not the correct category, the category argument must be {', '.join(config["commands"])}.")
+                sys.exit(1)
+        
+        categories = input_categories
+    else:
+        categories = list(config["commands"].keys())
 
     cli_script = CLIAutoTest(config, categories)
     cli_script.main()

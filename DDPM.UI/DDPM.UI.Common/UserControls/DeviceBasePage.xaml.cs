@@ -260,17 +260,16 @@ namespace DDPM.UI.Common.UserControls
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //if (!viewModel.IsLandingMode && this.ActualWidth <= breakPoints)
-            if (this.ActualWidth <= breakPoints)
-            {
-                ShowVBar(false);
-                ChangeToVerticalLayout();
-            }
-            else
-            {
-                ShowVBar(false);
-                ChangeToHorizontalLayout();
-            }
+            //if (this.ActualWidth <= breakPoints)
+            //{
+            //    ShowVBar(false);
+            //    ChangeToVerticalLayout();
+            //}
+            //else
+            //{
+            //    ShowVBar(false);
+            //    ChangeToHorizontalLayout();
+            //}
 
             if (!viewModel.IsLandingMode)
                 ChangeToNonLandingMode();
@@ -281,8 +280,8 @@ namespace DDPM.UI.Common.UserControls
             }
 
             //tbDisplayName.Width = gridDisplayName.ActualWidth;
-            _log?.Info($"tbDisplayName.ActualWidth = {tbDisplayName.ActualWidth}");
-            _log?.Info($"gridDisplayName.ActualWidth = {gridDisplayName.ActualWidth}");
+            //_log?.Info($"tbDisplayName.ActualWidth = {tbDisplayName.ActualWidth}");
+            //_log?.Info($"gridDisplayName.ActualWidth = {gridDisplayName.ActualWidth}");
         }
 
         private void ChangeToNonLandingMode()
@@ -349,8 +348,9 @@ namespace DDPM.UI.Common.UserControls
         {
             if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal)
             {
-                vBarRight.Width = vBarWidthNormal;  //show the vBar
-                LeftFrame.Width = this.ActualWidth - vBarRight.Width - 15;
+                //vBarRight.Width = vBarWidthNormal;  //show the vBar
+                vBarRight.Width = 0;
+                LeftFrame.Width = this.ActualWidth - vBarRight.Width - 13;
                 LeftFrame.Height = this.ActualHeight - 40;
 
                 //vBar.Margin = new Thickness(0, 0, 0, 10);

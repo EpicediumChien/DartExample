@@ -242,6 +242,11 @@ namespace DDPM.SA.Plugins.CMAManager
             // special case
             if (Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
             {
+                if (String.IsNullOrEmpty(task.value) || task.value.Length <= 0) 
+                {
+                    throw new ArgumentException("Command can't be empty");
+                }
+
                 command = command + ("app=" + task.command);
                 command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
 
@@ -366,17 +371,114 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 case Params.Lock.InAppUpdate:
                     command = command + ("app=" + task.command);
-                    command = command + (" value=" + comLock);
+                    //command = command + (" value=" + comLock);
+                    break;
+
+                case Params.Lock.InAppRestoreDefault:
+                    command = command + ("app=" + task.command);
+                    break;
+
+                case Params.Lock.RestoreFactoryDefaults:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.ScreenNotification:
+                    command = command + ("app=" + task.command);
                     break;
 
                 case Params.Lock.TelemetryConsent:
                     command = command + ("app=" + task.command);
-                    command = command + (" value=" + task.value + "," + comLock);
+                    //command = command + (" value=" + comLock);
                     break;
+
+                case Params.Lock.InAppBriCont:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                /*case Params.Lock.InAppBriCont:    // #5.14.7
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.InAppBriCont:  // #5.14.8
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.PrimaryMonitorSync:  // #5.14.9
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;*/
+
+                case Params.Lock.ResolutionRefreshRate:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.USBCPrioritization:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                /*case Params.Lock.InAppUSBKVM:   // # 5.14.12
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;*/
+
+
+                case Params.Lock.InAppNetworkKVM:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.InAppColorPreset:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.PowerNap:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.InAppExportSettings:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.CollabScreenShare:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+
+                case Params.Lock.hdr:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.AntiFlicker:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.MicSwitch:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.AIAutoFraming:
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+/*                case Params.Lock.PresenceDetection: // 5.14.22 Enable/Disable
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.ancMode:   // 5.14.23 Enable/Disable
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.micNoiseCancellation:  // 5.14.24
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;
+
+                case Params.Lock.wearDetection: // 5.14.25
+                    command = command + (task.devicetype + "=" + task.command);
+                    break;*/
+
 
                     // default: // TODO: Error Command
 
             }
+
+            command = command + (" value=" + comLock);
 
             return command;
         }
@@ -464,7 +566,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             CLIEventResult? cliResult = null;
             JObject? cliResp = null;
-            int count = 0;
+            int resultCount = 0;
 
             if (null != _CliManagerPlugin)
             {
@@ -489,21 +591,23 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     try 
                     {
-                        cliResp = JObject.Parse(cliResult.serialize_Json_response);
+                        /*cliResp = JObject.Parse(cliResult.serialize_Json_response);
                         responseMsg = (string?)cliResp["Message"] ?? string.Empty;
-                        responseResult = (string)cliResp["Result"] ?? string.Empty;
+                        responseResult = ((string)cliResp["Result"]).ToLower()?? string.Empty;
 
-                        if (responseResult.Equals("Success"))
+                        if (responseResult.Equals("success"))
                         {
                             isSuccess = true;
                         }
 
-                        if (responseResult.Equals("PASS"))
+                        if (responseResult.Equals("pass"))
                         {
                             isSuccess = true;
-                        }
+                        }*/
 
-                        if (count > 0)
+                        isSuccess = checkResult(cliResult.serialize_Json_response, out responseMsg);
+
+                        if (resultCount > 0)
                         {
                             finalResult = finalResult + ",";
                         }
@@ -518,12 +622,12 @@ namespace DDPM.SA.Plugins.CMAManager
                             finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}";
                         }
                     }
-                    catch
+                    catch (Exception e) 
                     {
-                        responseMsg = "Exception: Unknow Result";
-                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 99,\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult?.serialize_Json_response + "]}";
+                        responseMsg = "Exception: Unknow Result ";
+                        finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_RESULT_EXCEPTION + ",\"msg\": \"" + responseMsg + e.ToString() + "\",\"data\": [" + cliResult?.serialize_Json_response + "]}";
                     }
-                    count = count + 1;
+                    resultCount = resultCount + 1;
                     taskInfoQueue.Dequeue();
 
                 }
@@ -541,6 +645,74 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
             return new NotifyArgs();
+        }
+
+        private bool checkResult(string src, out string msg) 
+        { 
+            bool result = false;
+            msg = string.Empty;
+
+            WriteLog($"[CMA] checkResult src = {src}");
+
+            int index = src.IndexOf("{", 0);
+
+            do
+            {
+                index = src.IndexOf("{", index + 2);
+                if (index > 0)
+                {
+                    src = src.Insert(index, ",");
+                }
+            } while (index > 0);
+
+            src = "[" + src + "]";
+
+            WriteLog($"[CMA] checkResult fixed src = {src}");
+
+            JArray jarray = JArray.Parse(src);
+
+            string strResult = string.Empty;
+
+            foreach (JObject jobj in jarray) 
+            {
+                try 
+                {
+                    strResult = ((string)jobj["Result"]).ToLower() ?? string.Empty;
+
+                    if (strResult.Equals("success"))
+                    {
+                        result = true;
+                        continue;
+                    }
+
+                    if (strResult.Equals("pass"))
+                    {
+                        result = true;
+                        continue;
+                    }
+
+                    if (strResult.Equals("completed"))
+                    {
+                        result = true;
+                        continue;
+                    }
+
+                    result = false;
+                    msg = (string)jobj["Message"];
+
+                    return result;
+                }
+                catch (Exception e) 
+                {
+                    msg = e.ToString();
+
+                    return result;
+                }
+
+                
+            }
+
+            return result;
         }
         
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
@@ -674,25 +846,30 @@ namespace DDPM.SA.Plugins.CMAManager
             // TODO: implement decice connect/disconnect information
             WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed data.type = " + data.type);
 
-            foreach (MonitorInfo info in data.mos) {
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo ToString = " + info.ToString());
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo AliasDeviceName = " + info.AliasDeviceName);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo Index = " + info.Index);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo CapabilityString = " + info.CapabilityString);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DisplayName = " + info.DisplayName);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DDCisON = " + info.DDCisON);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid = " + info.edid);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo FwVersion = " + info.FwVersion);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputSource = " + info.inputSource);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputCable = " + info.inputCable);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName = " + info.modelName);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo series = " + info.series);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.PID = " + info.edid.PID);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ModelNam = " + info.edid.ModelName);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.SerialNumber = " + info.edid.SerialNumber);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ServiceTag = " + info.edid.ServiceTag);
-                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName =========================================");
+            if (data.mos != null) 
+            {
+                foreach (MonitorInfo info in data.mos)
+                {
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo =======================================================");
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo ToString = " + info.ToString());
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo AliasDeviceName = " + info.AliasDeviceName);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo Index = " + info.Index);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo CapabilityString = " + info.CapabilityString);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DisplayName = " + info.DisplayName);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DDCisON = " + info.DDCisON);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid = " + info.edid);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo FwVersion = " + info.FwVersion);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputSource = " + info.inputSource);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputCable = " + info.inputCable);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName = " + info.modelName);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo series = " + info.series);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.PID = " + info.edid.PID);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ModelNam = " + info.edid.ModelName);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.SerialNumber = " + info.edid.SerialNumber);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ServiceTag = " + info.edid.ServiceTag);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo =======================================================");
 
+                }
             }
 
            

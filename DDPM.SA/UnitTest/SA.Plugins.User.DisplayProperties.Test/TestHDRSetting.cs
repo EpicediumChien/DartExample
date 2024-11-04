@@ -74,23 +74,23 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             bool blOn = true;
             bool blOffon = false;
             bool boff = false;
-            var result = hDRSetting.GetWindowsHDRStatus(eDID, out blOffon);
+            var result = hDRSetting.GetWindowsHDRStatus(null, eDID, out blOffon);
             Assert.IsNotNull(result);
             Assert.IsFalse(result);
             if (blOffon)
             {
-                var result1 = hDRSetting.SetWindowsHDRStatus(eDID, blOffon);
+                var result1 = hDRSetting.SetWindowsHDRStatus(null, eDID, blOffon);
                 Assert.IsNotNull(result1);
                 Assert.IsTrue(result1);
-                var result2 = hDRSetting.GetWindowsHDRStatus(eDID, out blOffon);
+                var result2 = hDRSetting.GetWindowsHDRStatus(null, eDID, out blOffon);
                 Assert.IsTrue(result2);
                 Assert.IsTrue(blOffon);
-                result = hDRSetting.SetWindowsHDRStatus(eDID, boff);
+                result = hDRSetting.SetWindowsHDRStatus(null, eDID, boff);
                 Assert.IsTrue(result);
             }
             else
             {
-                var result3 = hDRSetting.SetWindowsHDRStatus(eDID, boff);
+                var result3 = hDRSetting.SetWindowsHDRStatus(null, eDID, boff);
                 Assert.IsNotNull(result3);
             }
         }
@@ -127,22 +127,22 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             HDRSetting hDRSetting = new HDRSetting();
             bool blOff = false;
             bool blOn = true;
-            var result = hDRSetting.GetWindowsHDRStatus(eDID, out blOff);
+            var result = hDRSetting.GetWindowsHDRStatus(null, eDID, out blOff);
             Assert.IsNotNull(result);
             Assert.IsFalse(result);
             if (blOff)
             {
-                var result1 = hDRSetting.SetWindowsHDRStatus(eDID, blOn);
+                var result1 = hDRSetting.SetWindowsHDRStatus(null, eDID, blOn);
                 Assert.IsNotNull(result1);
                 Assert.IsTrue(result1);
 
-                result = hDRSetting.SetWindowsHDRStatus(eDID, blOff);
+                result = hDRSetting.SetWindowsHDRStatus(null, eDID, blOff);
                 Assert.IsNotNull(result);
                 Assert.IsTrue(result);
             }
             else
             {
-                var result3 = hDRSetting.SetWindowsHDRStatus(eDID, blOff);
+                var result3 = hDRSetting.SetWindowsHDRStatus(null, eDID, blOff);
                 Assert.IsNotNull(result3);
             }
         }

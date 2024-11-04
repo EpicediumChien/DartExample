@@ -21,6 +21,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+	  <ProjectReference Include="..\..\Common\DDPM.SA.Resources\DDPM.SA.Resources.csproj" />
 		<!--<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" PrivateAssets="all" />-->
 	</ItemGroup>
 

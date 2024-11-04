@@ -2,6 +2,7 @@
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Interfaces;
+using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -339,9 +340,14 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <returns>true is HDR on; false is HDR off</returns>
         public Task<bool> GetHDRStatus(EDID monitorEdid)
         {
-            HDRSetting hDRSetting = new HDRSetting();
+            _logs?.DebugMsg_1($"{nameof(GetHDRStatus)} start");
             bool HDRStatus = false;
-            hDRSetting.GetWindowsHDRStatus(monitorEdid, out HDRStatus);
+            using (HDRSetting hDRSetting = new HDRSetting())
+            {
+                hDRSetting.GetWindowsHDRStatus(_logs, monitorEdid, out HDRStatus);
+            }
+            _logs?.DebugMsg_1($"{nameof(GetHDRStatus)} HDRStatus : {HDRStatus}");
+            _logs?.DebugMsg_1($"{nameof(GetHDRStatus)} done");
             return Task.FromResult(HDRStatus);
         }
 
@@ -353,20 +359,27 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <returns></returns>
         public Task<bool> SetHDRStatus(EDID monitorEdid, bool onoff)
         {
+            _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} start");
+            bool ret = false;
             try
             {
-                HDRSetting hDRSetting = new HDRSetting();
-                bool result = hDRSetting.SetWindowsHDRStatus(monitorEdid, onoff);
-                if (result)
+                using (HDRSetting hDRSetting = new HDRSetting())
                 {
-                    HDRChangeEvent?.AsyncFireAndForget(this, onoff, System.Threading.CancellationToken.None);
+                    _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} SetWindowsHDRStatus go");
+                    ret = hDRSetting.SetWindowsHDRStatus(_logs, monitorEdid, onoff);
+                    if (ret)
+                    {
+                        HDRChangeEvent?.AsyncFireAndForget(this, onoff, System.Threading.CancellationToken.None);
+                    }
                 }
-                return Task.FromResult(result);
             }
-            catch
+            catch (Exception ex)
             {
-                return Task.FromResult(false);
+                _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} Error : {ex.Message}");
             }
+            _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} ret : {ret}");
+            _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} done");
+            return Task.FromResult(ret);
         }
 
         public void SetExtendMode(MonitorInfo info)
@@ -480,7 +493,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
                     }
                     displayPropertiesInfo.SupportedHDR = isSupportedHDR;
-                    hDRSetting.GetWindowsHDRStatus(monitorInfo.edid, out displayPropertiesInfo.isHDREnable);
+                    hDRSetting.GetWindowsHDRStatus(_logs, monitorInfo.edid, out displayPropertiesInfo.isHDREnable);
                     /*if (!displayPropertiesInfo.isHDREnable)
                     {
                         if (!hDRSetting.SetWindowsHDRStatus(monitorInfo.edid, false))

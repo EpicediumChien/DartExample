@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.OSDs"
+        xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
         AllowsTransparency="True"
         Background="Transparent"
         Loaded="Window_Loaded"
@@ -78,7 +79,7 @@
                                    FontSize="14"
                                    FontWeight="Medium"
                                    Foreground="#FFFFFF"
-                                   Text="To access Quick Settings Widget again, press and hold [Alt + Z] on your keyboard." />
+                                   Text="{Binding [QAM_OSD_Msg], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                         <Button Grid.Row="1"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Top"
@@ -89,7 +90,7 @@
                                 FontWeight="Medium"
                                 Foreground="#FFFFFF"
                                 Background="#0672CB"
-                                Content="Go to Widget Settings" />
+                                Content="{Binding [Go_to_Widget_Settings], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     </Grid>
                 </Grid>
             </Border>

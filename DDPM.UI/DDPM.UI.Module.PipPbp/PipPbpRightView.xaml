@@ -48,7 +48,9 @@
     <Grid>
         <UXControls:UXScrollViewer>
             <Grid>
+                <!-- #region Main Content -->
                 <StackPanel>
+                    <!-- #region PIP/PBP Section -->
                     <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
                             <!-- PipPbpSectionHeader -->
@@ -96,8 +98,9 @@
                                                       ItemClickCommand="{Binding PbpItemClickCommand}" />
                         </StackPanel>
                     </Border>
+                    <!-- #endregion PIP/PBP Section -->
 
-                    <!-- Video Swap ComboBoxes Border -->
+                    <!-- #region Video Swap ComboBoxes -->
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0"
                             Visibility="{Binding IsVideoSwapComboBoxesVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel>
@@ -212,6 +215,7 @@
                             <Grid Height="12" />
                         </StackPanel>
                     </Border>
+                    <!-- #endregion Video Swap ComboBoxes -->
 
                     <!-- Buttons
                     IsEnabled="{Binding IsUsbSwitchButtonEnabled}"
@@ -261,7 +265,9 @@
                                 MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown" Click="usbSwitchButton_Click"/>
                     </StackPanel>
                 </StackPanel>
+                <!-- #endregion Main Content -->
 
+                <!-- #region FullView BusyIndicator  -->
                 <Border Name="DisableAll" Background="#4C24273C">
                     <Border.Style>
                         <Style TargetType="Border">
@@ -278,6 +284,7 @@
                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                                 IsActive="{Binding IsBusy}" />
                 </Border>
+                <!-- #endregion  FullView BusyIndicator -->
             </Grid>
         </UXControls:UXScrollViewer>
     </Grid>
