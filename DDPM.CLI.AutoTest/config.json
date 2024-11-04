@@ -108,8 +108,7 @@
             "/set -Display=NetworkKVMAutoConnect  -value=off",
             "/set -Display=NetworkKVMContentTransfer -value=off",
             "/set -Display=PxP -value=pip-large",
-            "/set -Display=SubInput -value=HDMI",
-            "/set -Display=PowerSetting -value=off"
+            "/set -Display=SubInput -value=HDMI"
         ],
         "App":[
             "/help",
