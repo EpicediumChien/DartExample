@@ -281,3 +281,6 @@ testcoverage/
 /DdpmSwUpdater/CommonDll/DDPM.SA.Common.deps.json
 /DdpmSwUpdater/CommonDll/DDPM.SA.Common.dll
 /DDPM.UI/CommonDll/DDPM.RemoteManagement.Common.dll
+/DdpmSwUpdater/CommonDll/DDPM.SA.Obfuscation.dll
+/DdpmSwUpdater/CommonDll/VcpCore.Common.deps.json
+/DdpmSwUpdater/CommonDll/VcpCore.Common.dll
