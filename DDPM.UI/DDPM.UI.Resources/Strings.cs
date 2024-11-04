@@ -457,6 +457,9 @@ namespace DDPM.UI.Common
         public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
 
         //WalkThrough
+        public static readonly string NextStr_0 = GetString("Kvm.1");
+        public static readonly string WalkThrough_1 = GetString("WalkThrough.1");
+        public static readonly string WalkThrough_2 = GetString("WalkThrough.2");       
         public static readonly string WalkThroughDDPM_Main0 = GetString("WalkThroughDDPM_Main.0");
         public static readonly string WalkThroughDDPM_Sub0 = GetString("WalkThroughDDPM_Sub.0");
         public static readonly string WalkThroughDDPM_Main1 = GetString("WalkThroughDDPM_Main.1");
@@ -543,6 +546,8 @@ namespace DDPM.UI.Common
         public static readonly string HeadsetAudioSettingsToolTip_7 = GetString("HeadsetAudioSettings.26");
         public static readonly string HeadsetAudioSettingsToolTip_8 = GetString("HeadsetAudioSettings.27");
         public static readonly string HeadsetAudioSettingsToolTip_9 = GetString("HeadsetAudioSettings.28");
+        public static readonly string HeadsetAudioSettingsToolTip_10 = GetString("HeadsetAudioSettings.29");
+        public static readonly string HeadsetAudioSettingsToolTip_11 = GetString("HeadsetAudioSettings.30");
 
         public static readonly string HeadsetAutomatedActionsToolTip_1 = GetString("HeadsetAutomatedActions.9");
         public static readonly string HeadsetAutomatedActionsToolTip_2 = GetString("HeadsetAutomatedActions.10");

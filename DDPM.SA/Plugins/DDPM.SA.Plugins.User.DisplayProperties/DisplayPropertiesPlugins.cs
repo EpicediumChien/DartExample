@@ -341,9 +341,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         public Task<bool> GetHDRStatus(EDID monitorEdid)
         {
             _logs?.DebugMsg_1($"{nameof(GetHDRStatus)} start");
-            HDRSetting hDRSetting = new HDRSetting();
             bool HDRStatus = false;
-            hDRSetting.GetWindowsHDRStatus(_logs, monitorEdid, out HDRStatus);
+            using (HDRSetting hDRSetting = new HDRSetting())
+            {
+                hDRSetting.GetWindowsHDRStatus(_logs, monitorEdid, out HDRStatus);
+            }
             _logs?.DebugMsg_1($"{nameof(GetHDRStatus)} HDRStatus : {HDRStatus}");
             _logs?.DebugMsg_1($"{nameof(GetHDRStatus)} done");
             return Task.FromResult(HDRStatus);
@@ -361,12 +363,14 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             bool ret = false;
             try
             {
-                HDRSetting hDRSetting = new HDRSetting();
-                _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} SetWindowsHDRStatus go");
-                ret = hDRSetting.SetWindowsHDRStatus(_logs, monitorEdid, onoff);
-                if (ret)
+                using (HDRSetting hDRSetting = new HDRSetting())
                 {
-                    HDRChangeEvent?.AsyncFireAndForget(this, onoff, System.Threading.CancellationToken.None);
+                    _logs?.DebugMsg_1($"{nameof(SetHDRStatus)} SetWindowsHDRStatus go");
+                    ret = hDRSetting.SetWindowsHDRStatus(_logs, monitorEdid, onoff);
+                    if (ret)
+                    {
+                        HDRChangeEvent?.AsyncFireAndForget(this, onoff, System.Threading.CancellationToken.None);
+                    }
                 }
             }
             catch (Exception ex)
