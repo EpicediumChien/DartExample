@@ -196,6 +196,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null && _deviceInfo.DpiLevel != newDPILevel)
                     {
+                        writelog($"SetDPILevel: Guid:{deviceId} NewValue: {newDPILevel}");
+                        Debug.WriteLine($"SetDPILevel: Guid:{deviceId} NewValue: {newDPILevel}");
                         _logicalDevice3.SetDPILevel(newDPILevel);
                         _deviceInfo.DpiLevel = newDPILevel;
                         break;
@@ -214,6 +216,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null && _deviceInfo.DpiValue != newDPIValue.ToString())
                     {
+                        writelog($"SetDPIValue: Guid:{deviceId} NewValue: {newDPIValue}");
+                        Debug.WriteLine($"SetDPIValue: Guid:{deviceId} NewValue: {newDPIValue}");
                         _logicalDevice2.SetDPIValue(newDPIValue);
                         _deviceInfo.DpiValue = newDPIValue.ToString();
                         break;
@@ -1922,7 +1926,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 if (arg2 == 0)
                     return;
-                deviceInfo.DpiLevel = arg2 - 1;
+                //deviceInfo.DpiLevel = arg2 - 1;
+                deviceInfo.DpiLevel = arg2;
+                Debug.WriteLine($"New DpiLevel: {arg2}");
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
