@@ -626,6 +626,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
+        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightschedulerStatus)
+        {
+            writelog("DeviceManagerPlugin received Send_NightLightschedulerStatus_Telementry_SA requested ...");
+
+            bool blRet = true;
+
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+
+            if (!string.IsNullOrEmpty(NightLightschedulerStatus))
+            {
+                writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus...");
+                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightschedulerStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Fail ...");
+            }
+
+            return Task.FromResult(blRet);
+        }
+
         // 20240619 jim modify
         public async Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
         {
@@ -964,6 +984,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         /// <summary>
+        /// 啟動監視NightLight Scheduler Status
+        /// </summary>
+        public Task<bool> CheckNightLightScheduler()
+        {
+            writelog("DeviceManagerPlugin received CheckNightLightScheduler requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckNightLightScheduler]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.CheckNightLightScheduler().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
         /// 啟動監視Color ICC profile Status
         /// </summary>
         public Task<bool> CheckColorICCStatus()
@@ -995,6 +1033,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLight().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
+        /// 停止監視NightLight Scheduler Status
+        /// </summary>
+        public Task<bool> StopRegistryMonitor_NightLightScheduler()
+        {
+            writelog("DeviceManagerPlugin received StopRegistryMonitor_NightLightScheduler requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - StopRegistryMonitor_NightLightScheduler]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLightScheduler().Result;
 
             return Task.FromResult(temp);
         }

@@ -78,6 +78,12 @@ namespace DDPM.SA.Common
     {
         public string NightLightStatus { get; set; } = string.Empty;
     }
+
+    public class Displaysettings_NightLightschedulerStatus : DisplaysettingsBasic
+    {
+        public string NightLightschedulerStatus { get; set; } = string.Empty;
+    }
+
     public class DisplayFeatures_GamingEnhancementMode : DisplaysettingsBasic
     {
         public string GamingEnhancementMode { get; set; } = string.Empty;
