@@ -3899,14 +3899,17 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         if (commandLineInput.Options.Count > 0)
                         {
-
+                            writelog("FWUpdate_Line 3902");
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
                             if (ss_1.Length == 2)
                             {
+                                writelog("FWUpdate_Line 3906");
                                 if (!string.IsNullOrEmpty(ss_1[0]) && !string.IsNullOrEmpty(ss_1[1]))
                                 {
+                                    writelog("FWUpdate_Line 3909");
                                     if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
                                     {
+                                        writelog("FWUpdate_Line 3912");
                                         SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, true, false, true, false).Result;
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
@@ -3916,6 +3919,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     //peripherals no guid minversion model
                                     else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
                                     {
+                                        writelog("FWUpdate_Line 3922");
                                         SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(false, true, false, true, false).Result;
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
@@ -3924,28 +3928,33 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     }
                                     else if (ss_1[1].ToUpper().Equals("DEFER") && commandLineInput.Options.Count == 1)
                                     {
+                                        writelog("FWUpdate_Line 3931");
                                         SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true, true, false).Result;
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
                                     }
                                     else
                                     {
+                                        writelog("FWUpdate_Line 3938");
                                         somethingError = true;
                                     }
                                 }
                                 else
                                 {
+                                    writelog("FWUpdate_Line 3944");
                                     somethingError = true;
                                 }
                             }
                             else
                             {
+                                writelog("FWUpdate_Line 3950");
                                 somethingError = true;
                             }
 
                         }
                         else if (commandLineInput.Options.Count == 0)
                         {
+                            writelog("FWUpdate_Line 3957");
                             SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                             ret = true;
@@ -3953,6 +3962,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         else
                         {
+                            writelog("FWUpdate_Line 3965");
                             cLI_SWU_RESPONSE.Message = "Input FAIL";
                             ret = false;
                         }
@@ -3963,27 +3973,33 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                         if (commandLineInput.Options.Count > 0)
                         {
+                            writelog("FWUpdate_Line 3976");
                             if (commandLineInput.Options[0].Option_Value.ToUpper() == "ON" || commandLineInput.Options[0].Option_Value.ToUpper() == "OFF")
                             {
+                                writelog("FWUpdate_Line 3979");
                                 ret = _devMgr.SetServerURL(commandLineInput.Options[0].Option_Value.ToString()).Result;
                             }
                             else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\"))
                             {
+                                writelog("FWUpdate_Line 3984");
                                 string path = File.ReadAllText($"{commandLineInput.Options[0].Option_Value}");
                                 ret = _devMgr.SetServerURL(path).Result;
                             }
                             else
                             {
+                                writelog("FWUpdate_Line 3990");
                                 somethingError = true;
                             }
                         }
                         else
                         {
+                            writelog("FWUpdate_Line 3996");
                             somethingError = true;
                         }
                         break;
 
                     default:
+                        writelog("FWUpdate_Line 4002");
                         cLI_SWU_RESPONSE.Message = "Input FAIL";
                         ret = false;
                         break;
@@ -3991,18 +4007,22 @@ namespace DDPM.CLI.Plugins.Peripherals
                 cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                 if (cLI_SWU_RESPONSE != null)
                 {
+                    writelog("FWUpdate_Line 4010");
                     output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
+                    writelog("FWUpdate_Line 4015");
                     output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
                 {
+                    writelog("FWUpdate_Line 4020");
                     return ((int)CLI_ExitCode.success, output);
                 }
                 else if(somethingError)
                 {
+                    writelog("FWUpdate_Line 4025");
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
                     {
                         Command = commandLineInput.Command,
@@ -4015,6 +4035,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else
                 {
+                    writelog("FWUpdate_Line 4038");
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
                     {
                         Command = commandLineInput.Command,
@@ -4028,6 +4049,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
             catch
             {
+                writelog("FWUpdate_Line 4052");
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
                     Command = commandLineInput.Command,
