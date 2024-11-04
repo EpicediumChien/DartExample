@@ -560,6 +560,22 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         }
 
+        /// <summary>
+        /// Called from DDPM.UI, when user select a layout. UI will update UI and save setting after changed.
+        /// This method will only notify working windows to update their UI only.
+        /// </summary>
+        /// <returns></returns>
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaBroker != null)
+            {
+                _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
+
         // EditCommand() and related events (Robert_Lin 2024-0910)
         // 1 UI call EditCommand() to initiate a Edit command to edit a layout.
         // 2 UI_EditCommand() will try to show the EAEditWindow for the editing

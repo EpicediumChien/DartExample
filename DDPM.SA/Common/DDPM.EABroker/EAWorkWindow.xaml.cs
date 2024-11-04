@@ -1,4 +1,5 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common.Display;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -109,6 +110,110 @@ namespace DDPM.EABroker
         #endregion
 
         #region [Input] Working SplitCtrl
+        public bool SetWorkingSplit(SplitJson splitJson)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Rect rcScreen = new Rect();
+                int cellCount = splitJson.CellCount;
+                char splitKey = splitJson.SplitKey;
+
+                if ((cellCount == 0) && (splitKey == 'A'))
+                {
+                    _workingSplit = null;
+                    splitCtrl.Content = null;
+                    fadeOutCtrl.Content = null;
+                    return;
+                }
+
+                if ((cellCount == 0) && (splitKey == 'B'))
+                {
+                    SplitCtrl0B sp0B = new SplitCtrl0B();
+                    _workingSplit = sp0B;
+                    _workingSplit.SplitMode = eSplitModes.Work;
+
+                    if (splitJson.Settings == null)
+                        _workingSplit.Settings = new List<double>();
+                    else
+                        _workingSplit.Settings = new List<double>(splitJson.Settings);
+
+
+                    //_vm.CreateCellBorderListToSplitCtrlFromCellJsons(splitJson.Cells, ref _workingSplit);
+
+                    Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
+                    //Rect rcScreen = new Rect();
+                    rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
+                    rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
+                    rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
+                    rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
+                    Trace.WriteLine($"AfterScale(/{_vm.ScreenScale}):({rcScreen.X},{rcScreen.Y})-({rcScreen.Right},{rcScreen.Bottom}){rcScreen.Width}x{rcScreen.Height}");
+
+                    //sp0B.UI_CreateCellBordersFromRatioRects(rcScreen);
+                    sp0B.ApplySettingsToCellList(rcScreen);
+
+                    _workingSplit.IsEditable = false;
+                    _workingSplit.IsVertical = _isVertical;
+                    splitCtrl.Content = _workingSplit;
+                }
+                else
+                {
+                    _workingSplit = ISplitCtrl.Create(cellCount, splitKey);
+
+                    if (_workingSplit != null)
+                    {
+                        _workingSplit.SplitMode = eSplitModes.Work;
+                        if (splitJson.Settings == null)
+                            _workingSplit.Settings = new List<double>();
+                        else
+                            _workingSplit.Settings = new List<double>(splitJson.Settings);
+                        _workingSplit.IsEditable = false;
+                        _workingSplit.IsVertical = _isVertical;
+                        splitCtrl.Content = _workingSplit;
+                    }
+                    else
+                    {
+                        splitCtrl.Content = null;
+                    }
+                }
+                //AwsBuddy Window do not support FadeOut
+                if (_isAwsBuddy)
+                {
+
+                    return;
+                }
+
+                ISplitCtrl? fadeSplit = ISplitCtrl.Create(cellCount, splitKey);
+                if (fadeSplit != null)
+                {
+                    fadeSplit.SplitMode = eSplitModes.Work;
+                    if (splitJson.Settings == null)
+                        fadeSplit.Settings = new List<double>();
+                    else
+                        fadeSplit.Settings = new List<double>(splitJson.Settings);
+
+                    //_vm.CreateCellBorderListToSplitCtrlFromCellJsons(splitJson.Cells, ref fadeSplit);
+
+                    if ((cellCount == 0) && (splitKey == 'B'))
+                    {
+                        SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
+                        // sp0b.UI_CreateCellBordersFromRatioRects(rcScreen);
+                        sp0b.ApplySettingsToCellList(rcScreen);
+
+                    }
+                    fadeSplit.IsEditable = false;
+                    fadeSplit.IsVertical = _isVertical;
+                    fadeOutCtrl.Content = fadeSplit;
+                }
+                else
+                {
+                    fadeOutCtrl.Content = null;
+                }
+
+                InvokeFadeOutAnimation();
+            });
+
+            return true;
+        }
 
 
         public bool SetWorkingSplit(int cellCount, char splitKey, List<double>? settings = null)
@@ -299,44 +404,6 @@ namespace DDPM.EABroker
 
             _workingSplit.HoveringCell = "";
 
-            /*
-            if (_workingSplit.CtrlClass.Equals("SplitCtrl2C"))
-            {
-                SplitCtrl2C ctrl = _workingSplit as SplitCtrl2C;
-                foreach (CellBorder cellBd in ctrl.CellBorders)
-                {
-                    if (cellBd.rect.Contains(x, y))
-                    {
-                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                        cellBd.IsHover = true;
-                        isHandled = true;
-                    }
-                    else
-                    {
-                        cellBd.IsHover = false;
-                    }
-                }
-            }
-
-            if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
-            {
-                SplitCtrl2A ctrl = _workingSplit as SplitCtrl2A;
-                foreach (CellBorder cellBd in ctrl.CellBorders)
-                {
-                    if (cellBd.rect.Contains(x, y))
-                    {
-                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                        cellBd.IsHover = true;
-                        isHandled = true;
-                    }
-                    else
-                    {
-                        cellBd.IsHover = false;
-                    }
-                }
-            }
-            */
-
             //For AddedCustomLayout
             if (_workingSplit.IsAddedCustomLayout)
             {
@@ -395,39 +462,30 @@ namespace DDPM.EABroker
                 //Detect from CellBorders
                  return hoverCell; ;
             }
-
-            /*
-            foreach (CellBorder cellBd in _workingSplit.CellBorders)
+            else if (_workingSplit.CellCount == 5)
             {
-                if (isHandled)
+                foreach (CellObj objCell in _workingSplit.CellList)
                 {
-                    cellBd.IsHover = false;
-                    continue;
-                }
-
-                if (cellBd.rect.Contains(x, y))
-                {
-                    _vm.AwsIcon1.HoveringCell = cellBd.CellName;
-                    cellBd.IsHover = true;
-                    isHandled = true;
-                }
-                else
-                {
-                    cellBd.IsHover = false;
+                    if (objCell.rc.Contains(x, y))
+                    {
+                        _workingSplit.HoveringCell = objCell.Name;
+                        return objCell;
+                    }
                 }
             }
-            */
-
-            //For other layouts
-            foreach (CellObj objCell in _workingSplit.CellList)
+            else
             {
-                if (objCell.rc.Contains(x, y))
+                //For other layouts
+                foreach (CellObj objCell in _workingSplit.CellList)
                 {
-                    _workingSplit.HoveringCell = objCell.Name;
-                    return objCell;
+                    if (objCell.rc.Contains(x, y))
+                    {
+                        _workingSplit.HoveringCell = objCell.Name;
+                        return objCell;
+                    }
                 }
-            }
 
+            }
             return null;
         }
 
@@ -481,22 +539,35 @@ namespace DDPM.EABroker
                         }
                     }
                 }
-                else
+                else // if (_workingSplit.CellCount==5)
                 {
-                    foreach (CellObj objCell in _workingSplit.CellList)
+                    foreach(CellObj objCell in _workingSplit.CellList)
                     {
-                        if (objCell.bd == null)
+                        if (objCell.CellBd == null)
                             continue;
 
-                        objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
-
-                        Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+                        objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
 
                         if (objCell.rc.IsEmpty)
                             _areCellRectsRefreshed = false;
                     }
-
                 }
+                //else
+                //{
+                //    //foreach (CellObj objCell in _workingSplit.CellList)
+                //    //{
+                //    //    if (objCell.bd == null)
+                //    //        continue;
+
+                //    //    objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
+
+                //    //    Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+
+                //    //    if (objCell.rc.IsEmpty)
+                //    //        _areCellRectsRefreshed = false;
+                //    //}
+
+                //}
                 if (!_areCellRectsRefreshed)
                 {
                     //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);

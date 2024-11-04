@@ -6,11 +6,12 @@
              xmlns:local="clr-namespace:DDPM.Easy.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Name="bd" BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}}"
+    <Border x:Name="bd" BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}}"
             BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=UserControl}}"
             CornerRadius="{Binding Radius, RelativeSource={RelativeSource AncestorType=UserControl}}"
             Background="{Binding BkBrush, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
+        <!-- For AwsIcon0, will show MonitorId Text -->
         <Grid x:Name="childGrid"/>
 
         <!-- 

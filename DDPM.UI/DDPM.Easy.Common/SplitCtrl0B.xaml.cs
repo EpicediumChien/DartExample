@@ -101,6 +101,85 @@ namespace DDPM.Easy.Common
             //cellListV.Add(new CellObj("2B2", cell_2B2));
         }
 
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to CellList[i].rcRect
+        /// </summary>
+        public void UpdateRatioRectsFromSettings()
+        {
+            if (VM.Settings_Double.Count < 7)
+                return;
+
+            if (VM.IsVertical)
+            {
+
+            }
+            else //Horz
+            {
+                //SplitCtrl0B has no default CellList, so we will create new and replace
+                //Always apply to Horz CellList now
+
+                List<Rect> listOut = new List<Rect>();
+
+                List<double> settings = VM.Settings_Double;
+                if (settings == null)
+                    return;// listOut;
+                if (settings.Count == 0)
+                    return;// listOut;
+
+                //settings[0] is BorderCount
+                int borderCount = (int)settings[0];
+                if (borderCount <= 0)
+                    return;// listOut;
+
+                //Check the settings.Count should be (borderCount*4 + 4)
+                if (settings.Count != ((borderCount + 1) * 4))
+                    return; // listOut;
+
+                //settings[1] is screenScale
+                double orgScreenScale = settings[1];
+                //settings[2] is screenWidth
+                double orgWidth = settings[2];
+                //settings[3] is screenHeight
+                double orgHeight = settings[3];
+
+                if (orgWidth <= 0)
+                    orgWidth = 1;
+                if (orgHeight <= 0)
+                    orgHeight = 1;
+
+                Rect rcDest = new Rect(0, 0, 1, 1);
+                double xRatio = rcDest.Width / orgWidth;
+                double yRatio = rcDest.Height / orgHeight;
+
+                int idxSettings = 0;
+                for (int idx = 0; idx < borderCount; idx++)
+                {
+                    idxSettings += 4;
+                    if ((idxSettings + 4) > settings.Count)
+                        break;
+
+                    double left = rcDest.Left + settings[idxSettings] * xRatio;
+                    double top = rcDest.Top + settings[idxSettings + 1] * yRatio;
+
+                    double width = settings[idxSettings + 2] * xRatio;
+                    double height = settings[idxSettings + 3] * yRatio;
+
+                    Rect rect = new Rect(left, top, width, height);
+                    listOut.Add(rect);
+                }
+
+                cellListH.Clear();
+                int idxCell = 0;
+                foreach (Rect rcRatio in listOut)
+                {
+                    CellObj cellObj = new CellObj($"Cb{idxCell}");
+                    cellObj.rcRatio = rcRatio;
+                    cellListH.Add(cellObj);
+                    idxCell++;
+                }
+            }
+
+        }
         public bool ApplySettingsToCellList(Rect rcView)
         {
             List<double> settings = VM.Settings_Double;

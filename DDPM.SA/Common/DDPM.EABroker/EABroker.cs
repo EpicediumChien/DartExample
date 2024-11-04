@@ -1,5 +1,6 @@
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
@@ -169,7 +170,14 @@ namespace DDPM.EABroker
             }
         }
 
-
+        public void NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
+            if (workWindow != null)
+            {
+                workWindow.SetWorkingSplit(spJson);
+            }
+        }
         /*
         public EventHandler<string>? EditSave;
 

@@ -285,6 +285,8 @@ namespace DDPM.EABroker
             Trace.WriteLine("@ Dispatcher_RefreshCellRects()");
             _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
             _vm.WriteLog($"@ RefreshCellRects() - Icon1: {ArrangeVM.FormatRect(_rcIcon1)}");
+
+            /*
             foreach (CellObj objCell in _vm.AwsIcon1.CellList)
             {
                 if (objCell.bd == null)
@@ -319,9 +321,16 @@ namespace DDPM.EABroker
                     cb.rect = _vm.GetFrameworkElementRect(cb);
                 }
             }
+            */
+            if (! UI_RefreshAwsIconCellRects(_vm.AwsIcon1))
+            {
+                _areCellRectsRefreshed = false;
+            }
 
             _rcIcon2 = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
             _vm.WriteLog($"@ RefreshCellRects() - Icon2: {ArrangeVM.FormatRect(_rcIcon2)}");
+
+            /*
             foreach (CellObj objCell in _vm.AwsIcon2.CellList)
             {
                 if (objCell.bd == null)
@@ -357,9 +366,17 @@ namespace DDPM.EABroker
                     cb.rect = _vm.GetFrameworkElementRect(cb);
                 }
             }
+            */
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon2))
+            {
+                _areCellRectsRefreshed = false;
+            }
 
+            
             _rcIcon3 = _vm.GetFrameworkElementRect(_vm.AwsIcon3.UC);
             _vm.WriteLog($"@ RefreshCellRects() - Icon3: {ArrangeVM.FormatRect(_rcIcon3)}");
+
+            /*
             foreach (CellObj objCell in _vm.AwsIcon3.CellList)
             {
                 if (objCell.bd == null)
@@ -396,9 +413,16 @@ namespace DDPM.EABroker
                     cb.rect = _vm.GetFrameworkElementRect(cb);
                 }
             }
+            */
+            if (! UI_RefreshAwsIconCellRects(_vm.AwsIcon3))
+            {
+                _areCellRectsRefreshed = false;
+            }
 
             _rcIcon4 = _vm.GetFrameworkElementRect(_vm.AwsIcon4.UC);
             _vm.WriteLog($"@ RefreshCellRects() - Icon4: {ArrangeVM.FormatRect(_rcIcon4)}");
+
+            /*
             foreach (CellObj objCell in _vm.AwsIcon4.CellList)
             {
                 if (objCell.bd == null)
@@ -434,6 +458,11 @@ namespace DDPM.EABroker
                     cb.rect = _vm.GetFrameworkElementRect(cb);
                 }
             }
+            */
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon4))
+            {
+                _areCellRectsRefreshed = false;
+            }
 
             if (!_areCellRectsRefreshed)
             {
@@ -443,6 +472,53 @@ namespace DDPM.EABroker
                 }
             }
             _vm.OnPropertyChanged_AwsIconInfos();
+        }
+
+        private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon)
+        {
+            bool _areCellRectsRefreshed = true;
+
+            if (awsIcon.CellCount == 5)
+            {
+                foreach (CellObj objCell in awsIcon.CellList)
+                {
+                    if (objCell.CellBd == null)
+                        continue;
+
+                    objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
+                    if (objCell.rc.IsEmpty)
+                    {
+                        _areCellRectsRefreshed = false;
+                    }
+                }
+            }
+            else if (awsIcon.IsAddedCustomLayout)
+            {
+                SplitCtrl0B splitCtrl0B = (SplitCtrl0B)awsIcon;
+                foreach (CellBorder cb in splitCtrl0B.CellBorders)
+                {
+                    cb.rect = _vm.GetFrameworkElementRect(cb);
+                    if (cb.rect.IsEmpty)
+                    {
+                        _areCellRectsRefreshed = false;
+                    }
+                }
+            }
+            else
+            {
+                foreach (CellObj objCell in awsIcon.CellList)
+                {
+                    if (objCell.bd == null)
+                        continue;
+
+                    objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
+                    if (objCell.rc.IsEmpty)
+                    {
+                        _areCellRectsRefreshed = false;
+                    }
+                }
+            }
+            return _areCellRectsRefreshed;
         }
 
          public CellObj? DetermineHoveringCellObj(int x, int y)
@@ -465,6 +541,20 @@ namespace DDPM.EABroker
             _vm.AwsIcon3.HoveringCell = "";
             _vm.AwsIcon4.HoveringCell = "";
 
+            //
+            //  AWSIcon1
+            //
+            hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon1, x, y);
+            if (hoverCell != null)
+            {
+                _vm.HoveringAwsIcon = _vm.AwsIcon1;
+                _vm.AwsIcon1.HoveringCell = hoverCell.Name;
+                _rcHoveringIcon = _rcIcon1;
+                _rcHoveringCell = hoverCell.rc;
+                return hoverCell;
+            }
+
+            /*
             foreach (CellObj objCell in _vm.AwsIcon1.CellList)
             {
                 if (objCell.rc.Contains(x, y))
@@ -506,7 +596,22 @@ namespace DDPM.EABroker
                     }
                 }
             }
+            */
 
+
+            //
+            //  AWSIcon2
+            //
+            hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon2, x, y);
+            if (hoverCell != null)
+            {
+                _vm.HoveringAwsIcon = _vm.AwsIcon2;
+                _vm.AwsIcon2.HoveringCell = hoverCell.Name;
+                _rcHoveringIcon = _rcIcon2;
+                _rcHoveringCell = hoverCell.rc;
+                return hoverCell;
+            }
+            /*
             foreach (CellObj objCell in _vm.AwsIcon2.CellList)
             {
                 if (objCell.rc.Contains(x, y))
@@ -548,6 +653,21 @@ namespace DDPM.EABroker
                     }
                 }
             }
+            */
+
+            //
+            //  AWSIcon3
+            //
+            hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon3, x, y);
+            if (hoverCell != null)
+            {
+                _vm.HoveringAwsIcon = _vm.AwsIcon3;
+                _vm.AwsIcon3.HoveringCell = hoverCell.Name;
+                _rcHoveringIcon = _rcIcon3;
+                _rcHoveringCell = hoverCell.rc;
+                return hoverCell;
+            }
+            /*
             foreach (CellObj objCell in _vm.AwsIcon3.CellList)
             {
                 if (objCell.rc.Contains(x, y))
@@ -589,6 +709,21 @@ namespace DDPM.EABroker
                     }
                 }
             }
+            */
+
+            //
+            //  AWSIcon4
+            //
+            hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon4, x, y);
+            if (hoverCell != null)
+            {
+                _vm.HoveringAwsIcon = _vm.AwsIcon4;
+                _vm.AwsIcon4.HoveringCell = hoverCell.Name;
+                _rcHoveringIcon = _rcIcon4;
+                _rcHoveringCell = hoverCell.rc;
+                return hoverCell;
+            }
+            /*
             foreach (CellObj objCell in _vm.AwsIcon4.CellList)
             {
                 if (objCell.rc.Contains(x, y))
@@ -630,9 +765,69 @@ namespace DDPM.EABroker
                     }
                 }
             }
+            */
             if (hoverCell == null)
                 _vm.HoveringAwsIcon = null;
             return hoverCell;
+        }
+
+        private CellObj? DeterminAwsIconHoveringCellObj(ISplitCtrl awsIcon, int x, int y)
+        {
+            CellObj? hoverCell = null;
+
+            if (awsIcon.IsAddedCustomLayout)
+            {
+                SplitCtrl0B sp0B = (SplitCtrl0B)_vm.AwsIcon1;
+                foreach (CellBorder cb in sp0B.CellBorders)
+                {
+                    if (hoverCell == null)
+                    {
+                        if (cb.rect.Contains(x, y))
+                        {
+                            cb.Dispatcher_SetIsHover(true);
+
+                            hoverCell = new CellObj(cb.CellName);
+                            hoverCell.rc = cb.rect;
+
+                            _vm.AwsIcon1.HoveringCell = cb.CellName;
+                            _vm.HoveringAwsIcon = _vm.AwsIcon1;
+                            _rcHoveringIcon = _rcIcon1;
+                            _rcHoveringCell = cb.rect;
+                        }
+                        else
+                        {
+                            cb.Dispatcher_SetIsHover(false);
+                        }
+                    }
+                    else
+                    {
+                        cb.Dispatcher_SetIsHover(false);
+                    }
+                }
+            }
+            else if (awsIcon.CellCount == 5)
+            {
+                foreach (CellObj objCell in awsIcon.CellList)
+                {
+                    if (objCell.rc.Contains(x, y))
+                    {
+                        hoverCell = objCell;
+                        return objCell;
+                    }
+                }
+            }
+            else
+            {
+                foreach (CellObj objCell in awsIcon.CellList)
+                {
+                    if (objCell.rc.Contains(x, y))
+                    {
+                        hoverCell = objCell;
+                        return objCell;
+                    }
+                }
+            }
+            return null;
         }
 
         public Screen HoveringScreen { get; set; }

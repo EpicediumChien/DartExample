@@ -77,6 +77,13 @@ namespace DDPM.Easy.Common
             cellListV.Clear();
         }
 
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to CellList[i].rcRect
+        /// </summary>
+        public void UpdateRatioRectsFromSettings()
+        {
+
+        }
         #endregion Cell List
 
         #region CellBorders

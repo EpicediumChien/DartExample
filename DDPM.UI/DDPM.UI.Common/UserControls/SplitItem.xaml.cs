@@ -294,7 +294,7 @@ namespace DDPM.UI.Common.UserControls
                         foreach (CellBorder cellBorder in ISplitCtrl.CellBorders)
                         {
                             CellJson cj = new CellJson();
-                            cj.Name = cellBorder.Name;
+                            cj.Name = cellBorder.CellName;
                             cj.x = cellBorder.rcRatio.Left;
                             cj.y = cellBorder.rcRatio.Top;
                             cj.w = cellBorder.rcRatio.Width;

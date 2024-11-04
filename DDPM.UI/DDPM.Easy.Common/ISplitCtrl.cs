@@ -24,10 +24,10 @@ namespace DDPM.Easy.Common
             new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
             new SplitCtrl4A(), new SplitCtrl4B(), new SplitCtrl4C(), new SplitCtrl4D(),
             new SplitCtrl4E(), new SplitCtrl4F(),
-            //new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
+            new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
             //new SplitCtrl5G(), new SplitCtrl5H(), new SplitCtrl5I(),
-            //new SplitCtrl6A(), new SplitCtrl6B(), new SplitCtrl6C(), new SplitCtrl6D(), new SplitCtrl6E(),
-            //new SplitCtrl6F(), new SplitCtrl6G(), new SplitCtrl6H(), new SplitCtrl6I(), new SplitCtrl6J(),
+            new SplitCtrl6A(), new SplitCtrl6B(), new SplitCtrl6C(), new SplitCtrl6D(), new SplitCtrl6E(),
+            new SplitCtrl6F(), new SplitCtrl6G(), new SplitCtrl6H(), //new SplitCtrl6I(), new SplitCtrl6J(),
             //new SplitCtrl7A(), new SplitCtrl7B(),  new SplitCtrl7C(),  new SplitCtrl7D(),  new SplitCtrl7E(),  new SplitCtrl7F(),
             //new SplitCtrl7G(), new SplitCtrl7H(), new SplitCtrl7I(), new SplitCtrl7J(), new SplitCtrl7K(),
 
@@ -136,7 +136,7 @@ namespace DDPM.Easy.Common
         }
         #endregion Create a new instance
 
-        #region Working mode
+        #region Split mode
 
         public eSplitModes SplitMode
         {
@@ -147,7 +147,7 @@ namespace DDPM.Easy.Common
             }
         }
 
-        #endregion Working mode
+        #endregion Split mode
 
         #region IsEditable
 
@@ -178,7 +178,7 @@ namespace DDPM.Easy.Common
         /// </summary>
         public List<CellObj> CellList { get; set; }
 
-       // public void UpdateSettingsToCells();
+        public void UpdateRatioRectsFromSettings();
         #endregion Cell list
 
         #region CellBorders
@@ -227,6 +227,7 @@ namespace DDPM.Easy.Common
             }
         }
 
+        //public void UpdateRatioRectsFromSettings();
         #endregion Settings
 
         #region Screen Orientation

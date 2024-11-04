@@ -263,16 +263,9 @@ namespace DDPM.EABroker
         /// Need to update ArrangeVM.xCursor and yCursor at first
         /// </summary>
         /// <returns></returns>
-        public Screen? GetScreenFromCursor()
+        public Screen GetScreenFromCursor()
         {
-            foreach (System.Windows.Forms.Screen scr in Screen.AllScreens)
-            {
-                if (scr.Bounds.Contains(xCursor, yCursor))
-                {
-                    return scr;
-                }
-            }
-            return null;
+            return Screen.FromPoint(new System.Drawing.Point(xCursor, yCursor));
         }
 
         /// <summary>
@@ -626,14 +619,22 @@ namespace DDPM.EABroker
                     int cellCount = 0;
                     char splitKey = 'A';
                     List<double> settings = new List<double>() { 1 };
-                    workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+
+                    //workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+
+                    SplitJson spj0A = new SplitJson();
+                    spj0A.CellCount = cellCount;
+                    spj0A.SplitKey = splitKey;
+                    spj0A.Settings = settings;
+                    workWindow.SetWorkingSplit(spj0A);
                 }
                 else
                 {
                     int cellCount = eaSettings.SelectedSplit.CellCount;
                     char splitKey = eaSettings.SelectedSplit.SplitKey;
                     List<double> settings = eaSettings.SelectedSplit.Settings;
-                    workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+                    //workWindow.SetWorkingSplit(cellCount, splitKey, settings);
+                    workWindow.SetWorkingSplit(eaSettings.SelectedSplit);
                 }
 
             } //foreach (Screen scr in System.Windows.Forms.Screen.AllScreens)
@@ -1226,5 +1227,31 @@ namespace DDPM.EABroker
 
         }
         #endregion Telemetry
+
+        public void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
+        {
+            if (!ispCtrl.IsAddedCustomLayout)
+                return;
+
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
+            spCtrl0B.CellList.Clear();
+            if (spCtrl0B.CellBorders != null)
+                spCtrl0B.CellBorders.Clear();
+            else
+                spCtrl0B.CellBorders = new List<CellBorder>();
+
+            foreach (CellJson cellJson in cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellBorders.Add(cellBorder);
+
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellList.Add(cellObj);
+            }
+
+        }
     }
 }
