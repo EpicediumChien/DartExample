@@ -420,7 +420,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             newVer = Convert.ToInt32(newVer, 16).ToString();
                         }
-                        DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{","").Replace("}", "")));
+                        DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
                         string deviceConnectivity = string.Empty;
                         string deviceSupplierID = string.Empty;
                         if (deviceInfo != null)
@@ -1113,7 +1113,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfos[0].BatteryStatus}");
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfos[0].BatteryLevel}");
-                            if (deviceInfos[0].BatteryLevel < 20)
+                            if (deviceInfos[0].BatteryLevel <= 20)
                             {
                                 _notificationStr = "Firmware update unsuccessful.";
                                 ret = true;
@@ -1361,6 +1361,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 fWUpdateInfo.Add(temp);
                             }
                         }
+                        _logs.DebugMsg_1($"{nameof(DelayEvent)} _ForceFWUpdateInfoPackage.FWUpdateInfo.Clear");
+                        _ForceFWUpdateInfoPackage.FWUpdateInfo.Clear();
                         if (fWUpdateInfo != null && fWUpdateInfo.Count > 0)
                         {
                             _logs.DebugMsg_1($"{nameof(UpdateEvent)} fWUpdateInfo.Count : {fWUpdateInfo.Count}");
@@ -1443,7 +1445,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\Dock_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
                     }
-                    
+
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
@@ -1974,21 +1976,32 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         [SupportedOSPlatform("windows10.0.19041.0")]
         private void resetState()
         {
+            _logs.DebugMsg_1($"{nameof(resetState)} start");
             if (_timerTimeOut != null)
             {
+                _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut is no null");
+                _timerTimeOut.Elapsed -= new ElapsedEventHandler(_timerTimeOut_Tick);
                 _timerTimeOut.Enabled = false;
+                _timerTimeOut.Stop();
+                _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut.Stop()");
+                _timerTimeOut = null;
             }
             if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041))
             {
+                _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut.Stop()");
                 if (_clientProcess != null)
                 {
+                    _logs.DebugMsg_1($"{nameof(resetState)} _clientProcess is no null");
                     try
                     {
                         _clientProcess.Kill();
                         _clientProcess.Dispose();
                         _clientProcess = null;
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        _logs.DebugMsg_1($"{nameof(resetState)} _clientProcess Error : {ex.Message}");
+                    }
                 }
             }
         }

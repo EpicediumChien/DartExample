@@ -6,7 +6,12 @@
       "active": "set",
       "devicetype": "display",
       "command": "DeviceConfiguration",
-      "value": "",
+      "value": {
+        "Index": "1",
+        "DeviceType": "Display",
+        "BrightnessLevel": "90%",
+        "ContrastLevel": "90%"
+      },
       "options": {}
     }
   ]

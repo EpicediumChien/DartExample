@@ -164,6 +164,7 @@ namespace DDPM.CMA.Tester
             string jsonDeviceData = loadResult[7].PlainJsonString();
             string jsonReport = loadResult[8].PlainJsonString();
             string deviceConfig = loadResult[9].PlainJsonString();
+            // DeviceConfig2 DEVICECONFIGURATION value is required
             string jsonDeviceConfig2 = loadResult[10].PlainJsonString();
             string jsonDeviceConfig3 = loadResult[11].PlainJsonString();
             string configLess = loadResult[12].PlainJsonString();
