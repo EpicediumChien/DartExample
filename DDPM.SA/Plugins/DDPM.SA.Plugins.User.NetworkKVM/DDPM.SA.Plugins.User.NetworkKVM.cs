@@ -1243,6 +1243,7 @@ namespace NetworkKVM.Plugins
                                 catch (Exception ex)
                                 {
                                     //throw;
+                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                     Disconnect();
                                     _AllInfoMonitors = GetMonitors().Result;
                                     CreateNamedPipe_init();
@@ -1337,6 +1338,7 @@ namespace NetworkKVM.Plugins
                                 catch (Exception ex)
                                 {
                                     //throw;
+                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                     Disconnect();
                                     _AllInfoMonitors = GetMonitors().Result;
                                     CreateNamedPipe();
