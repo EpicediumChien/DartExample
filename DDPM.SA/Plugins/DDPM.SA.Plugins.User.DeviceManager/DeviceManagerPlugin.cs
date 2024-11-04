@@ -4101,6 +4101,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
+                    writelog("[DeviceMangerPlugin] updateHelper is no null");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
                         writelog($"[DeviceMangerPlugin] GetFWUpdateInfo DeviceModelNumber : {updateHelper.UpdateItems[i].DeviceModelNumber}GetFWUpdateInfo NewVersion :{Convert.ToInt32(updateHelper.UpdateItems[i].NewVersion, 16).ToString("X8")}");
