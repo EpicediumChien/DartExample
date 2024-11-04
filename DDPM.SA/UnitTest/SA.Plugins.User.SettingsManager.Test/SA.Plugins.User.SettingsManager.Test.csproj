@@ -25,7 +25,14 @@
     <ProjectReference Include="..\SA.Plugins.User.DisplayManager.Test\SA.Plugins.User.DisplayManager.Test.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<Reference Include="DdmLibrary">
+			<HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+
+	<ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
