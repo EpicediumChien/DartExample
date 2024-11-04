@@ -4895,6 +4895,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
+                writelog($"commodity: {commodity.GetType().Name} Property: {property}");
                 Debug.WriteLine($"commodity: {commodity.GetType().Name} Property: {property}");
                 var obj = interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
                 Debug.WriteLine($"{obj.ToString()}");
