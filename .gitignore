@@ -280,3 +280,4 @@ testcoverage/
 /DDPM.UI/CommonDll/DDPM.QAM.deps.json
 /DdpmSwUpdater/CommonDll/DDPM.SA.Common.deps.json
 /DdpmSwUpdater/CommonDll/DDPM.SA.Common.dll
+/DDPM.UI/CommonDll/DDPM.RemoteManagement.Common.dll

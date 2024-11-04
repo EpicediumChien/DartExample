@@ -130,7 +130,7 @@
                             <Expander.Content>
                                 <Grid>
                                     <Border>
-                                        <Grid Height="40" Margin="20,0">
+                                        <Grid Height="40" Margin="0,10">
 
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -154,7 +154,7 @@
                                             SelectionChanged="cbManualPreset_SelectionChanged" />
                                             -->
                                             <ComboBox x:Name="cbManualPreset" Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                                    Width="184"
+                                                    Width="184" 
                                                     ItemsSource="{Binding ColorPresets_ItemsCollection}"
                                                     SelectedIndex="{Binding ColorPresetSelectedIndex}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                         </Grid>
