@@ -1708,7 +1708,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         foreach (var input in inputSourcelist)
                                         {
                                             //Maybe Migration...
-                                            if (input.Value.USBUpstream == string.Empty)
+                                            if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
                                             {
                                                 readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                                                 if (readinputlist != null)
