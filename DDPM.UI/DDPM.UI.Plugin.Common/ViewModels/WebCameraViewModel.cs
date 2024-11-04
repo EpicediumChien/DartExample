@@ -765,7 +765,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.WebcamGrid = value;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged();
-                WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
+                //WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
