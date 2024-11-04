@@ -6451,7 +6451,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (aLSConfigs != null)
                                 {
                                     ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
-                                    monitorSettings.ALSConfig = aLSConfig.AllValue;
+                                    if (aLSConfig != null)
+                                    {
+                                        monitorSettings.ALSConfig = aLSConfig.AllValue;
+                                    }
+                                    else
+                                    {
+                                        writelog("[DisplayExportSettings]Export ALS : aLSConfig is null");
+                                    }
                                 }
                                 writelog("[DisplayExportSettings]Export Gaming");
                                 GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
@@ -8670,7 +8677,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
                                         if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
+                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo, _SettingsPlugin));
                                     }
                                     catch (Exception ex)
                                     {
@@ -8774,7 +8781,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
+                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors, _SettingsPlugin));
         }
 
         private void OnPeripheralsNotify(DeviceChangedEventArgs data)

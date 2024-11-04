@@ -1092,23 +1092,23 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             if (WriteImpExpSettings(path, impexpSettings))
                             {
                                 WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
+                                if (!string.IsNullOrEmpty(_export_path))
+                                {
+                                    string _exportpath = _export_path + "\\" + modelname + "_" + seriveTag + ".json";
+                                    if (WriteImpExpSettings(_exportpath, impexpSettings))
+                                    {
+                                        WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file success");
+                                    }
+                                    else
+                                    {
+                                        WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file failed");
+                                    }
+                                }
                                 return Task.FromResult<bool>(true);
                             }
                             else
                             {
                                 WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
-                                return Task.FromResult<bool>(false);
-                            }
-
-                            string _exportpath = _export_path + "\\" + modelname + ".json";
-                            if (WriteImpExpSettings(_exportpath, impexpSettings))
-                            {
-                                WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file success");
-                                return Task.FromResult<bool>(true);
-                            }
-                            else
-                            {
-                                WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file failed");
                                 return Task.FromResult<bool>(false);
                             }
                         }
