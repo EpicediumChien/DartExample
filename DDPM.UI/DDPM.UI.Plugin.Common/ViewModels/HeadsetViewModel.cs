@@ -1103,6 +1103,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isNoiseOffChecked = false;
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
+                        OnPropertyChanged("IsTransparencyChecked");
+                        OnPropertyChanged("TransparencylevelSliderValue");
                     }
                 }
             }
