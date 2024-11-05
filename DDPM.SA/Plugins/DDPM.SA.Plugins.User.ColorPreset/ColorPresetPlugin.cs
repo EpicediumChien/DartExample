@@ -1036,6 +1036,8 @@ namespace ColorPreset.Plugins
                             });
                         }
                     }
+
+                    registryKey.Close();  
                 }
                 else
                 {
@@ -1054,6 +1056,8 @@ namespace ColorPreset.Plugins
                         });
                     }
                 }
+
+                localKey64.Close();
             }
             else
             {
