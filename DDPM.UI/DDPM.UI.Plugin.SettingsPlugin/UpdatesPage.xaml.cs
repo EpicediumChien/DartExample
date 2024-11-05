@@ -33,6 +33,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
+            InterruptScreen interruptScreen = new InterruptScreen();
+            interruptScreen.Show();
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             vm.CheckUpdate();
         }

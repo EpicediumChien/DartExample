@@ -6232,6 +6232,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result);
         }
+        public Task<InterruptScreenRoot> InterruptScreen_Metadata()
+        {
+            InterruptScreenRoot result = null;
+            writelog("[InterruptScreen_Metadata], start.");
+            try
+            {
+                writelog("[InterruptScreen_Metadata], creat logs.");
+                Logs logs = new Logs(Log);
+                writelog("[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata go.");
+                result = SWUpdateSetting.InterruptScreen_Metadata(_IsSkipCA, out string info, _SettingsPlugin, null, logs);
+                writelog($"[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata info : {info}");
+            }
+            catch (Exception ex)
+            {
+                writelog($"[InterruptScreen_Metadata], Error : {ex.Message}");
+            }
+            writelog("[InterruptScreen_Metadata], done.");
+            return Task.FromResult(result);
+        }
 
         private Task<bool> SW_SetSWUpdateInfoPackage(SWUpdateInfoPackage swUpdateInfoPackage)
         {
