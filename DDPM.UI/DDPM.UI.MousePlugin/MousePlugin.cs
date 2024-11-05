@@ -64,20 +64,23 @@ namespace DDPM.UI.Plugin.MousePlugin
                         _viewModel.OnGoBackClicked();
                         return;
                     }
-                    GetPeripheralsAsync();
+                    if (_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                        _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
+                    //GetPeripheralsAsync();
                 }
-                //if (e.type == DeviceChangedType.Peripherals_PlugIn)
-                //{
-                //    GetPeripheralsAsync(false);
-                //}
+                if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                {
+                    if (e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                        _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
+                }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
 
-        private void GetPeripheralsAsync(bool reScan = true)
+        private void GetPeripheralsAsync()
         {
             _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(reScan);
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices();
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
