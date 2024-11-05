@@ -85,7 +85,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             //check if no monitor connected, direct response no monitor
             _AllInfoMonitors = devMgr.GetMonitors().Result;
-            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("DEVICEDATA") && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET"))
+            if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && !commandLineInput.TargetFeature.Equals("DEVICEDATA") && !commandLineInput.TargetFeature.Equals("NETWORKKVM") && !commandLineInput.TargetFeature.Equals("NETWORKKVMAUTOCONNECT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFER") && !commandLineInput.TargetFeature.Equals("NETWORKKVMINCOMINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMOUTGOINGPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMCONTENTTRANSFERPORT") && !commandLineInput.TargetFeature.Equals("NETWORKKVMACCESSRESET") && !commandLineInput.TargetFeature.Equals("DEVICECONFIGURATION") && !commandLineInput.TargetFeature.Equals("CONNECTEDDEVICES") && !commandLineInput.TargetFeature.Equals("DIAGNOSTICSREPORT"))
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
@@ -10362,7 +10362,7 @@ namespace DDPM.CLI.Plugins.Display
                         rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                         int getvalue = Convert.ToInt32(rc.value);
                         string setvalue = get_SpeakerVolume(devicedata.SpeakerVolume, getvalue);
-                        if (setvalue != "Unknown_command")
+                        if (setvalue != "unknown_command")
                             retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
                         else
                             retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result;
@@ -10852,7 +10852,7 @@ namespace DDPM.CLI.Plugins.Display
                                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                                 int getvalue = Convert.ToInt32(rc.value);
                                                 string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
-                                                if (setvalue != "Unknown_command")
+                                                if (setvalue != "unknown_command")
                                                     retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
                                                 else
                                                     retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
@@ -11052,7 +11052,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return ((value & 0xFF00) | 0x0001).ToString();       // "xx01"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x0002).ToString();        // "xx02"
-                default: return "Unknown_command";
+                default: return "unknown_command";
             }
         }
 
@@ -11071,7 +11071,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return ((value & 0xFF00) | 0x00FF).ToString();       // "xxFF"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x00FE).ToString();        // "xxFE"
-                default: return "Unknown_command";
+                default: return "unknown_command";
             }
         }
 
@@ -11079,7 +11079,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
 
-            int value_tmp = value;
+            int value_tmp = value & 0x00FF;
             if (value_tmp == 0xFF)
             {
                 output += "OSDDISABLE";
@@ -11108,7 +11108,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "OSDUNLOCK,OSDENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
                 case "OSDLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
                 case "OSDLOCK,OSDENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
-                default: return "Unknown_command";
+                default: return "unknown_command";
             }
         }
 

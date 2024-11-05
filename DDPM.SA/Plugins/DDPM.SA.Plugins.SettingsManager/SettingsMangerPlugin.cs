@@ -504,7 +504,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"[{type}]re-create system settings folder success");
                 }
                 //AclChecker aclChecker = new AclChecker();
-                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo)) // apply acl at the bottom of function
                 string info2 = string.Empty;
                 if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 {
@@ -615,6 +615,8 @@ namespace DDPM.SA.Plugins.SettingsManager
             //ACL apply
             if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(filePath, out info))
                 WriteLog($"[InitSysSettingsData][{type}] {info}");
+            else
+                WriteLog($"[InitSysSettingsData][{type}] ACL apply success");
 
             WriteLog($"[InitSysSettingsData][{type}] finish");
             return result;
