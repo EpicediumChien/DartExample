@@ -416,9 +416,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
                         string newVer = updateHelper.UpdateItems[i].NewVersion;
+                        string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
                         if (!int.TryParse(newVer, out _))
                         {
                             newVer = Convert.ToInt32(newVer, 16).ToString();
+                        }
+                        if (!int.TryParse(oldVer, out _))
+                        {
+                            oldVer = Convert.ToInt32(oldVer, 16).ToString();
                         }
                         DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
                         string deviceConnectivity = string.Empty;
@@ -437,12 +442,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         if (deviceTypeList == null)
                         {
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                             {
                                 TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                                DeviceVersion = Regex.Replace(Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4").Length * 2) - 1),
-                                NeedUpdated = int.Parse(newVer) > int.Parse(updateHelper.UpdateItems[i].CurrentVersion) ? true : false,
+                                DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
+                                NeedUpdated = int.Parse(newVer) > int.Parse(oldVer) ? true : false,
                                 ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                 FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                 Model = updateHelper.UpdateItems[i].DeviceModelNumber,
@@ -475,8 +479,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                                 {
                                     TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                                    DeviceVersion = Regex.Replace(Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(updateHelper.UpdateItems[i].CurrentVersion).ToString("D4").Length * 2) - 1),
-                                    NeedUpdated = int.Parse(newVer) > int.Parse(updateHelper.UpdateItems[i].CurrentVersion) ? true : false,
+                                    DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
+                                    NeedUpdated = int.Parse(newVer) > int.Parse(oldVer) ? true : false,
                                     ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                     FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                     Model = updateHelper.UpdateItems[i].DeviceModelNumber,
