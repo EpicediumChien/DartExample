@@ -715,7 +715,15 @@ namespace DDPM.SA.Common
 
         public void Dispose()
         {
-            Stop();
+            try
+            {
+                Stop();
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine("RegistryMonitor_NightLightScheduler: Dispose() " + ex.Message);
+            }
+           
             _disposed = true;
             GC.SuppressFinalize(this);
         }
