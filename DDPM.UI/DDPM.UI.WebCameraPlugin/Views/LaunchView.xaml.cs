@@ -193,8 +193,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (_vm != null && _vm.CurrentDeviceInfo != null)
                     {
-                        if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        if (selectedFrameSourceGroup.Id.Contains(_vm.CurrentDeviceInfo.DeviceSymbolicLink, StringComparison.CurrentCultureIgnoreCase))
                             break;
+
+                        //if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        //    break;
                     }
                     else
                         selectedFrameSourceGroup = null;
