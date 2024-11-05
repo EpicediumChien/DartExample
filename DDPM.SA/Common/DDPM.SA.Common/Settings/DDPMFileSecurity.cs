@@ -1425,7 +1425,19 @@ namespace DDPM.SA.Common.Settings
                 //_log.Info(info);
                 return null;
             }
-            byte[] data = File.ReadAllBytes(filePath);
+
+            byte[] data = null;
+
+            try
+            {
+                data = File.ReadAllBytes(filePath);
+            }
+            catch
+            {
+                info = $"Read data from file path - {filePath}, exception";
+                return null;
+            }
+
             if (data == null)
             {
                 info = $"Read data from file path - {filePath}, failed";
@@ -1444,15 +1456,21 @@ namespace DDPM.SA.Common.Settings
         static string CalculateFileSHA256(string filePath)
         {
             string ret = string.Empty;
-            using (FileStream fileStream = File.OpenRead(filePath))
+            try
             {
-                using (SHA256 sha256 = SHA256.Create())
+                using (FileStream fileStream = File.OpenRead(filePath))
                 {
-                    byte[] hashBytes = sha256.ComputeHash(fileStream);
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        byte[] hashBytes = sha256.ComputeHash(fileStream);
 
-                    // 將計算的雜湊值轉換為十六進制字符串
-                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
+                        // 將計算的雜湊值轉換為十六進制字符串
+                        ret = BitConverter.ToString(hashBytes).Replace("-", "");
+                    }
                 }
+            }
+            catch 
+            {
             }
             return ret;
         }
@@ -1473,7 +1491,18 @@ namespace DDPM.SA.Common.Settings
                // _log.Info(info);
                 return null;
             }
-            byte[] data = File.ReadAllBytes(filePath);
+
+            byte[] data = null;
+            try
+            {
+                data = File.ReadAllBytes(filePath);
+            }
+            catch
+            {
+                info = $"Read data from file path - {filePath}, exception";
+                return null;
+            }
+
             if (data == null)
             {
                 info = $"Read data from file path - {filePath}, failed";
@@ -1492,15 +1521,22 @@ namespace DDPM.SA.Common.Settings
         static string CalculateFileSHA512(string filePath)
         {
             string ret = string.Empty;
-            using (FileStream fileStream = File.OpenRead(filePath))
+            try
             {
-                using (SHA512 sha512 = SHA512.Create())
+                using (FileStream fileStream = File.OpenRead(filePath))
                 {
-                    byte[] hashBytes = sha512.ComputeHash(fileStream);
+                    using (SHA512 sha512 = SHA512.Create())
+                    {
+                        byte[] hashBytes = sha512.ComputeHash(fileStream);
 
-                    // 將計算的雜湊值轉換為十六進制字符串
-                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
+                        // 將計算的雜湊值轉換為十六進制字符串
+                        ret = BitConverter.ToString(hashBytes).Replace("-", "");
+                    }
                 }
+            }
+            catch
+            {
+
             }
             return ret;
         }
