@@ -38,7 +38,7 @@ namespace DDPM.UI.Common
     public static class Actions
     {
         public static readonly Dictionary<int, ActionItem> KnMActions = new() {
-          { 0, new ActionItem(ActionCategory.None, Strings.None, true, true, 4, 4) },
+          { 0, new ActionItem(ActionCategory.None, Strings.None, true, true, 2, 3) },
           { 1, new ActionItem(ActionCategory.WindowsAction, Strings.Copilot) },
           { 2, new ActionItem(ActionCategory.WindowsAction, Strings.Devices) },
           { 3, new ActionItem(ActionCategory.WindowsAction, Strings.Lock) },
@@ -64,8 +64,8 @@ namespace DDPM.UI.Common
           { 22, new ActionItem(ActionCategory.ProductivityAction, Strings.MaximizeWindow) },
           { 23, new ActionItem(ActionCategory.ProductivityAction, Strings.MinimizeWindow) },
           { 24, new ActionItem(ActionCategory.ProductivityAction, Strings.MyHome) },
-          { 25, new ActionItem(ActionCategory.ProductivityAction, Strings.OpenFile, true, false, 2) },
-          { 26, new ActionItem(ActionCategory.ProductivityAction, Strings.OpenFolder, true, false, 3) },
+          { 25, new ActionItem(ActionCategory.ProductivityAction, Strings.OpenFile, true, false, 3) },
+          { 26, new ActionItem(ActionCategory.ProductivityAction, Strings.OpenFolder, true, false, 4) },
           { 27, new ActionItem(ActionCategory.ProductivityAction, Strings.OpenNewBrowserTab) },
           { 28, new ActionItem(ActionCategory.ProductivityAction, Strings.OpenWebPage) },
           { 29, new ActionItem(ActionCategory.ProductivityAction, Strings.Paste) },
@@ -79,7 +79,7 @@ namespace DDPM.UI.Common
           { 36, new ActionItem(ActionCategory.MultimediaAction, Strings.Music) },
           { 37, new ActionItem(ActionCategory.MultimediaAction, Strings.Pictures) },
           { 38, new ActionItem(ActionCategory.MultimediaAction, Strings.VolumeDown) },
-          { 39, new ActionItem(ActionCategory.MultimediaAction, Strings.VolumeMute, false, true, 0, 3) },
+          { 39, new ActionItem(ActionCategory.MultimediaAction, Strings.VolumeMute, false, true, 0, 4) },
           { 40, new ActionItem(ActionCategory.MultimediaAction, Strings.VolumeUp) },
 
           { 41, new ActionItem(ActionCategory.None, Strings.PrtSc) },
