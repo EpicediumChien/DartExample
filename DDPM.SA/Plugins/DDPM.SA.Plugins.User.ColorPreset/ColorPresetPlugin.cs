@@ -1138,8 +1138,10 @@ namespace ColorPreset.Plugins
                             }
 
                         }
-                    }                   
-                }                
+                    }
+                    registryKey.Close();   
+                }
+                localKey64.Close();
             }           
 
             return System.Threading.Tasks.Task.FromResult(true);
