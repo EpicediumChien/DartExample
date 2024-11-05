@@ -747,27 +747,27 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
-                case "NETWORKKVM":
-                    {
-                        var ret = Networkkvmx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
-                case "NETWORKKVMAUTOCONNECT":
-                    {
-                        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
-                case "NETWORKKVMCONTENTTRANSFER":
-                    {
-                        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
+                //case "NETWORKKVM":
+                //    {
+                //        var ret = Networkkvmx(devMgr, commandLineInput);
+                //        result.ExitCode = ret.code;
+                //        result.serialize_Json_response = ret.result;
+                //    }
+                //    break;
+                //case "NETWORKKVMAUTOCONNECT":
+                //    {
+                //        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
+                //        result.ExitCode = ret.code;
+                //        result.serialize_Json_response = ret.result;
+                //    }
+                //    break;
+                //case "NETWORKKVMCONTENTTRANSFER":
+                //    {
+                //        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
+                //        result.ExitCode = ret.code;
+                //        result.serialize_Json_response = ret.result;
+                //    }
+                //    break;
                 case "NETWORKKVMINCOMINGPORT":
                     {
                         var ret = Networkkvmincomingportx(devMgr, commandLineInput);
