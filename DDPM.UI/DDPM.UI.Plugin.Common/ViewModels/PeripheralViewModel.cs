@@ -96,16 +96,20 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void CheckMultiDevice()
         {
+            int i = 0;
             foreach (var info in DeviceInfos.Values)
             {
-                if (info.ModelNumber == Model && info.ID != CurrentDeviceID)
+                if (info.ModelNumber == Model)
                 {
-                    MultiDevicesInfoVisibility = Visibility.Visible;
-                    OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
-                    return;
+                    i++;
+                    //OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
+                    //return;
                 }
             }
-            MultiDevicesInfoVisibility = Visibility.Collapsed;
+            if (i > 1)
+                MultiDevicesInfoVisibility = Visibility.Visible;
+            else
+                MultiDevicesInfoVisibility = Visibility.Collapsed;
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 

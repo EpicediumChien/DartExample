@@ -587,7 +587,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChangeDevNameWidth();
+            //ChangeDevNameWidth();
         }
 
         private void ChangeDevNameWidth()
@@ -597,7 +597,15 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChangeDevNameWidth();
+            //ChangeDevNameWidth();
+        }
+
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
+            }
         }
     }
 }
