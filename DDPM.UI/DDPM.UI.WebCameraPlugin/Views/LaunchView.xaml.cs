@@ -193,8 +193,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (_vm != null && _vm.CurrentDeviceInfo != null)
                     {
-                        if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        if (selectedFrameSourceGroup.Id.Contains(_vm.CurrentDeviceInfo.DeviceSymbolicLink, StringComparison.CurrentCultureIgnoreCase))
                             break;
+
+                        //if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        //    break;
                     }
                     else
                         selectedFrameSourceGroup = null;
@@ -376,16 +379,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+            //if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+            //{
+            moduleGroup = new ModuleGroup()
             {
-                moduleGroup = new ModuleGroup()
-                {
-                    GroupName = Microphone,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
-                };
-                moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
-                groups.Add(moduleGroup);
-            }
+                GroupName = Microphone,
+                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
+            };
+            moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
+            groups.Add(moduleGroup);
+            //}
 
             _vm!.ModuleGroups = groups;
         }
@@ -853,7 +856,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             var profileName = ((Image)sender).Tag.ToString()!;
             EditMode = "EDIT";
             EditingProfileName = profileName;
-            if (profileName != _vm.CurrentProfileName)
+            if (profileName != _vm!.CurrentProfileName)
             {
                 _vm.CurrentProfileName = profileName;
                 _vm.SetProfile();
@@ -996,6 +999,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
+            EditMode = "ADD";
             _vm!.DisableVBar();
             gdBattery.Visibility = Visibility.Collapsed;
             gdAddProfile.Visibility = Visibility.Visible;
@@ -1074,9 +1078,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
             {
                 var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
-                NewProfiles.Add(txt, profile);
-                //_vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
-                _vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                //NewProfiles.Add(txt, profile);
+                //_vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
             }
             _vm.CurrentProfileName = txt;
             WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);

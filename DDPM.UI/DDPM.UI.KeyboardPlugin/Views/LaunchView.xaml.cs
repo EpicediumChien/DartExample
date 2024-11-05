@@ -408,10 +408,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             imgBL3.Source = img2;
             txtBLHost3.Style = ConnectionStyle2;
 
+
             switch (_vm!.Model)
             {
                 case "KB700":
                 case "KB740":
+                case "KB7120W":
+                case "KB7221W":
                     Host1.Visibility = Visibility.Collapsed;
                     txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                     txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
@@ -584,7 +587,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChangeDevNameWidth();
+            //ChangeDevNameWidth();
         }
 
         private void ChangeDevNameWidth()
@@ -594,7 +597,15 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChangeDevNameWidth();
+            //ChangeDevNameWidth();
+        }
+
+        private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is Border)
+            {
+                Mainframe_MouseLeftButtonDown(this, e);
+            }
         }
     }
 }

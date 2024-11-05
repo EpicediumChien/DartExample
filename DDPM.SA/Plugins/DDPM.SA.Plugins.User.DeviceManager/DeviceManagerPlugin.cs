@@ -626,6 +626,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
+        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightschedulerStatus)
+        {
+            writelog("DeviceManagerPlugin received Send_NightLightschedulerStatus_Telementry_SA requested ...");
+
+            bool blRet = true;
+
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+
+            if (!string.IsNullOrEmpty(NightLightschedulerStatus))
+            {
+                writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus...");
+                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightschedulerStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Fail ...");
+            }
+
+            return Task.FromResult(blRet);
+        }
+
         // 20240619 jim modify
         public async Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
         {
@@ -964,6 +984,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         /// <summary>
+        /// 啟動監視NightLight Scheduler Status
+        /// </summary>
+        public Task<bool> CheckNightLightScheduler()
+        {
+            writelog("DeviceManagerPlugin received CheckNightLightScheduler requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckNightLightScheduler]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.CheckNightLightScheduler().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
         /// 啟動監視Color ICC profile Status
         /// </summary>
         public Task<bool> CheckColorICCStatus()
@@ -995,6 +1033,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLight().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
+        /// 停止監視NightLight Scheduler Status
+        /// </summary>
+        public Task<bool> StopRegistryMonitor_NightLightScheduler()
+        {
+            writelog("DeviceManagerPlugin received StopRegistryMonitor_NightLightScheduler requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - StopRegistryMonitor_NightLightScheduler]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLightScheduler().Result;
 
             return Task.FromResult(temp);
         }
@@ -1708,7 +1764,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         foreach (var input in inputSourcelist)
                                         {
                                             //Maybe Migration...
-                                            if (input.Value.USBUpstream == string.Empty)
+                                            if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
                                             {
                                                 readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                                                 if (readinputlist != null)
@@ -6479,7 +6535,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (aLSConfigs != null)
                                 {
                                     ALSConfig aLSConfig = aLSConfigs.Find(x => (x.ModelName == monitorInfo.modelName));
-                                    monitorSettings.ALSConfig = aLSConfig.AllValue;
+                                    if (aLSConfig != null)
+                                    {
+                                        monitorSettings.ALSConfig = aLSConfig.AllValue;
+                                    }
+                                    else
+                                    {
+                                        writelog("[DisplayExportSettings]Export ALS : aLSConfig is null");
+                                    }
                                 }
                                 writelog("[DisplayExportSettings]Export Gaming");
                                 GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
@@ -8698,7 +8761,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
                                         if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo));
+                                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, new_mo, _SettingsPlugin));
                                     }
                                     catch (Exception ex)
                                     {
@@ -8802,7 +8865,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors));
+                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors, _SettingsPlugin));
         }
 
         private void OnPeripheralsNotify(DeviceChangedEventArgs data)
@@ -10529,7 +10592,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (e.KeyCode == Keys.Scroll)
                     {
-                        bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                        bool isScrollLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.Scroll) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.Scroll={isScrollLockOn}");
                         if (isScrollLockOn)
                         {
@@ -10544,7 +10607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (e.KeyCode == Keys.NumLock)
                     {
-                        bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.CapsLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
+                        bool isNumLockLockOn = (System.Windows.Input.Keyboard.GetKeyStates(System.Windows.Input.Key.NumLock) & System.Windows.Input.KeyStates.Toggled) == System.Windows.Input.KeyStates.Toggled;
                         Debug.WriteLine($"Key.NumLock={isNumLockLockOn}");
                         if (isNumLockLockOn)
                         {
@@ -10554,7 +10617,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
                         }
-                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                        //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
                         //_OSDKeyLock = true;
                         //e.Handled = true;
                     }
@@ -10689,55 +10752,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                    }
                     break;
 
                 case HotkeyType.BrightnessIncrease:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                    }
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                    }
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    if (!isAutoBrightnessOn(monitorInfo))
-                        if (IsALSautobrightness(monitorInfo))
-                        {
-                            HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                            HotkeyPopup(hotkeyPopWrap);
-                        }
-                        else
-                        {
-                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                        }
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                    }
                     break;
 
                 case HotkeyType.LuminanceReduce:
@@ -10820,11 +10879,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        private bool isAutoBrightnessOn(MonitorInfo mo)
-        {
-            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
-            return result.IsEnable;
-        }
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
@@ -11195,14 +11249,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //OLD:
                 //List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Name.Equals(tmp.Name.Replace("-", "")) && x.Code.Equals(tmp.Code)))).ToList();
                 //NEW:
-                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
-                if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
-                {
-                    return;
-                }
-                Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
-                bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
-                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}](keys:{log_keys}) from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
+                /* List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.FirstOrDefault(x => x.Code.Equals(tmp.Code)))).ToList();
+                 if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
+                 {
+                     return;
+                 }*/
+                // Trace.WriteLine($"Calling to VideoSwap(0,{swapList[0]})");
+                //bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
+                //SplitCountFromPxpMode==2 alway is this
+                bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)1).Result;
+                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}](keys:{log_keys}) from [0] to [1]" + (swapPxp ? "success" : "fail"));
                 /*if (subInputs != null && subInputs.Count > 0)
                 {
                     allInputs.AddRange(subInputs);

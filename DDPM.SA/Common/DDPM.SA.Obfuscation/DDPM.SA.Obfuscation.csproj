@@ -7,8 +7,36 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)DDPM.SA.Obfuscation.*&quot; &quot;$(SolutionDir)..\DdpmSwUpdater\CommonDll\&quot; /Y /S /Q" />
+	<ItemGroup>
+	  <PackageReference Include="Obfuscar" Version="2.2.40">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+  <ItemGroup>
+	  <None Update="Obfuscar.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="ObfuscarTask" AfterTargets="AfterBuild">
+		<PropertyGroup>
+			<ObfuscateCommand>$(Obfuscar) "Obfuscar.xml"</ObfuscateCommand>
+		</PropertyGroup>
+		<PropertyGroup>
+			<ReplaceCommand>xcopy "$(ProjectDir)$(OutDir)Obfuscar\DDPM.SA.Obfuscation.*" "$(ProjectDir)$(OutDir)" /Y /S /Q</ReplaceCommand>
+		</PropertyGroup>
+		<PropertyGroup>
+			<SWUpdaterCommand>xcopy "$(ProjectDir)$(OutDir)Obfuscar\DDPM.SA.Obfuscation.*" "$(SolutionDir)..\DdpmSwUpdater\CommonDll\" /Y /S /Q</SWUpdaterCommand>
+		</PropertyGroup>
+		<PropertyGroup>
+			<RemoveTempCommand>rd /s /q "$(ProjectDir)$(OutDir)Obfuscar"</RemoveTempCommand>
+		</PropertyGroup>
+		<Exec WorkingDirectory="$(OutputPath)" Command="$(ObfuscateCommand)" />
+		<Exec WorkingDirectory="$(OutputPath)" Command="$(ReplaceCommand)" />
+		<Exec WorkingDirectory="$(OutputPath)" Command="$(SWUpdaterCommand)" />
+		<Exec WorkingDirectory="$(OutputPath)" Command="$(RemoveTempCommand)" />
 	</Target>
 
 </Project>

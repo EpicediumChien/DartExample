@@ -346,7 +346,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (option.minversion != null && option.minversion.Length > 0)
                 {
-                    command = command + (" value=" + option.minversion + ",minversion");
+                    command = command + (" value=" + option.minversion + ",miniversion");
                 }
 
                 if (option.model != null && option.model.Length > 0)
