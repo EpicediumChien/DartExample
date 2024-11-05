@@ -1113,7 +1113,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryStatus : {deviceInfos[0].BatteryStatus}");
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfos[0].BatteryLevel}");
-                            if (deviceInfos[0].BatteryLevel < 20)
+                            if (deviceInfos[0].BatteryLevel <= 20)
                             {
                                 _notificationStr = "Firmware update unsuccessful.";
                                 ret = true;
