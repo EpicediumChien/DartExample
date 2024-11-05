@@ -1356,6 +1356,7 @@ namespace DDPM.CLI.Plugins.Display
                         index_per++;
 
                         cli_Response2.Index = index_per.ToString();
+                        cli_Response2.ID = g.ID;
                         cli_Response2.Model = g.Name;
                         cli_Response2.FirmwareVersion = g.FirmwareVersion;
                         cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
