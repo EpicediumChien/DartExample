@@ -10604,6 +10604,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (_AllInfoMonitors == null)
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
+
                         _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                         writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
                         if (ss_1[0].ToUpper() == "DISPLAY")
@@ -10618,7 +10619,6 @@ namespace DDPM.CLI.Plugins.Display
                                 ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                                 ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                                 ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
 
                                 // malik
                                 bool retcode = false;
