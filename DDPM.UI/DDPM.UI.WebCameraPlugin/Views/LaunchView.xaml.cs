@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.PowerMon;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
@@ -77,6 +78,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
         private string EditMode = string.Empty;
         private string EditingProfileName = string.Empty;
+        private static PowerEventControl _pwr_Mon = null;
 
         public LaunchView()
         {
@@ -150,6 +152,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
             Preview();
+        }
+
+        private void EnableMonitorOnEvent()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_pwr_Mon == null)
+                {
+                    _pwr_Mon = new PowerEventControl(null);
+                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+                    _pwr_Mon.Enable_Event();
+                }
+            }));
+        }
+
+        private void MonitorEvent_On(object sender, EventArgs e)
+        {
+            Trace.WriteLine("GET MONITOR ON EVENT");
         }
 
         private bool isProfilePropertyChanged = false;
@@ -323,6 +343,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 await CleanupMediaCaptureAsync();
+
+                if(_pwr_Mon != null)
+                {
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    _pwr_Mon = null;
+                }
             }
             catch
             { }

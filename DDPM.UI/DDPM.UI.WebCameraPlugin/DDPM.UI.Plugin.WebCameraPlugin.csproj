@@ -54,6 +54,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DDPM.PowerMon">
+      <HintPath>..\CommonDll\DDPM.PowerMon.dll</HintPath>
+    </Reference>
     <Reference Include="DDPM.SA.Common">
       <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>
