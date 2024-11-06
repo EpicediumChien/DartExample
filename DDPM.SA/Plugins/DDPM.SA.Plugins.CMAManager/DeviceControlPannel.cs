@@ -27,7 +27,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             if (_CMADeviceChanges == null)
             {
-                args.eventType = Params.EventType.UNKNOW_ERROR.ToString();
+                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
                 args.notification = "Device data is null.";
 
                 return args;
@@ -99,7 +99,8 @@ namespace DDPM.SA.Plugins.CMAManager
                     if (other.Equals(info))
                     {
                         isExist = true;
-                        break; ;
+                        break;
+                        ;
                     }
                 }
 

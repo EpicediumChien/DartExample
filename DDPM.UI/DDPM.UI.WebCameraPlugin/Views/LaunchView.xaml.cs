@@ -379,16 +379,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
 
-            //if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
-            //{
-            moduleGroup = new ModuleGroup()
+            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
             {
-                GroupName = Microphone,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
-            };
-            moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
-            groups.Add(moduleGroup);
-            //}
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Microphone,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
+                };
+                moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
+                groups.Add(moduleGroup);
+            }
 
             _vm!.ModuleGroups = groups;
         }
