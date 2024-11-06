@@ -100,7 +100,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                             }
                             NewFeaturesList.Add(new UI_NewFeatures()
                             {
-                                NewFeatures_Image = LoadLocalImage($@""),
+                                NewFeatures_Image = LoadLocalImage($@"D:\Update\FW_Update_Info\FW-UPDATE-LOCAL-FOR-ODM\DPM-Updates\WebServer\appRoot\test\ddpm\{featuresList.content.imageUrl}"),
                                 NewSupportedDevicesCollection = temp
                             });
                         }

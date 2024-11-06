@@ -31,7 +31,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0"
-                      Margin="32,32,68,0">
+                      Margin="32,32,68,32">
                     <Grid>
                         <UXControls:UXTextBlock Grid.Column="0"
                                                 Width="276"
@@ -55,17 +55,17 @@
                            Stretch="Fill" />
                     <UXControls:UXScrollViewer>
                         <Grid>
-                            <Grid Grid.Column="1"
-                                  Margin="15"
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Top"
-                                  MouseDown="Grid_MouseDown"
-                                  Background="Transparent">
-                                <Path VerticalAlignment="Center"
-                                      Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
-                                      Fill="#CCCCCC" />
-                            </Grid>
+                            
                             <StackPanel Margin="50">
+                                <Grid Grid.Column="1"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Top"
+                                      MouseDown="Grid_MouseDown"
+                                      Background="Transparent">
+                                    <Path VerticalAlignment="Center"
+                                          Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
+                                          Fill="#CCCCCC" />
+                                </Grid>
                                 <Grid x:Name="NewSupportedDevices">
                                     <StackPanel>
                                         <UXControls:UXTextBlock  Grid.Column="0"
@@ -75,8 +75,8 @@
                                                                  TextWrapping="WrapWithOverflow"
                                                                  Style="{StaticResource ModuleCaptionStyle}"
                                                                  Text="New Supported Devices"
-                                                                 Margin="0,0,0,10" />
-                                        <StackPanel HorizontalAlignment="Left">
+                                                                 Margin="0,0,0,24" />
+                                        <StackPanel HorizontalAlignment="Left" Margin="0,0,0,24">
                                             <Image Width="400"
                                                    Height="200"
                                                    Source="{Binding BackgroundImage}"
@@ -90,21 +90,21 @@
                                                       Name="listTopics"
                                                       Background="Transparent"
                                                       BorderThickness="0"
-                                                      Margin="0,10,0,10">
+                                                      Margin="0,0,0,0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Margin="0,0,0,24">
                                                         <Path VerticalAlignment="Center"
                                                               HorizontalAlignment="Center"
                                                               Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
-                                                              Fill="#31A2E3" />
+                                                              Fill="#31A2E3" Margin="0,0,15,0"/>
                                                         <UXControls:UXTextBlock  Grid.Column="0"
                                                                                  Width="400"
                                                                                  FontSize="16"
-                                                                                 Margin="15,5,0,5"
                                                                                  TextWrapping="WrapWithOverflow"
                                                                                  Style="{StaticResource ModuleCaptionStyle}"
-                                                                                 Text="{Binding Title}" />
+                                                                                 Text="{Binding Title}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -119,23 +119,26 @@
                                                                  FontFamily="Roboto"
                                                                  TextWrapping="WrapWithOverflow"
                                                                  Style="{StaticResource ModuleCaptionStyle}"
-                                                                 Text="New Features" />
+                                                                 Text="New Features"
+                                                                 Margin="0,0,0,24" />
                                         <ItemsControl ItemsSource="{Binding NewFeaturesList}"
                                                       Background="Transparent"
                                                       BorderThickness="0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel>
+                                                    <StackPanel Margin="0,0,0,0">
                                                         <Image  Grid.Column="0"
                                                                 Width="524"
                                                                 HorizontalAlignment="Left"
-                                                                Source="{Binding NewFeatures_Image}" />
+                                                                Source="{Binding NewFeatures_Image}"
+                                                                Margin="0,0,0,24" />
                                                         <ItemsControl ItemsSource="{Binding NewSupportedDevicesCollection}"
                                                                       Background="Transparent"
                                                                       BorderThickness="0">
                                                             <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <StackPanel Orientation="Horizontal">
+                                                                    <StackPanel Orientation="Horizontal"
+                                                                                Margin="0,0,0,24">
                                                                         <Path VerticalAlignment="Center"
                                                                               HorizontalAlignment="Center"
                                                                               Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
@@ -165,13 +168,15 @@
                                                                  FontFamily="Roboto"
                                                                  TextWrapping="WrapWithOverflow"
                                                                  Style="{StaticResource ModuleCaptionStyle}"
-                                                                 Text="Bug Fixes" />
+                                                                 Text="Bug Fixes"
+                                                                 Margin="0,0,0,24" />
                                         <ItemsControl ItemsSource="{Binding BugFixesList}"
                                                       Background="Transparent"
                                                       BorderThickness="0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <StackPanel Orientation="Horizontal">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Margin="0,0,0,24">
                                                         <Path VerticalAlignment="Center"
                                                               HorizontalAlignment="Center"
                                                               Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
