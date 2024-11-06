@@ -19,20 +19,21 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\..\Common\VcpCore.Common\VcpCore.Common.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.SettingsManager\DDPM.SA.Plugins.User.SettingsManager.csproj" />
+    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.Peripherals\DDPM.SA.Plugins.User.Peripherals.csproj" />
     <ProjectReference Include="..\..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />
     <ProjectReference Include="..\SA.Plugins.User.DisplayManager.Test\SA.Plugins.User.DisplayManager.Test.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="DdmLibrary">
-			<HintPath>..\..\dll\DdmLibrary.dll</HintPath>
-		</Reference>
-	</ItemGroup>
+  <ItemGroup>
+    <Reference Include="DPeMClientBroker">
+      <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
+    </Reference>
+	  <Reference Include="DPeMPublic.Common">
+		  <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
+	  </Reference>
+  </ItemGroup>
 
-
-	<ItemGroup>
+  <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 

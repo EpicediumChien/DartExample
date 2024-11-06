@@ -626,6 +626,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
+        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightschedulerStatus)
+        {
+            writelog("DeviceManagerPlugin received Send_NightLightschedulerStatus_Telementry_SA requested ...");
+
+            bool blRet = true;
+
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+
+            if (!string.IsNullOrEmpty(NightLightschedulerStatus))
+            {
+                writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus...");
+                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightschedulerStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Success ...");
+                else writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Fail ...");
+            }
+
+            return Task.FromResult(blRet);
+        }
+
         // 20240619 jim modify
         public async Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
         {
@@ -964,6 +984,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         /// <summary>
+        /// 啟動監視NightLight Scheduler Status
+        /// </summary>
+        public Task<bool> CheckNightLightScheduler()
+        {
+            writelog("DeviceManagerPlugin received CheckNightLightScheduler requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - CheckNightLightScheduler]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.CheckNightLightScheduler().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
         /// 啟動監視Color ICC profile Status
         /// </summary>
         public Task<bool> CheckColorICCStatus()
@@ -995,6 +1033,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLight().Result;
+
+            return Task.FromResult(temp);
+        }
+
+        /// <summary>
+        /// 停止監視NightLight Scheduler Status
+        /// </summary>
+        public Task<bool> StopRegistryMonitor_NightLightScheduler()
+        {
+            writelog("DeviceManagerPlugin received StopRegistryMonitor_NightLightScheduler requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - StopRegistryMonitor_NightLightScheduler]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.StopRegistryMonitor_NightLightScheduler().Result;
 
             return Task.FromResult(temp);
         }
@@ -3860,45 +3916,60 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //0606 Bruce 新增鎖定自動旋轉方向
         public Task<bool> LockRotate(bool onoff)
         {
+            writelog("[DeviceMangerPlugin] LockRotate Start");
             bool ret = false;
-            DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (config != null && _DisplayManagerPlugin != null)
+            if (_SettingsPlugin != null)
             {
-                config.UserSettings.LockRotate = onoff;
-                _DisplayManagerPlugin.SetEnableLockOrientation(onoff);
-                ret = _SettingsPlugin.SetAppConfigData(config).Result;
+                writelog("[DeviceMangerPlugin] _SettingsPlugin.ReloadAppConfigData go");
+                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (config != null && _DisplayManagerPlugin != null)
+                {
+                    config.UserSettings.LockRotate = onoff;
+                    writelog("[DeviceMangerPlugin] _DisplayManagerPlugin.SetEnableLockOrientation go");
+                    _DisplayManagerPlugin.SetEnableLockOrientation(onoff);
+                    writelog("[DeviceMangerPlugin] _SettingsPlugin.SetAppConfigData go");
+                    ret = _SettingsPlugin.SetAppConfigData(config).Result;
+                }
+
+                Task.Run(() =>
+                {
+                    //Telementry Collection
+                    var rt = false;
+                    var ApplicationSettings_Function = new ApplicationSettings_Function();
+                    writelog("[DeviceMangerPlugin] Send Telementry for LockRotation...");
+                    rt = ApplicationSettings_Function.Send_LockRotation_Telementry(_TelementryScheduler, _AllInfoMonitors, onoff);
+                    if (rt) writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Success ...");
+                    else writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Fail ...");
+                }).ConfigureAwait(false);
             }
-
-            Task.Run(() =>
-            {
-                //Telementry Collection
-                var rt = false;
-                var ApplicationSettings_Function = new ApplicationSettings_Function();
-                writelog("[DeviceMangerPlugin] Send Telementry for LockRotation...");
-                rt = ApplicationSettings_Function.Send_LockRotation_Telementry(_TelementryScheduler, _AllInfoMonitors, onoff);
-                if (rt) writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Success ...");
-                else writelog("[DeviceMangerPlugin] Send Telementry for LockRotation Fail ...");
-            }).ConfigureAwait(false);
-
+            writelog("[DeviceMangerPlugin] LockRotate done");
             return Task.FromResult(ret);
         }
 
         //0606 Bruce 新增鎖定自動旋轉方向
         public Task<bool> GetLockRotateStatus()
         {
+            writelog("[DeviceMangerPlugin] GetLockRotateStatus Start");
             bool ret = false;
             try
             {
                 if (_SettingsPlugin != null && _DisplayManagerPlugin != null)
                 {
+                    writelog("[DeviceMangerPlugin] _SettingsPlugin.ReloadAppConfigData go");
                     DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                    _DisplayManagerPlugin.SetEnableLockOrientation(config.UserSettings.LockRotate);
-                    ret = config.UserSettings.LockRotate;
+                    if (config != null && config.UserSettings != null)
+                    {
+                        writelog("[DeviceMangerPlugin] _DisplayManagerPlugin.SetEnableLockOrientation go");
+                        _DisplayManagerPlugin.SetEnableLockOrientation(config.UserSettings.LockRotate);
+                        ret = config.UserSettings.LockRotate;
+                    }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                writelog($"[DeviceMangerPlugin] GetLockRotateStatus Error : {ex.Message}");
             }
+            writelog("[DeviceMangerPlugin] GetLockRotateStatus done");
             return Task.FromResult(ret);
         }
 
@@ -4192,16 +4263,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public void SetUILockStatus(bool isLockFWU_UI)
         {
+            writelog("[DeviceMangerPlugin] SetUILockStatus start");
             if (_SettingsPlugin != null)
             {
+                writelog("[DeviceMangerPlugin] _SettingsPlugin.ReloadAppConfigData go");
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
                 if (config != null)
                 {
                     config.UserSettings.LockFWU_UI = isLockFWU_UI;
+                    writelog("[DeviceMangerPlugin] _SettingsPlugin.SetAppConfigData go");
                     _SettingsPlugin.SetAppConfigData(config).Wait();
                     OnUILockEvent(isLockFWU_UI);
                 }
             }
+            writelog("[DeviceMangerPlugin] SetUILockStatus done");
         }
 
         public Task<bool> GetUILockStatus()
@@ -6235,22 +6310,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Task<bool> SW_SetSWUpdateInfoPackage(SWUpdateInfoPackage swUpdateInfoPackage)
         {
+            writelog("[SW_SetSWUpdateInfoPackage], start.");
+            bool ret = false;
             if (_SettingsPlugin != null)
             {
+                writelog("[SW_SetSWUpdateInfoPackage], _SettingsPlugin.ReloadAppConfigData go.");
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                foreach (SWUpdateInfo updateInfo in swUpdateInfoPackage.SWUpdateInfo)
+                if (config != null)
                 {
-                    updateInfo.ServerPath = "";
-                    updateInfo.SHA256 = "";
-                    updateInfo.SHA512 = "";
-                    updateInfo.Thumbprint = "";
+                    foreach (SWUpdateInfo updateInfo in swUpdateInfoPackage.SWUpdateInfo)
+                    {
+                        updateInfo.ServerPath = "";
+                        updateInfo.SHA256 = "";
+                        updateInfo.SHA512 = "";
+                        updateInfo.Thumbprint = "";
+                    }
+                    config.UserSettings.DelaySWUpdateInfoPackage = swUpdateInfoPackage;
+                    writelog("[SW_SetSWUpdateInfoPackage], _SettingsPlugin.SetAppConfigData go.");
+                    ret = (_SettingsPlugin.SetAppConfigData(config).Result);
                 }
-                config.UserSettings.DelaySWUpdateInfoPackage = swUpdateInfoPackage;
-                return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
             }
-            return Task.FromResult(false);
+            writelog("[SW_SetSWUpdateInfoPackage], done.");
+            return Task.FromResult(ret);
         }
-
         private Task<bool> SW_CheckSWUpdate()
         {
             writelog("[SW_CheckSWUpdate], start.");

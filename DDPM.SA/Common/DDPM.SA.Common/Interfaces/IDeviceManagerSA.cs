@@ -126,13 +126,16 @@ namespace DDPM.SA.Common
 
         Task<bool> SyncNightlightStatus();
         Task<bool> CheckNightLightStatus();
+        Task<bool> CheckNightLightScheduler();
         Task<bool> CheckColorICCStatus();
 
 
         Task<bool> StopRegistryMonitor_NightLight();
+        Task<bool> StopRegistryMonitor_NightLightScheduler();
         Task<bool> StopRegistryMonitor_ICC();
 
         Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
+        Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
 
         #endregion public for ColorPreset
 

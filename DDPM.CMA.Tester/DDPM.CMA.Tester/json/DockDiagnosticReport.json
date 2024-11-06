@@ -1,0 +1,13 @@
+{
+  "sid": "1728647205",
+  "req": [
+    {
+      "tid": 1,
+      "active": "get",
+      "devicetype": "Dock",
+      "command": "DiagnosticsReport",
+      "value": "C:\\temp",
+      "options": {}
+    }
+  ]
+}
