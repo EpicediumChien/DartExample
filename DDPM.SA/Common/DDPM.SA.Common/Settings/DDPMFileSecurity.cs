@@ -4,7 +4,6 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.TechHub.Sdk.Common;
-using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
