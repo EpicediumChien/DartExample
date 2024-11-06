@@ -17,10 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="D:\DDPMFileSecurity.cs" Link="DDPMFileSecurity.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
     <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />

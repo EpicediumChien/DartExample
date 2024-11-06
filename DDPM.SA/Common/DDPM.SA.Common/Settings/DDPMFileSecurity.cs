@@ -4,6 +4,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.TechHub.Sdk.Common;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
@@ -180,7 +181,7 @@ namespace DDPM.SA.Common.Settings
                     array.Add("Signature : " + signature);
                     temp = array.ToString();
                 }
-                if(string.IsNullOrEmpty(temp))
+                if (string.IsNullOrEmpty(temp))
                 {
                     info = "Add sign to json object failed";
                     return false;
@@ -336,7 +337,7 @@ namespace DDPM.SA.Common.Settings
                         if (sign != null && !string.IsNullOrEmpty(sign.ToString()))
                         {
                             signature = sign.ToString().Replace("Signature", "").Trim();
-                            if(signature.StartsWith(":"))
+                            if (signature.StartsWith(":"))
                             {
                                 signature = signature.Substring(1).Trim();
                             }
@@ -789,7 +790,7 @@ namespace DDPM.SA.Common.Settings
                 return false;// No signature so fail
             }
 
-            foreach(string key in InfoPkey)
+            foreach (string key in InfoPkey)
             {
                 //use signature to verify json
                 if (DDPMFileSecurity.IsJsonContentValid_2(strJson, signature, key, HashAlgorithmName.SHA512, out info))
@@ -1065,7 +1066,7 @@ namespace DDPM.SA.Common.Settings
             string FileInfo;
             if (!IsFilePathValid(filePath, out FileInfo))
             {
-                info = $"[CheckFileACL] {FileInfo}";                
+                info = $"[CheckFileACL] {FileInfo}";
                 return false;
             }
             FileInfo fileInfo = new FileInfo(filePath);
@@ -1185,7 +1186,7 @@ namespace DDPM.SA.Common.Settings
             if (!IsFolderPathValid(folderPath, out FileInfo))
             {
                 //_log.Info($"{nameof(SetFolderPermissions_UserReadAndExecute)} {FileInfo}");
-                throw new SecurityException($"{FileInfo}"); 
+                throw new SecurityException($"{FileInfo}");
             }
             DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
             DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
@@ -1445,16 +1446,17 @@ namespace DDPM.SA.Common.Settings
             }
             //Bruce 0909 modify
             //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
-            string result = CalculateFileSHA256(filePath);
+            string result = CalculateFileSHA256(filePath, out info);
             info = "Complete";
             if (string.IsNullOrEmpty(result))
             {
-                info = "Calculate fail.";
+                info = "Calculate fail. " + info;
             }
             return result;
         }
-        static string CalculateFileSHA256(string filePath)
+        static string CalculateFileSHA256(string filePath, out string info)
         {
+            info = string.Empty;
             string ret = string.Empty;
             try
             {
@@ -1469,8 +1471,9 @@ namespace DDPM.SA.Common.Settings
                     }
                 }
             }
-            catch 
+            catch (Exception ex)
             {
+                info = "[CalculateFileSHA256] exception, message: " + ex.Message;
             }
             return ret;
         }
@@ -1480,7 +1483,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
-               // _log.Info(info);
+                // _log.Info(info);
                 return null;
             }
 
@@ -1488,7 +1491,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
-               // _log.Info(info);
+                // _log.Info(info);
                 return null;
             }
 
@@ -1510,7 +1513,7 @@ namespace DDPM.SA.Common.Settings
             }
             //Bruce 0909 modify
             //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
-            string result = CalculateFileSHA512(filePath);
+            string result = CalculateFileSHA512(filePath, out info);
             info = "Complete";
             if (string.IsNullOrEmpty(result))
             {
@@ -1518,8 +1521,9 @@ namespace DDPM.SA.Common.Settings
             }
             return result;
         }
-        static string CalculateFileSHA512(string filePath)
+        static string CalculateFileSHA512(string filePath, out string info)
         {
+            info = string.Empty;
             string ret = string.Empty;
             try
             {
@@ -1534,9 +1538,9 @@ namespace DDPM.SA.Common.Settings
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                info = "[CalculateFileSHA256] exception, message: " + ex.Message;
             }
             return ret;
         }
@@ -2051,8 +2055,8 @@ namespace DDPM.SA.Common.Settings
         }
 
         #endregion Bruce 0814 Move this method to DDPM.SA.Common
-	
-	public static bool SRemoveSymbolicFile(string filePath, out string info)
+
+        public static bool SRemoveSymbolicFile(string filePath, out string info)
         {
             info = "pass";
             if (!DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
@@ -2139,7 +2143,7 @@ namespace DDPM.SA.Common.Settings
             int count = 0;
             bool folderValid = false;
 
-            if(string.IsNullOrEmpty(folderPath))
+            if (string.IsNullOrEmpty(folderPath))
             {
                 folderInfo = "CheckFold - folder path NULL";
                 return folderValid;
@@ -2206,7 +2210,7 @@ namespace DDPM.SA.Common.Settings
         {
             bool ret = false;
             inline_info = string.Empty;
-            string strJson = string.Empty; 
+            string strJson = string.Empty;
             //Pass json metadata to security check and try to output serialized json string
             // the output json string will remove signature
             ret = LoadFileToVerifyJson_2(log, fileContent, InfoPkey, out strJson);
@@ -2282,14 +2286,14 @@ namespace DDPM.SA.Common.Settings
                 if (log != null)
                     log.Error($"[IsProcessInfoValid] just file name [{filePath}] only");
             }
-            else if(IsUrl(filePath))
+            else if (IsUrl(filePath))
             {
                 if (log != null)
                     log.Error($"[IsProcessInfoValid] just URL [{filePath}] only");
                 return true;
             }
             else
-            {                
+            {
                 FileInfo fi = new FileInfo(filePath);
                 if (fi == null)
                 {
@@ -2338,13 +2342,13 @@ namespace DDPM.SA.Common.Settings
                         log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
                     return false;
                 }
-            }         
+            }
             return true;
         }
 
         //Make sure that startInfo and filePath should not exist at the same time
-        private static bool StartProcessByOptions( ILog log,
-            ProcessStartInfo startInfo = null, 
+        private static bool StartProcessByOptions(ILog log,
+            ProcessStartInfo startInfo = null,
             string filePath = "",
             string arguments = "",
             bool isLockNeeded = false,
@@ -2375,7 +2379,7 @@ namespace DDPM.SA.Common.Settings
             {
                 log.Info("[StartProcessSafely] Lock file");
                 using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))
-                {                    
+                {
                     // start process
                     using (Process process = Process.Start(startInfo))
                     {
@@ -2519,13 +2523,13 @@ namespace DDPM.SA.Common.Settings
             ILog log,
             ProcessStartInfo startInfo,
             bool needCheckThumbprintInbox = false,
-            string fileHash = "", 
+            string fileHash = "",
             string hashType = "SHA512",
             bool isWaitExitCode = false,
             bool isLockNeeded = false)
         {
             string info = string.Empty;
-            if(startInfo == null)
+            if (startInfo == null)
             {
                 if (log != null)
                     log.Error("[StartProcessSafely] null process StartInfo");
