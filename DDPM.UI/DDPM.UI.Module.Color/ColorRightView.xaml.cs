@@ -118,6 +118,7 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessEnd_Stop();
 
             DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLight();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLightScheduler();
             DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_ICC();
             //vm.StopRegistryMonitor();
 

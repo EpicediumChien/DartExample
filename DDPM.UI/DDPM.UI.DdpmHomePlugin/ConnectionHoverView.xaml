@@ -5,9 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.DdpmHomePlugin"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
-             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+              xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
+            xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800" d:Background="Black">
+             d:DesignHeight="450" d:DesignWidth="800" d:Background="Black"
+             d:DataContext="{DynamicResource vmDesign}"
+             >
     <UserControl.Resources>
 
         <ResourceDictionary>
@@ -18,6 +21,12 @@
 
             <SolidColorBrush x:Key="ConnectionStyle1Brush" Color="White" />
             <SolidColorBrush x:Key="ConnectionStyle2Brush" Color="#839DB4" />
+
+            <commonModel:HomeDevice x:Key="vmDesign" IsConnectionHoverViewShow="True" ConnectionHoverMode="IO_BLE"
+                                    BleHost1Style="1" BleHost1Text="Host1" 
+                                    BleHost2Style="2" BleHost2Text="My Computer"
+                                    BleHost3Style="1" BleHost3Text="TPE702234"
+                                    />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -34,7 +43,7 @@
         </Grid.Style>
 
         <Viewbox Stretch="Uniform" MaxHeight="130">
-            <!-- IO Dongle -->
+            <!-- #region IO Dongle -->
             <Border x:Name="IO_Dongle" Height="130">
                 <Border.Style>
                     <Style TargetType="Border" BasedOn="{StaticResource BorderConnection}">
@@ -68,9 +77,10 @@
                                             Margin="20,15,0,0" Text="{Binding DongleSlot}" />
                 </StackPanel>
             </Border>
+            <!-- #endregion IO Dongle -->
         </Viewbox>
 
-        <Viewbox Stretch="Uniform" MaxHeight="92">
+        <Viewbox Stretch="Uniform" MaxHeight="120">
             <!-- IO BLE -->
             <!--
             1 {BLE_Icon} Windows Machine A
@@ -82,7 +92,7 @@
             1 = This row is White color
             2 = This row is Gray color
             -->
-            <Border x:Name="IO_BLE" Height="92">
+            <Border x:Name="IO_BLE">
                 <!-- Only when ConnectionHoverMode=="IO_BLE" will show this Border -->
                 <Border.Style>
                     <Style TargetType="Border" BasedOn="{StaticResource BorderConnection}">

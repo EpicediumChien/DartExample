@@ -332,9 +332,10 @@
         </Grid>
       </Grid>
       <!--Name & Model-->
-      <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+      <Grid Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="200">
+        <Border Background="Transparent" MouseDown="PushBack"></Border>
         <StackPanel Orientation="Vertical">
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" MouseDown="PushBack">
             <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
               <Image.InputBindings>
@@ -342,7 +343,7 @@
               </Image.InputBindings>
             </Image>
             <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
-                                                x:Name="devName" Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+                                                x:Name="devName" Style="{StaticResource ProductNameTextStyle}" />
           </StackPanel>
           <StackPanel Orientation="Horizontal">
             <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
@@ -379,8 +380,9 @@
         </StackPanel>
       </Grid>
       <!--Battery-->
-      <Grid VerticalAlignment="Bottom">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+      <Grid VerticalAlignment="Bottom" Height="200">
+        <Border Background="Transparent" MouseDown="PushBack"></Border>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
