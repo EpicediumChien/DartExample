@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.IO;
 using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 
@@ -63,14 +64,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 modalDialog.Top = windowTop;
                 modalDialog.ShowDialog();
 
-                if(modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
+                string model = mo.modelName;//"U2724DE";
+                string serviceTag = mo.edid.ServiceTag;
+                string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+
+                if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
                 {
                     //For jason to do import
-
-                    //ignore next check for this model
-                    if(modalDialog.isChecked)
+                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, false, exportpath).Result)
                     {
-
+                        //ignore next check for this model
+                        if (modalDialog.isChecked)
+                        {
+                            //DdpmCommonHelper.DeviceManagerSA
+                        }
                     }
                 }
             });

@@ -1094,7 +1094,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                 WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
                                 if (!string.IsNullOrEmpty(_export_path))
                                 {
-                                    string _exportpath = _export_path + "\\" + modelname + "_" + seriveTag + ".json";
+                                    string _exportpath = _export_path + "\\" + modelname + ".json";
                                     if (WriteImpExpSettings(_exportpath, impexpSettings))
                                     {
                                         WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file success");
@@ -1131,7 +1131,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            ImpExpSettings = ReadImportSettingsFile(path);
+            ImpExpSettings = ReadImportSettingsFile(path).Result;
             //List<VCPCode> vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
@@ -1727,7 +1727,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return true;
         }
 
-        private DDPMImpExpSettings ReadImportSettingsFile(string path)
+        public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
 
@@ -1740,7 +1740,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                     {
                         WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
-                        return ImpSettings;
+                        return Task.FromResult(ImpSettings);
                     }
                     string strReadJson = string.Empty;
                     //using (var reader = new StreamReader(path))
@@ -1752,10 +1752,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
-                        return ImpSettings;
+                        return Task.FromResult(ImpSettings);
                     try
                     {
-
                         WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
@@ -1769,7 +1768,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     WriteLog("[ReadImportSettingsFile] path : " + path);
                 }
             }
-            return ImpSettings;
+            return Task.FromResult(ImpSettings);
         }
         public Task<DDMImpSettings> ReadDDMImpSettingsFile(string path) 
         {
