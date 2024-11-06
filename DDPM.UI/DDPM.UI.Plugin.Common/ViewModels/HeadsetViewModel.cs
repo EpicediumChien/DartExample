@@ -68,7 +68,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _wearDetectionPageShow = true;
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
-                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉
+                    _automatedActionsAnswerCallPageShow = true;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -88,7 +88,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    _automatedActionsAnswerCallPageShow = true;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -1120,7 +1120,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     return;
                 }
 
-                if (_isNoiseOffChecked != value)
+                if (_isNoiseOffChecked != value && value)
                 {
                     _isNoiseOffChecked = value;
                     if (_isNoiseOffChecked)
@@ -1758,13 +1758,14 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isNormal2Checked;
             set
             {
-                if (_isNormal2Checked != value)
+                if (_isNormal2Checked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isNormal2Checked != value && value)
                 {
                     _isNormal2Checked = value;
-                    if (_isNormal2Checked)
-                    {
-                        IsLowChecked = false;
-                    }
                     if (value)
                     {
                         int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 3, 1);
@@ -1772,8 +1773,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 3, 1), CurrentDeviceInfo!.ID).Wait();
                         _deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
                         DeviceInfoDTP.WearDetection = setWear;
+                        _isLowChecked = false;
+                        OnPropertyChanged(nameof(IsNormal2Checked));
+                        OnPropertyChanged(nameof(IsLowChecked));
                     }
-                    OnPropertyChanged(nameof(IsNormal2Checked));
                 }
             }
         }
@@ -1783,13 +1786,14 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isLowChecked;
             set
             {
-                if (_isLowChecked != value)
+                if (_isLowChecked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isLowChecked != value && value)
                 {
                     _isLowChecked = value;
-                    if (_isLowChecked)
-                    {
-                        IsNormal2Checked = false;
-                    }
                     if (value)
                     {
                         int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 3, 0);
@@ -1797,8 +1801,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         //_deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 3, 0), CurrentDeviceInfo!.ID).Wait();
                         _deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
                         DeviceInfoDTP.WearDetection = setWear;
+                        _isNormal2Checked = false;
+                        OnPropertyChanged(nameof(IsNormal2Checked));
+                        OnPropertyChanged(nameof(IsLowChecked));
                     }
-                    OnPropertyChanged(nameof(IsLowChecked));
                 }
             }
         }
@@ -1811,13 +1817,13 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isNormalChecked;
             set
             {
-                if (_isNormalChecked != value)
+                if (_isNormalChecked == value && value == true)
+                {
+                    return;
+                }
+                if (_isNormalChecked != value && value)
                 {
                     _isNormalChecked = value;
-                    if (_isNormalChecked)
-                    {
-                        IsSensitiveChecked = false;
-                    }
                     if (value)
                     {
                         int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 5, 1);
@@ -1825,8 +1831,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         //_deviceManager.SetWearDetection((int)SetBitsValue((uint)CurrentDeviceInfo!.WearDetection, 5, 1), CurrentDeviceInfo!.ID).Wait();
                         _deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString(), setWear).Wait();
                         DeviceInfoDTP.WearDetection = setWear;
+                        _isSensitiveChecked = false;
+                        OnPropertyChanged(nameof(IsNormalChecked));
+                        OnPropertyChanged(nameof(IsSensitiveChecked));
                     }
-                    OnPropertyChanged(nameof(IsNormalChecked));
                 }
             }
         }
@@ -1836,13 +1844,14 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isSensitiveChecked;
             set
             {
-                if (_isSensitiveChecked != value)
+                if (_isSensitiveChecked == value && value == true)
+                {
+                    return;
+                }
+
+                if (_isSensitiveChecked != value && value)
                 {
                     _isSensitiveChecked = value;
-                    if (_isSensitiveChecked)
-                    {
-                        IsNormalChecked = false;
-                    }
                     if (value)
                     {
                         int setWear = (int)SetBitsValue((uint)DeviceInfoDTP!.WearDetection, 5, 2);
@@ -1850,8 +1859,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         //_deviceManager.SetWearDetection((int)SetBitsValue((uint)CurrentDeviceInfo!.WearDetection, 5, 2), CurrentDeviceInfo!.ID).Wait();
                         _deviceManager.SetWearDetectionAsync(CurrentDeviceInfo!.ID.ToString() , setWear).Wait();
                         DeviceInfoDTP.WearDetection = setWear;
+                        _isNormalChecked = false;
+                        OnPropertyChanged(nameof(IsNormalChecked));
+                        OnPropertyChanged(nameof(IsSensitiveChecked));
                     }
-                    OnPropertyChanged(nameof(IsSensitiveChecked));
                 }
             }
         }
