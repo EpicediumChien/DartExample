@@ -745,7 +745,7 @@ namespace DDPM.SA.Plugins.CMAManager
             catch (Exception e) {
 
                 NotifyArgs args = new NotifyArgs();
-                args.eventType = Params.EventType.UNKNOW_ERROR.ToString();
+                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
                 args.notification = e.ToString() + "; " + request.remote_request;
                 OnEventNotify(args);
             }
