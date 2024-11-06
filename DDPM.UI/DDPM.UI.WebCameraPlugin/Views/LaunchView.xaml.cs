@@ -152,6 +152,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
             Preview();
+            EnableMonitorOnEvent();
         }
 
         private void EnableMonitorOnEvent()
