@@ -856,7 +856,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             var profileName = ((Image)sender).Tag.ToString()!;
             EditMode = "EDIT";
             EditingProfileName = profileName;
-            if (profileName != _vm.CurrentProfileName)
+            if (profileName != _vm!.CurrentProfileName)
             {
                 _vm.CurrentProfileName = profileName;
                 _vm.SetProfile();
@@ -999,6 +999,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
+            EditMode = "ADD";
             _vm!.DisableVBar();
             gdBattery.Visibility = Visibility.Collapsed;
             gdAddProfile.Visibility = Visibility.Visible;
@@ -1077,9 +1078,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
             {
                 var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
-                NewProfiles.Add(txt, profile);
-                //_vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
-                _vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                //NewProfiles.Add(txt, profile);
+                //_vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
             }
             _vm.CurrentProfileName = txt;
             WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);

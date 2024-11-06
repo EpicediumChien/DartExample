@@ -1,0 +1,16 @@
+{
+  "sid": "1728380251",
+  "req": [
+    {
+      "tid": 1,
+      "active": "set",
+      "devicetype": "dock",
+      "command": "DeviceConfiguration",
+      "value": {
+        "Index": "1",
+        "DeviceType": "Dock"
+      },
+      "options": {}
+    }
+  ]
+}
