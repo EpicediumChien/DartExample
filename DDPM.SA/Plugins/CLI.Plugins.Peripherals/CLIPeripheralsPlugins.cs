@@ -3262,12 +3262,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_FWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 3255");
-                    output = cLI_FWU_RESPONSE.OutputLog(cLI_FWU_RESPONSE, commandLineInput);
+                    output = JsonConvert.SerializeObject(cLI_FWU_RESPONSE, Formatting.Indented);
+                    //output = cLI_FWU_RESPONSE.OutputLog(cLI_FWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 3260");
-                    output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
                 {
@@ -3301,9 +3303,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(output, Formatting.Indented));
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 writelog("FWUpdate_Line 3297");
+                writelog($"FWUpdate_Line 3297 Error : {ex.Message}");
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
                     Command = commandLineInput.Command,
@@ -4008,12 +4011,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_SWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 4010");
-                    output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
+                    output =  JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
+                    //output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 4015");
-                    output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+                    output =  JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
                 {
