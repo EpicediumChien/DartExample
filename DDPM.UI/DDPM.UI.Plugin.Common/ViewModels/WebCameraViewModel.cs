@@ -1357,6 +1357,12 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));
             OnPropertyChanged(nameof(Redo2Visibility));
+
+            //Derek 2024/11/06
+            //Webcam PIMS-316915
+            //FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
+            if (IsAutoFramingOn)
+                SetFOV_Selected(2);
         }
 
         public void ClearUndo()

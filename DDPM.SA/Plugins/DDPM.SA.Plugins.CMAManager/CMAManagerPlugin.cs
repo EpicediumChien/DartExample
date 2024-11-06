@@ -244,7 +244,7 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 if (String.IsNullOrEmpty(task.value) || task.value.Length <= 0) 
                 {
-                    throw new ArgumentException("Command can't be empty");
+                    throw new ArgumentException("Command 'value' can't be empty");
                 }
 
                 command = command + ("app=" + task.command);
@@ -346,7 +346,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (option.minversion != null && option.minversion.Length > 0)
                 {
-                    command = command + (" value=" + option.minversion + ",miniversion");
+                    command = command + (" value=" + option.minversion + ",minversion");
                 }
 
                 if (option.model != null && option.model.Length > 0)
@@ -745,7 +745,7 @@ namespace DDPM.SA.Plugins.CMAManager
             catch (Exception e) {
 
                 NotifyArgs args = new NotifyArgs();
-                args.eventType = Params.EventType.UNKNOW_ERROR.ToString();
+                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
                 args.notification = e.ToString() + "; " + request.remote_request;
                 OnEventNotify(args);
             }
