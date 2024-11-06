@@ -31,15 +31,15 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0"
-                      Margin="30">
+                      Margin="32,32,68,0">
                     <Grid>
-                        <UXControls:UXTextBlock  Grid.Column="0"
-                                                 Width="276"
-                                                 FontSize="40"
-                                                 FontFamily="Roboto"
-                                                 TextWrapping="WrapWithOverflow"
-                                                 Style="{StaticResource ModuleCaptionStyle}"
-                                                 Text="{Binding Title}" />
+                        <UXControls:UXTextBlock Grid.Column="0"
+                                                Width="276"
+                                                FontSize="40"
+                                                FontFamily="Roboto"
+                                                TextWrapping="WrapWithOverflow"
+                                                Style="{StaticResource ModuleCaptionStyle}"
+                                                Text="Update Available Version 2.1.0" />
                         <UXControls:UXButton ButtonType="Primary"
                                              AutomationProperties.Name="Primary1"
                                              ButtonSize="Medium"

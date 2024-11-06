@@ -183,43 +183,43 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 _timer = null;
             }
         }
-        public class UI_NewSupportedDevices
+    }
+    public class UI_NewSupportedDevices
+    {
+        public string Title { get; set; }
+        public string Content_1 { get; set; }
+        public string Content_2 { get; set; }
+        public BitmapImage BackgroundImage { get; set; }
+        public UI_NewSupportedDevices()
         {
-            public string Title { get; set; }
-            public string Content_1 { get; set; }
-            public string Content_2 { get; set; }
-            public BitmapImage BackgroundImage { get; set; }
-            public UI_NewSupportedDevices()
-            {
-                Title = string.Empty;
-                Content_1 = string.Empty;
-                Content_2 = string.Empty;
-            }
+            Title = string.Empty;
+            Content_1 = string.Empty;
+            Content_2 = string.Empty;
         }
-        public class UI_NewFeatures
+    }
+    public class UI_NewFeatures
+    {
+        public BitmapImage NewFeatures_Image { get; set; }
+        public ObservableCollection<UI_NewFeaturesContent> NewSupportedDevicesCollection { get; set; }
+        public UI_NewFeatures()
         {
-            public BitmapImage NewFeatures_Image { get; set; }
-            public ObservableCollection<UI_NewFeaturesContent> NewSupportedDevicesCollection { get; set; }
-            public UI_NewFeatures()
-            {
-                NewSupportedDevicesCollection = new ObservableCollection<UI_NewFeaturesContent>();
-            }
+            NewSupportedDevicesCollection = new ObservableCollection<UI_NewFeaturesContent>();
         }
-        public class UI_NewFeaturesContent
+    }
+    public class UI_NewFeaturesContent
+    {
+        public string Content { get; set; }
+        public UI_NewFeaturesContent()
         {
-            public string Content { get; set; }
-            public UI_NewFeaturesContent()
-            {
-                Content = string.Empty;
-            }
+            Content = string.Empty;
         }
-        public class UI_BugFixesContent
+    }
+    public class UI_BugFixesContent
+    {
+        public string BugFixesContent { get; set; }
+        public UI_BugFixesContent()
         {
-            public string BugFixesContent { get; set; }
-            public UI_BugFixesContent()
-            {
-                BugFixesContent = string.Empty;
-            }
+            BugFixesContent = string.Empty;
         }
     }
 }
