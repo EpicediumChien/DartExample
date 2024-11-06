@@ -456,6 +456,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                SHA256 = updateHelper.UpdateItems[i].SHA256,
                                 //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                 Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
                                 IsUOD = (isUODMode &&
@@ -490,6 +491,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                     DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                    SHA256 = updateHelper.UpdateItems[i].SHA256,
                                     //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                     Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
                                     IsUOD = (isUODMode &&
