@@ -96,7 +96,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 foreach (MonitorInfo other in des)
                 {
-                    if (other == info)
+                    if (other.Equals(info))
                     {
                         isExist = true;
                         break; ;
