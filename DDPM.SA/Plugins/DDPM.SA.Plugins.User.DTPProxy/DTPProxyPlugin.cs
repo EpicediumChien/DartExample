@@ -1373,8 +1373,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
             }
         }
 
@@ -1389,8 +1389,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
             }
         }
 
