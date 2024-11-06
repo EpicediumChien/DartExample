@@ -1,0 +1,14 @@
+{
+  "sid": "1728273742",
+  "req": [
+    {
+      "tid": 1,
+      "active": "fw",
+      "devicetype": "dock",
+      "options": {
+        "index": "1",
+        "model": "Dell Dock"
+      }
+    }
+  ]
+}
