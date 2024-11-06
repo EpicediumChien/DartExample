@@ -980,11 +980,11 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _autoWhiteBalance = 0;
         public int AutoWhiteBalance
         {
-            get => CurrentProfile.AutoWhiteBalance;
+            get => _autoWhiteBalance;
             set
             {
                 _autoWhiteBalance = value;
-                if (value != CurrentProfile.AutoWhiteBalance)
+                if (value != _autoWhiteBalance)
                 {
                     if (!IsSliderDragging)
                     {
@@ -1333,12 +1333,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     OPIndex -= 1;
                 }
                 //CurrentProfileName = string.Empty;
-                if (CurrentProfileName == "Smooth" || CurrentProfileName == "Smooth" || CurrentProfileName == "Smooth")
+                if (CurrentProfileName == "Smooth" || CurrentProfileName == "Warm" || CurrentProfileName == "Vibrant")
                     switch (propertyName)
                     {
                         case nameof(IsAutoFramingOn):
                         case nameof(FieldOfView):
                         case nameof(IsHDROn):
+                        case nameof(IsAutoWhiteBalanceOn):
                         case nameof(Brightness):
                         case nameof(Contrast):
                         case nameof(Saturation):

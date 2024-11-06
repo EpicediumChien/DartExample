@@ -402,6 +402,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }
 
+            UpdatePVMargin(0);
+
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {
                 _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
@@ -480,6 +482,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             if (_vm!.VbarSelectedIndex == -1)
             { return; }
+
+            UpdatePVMargin(-1);
 
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
@@ -1194,6 +1198,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             return false;
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdatePVMargin(_vm!.VbarSelectedIndex);
+        }
+
+        private void UpdatePVMargin(int index)
+        {
+            int mR = index == -1 ? 155 : 85;
+            int mT = 0;
+            int mB = 35;
+            if (this.ActualHeight < 640)
+            {
+                mT = 55;
+                mB = 75;
+
+            }
+            largeImage.Margin = new Thickness(40, mT, mR, mB);
         }
     }
 }
