@@ -635,13 +635,13 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
-                case "ENERGYSAVER":
-                    {
-                        var energysaver = EnergysaverX(devMgr, commandLineInput);
-                        result.ExitCode = energysaver.code;
-                        result.serialize_Json_response = energysaver.result;
-                    };
-                    break;
+                //case "ENERGYSAVER":
+                //    {
+                //        var energysaver = EnergysaverX(devMgr, commandLineInput);
+                //        result.ExitCode = energysaver.code;
+                //        result.serialize_Json_response = energysaver.result;
+                //    };
+                //    break;
 
                 case "CAPABILITIESSTRING":
                     {
@@ -1356,7 +1356,8 @@ namespace DDPM.CLI.Plugins.Display
                         index_per++;
 
                         cli_Response2.Index = index_per.ToString();
-                        cli_Response2.Model = g.Name;
+                        cli_Response2.ID = g.ID;
+                        cli_Response2.Model = g.ModelNumber;
                         cli_Response2.FirmwareVersion = g.FirmwareVersion;
                         cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                         cli_Response2.BatteryStatus = g.BatteryStatus;
