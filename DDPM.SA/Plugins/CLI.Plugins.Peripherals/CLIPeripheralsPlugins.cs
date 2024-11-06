@@ -377,6 +377,12 @@ namespace DDPM.CLI.Plugins.Peripherals
             //bool target = false;
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
 
+            if (data == null)
+            {
+                writelog("SetPeripheralProperty: DDPMSettings is null");
+                return (int)CLI_ExitCode.functional_error;
+            }
+
             if (_devMgr == null)
             {
                 writelog("SetPeripheralProperty: input null IDeviceManagerSA");
@@ -1209,27 +1215,36 @@ namespace DDPM.CLI.Plugins.Peripherals
             SetResults.ForEach(x =>
             {
                 x.Value = _commandLineInput.Options[0].Option_Value;
-                if (_commandLineInput.TargetFeature.ToUpper().Equals("ANCMODE"))
-                    x.Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
-                if (_commandLineInput.TargetFeature.ToUpper().Equals("WEARDETECTION"))
-                    x.Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
-                if (x.Result == "")
+
+                if (data == null)
                 {
-                    var result = RunAsyncTimeout(taskA(val, Guid.Parse(x.Guid))).Result;
-                    if (result == "0")
+                    x.Result = "FAIL";
+                    writelog("RunTaskA: DDPMSettings is null");
+                }
+                else
+                {
+                    if (_commandLineInput.TargetFeature.ToUpper().Equals("ANCMODE"))
+                        x.Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                    if (_commandLineInput.TargetFeature.ToUpper().Equals("WEARDETECTION"))
+                        x.Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
+                    if (x.Result == "")
                     {
-                        x.Result = "PASS";
-                        x.Message = "N/A";
-                    }
-                    else if (result == "1")
-                    {
-                        x.Result = "FAIL";
-                        x.Message = "Timeout";
-                    }
-                    else
-                    {
-                        x.Result = "FAIL";
-                        x.Message = result;
+                        var result = RunAsyncTimeout(taskA(val, Guid.Parse(x.Guid))).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
                     }
                 }
             });
@@ -1294,24 +1309,33 @@ namespace DDPM.CLI.Plugins.Peripherals
             SetResults.ForEach(x =>
             {
                 x.Value = _commandLineInput.Options[0].Option_Value;
-                if (x.Result == "")
+
+                if (data == null)
                 {
-                    var result = RunAsyncTimeout(taskB(val, Guid.Parse(x.Guid))).Result;
-                    if (result == "0")
+                    x.Result = "FAIL";
+                    writelog("RunTaskD: DDPMSettings is null");
+                }
+                else
+                {
+                    if (x.Result == "")
                     {
-                        x.Result = "PASS";
-                        //x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
-                        x.Message = "N/A";
-                    }
-                    else if (result == "1")
-                    {
-                        x.Result = "FAIL";
-                        x.Message = "Timeout";
-                    }
-                    else
-                    {
-                        x.Result = "FAIL";
-                        x.Message = result;
+                        var result = RunAsyncTimeout(taskB(val, Guid.Parse(x.Guid))).Result;
+                        if (result == "0")
+                        {
+                            x.Result = "PASS";
+                            //x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                            x.Message = "N/A";
+                        }
+                        else if (result == "1")
+                        {
+                            x.Result = "FAIL";
+                            x.Message = "Timeout";
+                        }
+                        else
+                        {
+                            x.Result = "FAIL";
+                            x.Message = result;
+                        }
                     }
                 }
             });
@@ -3262,12 +3286,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_FWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 3255");
-                    output = cLI_FWU_RESPONSE.OutputLog(cLI_FWU_RESPONSE, commandLineInput);
+                    output = JsonConvert.SerializeObject(cLI_FWU_RESPONSE, Formatting.Indented);
+                    //output = cLI_FWU_RESPONSE.OutputLog(cLI_FWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 3260");
-                    output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
                 {
@@ -3301,9 +3327,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(output, Formatting.Indented));
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 writelog("FWUpdate_Line 3297");
+                writelog($"FWUpdate_Line 3297 Error : {ex.Message}");
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
                 {
                     Command = commandLineInput.Command,
@@ -4008,12 +4035,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_SWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 4010");
-                    output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
+                    output =  JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
+                    //output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 4015");
-                    output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+                    output =  JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
                 {

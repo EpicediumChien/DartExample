@@ -143,7 +143,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
         }
 
         [Test]
-        public void TestSchedulerMangerPlugins()
+        public void TestTelementrySchedulerPlugin()
         {
             Assert.IsNotNull(telementrySchedulerPlugin);
             PrivateObject privatetelementrySchedulerPlugin = new PrivateObject(telementrySchedulerPlugin);
@@ -165,7 +165,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
         [Test]
         public void TestStartTelemetrySchedulerManger()
         {
-            bool StartTelemetrySchedulerManger1=true;
+            bool StartTelemetrySchedulerManger1 = true;
             var StartTelemetrySchedulerManger_Result1 = telementrySchedulerPlugin.StartTelemetrySchedulerManger(StartTelemetrySchedulerManger1);  //IsStartTelementry true
             Assert.IsTrue(StartTelemetrySchedulerManger_Result1.IsCompletedSuccessfully);
 
@@ -177,31 +177,31 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
         [Test]
         public void TestReceiveTelemetryInfo()
         {
-            string EventTag= "Test EventTag";
+            string EventTag = "Test EventTag";
             string EventValue = "Test EventValue";
 
-            Telementry_Frequency Frequency1= Telementry_Frequency.RealTime; //RealTime 3
+            Telementry_Frequency Frequency1 = Telementry_Frequency.RealTime; //RealTime 3
             Telementry_Frequency Frequency2 = Telementry_Frequency.FirstDayofMonth; //FirstDayofMonth 0
             Telementry_Frequency Frequency3 = Telementry_Frequency.PerDay; //PerDay 1
             Telementry_Frequency Frequency4 = Telementry_Frequency.Weekly; //Weekly 2
 
-            bool ReceiveTelemetryInfoActual=true;
-            bool ReceiveTelemetryInfoExpected=false;
+            bool ReceiveTelemetryInfoActual = true;
+            bool ReceiveTelemetryInfoExpected = false;
             bool IsTelemetryConsentOn1 = true;
-            bool IsTelemetryConsentOn2 = false; 
+            bool IsTelemetryConsentOn2 = false;
 
             Mock<IPlatinumSDKService> mockPlatinumSDKService = new Mock<IPlatinumSDKService>();
             mockPlatinumSDKService.Setup(x => x.UpdateEventValue(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-            var mockPlatinumSDKServiceObject= mockPlatinumSDKService.Object;
+            var mockPlatinumSDKServiceObject = mockPlatinumSDKService.Object;
             privatetelementrySchedulerPlugin.SetFieldOrProperty("_PlatinumSDKPlugin", mockPlatinumSDKServiceObject);  //_PlatinumSDKPlugin not null
             privatetelementrySchedulerPlugin.SetFieldOrProperty("IsTelemetryConsentOn", IsTelemetryConsentOn1);
 
-            if (IsTelemetryConsentOn1) 
+            if (IsTelemetryConsentOn1)
             {
-                if (Frequency1 == Telementry_Frequency.RealTime) 
+                if (Frequency1 == Telementry_Frequency.RealTime)
                 {
                     var ReceiveTelemetryInfo_Result1 = telementrySchedulerPlugin.ReceiveTelemetryInfo(EventTag, EventValue, Frequency1).Result;  // Frequency1 3  RealTime;_PlatinumSDKPlugin not null, true
-                    Assert.That(ReceiveTelemetryInfoActual,Is.EqualTo(ReceiveTelemetryInfo_Result1));
+                    Assert.That(ReceiveTelemetryInfoActual, Is.EqualTo(ReceiveTelemetryInfo_Result1));
                 }
 
                 if (Frequency2 == Telementry_Frequency.FirstDayofMonth)
@@ -224,7 +224,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             }
 
             privatetelementrySchedulerPlugin.SetFieldOrProperty("IsTelemetryConsentOn", IsTelemetryConsentOn2); //IsTelemetryConsentOn2 false
-            if (!IsTelemetryConsentOn2) 
+            if (!IsTelemetryConsentOn2)
             {
                 var ReceiveTelemetryInfo_Result5 = telementrySchedulerPlugin.ReceiveTelemetryInfo(EventTag, EventValue, Frequency1).Result;  // Frequency1 3  RealTime;_PlatinumSDKPlugin not null, IsTelemetryConsentOn2 false, return true
                 Assert.That(ReceiveTelemetryInfoExpected, Is.EqualTo(ReceiveTelemetryInfo_Result5));
@@ -294,7 +294,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
         [Test]
         public void TestGetGlobalsetting_IsTelemetryConsentOn()
         {
-            bool GetGlobalsetting_IsTelemetryConsentOn1=true;
+            bool GetGlobalsetting_IsTelemetryConsentOn1 = true;
             var GetGlobalsetting_IsTelemetryConsentOn_Result1 = telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(GetGlobalsetting_IsTelemetryConsentOn1);  //GetGlobalsetting_IsTelemetryConsentOn_Result1 true
             Assert.IsTrue(GetGlobalsetting_IsTelemetryConsentOn_Result1.IsCompletedSuccessfully);
 
@@ -303,7 +303,155 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             Assert.IsTrue(GetGlobalsetting_IsTelemetryConsentOn_Result1r_Result2.IsCompletedSuccessfully);
         }
 
-       
+        [Test]
+        public void TestInitializeDisplayManagerPlugin()
+        {
+            Mock<IDisplayService> mockDisplayService = new Mock<IDisplayService>();
+            PrivateObject privatetelementrySchedulerPluginObject = new PrivateObject(telementrySchedulerPlugin);
+            var DisplayServiceObject = mockDisplayService.Object;
+            privatetelementrySchedulerPluginObject.SetFieldOrProperty("_DisplayManagerPlugin", DisplayServiceObject);
+            privatetelementrySchedulerPluginObject.Invoke("InitializeDisplayManagerPlugin");
+            var InitializeDisplayManagerPlugin_result = privatetelementrySchedulerPluginObject.GetFieldOrProperty("_DisplayManagerPlugin");
+            Assert.IsNotNull(InitializeDisplayManagerPlugin_result);
+        }
+
+        [Test]
+        public void TestSet_FrequencyDateTime()
+        {
+            bool Set_FrequencyDateTime2 = true;
+
+            var settings_Dataconfig = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+
+
+            mockSettingsManagerDev.Setup(x => x.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(true));
+            var mockSettingsManagerDevObject = mockSettingsManagerDev.Object;
+            privatetelementrySchedulerPlugin.SetFieldOrProperty("_SettingsPlugin", mockSettingsManagerDevObject);
+
+            var Set_FrequencyDateTime_result2 = (bool)privatetelementrySchedulerPlugin.Invoke("Set_FrequencyDateTime", settings_Dataconfig); //_SettingsPlugin not null
+            Assert.That(Set_FrequencyDateTime2, Is.EqualTo(Set_FrequencyDateTime_result2));
+        }
+
+        [Test]
+        public void TestGet_FrequencyDateTime()
+        {
+            bool Get_FrequencyDateTim2 = true;
+
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                TelementryFrequency = new FrequencyDateTime() { Month1stDay = DateTime.Now, PerDay = DateTime.Now, Weekly = DateTime.Now, },
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+                HotkeySettings = new HotkeySettings(),
+                isDisplayConsentPage = false,
+                EAProfile = new List<EAProfileDDPM> { new EAProfileDDPM() },
+                EzSettings = new EzSettings(),
+                EACustomList = new SplitJson[] { new SplitJson() },
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+
+            var settings_Dataconfig = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+
+
+            mockSettingsManagerDev.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(settings_Dataconfig));
+            var mockSettingsManagerDevObject = mockSettingsManagerDev.Object;
+            privatetelementrySchedulerPlugin.SetFieldOrProperty("_SettingsPlugin", mockSettingsManagerDevObject);
+
+            var Get_FrequencyDateTime_result2 = (bool)privatetelementrySchedulerPlugin.Invoke("Get_FrequencyDateTime"); //_SettingsPlugin not null
+            Assert.That(Get_FrequencyDateTim2, Is.EqualTo(Get_FrequencyDateTime_result2));
+        }
+
+        [Test]
+        public void TestSettingsReady()
+        {
+            object obj = new object();
+            EventArgs eventArgs = new EventArgs();
+
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                TelementryFrequency = new FrequencyDateTime() { Month1stDay = DateTime.Now, PerDay = DateTime.Now, Weekly = DateTime.Now, },
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+                HotkeySettings = new HotkeySettings(),
+                isDisplayConsentPage = false,
+                EAProfile = new List<EAProfileDDPM> { new EAProfileDDPM() },
+                EzSettings = new EzSettings(),
+                EACustomList = new SplitJson[] { new SplitJson() },
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+
+            var settings_Dataconfig = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+            mockSettingsManagerDev.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(settings_Dataconfig));
+            var mockSettingsManagerDevObject = mockSettingsManagerDev.Object;
+            privatetelementrySchedulerPlugin.SetFieldOrProperty("_SettingsPlugin", mockSettingsManagerDevObject);
+
+            privatetelementrySchedulerPlugin.Invoke("SettingsReady", obj, eventArgs); //_SettingsPlugin not null
+            Assert.IsTrue(true);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {
