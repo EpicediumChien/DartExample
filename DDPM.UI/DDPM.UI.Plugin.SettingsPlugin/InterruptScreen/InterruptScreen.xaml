@@ -55,7 +55,6 @@
                            Stretch="Fill" />
                     <UXControls:UXScrollViewer>
                         <Grid>
-                            
                             <StackPanel Margin="50">
                                 <Grid Grid.Column="1"
                                       HorizontalAlignment="Right"
@@ -76,7 +75,8 @@
                                                                  Style="{StaticResource ModuleCaptionStyle}"
                                                                  Text="New Supported Devices"
                                                                  Margin="0,0,0,24" />
-                                        <StackPanel HorizontalAlignment="Left" Margin="0,0,0,24">
+                                        <StackPanel HorizontalAlignment="Left"
+                                                    Margin="0,0,0,24">
                                             <Image Width="400"
                                                    Height="200"
                                                    Source="{Binding BackgroundImage}"
@@ -98,13 +98,14 @@
                                                         <Path VerticalAlignment="Center"
                                                               HorizontalAlignment="Center"
                                                               Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
-                                                              Fill="#31A2E3" Margin="0,0,15,0"/>
+                                                              Fill="#31A2E3"
+                                                              Margin="0,0,15,0" />
                                                         <UXControls:UXTextBlock  Grid.Column="0"
                                                                                  Width="400"
                                                                                  FontSize="16"
                                                                                  TextWrapping="WrapWithOverflow"
                                                                                  Style="{StaticResource ModuleCaptionStyle}"
-                                                                                 Text="{Binding Title}"/>
+                                                                                 Text="{Binding Title}" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -139,17 +140,25 @@
                                                                 <DataTemplate>
                                                                     <StackPanel Orientation="Horizontal"
                                                                                 Margin="0,0,0,24">
-                                                                        <Path VerticalAlignment="Center"
-                                                                              HorizontalAlignment="Center"
-                                                                              Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
-                                                                              Fill="#31A2E3" />
-                                                                        <UXControls:UXTextBlock  Grid.Column="0"
-                                                                                                 Width="400"
-                                                                                                 Margin="15,5,0,5"
-                                                                                                 FontSize="16"
-                                                                                                 TextWrapping="WrapWithOverflow"
-                                                                                                 Style="{StaticResource ModuleCaptionStyle}"
-                                                                                                 Text="{Binding Content}" />
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="*" />
+                                                                                <ColumnDefinition Width="*" />
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <Path Grid.Column="0"
+                                                                                  VerticalAlignment="Top"
+                                                                                  Margin="0,5,0,5"
+                                                                                  HorizontalAlignment="Center"
+                                                                                  Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
+                                                                                  Fill="#31A2E3" />
+                                                                            <UXControls:UXTextBlock  Grid.Column="1"
+                                                                                                     Width="400"
+                                                                                                     Margin="15,0,0,5"
+                                                                                                     FontSize="16"
+                                                                                                     TextWrapping="WrapWithOverflow"
+                                                                                                     Style="{StaticResource ModuleCaptionStyle}"
+                                                                                                     Text="{Binding Content}" />
+                                                                        </Grid>
                                                                     </StackPanel>
                                                                 </DataTemplate>
                                                             </ItemsControl.ItemTemplate>
@@ -177,21 +186,47 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal"
                                                                 Margin="0,0,0,24">
-                                                        <Path VerticalAlignment="Center"
-                                                              HorizontalAlignment="Center"
-                                                              Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
-                                                              Fill="#31A2E3" />
-                                                        <UXControls:UXTextBlock  Grid.Column="0"
-                                                                                 Width="400"
-                                                                                 Margin="15,5,0,5"
-                                                                                 FontSize="16"
-                                                                                 TextWrapping="WrapWithOverflow"
-                                                                                 Style="{StaticResource ModuleCaptionStyle}"
-                                                                                 Text="{Binding BugFixesContent}" />
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <Path Grid.Column="0"
+                                                                  VerticalAlignment="Top"
+                                                                  Margin="0,5,0,5"
+                                                                  HorizontalAlignment="Center"
+                                                                  Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
+                                                                  Fill="#31A2E3" />
+                                                            <UXControls:UXTextBlock  Grid.Column="1"
+                                                                                     Width="400"
+                                                                                     Margin="15,0,0,5"
+                                                                                     FontSize="16"
+                                                                                     TextWrapping="WrapWithOverflow"
+                                                                                     Style="{StaticResource ModuleCaptionStyle}"
+                                                                                     Text="{Binding BugFixesContent}" />
+                                                        </Grid>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
+                                        <UXControls:UXLink Content="Learn more for software"
+                                                           IconPosition="IconRight"
+                                                           LinkSize="Medium"
+                                                           LinkColorScheme="Primary"
+                                                           LinkType="InLine"
+                                                           Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"
+                                                           Height="40" />
+                                        <UXControls:UXLink Content="Learn more for firmware"
+                                                           IconPosition="IconRight"
+                                                           LinkSize="Medium"
+                                                           LinkColorScheme="Primary"
+                                                           LinkType="InLine"
+                                                           Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"
+                                                           Height="40" />
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
