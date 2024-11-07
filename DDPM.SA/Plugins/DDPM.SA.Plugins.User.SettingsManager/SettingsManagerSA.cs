@@ -1587,7 +1587,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private Dictionary<string, List<DDPMMonitorSettings>> ReadAllMonitorSettings()
         {
-            string[] files = Directory.GetFiles(_display_path, "*.json");
+
+            string[] files = default;
+
+            try
+            {
+                files = Directory.GetFiles(_display_path, "*.json");
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine($"[Dictionary] Get files in folder failed, message: {ex.Message}");
+            }
 
             return _AllMonitorSettings;
         }
