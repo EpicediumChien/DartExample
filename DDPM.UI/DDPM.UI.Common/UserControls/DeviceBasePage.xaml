@@ -325,7 +325,7 @@
 
                         <!-- RightFrame -->
                         <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
-                            <Border CornerRadius="13" Margin="0,0,0,20" Padding="16,0" 
+                            <Border CornerRadius="13" Margin="10,0,0,20" Padding="16,0" 
                                     Background="{StaticResource RightBaseBkColor}">
                                 <Grid>
                                     <Grid.RowDefinitions>
