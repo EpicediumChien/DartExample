@@ -1827,6 +1827,28 @@ namespace DDPM.SA.Common.Settings
         //    return new X509Certificate2(certBytes);
         //}*/
 
+        private static bool CheckCertificateIsVaild(X509Certificate2 cert, ref string info)
+        {                        
+            bool result = false;
+            try
+            {
+                X509Chain x509Chain = new X509Chain();
+                x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+                x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                x509Chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0); // 1 minute timeout
+                x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+                result = x509Chain.Build(cert);
+
+                info = "Certificate is vaild";
+            }
+            catch (Exception ex)
+            {
+                info = "[CheckCertificateIsVaild] error: " + ex.Message;
+            }
+
+            return result;
+        }
+
         private static byte[] ConvertThumbprintToByteArray(string thumbprint)
         {
             return Enumerable.Range(0, thumbprint.Length)
@@ -1857,7 +1879,11 @@ namespace DDPM.SA.Common.Settings
                 //compare thumbprint
                 //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
                 //Target cert.Thumbprint
-
+                if(!CheckCertificateIsVaild(cert, ref info))
+                {                    
+                    return false;
+                }
+                
                 bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
                 if (!contains)
                 {
@@ -1894,6 +1920,11 @@ namespace DDPM.SA.Common.Settings
                 if (cert == null)
                 {
                     info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                if (!CheckCertificateIsVaild(cert, ref info))
+                {
                     return false;
                 }
 
