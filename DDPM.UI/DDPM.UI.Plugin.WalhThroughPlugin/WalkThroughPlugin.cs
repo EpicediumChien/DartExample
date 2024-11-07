@@ -30,8 +30,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public static readonly Ioc PluginIoc = new();
 
+        private readonly IShowPluginManager _showPluginManager;
         private readonly ILog _log;
         private readonly IConsole _console;
+        private readonly IPluginManager _pluginManager;
 
         private bool _isConfigured;
 
@@ -48,8 +50,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public WalkThroughPlugin(IConsole console, IGearMenu gearMenu)
+        public WalkThroughPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console, IGearMenu gearMenu)
         {
+            _showPluginManager = showPluginManager;
+            _pluginManager = pluginManager;
             _console = console;
             _log = console.CreateLog("WalkThroughPLG");
             _log.Info($"{nameof(WalkThroughPlugin)} - Constructed");
@@ -62,7 +66,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public void OnDeactivated()
         {
-            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+            //Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
         }
         public void OnShown()
         {
@@ -75,6 +79,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 return;
 
             PluginIoc.ConfigureServices(new ServiceCollection()
+                .AddSingleton(_showPluginManager)
                 .AddSingleton(_console)
                 .AddSingleton(_log)
                 //.AddSingleton<WalkThroughPageViewModel, WalkThroughPageViewModel>()
