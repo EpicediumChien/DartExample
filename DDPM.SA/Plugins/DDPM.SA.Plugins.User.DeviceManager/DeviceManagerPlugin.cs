@@ -8462,11 +8462,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 確保目標資料夾存在
             Directory.CreateDirectory(destDirName);
             // 複製檔案
-            foreach (string file in Directory.GetFiles(sourceDirName))
+            try
             {
-                string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                File.Copy(file, destFile, true);
+                foreach (string file in Directory.GetFiles(sourceDirName))
+                {
+                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                    File.Copy(file, destFile, true);
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+            }
+
             // 複製子資料夾
             if (copySubDirs)
             {
