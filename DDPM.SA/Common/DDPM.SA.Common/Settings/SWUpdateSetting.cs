@@ -96,7 +96,15 @@ namespace DDPM.SA.Common.Settings
                             {
                                 foreach (Software software in data.Softwares)
                                 {
-                                    string version = Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString(), @"(?<=\d)(?=(\d{2})*$)", ".").TrimEnd('.');
+                                    string version;
+                                    if (int.TryParse(software.SoftwareVersion, out _))
+                                    {
+                                        version = Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString(), @"(?<=\d)(?=(\d{2})*$)", ".").TrimEnd('.');
+                                    }
+                                    else
+                                    {
+                                        version = software.SoftwareVersion;
+                                    }
                                     software.SoftwareVersion = version;
                                     software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}");
                                     software.DdpmSwUpdaterServer_path = software.DdpmSwUpdaterServer_path.Replace("%21", $"DdpmSwUpdater");

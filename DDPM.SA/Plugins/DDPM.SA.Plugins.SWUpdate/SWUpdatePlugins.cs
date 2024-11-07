@@ -124,7 +124,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             InitializeSettingsPlugin();
             SystemEvents.PowerModeChanged += OnPowerModeChanged;
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
-            _ForceSWUpdateInfoPackage= new SWUpdateInfoPackage();
+            _ForceSWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
             _checkUpdateScheduleTimer = new Timer();
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
@@ -270,11 +270,16 @@ namespace DDPM.SA.Plugins.SWUpdate
                                 oldVer = oldVer.Replace(".", "");
                             }
                         }
+                        bool needUpdate = false;
+                        if (int.TryParse(newVer, out _) && int.TryParse(oldVer, out _))
+                        {
+                            needUpdate = int.Parse(newVer) > int.Parse(oldVer) ? true : false;
+                        }
                         SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                         {
                             TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,
                             SoftwareVersion = currentVersion,
-                            NeedUpdated = int.Parse(newVer) > int.Parse(oldVer) ? true : false,
+                            NeedUpdated = needUpdate,
                             ServerPath = swUpdateHelper.Softwares[i].DdpmSwUpdaterServer_path,
                             SHA256 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA256,
                             SHA512 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA512,
