@@ -1,0 +1,28 @@
+{
+  "sid": "1729840262",
+  "req": [
+    {
+      "tid": 1,
+      "active": "get",
+      "devicetype": "APP",
+      "command": "DiagnosticsReport",
+      "value": "c:\temp",
+      "options": {
+        "index": "1",
+        "servicetag": "aaaaa",
+        "devicemodel": "dell ea",
+        "uod": true,
+        "forcewithnotice": true,
+        "updatesilent": true,
+        "minversion": "1.0.0.5"
+      }
+    },
+    {
+      "tid": 2,
+      "active": "get",
+      "devicetype": "DISPLAY",
+      "command": "ConnectedDevices",
+      "options": {}
+    }
+  ]
+}

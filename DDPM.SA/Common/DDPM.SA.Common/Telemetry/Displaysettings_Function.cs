@@ -166,6 +166,28 @@ namespace DDPM.SA.Common
             return rt;
         }
 
+        public bool Send_NightLightschedulerStatus_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, string val, string currentResolution, string maxResolution)
+        {
+            var rt = false;
+            if (monitorInfo != null)
+            {
+                var TelemetryDta_NightLightschedulerStatus = new Displaysettings_NightLightschedulerStatus();
+                TelemetryDta_NightLightschedulerStatus.NightLightschedulerStatus= val;
+                TelemetryDta_NightLightschedulerStatus.CommunicationPath = "Video";
+                TelemetryDta_NightLightschedulerStatus.MonitorName = monitorInfo.AliasDeviceName;
+                TelemetryDta_NightLightschedulerStatus.D_Ctrl = monitorInfo.D_Ctrl;
+                TelemetryDta_NightLightschedulerStatus.SupplierID = monitorInfo.SupplierID;
+                TelemetryDta_NightLightschedulerStatus.FirmwareVersion = monitorInfo.FwVersion;
+                TelemetryDta_NightLightschedulerStatus.DisplayModelname = monitorInfo.modelName;
+                TelemetryDta_NightLightschedulerStatus.DisplayServiceTag = monitorInfo.edid.ServiceTag;
+                TelemetryDta_NightLightschedulerStatus.DsiplayResolution = currentResolution;
+                TelemetryDta_NightLightschedulerStatus.MaxDisplayResolution = maxResolution;
+
+                if (plugin != null)
+                    rt = plugin.ReceiveTelemetryInfo("Displaysettings", TelemetryDta_NightLightschedulerStatus.ToJson(), Telementry_Frequency.RealTime).Result;
+            }
+            return rt;
+        }
 
         public bool Send_InputSource_Telementry(ITelementryScheduler plugin, MonitorInfo monitorInfo, string val, string currentResolution, string maxResolution)
         {

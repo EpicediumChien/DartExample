@@ -116,65 +116,67 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
-        [Test]
-        public void TestTest1Value()
-        {
-            var test1Value = "bbb";
-            pipPbpViewModel.Test1Value = test1Value;
+        //Robert_Lin, 2024-10-31, below properties/methods has been removed
 
-            // Assert
-            Assert.That(pipPbpViewModel.Test1Value, Is.EqualTo("bbb"));
-        }
+        //[Test]
+        //public void TestTest1Value()
+        //{
+        //    var test1Value = "bbb";
+        //    pipPbpViewModel.Test1Value = test1Value;
 
-        [Test]
-        public void TestTest2Value()
-        {
-            var test2Value = "ccc";
-            pipPbpViewModel.Test2Value = test2Value;
+        //    // Assert
+        //    Assert.That(pipPbpViewModel.Test1Value, Is.EqualTo("bbb"));
+        //}
 
-            // Assert
-            Assert.That(pipPbpViewModel.Test2Value, Is.EqualTo("ccc"));
-        }
+        //[Test]
+        //public void TestTest2Value()
+        //{
+        //    var test2Value = "ccc";
+        //    pipPbpViewModel.Test2Value = test2Value;
 
-        [Test]
-        public void TestCloseFullViewCommand()
-        {
-            var closeFullViewCommand = command;
-            pipPbpViewModel.CloseFullViewCommand = closeFullViewCommand;
+        //    // Assert
+        //    Assert.That(pipPbpViewModel.Test2Value, Is.EqualTo("ccc"));
+        //}
 
-            // Assert
-            Assert.That(pipPbpViewModel.CloseFullViewCommand, Is.EqualTo(closeFullViewCommand));
-        }
+        //[Test]
+        //public void TestCloseFullViewCommand()
+        //{
+        //    var closeFullViewCommand = command;
+        //    pipPbpViewModel.CloseFullViewCommand = closeFullViewCommand;
 
-        [Test]
-        public void TestGotoNextCommand()
-        {
-            var gotoNextCommand = command;
-            pipPbpViewModel.GotoNextCommand = gotoNextCommand;
+        //    // Assert
+        //    Assert.That(pipPbpViewModel.CloseFullViewCommand, Is.EqualTo(closeFullViewCommand));
+        //}
 
-            // Assert
-            Assert.That(pipPbpViewModel.GotoNextCommand, Is.EqualTo(gotoNextCommand));
-        }
+        //[Test]
+        //public void TestGotoNextCommand()
+        //{
+        //    var gotoNextCommand = command;
+        //    pipPbpViewModel.GotoNextCommand = gotoNextCommand;
 
-        [Test]
-        public void TestGotoPrevCommand()
-        {
-            var gotoPrevCommand = command;
-            pipPbpViewModel.GotoPrevCommand = gotoPrevCommand;
+        //    // Assert
+        //    Assert.That(pipPbpViewModel.GotoNextCommand, Is.EqualTo(gotoNextCommand));
+        //}
 
-            // Assert
-            Assert.That(pipPbpViewModel.GotoPrevCommand, Is.EqualTo(gotoPrevCommand));
-        }
+        //[Test]
+        //public void TestGotoPrevCommand()
+        //{
+        //    var gotoPrevCommand = command;
+        //    pipPbpViewModel.GotoPrevCommand = gotoPrevCommand;
 
-        [Test]
-        public void TestFullScreenClickCommand()
-        {
-            var fullScreenClickCommand = command;
-            pipPbpViewModel.FullScreenClickCommand = fullScreenClickCommand;
+        //    // Assert
+        //    Assert.That(pipPbpViewModel.GotoPrevCommand, Is.EqualTo(gotoPrevCommand));
+        //}
 
-            // Assert
-            Assert.That(pipPbpViewModel.FullScreenClickCommand, Is.EqualTo(fullScreenClickCommand));
-        }
+        //[Test]
+        //public void TestFullScreenClickCommand()
+        //{
+        //    var fullScreenClickCommand = command;
+        //    pipPbpViewModel.FullScreenClickCommand = fullScreenClickCommand;
+
+        //    // Assert
+        //    Assert.That(pipPbpViewModel.FullScreenClickCommand, Is.EqualTo(fullScreenClickCommand));
+        //}
 
         [Test]
         public void TestPipSmallClickCommand()
@@ -319,13 +321,14 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.InputSourceList, Is.EqualTo(selectedSplitItem));
         }
 
-        [Test]
-        public void TestMainInputSource()
-        {
-            var mainInputSource = new InputSourceObj();
-            pipPbpViewModel.MainInputSource = mainInputSource;
-            Assert.That(pipPbpViewModel.MainInputSource, Is.EqualTo(mainInputSource));
-        }
+        //Robert_Lin, 2024-10-31 propery type has been changed
+        //[Test]
+        //public void TestMainInputSource()
+        //{
+        //    var mainInputSource = new InputSourceObj();
+        //    pipPbpViewModel.MainInputSource = mainInputSource;
+        //    Assert.That(pipPbpViewModel.MainInputSource, Is.EqualTo(mainInputSource));
+        //}
 
         [Test]
         public void TestSubInputs()

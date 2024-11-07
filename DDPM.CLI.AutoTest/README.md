@@ -24,12 +24,13 @@
 
         `python .\ddpm_cli_auto_test.py`
 
-    - Specify category in config.json
+    - Specify categories in config.json (Use commas to separate multiple categories)
 
         ```
         python .\ddpm_cli_auto_test.py --category Display
         python .\ddpm_cli_auto_test.py --category App
         python .\ddpm_cli_auto_test.py --category Peripherals
+        python .\ddpm_cli_auto_test.py --category App,Peripherals
         ...
         ```
 
@@ -42,12 +43,13 @@
 
         `.\ddpm_cli_auto_test.exe`
 
-    - Specify directory in config.json
+    - Specify directory in config.json (Use commas to separate multiple categories)
 
         ```
         .\ddpm_cli_auto_test.exe --category Display
         .\ddpm_cli_auto_test.exe --category App
         .\ddpm_cli_auto_test.exe --category Peripherals
+        .\ddpm_cli_auto_test.exe --category App,Peripherals
         ...
         ```
 

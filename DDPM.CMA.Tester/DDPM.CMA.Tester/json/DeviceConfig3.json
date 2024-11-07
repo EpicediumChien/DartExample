@@ -1,0 +1,18 @@
+{
+  "sid": "1728380278",
+  "req": [
+    {
+      "tid": 1,
+      "active": "set",
+      "devicetype": "display",
+      "command": "DeviceConfiguration",
+      "value": {
+        "Index": "1",
+        "DeviceType": "Display",
+        "BrightnessLevel": "90%",
+        "ContrastLevel": "90%"
+      },
+      "options": {}
+    }
+  ]
+}

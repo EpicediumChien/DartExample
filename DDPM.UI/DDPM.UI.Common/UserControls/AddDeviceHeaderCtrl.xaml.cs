@@ -165,8 +165,9 @@ namespace DDPM.UI.Common
             //_log.Info($"header1SP.Width = {header1SP.ActualWidth}");
             //_log.Info($"header1Border.Width = {header1Border.ActualWidth}");
 
-            if (header1Text.ActualWidth <= 150)
-                header1Text.Width = header1Border.ActualWidth - 40;
+            //remove due to main window's min width change to 1050
+            //if (header1Text.ActualWidth <= 150)
+            //    header1Text.Width = header1Border.ActualWidth - 40;
         }
     }
 }

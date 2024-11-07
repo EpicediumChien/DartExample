@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Security;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,10 +13,6 @@ namespace DDPM.UI.Plugin.Common
     public partial class ActionParameterModalDialog : Window
     {
         private readonly string Caption = "";
-        //private readonly string Cancel = "Cancel";
-        //private readonly string Clear = "Clear";
-        //private readonly string Save = "Save";
-        //private readonly string Browse = "Browse";
 
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
@@ -99,7 +96,7 @@ namespace DDPM.UI.Plugin.Common
             {
                 if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
                 {
-                    MessageBox.Show("Invalid URL");
+                    MessageBox.Show(LangHelper.Instance["InvalidURL"]);
                     return;
                 }
             }

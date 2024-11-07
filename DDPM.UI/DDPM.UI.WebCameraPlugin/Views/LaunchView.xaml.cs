@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.PowerMon;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
@@ -18,6 +19,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -31,14 +33,17 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
+using Windows.Media;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.UI.Popups;
+using WinRT;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
+using Color = System.Windows.Media.Color;
 using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
@@ -71,12 +76,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private DispatcherTimer RecordingTimer;
         private bool _running = false;
         private MediaCapture _mediaCapture;
-        private SoftwareBitmap backBitmapBuffer;        
+        private SoftwareBitmap backBitmapBuffer;
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
         private string EditMode = string.Empty;
         private string EditingProfileName = string.Empty;
+        private static PowerEventControl _pwr_Mon = null;
 
         public LaunchView()
         {
@@ -150,6 +156,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
             Preview();
+            EnableMonitorOnEvent();
+        }
+
+        private void EnableMonitorOnEvent()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_pwr_Mon == null)
+                {
+                    _pwr_Mon = new PowerEventControl(null);
+                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+                    _pwr_Mon.Enable_Event();
+                }
+            }));
+        }
+
+        private void MonitorEvent_On(object sender, EventArgs e)
+        {
+            Trace.WriteLine("GET MONITOR ON EVENT");
         }
 
         private bool isProfilePropertyChanged = false;
@@ -193,8 +218,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (_vm != null && _vm.CurrentDeviceInfo != null)
                     {
-                        if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        if (selectedFrameSourceGroup.Id.Contains(_vm.CurrentDeviceInfo.DeviceSymbolicLink, StringComparison.CurrentCultureIgnoreCase))
                             break;
+
+                        //if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        //    break;
                     }
                     else
                         selectedFrameSourceGroup = null;
@@ -234,6 +262,20 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 // 20240626 jim modify
                 _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
 
+
+                writeableBitmap = new(
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
+                    96,
+                    96,
+                    PixelFormats.Bgra32,
+                    null);
+
+                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                CameraImage.Source = writeableBitmap;
+
+                
                 _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
 
                 await _vm.MediaFrameReader.StartAsync();
@@ -320,6 +362,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 await CleanupMediaCaptureAsync();
+
+                if(_pwr_Mon != null)
+                {
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    _pwr_Mon = null;
+                }
             }
             catch
             { }
@@ -398,6 +447,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }
+
+            UpdatePVMargin(0);
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {
@@ -478,6 +529,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_vm!.VbarSelectedIndex == -1)
             { return; }
 
+            UpdatePVMargin(-1);
+
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
             InvokeGotoTwoViewModeAnimation();
@@ -498,11 +551,80 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             });
         };
 
+
+        WriteableBitmap writeableBitmap;
+        SoftwareBitmap backBuffer;
+        Int32Rect react;
+
+        [ComImport]
+        [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        unsafe interface IMemoryBufferByteAccess
+        {
+            void GetBuffer(out byte* buffer, out uint capacity);
+        }
+        [DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        public static extern void CopyMemory(IntPtr Destination, IntPtr Source, int Length);
+        int ImageBufferSize = 0;
+        int count = 0;
+        private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
+        {
+            if (_running) return;
+            _running = true;
+
+            /*int frame_drop = 3;
+            count++;
+            if (count != frame_drop)
+            {
+                _running = false;
+                return;
+            }
+            if (count == frame_drop) count = 0;*/
+
+            var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
+
+            Thread.Sleep(66);//15fps
+
+            if (softwareBitmap != null)
+            {
+                //ImageSource source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
+                _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                {
+
+
+                    writeableBitmap.Lock();
+                    using var m = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Read);
+                    using var reference = m.CreateReference();
+                    var t = m.GetPlaneDescription(0);
+                    unsafe
+                    {
+                        (reference.As<IMemoryBufferByteAccess>()).GetBuffer(out var ptr, out var capacity);
+
+                        //way 1:
+                        writeableBitmap.WritePixels(
+                            react,
+                            (IntPtr)ptr,
+                            (int)capacity,
+                            t.Stride);
+                        writeableBitmap.AddDirtyRect(react);
+
+                        //way 2:
+                        /*CopyMemory(writeableBitmap.BackBuffer, (IntPtr)ptr, ImageBufferSize);
+                        writeableBitmap.AddDirtyRect(react);*/
+                    }
+                    writeableBitmap.Unlock();
+
+                    //CameraImage.Source = source;
+                });
+            }
+            _running = false;
+        }
+
         /// <summary>
         /// MediaFrameReader FrameArrived event
         /// </summary>
-        private void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
-        {  
+        private void MediaFrameReader_FrameArrived_org(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
+        {
             using var latestFrameReference = sender.TryAcquireLatestFrame();
 
             var videoMediaFrame = latestFrameReference?.VideoMediaFrame;
@@ -519,7 +641,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 // Swap the processed frame to backBuffer and dispose of the unused image.
                 softwareBitmap = Interlocked.Exchange(ref backBitmapBuffer, softwareBitmap);
                 softwareBitmap?.Dispose();
-                
+
                 CameraImage.Dispatcher.BeginInvoke(async () =>
                 {
                     if (_running)
@@ -539,8 +661,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     //CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
                     _running = false;
                 });
-                
-             
+
+
             }
 
             if (latestFrameReference != null)
@@ -853,7 +975,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             var profileName = ((Image)sender).Tag.ToString()!;
             EditMode = "EDIT";
             EditingProfileName = profileName;
-            if (profileName != _vm.CurrentProfileName)
+            if (profileName != _vm!.CurrentProfileName)
             {
                 _vm.CurrentProfileName = profileName;
                 _vm.SetProfile();
@@ -909,39 +1031,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
 
-        private async Task InitializeCameraAsync()
-        {
-            try
-            {
-                _vm!.MediaCapture = new MediaCapture();
+        //private async Task InitializeCameraAsync()
+        //{
+        //    try
+        //    {
+        //        _vm!.MediaCapture = new MediaCapture();
 
-                // Find available video devices (cameras)
-                var cameraDevices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
-                if (cameraDevices.Count == 0)
-                {
-                    MessageBox.Show("No camera devices found.");
-                    return;
-                }
+        //        // Find available video devices (cameras)
+        //        var cameraDevices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+        //        if (cameraDevices.Count == 0)
+        //        {
+        //            MessageBox.Show("No camera devices found.");
+        //            return;
+        //        }
 
-                // Initialize with the first available camera
-                var settings = new MediaCaptureInitializationSettings
-                {
-                    VideoDeviceId = cameraDevices[0].Id // You can select specific camera by ID
-                };
-                await _vm.MediaCapture.InitializeAsync(settings);
+        //        // Initialize with the first available camera
+        //        var settings = new MediaCaptureInitializationSettings
+        //        {
+        //            VideoDeviceId = cameraDevices[0].Id // You can select specific camera by ID
+        //        };
+        //        await _vm.MediaCapture.InitializeAsync(settings);
 
-                // Set the camera resolution
-                //SetCameraResolution(1280, 720); // Desired resolution (e.g., 1280x720)
+        //        // Set the camera resolution
+        //        //SetCameraResolution(1280, 720); // Desired resolution (e.g., 1280x720)
 
-                // Start the preview
-                await _mediaCapture.StartPreviewAsync();
+        //        // Start the preview
+        //        await _mediaCapture.StartPreviewAsync();
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error initializing camera: {ex.Message}");
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error initializing camera: {ex.Message}");
+        //    }
+        //}
 
         private void ChangePan(object sender, MouseButtonEventArgs e)
         {
@@ -996,6 +1118,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void AddPreset(object sender, MouseButtonEventArgs e)
         {
+            EditMode = "ADD";
             _vm!.DisableVBar();
             gdBattery.Visibility = Visibility.Collapsed;
             gdAddProfile.Visibility = Visibility.Visible;
@@ -1074,9 +1197,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
             {
                 var profile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(_vm!.CurrentProfile))!;
-                NewProfiles.Add(txt, profile);
-                //_vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
-                _vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                //NewProfiles.Add(txt, profile);
+                //_vm.WebcamSettings.CustomProfiles = NewProfiles.Concat(_vm.WebcamSettings.CustomProfiles!).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
             }
             _vm.CurrentProfileName = txt;
             WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
@@ -1190,6 +1313,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             return false;
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdatePVMargin(_vm!.VbarSelectedIndex);
+        }
+
+        private void UpdatePVMargin(int index)
+        {
+            int mR = index == -1 ? 155 : 85;
+            int mT = 0;
+            int mB = 35;
+            if (this.ActualHeight < 640)
+            {
+                mT = 55;
+                mB = 75;
+
+            }
+            largeImage.Margin = new Thickness(40, mT, mR, mB);
         }
     }
 }

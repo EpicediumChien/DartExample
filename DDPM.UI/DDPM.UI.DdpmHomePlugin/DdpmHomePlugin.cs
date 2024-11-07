@@ -25,6 +25,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.IO;
 using VcpCore.Common;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
@@ -219,7 +220,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             //Derek_Du, 2024-10-21 add send process ID to SA
                             Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
-                            _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted",Telementry_Frequency.RealTime);
+                            _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
                             await GetDdpmDevicesAsync(_deviceManager);
 
@@ -228,6 +229,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
+                            if (DdpmCommonHelper.Settings_Cache == null)
+                            {
+                                if (DdpmCommonHelper.DeviceManagerSA != null)
+                                    DdpmCommonHelper.ReadDDPMSettings();
+                            }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
                                 if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
@@ -356,7 +362,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
             }
         }
-        
+
         private void CheckIfNeedImportSetting_Display()
         {
             //For existing monitor to check if need to pop-up message to import setting
@@ -370,10 +376,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     Thread.Sleep(5000);
                 }
+                string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
                 foreach (MonitorInfo info in temp_mos)
                 {
+                    string model = info.modelName;//"U2724DE";
+                    string serviceTag = info.edid.ServiceTag;
+                    string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                    _log.Info("[CheckIfNeedImportSetting_Display] export path : " + exportpath);
                     //if(can popup messagebox && not yet to import / already click no need import)
+                    if (File.Exists(exportpath))
                     {
                         //avoid timing issue to cause monitor updated
                         if (temp_mos.Count != _monitorInfos.Count)
@@ -381,7 +394,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         //force return here to avoid page trigger, need Jason handle it
                         return;
-                        if(_viewModel != null)
+                        if (_viewModel != null)
                         {
                             _viewModel.InvokeImportQuestion(info);
                         }
@@ -617,7 +630,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
             Mouse.OverrideCursor = null;
             DdpmCommonHelper.MyConsole = PluginIoc.GetService<IConsole>();
-            DdpmCommonHelper.MyShowPluginManager= PluginIoc.GetService<IShowPluginManager>();
+            DdpmCommonHelper.MyShowPluginManager = PluginIoc.GetService<IShowPluginManager>();
 
 
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
@@ -1059,7 +1072,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
             string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
 
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
 
             try
             {

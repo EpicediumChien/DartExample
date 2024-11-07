@@ -9,7 +9,7 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:PenViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="675" d:DesignWidth="320">
+             d:DesignHeight="675" d:DesignWidth="320" VerticalAlignment="Top" HorizontalAlignment="Left">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -87,7 +87,7 @@
                     <Border Style="{StaticResource SearchBoxBorderStyle}" Margin="0,0,0,8">
                         <Grid>
                             <UXControls:UXTextBox AutomationProperties.Name="TextBoxWithWaterMark"  Name="txtSearchText" Width="270" Height="0" Margin="12,-.8,0,0" Watermark="Search actions"
-                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="#0F2641" BorderThickness="0" Foreground="#FFFFFF" MaxLength="30"
+                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="#0F2641" BorderThickness="0" Foreground="#FFFFFF" MaxLength="50"
                                                   TextChanged="SearchBox_TextChanged" IsEnabled="{Binding IsSearchEnabled}" PreviewKeyDown="txtSearchText_PreviewKeyDown" />
                             <Image Margin="7,0,18,0" Source="/DDPM.UI.Resources;component/Resources/Images/Search.png" Stretch="Uniform"
                                    HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="" Width="12" Height="12" />

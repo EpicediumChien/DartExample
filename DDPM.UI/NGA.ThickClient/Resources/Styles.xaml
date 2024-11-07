@@ -12,6 +12,7 @@
 
     <!-- this is break point value and the minwidth of main window  -->
     <system:Int16 x:Key="breakPoint">1050</system:Int16>
+    <system:Int16 x:Key="minHeight">645</system:Int16>
 
     <!-- Original (NoResize) settings
     <Setter Property="MinHeight" Value="{StaticResource DefaultWindowHeight}" />

@@ -16,7 +16,7 @@
             public const int DISPLAY_CONNECT = 11;
             public const int DISPLAY_DISCONNECT = 12;
 
-            public const int UNKNOW_ERROR = 99;
+            public const int UNKNOWN_ERROR = 99;
         }
 
 
@@ -31,8 +31,8 @@
 
         public static class DeviceType
         {
-            public const string DISPLAY = "display";
             public const string APP = "app";
+            public const string DISPLAY = "display";
             public const string WEBCAM = "webcam";
             public const string AUDIO = "audio";
             public const string KEYBOARD = "keyboard";
@@ -65,8 +65,10 @@
             // 500+ : Command Fail or Error
             public const int STATUS_COMMAND_TIMEOUT = 500;
             public const int STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS = 501;
+            public const int STATUS_COMMAND_ERROR_RESULT = 502;
+            public const int STATUS_COMMAND_ERROR_RESULT_EXCEPTION = 503;
 
-            public static int UNKNOW_ERROR = 9999;
+            public static int UNKNOWN_ERROR = 9999;
 
         }
 
@@ -84,8 +86,8 @@
             public const string PrimaryMonitorSync = "primarymonitorsync";
             public const string ResolutionRefreshRate = "resolutionrefreshrate";
             public const string USBCPrioritization = "usbcprioritization";
-            //public const string InAppUpdate = "inappupdate";  // #5.13.12
-            public const string InAppUSBKVM = "inappusbkvm";
+            //public const string InAppUpdate = "inappusbkvm";  // #5.13.12
+            public const string InAppNetworkKVM = "inappnetworkkvm";
             public const string InAppColorPreset = "inappcolorpreset";
             public const string PowerNap = "powernap";
             public const string InAppExportSettings = "inappexportsettings";

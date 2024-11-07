@@ -73,6 +73,10 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// 從SettingsManager取得的延遲更新包，用於比對是否延遲次數為0
         /// </summary>
         private SWUpdateInfoPackage _DelaySWUpdateInfoPackage;
+        /// <summary>
+        /// 
+        /// </summary>
+        private SWUpdateInfoPackage _ForceSWUpdateInfoPackage;
 
         private Download? download = null;
 
@@ -120,6 +124,8 @@ namespace DDPM.SA.Plugins.SWUpdate
             InitializeSettingsPlugin();
             SystemEvents.PowerModeChanged += OnPowerModeChanged;
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
+            _ForceSWUpdateInfoPackage= new SWUpdateInfoPackage();
+            _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
             _checkUpdateScheduleTimer = new Timer();
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
@@ -249,6 +255,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
                 if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
                 {
+                    _logs.DebugMsg_1($"{nameof(CheckUpdate)} swUpdateHelper.Softwares.Count : {swUpdateHelper.Softwares.Count}");
                     for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                     {
                         SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
@@ -264,10 +271,14 @@ namespace DDPM.SA.Plugins.SWUpdate
                             FileSavepath = swUpdateHelper.Softwares[i].InstallPath,
                             Available_date = _SWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
                         };
+                        _logs.DebugMsg_1($"{nameof(CheckUpdate)} swUpdateHelper.Softwares[i].SoftwareVersion : {swUpdateHelper.Softwares[i].SoftwareVersion}");
+                        _logs.DebugMsg_1($"{nameof(CheckUpdate)} currentVersion : {currentVersion}");
+                        _logs.DebugMsg_1($"{nameof(CheckUpdate)} SWUpdateInfo.NeedUpdated : {SWUpdateInfo.NeedUpdated}");
                         if (SWUpdateInfo.NeedUpdated)
                         {
                             _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
                         }
+                        _logs.DebugMsg_1($"{nameof(CheckUpdate)} _SWUpdateInfoPackage.SWUpdateInfo.Count : {_SWUpdateInfoPackage.SWUpdateInfo.Count}");
                     }
                     if (!_IsUITrigger)
                     {
@@ -280,7 +291,6 @@ namespace DDPM.SA.Plugins.SWUpdate
             {
                 _logs.DebugMsg_1(nameof(CheckUpdate) + " done but _SettingsPlugin is null");
             }
-            _IsShowNotify = true;
             _isDefer = false;
             _isForce = false;
             _IsUITrigger = false;
@@ -289,7 +299,7 @@ namespace DDPM.SA.Plugins.SWUpdate
 
         private void HandleUpdateInfo()
         {
-            _logs.DebugMsg_1("HandleUpdateInfo");
+            _logs.DebugMsg_1($"HandleUpdateInfo start");
             if (_SWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage != null)
             {
                 bool isUpdate = false;//判斷是否強制更新
@@ -307,37 +317,49 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         if (_isForce)
                         {
+                            _logs.DebugMsg_1($"HandleUpdateInfo _isForce : {_isForce}");
+                            _logs.DebugMsg_1($"HandleUpdateInfo _ForceSWUpdateInfoPackage.SWUpdateInfo.Add : {swUpdateInfo.SoftwareName}");
+                            _ForceSWUpdateInfoPackage.SWUpdateInfo.Add(swUpdateInfo);
                             isUpdate = true;
                             s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
                         }
                         else if (_isDefer)
                         {
-                            s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
+                            _logs.DebugMsg_1($"HandleUpdateInfo _isDefer : {_isDefer}");
+                            if (!_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(swUpdateInfo)))
+                            {
+                                _logs.DebugMsg_1($"HandleUpdateInfo _DelaySWUpdateInfoPackage.SWUpdateInfo.Add : {swUpdateInfo.SoftwareName}");
+                                _DelaySWUpdateInfoPackage.SWUpdateInfo.Add(swUpdateInfo);
+                                s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
+                            }
                         }
                         if (_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(swUpdateInfo)))
                         {
+                            _logs.DebugMsg_1($"HandleUpdateInfo _DelaySWUpdateInfoPackage go");
                             if (_DelaySWUpdateInfoPackage.SaveTime != null)
                             {
+                                _logs.DebugMsg_1($"HandleUpdateInfo _DelaySWUpdateInfoPackage.SaveTime : {_DelaySWUpdateInfoPackage.SaveTime}");
                                 SWUpdateInfo? delayFUpdateInfo = _DelaySWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(swUpdateInfo));
                                 if (delayFUpdateInfo != null)
                                 {
-                                    delayFUpdateInfo.ServerPath = swUpdateInfo.ServerPath;
-                                    delayFUpdateInfo.SHA256 = swUpdateInfo.SHA256;
-                                    delayFUpdateInfo.SHA512 = swUpdateInfo.SHA512;
-                                    delayFUpdateInfo.Thumbprint = swUpdateInfo.Thumbprint;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
                                     if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable > 0)
                                     {
+                                        _logs.DebugMsg_1($"HandleUpdateInfo _DelaySWUpdateInfoPackage.DelayTimesAvailable : {_DelaySWUpdateInfoPackage.DelayTimesAvailable}");
                                         s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
+                                        _ForceSWUpdateInfoPackage.SWUpdateInfo.Add(swUpdateInfo);
                                     }
                                     else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable <= 0)
                                     {
+                                        _logs.DebugMsg_1($"HandleUpdateInfo _DelaySWUpdateInfoPackage.DelayTimesAvailable<=0 : {_DelaySWUpdateInfoPackage.DelayTimesAvailable}");
+                                        _ForceSWUpdateInfoPackage.SWUpdateInfo.Add(swUpdateInfo);
                                         isUpdate = true;
                                         s = $"Device and/or application will be updated. Device and/or application may be intermittently available. Do not disconnect the device during the update.";
                                     }
                                 }
                             }
                         }
+                        _logs.DebugMsg_1($"HandleUpdateInfo info: {s}");
                     }
                 }
                 string title = "Update available";
@@ -488,7 +510,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                 }
-                _IsShowNotify = true;
                 _isDefer = false;
                 _isForce = false;
                 return Task.FromResult(swUpdateInfos);
@@ -502,7 +523,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _notificationStr = $"{_SWUpdateInfo.SoftwareName} Update failed due to network error. Try again.";
                 NotificationFWupdate("Error", _notificationStr);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：Update failed due to network error. Try again. ex:" + ex.Message); // 輸出錯誤訊息
-                _IsShowNotify = true;
                 _isDefer = false;
                 _isForce = false;
                 return Task.FromResult(swUpdateInfos);
@@ -596,7 +616,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             else
             {
-                if (!string.IsNullOrEmpty(info) && _IsShowNotify)
+                if (!string.IsNullOrEmpty(info))
                 {
                     CallOSD?.AsyncFireAndForget(this, (title, info, stayOpen), System.Threading.CancellationToken.None);
                 }
@@ -615,40 +635,39 @@ namespace DDPM.SA.Plugins.SWUpdate
             //string json = JsonConvert.SerializeObject(e);
             try
             {
-                //if (e != null && string.IsNullOrEmpty(e.ToString()))
+                //if (e != null && !string.IsNullOrEmpty(e.ToString()))
                 {
-                    //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(e.ToString());
+                    // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+                    //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
+                    if (_ForceSWUpdateInfoPackage != null && _ForceSWUpdateInfoPackage.SWUpdateInfo != null)
+                    {
+                        _logs.DebugMsg_1($"{nameof(DelayEvent)} _ForceSWUpdateInfoPackage.SWUpdateInfo.Clear");
+                        _ForceSWUpdateInfoPackage.SWUpdateInfo.Clear();
+                    }
                     if (_SWUpdateInfoPackage != null)
                     {
+                        _logs.DebugMsg_1($"{nameof(DelayEvent)} _SWUpdateInfoPackage is no null");
                         if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime != null && _DelaySWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                         {
-                            foreach (SWUpdateInfo newSWUpdateInfo in _SWUpdateInfoPackage.SWUpdateInfo)
+                            _logs.DebugMsg_1($"{nameof(DelayEvent)} _DelaySWUpdateInfoPackage.SWUpdateInfo.Count : {_DelaySWUpdateInfoPackage.SWUpdateInfo.Count}");
+                            TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
+                            _logs.DebugMsg_1($"{nameof(DelayEvent)} difference.TotalHours : {difference.TotalHours}");
+                            if (difference.TotalHours >= 24)
                             {
-                                if (!_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(newSWUpdateInfo)))
-                                {
-                                    newSWUpdateInfo.ServerPath = "";
-                                    newSWUpdateInfo.SHA256 = "";
-                                    newSWUpdateInfo.SHA512 = "";
-                                    newSWUpdateInfo.Thumbprint = "";
-                                    _DelaySWUpdateInfoPackage.SWUpdateInfo.Add(newSWUpdateInfo);
-                                }
+                                _DelaySWUpdateInfoPackage.DelayTimesAvailable--;
+                                _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
                             }
-                            _DelaySWUpdateInfoPackage.DelayTimesAvailable--;
-                            _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
                             CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                         }
                         else if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime == null)
                         {
+                            _logs.DebugMsg_1($"{nameof(DelayEvent)} _DelayFWUpdateInfoPackage is no null");
                             _DelaySWUpdateInfoPackage = _SWUpdateInfoPackage;
-                            foreach (SWUpdateInfo newSWUpdateInfo in _DelaySWUpdateInfoPackage.SWUpdateInfo)
-                            {
-                                newSWUpdateInfo.ServerPath = "";
-                                newSWUpdateInfo.SHA256 = "";
-                                newSWUpdateInfo.SHA512 = "";
-                                newSWUpdateInfo.Thumbprint = "";
-                            }
                             _DelaySWUpdateInfoPackage.DelayTimesAvailable = 2;
                             _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
+                            _logs.DebugMsg_1($"{nameof(DelayEvent)} _DelayFWUpdateInfoPackage.FWUpdateInfo.Count : {_DelaySWUpdateInfoPackage.SWUpdateInfo.Count}");
+                            _logs.DebugMsg_1($"{nameof(DelayEvent)} _DelayFWUpdateInfoPackage.DelayTimesAvailable : {_DelaySWUpdateInfoPackage.DelayTimesAvailable}");
+                            _logs.DebugMsg_1($"{nameof(DelayEvent)} _DelayFWUpdateInfoPackage.SaveTime : {_DelaySWUpdateInfoPackage.SaveTime}");
                             CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                         }
                     }
@@ -675,11 +694,23 @@ namespace DDPM.SA.Plugins.SWUpdate
                 //if (e != null && string.IsNullOrEmpty(e.ToString()))
                 {
                     //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(e.ToString());
-                    if (_SWUpdateInfoPackage != null)
+                    if (_SWUpdateInfoPackage != null && _SWUpdateInfoPackage.SWUpdateInfo != null && _ForceSWUpdateInfoPackage != null && _ForceSWUpdateInfoPackage.SWUpdateInfo != null)
                     {
-                        List<SWUpdateInfo> sWUpdateInfo = _SWUpdateInfoPackage.SWUpdateInfo;
+                        _logs.DebugMsg_1($"{nameof(UpdateEvent)} _ForceSWUpdateInfoPackage go");
+                        _logs.DebugMsg_1($"{nameof(UpdateEvent)} _ForceSWUpdateInfoPackage.SWUpdateInfo.Count {_ForceSWUpdateInfoPackage.SWUpdateInfo.Count}");
+                        List<SWUpdateInfo> sWUpdateInfo = new List<SWUpdateInfo>();
+                        foreach (SWUpdateInfo delaySWUpdate in _ForceSWUpdateInfoPackage.SWUpdateInfo)
+                        {
+                            SWUpdateInfo? temp = _SWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(delaySWUpdate));
+                            if (temp != null)
+                            {
+                                _logs.DebugMsg_1($"{nameof(UpdateEvent)} sWUpdateInfo.Add : temp = {temp.SoftwareName}");
+                                sWUpdateInfo.Add(temp);
+                            }
+                        }
                         if (sWUpdateInfo != null && sWUpdateInfo.Count > 0)
                         {
+                            _logs.DebugMsg_1($"{nameof(UpdateEvent)} sWUpdateInfo.Count : {sWUpdateInfo.Count}");
                             DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(sWUpdateInfo, false, "").Result, System.Threading.CancellationToken.None);
                         }
                     }
@@ -744,6 +775,17 @@ namespace DDPM.SA.Plugins.SWUpdate
                 //    });
                 //}
                 _updateErrorCode = SWUErrorCode.NoError;
+                if (_ForceSWUpdateInfoPackage != null && _ForceSWUpdateInfoPackage.SWUpdateInfo != null && _updateErrorCode == SWUErrorCode.NoError)
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} _ForceSWUpdateInfoPackage.SWUpdateInfo.RemoveAll :{_SWUpdateInfo.SoftwareName}");
+                    _ForceSWUpdateInfoPackage.SWUpdateInfo.RemoveAll(obj => obj.Equals(_SWUpdateInfo));
+                }
+                if (_ForceSWUpdateInfoPackage != null && _ForceSWUpdateInfoPackage.SWUpdateInfo != null && _updateErrorCode == SWUErrorCode.NoError)
+                {
+                    _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} _ForceSWUpdateInfoPackage.SWUpdateInfo.RemoveAll :{_SWUpdateInfo.SoftwareName}");
+                    _ForceSWUpdateInfoPackage.SWUpdateInfo.RemoveAll(obj => obj.Equals(_SWUpdateInfo));
+                }
+                _logs.DebugMsg_1($"{nameof(Install)} _notificationStr {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 return Task.FromResult(_updateErrorCode);
             }

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
     AllowsTransparency="True"
     Background="Transparent"
     Loaded="Window_Loaded"
@@ -78,7 +79,7 @@
                         FontSize="14"
                         FontWeight="Medium"
                         Foreground="#FFFFFF"
-                        Text="Num Lock Off" />
+                        Text="{Binding [Num_Lock_Off], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                 </Grid>
             </Border>
         </Grid>

@@ -281,7 +281,7 @@
                         <!-- Left vBar -->
                         <!-- ItemsSource="{Binding VbarItems}" -->
                         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" 
-                              x:Name="vBarLeft" Visibility="Collapsed" Width="{Binding vBarWidthRWD}">
+                              x:Name="vBarLeft" Width="{Binding vBarWidthRWD}">
                             <ItemsControl Name="vbarListLeft" Margin="0,10,5,0" HorizontalAlignment="Right" 
                                           ItemsSource="{Binding Source={StaticResource ItemsViewSource}}">
                                 <ItemsControl.ItemTemplate>
@@ -303,7 +303,7 @@
                     <!-- vBar + RightFrame -->
                     <StackPanel x:Name="stVbarRightFrame">
                         <!-- vBar -->
-                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,15" x:Name="vBarRight" 
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,15" x:Name="vBarRight" Visibility="Collapsed"
                               MouseEnter="vBar_MouseEnter" MouseLeave="vBar_MouseLeave">
                             <ItemsControl Name="vbarListRight" Margin="0,10,5,0" HorizontalAlignment="Right" 
                                           ItemsSource="{Binding Source={StaticResource ItemsViewSource}}">
@@ -325,7 +325,7 @@
 
                         <!-- RightFrame -->
                         <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
-                            <Border CornerRadius="13" Margin="0,0,0,20" Padding="16,0" 
+                            <Border CornerRadius="13" Margin="10,0,0,20" Padding="16,0" 
                                     Background="{StaticResource RightBaseBkColor}">
                                 <Grid>
                                     <Grid.RowDefinitions>

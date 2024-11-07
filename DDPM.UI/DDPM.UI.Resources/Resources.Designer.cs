@@ -1564,7 +1564,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to reset your monitor to factory settings now?.
+        ///   Looks up a localized string similar to Are you sure you want to restore all default settings on your device?.
         /// </summary>
         internal static string DisplayDefault_0 {
             get {
@@ -2554,11 +2554,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applies when you&apos;re on a conference call.
+        /// </summary>
+        internal static string HeadsetAudioSettings_29 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.29", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         internal static string HeadsetAudioSettings_3 {
             get {
                 return ResourceManager.GetString("HeadsetAudioSettings.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applies when you&apos;re listening to multimedia, such as music or podcasts.
+        /// </summary>
+        internal static string HeadsetAudioSettings_30 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.30", resourceCulture);
             }
         }
         
@@ -3085,6 +3103,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid URL.
+        /// </summary>
+        internal static string InvalidURL {
+            get {
+                return ResourceManager.GetString("InvalidURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This setting is locked by your IT admin..
         /// </summary>
         internal static string ITLockToolTip_0 {
@@ -3486,6 +3513,15 @@ namespace DDPM.UI.Resources {
         internal static string LearnMore {
             get {
                 return ResourceManager.GetString("LearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        internal static string Left {
+            get {
+                return ResourceManager.GetString("Left", resourceCulture);
             }
         }
         
@@ -4381,6 +4417,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Right.
+        /// </summary>
+        internal static string Right {
+            get {
+                return ResourceManager.GetString("Right", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Right Click.
         /// </summary>
         internal static string RightClick {
@@ -5088,6 +5133,24 @@ namespace DDPM.UI.Resources {
         internal static string WalkThrough_0 {
             get {
                 return ResourceManager.GetString("WalkThrough.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        internal static string WalkThrough_1 {
+            get {
+                return ResourceManager.GetString("WalkThrough.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to App.
+        /// </summary>
+        internal static string WalkThrough_2 {
+            get {
+                return ResourceManager.GetString("WalkThrough.2", resourceCulture);
             }
         }
         
@@ -5911,7 +5974,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to P2424HEB.
+        ///   Looks up a localized string similar to Enable High Dynamic Range to enhance image quality, particularly in extreme lighting conditions.
         /// </summary>
         internal static string WalkThroughWebCamWB3023_Sub_2 {
             get {

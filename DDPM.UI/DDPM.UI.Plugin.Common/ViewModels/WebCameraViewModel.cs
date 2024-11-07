@@ -466,7 +466,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
             FPSs.Clear();
 
-            //InitializeWebcam();
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
             IsMicEnumerationOnEnabled = true;
@@ -501,6 +500,12 @@ namespace DDPM.UI.Plugin.ViewModels
             SetResolution_Selected(i);
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
+
+            if (CurrentDeviceInfo.IsWindowsHelloSupported)
+            {
+                Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.GetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString());
+                _isPrioritizeExternalWebcam = task.Result;
+            }
         }
 
         public void RefreshProfiles()
@@ -687,6 +692,18 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
 
+
+        private bool _isPrioritizeExternalWebcam = false;
+        public bool IsPrioritizeExternalWebcam
+        {
+            get => _isPrioritizeExternalWebcam;
+            set
+            {
+                _isPrioritizeExternalWebcam = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString(), value);
+                OnPropertyChanged();
+            }
+        }
         public string CurrentProfileName
         {
             get => WebcamSettings.SelectedProfileName;
@@ -765,7 +782,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.WebcamGrid = value;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged();
-                WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
+                //WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -844,7 +861,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.FieldOfView;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), value);
+                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceID.ToString(), value);
                 SetProfileProperty(nameof(FieldOfView), value, OperationModule.CameraControl);
                 OnPropertyChanged();
             }
@@ -980,11 +997,11 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _autoWhiteBalance = 0;
         public int AutoWhiteBalance
         {
-            get => CurrentProfile.AutoWhiteBalance;
+            get => _autoWhiteBalance;
             set
             {
                 _autoWhiteBalance = value;
-                if (value != CurrentProfile.AutoWhiteBalance)
+                if (value != _autoWhiteBalance)
                 {
                     if (!IsSliderDragging)
                     {
@@ -1003,12 +1020,12 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _brightness = 0;
         public int Brightness
         {
-            get => CurrentProfile.Brightness;
+            get => _brightness;
             set
             {
-                _brightness = value;
-                if (value != CurrentProfile.Brightness)
+                if (value != _brightness)
                 {
+                    _brightness = value;
                     if (!IsSliderDragging)
                     {
                         SetBrightness();
@@ -1049,11 +1066,11 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _contrast = 0;
         public int Contrast
         {
-            get => CurrentProfile.Contrast;
+            get => _contrast;
             set
             {
                 _contrast = value;
-                if (value != CurrentProfile.Contrast)
+                if (value != _contrast)
                 {
                     if (!IsSliderDragging)
                     {
@@ -1072,11 +1089,11 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _saturation = 0;
         public int Saturation
         {
-            get => CurrentProfile.Saturation;
+            get => _saturation;
             set
             {
                 _saturation = value;
-                if (value != CurrentProfile.Saturation)
+                if (value != _saturation)
                 {
                     if (!IsSliderDragging)
                     {
@@ -1333,7 +1350,24 @@ namespace DDPM.UI.Plugin.ViewModels
                     OPIndex -= 1;
                 }
                 //CurrentProfileName = string.Empty;
-                ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                if (CurrentProfileName == "Smooth" || CurrentProfileName == "Warm" || CurrentProfileName == "Vibrant")
+                    switch (propertyName)
+                    {
+                        case nameof(IsAutoFramingOn):
+                        case nameof(FieldOfView):
+                        case nameof(IsHDROn):
+                        case nameof(IsAutoWhiteBalanceOn):
+                        case nameof(Brightness):
+                        case nameof(Contrast):
+                        case nameof(Saturation):
+                        case nameof(Sharpness):
+                            ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                            break;
+                        default:
+                            break;
+                    }
+                else
+                    ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
             }
             propertyInfo.SetValue(CurrentProfile, convertedValue);
             //WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
@@ -1341,6 +1375,12 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));
             OnPropertyChanged(nameof(Redo2Visibility));
+
+            //Derek 2024/11/06
+            //Webcam PIMS-316915
+            //FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
+            if (IsAutoFramingOn)
+                SetFOV_Selected(2);
         }
 
         public void ClearUndo()
