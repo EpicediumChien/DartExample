@@ -18,8 +18,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public IDeviceManagerSA _deviceManager;
         public DeviceInfo DeviceInfoDTP;
         public string _current_headset;
-        public readonly string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\QRCode";
-        public readonly string regKeyForQRCode = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.HeadsetQRCode";
+
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -82,6 +81,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     _voiceGuidancePageShow = true;
+                    _deviceSettingsDownloadDellAudioPageShow = false;
                     break;
 
                 case "WL3024"://Vaporify
@@ -101,6 +101,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 2
                     _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
+                    _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
                     break;
 
@@ -116,7 +117,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForQRCode).Result;
+                    regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, RegPath, RegKeyForQRCode).Result;
 
                     if (regValue != null)
                     {
@@ -695,6 +696,18 @@ namespace DDPM.UI.Plugin.ViewModels
             return bitValue;
         }
 
+
+        public readonly string _regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\QRCode";
+        public string RegPath
+        {
+            get => _regPath;
+        }
+
+        private string _regKeyForQRCode = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.HeadsetQRCode.";
+        public string RegKeyForQRCode
+        {
+            get => _regKeyForQRCode + Model;
+        }
         #region Please Wait
 
         private bool _isPleaseWaitVisible;
