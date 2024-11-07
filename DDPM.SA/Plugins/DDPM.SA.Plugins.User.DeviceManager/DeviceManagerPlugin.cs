@@ -8667,6 +8667,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 try
                 {
+                    if (_UpdateProgress != null && _FWUpdatePlugin != null)
+                    {
+                        _FWUpdatePlugin.ProgressUpdate_Notify -= ProgressUpdate_Notify;
+                        _FWUpdatePlugin.ProgressUpdate_Notify += ProgressUpdate_Notify;
+                        ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                        ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                    }
                     writelog($"DisplaySettingsChanged: displayInOut is true");
 
                     if (isLetDisplayServiceIdle == true)

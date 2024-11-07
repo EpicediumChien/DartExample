@@ -2016,7 +2016,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
-            ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
+            _logs.DebugMsg_1($"sendMessageToEvent ProgressUpdate_Notify : {ProgressUpdate_Notify}");
+            _logs.DebugMsg_1($"sendMessageToEvent ProgressUpdate_Notify is null : {ProgressUpdate_Notify == null}");
+            ProgressUpdate_Notify?.Invoke(this, fWUpdateInfo);
             _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
         }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
