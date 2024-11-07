@@ -6701,7 +6701,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out DDPMImpExpSettings ImpExpSettings).Result)
+                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
                     if (ImpExpSettings != null)
                     {
@@ -7001,6 +7001,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             return Task.FromResult(false);
+        }
+
+        public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
+        {
+            DDPMImpExpSettings impExpSettings = new DDPMImpExpSettings();
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path)) 
+            {
+                impExpSettings =  _SettingsPlugin.ReadImportSettingsFile(path).Result;
+            }
+            return Task.FromResult(impExpSettings);
         }
 
         #endregion
