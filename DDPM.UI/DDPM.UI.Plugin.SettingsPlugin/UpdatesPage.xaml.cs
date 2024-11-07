@@ -95,7 +95,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             else
                 ChangeToHorizontalLayout();
 
-            alertBase.Width = spSAAlert.ActualWidth - 50;
+            if (spSAAlert.ActualWidth > 50) //Derek 1107 in debug mode ，ActualWidth maybe 0
+                alertBase.Width = spSAAlert.ActualWidth - 50;
         }
 
         private void ChangeToVerticalLayout()
