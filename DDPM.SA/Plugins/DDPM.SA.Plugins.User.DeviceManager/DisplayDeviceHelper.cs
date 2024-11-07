@@ -200,15 +200,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         public Task<string> CheckisShowSynchronize(IDisplayService _displayManagerPlugin, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
         {
-
-            //if (moLists == null || DdpmCommonHelper.DeviceManagerSA == null)
-            //    return Task.FromResult("null");
-            Trace.WriteLine(moLists.Count.ToString());
-            //Trace.WriteLine(DdpmCommonHelper.DeviceManagerSA.ToString());
-            if (moLists == null)
-                return Task.FromResult("null");
-
-            if (_displayManagerPlugin == null)
+            if (moLists == null || _displayManagerPlugin == null)
                 return Task.FromResult("null");
 
             ALSConfig Current_ALSConfig = new ALSConfig();
