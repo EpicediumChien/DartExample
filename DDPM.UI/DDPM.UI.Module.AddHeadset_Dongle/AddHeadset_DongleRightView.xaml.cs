@@ -40,7 +40,8 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
                 ChangeToHorizontalLayout();
 
             //bdrAlert.Width = this.ActualWidth;
-            txtAlert.Width = bdrAlert.ActualWidth - 50;
+            if (bdrAlert.ActualWidth > 50) //Derek 1107 in debug mode ，ActualWidth maybe 0
+                txtAlert.Width = bdrAlert.ActualWidth - 50;
 
             AdjustBorderHeight();
         }

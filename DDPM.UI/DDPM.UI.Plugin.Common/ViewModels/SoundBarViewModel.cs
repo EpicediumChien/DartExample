@@ -386,6 +386,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
 
                         // 只通知其他按鈕已變更狀態
+                        OnPropertyChanged(nameof(IsDefaultChecked));
                         OnPropertyChanged(nameof(IsSpeechChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
