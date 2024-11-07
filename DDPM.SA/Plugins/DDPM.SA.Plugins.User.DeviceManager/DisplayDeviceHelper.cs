@@ -12,6 +12,7 @@ using System.IO;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
 using System.Windows.Shell;
+using DDPM.SA.Resources.Helper;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 { 
@@ -96,7 +97,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         string model = monitorInfo.modelName;//"U2724DE";
                         string serviceTag = monitorInfo.edid.ServiceTag;
-                        string desc = "The same monitor is detected, do you want to import settings for %1?"; //string table: ImpExp_Message.0
+                        string desc = LangHelper.Instance["ImpExp_Message.0"]; //string table: ImpExp_Message.0
                         //
                         //Need jason to implement import/export check here
                         string exportpath = path + "\\" + model + ".json";
@@ -126,12 +127,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     DisplayImportToast(
                                         new DisplayWindowsToast()
                                         {
-                                            Title = "Dell Display and Peripheral Manager", //string table: App_Name
+                                            Title = LangHelper.Instance["App_Name"], //string table: App_Name
                                             Description = desc,
                                             Model = model,
                                             ServiceTag = serviceTag,
-                                            left_btn = "Yes",        //string table: Yes
-                                            right_btn = "No"       //string table: No
+                                            left_btn = LangHelper.Instance["Yes"],        //string table: Yes
+                                            right_btn = LangHelper.Instance["No"]       //string table: No
                                         }
                                     );
                                 }
