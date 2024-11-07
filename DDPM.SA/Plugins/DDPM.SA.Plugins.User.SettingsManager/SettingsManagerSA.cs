@@ -1127,7 +1127,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -1180,7 +1180,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             {
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
-                                    if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                                    if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
+                                        (settings.ServiceTag == serviceTag && isSameModel == true))
                                     {
                                         settings.Input = monitorSettings.Input;
                                         settings.KVM = monitorSettings.KVM;
@@ -1206,10 +1207,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                             }
                                         }
                                     }
-                                }
-                                if (isSameModel)
-                                {
-                                    return Task.FromResult(true);
                                 }
                             }
                             else

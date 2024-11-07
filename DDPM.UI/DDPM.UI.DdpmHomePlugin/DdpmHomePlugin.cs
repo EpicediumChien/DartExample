@@ -393,7 +393,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             return;
 
                         //force return here to avoid page trigger, need Jason handle it
-                        return;
+                        //return;
                         if (_viewModel != null)
                         {
                             _viewModel.InvokeImportQuestion(info);
