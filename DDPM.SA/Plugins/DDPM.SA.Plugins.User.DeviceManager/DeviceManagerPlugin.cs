@@ -4215,7 +4215,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_UpdateProgress != null)
             {
                 writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
-                _FWUpdatePlugin.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
             }
@@ -4622,7 +4622,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
-                _FWUpdatePlugin.ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 tcs.SetResult(true);
                 Dispatcher.Run();
             });
@@ -8921,10 +8921,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
+            writelog($"{nameof(OnProgressUpdateEvent)} start");
             //ProgressUpdate_Notify?.Invoke(this, fWUpdateInfo);
             EventHandler<UpdateProgressInfo> handler = ProgressUpdate_Notify;
+            writelog($"{nameof(OnProgressUpdateEvent)} handler : {handler}");
             if (handler != null)
+            {
+                writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
+            }
+            writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
 
         private void OnUILockEvent(bool isLockFWU_UI)

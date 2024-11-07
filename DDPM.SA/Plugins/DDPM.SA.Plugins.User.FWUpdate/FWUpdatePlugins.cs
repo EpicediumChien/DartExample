@@ -1628,6 +1628,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll :{fwUpdateInfo.Model}");
                     _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.Equals(fwUpdateInfo));
                 }
+                resetState();
                 _logs.DebugMsg_1($"{nameof(Install)} _notificationStr {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 return _updateErrorCode;
@@ -1815,11 +1816,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             else
             {
-                progressNode = xmlDoc.SelectSingleNode("Root/Progress");
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/Button-Caption");
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/Button-State");
-                stateFlowNode = xmlDoc.SelectSingleNode("Root/StateFlow");
-                timeOut = xmlDoc.SelectSingleNode("Root/Timeout");//新的FW安裝包都有
+                progressNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='progress']");
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-caption']");
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-state']");
+                stateFlowNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='stateflow']");
+                timeOut = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='timeout']");
 
                 if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null)
                 {
@@ -2016,7 +2017,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
-            _logs.DebugMsg_1("sendMessageToEvent" + " " + fWUpdateInfo.ProcessName + " " + fWUpdateInfo.ProcessProgress + " " + DateTime.Now);
+            _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
         }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {

@@ -1,9 +1,13 @@
-﻿using Dell.Client.Framework.UX.WPF.Controls;
+﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.UpdateProgressPage
 {
@@ -128,11 +132,26 @@ namespace DDPM.SA.Common.UpdateProgressPage
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        string logFilePath = "UpdateProgress.log";
+         Logs logs;
         public UpdateProgress()
         {
             InitializeComponent();
             DataContext = this;
+            DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+            string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+            if (!string.IsNullOrEmpty(AppDataPath))
+            {
+                string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-UpdateProgress";
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                logFilePath = path + "\\" + logFilePath;
+            }
+            logs = new Logs(logFilePath, "DdpmSwUpdater");
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            logs.DebugMsg_1($"UpdateProgress go");
         }
 
         public void ShowWindow()
@@ -223,7 +242,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 ProgressStr_2_Color = "#E6AC28";
                 Progress_IsAnimated = false;
             }
-            Debug.WriteLine(nameof(_FWUpdatePlugin_ProgressUpdate) + " " + e.ProcessName + " " + e.ProcessProgress + " " + DateTime.Now);
+            logs.DebugMsg_1($"{nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
         }
     }
 }
