@@ -247,10 +247,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     return Task.FromResult(new List<SWUpdateInfo>());
                 }
-                if (currentVersion.Contains("."))
-                {
-                    currentVersion = currentVersion.Replace(".", "");
-                }
                 SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(_IsSkipCA, out string getMetadataInfo, _SettingsPlugin, null, _logs);
                 _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
                 if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
@@ -258,11 +254,27 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _logs.DebugMsg_1($"{nameof(CheckUpdate)} swUpdateHelper.Softwares.Count : {swUpdateHelper.Softwares.Count}");
                     for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                     {
+                        string newVer = swUpdateHelper.Softwares[i].SoftwareVersion;
+                        string oldVer = currentVersion;
+                        if (!int.TryParse(newVer, out _))
+                        {
+                            if (newVer.Contains("."))
+                            {
+                                newVer = newVer.Replace(".", "");
+                            }
+                        }
+                        if (!int.TryParse(oldVer, out _))
+                        {
+                            if (oldVer.Contains("."))
+                            {
+                                oldVer = oldVer.Replace(".", "");
+                            }
+                        }
                         SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                         {
-                            TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
-                            SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
-                            NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
+                            TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,
+                            SoftwareVersion = currentVersion,
+                            NeedUpdated = int.Parse(newVer) > int.Parse(oldVer) ? true : false,
                             ServerPath = swUpdateHelper.Softwares[i].DdpmSwUpdaterServer_path,
                             SHA256 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA256,
                             SHA512 = swUpdateHelper.Softwares[i].DdpmSwUpdater_SHA512,
