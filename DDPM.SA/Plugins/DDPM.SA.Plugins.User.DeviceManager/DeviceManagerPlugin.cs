@@ -55,6 +55,7 @@ using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -176,6 +177,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static System.Timers.Timer _PowerNapTimer = new System.Timers.Timer(2000);
 
+        //USBKVM auto switch USB upstream ports in PBP side-by-side mode
+        private static System.Timers.Timer _USBKVMAutoSwitchTimer = new System.Timers.Timer(1000);
+
+
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
 
@@ -223,12 +228,259 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Elapsed += OnPowerNapTimedRaise;
             _PowerNapTimer.AutoReset = true;
             _PowerNapTimer.Enabled = true;
+
+            _USBKVMAutoSwitchTimer.Elapsed += OnUsbKvmAutoSwitchTimedRaise;
+            _USBKVMAutoSwitchTimer.AutoReset = true;
+            _USBKVMAutoSwitchTimer.Enabled = true;
+
             UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
         }
 
+        private string debugPreMsg = string.Empty;
+        private System.Drawing.Point previousCursorPosition = new System.Drawing.Point { X = 0, Y = 0 };
+        private bool isKvm_Auto_SwitchKbMsKey = false;
+        private int KvmAutoSwitchCounter = 0;
+        private void OnUsbKvmAutoSwitchTimedRaise(object sender, ElapsedEventArgs e)
+        {
+            //cursor position
+            System.Drawing.Point cursorPosition = Cursor.Position;
+            // retrieve the monitor object from cursor's position
+            Screen currentScreen = Screen.FromPoint(cursorPosition);
+            MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+            if (monitorInfo != null)
+            {
+                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+                if (isUsbKvmCursorEdge(monitorInfo, currentScreen, cursorPosition))
+                {
+                    KvmAutoSwitchCounter += 1;
+                }
+                else
+                {
+                    KvmAutoSwitchCounter = 0;
+                }
+                if (KvmAutoSwitchCounter >= 5)
+                {
+                    if (!debugPreMsg.Equals(debugMsg))
+                    {
+                        debugPreMsg = debugMsg;
+                        Debug.WriteLine($"{debugMsg}");
+                    }
+
+                    if (isKvm_Auto_SwitchKbMsKey || (previousCursorPosition.X.Equals(cursorPosition.X) && previousCursorPosition.Y.Equals(cursorPosition.Y)))
+                    {
+                        Debug.WriteLine($"previous.X={previousCursorPosition.X},previous.Y={previousCursorPosition.Y};Curs.X={cursorPosition.X},Curs.Y={cursorPosition.Y};isKvm_Auto_SwitchKbMsKey= {isKvm_Auto_SwitchKbMsKey}");
+                        writelog($"previous.X={previousCursorPosition.X},previous.Y={previousCursorPosition.Y};Curs.X={cursorPosition.X},Curs.Y={cursorPosition.Y} is same ;isKvm_Auto_SwitchKbMsKey= {isKvm_Auto_SwitchKbMsKey}");
+                        KvmAutoSwitchCounter = 0;
+                        previousCursorPosition = cursorPosition;
+                        return;
+                    }
+                    Debug.WriteLine($"previousCursorPosition.X={previousCursorPosition.X},previousCursorPosition.Y={previousCursorPosition.Y}");
+                    Debug.WriteLine($"Kvm_Auto_SwitchKbMsKey:monitor:{monitorInfo.edid.ServiceTag} Enqueue");
+                    //send usbKvm switch
+
+                    isKvm_Auto_SwitchKbMsKey = true;
+                    KvmAutoSwitchCounter = 0;
+                    previousCursorPosition = cursorPosition;
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_Auto_SwitchKbMsKey));
+                }
+            }
+        }
+        private bool isUsbKvmCursorEdge(MonitorInfo monitorInfo, Screen currentScreen, System.Drawing.Point cursorPosition)
+        {
+            bool ret = false;
+            if (monitorInfo != null)
+            {
+                if (GetOnUSBKVM(monitorInfo).Result)
+                {
+                    //check 
+                    if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+                    {
+                        _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
+                    }
+                    if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+                    {
+                        HotkeySettings hotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (hotkeySettings != null)
+                        {
+                            if (hotkeySettings.HotkeyOptions.Count > 0 && hotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                            {
+                                //check cursor position at the edge
+                                //1.get PBP mode sub input source 
+                                Rectangle bounds = currentScreen.Bounds;
+                                Dictionary<string, InputInfo> inputSourcelist = GetInputSourcelist(monitorInfo).Result;
+                                List<ushort> subInputListRet = GetSubInputList(monitorInfo).Result;
+                                //var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitorInfo).Result;
+                                //GetUSBKVMPCsList(monitorInfo);
+                                bool isEdge = false;
+                                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+                                if (monitorInfo.inputCable.Equals(monitorInfo.inputSource))
+                                {
+                                    // PBP as main inputSource
+                                    writelog($"as PBP main input:{debugMsg}");
+                                    if (cursorPositionXSide("left", currentScreen, cursorPosition.X))
+                                    {
+                                        Debug.WriteLine($"left edge: approach");
+                                        writelog($"[left edge: approach]{debugMsg}");
+                                        isEdge = true;
+                                    }
+                                }
+                                else
+                                {
+                                    // PBP as sub imputSource
+                                    writelog($"as PBP subinput:{debugMsg}");
+                                    if (cursorPositionXSide("right", currentScreen, cursorPosition.X))
+                                    {
+                                        Debug.WriteLine($"right edge: approach");
+                                        writelog($"[right edge: approach]{debugMsg}");
+                                        isEdge = true;
+                                    }
+                                }
+                                lock (USBKVM_PBPmode_lock)
+                                {
+                                    UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                                    if (usbKvmPBP1 != null && usbKvmPBP1.isPBPmode)
+                                    {
+                                        if (isEdge)
+                                            ret = true;
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in usbKvmPBPs)
+                                        {
+                                            Debug.WriteLine($"{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+        private void Kvm_Auto_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
+        {
+            bool usbSwitch = UsbSwitch1(monitorInfo).Result;
+            if (usbSwitch)
+                isKvm_Auto_SwitchKbMsKey = false;
+            writelog($"Kvm_Auto_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
+        }
+        private bool cursorPositionXSide(string side, Screen screen, int x)
+        {
+
+            bool ret = false;
+            int xPos = -1;
+            if ("left".Equals(side))
+            {
+                int v = Math.Abs(screen.WorkingArea.X - x) - screen.WorkingArea.Width;
+                xPos = Math.Abs(v);
+            }
+            if ("right".Equals(side))
+            {
+                int v = Math.Abs(screen.WorkingArea.X - x);
+                xPos = Math.Abs(xPos);
+            }
+            if (xPos >= 0 && xPos <= 20)
+                ret = true;
+            return ret;
+        }
+
+        private List<UsbKvmPBP> usbKvmPBPs = new List<UsbKvmPBP>();
+        private object USBKVM_PBPmode_lock = new object();
+        private void updatePBPModeStatus(MonitorInfo monitorInfo, string vcpcode)
+        {
+            if ("E7".Equals(vcpcode))
+            {
+                System.Drawing.Point cursorPosition = Cursor.Position;
+                // retrieve the monitor object from cursor's position
+                Screen currentScreen = Screen.FromPoint(cursorPosition);
+                MonitorInfo monitorInfoFind = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+                if (monitorInfoFind != null)
+                {
+                    if (monitorInfoFind.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && monitorInfoFind.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber))
+                    {
+                        previousCursorPosition = cursorPosition;
+                        writelog($"updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} ========>vcpcode:E7; previousCursorPosition to cursorPosition = {cursorPosition}; _USBKVMAutoSwitchTimer:{_USBKVMAutoSwitchTimer.Enabled}");
+                    }
+                }
+            }
+            if (vcpcode.Equals("E9") || vcpcode.Equals("2"))
+            {
+                ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
+                UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
+                UInt16 _curPxpMode = 0;
+                if (ret != null && ret.result)
+                {
+                    _curPxpMode = Convert.ToUInt16(ret.value);
+                    switch (_curPxpMode)
+                    {
+                        case 0x11:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+
+                        case 0x12:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+
+                        case 0x24:
+                        case 0x2F:
+                        case 0x26:
+                        case 0x28:
+                        case 0x2A:
+                        case 0x2C:
+                        case 0x2E:
+                        case 0x25:
+                        case 0x27:
+                        case 0x29:
+                        case 0x2B:
+                        case 0x2D:
+                        case 0x31:
+                        case 0x32:
+                        case 0x33:
+                        case 0x34:
+                        case 0x35:
+                        case 0x41:
+                        case 0x42:
+                            usbKvmPBP.isPBPmode = true;
+                            break;
+                        default:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+                    }
+                    lock (USBKVM_PBPmode_lock)
+                    {
+                        if (usbKvmPBPs.Count > 0)
+                        {
+                            UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                            if (usbKvmPBP1 != null)
+                            {
+                                usbKvmPBP1.isPBPmode = usbKvmPBP.isPBPmode;
+                            }
+                            else
+                            {
+                                usbKvmPBPs.Add(usbKvmPBP);
+                            }
+                        }
+                        else
+                        {
+                            usbKvmPBPs.Add(usbKvmPBP);
+                        }
+                        if (usbKvmPBPs.Any(x => x.isPBPmode))
+                        {
+                            _USBKVMAutoSwitchTimer.Stop();
+                            _USBKVMAutoSwitchTimer.Start();
+
+                        }
+                        Debug.WriteLine($"updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} ========>{usbKvmPBP.isPBPmode}");
+                        writelog($"updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} ========>{usbKvmPBP.isPBPmode} _USBKVMAutoSwitchTimer:{_USBKVMAutoSwitchTimer.Enabled}");
+
+                    }
+                }
+            }
+        }
         private void UXSystemParametersChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
@@ -8087,6 +8339,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
+            foreach (var monitor in _AllInfoMonitors)
+            {
+                Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+            }
         }
 
         #region OutReport
@@ -9065,6 +9321,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _VCPchangedEventArgs.value = e.value;
             //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
             _VCPchangedEventArgs.monitor = e.monitor;
+            Debug.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
+            //1106 add PBP mode status
+            Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             OnVCPchanged(_VCPchangedEventArgs);
         }
 
