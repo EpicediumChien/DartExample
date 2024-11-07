@@ -13,6 +13,8 @@ using Windows.System;
 using DDPM.UI.Common.UserControls;
 using Microsoft.VisualBasic.Devices;
 using System.Windows.Forms;
+using System.Windows.Media;
+using Dell.Client.Framework.UX.WPF.Controls;
 
 namespace DDPM.UI.Common.Tests
 {
@@ -138,38 +140,50 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(true));
 
-            //// Act
+            // Act
             //deviceManagerSAMock.Setup(x => x.GetHotkeyConflicts(It.IsAny<HotkeyInfo>())).Returns(Task.FromResult(HotkeyWarning.SingleKey));
             //result = KeysHelper.hotKeyConflictsCheck(new HotkeyInfo());
-            //// Assert
+            // Assert
             //Assert.That(result, Is.EqualTo(false));
 
             //// Act
             //deviceManagerSAMock.Setup(x => x.GetHotkeyConflicts(It.IsAny<HotkeyInfo>())).Returns(Task.FromResult(HotkeyWarning.ConflictInbox));
             //result = KeysHelper.hotKeyConflictsCheck(new HotkeyInfo());
-            //// Assert
+            // Assert
             //Assert.That(result, Is.EqualTo(false));
         }
 
-
-        //Test getUXTextBoxHotkeyInfo()
-
-        //getUXTextBoxHotkeyInfo(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, HotkeyType hotkeyType)
         [Test]
         public void TestgetUXTextBoxHotkeyInfo()
         {
             // Act
-            var newKeys= new List<VirtualKey>();
-            var hotkeyType= new HotkeyType();
-            //var e = new System.Windows.Input.KeyEventArgs(null,null, 1, Key.K);
-            //var result = KeysHelper.getUXTextBoxHotkeyInfo(null,null,ref newKeys, hotkeyType);
-            // Assert
-            //Assert.That(result, Is.EqualTo(true));
+            var keyboard = new TestKeyboardDevice(InputManager.Current);
+            var Presentation = new TestPresentationSource();
+            var newKeys = new List<VirtualKey>() { VirtualKey.LeftMenu };
+            var hotkeyType = new HotkeyType();
+            var e = new System.Windows.Input.KeyEventArgs(keyboard, Presentation, 1, Key.K);
+            var result = KeysHelper.getUXTextBoxHotkeyInfo(null, e, ref newKeys, hotkeyType);
+            //Assert
+            Assert.That(result, Is.Not.Null);
 
             // Act
-           // result = KeysHelper.onlyContainModifyKeys(new List<VirtualKey>() { VirtualKey.Control, VirtualKey.Menu, VirtualKey.Shift, VirtualKey.V });
+            e = new System.Windows.Input.KeyEventArgs(keyboard, Presentation, 1, Key.LeftCtrl);
+            result = KeysHelper.getUXTextBoxHotkeyInfo(null, e, ref newKeys, hotkeyType);
             // Assert
-            //Assert.That(result, Is.EqualTo(false));
+            Assert.That(result, Is.Not.Null);
+
+            // Act
+            newKeys = new List<VirtualKey>() {};
+            e = new System.Windows.Input.KeyEventArgs(keyboard, Presentation, 1, Key.LeftShift);
+            result = KeysHelper.getUXTextBoxHotkeyInfo(new UXTextBox() { Text= " Ctrl" } , e, ref newKeys, hotkeyType);
+            // Assert
+            Assert.That(result.Hotkey.Count, Is.EqualTo(1));
+
+            // Act
+            result = KeysHelper.getUXTextBoxHotkeyInfo(new UXTextBox() { Text = " 3" }, e, ref newKeys, hotkeyType);
+            // Assert
+            Assert.That(result.Hotkey.Count, Is.EqualTo(1));
+
         }
 
         [Test]
@@ -187,7 +201,29 @@ namespace DDPM.UI.Common.Tests
         }
 
         //Test setUXTextBoxPreviewKey()
+        [Test]
+        public void TestsetUXTextBoxPreviewKey()
+        {
+            // Act
+            var keyboard = new TestKeyboardDevice(InputManager.Current);
+            var Presentation = new TestPresentationSource();
+            var newKeys = new List<VirtualKey>() { VirtualKey.LeftMenu };
+            var BundleNewKeys = new List<VirtualKey>();
+            var e = new System.Windows.Input.KeyEventArgs(keyboard, Presentation, 1, Key.K);
+            var alphabetKey = true;
+            try
+            {
+                KeysHelper.setUXTextBoxPreviewKey(null, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
 
+
+
+        }
 
         [Test]
         public void TestReSetHotKeyText()
@@ -241,5 +277,29 @@ namespace DDPM.UI.Common.Tests
         }
 
 
+    }
+
+    public class TestKeyboardDevice : KeyboardDevice
+    {
+        public TestKeyboardDevice(InputManager inputManager) : base(inputManager)
+        {
+        }
+
+        protected override KeyStates GetKeyStatesFromSystem(Key key)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TestPresentationSource : PresentationSource
+    {
+        public override bool IsDisposed => throw new NotImplementedException();
+
+        public override Visual RootVisual { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        protected override CompositionTarget GetCompositionTargetCore()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

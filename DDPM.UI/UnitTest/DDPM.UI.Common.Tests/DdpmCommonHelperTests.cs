@@ -289,16 +289,16 @@ namespace DDPM.UI.Common.Tests
             }
 
 
-            //UXSystemParameters.Instance.OSTheme = OSThemeEnum.Light;
-            //try
-            //{
-            //    DdpmCommonHelper.updateMergedDictionarie();
-            //    Assert.True(true);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Assert.Fail("not invoked");
-            //}
+            UXSystemParameters.Instance.OSTheme = OSThemeEnum.Light;
+            try
+            {
+                DdpmCommonHelper.updateMergedDictionarie();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
         }
        
         [Test]
