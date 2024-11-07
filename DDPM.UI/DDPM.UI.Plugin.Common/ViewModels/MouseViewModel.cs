@@ -186,7 +186,7 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if (deviceInfo.LogicalDeviceType.Contains("Mouse"))
+                if (deviceInfo.LogicalDeviceType.Contains("Mouse") && !DeviceInfos.ContainsKey(deviceInfo.ID))
                 {
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }

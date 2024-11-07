@@ -547,12 +547,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             bool found_Current = false, found_Recommended = false;
             while (_EnumDisplaySettings(monitorInfo.DisplayName, i, ref devMode))
             {
-                if (!(devMode.dmPelsWidth >= 800 && devMode.dmPelsHeight >= 600) &&
-                    !(devMode.dmPelsWidth >= 600 && devMode.dmPelsHeight >= 800))
-                {
-                    i++;
-                    continue;
-                }
                 Properties resolution = new Properties
                 {
                     Resolutions_Width = devMode.dmPelsWidth,

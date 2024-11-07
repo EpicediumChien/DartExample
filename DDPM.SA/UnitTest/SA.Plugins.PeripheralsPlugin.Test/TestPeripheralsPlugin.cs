@@ -145,6 +145,142 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.That(OverlayManagerObj, Is.EqualTo(OverlayManager_Result));
         }
 
+        [Test]
+        public void TestICTKMessageHelper()
+        {
+            Mock<ICTKMessageHelper> mockCTKMessageHelper = new Mock<ICTKMessageHelper>();
+            var CTKMessageHelperObj = mockCTKMessageHelper.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iCTKMessageHelper", CTKMessageHelperObj);
+            var CTKMessageHelper_Result = peripheralsPlugin.ICTKMessageHelper;
+            Assert.That(CTKMessageHelperObj, Is.EqualTo(CTKMessageHelper_Result));
+        }
+
+        [Test]
+        public void TestIDeviceManager()
+        {
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+            var DeviceManager_Result = peripheralsPlugin.IDeviceManager;
+            Assert.That(DeviceManagerObj, Is.EqualTo(DeviceManager_Result));
+
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", null);
+            var DeviceManager_Result2 = peripheralsPlugin.IDeviceManager;
+            Assert.IsNull(DeviceManager_Result2);
+        }
+
+        [Test]
+        public void TestNotifyNow()
+        {
+            bool eventFired = false;
+            peripheralsPlugin.Notify += (sender, e) =>
+            {
+                eventFired = true;
+            };
+
+            // Act
+            peripheralsPlugin.NotifyNow();
+
+            // Assert
+            Assert.IsTrue(eventFired);
+        }
+
+        [Test]
+        public void TestGetDPeMPluginConditionAsync()
+        {
+            try
+            {
+                var GetDPeMPluginConditionAsync_Result = peripheralsPlugin.GetDPeMPluginConditionAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Assert.That(ex.Message, Is.EqualTo("The method or operation is not implemented."));
+            }
+        }
+
+        [Test]
+        public void TestGetDevices()
+        {
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo() {DeviceName="Mouse",Name="Test mouse",}
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", null);
+            var GetDevices_Result1 = peripheralsPlugin.GetDevices(true).Result;  //_deviceHelper null
+            Assert.IsNotNull(GetDevices_Result1);
+
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+            var GetDevices_Result2 = peripheralsPlugin.GetDevices(false).Result;  //_deviceHelper not null
+            Assert.That(deviceHelper, Is.EqualTo(GetDevices_Result2));
+        }
+
+        [Test]
+        public void TestGetDevices_WithoutAwait()
+        {
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo() {DeviceName="Mouse",Name="Test mouse",}
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", null);
+            var GetDevices_WithoutAwait_Result1 = peripheralsPlugin.GetDevices_WithoutAwait(true).Result;  //_deviceHelper null
+            Assert.IsNotNull(GetDevices_WithoutAwait_Result1);
+
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+            var GetDevices_WithoutAwait_Result2 = peripheralsPlugin.GetDevices_WithoutAwait(false).Result;  //_deviceHelper not null
+            Assert.That(deviceHelper, Is.EqualTo(GetDevices_WithoutAwait_Result2));
+        }
+
+        [Test]
+        public void TestGetCTKMessageHelper()
+        {
+            Mock<ICTKMessageHelper> mockCTKMessageHelper = new Mock<ICTKMessageHelper>();
+            var CTKMessageHelperObj = mockCTKMessageHelper.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iCTKMessageHelper", CTKMessageHelperObj);
+            var GetCTKMessageHelper_Result1 = peripheralsPlugin.GetCTKMessageHelper().Result;
+            Assert.IsNotNull(GetCTKMessageHelper_Result1);
+        }
+
+        [Test]
+        public void TestGetRFDongleDevices()
+        {
+            RFDeviceHelper rFDeviceHelper = new RFDeviceHelper()
+            {
+                dongleInfo = new List<DongleInfo>()
+                {
+                    new DongleInfo()
+                    {
+                    DeviceType= new DPeMPublic.Common.Enums.DeviceType(),
+                    IsMultipleDongleFound= false,
+                    ID=Guid.NewGuid(),
+                    LogicalDeviceIDs= new List<Guid>(),
+                    MaxPairingSlots=0,
+                    PairedDeviceCount= 0,
+                    }
+                }
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", null);
+            var GetRFDongleDevices_Result1 = peripheralsPlugin.GetRFDongleDevices().Result;  //_rfDeviceHelper null
+            Assert.IsNotNull(GetRFDongleDevices_Result1);
+
+            privatetePeripheralsPlugin.SetFieldOrProperty("_rfDeviceHelper", rFDeviceHelper);
+            var GetRFDongleDevices_Result2 = peripheralsPlugin.GetRFDongleDevices().Result;  //_rfDeviceHelper not null
+            Assert.IsNotNull(GetRFDongleDevices_Result2);
+        }
 
         [OneTimeTearDown]
         public void TearDown()

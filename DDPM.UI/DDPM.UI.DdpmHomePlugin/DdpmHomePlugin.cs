@@ -101,15 +101,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             { "Consent", 1}, //Add by Derek 2024/10/24
             { "DDPM", 2 },
             { "Displays", 3 },
-            { "Webcam", 4 },
-            { "Keyboard", 5 },
-            { "Mice", 6 },
-            { "Stylus", 7 },
-            { "Headset", 8 },
-            { "Speakerphone", 9 },
-            { "Soundbar", 10 },
-            { "Audio", 11 },
-            { "Docks", 12 }
+            { "LogicalWebcam", 4 },
+            { "LogicalKeyboard", 5 },
+            { "LogicalMouse", 6 },
+            { "LogicalPen", 7 },
+            { "LogicalHeadset", 8 }
         };
 
         private GlobalSettingParam _globalSettings = null;
@@ -262,7 +258,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     _iconGear.GlowEffect_Start();
                             }
                         }
-                        await CheckAndQueueDevice("DDPM", "DDPM");
+                        await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
                         if (WalkThroughQueue.Count != 0 && _showPluginById == false)
                         {
                             _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start DDPM");
@@ -1059,7 +1055,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// </summary>
         /// <param name="device">DeviceInfo list</param>
         /// <returns>Task</returns>
-        private async Task CheckAndQueueDevice(String modelNumber, String modelType)
+        private async Task CheckAndQueueDevice(String modelNumber, String modelType, object info)
         {
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
             object regValue;
@@ -1095,7 +1091,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
                     {
-                        WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM"));
+                        WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM", info));
                     }
                 }
 
@@ -1116,7 +1112,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     // Add the device to the queue and update the registry
                     if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber))
                     {
-                        WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType));
+                        WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType, info));
                     }
 
                     //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                    
@@ -1126,7 +1122,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     _log.Info($"[Walkthrough] Device {modelNumber} reg is true, skipping.");
                 }
-                await DeviceSort(new WalkThroughInfo(modelNumber, modelType));
+                await DeviceSort(new WalkThroughInfo(modelNumber, modelType, info));
             }
             catch (Exception ex)
             {
@@ -1150,13 +1146,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 foreach (var monitor in monitorInfos)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Monitor)");
-                    await CheckAndQueueDevice(monitor.modelName, "Displays");
+                    await CheckAndQueueDevice(monitor.modelName, "Displays", monitor);
                 }
 
                 foreach (var device in deviceHelper.deviceInfo)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
-                    await CheckAndQueueDevice(device.ModelNumber, device.PhysicalDeviceType.ToString());
+                    await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
                 if (WalkThroughQueue.Count != 0 && _showPluginById == false)

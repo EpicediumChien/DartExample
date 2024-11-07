@@ -99,7 +99,8 @@ namespace DDPM.SA.Plugins.CMAManager
                     if (other.Equals(info))
                     {
                         isExist = true;
-                        break; ;
+                        break;
+                        ;
                     }
                 }
 
