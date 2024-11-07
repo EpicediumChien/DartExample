@@ -98,7 +98,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             }
             _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
         }
-        private void btnResolution_Click(object sender, MouseButtonEventArgs e)
+        private async void btnResolution_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
             {
@@ -111,14 +111,30 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        bool set_ok = false;
+                        while (set_ok != true)
+                        {
+                            try
+                            {
+                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                set_ok = true;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }
+
                         break;
                     }
                 }
             }
         }
 
-        private void btnFPS_Click(object sender, MouseButtonEventArgs e)
+        private async void btnFPS_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
             {
@@ -130,7 +146,24 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+  
+                        bool set_ok = false;
+                        while (set_ok != true)
+                        {
+                            try
+                            {
+                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                set_ok = true;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }
+
                         break;
                     }
                 }
