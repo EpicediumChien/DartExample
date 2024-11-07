@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.IO;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
+using System.Windows.Shell;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 { 
@@ -74,7 +75,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 toastContentBuilder.AddArgument(content.Title);
                 toastContentBuilder.AddText(content.Title);
                 toastContentBuilder.AddText(content.Description);
-                toastContentBuilder.AddButton(content.left_btn, ToastActivationType.Background, "Yes" + "," + content.Model + "," + content.ServiceTag/*content.left_btn_action*/);
+                toastContentBuilder.AddButton(content.left_btn, ToastActivationType.Background, "Yes" + "," + content.Model/*content.left_btn_action*/);
                 toastContentBuilder.AddButton(content.right_btn, ToastActivationType.Background, content.right_btn_action);
 
                 toastContentBuilder.Show(); // 顯示Toast通知
@@ -94,28 +95,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     foreach (MonitorInfo monitorInfo in mos)
                     {
                         string model = monitorInfo.modelName;//"U2724DE";
-                        string serviceTag = monitorInfo.edid.ServiceTag;
                         string desc = "The same monitor is detected, do you want to import settings for %1?"; //string table: ImpExp_Message.0
                         //
                         //Need jason to implement import/export check here
-                        string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                        string exportpath = path + "\\" + model + ".json";
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] export path : " + exportpath);
                         //
                         if (File.Exists(exportpath))
                         {
                             DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
-                            desc = desc.Replace("%1", model);
-                            DisplayImportToast(
-                                new DisplayWindowsToast()
+                            dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
+                            if (dDPMImpExpSettings != null)
+                            {
+                                if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                 {
-                                    Title = "Dell Display and Peripheral Manager", //string table: App_Name
-                                    Description = desc,
-                                    Model = model,
-                                    ServiceTag = serviceTag,
-                                    left_btn = "Yes",        //string table: Yes
-                                    right_btn = "No"       //string table: No
+                                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                                    if (settingsManagerDev.DisplayImportSettings(exportpath, false, out ImpExpSettings).Result)
+                                    {
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
+                                    }
+                                    else
+                                    {
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
+                                    }
                                 }
-                            );
+                                else
+                                {
+                                    desc = desc.Replace("%1", model);
+                                    DisplayImportToast(
+                                        new DisplayWindowsToast()
+                                        {
+                                            Title = "Dell Display and Peripheral Manager", //string table: App_Name
+                                            Description = desc,
+                                            Model = model,
+                                            left_btn = "Yes",        //string table: Yes
+                                            right_btn = "No"       //string table: No
+                                        }
+                                    );
+                                }
+                            }
+                            else
+                            {
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
+                            }
                         }
                         else
                         {
@@ -133,13 +155,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void AutoImport(ToastNotificationActivatedEventArgsCompat e) 
         {
             string[] ret = e.Argument.Split(",");
-            if (ret.Length >= 3)
+            if (ret.Length >= 2)
             {
                 if (e.Argument.StartsWith("Yes"))
                 {
                     if (!string.IsNullOrEmpty(path))
                     {
-                        string impPath = path + "\\" + ret[1] + "_" + ret[2] + ".json";
+                        string impPath = path + "\\" + ret[1] + ".json";
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] impPath : " + impPath);
                         if (File.Exists(impPath))
                         {
