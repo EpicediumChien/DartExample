@@ -6654,7 +6654,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
                                     }
-                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                    else
+                                    {
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                    }
                                 }
                                 else
                                 {

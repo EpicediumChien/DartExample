@@ -148,5 +148,10 @@ namespace DDPM.PowerMon
             }
             return IntPtr.Zero;
         }
+
+        public void CloseByCaller()
+        {
+            Close();
+        }
     }
 }

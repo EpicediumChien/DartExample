@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.PowerMon;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
@@ -81,6 +82,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
         private string EditMode = string.Empty;
         private string EditingProfileName = string.Empty;
+        private static PowerEventControl _pwr_Mon = null;
 
         public LaunchView()
         {
@@ -154,6 +156,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
             Preview();
+            EnableMonitorOnEvent();
+        }
+
+        private void EnableMonitorOnEvent()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_pwr_Mon == null)
+                {
+                    _pwr_Mon = new PowerEventControl(null);
+                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+                    _pwr_Mon.Enable_Event();
+                }
+            }));
+        }
+
+        private void MonitorEvent_On(object sender, EventArgs e)
+        {
+            Trace.WriteLine("GET MONITOR ON EVENT");
         }
 
         private bool isProfilePropertyChanged = false;
@@ -341,6 +362,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 await CleanupMediaCaptureAsync();
+
+                if(_pwr_Mon != null)
+                {
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    _pwr_Mon = null;
+                }
             }
             catch
             { }
@@ -397,16 +425,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
 
-            //if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
-            //{
-            moduleGroup = new ModuleGroup()
+            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
             {
-                GroupName = Microphone,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
-            };
-            moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
-            groups.Add(moduleGroup);
-            //}
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Microphone,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
+                };
+                moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
+                groups.Add(moduleGroup);
+            }
 
             _vm!.ModuleGroups = groups;
         }
@@ -419,6 +447,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }
+
+            UpdatePVMargin(0);
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {
@@ -498,6 +528,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             if (_vm!.VbarSelectedIndex == -1)
             { return; }
+
+            UpdatePVMargin(-1);
 
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
@@ -1281,6 +1313,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             return false;
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdatePVMargin(_vm!.VbarSelectedIndex);
+        }
+
+        private void UpdatePVMargin(int index)
+        {
+            int mR = index == -1 ? 155 : 85;
+            int mT = 0;
+            int mB = 35;
+            if (this.ActualHeight < 640)
+            {
+                mT = 55;
+                mB = 75;
+
+            }
+            largeImage.Margin = new Thickness(40, mT, mR, mB);
         }
     }
 }
