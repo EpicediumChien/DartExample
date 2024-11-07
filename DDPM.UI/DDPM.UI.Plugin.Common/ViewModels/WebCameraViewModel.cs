@@ -466,7 +466,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
             FPSs.Clear();
 
-            //InitializeWebcam();
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
             IsMicEnumerationOnEnabled = true;
@@ -501,6 +500,12 @@ namespace DDPM.UI.Plugin.ViewModels
             SetResolution_Selected(i);
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
+
+            if (CurrentDeviceInfo.IsWindowsHelloSupported)
+            {
+                Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.GetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString());
+                _isPrioritizeExternalWebcam = task.Result;
+            }
         }
 
         public void RefreshProfiles()
@@ -687,6 +692,18 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
 
+
+        private bool _isPrioritizeExternalWebcam = false;
+        public bool IsPrioritizeExternalWebcam
+        {
+            get => _isPrioritizeExternalWebcam;
+            set
+            {
+                _isPrioritizeExternalWebcam = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString(), value);
+                OnPropertyChanged();
+            }
+        }
         public string CurrentProfileName
         {
             get => WebcamSettings.SelectedProfileName;
@@ -844,7 +861,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.FieldOfView;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), value);
+                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceID.ToString(), value);
                 SetProfileProperty(nameof(FieldOfView), value, OperationModule.CameraControl);
                 OnPropertyChanged();
             }
@@ -980,11 +997,11 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _autoWhiteBalance = 0;
         public int AutoWhiteBalance
         {
-            get => CurrentProfile.AutoWhiteBalance;
+            get => _autoWhiteBalance;
             set
             {
                 _autoWhiteBalance = value;
-                if (value != CurrentProfile.AutoWhiteBalance)
+                if (value != _autoWhiteBalance)
                 {
                     if (!IsSliderDragging)
                     {
@@ -1333,12 +1350,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     OPIndex -= 1;
                 }
                 //CurrentProfileName = string.Empty;
-                if (CurrentProfileName == "Smooth" || CurrentProfileName == "Smooth" || CurrentProfileName == "Smooth")
+                if (CurrentProfileName == "Smooth" || CurrentProfileName == "Warm" || CurrentProfileName == "Vibrant")
                     switch (propertyName)
                     {
                         case nameof(IsAutoFramingOn):
                         case nameof(FieldOfView):
                         case nameof(IsHDROn):
+                        case nameof(IsAutoWhiteBalanceOn):
                         case nameof(Brightness):
                         case nameof(Contrast):
                         case nameof(Saturation):

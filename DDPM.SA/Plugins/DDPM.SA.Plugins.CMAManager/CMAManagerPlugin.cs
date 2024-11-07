@@ -134,17 +134,17 @@ namespace DDPM.SA.Plugins.CMAManager
             //    WriteLog("[Info] Settings Manager IT plugin with ISettingsManagerIT started.");
             //}
 
-/*            if (e.ChangedPlugins.OfType<ICMAManagerSA>().Any())
-            {
-                WriteLog("[Info] CMA Manager plugin with ICMAManagerSA started.");
-            }
+            /*            if (e.ChangedPlugins.OfType<ICMAManagerSA>().Any())
+                        {
+                            WriteLog("[Info] CMA Manager plugin with ICMAManagerSA started.");
+                        }
 
-            if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
-            {
-                WriteLog("[Info]  CMA Manager plugin with ICMAManagerIT started.");
-            }*/
+                        if (e.ChangedPlugins.OfType<ICMAManagerIT>().Any())
+                        {
+                            WriteLog("[Info]  CMA Manager plugin with ICMAManagerIT started.");
+                        }*/
 
-            if(e.ChangedPlugins.OfType<ICliManagerIT>().Any())
+            if (e.ChangedPlugins.OfType<ICliManagerIT>().Any())
             {
                 WriteLog("[Info]  CLI Manager plugin with ICliManagerIT started.");
                 InitializeCliManagerPlugin();
@@ -171,7 +171,8 @@ namespace DDPM.SA.Plugins.CMAManager
         #endregion
 
         #region IRemoteManagement implementation
-        internal struct TaskInfo {
+        internal struct TaskInfo
+        {
             public string sid;
             public string gid;
             public int tid;
@@ -199,7 +200,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 {
                     command = command + (" value=" + task.devicetype);
                 }
-                
+
             }
             else
             {
@@ -242,7 +243,7 @@ namespace DDPM.SA.Plugins.CMAManager
             // special case
             if (Params.App.DeviceConfiguration.ToLower().Equals(task.command.ToLower()))
             {
-                if (String.IsNullOrEmpty(task.value) || task.value.Length <= 0) 
+                if (String.IsNullOrEmpty(task.value) || task.value.Length <= 0)
                 {
                     throw new ArgumentException("Command 'value' can't be empty");
                 }
@@ -457,21 +458,21 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (task.devicetype + "=" + task.command);
                     break;
 
-/*                case Params.Lock.PresenceDetection: // 5.14.22 Enable/Disable
-                    command = command + (task.devicetype + "=" + task.command);
-                    break;
+                    /*                case Params.Lock.PresenceDetection: // 5.14.22 Enable/Disable
+                                        command = command + (task.devicetype + "=" + task.command);
+                                        break;
 
-                case Params.Lock.ancMode:   // 5.14.23 Enable/Disable
-                    command = command + (task.devicetype + "=" + task.command);
-                    break;
+                                    case Params.Lock.ancMode:   // 5.14.23 Enable/Disable
+                                        command = command + (task.devicetype + "=" + task.command);
+                                        break;
 
-                case Params.Lock.micNoiseCancellation:  // 5.14.24
-                    command = command + (task.devicetype + "=" + task.command);
-                    break;
+                                    case Params.Lock.micNoiseCancellation:  // 5.14.24
+                                        command = command + (task.devicetype + "=" + task.command);
+                                        break;
 
-                case Params.Lock.wearDetection: // 5.14.25
-                    command = command + (task.devicetype + "=" + task.command);
-                    break;*/
+                                    case Params.Lock.wearDetection: // 5.14.25
+                                        command = command + (task.devicetype + "=" + task.command);
+                                        break;*/
 
 
                     // default: // TODO: Error Command
@@ -571,7 +572,7 @@ namespace DDPM.SA.Plugins.CMAManager
             if (null != _CliManagerPlugin)
             {
                 WriteLog($"[CMA] runCommandTaskAsync taskInfoQueue.Count = {taskInfoQueue.Count}");
-                
+
                 while (taskInfoQueue.Count > 0)
                 {
                     WriteLog($"[CMA] runCommandTaskAsync taskInfoQueue.Count = {taskInfoQueue.Count}");
@@ -589,7 +590,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
 
-                    try 
+                    try
                     {
                         /*cliResp = JObject.Parse(cliResult.serialize_Json_response);
                         responseMsg = (string?)cliResp["Message"] ?? string.Empty;
@@ -622,7 +623,7 @@ namespace DDPM.SA.Plugins.CMAManager
                             finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_FORMAT_OR_PARAMS + ",\"msg\": \"" + responseMsg + "\",\"data\": [" + cliResult.serialize_Json_response + "]}";
                         }
                     }
-                    catch (Exception e) 
+                    catch (Exception e)
                     {
                         responseMsg = "Exception: Unknow Result ";
                         finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": " + Params.Response.STATUS_COMMAND_ERROR_RESULT_EXCEPTION + ",\"msg\": \"" + responseMsg + e.ToString() + "\",\"data\": [" + cliResult?.serialize_Json_response + "]}";
@@ -647,8 +648,8 @@ namespace DDPM.SA.Plugins.CMAManager
             return new NotifyArgs();
         }
 
-        private bool checkResult(string src, out string msg) 
-        { 
+        private bool checkResult(string src, out string msg)
+        {
             bool result = false;
             msg = string.Empty;
 
@@ -673,9 +674,9 @@ namespace DDPM.SA.Plugins.CMAManager
 
             string strResult = string.Empty;
 
-            foreach (JObject jobj in jarray) 
+            foreach (JObject jobj in jarray)
             {
-                try 
+                try
                 {
                     strResult = ((string)jobj["Result"]).ToLower() ?? string.Empty;
 
@@ -702,19 +703,19 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     return result;
                 }
-                catch (Exception e) 
+                catch (Exception e)
                 {
                     msg = e.ToString();
 
                     return result;
                 }
 
-                
+
             }
 
             return result;
         }
-        
+
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
         {
             // 
@@ -742,7 +743,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 WriteLog($"[CMA]  before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
                 _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
 
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
@@ -816,11 +818,11 @@ namespace DDPM.SA.Plugins.CMAManager
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         WriteLog($"{nameof(GetCurrentCliManagerPluginCondition)} - CliManager Plugin is in a running/started condition");
-                        
-                       /* if (!relay_registered && _DevManagerPlugin != null)
-                        {
-                            DoRelayRegister();
-                        }*/
+
+                        /* if (!relay_registered && _DevManagerPlugin != null)
+                         {
+                             DoRelayRegister();
+                         }*/
                     }
                 }
             });
@@ -830,7 +832,7 @@ namespace DDPM.SA.Plugins.CMAManager
         #region ICMAManagerSA implementation
         public Task WriteResult(RemoteManagementResult result)
         {
-            lock(_resultLock)
+            lock (_resultLock)
             {
                 _result_list.Add(result);
             }
@@ -846,7 +848,7 @@ namespace DDPM.SA.Plugins.CMAManager
             // TODO: implement decice connect/disconnect information
             WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed data.type = " + data.type);
 
-            if (data.mos != null) 
+            if (data.mos != null)
             {
                 foreach (MonitorInfo info in data.mos)
                 {
@@ -872,7 +874,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 }
             }
 
-           
+
             NotifyArgs args = deviceControlPannel.OnDeviceChnaged(data);
 
             args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \"\",\"data\": [" + args.notification + "]}]}";
@@ -881,7 +883,7 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 OnEventDisplayConnect(args);
             }
-            else 
+            else
             {
                 OnEventDisplayDisconnect(args);
             }
