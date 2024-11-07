@@ -103,7 +103,10 @@ namespace DDPM.SA.Common.Settings
                                     }
                                     else
                                     {
-                                        version = software.SoftwareVersion;
+                                        data = new SWUpdateHelper();
+                                        info = $"{nameof(GetSWMetadata)} software.SoftwareVersion TryParse fail: {software.SoftwareVersion}";
+                                        logs?.DebugMsg_1(info);
+                                        return data;
                                     }
                                     software.SoftwareVersion = version;
                                     software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}");
