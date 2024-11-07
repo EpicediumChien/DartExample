@@ -16,7 +16,7 @@
             public const int DISPLAY_CONNECT = 11;
             public const int DISPLAY_DISCONNECT = 12;
 
-            public const int UNKNOW_ERROR = 99;
+            public const int UNKNOWN_ERROR = 99;
         }
 
 
@@ -68,7 +68,7 @@
             public const int STATUS_COMMAND_ERROR_RESULT = 502;
             public const int STATUS_COMMAND_ERROR_RESULT_EXCEPTION = 503;
 
-            public static int UNKNOW_ERROR = 9999;
+            public static int UNKNOWN_ERROR = 9999;
 
         }
 

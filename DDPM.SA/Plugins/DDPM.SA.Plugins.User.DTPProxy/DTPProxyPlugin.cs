@@ -1373,8 +1373,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
             }
         }
 
@@ -1389,8 +1389,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
             }
         }
 
@@ -4895,6 +4895,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
+                writelog($"commodity: {commodity.GetType().Name} Property: {property}");
                 Debug.WriteLine($"commodity: {commodity.GetType().Name} Property: {property}");
                 var obj = interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
                 Debug.WriteLine($"{obj.ToString()}");

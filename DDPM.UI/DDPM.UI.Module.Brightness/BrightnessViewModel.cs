@@ -585,7 +585,13 @@ namespace DDPM.UI.Module.Brightness
                         }
                         //Re-Get Start_ALSConfig
                         if (Start_ALSConfig.AllValue == 0)//Need to Re-Get value
+                        {
                             Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
+                            if (!alsList.Contains(Start_ALSConfig))
+                            {
+                                alsList.Add(Start_ALSConfig);
+                            }
+                        }
                         GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
                         CheckisShowSynchronize(alsList);
                     }

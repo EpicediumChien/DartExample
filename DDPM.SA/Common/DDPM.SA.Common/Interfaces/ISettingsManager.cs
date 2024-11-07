@@ -104,6 +104,8 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings);
 
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
+
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
 

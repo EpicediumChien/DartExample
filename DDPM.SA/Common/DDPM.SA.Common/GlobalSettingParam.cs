@@ -45,8 +45,8 @@ namespace DDPM.SA.Common
         public bool EnableQuickAccessWidget_Reminder { get; set; }
         public GlobalSetting_WidgetSettings()
         {
-            EnableQuickAccessWidget = false;
-            EnableQuickAccessWidget_Reminder = false;
+            EnableQuickAccessWidget = true;
+            EnableQuickAccessWidget_Reminder = true;
         }
     }
     public class GlobalSetting_About

@@ -316,6 +316,7 @@ namespace DDPM.UI.Module.ButtonSettings
                     Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
                     var keystroke = task2.Result;
                     parameter = modalDialog.Parameter;
+                    parameter = keystroke;
                 }
                 else
                 {

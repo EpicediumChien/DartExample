@@ -69,9 +69,11 @@ namespace DDPM.SA.Common
 
         Task<bool> SyncNightlightStatus();
         Task<bool> CheckNightLightStatus();
+        Task<bool> CheckNightLightScheduler();
         Task<bool> CheckColorICCStatus();
 
         Task<bool> StopRegistryMonitor_NightLight();
+        Task<bool> StopRegistryMonitor_NightLightScheduler();
         Task<bool> StopRegistryMonitor_ICC();
 
         #endregion public for  Color Preset Plugin

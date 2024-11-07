@@ -151,7 +151,7 @@
     <None Remove="Resources\Images\MS700.png" />
     <None Remove="Resources\Images\MS700_7.png" />
     <None Remove="Resources\Images\MS7421W.png" />
-    <None Remove="Resources\Images\MS7421W_1.png" />
+    <None Remove="Resources\Images\MS7421W_6.png" />
     <None Remove="Resources\Images\MS900.png" />
     <None Remove="Resources\Images\MultiDevice.png" />
     <None Remove="Resources\Images\P2424HEB.png" />
@@ -652,7 +652,7 @@
     <Resource Include="Resources\Images\MS5320W.png" />
     <Resource Include="Resources\Images\MS700.png" />
     <Resource Include="Resources\Images\MS700_7.png" />
-    <Resource Include="Resources\Images\MS7421W_1.png" />
+    <Resource Include="Resources\Images\MS7421W_6.png" />
     <Resource Include="Resources\Images\MS7421W.png" />
     <Resource Include="Resources\Images\MS900.png" />
     <Resource Include="Resources\Images\MultiDevice.png" />

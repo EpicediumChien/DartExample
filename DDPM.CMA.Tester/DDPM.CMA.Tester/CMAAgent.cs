@@ -150,7 +150,11 @@ namespace DDPM.CMA.Tester
                 ReadJsonFileAsync("Test"),
                 ReadJsonFileAsync("FwDisplayByOption"),
                 ReadJsonFileAsync("FwDisplayTest"),
-                ReadJsonFileAsync("TestLock")
+                ReadJsonFileAsync("TestLock"),
+                ReadJsonFileAsync("ShowDock"),
+                ReadJsonFileAsync("DockConfiguration"),
+                ReadJsonFileAsync("DockDiagnosticReport"),
+                ReadJsonFileAsync("DockDeviceDataOptions")
             };
 
             string[] loadResult = await Task.WhenAll(loadJsonTasks);
@@ -164,6 +168,7 @@ namespace DDPM.CMA.Tester
             string jsonDeviceData = loadResult[7].PlainJsonString();
             string jsonReport = loadResult[8].PlainJsonString();
             string deviceConfig = loadResult[9].PlainJsonString();
+            // DeviceConfig2 DEVICECONFIGURATION value is required
             string jsonDeviceConfig2 = loadResult[10].PlainJsonString();
             string jsonDeviceConfig3 = loadResult[11].PlainJsonString();
             string configLess = loadResult[12].PlainJsonString();
@@ -172,6 +177,10 @@ namespace DDPM.CMA.Tester
             string jsonFwDisplayByOption = loadResult[15].PlainJsonString();
             string fwDisplayTest = loadResult[16].PlainJsonString();
             string testLock = loadResult[17].PlainJsonString();
+            string showDock = loadResult[18].PlainJsonString();
+            string dockConfiguration = loadResult[19].PlainJsonString();
+            string dockDiagnosticReport = loadResult[20].PlainJsonString();
+            string dockDeviceDataOptions = loadResult[21].PlainJsonString();
             #endregion
 
             #region Subscribe Events
@@ -253,6 +262,22 @@ namespace DDPM.CMA.Tester
                             cmaRequest.remote_request = testLock;
                             break;
 
+                        case 41:
+                            cmaRequest.remote_request = showDock;
+                            break;
+
+                        case 42:
+                            cmaRequest.remote_request = dockConfiguration;
+                            break;
+
+                        case 43:
+                            cmaRequest.remote_request = dockDiagnosticReport;
+                            break;
+
+                        case 44:
+                            cmaRequest.remote_request = dockDeviceDataOptions;
+                            break;
+
                         default:
                             isRunning = false;
                             break;
@@ -316,6 +341,37 @@ namespace DDPM.CMA.Tester
             }
         }
 
+        private void PrintOptions()
+        {
+            Console.WriteLine("\nCMAManagerPlugin Demo: ");
+            Console.WriteLine("1. Show ConnectedDevices.");
+            Console.WriteLine("2. Show Display FWUpdate.");
+            Console.WriteLine("3. Show DeviceData All (No filter).");
+            Console.WriteLine("4. Show DeviceConfiguration with json in value.");
+            Console.WriteLine("5. Show DiagnosticsReport export to c:\\temp\\.");
+            Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
+            Console.WriteLine("7. Show Dock FWUpdate.");
+            Console.WriteLine("8. Show Keyboard FWUpdate.");
+            Console.WriteLine("9. Show Mouse FWUpdate.");
+            Console.WriteLine("10. Show Mouse FWUpdate.");
+
+            Console.WriteLine("21. Show 2 task.");
+            Console.WriteLine("22. DeviceConfiguration with only few attributes.");
+            Console.WriteLine("23. Show DeviceData - Display.");
+            Console.WriteLine("24. Show DeviceData - Display with Options.");
+
+            Console.WriteLine("31. Show Fwupdate Display with options.");
+            Console.WriteLine("32. Show Lock/Unlock.");
+
+            Console.WriteLine("41. Show Dock.");
+            Console.WriteLine("42. Get DockConfiguration.");
+            Console.WriteLine("43. Get Dock Diagnostic Report.");
+            Console.WriteLine("44. Dock Device Data update firmware with Options.");
+
+            Console.WriteLine("0. Exit.");
+
+            Console.WriteLine("Enter the number to run ?");
+        }
         #endregion
 
         #region Event Handlers
@@ -368,33 +424,6 @@ namespace DDPM.CMA.Tester
             Console.WriteLine("CMA DisplayDisconnected Alert notification : " + e.notification);
 
             isresponse = true;
-        }
-
-        private void PrintOptions()
-        {
-            Console.WriteLine("\nCMAManagerPlugin Demo: ");
-            Console.WriteLine("1. Show ConnectedDevices.");
-            Console.WriteLine("2. Show Display FWUpdate.");
-            Console.WriteLine("3. Show DeviceData All (No filter).");
-            Console.WriteLine("4. Show DeviceConfiguration with json in value.");
-            Console.WriteLine("5. Show DiagnosticsReport export to c:\\temp\\.");
-            Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
-            Console.WriteLine("7. Show Dock FWUpdate.");
-            Console.WriteLine("8. Show Keyboard FWUpdate.");
-            Console.WriteLine("9. Show Mouse FWUpdate.");
-
-
-            Console.WriteLine("21. Show 2 task.");
-            Console.WriteLine("22. DeviceConfiguration with only few attributes.");
-            Console.WriteLine("23. Show DeviceData - Display.");
-            Console.WriteLine("24. Show DeviceData - Display with Options.");
-
-            Console.WriteLine("31. Show Fwupdate Display with options.");
-            Console.WriteLine("32. Show Lock/Unlock.");
-
-            Console.WriteLine("0. Exit.");
-
-            Console.WriteLine("Enter the number to run ?");
         }
         #endregion
     }

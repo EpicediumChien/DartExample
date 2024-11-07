@@ -194,7 +194,13 @@ namespace DDPM.SA.Common
             TelemetryDta_Settings.App_Copy_Settings = impexp;
 
             if (plugin != null)
+            {
                 rt = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_Settings.ToJson(), Telementry_Frequency.RealTime).Result;
+                if (rt)
+                {
+                    bool rt1 = plugin.ReceiveTelemetryInfo("ApplicationSettings", TelemetryDta_Settings.ToJson(), Telementry_Frequency.FirstDayofMonth).Result;
+                }
+            }
 
             return rt;
         }

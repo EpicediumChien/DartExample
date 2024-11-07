@@ -276,3 +276,13 @@ testcoverage/
 /DDPM.UI/CommonDll/DdmLibrary.dll
 /DDPM.SA/dll/DDPM.Easy.Common.dll
 /DDPM.UI/CommonDll/ja-JP/DDPM.SA.Resources.resources.dll
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.QAM.deps.json
+/DdpmSwUpdater/CommonDll/DDPM.SA.Common.deps.json
+/DdpmSwUpdater/CommonDll/DDPM.SA.Common.dll
+/DDPM.UI/CommonDll/DDPM.RemoteManagement.Common.dll
+/DdpmSwUpdater/CommonDll/DDPM.SA.Obfuscation.dll
+/DdpmSwUpdater/CommonDll/VcpCore.Common.deps.json
+/DdpmSwUpdater/CommonDll/VcpCore.Common.dll
+/DDPM.UI/CommonDll/DDPM.PowerMon.deps.json
+/DDPM.UI/CommonDll/DDPM.PowerMon.dll
