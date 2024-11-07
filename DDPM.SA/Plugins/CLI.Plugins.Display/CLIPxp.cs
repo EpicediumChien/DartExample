@@ -262,7 +262,7 @@ namespace CLI.Plugins.Display
                     }
                     response.Value = rawValue;
                     response.Index = change_0base_to_1base(i.ToString());
-                    response.Model = mo.AliasDeviceName;
+                    response.Model = mo.modelName;
                     response.SerialNumber = mo.edid.SerialNumber;
                     response.ServiceTag = mo.edid.ServiceTag;
                     response.Value = rawValue;
@@ -325,7 +325,7 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_PxpMode response = new CLI_RESPONSE_PxpMode();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.Model = _AllInfoMonitors[idx].modelName;
                 response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
 
@@ -536,22 +536,17 @@ namespace CLI.Plugins.Display
                                     isOK = false;
                                     break;
                                 }
-                                string vcpcode = "0x60";
-                                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                                string vcpcode2 = "0xE8";
                                 string value2 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
-                                // sub2
-                                //ePxpInputs targetA = GetPxpInputFromString(ss[0]);
-                                //ePxpInputs targetB = GetPxpInputFromString(ss[1]);
-
-                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode2, 16)), (Convert.ToUInt32(value2, 16))).Result;
                                 if (!isOK)
                                 {
                                     isOK = false;
                                     break;
                                 }
-                                isOK = _devMgr.SetSubInputs(mo, sub2, null, null).Result;
+                                string vcpcode = "0x60";
+                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
                                 if (!isOK)
                                 {
                                     isOK = false;
@@ -566,7 +561,7 @@ namespace CLI.Plugins.Display
                         TargetFeature = _cmdLineInput.TargetFeature
                     };
                     response.Index = change_0base_to_1base(i.ToString());
-                    response.Model = mo.AliasDeviceName;
+                    response.Model = mo.modelName;
                     response.SerialNumber = mo.edid.SerialNumber;
                     response.ServiceTag = mo.edid.ServiceTag;
                     response.Value = rawValue;
@@ -602,7 +597,7 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.Model = _AllInfoMonitors[idx].modelName;
                 response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
 
@@ -720,7 +715,7 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.Model = _AllInfoMonitors[idx].modelName;
                 response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.Sub1InputSource = (sub1 == null) ? "" : sub1.Name;
@@ -882,7 +877,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.Model = _AllInfoMonitors[idx].modelName;
                 response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
@@ -923,7 +918,7 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = (rc.value).ToString();
-                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.Model = _AllInfoMonitors[idx].modelName;
                 response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
@@ -1022,7 +1017,7 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Index = change_0base_to_1base(idx.ToString());
-                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.Model = _AllInfoMonitors[idx].modelName;
                 response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
