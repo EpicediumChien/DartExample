@@ -549,7 +549,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, null, colorPresetRunType).Result;
             else
+            {
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin, colorPresetRunType).Result;
+
+                if (r == false)
+                {
+                    PopupContentPackage popupContentPackage = new PopupContentPackage()
+                    {
+                        Title = "Dell Display and Peripheral Manager",
+                        Info = "Unable to synchronize the corresponding ICC profile for"+m.modelName,
+                        IsInfo = true,
+                        IsOnlyUpdate = false,
+                        StayOpen = true,
+                        Timeout = 5,
+                    };
+                    CallPopup(this, popupContentPackage);
+                }
+            }
             //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
             //write back to settings

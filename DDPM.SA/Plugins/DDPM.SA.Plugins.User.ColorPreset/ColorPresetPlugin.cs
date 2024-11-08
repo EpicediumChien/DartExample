@@ -1491,6 +1491,8 @@ namespace ColorPreset.Plugins
             //    Log.Info($"WriteColorPreset requested ...");
             //}
 
+            bool blRes = true;
+
             writelog("ColorPresetPlugin WriteColorPreset requested ...");
 
             if (_SettingsPlugin != null)
@@ -1540,7 +1542,7 @@ namespace ColorPreset.Plugins
 
                         try
                         {
-                            SetMonitorProfile(m, ColorPreset_Name);
+                            blRes = SetMonitorProfile(m, ColorPreset_Name).Result;
                         }
                         catch (Exception ex)
                         {
@@ -1551,7 +1553,7 @@ namespace ColorPreset.Plugins
 
             }
 
-            return System.Threading.Tasks.Task.FromResult(true);
+            return System.Threading.Tasks.Task.FromResult(blRes);
             //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
@@ -2412,6 +2414,8 @@ namespace ColorPreset.Plugins
         /// <returns></returns>
         public Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name)
         {
+            bool blRes = true;
+
             writelog("ColorPresetPlugin SetMonitorProfile requested ...");
 
             if (_ICC_Metadata._match_ICC_DeviceName != null)
@@ -2429,7 +2433,7 @@ namespace ColorPreset.Plugins
                         {
                             try
                             {
-                                MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                                blRes = MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                             }
                             catch (Exception ex)
                             {
@@ -2446,7 +2450,7 @@ namespace ColorPreset.Plugins
                         {
                             try
                             {
-                                MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                                blRes = MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                             }
                             catch (Exception ex)
                             {
@@ -2463,7 +2467,7 @@ namespace ColorPreset.Plugins
                         {
                             try
                             {
-                                MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                                blRes = MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                             }
                             catch (Exception ex)
                             {
@@ -2479,7 +2483,7 @@ namespace ColorPreset.Plugins
                     {
                         try
                         {
-                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            blRes = MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                         }
                         catch (Exception ex)
                         {
@@ -2493,7 +2497,7 @@ namespace ColorPreset.Plugins
             }
 
             writelog("ColorPresetPlugin SetMonitorProfile exit ...");
-            return System.Threading.Tasks.Task.FromResult(true);
+            return System.Threading.Tasks.Task.FromResult(blRes);
         }
 
         /// <summary>
