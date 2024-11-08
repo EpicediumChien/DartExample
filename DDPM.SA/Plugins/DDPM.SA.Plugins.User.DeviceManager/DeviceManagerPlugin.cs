@@ -6253,19 +6253,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         public Task<InterruptScreenRoot> InterruptScreen_Metadata()
         {
-            InterruptScreenRoot result = null;
             writelog("[InterruptScreen_Metadata], start.");
-            try
+            InterruptScreenRoot result = null;
+            if (_SettingsPlugin != null)
             {
-                writelog("[InterruptScreen_Metadata], creat logs.");
-                Logs logs = new Logs(Log);
-                writelog("[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata go.");
-                result = SWUpdateSetting.InterruptScreen_Metadata(_IsSkipCA, out string info, _SettingsPlugin, null, logs);
-                writelog($"[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata info : {info}");
-            }
-            catch (Exception ex)
-            {
-                writelog($"[InterruptScreen_Metadata], Error : {ex.Message}");
+
+                try
+                {
+                    writelog("[InterruptScreen_Metadata], creat logs.");
+                    Logs logs = new Logs(Log);
+
+                    writelog("[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata go.");
+                    InterruptScreenRoot temp = SWUpdateSetting.InterruptScreen_Metadata(_IsSkipCA, out string info, _SettingsPlugin, null, logs);
+                    if (temp != null)
+                    {
+                        writelog("[InterruptScreen_Metadata], temp is not null");
+                        writelog("[InterruptScreen_Metadata], _SettingsPlugin.ReadInterruptScreen go.");
+                        InterruptScreenRoot temp2 = _SettingsPlugin.ReadInterruptScreen().Result;
+                        if (temp2 == null || !temp.Equals(temp2))
+                        {
+                            result = temp;
+                            foreach (FeaturesList interruptScreenRoot in temp.featuresList)
+                            {
+                                if (interruptScreenRoot != null && interruptScreenRoot.content != null)
+                                {
+                                    interruptScreenRoot.content.image = new byte[0];
+                                }
+                            }
+                            writelog("[InterruptScreen_Metadata], _SettingsPlugin.WriteInterruptScreen go.");
+                            bool ret = _SettingsPlugin.WriteInterruptScreen(temp).Result;
+                        }
+                    }
+                    writelog($"[InterruptScreen_Metadata], SWUpdateSetting.InterruptScreen_Metadata info : {info}");
+                    logs = null;
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[InterruptScreen_Metadata], Error : {ex.Message}");
+                }
             }
             writelog("[InterruptScreen_Metadata], done.");
             return Task.FromResult(result);

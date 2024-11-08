@@ -149,6 +149,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             IsBusy = false;
             OnPropertyChanged("IsBusy");
+            if (SWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
+            {
+                InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
+                if (myDeserializedClass != null)
+                {
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                    {
+                        InterruptScreen interruptScreen = new InterruptScreen(myDeserializedClass);
+                        interruptScreen.Show();
+                    }));
+                }
+            }
         }
         #region General
         public GlobalSettingParam GlobalSettingParam { get; set; }
@@ -321,7 +333,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Critical_UpdateList_UI.Add(uiUpdateInfo);
                     }
                 }
-            } 
+            }
         }
 
         public bool IsCanUpdate()

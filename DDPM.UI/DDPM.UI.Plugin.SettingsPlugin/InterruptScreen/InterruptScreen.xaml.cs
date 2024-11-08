@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Resources;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
@@ -37,95 +38,116 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public ObservableCollection<UI_BugFixesContent> BugFixesList { get; set; }
         private int _currentIndex = 0;
         private DispatcherTimer _timer;
+        InterruptScreenRoot _InterruptScreenRoot;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public InterruptScreen()
+        public InterruptScreen(InterruptScreenRoot interruptScreenRoot)
         {
             InitializeComponent();
             DataContext = this;
-            //_InterruptScreenRoot = interruptScreenRoot;
+            if (interruptScreenRoot == null)
+            {
+                this.Close();
+            }
+            _InterruptScreenRoot = interruptScreenRoot;
             NewSupportedDevicesCollection = new ObservableCollection<UI_NewSupportedDevices>();
             NewFeaturesList = new ObservableCollection<UI_NewFeatures>();
             BugFixesList = new ObservableCollection<UI_BugFixesContent>();
             LodaData();
-
-           
             _timer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(3) 
+                Interval = TimeSpan.FromSeconds(3)
             };
             _timer.Tick += (sender, e) => NextItem();
             _timer.Start();
-
         }
         void LodaData()
         {
             string path = @"D:\Update\FW_Update_Info\FW-UPDATE-LOCAL-FOR-ODM\DPM-Updates\WebServer\appRoot\test\ddpm\AppUpdates.json";
             string jsonString = File.ReadAllText(path);
-            InterruptScreenRoot myDeserializedClass = JsonConvert.DeserializeObject<InterruptScreenRoot>(jsonString);
-            NewSupportedDevices.Visibility = Visibility.Collapsed;
-            NewFeatures.Visibility = Visibility.Collapsed;
-            BugFixes.Visibility = Visibility.Collapsed;
-            foreach (FeaturesList featuresList in myDeserializedClass.featuresList)
+            if (_InterruptScreenRoot != null)
             {
-                switch (featuresList.categoryId)
+                NewSupportedDevices.Visibility = Visibility.Collapsed;
+                NewFeatures.Visibility = Visibility.Collapsed;
+                BugFixes.Visibility = Visibility.Collapsed;
+                foreach (FeaturesList featuresList in _InterruptScreenRoot.featuresList)
                 {
-                    case 1:
-                        if (featuresList.content.productLabel != null)
-                        {
-                            NewSupportedDevices.Visibility = Visibility.Visible;
-                            Console.WriteLine($"{featuresList.content.productLabel.source}");
-                            NewSupportedDevicesCollection.Add(new UI_NewSupportedDevices()
+                    switch (featuresList.categoryId)
+                    {
+                        case 1:
+                            if (featuresList.content.productLabel != null)
                             {
-                                Title = featuresList.content.productLabel.source,
-                                BackgroundImage = LoadLocalImage($@"D:\Update\FW_Update_Info\FW-UPDATE-LOCAL-FOR-ODM\DPM-Updates\WebServer\appRoot\test\ddpm\{featuresList.content.imageUrl}"),
-                            });
-                        }
-                        break;
-                    case 2:
-                        if (featuresList.content.detailsList != null)
-                        {
-                            NewFeatures.Visibility = Visibility.Visible;
-                            ObservableCollection<UI_NewFeaturesContent> temp = new ObservableCollection<UI_NewFeaturesContent>();
-                            foreach (DetailsList detailsList in featuresList.content.detailsList)
-                            {
-                                temp.Add(new UI_NewFeaturesContent()
+                                NewSupportedDevices.Visibility = Visibility.Visible;
+                                Console.WriteLine($"{featuresList.content.productLabel.source}");
+                                NewSupportedDevicesCollection.Add(new UI_NewSupportedDevices()
                                 {
-                                    Content = detailsList.source
+                                    Title = featuresList.content.productLabel.source,
+                                    BackgroundImage = ConvertByteArrayToBitmapImage(featuresList.content.image),
                                 });
                             }
-                            NewFeaturesList.Add(new UI_NewFeatures()
+                            break;
+                        case 2:
+                            if (featuresList.content.detailsList != null)
                             {
-                                NewFeatures_Image = LoadLocalImage($@"D:\Update\FW_Update_Info\FW-UPDATE-LOCAL-FOR-ODM\DPM-Updates\WebServer\appRoot\test\ddpm\{featuresList.content.imageUrl}"),
-                                NewSupportedDevicesCollection = temp
-                            });
-                        }
-                        break;
-                    case 3:
-                        if (featuresList.content.bugDescription != null)
-                        {
-                            BugFixes.Visibility = Visibility.Visible;
-                            BugFixesList.Add(new UI_BugFixesContent()
+                                NewFeatures.Visibility = Visibility.Visible;
+                                ObservableCollection<UI_NewFeaturesContent> temp = new ObservableCollection<UI_NewFeaturesContent>();
+                                foreach (DetailsList detailsList in featuresList.content.detailsList)
+                                {
+                                    temp.Add(new UI_NewFeaturesContent()
+                                    {
+                                        Content = detailsList.source
+                                    });
+                                }
+                                NewFeaturesList.Add(new UI_NewFeatures()
+                                {
+                                    NewFeatures_Image = ConvertByteArrayToBitmapImage(featuresList.content.image),
+                                    NewSupportedDevicesCollection = temp
+                                });
+                            }
+                            break;
+                        case 3:
+                            if (featuresList.content.bugDescription != null)
                             {
-                                BugFixesContent = featuresList.content.bugDescription.source
-                            });
-                        }
-                        break;
+                                BugFixes.Visibility = Visibility.Visible;
+                                BugFixesList.Add(new UI_BugFixesContent()
+                                {
+                                    BugFixesContent = featuresList.content.bugDescription.source
+                                });
+                            }
+                            break;
+                    }
                 }
-            }
-            if (NewSupportedDevicesCollection.Count > 0)
-            {
-                BackgroundImage = NewSupportedDevicesCollection[_currentIndex].BackgroundImage;
-                NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;
+                if (NewSupportedDevicesCollection.Count > 0)
+                {
+                    BackgroundImage = NewSupportedDevicesCollection[_currentIndex].BackgroundImage;
+                    NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;
+                }
             }
             OnPropertyChanged("BackgroundImage");
             OnPropertyChanged("NewDeviceName");
             OnPropertyChanged("NewSupportedDevicesCollection");
         }
+        private static BitmapImage ConvertByteArrayToBitmapImage(byte[] byteArray)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+
+            if (byteArray.Length>0)
+            {
+                using (MemoryStream memoryStream = new MemoryStream(byteArray))
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.EndInit();
+                }
+            }
+            return bitmapImage;
+        }
+
         private BitmapImage LoadLocalImage(string path)
         {
             BitmapImage bitmap = new BitmapImage();
@@ -166,7 +188,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void NextItem()
         {
             _currentIndex = (_currentIndex + 1) % NewSupportedDevicesCollection.Count;
-            if (NewSupportedDevicesCollection.Count> _currentIndex)
+            if (NewSupportedDevicesCollection.Count > _currentIndex)
             {
                 BackgroundImage = NewSupportedDevicesCollection[_currentIndex].BackgroundImage;
                 NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;

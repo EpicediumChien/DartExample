@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Policy;
@@ -13,6 +14,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
@@ -192,7 +194,7 @@ namespace DDPM.SA.Common.Settings
                                 {
                                     if (interruptScreenRoot != null && interruptScreenRoot.content != null)
                                     {
-                                        interruptScreenRoot.content.imageUrl = $@"{URL}\{interruptScreenRoot.content.imageUrl}";
+                                        interruptScreenRoot.content.image = DownloadImageAsByteArray($@"{URL}\{interruptScreenRoot.content.imageUrl}");
                                     }
                                 }
                                 info = $"{nameof(InterruptScreen_Metadata)} Pass";
@@ -220,6 +222,40 @@ namespace DDPM.SA.Common.Settings
                 logs?.DebugMsg_1($"[InterruptScreen_Metadata], Error : {ex.Message}");
             }
             return result;
+        }
+        private static BitmapImage LoadLocalImage(string path)
+        {
+            BitmapImage bitmap = new BitmapImage();
+            if (!string.IsNullOrEmpty(path))
+            {
+                try
+                {
+                    byte[] imageBytes = DownloadImageAsByteArray(path);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading image: {ex.Message}");
+                }
+            }
+            return bitmap;
+        }
+        // 使用 HttpClient 從網站下載圖片並轉換為 byte[]
+        private static byte[] DownloadImageAsByteArray(string url)
+        {
+            byte[] imageBytes = new byte[0];
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    imageBytes = client.GetByteArrayAsync(url).Result;
+                }
+            }
+            catch
+            {
+
+            }
+            return imageBytes;
         }
     }
 }

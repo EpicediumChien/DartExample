@@ -139,5 +139,8 @@ namespace DDPM.SA.Common
         Task<List<string>> GetInfos(bool force_reload = false);
 
         Task<bool> QuerySettingsStatus();
+
+        Task<InterruptScreenRoot> ReadInterruptScreen();
+        Task<bool> WriteInterruptScreen(InterruptScreenRoot interruptScreenParam);
     }
 }
