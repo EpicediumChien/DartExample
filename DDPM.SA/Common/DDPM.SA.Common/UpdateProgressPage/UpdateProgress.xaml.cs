@@ -25,6 +25,10 @@ namespace DDPM.SA.Common.UpdateProgressPage
         private string _AlertMessage;
         private Visibility _AlertVisibility = Visibility.Collapsed;
         private string _ProgressStr_2_Color;
+#if DEBUG
+        string logFilePath = "UpdateProgress.log";
+        Logs logs;
+#endif
 
         public string UpdateTitle
         {
@@ -132,12 +136,12 @@ namespace DDPM.SA.Common.UpdateProgressPage
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        string logFilePath = "UpdateProgress.log";
-         Logs logs;
+
         public UpdateProgress()
         {
             InitializeComponent();
             DataContext = this;
+#if DEBUG
             DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
             string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
             if (!string.IsNullOrEmpty(AppDataPath))
@@ -150,8 +154,8 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 logFilePath = path + "\\" + logFilePath;
             }
             logs = new Logs(logFilePath, "DdpmSwUpdater");
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            logs.DebugMsg_1($"UpdateProgress go");
+            logs?.DebugMsg_1($"UpdateProgress go");
+#endif
         }
 
         public void ShowWindow()
@@ -242,7 +246,9 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 ProgressStr_2_Color = "#E6AC28";
                 Progress_IsAnimated = false;
             }
-            logs.DebugMsg_1($"{nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
+#if DEBUG
+            logs?.DebugMsg_1($"{nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
+#endif
         }
     }
 }

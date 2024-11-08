@@ -17,6 +17,7 @@ using DDPM.PowerMon;
 using DDPM.QAM;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Screen;
 using DDPM.SA.Common.Settings;
@@ -44,6 +45,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
@@ -4202,6 +4204,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
+            if (_FWUpdatePlugin == null)
+            {
+                writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
+                return Task.FromResult(new List<FWUpdateInfo>());
+            }
             _UpdateProgress = null;
             writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
@@ -4215,6 +4222,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_UpdateProgress != null)
             {
                 writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
@@ -4467,6 +4475,65 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
+        public Task<bool> MiniMizeDDPMUI()
+        {
+            writelog($"{nameof(MiniMizeDDPMUI)} start");
+            bool ret = false;
+            try
+            {
+                string processName = "DDPM";
+                Process[] processes = Process.GetProcessesByName(processName);
+                writelog($"{nameof(MiniMizeDDPMUI)} processes.Length {processes.Length}");
+                if (processes.Length > 0)
+                {
+                    foreach (var process in processes)
+                    {
+                        IntPtr hwnd = CallUser32dll._FindWindow(null, process.MainWindowTitle);
+                        if (hwnd != IntPtr.Zero)
+                        {
+                            writelog($"{process.ProcessName} SW_MINIMIZE go");
+                            CallUser32dll._ShowWindow(hwnd, (int)CallUser32dll.WindowState.SW_MINIMIZE);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(MiniMizeDDPMUI)} Error : {ex.Message}");
+            }
+            writelog($"{nameof(MiniMizeDDPMUI)} done");
+            return Task.FromResult(ret);
+        }
+        public Task<bool> RestoreDDPMUI()
+        {
+            writelog($"{nameof(RestoreDDPMUI)} start");
+            bool ret = false;
+            try
+            {
+                string processName = "DDPM";
+                Process[] processes = Process.GetProcessesByName(processName);
+                writelog($"{nameof(RestoreDDPMUI)} processes.Length {processes.Length}");
+                if (processes.Length > 0)
+                {
+                    foreach (var process in processes)
+                    {
+                        IntPtr hwnd = CallUser32dll._FindWindow(null, process.MainWindowTitle);
+                        if (hwnd != IntPtr.Zero)
+                        {
+                            writelog($"{process.ProcessName} SW_RESTORE go");
+                            CallUser32dll._ShowWindow(hwnd, (int)CallUser32dll.WindowState.SW_RESTORE);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(RestoreDDPMUI)} Error : {ex.Message}");
+            }
+            writelog($"{nameof(RestoreDDPMUI)} done");
+            return Task.FromResult(ret);
+        }
+
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -4622,7 +4689,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
                 Dispatcher.Run();
             });
@@ -8669,10 +8738,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (_UpdateProgress != null && _FWUpdatePlugin != null)
                     {
-                        _FWUpdatePlugin.ProgressUpdate_Notify -= ProgressUpdate_Notify;
-                        _FWUpdatePlugin.ProgressUpdate_Notify += ProgressUpdate_Notify;
+                        writelog($"DisplaySettingsChanged: Rrconnect FWU eventv go");
+                        _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                         ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                        writelog($"DisplaySettingsChanged: Rrconnect FWU eventv don");
                     }
                     writelog($"DisplaySettingsChanged: displayInOut is true");
 
@@ -9035,7 +9106,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var CancellationToken = Cancellation.Token;
 
             DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
-
+            if (_UpdateProgress != null && _FWUpdatePlugin != null)
+            {
+                writelog($"OnDeviceChanged: Rrconnect FWU eventv go");
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+                ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                writelog($"OnDeviceChanged: Rrconnect FWU eventv don");
+            }
             if (type == DeviceChangedType.NotifyOnly)
             {
                 //writelog("[OnDeviceChanged] Notify event to registers");
@@ -9964,7 +10043,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
                         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
                         //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         _FWUpdatePlugin.CollCheckUpdate += show_fwCheckUpdateScheduleEvent;
                         _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
                         _FWUpdatePlugin.StartCheckUpdateScheduleTimer();
@@ -9982,7 +10060,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
                         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
                         //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         _FWUpdatePlugin.CollCheckUpdate += show_fwCheckUpdateScheduleEvent;
                         _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
                         _FWUpdatePlugin.StartCheckUpdateScheduleTimer();

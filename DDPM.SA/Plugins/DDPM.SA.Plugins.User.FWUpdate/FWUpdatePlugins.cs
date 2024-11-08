@@ -56,23 +56,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     {
         //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
-        {
-            return ShowWindow(hWnd, nCmdShow);
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        private static bool _SetForegroundWindow(IntPtr hWnd)
-        {
-            return SetForegroundWindow(hWnd);
-        }
+        
         public static string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
         #region Private Members
 
@@ -2016,9 +2000,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
-            _logs.DebugMsg_1($"sendMessageToEvent ProgressUpdate_Notify : {ProgressUpdate_Notify}");
-            _logs.DebugMsg_1($"sendMessageToEvent ProgressUpdate_Notify is null : {ProgressUpdate_Notify == null}");
-            ProgressUpdate_Notify?.Invoke(this, fWUpdateInfo);
+            ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
         }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
