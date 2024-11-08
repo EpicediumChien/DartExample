@@ -10,8 +10,10 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.IO;
 using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -46,34 +48,60 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
         {
-            Dispatcher.Invoke(() =>
+            if (mo != null)
             {
-                Window parentWindow = Window.GetWindow(this);
-                double windowLeft = 0;
-                double windowTop = 0;
-                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
-                if (parentWindow != null)
+                Dispatcher.Invoke(() =>
                 {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top + 40;
-                }
-                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                modalDialog.Left = windowLeft;
-                modalDialog.Top = windowTop;
-                modalDialog.ShowDialog();
+                    string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                    string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
+                    string model = mo.modelName;//"U2724DE";
+                    string exportpath = path + "\\" + model + ".json";
 
-                if(modalDialog.DialogResult != null && modalDialog.DialogResult == true)
-                {
-                    //For jason to do import
+                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                    ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
 
-                    //ignore next check for this model
-                    if(modalDialog.isChecked)
+                    if (ImpExpSettings != null)
                     {
+                        if (ImpExpSettings.MonitorSettings != null)
+                        {
+                            if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                            {
+                                DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
+                            }
+                            else
+                            {
+                                Window parentWindow = Window.GetWindow(this);
+                                double windowLeft = 0;
+                                double windowTop = 0;
+                                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                                if (parentWindow != null)
+                                {
+                                    modalDialog.Owner = parentWindow;
+                                    windowLeft = parentWindow.Left;
+                                    windowTop = parentWindow.Top + 40;
+                                }
+                                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                                modalDialog.Left = windowLeft;
+                                modalDialog.Top = windowTop;
+                                modalDialog.ShowDialog();
 
+                                if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                                {
+                                    //For jason to do import
+                                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result)
+                                    {
+                                        //ignore next check for this model
+                                        if (modalDialog.isChecked)
+                                        {
+                                            DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         //Unused

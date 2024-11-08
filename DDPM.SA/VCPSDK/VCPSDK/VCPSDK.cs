@@ -118,6 +118,26 @@ namespace VCPSDK
                 return false;
             }
 
+
+            try
+            {
+                X509Chain x509Chain = new X509Chain();
+                x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+                x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                x509Chain.ChainPolicy.UrlRetrievalTimeout = new System.TimeSpan(0, 1, 0);
+                x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+                if (!x509Chain.Build(cert))
+                {
+                    Console.WriteLine("[NamedPipeServerSecurity] Certificate is invaild!");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[NamedPipeServerSecurity] error: {ex.Message}");
+                return false;
+            }
+
             //compare thumbprint
             //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
             //Target cert.Thumbprint

@@ -2063,6 +2063,26 @@ namespace ColorPreset.Plugins
                 writelog("[PinPublicKey] certificate null.");
                 return false;
             }
+
+            try
+            {
+                X509Chain x509Chain = new X509Chain();
+                x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+                x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                x509Chain.ChainPolicy.UrlRetrievalTimeout = new System.TimeSpan(0, 1, 0);
+                x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+                if(!x509Chain.Build(certificate2))
+                {
+                    writelog("[PinPublicKey] Certificate is invaild!");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {                
+                writelog("[PinPublicKey] error: " + ex.Message);
+            }
+
+
             HttpWebRequest httpWebRequest = sender as HttpWebRequest;
             if (httpWebRequest == null)
             {

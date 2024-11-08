@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.IO;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
+using System.Windows.Shell;
+using DDPM.SA.Resources.Helper;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 { 
@@ -95,27 +97,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         string model = monitorInfo.modelName;//"U2724DE";
                         string serviceTag = monitorInfo.edid.ServiceTag;
-                        string desc = "The same monitor is detected, do you want to import settings for %1?"; //string table: ImpExp_Message.0
+                        string desc = LangHelper.Instance["ImpExp_Message.0"]; //string table: ImpExp_Message.0
                         //
                         //Need jason to implement import/export check here
-                        string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                        string exportpath = path + "\\" + model + ".json";
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] export path : " + exportpath);
                         //
                         if (File.Exists(exportpath))
                         {
                             DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
-                            desc = desc.Replace("%1", model);
-                            DisplayImportToast(
-                                new DisplayWindowsToast()
+                            dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
+                            if (dDPMImpExpSettings != null)
+                            {
+                                if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                 {
-                                    Title = "Dell Display and Peripheral Manager", //string table: App_Name
-                                    Description = desc,
-                                    Model = model,
-                                    ServiceTag = serviceTag,
-                                    left_btn = "Yes",        //string table: Yes
-                                    right_btn = "No"       //string table: No
+                                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                                    if (settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result)
+                                    {
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
+                                    }
+                                    else
+                                    {
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
+                                    }
                                 }
-                            );
+                                else
+                                {
+                                    desc = desc.Replace("%1", model);
+                                    DisplayImportToast(
+                                        new DisplayWindowsToast()
+                                        {
+                                            Title = LangHelper.Instance["App_Name"], //string table: App_Name
+                                            Description = desc,
+                                            Model = model,
+                                            ServiceTag = serviceTag,
+                                            left_btn = LangHelper.Instance["Yes"],        //string table: Yes
+                                            right_btn = LangHelper.Instance["No"]       //string table: No
+                                        }
+                                    );
+                                }
+                            }
+                            else
+                            {
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
+                            }
                         }
                         else
                         {
@@ -139,12 +164,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (!string.IsNullOrEmpty(path))
                     {
-                        string impPath = path + "\\" + ret[1] + "_" + ret[2] + ".json";
+                        string impPath = path + "\\" + ret[1] + ".json";
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] impPath : " + impPath);
                         if (File.Exists(impPath))
                         {
                             DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                            if (settingsManagerDev.DisplayImportSettings(impPath, false, out ImpExpSettings).Result)
+                            if (settingsManagerDev.DisplayImportSettings(impPath, true, ret[2], out ImpExpSettings).Result)
                             {
                                 WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
                             }
