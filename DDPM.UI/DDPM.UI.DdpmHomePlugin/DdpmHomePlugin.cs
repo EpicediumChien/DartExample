@@ -25,6 +25,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.IO;
 using VcpCore.Common;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
@@ -375,10 +376,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     Thread.Sleep(5000);
                 }
+                string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
                 foreach (MonitorInfo info in temp_mos)
                 {
+                    string model = info.modelName;//"U2724DE";
+                    string serviceTag = info.edid.ServiceTag;
+                    string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                    _log.Info("[CheckIfNeedImportSetting_Display] export path : " + exportpath);
                     //if(can popup messagebox && not yet to import / already click no need import)
+                    if (File.Exists(exportpath))
                     {
                         //avoid timing issue to cause monitor updated
                         if (temp_mos.Count != _monitorInfos.Count)

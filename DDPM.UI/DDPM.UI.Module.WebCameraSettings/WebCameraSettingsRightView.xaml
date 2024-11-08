@@ -101,7 +101,7 @@
                         </Image.ToolTip>
                       </Image>
                     </StackPanel>
-                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsAutoFramingOn}" Content="{Binding Path=IsAutoFramingOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotRecording}"/>
+                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsAutoFramingOn}" Content="{Binding Path=IsAutoFramingOnText}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotRecording}"/>
                   </Grid>
                   <Grid Margin="32,12,16,0" Visibility="{Binding AutoFramingTransitionVisibility}">
                     <StackPanel Orientation="Horizontal">

@@ -6654,7 +6654,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
                                     }
-                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                    else
+                                    {
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                    }
                                 }
                                 else
                                 {
@@ -8274,7 +8277,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         // 複製指定的 log 文件到選擇的資料夾
                         CopyLogFolder(LogFolder, savePath);
                     }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
