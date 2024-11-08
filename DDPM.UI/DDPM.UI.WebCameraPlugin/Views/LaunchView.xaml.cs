@@ -257,7 +257,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                //Derek 1108 Move to here for PIMS 314613
+                //Derek 1108 Move to here to fix Webcam PIMS-314613
                 // Query all properties [resolution and frame rate] of the webcam device
                 _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
 

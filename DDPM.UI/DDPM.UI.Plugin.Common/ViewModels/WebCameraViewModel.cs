@@ -90,6 +90,21 @@ namespace DDPM.UI.Plugin.ViewModels
         // 20240926 jim add
         private bool showLockMask = false;
 
+        //Derek 1108
+        private bool _isAutoFocusOn;
+        public bool IsAutoFocusOn
+        {
+            get { return _isAutoFocusOn; }
+            set
+            {
+                if (_isAutoFocusOn != value)
+                {
+                    _isAutoFocusOn = value;
+                    OnPropertyChanged(nameof(IsAutoFocusOn));
+                }
+            }
+        }
+
         public bool ShowLockMask
         {
             get { return showLockMask; }
@@ -1377,10 +1392,20 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(Redo2Visibility));
 
             //Derek 2024/11/06
-            //Webcam PIMS-316915
-            //FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
             if (IsAutoFramingOn)
-                SetFOV_Selected(2);
+            {
+                SetFOV_Selected(2); //Webcam PIMS-316915 FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
+
+                //Derek 2024/11/06 Webcam PIMS-317629 
+                //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
+                IsFocusOn = true;
+                IsAutoFocusOn = false;
+            }
+            else
+            {
+                IsAutoFocusOn = true;
+            }
+
         }
 
         public void ClearUndo()
