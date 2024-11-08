@@ -14,7 +14,7 @@
                 <ResourceDictionary Source="EAStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="True" SplitMode="Work"
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="AWS"
                                IsEditable="True" HoveringCell="5D2" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -168,7 +168,7 @@
                     <GridSplitter Name="h2" Grid.Row="1" Style="{StaticResource SplitterStyle_Horz}" />
                </Grid>
 
-                <GridSplitter Name="h1" Grid.Row="1" Style="{StaticResource SplitterStyle_Horz}" />
+                <GridSplitter Name="h1" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource SplitterStyle_Horz}" />
 
                 <GridSplitter Name="v1" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"  Style="{StaticResource SplitterStyle_Vert}" />
             </Grid>

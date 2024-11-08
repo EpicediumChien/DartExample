@@ -97,7 +97,7 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("6C3", cell_6C3) { rcRatio = new Rect(0, 1/4, 0.3, 1/4) });
             cellListV.Add(new CellObj("6C4", cell_6C4) { rcRatio = new Rect(0, 0, 0.3, 1/4) });
             cellListV.Add(new CellObj("6C5", cell_6C5) { rcRatio = new Rect(0.3, 1/2, 0.7, 1/2) });
-            cellListV.Add(new CellObj("6C5", cell_6C6) { rcRatio = new Rect(0.3, 0, 0.7, 1/2) });
+            cellListV.Add(new CellObj("6C6", cell_6C6) { rcRatio = new Rect(0.3, 0, 0.7, 1/2) });
         }
 
         /// <summary>

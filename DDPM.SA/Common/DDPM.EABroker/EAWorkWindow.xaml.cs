@@ -141,11 +141,14 @@ namespace DDPM.EABroker
                     //_vm.CreateCellBorderListToSplitCtrlFromCellJsons(splitJson.Cells, ref _workingSplit);
 
                     Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
+
+                    double scale = 1.000;
                     //Rect rcScreen = new Rect();
-                    rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
-                    rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
-                    rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
-                    rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
+                    rcScreen.X = _workScreen.Bounds.Left / scale;
+                    rcScreen.Y = _workScreen.Bounds.Top / scale;
+                    rcScreen.Width = _workScreen.Bounds.Width / scale;
+                    rcScreen.Height = _workScreen.Bounds.Height / scale;
+
                     Trace.WriteLine($"AfterScale(/{_vm.ScreenScale}):({rcScreen.X},{rcScreen.Y})-({rcScreen.Right},{rcScreen.Bottom}){rcScreen.Width}x{rcScreen.Height}");
 
                     //sp0B.UI_CreateCellBordersFromRatioRects(rcScreen);

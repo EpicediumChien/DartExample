@@ -11,8 +11,12 @@
             CornerRadius="{Binding Radius, RelativeSource={RelativeSource AncestorType=UserControl}}"
             Background="{Binding BkBrush, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
-        <!-- For AwsIcon0, will show MonitorId Text -->
-        <Grid x:Name="childGrid"/>
+        <Grid Name="outterGrid">
+            <!-- For AwsIcon0, will show MonitorId Text -->
+            <Grid x:Name="childGrid"/>
+
+ 
+        </Grid>
 
         <!-- 
         <Border.Style>

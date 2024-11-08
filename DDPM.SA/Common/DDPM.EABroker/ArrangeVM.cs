@@ -63,6 +63,8 @@ namespace DDPM.EABroker
         //The last AwsWindow (left,top) position
         private double _xAwsWindow = 0;
         private double _yAwsWindow = 0;
+        private Rect _rcAwsWindow = new Rect();
+        private string _awsWindowHoverMsg = "";
 
         //AWS Icons
         private ISplitCtrl _awsIcon0;
@@ -810,6 +812,26 @@ namespace DDPM.EABroker
         }
 
         public AwsWindow AwsWindow => _awsWindow;
+
+        public Rect rcAwsWindow
+        {
+            get => _rcAwsWindow;
+            set
+            {
+                SetProperty(ref _rcAwsWindow, value);
+                OnPropertyChanged("AwsWindowRectText");
+            }
+        }
+        public string AwsWindowRectText
+        {
+            get { return FormatRect(rcAwsWindow); }
+        }
+
+        public string AwsWindowHoverMsg
+        {
+            get => _awsWindowHoverMsg;
+            set => SetProperty(ref _awsWindowHoverMsg, value);
+        }
         #endregion
 
         #region AWS Icons
@@ -953,12 +975,22 @@ namespace DDPM.EABroker
 
         public void OnPropertyChanged_AwsIconInfos()
         {
+            OnPropertyChanged("AwsIcon0Info");
             OnPropertyChanged("AwsIcon1Info");
             OnPropertyChanged("AwsIcon2Info");
             OnPropertyChanged("AwsIcon3Info");
             OnPropertyChanged("AwsIcon4Info");
         }
 
+        public string AwsIcon0Info
+        {
+            get
+            {
+                if (_awsIcon0 == null)
+                    return "(null)";
+                return $" Cells: {CellListText(_awsIcon0.CellList)}";
+            }
+        }
         public string AwsIcon1Info
         {
             get
@@ -966,7 +998,7 @@ namespace DDPM.EABroker
                 if (_awsIcon1 == null)
                     return "(null)";
                 if (_awsIcon1.IsAddedCustomLayout)
-                    return $"{_awsIcon1.FriendlyName}, Cells: Cells: {CellListText(_awsIcon1.CellList)}, CellBorders: {CellBordersText(_awsIcon1.CellBorders)}";
+                    return $"{_awsIcon1.FriendlyName}, Cells: Cells: {CellListText(_awsIcon1.CellList)}";
                 else
                     return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
             }
@@ -1181,6 +1213,13 @@ namespace DDPM.EABroker
                 }
                 return _isAwsBuddyWindowVisible;
             }
+        }
+
+        public Rect GetHoveringRectFromAwsBuddyWindow()
+        {
+            if (_awsBuddyWindow != null)
+                return _awsBuddyWindow.GetHoveringCellRect();
+            return Rect.Empty;
         }
         #endregion
 

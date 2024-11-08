@@ -16,12 +16,12 @@ using System.Windows.Shapes;
 namespace DDPM.Easy.Common
 {
     /// <summary>
-    /// Interaction logic for SplitCtrl6I.xaml
+    /// Interaction logic for SplitCtrl7K.xaml
     /// </summary>
-    public partial class SplitCtrl6I : UserControl, ISplitCtrl
+    public partial class SplitCtrl7K : UserControl, ISplitCtrl
     {
         #region ctor
-        public SplitCtrl6I()
+        public SplitCtrl7K()
         {
             InitializeComponent();
             VM.Settings = SplitCtrlVM.Double_To_GridLength(DefaultSettings);
@@ -33,13 +33,13 @@ namespace DDPM.Easy.Common
 
         #region ISplitCtrl Native Members
 
-        public string CtrlClass => nameof(SplitCtrl6I);
-        public int CellCount => 6;
-        public char SplitKey => 'I';
+        public string CtrlClass => nameof(SplitCtrl7K);
+        public int CellCount => 7;
+        public char SplitKey => 'K';
         public UserControl UC => this;
 
         //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
-        public int EAID { get; set; } = 37;
+        public int EAID { get; set; } = 49;
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -57,7 +57,7 @@ namespace DDPM.Easy.Common
         /// <returns></returns>
         public ISplitCtrl New()
         {
-            SplitCtrl6I ctrl = new SplitCtrl6I();
+            SplitCtrl7K ctrl = new SplitCtrl7K();
             return (ISplitCtrl)ctrl;
         }
 
@@ -84,20 +84,24 @@ namespace DDPM.Easy.Common
         public void InitCellList()
         {
             cellListH.Clear();
-            cellListH.Add(new CellObj("6i1", cell_6i1) { rcRatio = new Rect(0, 0, 1 / 4, 0.3) });
-            cellListH.Add(new CellObj("6i2", cell_6i2) { rcRatio = new Rect(1 / 4, 0, 1 / 4, 0.3) });
-            cellListH.Add(new CellObj("6i3", cell_6i3) { rcRatio = new Rect(1 / 2, 0, 1 / 4, 0.3) });
-            cellListH.Add(new CellObj("6i4", cell_6i4) { rcRatio = new Rect(3 / 4, 0, 1 / 4, 0.3) });
-            cellListH.Add(new CellObj("6i5", cell_6i5) { rcRatio = new Rect(0, 0.3, 1 / 2, 0.7) });
-            cellListH.Add(new CellObj("6i6", cell_6i6) { rcRatio = new Rect(1 / 2, 0.3, 1 / 2, 0.7) });
+            cellListH.Add(new CellObj("7k1", cell_7k1) { rcRatio = new Rect(0, 0, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k2", cell_7k2) { rcRatio = new Rect(1 / 3, 0, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k3", cell_7k3) { rcRatio = new Rect(2 / 3, 0, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k4", cell_7k4) { rcRatio = new Rect(0, 1 / 2, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k5", cell_7k5) { rcRatio = new Rect(1 / 3, 1 / 2, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k6", cell_7k6) { rcRatio = new Rect(2 / 3, 1 / 2, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k7", cell_7k7) { rcRatio = new Rect(2 / 3, 1 / 2, 1 / 3, 1 / 2) });
+            cellListH.Add(new CellObj("7k8", cell_7k8) { rcRatio = new Rect(2 / 3, 1 / 2, 1 / 3, 1 / 2) });
 
             cellListV.Clear();
-            cellListV.Add(new CellObj("6I1", cell_6I1) { rcRatio = new Rect(0, 3 / 4, 0.3, 1 / 4) });
-            cellListV.Add(new CellObj("6I2", cell_6I2) { rcRatio = new Rect(0, 1 / 2, 0.3, 1 / 4) });
-            cellListV.Add(new CellObj("6I3", cell_6I3) { rcRatio = new Rect(0, 1 / 4, 0.3, 1 / 4) });
-            cellListV.Add(new CellObj("6I4", cell_6I4) { rcRatio = new Rect(0, 0, 0.3, 1 / 4) });
-            cellListV.Add(new CellObj("6I5", cell_6I5) { rcRatio = new Rect(0.3, 1 / 2, 0.7, 1 / 2) });
-            cellListV.Add(new CellObj("6I6", cell_6I6) { rcRatio = new Rect(0.3, 0, 0.7, 1 / 2) });
+            cellListV.Add(new CellObj("7K1", cell_7K1) { rcRatio = new Rect(0, 2 / 3, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K2", cell_7K2) { rcRatio = new Rect(0, 1 / 3, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K3", cell_7K3) { rcRatio = new Rect(0, 0, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K4", cell_7K4) { rcRatio = new Rect(1 / 2, 2 / 3, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K5", cell_7K5) { rcRatio = new Rect(1 / 2, 1 / 3, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K6", cell_7K6) { rcRatio = new Rect(1 / 2, 0, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K7", cell_7K7) { rcRatio = new Rect(1 / 2, 0, 1 / 2, 1 / 3) });
+            cellListV.Add(new CellObj("7K8", cell_7K8) { rcRatio = new Rect(1 / 2, 0, 1 / 2, 1 / 3) });
         }
 
         /// <summary>
@@ -105,7 +109,7 @@ namespace DDPM.Easy.Common
         /// </summary>
         public void UpdateRatioRectsFromSettings()
         {
-            if (VM.Settings_Double.Count < 8)
+            if (VM.Settings_Double.Count < 5)
                 return;
 
             if (VM.IsVertical)
@@ -197,27 +201,29 @@ namespace DDPM.Easy.Common
             VSplitterList.Clear();
             VSplitterList.Add(v1);
             VSplitterList.Add(v2);
-            VSplitterList.Add(v3);
             VSplitterList.Add(V1);
+            VSplitterList.Add(V2);
+            VSplitterList.Add(V3);
 
             HSplitterList.Clear();
             HSplitterList.Add(h1);
+            HSplitterList.Add(h2);
+            HSplitterList.Add(h3);
             HSplitterList.Add(H1);
             HSplitterList.Add(H2);
-            HSplitterList.Add(H3);
         }
 
         #endregion Splitter List
 
         #region Settings
 
-        public List<double> DefaultSettings => new List<double>() { 1, 1, 7, 3, 1, 1, 1, 1 };
+        public List<double> DefaultSettings => new List<double>() { 1, 2, 1, 2, 1, 1, 1, 1, 1 };
         #endregion Settings
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 6.9: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 4 sections.";
-        private string _defaultVertName = "Option 6.9: 2 rows, split equally. Row 1, split 70/30%. Column 1, no split, Column 2, split equally. Row 2, split 70/30%.";
+        private string _defaultHorzName = "Option 7.11: 2 rows, split 30/70%. Rows 1 and 2, each split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split.";
+        private string _defaultVertName = "Option 7.11: 3 columns, split 30/70%. Columns 1, 2, and 3 split 25/50/25%. Rows 1 and 3, split equally. Row 2, no split.";
         public string FriendlyName
         {
             get

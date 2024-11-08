@@ -107,6 +107,12 @@
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_7w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
+
+                            <!-- Engineer Test -->
+                            <Grid Height="40">
+                                <Button Name="saveSplitCtrlsToPngImagesButton" Visibility="Collapsed"
+                                        Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Padding="8,2" Click="saveSplitCtrlsToPngImagesButton_Click"/>
+                            </Grid>
                         </StackPanel>
                     </Border>
                 </StackPanel>

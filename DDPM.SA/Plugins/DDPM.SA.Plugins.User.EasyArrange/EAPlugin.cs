@@ -359,6 +359,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _log?.Info($"SettingsManager plugin is in a started condition");
                         _settingsManagerPluginCondition = pluginCondition;
                         _settingsManagerPluginUsable = true;
+                        //Robert_Lin, 2024-11-6 Register a hander when SettingsMnager Init donw.
+                        //We need to reload settings in that handler
+                        _settingsManagerPlugin.SettingReadyEvent += _settingsManagerPlugin_SettingReadyEvent;
                         //_vmArrange.DeviceManager = _deviceManagerPlugin;
                         if (CheckIfReadyToStartEABorker())
                         {
@@ -373,6 +376,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                 }
             });
+        }
+
+        //Called (event) when SettingsManager has init done
+        private void _settingsManagerPlugin_SettingReadyEvent(object? sender, EventArgs e)
+        {
+            //If eaBroker
+            if (_eaBroker != null)
+            {
+                _eaBroker.NotifySettingsManagerIsInitializedDone();
+            }
+            //Unregister the event handler
+            if (_settingsManagerPlugin != null)
+            {
+                _settingsManagerPlugin.SettingReadyEvent -= _settingsManagerPlugin_SettingReadyEvent;
+            }
         }
 
         //TelemetryScheduler Plugin

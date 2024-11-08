@@ -223,33 +223,43 @@ namespace DDPM.Easy.Common
                 if ((idxSettings + 4) > settings.Count)
                     break;
 
+                string cellName = $"Cb{idx+1}";
                 double left = settings[idxSettings] * xRatio;
                 double top =  settings[idxSettings + 1] * yRatio;
+                double width = settings[idxSettings + 2] * xRatio;
+                double height = settings[idxSettings + 3] * yRatio;
+
+                //Create a CellBorder
+                //
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellName;
+                cellBorder.Width = settings[idxSettings + 2] * xRatio;
+                cellBorder.Height = settings[idxSettings + 3] * yRatio;
 
                 //Add Borders
                 //
-                Border border = new Border();
-                border.Name = $"Cb{idx}";
-                border.Style = FindResource("CellBorderStyle") as Style;
-                border.Width = settings[idxSettings + 2] * xRatio;
-                border.Height = settings[idxSettings + 3] * yRatio;
+                //Border border = new Border();
+                //border.Name = $"Cb{idx}";
+                //border.Style = FindResource("CellBorderStyle") as Style;
+                //border.Width = settings[idxSettings + 2] * xRatio;
+                //border.Height = settings[idxSettings + 3] * yRatio;
 
                //canvas.Children.Add(border);
                 //Canvas.SetLeft(border, left);
                 //Canvas.SetTop(border, top);
 
-                CellObj cell = new CellObj(border.Name, border);
-                cell.rc = new Rect(left, top, border.Width, border.Height);
+                CellObj cell = new CellObj(cellName, cellBorder);
+                cell.rc = new Rect(left, top, width, height);
                 cellListH.Add(cell);
                 Trace.WriteLine($"Cell[{idx}]:({cell.rc.X},{cell.rc.Y})-({cell.rc.Right},{cell.rc.Bottom}){cell.rc.Width}x{cell.rc.Height}");
 
                 //Add CellBorders
                 //
-                CellBorder cellBorder = new CellBorder();
-                cellBorder.CellName = $"Cb{idx}";
-                //cellBorder.Style = FindResource("CellBorder0B") as Style;
-                cellBorder.Width = settings[idxSettings + 2] * xRatio;
-                cellBorder.Height = settings[idxSettings + 3] * yRatio;
+                //CellBorder cellBorder = new CellBorder();
+                //cellBorder.CellName = $"Cb{idx}";
+                ////cellBorder.Style = FindResource("CellBorder0B") as Style;
+                //cellBorder.Width = settings[idxSettings + 2] * xRatio;
+                //cellBorder.Height = settings[idxSettings + 3] * yRatio;
 
                 //Point topLeftCellBd = cellBorder.PointToScreen(new Point(left, top));
                 //Rect rcCellBd = new Rect(topLeftCellBd.X, topLeftCellBd.Y, border.Width, border.Height);

@@ -22,6 +22,10 @@ using UserControl = System.Windows.Controls.UserControl;
 using Rect = System.Windows.Rect;
 using VcpCore.Common;
 using User32 = DDPM.UI.Common.User32;
+using System.Windows.Media.Imaging;
+using Microsoft.Win32;
+using DDPM.SA.Common.Popup;
+using System.Windows.Interop;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -105,6 +109,12 @@ namespace DDPM.UI.Module.EzArrange
         {
             //InitRecentListView();
             //InitListViewItems();
+
+            if (IniReadInt("DDPMDebug", "EzArrange.SaveSplitCtrlsToPngFilesButtonEnabled", 0, @"C:\temp\DDPMDebug.txt") == 1)
+            {
+                saveSplitCtrlsToPngImagesButton.Visibility = Visibility.Visible;
+            }
+
         }
         #endregion
 
@@ -800,8 +810,11 @@ namespace DDPM.UI.Module.EzArrange
                 //Find in CustomList, for the item with the same CustomName
                 SplitItem? itemCustom = splitListView_Custom.FindItemByFriendlyName(e.SplitJson.CustomName);
                 //If found in CustomList
-                if (itemCustom != null)
+                if ((itemCustom != null) && (itemCustom.ISplitCtrl != null))
                 {
+                    //Reuse the EAID of the Replaced item
+                    int eaid = itemCustom.ISplitCtrl.EAID;
+                    e.SplitJson.EAID = eaid;
                     //Replace data from return data
                     itemCustom.ReplaceByEAArgs(e);
 
@@ -839,7 +852,8 @@ namespace DDPM.UI.Module.EzArrange
                         }
                         ispCustom.Settings = e.SplitJson.Settings;
                         ispCustom.FriendlyName = e.SplitJson.CustomName;
-                        ispCustom.EAID = e.SplitJson.EAID;
+                        int newEAID = GetUnusedCustomEAID();
+                        ispCustom.EAID = newEAID;
                         //Insert to the first (DDPMW-861)
                         itemCustom = splitListView_Custom.InsertSplitCtrlToList(ispCustom, 0);
                         itemCustom.CustomId = GenerateCustomId();
@@ -861,7 +875,11 @@ namespace DDPM.UI.Module.EzArrange
                     {
                         itemCustom = splitListView_Custom.GetAt(0);
                         if (itemCustom == null) return;
+                        if (itemCustom.ISplitCtrl == null) return;
 
+                        //Reuse the EAID of the Replaced item
+                        int eaid = itemCustom.ISplitCtrl.EAID;
+                        e.SplitJson.EAID = eaid;
                         //Replace data from return data
                         itemCustom.ReplaceByEAArgs(e);
 
@@ -957,6 +975,32 @@ namespace DDPM.UI.Module.EzArrange
             //IDeviceManagerSA must be ready
             if (_deviceManagerSA == null) return;
 
+            //Check if this custom layout is used by EasyMemory?
+            //Debug, assume YES
+            bool isLayoutUsedByEM = false;
+            if (isLayoutUsedByEM)
+            {
+                //Try to get hWnd of MainWindow
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+               //Show a message box to get comfirm from user
+                string headerText = string.Empty;
+                string subHeaderText = "The corresponding Easy Memory profile will be deleted too. Do you want to continue";
+                string leftButtonContent = "No";
+                string rightButtonContent = "Yes";
+                object ob = null;
+                bool isStayOny = false;
+                int autoCloseTimeSec = 0;
+                DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
+                    headerText, subHeaderText, leftButtonContent, rightButtonContent, ob, isStayOny, autoCloseTimeSec);
+                popBase.Owner = mainWindow;
+
+                bool? popResult = popBase.ShowDialog();
+                //popResult: Close=null; LeftButton=false; RightButton=true
+                if (popResult != true)
+                    return;
+
+            }
+
             //Find its Buddy in RecentList
             SplitItem? itemRecent = spItem.Buddy;
             //If Buddy exist (should be true)
@@ -1003,7 +1047,7 @@ namespace DDPM.UI.Module.EzArrange
             //Save UserSettings: CustomList
             if (includeCustomList)
             {
-                splitListView_Custom.RefreshCustomEAID();
+                //splitListView_Custom.RefreshCustomEAID();
 
                 List<SplitJson> customList = new List<SplitJson>();
                 foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
@@ -1099,6 +1143,19 @@ namespace DDPM.UI.Module.EzArrange
         {
             long unixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             return unixTime;
+        }
+
+        private int GetUnusedCustomEAID()
+        {
+            int eaid = EAEMConstants.EAID_FirstCustom;
+            for (int i=0; i<EAEMConstants.MaxCustomItems; i++)
+            {
+                SplitItem? spItem = splitListView_Custom.FindItemByEAID(eaid);
+                if (spItem == null)
+                    return eaid;
+                eaid++;
+            }
+            return 0;
         }
 
         //private string GenerateCustomFriendlyName()
@@ -1267,5 +1324,107 @@ namespace DDPM.UI.Module.EzArrange
             return null;
         }
         #endregion
+
+        #region Save Layout Icons to PNG files
+        private void saveSplitCtrlsToPngImagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            //DDPM.SA.Common.Popup.PopupBase popupBase = new DDPM.SA.Common.Popup.PopupBase(true, true, "HeaderText", "SubHeaderText");
+            //popupBase.ShowDialog(this);
+
+            OpenFolderDialog ofd = new OpenFolderDialog()
+            {
+                Title = "Select a folder",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                SaveLayoutIconsToPngFiles(ofd.FolderName);
+            }
+        }
+        private void SaveLayoutIconsToPngFiles(string folderPath)
+        {
+            //2 Windows
+            foreach (SplitItem spItem in splitListView_2w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //3 Windows
+            foreach (SplitItem spItem in splitListView_3w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //4 Windows
+            foreach (SplitItem spItem in splitListView_4w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //5 Windows
+            foreach (SplitItem spItem in splitListView_5w.SplitList)
+            {
+
+
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //6 Windows
+            foreach (SplitItem spItem in splitListView_6w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //7 Windows
+            foreach (SplitItem spItem in splitListView_7w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+        }
+        #endregion
+
     }
 }
