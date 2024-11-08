@@ -13,6 +13,8 @@ using VcpCore.Common;
 using DDPM.SA.Common.Settings;
 using System.Windows.Shell;
 using DDPM.SA.Resources.Helper;
+using DDPM.SA.Common.Display;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 { 
@@ -30,13 +32,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
     public class DisplayDeviceHelper
     {
-        private ISettingsManagerDev settingsManagerDev;
+        private static ISettingsManagerDev settingsManagerDev = null;
+        private static IDeviceManagerSA devManagerSA = null;
+        private static IDisplayService displayService = null;
+
         private string path = string.Empty;
 
         public enum log_type
         {
             info = 0,
             error
+        }
+
+        public void UpdateDDPMPluginInstances(ISettingsManagerDev settings = null, IDeviceManagerSA devMgr = null, IDisplayService displaySrv = null)
+        {
+            if (settings != null)
+                settingsManagerDev = settings;
+            if(devMgr != null)
+                devManagerSA = devMgr;
+            if(displaySrv != null)
+                displayService = displaySrv;
         }
 
         private static ILog _log = null;
@@ -198,6 +213,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Length < 3");
             }
         }
+
+        //for PIMS-288826
+        public bool isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease ||
+                job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+            {
+                bool isSyncEnable = false;
+                DeviceMangerPlugin? devMgr = (DeviceMangerPlugin)devManagerSA;
+                if (devMgr == null)
+                {
+                    WriteLog("[isHotkeySyncBrightnessContrastToAllMonitors] default is false since null deviceManager");
+                    return false;
+                }
+                DDPMSettings data = devMgr.ReloadAppConfigData().Result;
+                isSyncEnable = data.UserSettings.IsSynchronizemonitor;
+                string actionType = CheckisShowSynchronize(displayService, moLists, currentMoInfo, alsSynchronizeList).Result;
+                if(actionType.Equals("A") || actionType.Equals("B") || actionType.Equals("C"))
+                {
+                    if (isSyncEnable)
+                        WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] should sync {job} between monitor");
+                    else
+                        WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] should *not* sync {job} between monitor");
+                    return isSyncEnable;
+                }
+                else
+                {
+                    WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] sync option isn't active ({actionType})");
+                }
+            }
+            else
+            {
+                WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] job is not belong to Bri/Con/Lum");
+            }
+
+            return false;
+        }
+
+        public void PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            if (devManagerSA == null)
+                return;
+            bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType.BrightnessReduce, moLists, currentMoInfo, alsSynchronizeList);
+            byte code = 0x10;
+            
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.BrightnessReduce ||
+                job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
+            {
+                code = 0x10;
+            }
+            else if (job == HotkeyType.ContrastIncrease || job == HotkeyType.ContrastReduce)
+            {
+                code = 0x12;
+            }
+            else
+                return;
+            
+            if (doSync)
+            {
+                foreach (MonitorInfo mi in moLists)
+                {
+                    ObjGetVCP obBrightness = devManagerSA.GetVCPCapability(mi, code, 0).Result;
+                    if (obBrightness.result)
+                    {
+                        uint brightnessValue = (uint)obBrightness.value;
+                        if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
+                            brightnessValue = ((uint)obBrightness.value) >= 95 ? 100 : ((uint)obBrightness.value + 5);
+                        else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+                            brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
+                        else
+                            continue;
+                        bool ret = devManagerSA.SetVCPCapability(mi, code, brightnessValue).Result;
+                        WriteLog($"{job}:[{mi.edid.ModelName}:{mi.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+                    }
+                }
+            }
+            else
+            {
+                ObjGetVCP obBrightness = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
+                uint brightnessValue = (uint)obBrightness.value;
+                if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
+                    brightnessValue = ((uint)obBrightness.value) >= 95 ? 100 : ((uint)obBrightness.value + 5);
+                else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+                    brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
+                else
+                    return;
+                bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, brightnessValue).Result;
+                WriteLog($"{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+            }
+        }
+
         public Task<string> CheckisShowSynchronize(IDisplayService _displayManagerPlugin, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
         {
             if (moLists == null || _displayManagerPlugin == null)
