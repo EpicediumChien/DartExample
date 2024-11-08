@@ -5305,6 +5305,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
         }
 
+        public Task<string> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
+        }
+
         #endregion
 
         #region NKVM implementation
