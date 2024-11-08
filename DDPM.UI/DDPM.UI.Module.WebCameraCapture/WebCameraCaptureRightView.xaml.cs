@@ -103,6 +103,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             if (sender is Border bdr)
             {
                 int idx;
+                if (bdr.Tag.GetType().ToString().ToLower() != "system.string") return;
                 bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
                 if (!r) return;
                 _vm.SetResolution_Selected(idx);
@@ -141,6 +142,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             if (sender is Border bdr)
             {
                 int idx;
+                if (bdr.Tag.GetType().ToString().ToLower() != "system.string") return;
                 bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
                 if (!r) return;
                 _vm.SetFPS_Selected(idx);
