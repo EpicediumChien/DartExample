@@ -4,6 +4,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.TechHub.Sdk.Common;
+using DPeMPublic.Common;
 using Microsoft.Win32;
 using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
@@ -1062,7 +1063,27 @@ namespace DDPM.SA.Common.Settings
             info = string.Empty;
             try
             {
-                var verifier = new PeAuthenticodeVerifier();
+                //Method 1
+                /*var verifier = new PeAuthenticodeVerifier();
+
+                using (var fileLock = new FileLock(filePath, PathCheckOption.IgnoreAll, lockNow: true))
+                {
+                    var result = verifier.Verify(fileLock);
+
+                    if (result == Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        info = $"[VerifyExecutableFileSignature] File has valid signature";
+                        return true;
+                    }
+                    else
+                    {
+                        info = $"[VerifyExecutableFileSignature] File has invalid signature, last error: {result}";
+                        return false;
+                    }
+                }*/
+                //Method 2 - with verify option
+                VerifierOption myVerifierOptions = VerifierOption.UseOfflineRevocationCheck;
+                var verifier = new PeAuthenticodeVerifier(myVerifierOptions);
 
                 using (var fileLock = new FileLock(filePath, PathCheckOption.IgnoreAll, lockNow: true))
                 {
