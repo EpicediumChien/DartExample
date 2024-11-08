@@ -3911,6 +3911,13 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (index)
             {
+                case "VGA": return "VGA-1";
+                case "VGA1": return "VGA-1";
+                case "VGA-1": return "VGA-1";
+
+                case "VGA2": return "VGA-2";
+                case "VGA-2": return "VGA-2";
+
                 case "HDMI": return "HDMI-1";
                 case "HDMI1": return "HDMI-1";
                 case "HDMI-1": return "HDMI-1";
@@ -10709,6 +10716,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (_AllInfoMonitors == null)
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
+
                         _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                         writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
                         if (ss_1[0].ToUpper() == "DISPLAY")
@@ -10723,7 +10731,6 @@ namespace DDPM.CLI.Plugins.Display
                                 ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                                 ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                                 ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
 
                                 // malik
                                 bool retcode = false;

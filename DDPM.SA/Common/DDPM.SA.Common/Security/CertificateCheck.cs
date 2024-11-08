@@ -73,6 +73,12 @@ namespace DDPM.SA.Common.Security
                 {
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+
+                    if(!CheckCertificateIsVaild(certificate))
+                    {
+                        return ret;
+                    }
+
                     ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
                 }
                 catch (Exception ex)
@@ -92,6 +98,12 @@ namespace DDPM.SA.Common.Security
                 {
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+
+                    if(!CheckCertificateIsVaild(certificate))
+                    { 
+                        return ret; 
+                    }
+
                     for (int i = 0; i < Stande_Thumbprint.Count; i++)
                     {
                         ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
@@ -197,6 +209,12 @@ namespace DDPM.SA.Common.Security
                 _logs?.DebugMsg_1("[PinPublicKey] certificate null.");
                 return false;
             }
+
+            if(!CheckCertificateIsVaild(certificate2))
+            {
+                return false;
+            }
+
             HttpClient httpClient = sender as HttpClient;
             if (httpClient == null)
             {

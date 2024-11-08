@@ -1907,8 +1907,8 @@ namespace DDPM.UI.Module.Brightness
                 {
                     if (_autoBrightnessStatus)
                     {
-                        string pop_string = "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
-                        if (DdpmCommonHelper.DDPMMesssageBox("Warning", pop_string))
+                        string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
+                        if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
                         {
                             AutoBrightnessStatus = _autoBrightnessStatus = false;
                         }
@@ -1931,8 +1931,8 @@ namespace DDPM.UI.Module.Brightness
         {
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
-                string pop_string = "This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync??";
-                if (DdpmCommonHelper.DDPMMesssageBox("Warning", pop_string))
+                string pop_string = Strings.BrightnessPageNotice0;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
+                if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
                 {
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
