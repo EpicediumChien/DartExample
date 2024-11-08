@@ -625,6 +625,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetSameModel(MonitorInfo monitorInfo);
 
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
+
         #endregion public for ImpExpSettings
 
         //public for GUI to get the changes of display and peripherals

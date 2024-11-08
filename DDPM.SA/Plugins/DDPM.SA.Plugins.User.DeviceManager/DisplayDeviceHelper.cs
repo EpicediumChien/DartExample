@@ -12,6 +12,7 @@ using System.IO;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
 using System.Windows.Shell;
+using DDPM.SA.Resources.Helper;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 { 
@@ -75,7 +76,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 toastContentBuilder.AddArgument(content.Title);
                 toastContentBuilder.AddText(content.Title);
                 toastContentBuilder.AddText(content.Description);
-                toastContentBuilder.AddButton(content.left_btn, ToastActivationType.Background, "Yes" + "," + content.Model/*content.left_btn_action*/);
+                toastContentBuilder.AddButton(content.left_btn, ToastActivationType.Background, "Yes" + "," + content.Model + "," + content.ServiceTag/*content.left_btn_action*/);
                 toastContentBuilder.AddButton(content.right_btn, ToastActivationType.Background, content.right_btn_action);
 
                 toastContentBuilder.Show(); // 顯示Toast通知
@@ -95,7 +96,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     foreach (MonitorInfo monitorInfo in mos)
                     {
                         string model = monitorInfo.modelName;//"U2724DE";
-                        string desc = "The same monitor is detected, do you want to import settings for %1?"; //string table: ImpExp_Message.0
+                        string serviceTag = monitorInfo.edid.ServiceTag;
+                        string desc = LangHelper.Instance["ImpExp_Message.0"]; //string table: ImpExp_Message.0
                         //
                         //Need jason to implement import/export check here
                         string exportpath = path + "\\" + model + ".json";
@@ -110,7 +112,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                 {
                                     DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                                    if (settingsManagerDev.DisplayImportSettings(exportpath, false, out ImpExpSettings).Result)
+                                    if (settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result)
                                     {
                                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
                                     }
@@ -125,11 +127,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     DisplayImportToast(
                                         new DisplayWindowsToast()
                                         {
-                                            Title = "Dell Display and Peripheral Manager", //string table: App_Name
+                                            Title = LangHelper.Instance["App_Name"], //string table: App_Name
                                             Description = desc,
                                             Model = model,
-                                            left_btn = "Yes",        //string table: Yes
-                                            right_btn = "No"       //string table: No
+                                            ServiceTag = serviceTag,
+                                            left_btn = LangHelper.Instance["Yes"],        //string table: Yes
+                                            right_btn = LangHelper.Instance["No"]       //string table: No
                                         }
                                     );
                                 }
@@ -155,7 +158,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void AutoImport(ToastNotificationActivatedEventArgsCompat e) 
         {
             string[] ret = e.Argument.Split(",");
-            if (ret.Length >= 2)
+            if (ret.Length >= 3)
             {
                 if (e.Argument.StartsWith("Yes"))
                 {
@@ -166,7 +169,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (File.Exists(impPath))
                         {
                             DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                            if (settingsManagerDev.DisplayImportSettings(impPath, false, out ImpExpSettings).Result)
+                            if (settingsManagerDev.DisplayImportSettings(impPath, true, ret[2], out ImpExpSettings).Result)
                             {
                                 WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
                             }

@@ -104,7 +104,7 @@ namespace DdpmSwUpdater
                 {
                     SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                     {
-                        TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
+                        TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,
                         ServerPath = swUpdateHelper.Softwares[i].ServerPath,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath,
