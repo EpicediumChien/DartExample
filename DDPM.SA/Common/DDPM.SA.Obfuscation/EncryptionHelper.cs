@@ -35,16 +35,24 @@ namespace DDPM.SA.Obfuscation
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-                using (MemoryStream msEncrypt = new MemoryStream())
+                try
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (MemoryStream msEncrypt = new MemoryStream())
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                         {
-                            swEncrypt.Write(plainText);
+                            using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                            {
+                                swEncrypt.Write(plainText);
+                            }
+                            return msEncrypt.ToArray();
                         }
-                        return msEncrypt.ToArray();
                     }
+                }
+                catch (Exception ex) 
+                {
+                    Console.WriteLine($"[EncryptStringToBytes_Aes] exception, message: {ex.Message}");
+                    return default;
                 }
             }
         }
@@ -67,7 +75,19 @@ namespace DDPM.SA.Obfuscation
                     {
                         using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                         {
-                            return srDecrypt.ReadToEnd();
+
+                            string plainText = string.Empty;
+
+                            try
+                            {
+                                plainText = srDecrypt.ReadToEnd();
+                            }
+                            catch (Exception ex) 
+                            {
+                                Console.WriteLine($"[DecryptStringFromBytes_Aes] exception, message: {ex.Message}");
+                            }
+
+                            return plainText;
                         }
                     }
                 }
@@ -112,15 +132,23 @@ namespace DDPM.SA.Obfuscation
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                try
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (MemoryStream msDecrypt = new MemoryStream(cipherText))
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
-                            return srDecrypt.ReadToEnd();
+                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            {
+                                return srDecrypt.ReadToEnd();
+                            }
                         }
                     }
+                }
+                catch (Exception ex) 
+                {
+                    Console.WriteLine($"[DecryptStringFromBytes_Aes] exception, message: {ex.Message}");
+                    return string.Empty;
                 }
             }
         }

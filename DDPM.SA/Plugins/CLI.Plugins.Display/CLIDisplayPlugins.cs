@@ -9918,7 +9918,17 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
 
             StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
-            string jsonString = r.ReadToEnd();
+
+            string jsonString = string.Empty;
+            try
+            {
+                jsonString = r.ReadToEnd();
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine($"[DiagnosticReport] StreamReader read failed, message: {ex.Message}");
+            }
+
             r.Close();
 
             if (_AllInfoMonitors == null)

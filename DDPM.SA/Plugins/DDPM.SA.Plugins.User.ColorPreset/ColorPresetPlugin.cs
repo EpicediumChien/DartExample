@@ -1848,19 +1848,35 @@ namespace ColorPreset.Plugins
         // Compute the file's SHA256 hash.
         private byte[] GetHashSha256(string filename)
         {
-            using (FileStream stream = System.IO.File.OpenRead(filename))
+            try
             {
-                return Sha256.ComputeHash(stream);
+                using (FileStream stream = System.IO.File.OpenRead(filename))
+                {
+                    return Sha256.ComputeHash(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetHashSha256 exception, message: ({ex.Message})");
+                return default;
             }
         }
 
         // Compute the file's SHA512 hash.
         private byte[] GetHashSha512(string filename)
         {
-            using (FileStream stream = System.IO.File.OpenRead(filename))
+            try
             {
-                return Sha512.ComputeHash(stream);
+                using (FileStream stream = System.IO.File.OpenRead(filename))
+                {
+                    return Sha512.ComputeHash(stream);
+                }
             }
+            catch (Exception ex)
+            {
+                writelog($"GetHashSha512 exception, message: ({ex.Message})");
+                return default;
+            }            
         }
 
         // 驗證伺服器證書

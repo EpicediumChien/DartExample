@@ -603,9 +603,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         }
                     }
                     string strReadJson = string.Empty;
-                    using (var reader = new StreamReader(monitorSettings_path))
+
+                    try
                     {
-                        strReadJson = reader.ReadToEnd();
+                        using (var reader = new StreamReader(monitorSettings_path))
+                        {
+                            strReadJson = reader.ReadToEnd();
+                        }
+                    }
+                    catch (Exception ex) 
+                    {
+                        WriteLog("[ReloadMonitorSettings] exception, message: " + ex.Message);
                     }
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
@@ -904,10 +912,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             string strReadJson = string.Empty;
-            using (var reader = new StreamReader(filePath))
+            try
             {
-                strReadJson = reader.ReadToEnd();
+                using (var reader = new StreamReader(filePath))
+                {
+                    strReadJson = reader.ReadToEnd();
+                }
             }
+            catch (Exception ex)
+            {
+                WriteLog("[ImportPowerNapSettings] exception, message: " + ex.Message);
+            }
+            
 
             if (strReadJson == string.Empty || strReadJson.Length == 0)
                 return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
