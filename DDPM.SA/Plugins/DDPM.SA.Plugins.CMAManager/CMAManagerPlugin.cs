@@ -301,6 +301,7 @@ namespace DDPM.SA.Plugins.CMAManager
             if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
             {
                 command = command + ("dock=silentfwupdate");
+                command = command + (" value=" + task.value);
             }
             else
             {
@@ -347,12 +348,12 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (option.minversion != null && option.minversion.Length > 0)
                 {
-                    command = command + (" value=" + option.minversion + ",minversion");
+                    command = command + (" value=" + option.minversion + ",miniversion");
                 }
 
                 if (option.model != null && option.model.Length > 0)
                 {
-                    command = command + (" value=\"" + option.model + "\",model");
+                    command = command + (" value=" + option.model + ",model");
                 }
             }
 
@@ -584,7 +585,16 @@ namespace DDPM.SA.Plugins.CMAManager
                     taskInfo = taskInfoQueue.Peek();
 
                     iCLICommandTable = new ICLICommandTable(null);
-                    commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
+                    commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.ToUpper().Split(' '));
+
+                    WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Count = {commandLineInput.Options.Count}");
+
+                    foreach (CommandType_Option s in commandLineInput.Options) {
+                        WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Option_Name = {s.Option_Name.ToString()}");
+                        WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Option_Value = {s.Option_Value.ToString()}");
+                    }
+
+
                     commandLineInput.isCliRunAdmin = true;
                     commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
 

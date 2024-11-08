@@ -974,9 +974,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType)
         {
             _logs.DebugMsg_1($"{nameof(Install)} start");
+            _logs.DebugMsg_1($"{nameof(Install)} installPath : {installPath}");
+            _logs.DebugMsg_1($"{nameof(Install)} deviceType : {deviceType}");
             FWUErrorCode ret = FWUErrorCode.Unknow;
             if (!string.IsNullOrEmpty(installPath))
             {
@@ -986,6 +988,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
+                            DeviceType = deviceType,
                             InstallPaths = installPath,
                             IsDisplay = isOnlyDisplay
                         };

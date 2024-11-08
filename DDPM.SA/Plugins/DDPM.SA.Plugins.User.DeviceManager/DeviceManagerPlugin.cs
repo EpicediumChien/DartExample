@@ -4242,7 +4242,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(tmpFWUpdateInfos);
         }
 
-        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown)
         {
             writelog("[DeviceMangerPlugin] Install start");
             writelog($"[DeviceMangerPlugin] Install isOnlyDisplay : {isOnlyDisplay}");
@@ -4254,7 +4254,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //if (_UpdateProgress != null)
                 //{
                 writelog($"[DeviceMangerPlugin] Install _FWUpdatePlugin.Install go");
-                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay, deviceType).Result;
                 //}
 
             }
@@ -7006,9 +7006,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings impExpSettings = new DDPMImpExpSettings();
-            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path)) 
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path))
             {
-                impExpSettings =  _SettingsPlugin.ReadImportSettingsFile(path).Result;
+                impExpSettings = _SettingsPlugin.ReadImportSettingsFile(path).Result;
             }
             return Task.FromResult(impExpSettings);
         }
