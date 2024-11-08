@@ -18,6 +18,7 @@ namespace TransferCmdJson
 
             string strJson = string.Empty;
             string[] cmds = src.Split(' ');
+
             string active = string.Empty;
             string devicetype = string.Empty;
             string command = string.Empty;
@@ -39,6 +40,11 @@ namespace TransferCmdJson
                 {
 
                     string[] s1 = cmds[i].Split('=');
+
+                    if (s1[1].Equals("firmwareupdate"))
+                    {
+                        active = "fw";
+                    }
 
                     devicetype = s1[0];
                     command = s1[1];
@@ -63,6 +69,7 @@ namespace TransferCmdJson
 
                             devicetype = s3[0];
                             value = s3[1];
+
                             continue;
 
                         }
@@ -131,28 +138,45 @@ namespace TransferCmdJson
 
         private static void readFile()
         {
-            const string PATH = @"C:\temp\cmd\";
+            const string PATH = @"C::\cmacmd\";
 
             List<string> list = new List<string>();
 
             DirectoryInfo dir = new DirectoryInfo(PATH);
             FileInfo[] files = dir.GetFiles("*");
 
+            long sessionId = DateTimeOffset.Now.ToUnixTimeSeconds();
+
             foreach (FileInfo file in files)
             {
                 string[] alllines = File.ReadAllLines(file.FullName);
 
+                txtOutput = string.Empty;   
+
                 for (int i = 0; i < alllines.Length; i++)
                 {
-                    list = new List<string>();
+                    if (alllines[i].Length <= 0)
+                    {
+                        continue;
+                    }
 
-                    string strTask = cmdParser(alllines[i].Trim());
+                    try
+                    {
+                        list = new List<string>();
 
-                    list.Add("{" + strTask + "}");
+                        alllines[i] = (alllines[i].Replace("/", "")).Replace("-", "");
 
-                    // Generator Info Json String
-                    InfoJsonGenerator obj = new InfoJsonGenerator($"{DateTimeOffset.Now.ToUnixTimeSeconds()}", list);
-                    txtOutput = txtOutput + obj.ToString() + "\n";
+                        string strTask = cmdParser(alllines[i].Trim());
+
+                        list.Add("{" + strTask + "}");
+
+                        // Generator Info Json String
+                        InfoJsonGenerator obj = new InfoJsonGenerator($"{sessionId++}", list);
+                        txtOutput = txtOutput + obj.ToString() + "\n";
+                    }
+                    catch (Exception ex) { 
+                        Console.WriteLine(ex.Message + ";" + alllines[i]);
+                    }
                 }
 
                 Console.WriteLine(txtOutput);
