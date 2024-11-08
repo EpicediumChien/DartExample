@@ -173,6 +173,33 @@ namespace DDPM.CLI.Plugins.Display
                 if (!is_match)
                     return false;
             }
+
+            if (commandLineInput != null && commandLineInput.Model.Count > 0)
+            {
+                bool is_match = false;
+                foreach (string model in commandLineInput.Model)
+                {
+                    int idx = _AllInfoMonitors.FindIndex(x => x.modelName.ToUpper().Equals(model.ToUpper()));
+                    if (idx < 0)
+                    {
+                        CLI_RESPONSE rsp = new CLI_RESPONSE()
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Result = "FAIL",
+                            Message = $"Invalid Model Name: {model}"
+                        };
+                        foreach (MonitorInfo monitor in _AllInfoMonitors)
+                            Trace.WriteLine($"Model Name in Monitor {monitor.modelName} ");
+                        result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
+                        result.ExitCode = (int)CLI_ExitCode.invalid_servicetag;
+                    }
+                    else
+                        is_match = true;
+                }
+                if (!is_match)
+                    return false;
+            }
             return true;
         }
 
@@ -336,7 +363,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "COLORPRESET":
                     if (commandLineInput.Command.Equals("GET"))
                     {
-                        var ret = ReadColorPreset(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        var ret = ReadColorPreset(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -348,7 +375,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
-                                var ret = ReadColorPreset(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                                var ret = ReadColorPreset(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                                 exitcode = ret.code;
                                 output += "\n" + ret.result;
                             }
@@ -378,7 +405,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "COLORPROFILE":
                     if (commandLineInput.Command.Equals("GET"))
                     {
-                        var ret = ActiveColorProfile(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        var ret = ActiveColorProfile(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -393,7 +420,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
-                                var ret = ActiveColorProfile(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                                var ret = ActiveColorProfile(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                                 exitcode = ret.code;
                                 output += "\n" + ret.result;
                             }
@@ -418,7 +445,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
-                                var ret = ActiveColorPreset(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                                var ret = ActiveColorPreset(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                                 exitcode = ret.code;
                                 output += "\n" + ret.result;
                             }
@@ -468,7 +495,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "RESTOREFACTORYDEFAULTS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
-                        var ret = RestoreFactoryDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        var ret = RestoreFactoryDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -490,7 +517,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "RESTORELEVELDEFAULTS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
-                        var ret = RestoreLevelDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        var ret = RestoreLevelDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -512,7 +539,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "RESTORECOLORDEFAULTS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
-                        var ret = RestoreColorDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        var ret = RestoreColorDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -534,7 +561,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "OSDACCESS":
                     if (commandLineInput.Command.Equals("GET"))
                     {
-                        var ret = OSD(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        var ret = OSD(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -546,7 +573,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
-                                var ret = OSD(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                                var ret = OSD(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                                 exitcode = ret.code;
                                 output += "\n" + ret.result;
                             }
@@ -861,6 +888,16 @@ namespace DDPM.CLI.Plugins.Display
                     }
                 }
             }
+            else if (input.Model.Count != 0)
+            {
+                for (int i = 0; i < _AllInfoMonitors.Count; i++)
+                {
+                    if (input.Model.FindIndex(x => x.ToUpper().Trim().Equals(_AllInfoMonitors[i].edid.ModelName.ToUpper().Trim())) >= 0)
+                    {
+                        index.Add(i.ToString());
+                    }
+                }
+            }
             else //do all
             {
                 for (int i = 0; i < _AllInfoMonitors.Count; i++)
@@ -909,7 +946,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private string ConnectedDevicesX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr, ref int exitcode)
         {
-            var result = ConnectedDevices(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput).Result;
+            var result = ConnectedDevices(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput).Result;
             exitcode = result.code;
             return result.result; ;
         }
@@ -923,7 +960,7 @@ namespace DDPM.CLI.Plugins.Display
             return $"{input[0].ToString().ToUpper()}{input.Substring(1)}";
         }
 
-        private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, CommandLineInput commandLineInput, string value = "")
+        private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, CommandLineInput commandLineInput, string value = "")
         {
             ConnectedDevices G_ConnectedDevices_RESPONSE = new ConnectedDevices();
 
@@ -955,7 +992,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     if (commandLineInput.Options[0].Option_Value.ToUpper() == "DISPLAY")
                     {
-                        if (index.Count == 0 && serviceTag.Count == 0)
+                        if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                         {
                             bool IsFailhappened = false;
                             foreach (MonitorInfo monitor in _AllInfoMonitors)
@@ -1040,6 +1077,45 @@ namespace DDPM.CLI.Plugins.Display
                             foreach (string tag in serviceTag)
                             {
                                 var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                                foreach (MonitorInfo mo in tmp)
+                                {
+                                    G_ConnectedDevices_RESPONSE = new ConnectedDevices();
+
+                                    G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                    G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                    G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
+                                    G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                    G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
+
+                                    if (string.IsNullOrWhiteSpace(mo.FwVersion))
+                                    {
+                                        G_ConnectedDevices_RESPONSE.PID = "N/A";
+                                        G_ConnectedDevices_RESPONSE.Result = "Fail";
+                                        G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
+                                        System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                        output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                        IsFailhappened = true;
+                                    }
+                                    else
+                                    {
+                                        G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
+                                        G_ConnectedDevices_RESPONSE.Result = "Pass";
+                                        index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
+                                        System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                                        output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                    }
+                                }
+                            }
+
+                            if (IsFailhappened)
+                                return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                        }
+                        else if (model.Count != 0)
+                        {
+                            bool IsFailhappened = false;
+                            foreach (string modelName in model)
+                            {
+                                var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
                                 foreach (MonitorInfo mo in tmp)
                                 {
                                     G_ConnectedDevices_RESPONSE = new ConnectedDevices();
@@ -1538,7 +1614,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             if (commandLineInput.Command.Equals("GET"))
             {
-                if (commandLineInput.Options.Count > 0 || commandLineInput.DeviceIndex.Count > 0 || commandLineInput.ServiceTag.Count > 0)
+                if (commandLineInput.Options.Count > 0 || commandLineInput.DeviceIndex.Count > 0 || commandLineInput.ServiceTag.Count > 0 || commandLineInput.Model.Count > 0)
                 {
                     CLI_Get_MONITORS_RESPONSE G_MONITORS_RESPONSE = new CLI_Get_MONITORS_RESPONSE();
                     G_MONITORS_RESPONSE.Result = "FAIL";
@@ -1548,7 +1624,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    var value = GetMonitors(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag).Result;
+                    var value = GetMonitors(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model).Result;
                     return (value.code, value.result);
                 }
             }
@@ -1576,7 +1652,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return Brightness(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                    return Brightness(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                 }
             }
             else if (commandLineInput.Command.Equals("SET"))
@@ -1589,7 +1665,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE"))
                         {
-                            var temp = Brightness(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                            var temp = Brightness(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                             output += "\n" + temp.result;
                             exitcode = temp.code;
                             if (exitcode != 0)
@@ -1630,7 +1706,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
                 }
                 else
-                    return Contrast(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                    return Contrast(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
             }
             else if (commandLineInput.Command.Equals("SET"))
             {
@@ -1642,7 +1718,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE"))
                         {
-                            var value = Contrast(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                            var value = Contrast(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                             exitcode = value.code;
                             output += "\n" + value.result;
                         }
@@ -1685,7 +1761,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
                 }
                 else
-                    return Luminus(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                    return Luminus(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
             }
             else if (commandLineInput.Command.Equals("SET"))
             {
@@ -1697,7 +1773,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE"))
                         {
-                            var value = Luminus(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                            var value = Luminus(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                             output += "\n" + value.result;
                             exitcode = value.code;
                         }
@@ -1741,7 +1817,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return EDID(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag).Result;
+                    return EDID(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model).Result;
                 }
             }
             else if (commandLineInput.Command.Equals("READ"))
@@ -1756,7 +1832,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return EDID(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag).Result;
+                    return EDID(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model).Result;
                 }
             }
             else
@@ -1783,7 +1859,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return DECODEDEDID(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag).Result;
+                    return DECODEDEDID(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model).Result;
                 }
             }
             else
@@ -1810,7 +1886,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return FWVersion(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag).Result;
+                    return FWVersion(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model).Result;
                 }
             }
             else
@@ -1945,7 +2021,7 @@ namespace DDPM.CLI.Plugins.Display
             return result;
         }
 
-        private async Task<(int code, string result)> Brightness(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> Brightness(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_RESPONSE S_Brightness_RESPONSE = new CLI_RESPONSE();
             CLI_Get_Brightness_RESPONSE G_Brightness_RESPONSE = new CLI_Get_Brightness_RESPONSE();
@@ -1969,7 +2045,7 @@ namespace DDPM.CLI.Plugins.Display
                     S_Brightness_RESPONSE.Message = "Format Error";
                     return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                 }
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     bool rc = false;
                     bool IsFailhappened = false;
@@ -2094,6 +2170,64 @@ namespace DDPM.CLI.Plugins.Display
 
                         bool rc = false;
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            {
+                                S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
+                                S_Brightness_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            }
+                            else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                            {
+                                S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                                S_Brightness_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            }
+                            rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
+
+                            S_Brightness_RESPONSE.Model = mo.modelName;
+                            S_Brightness_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            S_Brightness_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            S_Brightness_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            S_Brightness_RESPONSE.Command = "SET";
+                            S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";
+                            S_Brightness_RESPONSE.Value = value;
+
+                            if (!rc)
+                            {
+                                S_Brightness_RESPONSE.Result = "FAIL";
+                                S_Brightness_RESPONSE.Message = "FAIL VCP";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                if (mo.CapabilityDic.ContainsKey("12"))
+                                {
+                                    S_Brightness_RESPONSE.Result = "PASS";
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                }
+                                else
+                                {
+                                    S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
+                                    S_Brightness_RESPONSE.Result = "PASS";
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (string modelName in model)
+                    {
+                        writelog($"Brightness set tag entry");
+                        S_Brightness_RESPONSE = new CLI_RESPONSE();
+
+                        bool rc = false;
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
                             if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
@@ -2350,7 +2484,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> Contrast(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> Contrast(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_RESPONSE S_Contrast_RESPONSE = new CLI_RESPONSE();
             CLI_Get_Contrast_RESPONSE G_Contrast_RESPONSE = new CLI_Get_Contrast_RESPONSE();
@@ -2374,7 +2508,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
                 }
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     bool rc = false;
                     bool IsFailhappened = false;
@@ -2568,6 +2702,71 @@ namespace DDPM.CLI.Plugins.Display
                             }
                         }
                     }
+
+                    foreach (string modelName in model)
+                    {
+                        writelog($"Contrast set tag entry");
+                        S_Contrast_RESPONSE = new CLI_RESPONSE();
+
+                        bool rc = false;
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            rc = SetVCPCode(devMgr, mo, "0x12", value).Result;
+                            if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            {
+                                S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL lager then 100";
+                                S_Contrast_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                            }
+                            else if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 25)
+                            {
+                                S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL samller then 25";
+                                S_Contrast_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                            }
+                            else if (mo.CapabilityDic.ContainsKey("12"))
+                            {
+                                rc = SetVCPCode(devMgr, mo, "0x12", value).Result;
+                            }
+                            else
+                            {
+                                S_Contrast_RESPONSE.Model = mo.edid.ModelName;
+                                S_Contrast_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                S_Contrast_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                S_Contrast_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                S_Contrast_RESPONSE.Command = "SET";
+                                S_Contrast_RESPONSE.TargetFeature = "CONTRASTLEVEL";//change from contrast to contrastlevel to align with spec
+                                S_Contrast_RESPONSE.Value = value;
+                                S_Contrast_RESPONSE.Result = "FAIL";
+                                S_Contrast_RESPONSE.Message = "This monitor isn't support setting Contrastlevel";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented);
+                            }
+                            S_Contrast_RESPONSE.Model = mo.edid.ModelName;
+                            S_Contrast_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            S_Contrast_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            S_Contrast_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            S_Contrast_RESPONSE.Command = "SET";
+                            S_Contrast_RESPONSE.TargetFeature = "CONTRASTLEVEL";//change from contrast to contrastlevel to align with spec
+                            S_Contrast_RESPONSE.Value = value;
+
+                            if (!rc)
+                            {
+                                S_Contrast_RESPONSE.Result = "FAIL";
+                                S_Contrast_RESPONSE.Message = "FAIL VCP";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                S_Contrast_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
                     if (IsFailhappened)
                     {
                         writelog($"Contrast set fail");
@@ -2720,7 +2919,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> Luminus(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> Luminus(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_RESPONSE S_Luminus_RESPONSE = new CLI_RESPONSE();
             CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
@@ -2746,7 +2945,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Luminus_RESPONSE, Formatting.Indented));
                 }
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     bool rc = false;
                     bool IsFailhappened = false;
@@ -2829,6 +3028,41 @@ namespace DDPM.CLI.Plugins.Display
                             rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
 
                             S_Luminus_RESPONSE.Model = mo.modelName;
+                            S_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            S_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            S_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            S_Luminus_RESPONSE.Command = "SET";
+                            S_Luminus_RESPONSE.TargetFeature = "LUMINUS";
+                            S_Luminus_RESPONSE.Value = value;
+
+                            if (!rc)
+                            {
+                                S_Luminus_RESPONSE.Result = "FAIL";
+                                S_Luminus_RESPONSE.Message = "FAIL VCP";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Luminus_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Luminus_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                S_Luminus_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(S_Luminus_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(S_Luminus_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+
+                    foreach (string modelName in model)
+                    {
+                        S_Luminus_RESPONSE = new CLI_RESPONSE();
+
+                        bool rc = false;
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
+
+                            S_Luminus_RESPONSE.Model = mo.edid.ModelName;
                             S_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             S_Luminus_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             S_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -2990,7 +3224,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> EDID(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> EDID(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_EDID_RESPONSE G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
             CLI_Read_EDID_RESPONSE R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
@@ -3007,7 +3241,7 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             if (type == "GET")
             {
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     bool IsFailhappened = false;
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
@@ -3105,6 +3339,41 @@ namespace DDPM.CLI.Plugins.Display
                             G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
 
                             G_EDID_RESPONSE.Model = mo.modelName;
+                            G_EDID_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            G_EDID_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            G_EDID_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            G_EDID_RESPONSE.Command = "GET";
+                            G_EDID_RESPONSE.TargetFeature = "EDID";
+
+                            if (string.IsNullOrWhiteSpace(mo.edid.Edid))
+                            {
+                                G_EDID_RESPONSE.EDID_RAW = "N/A";
+                                G_EDID_RESPONSE.Value = "N/A";
+                                G_EDID_RESPONSE.Result = "FAIL";
+                                G_EDID_RESPONSE.Message = "FAIL GET EDID";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                G_EDID_RESPONSE.Value = "N/A";
+                                G_EDID_RESPONSE.EDID_RAW = mo.edid.Edid;
+                                G_EDID_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
+
+                            G_EDID_RESPONSE.Model = mo.edid.ModelName;
                             G_EDID_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_EDID_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_EDID_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -3315,7 +3584,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> DECODEDEDID(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> DECODEDEDID(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_EDID_RESPONSE G_EDID_RESPONSE = new CLI_Get_EDID_RESPONSE();
             CLI_Read_EDID_RESPONSE R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
@@ -3332,7 +3601,7 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             if (type == "GET")
             {
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     bool IsFailhappened = false;
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
@@ -3489,6 +3758,52 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
 
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo monitor in tmp)
+                        {
+                            R_EDID_RESPONSE = new CLI_Read_EDID_RESPONSE();
+
+                            R_EDID_RESPONSE.Model = monitor.edid.ModelName;
+                            R_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            R_EDID_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            R_EDID_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            R_EDID_RESPONSE.Command = "GET";
+                            R_EDID_RESPONSE.TargetFeature = "DECODEDEDID";
+
+                            if (string.IsNullOrEmpty(monitor.edid.Edid))
+                            {
+                                R_EDID_RESPONSE.Value = "N/A";
+                                R_EDID_RESPONSE.Result = "FAIL";
+                                R_EDID_RESPONSE.Message = "FAIL GET DECODEDEDID";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(R_EDID_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(R_EDID_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                R_EDID_RESPONSE.Value = "N/A";
+                                R_EDID_RESPONSE.AliasDeviceName = monitor.modelName;
+                                R_EDID_RESPONSE.Edid = monitor.edid.Edid;
+                                R_EDID_RESPONSE.ManufactureID = monitor.edid.ManufactureID;
+                                R_EDID_RESPONSE.VendorID = monitor.edid.VendorID;
+                                R_EDID_RESPONSE.PID = monitor.edid.PID;
+                                R_EDID_RESPONSE.ModelName = monitor.edid.ModelName;
+                                R_EDID_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                                R_EDID_RESPONSE.Week = monitor.edid.Week.ToString();
+                                R_EDID_RESPONSE.Month = monitor.edid.Month.ToString();
+                                R_EDID_RESPONSE.Year = monitor.edid.Year.ToString();
+                                R_EDID_RESPONSE.EdidVersion = monitor.edid.EdidVersion;
+                                R_EDID_RESPONSE.VideoInputType = monitor.edid.VideoInputType;
+                                R_EDID_RESPONSE.Size = monitor.edid.Size.ToString();
+                                R_EDID_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(R_EDID_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(R_EDID_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+
                     if (IsFailhappened)
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
                 }
@@ -3511,7 +3826,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> GetMonitors(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> GetMonitors(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_MONITORS_RESPONSE G_Monitos_RESPONSE = new CLI_Get_MONITORS_RESPONSE();
 
@@ -3557,7 +3872,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_Monitos_RESPONSE, Formatting.Indented));
         }
 
-        private async Task<(int code, string result)> FWVersion(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> FWVersion(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_FW_RESPONSE G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
 
@@ -3573,7 +3888,7 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             if (type == "GET")
             {
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     writelog($"FWVersion entry");
                     bool IsFailhappened = false;
@@ -3678,6 +3993,42 @@ namespace DDPM.CLI.Plugins.Display
                             G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
 
                             G_FW_RESPONSE.Model = mo.modelName;
+                            G_FW_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            G_FW_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            G_FW_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            G_FW_RESPONSE.Command = "GET";
+                            G_FW_RESPONSE.TargetFeature = "FWVERSION";
+
+                            if (string.IsNullOrWhiteSpace(mo.FwVersion))
+                            {
+                                //G_FW_RESPONSE.FWVer = "N/A";
+                                G_FW_RESPONSE.Value = "N/A";
+                                G_FW_RESPONSE.Result = "FAIL";
+                                G_FW_RESPONSE.Message = "FAIL GET FW VERSION";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented);
+                                IsFailhappened = true;
+                            }
+                            else
+                            {
+                                G_FW_RESPONSE.Value = mo.FwVersion;
+                                //G_FW_RESPONSE.FWVer = mo.FwVersion;
+                                G_FW_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+
+                    foreach (string modelName in model)
+                    {
+                        writelog($"FWVersion tag entry");
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
+
+                            G_FW_RESPONSE.Model = mo.edid.ModelName;
                             G_FW_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             G_FW_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_FW_RESPONSE.ServiceTag = mo.edid.ServiceTag;
@@ -3891,7 +4242,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                 {
-                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
                         //CLI_Set_Input_RESPONSE _Set_Input_RESPONSE = new CLI_Set_Input_RESPONSE();
                         //foreach (var monitor in _AllInfoMonitors)
@@ -4153,13 +4504,101 @@ namespace DDPM.CLI.Plugins.Display
                             }
                         }
                     }
+                    else if (commandLineInput.Model.Count != 0)
+                    {
+                        foreach (string modelName in commandLineInput.Model)
+                        {
+                            var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                            foreach (MonitorInfo mo in tmp)
+                            {
+                                writelog($"ActiveInputSource set tag entry");
+                                CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                                _Input_RESPONSE.Model = mo.edid.ModelName;
+                                _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                                _Input_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                                _Input_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                                _Input_RESPONSE.Command = commandLineInput.Command;
+                                _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+
+                                commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                                string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+
+                                foreach (string v in op_values)
+                                {
+                                    switch (v.ToUpper())
+                                    {
+                                        case "LOCK":
+                                        case "UNLOCK":
+                                            if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
+                                            if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
+                                            await devMgr.SetAppConfigData(data);
+                                            break;
+                                    }
+                                }
+                                string get_inputvpccode = get_inputsource_type(op_values[0]);
+                                int getvcp = get_inputsource_vcp(get_inputvpccode);
+
+                                if (getvcp != 0)
+                                {
+                                    if (commandLineInput.Options.Count == 1)
+                                    {
+                                        //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                                        _Input_RESPONSE.Value = op_values[0];
+                                        bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
+                                        if (!retcode) ispass = false;
+                                        if (!ispass)
+                                        {
+                                            _Input_RESPONSE.Result = "Fail";
+                                            _Input_RESPONSE.Message = "FAIL_SetVCP";
+                                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                            output += "\n" + _Input_RESPONSE.ToJson();
+                                        }
+                                        else
+                                        {
+                                            _Input_RESPONSE.Result = "Pass";
+                                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                                            System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                            output += "\n" + _Input_RESPONSE.ToJson();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //_Input_RESPONSE.ActiveInputSource = String.Empty;
+                                        _Input_RESPONSE.Result = "FAIL";
+                                        if (commandLineInput.Options.Count > 1)
+                                        {
+                                            _Input_RESPONSE.Message = "Too Many Value";
+                                        }
+                                        else
+                                        {
+                                            _Input_RESPONSE.Message = "No Value";
+                                        }
+                                        System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                        output += "\n" + _Input_RESPONSE.ToJson();
+                                        writelog($"ActiveInputSource set tag fail {output}");
+                                        return ((int)CLI_ExitCode.fail_Value, output);
+                                    }
+                                }
+                                else
+                                {
+                                    _Input_RESPONSE.Result = "FAIL";
+                                    _Input_RESPONSE.Message = "Wrong option value: ";
+                                    _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
+                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                    output += "\n" + _Input_RESPONSE.ToJson();
+                                    writelog($"ActiveInputSource option value fail {output}");
+                                    return ((int)CLI_ExitCode.fail_Value, output);
+                                }
+                            }
+                        }
+                    }
                 }
                 writelog($"ActiveInputSource set exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else if (commandLineInput.Command == "GET")
             {
-                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -4299,6 +4738,55 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+                else if (commandLineInput.Model.Count != 0)
+                {
+                    foreach (string modelName in commandLineInput.Model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            writelog($"ActiveInputSource get tag entry");
+                            CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
+                            string src = String.Empty;
+                            _Input_RESPONSE.Model = mo.edid.ModelName;
+                            _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            _Input_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Input_RESPONSE.ServiceTag = mo.edid.ModelName;
+                            _Input_RESPONSE.Command = commandLineInput.Command;
+                            _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                            if (commandLineInput.Options.Count == 0)
+                            {
+                                src = GetCurrentInput(devMgr, mo).Result;
+                                //_Input_RESPONSE.ActiveInputSource = src;
+                                _Input_RESPONSE.Value = src;
+                                if (src == String.Empty)
+                                {
+                                    _Input_RESPONSE.Result = "FAIL";
+                                    _Input_RESPONSE.Message = "FAIL_SetVCP";
+                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                    output += "\n" + _Input_RESPONSE.ToJson();
+                                }
+                                else
+                                {
+                                    _Input_RESPONSE.Result = "PASS";
+                                    _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
+                                    System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                    output += "\n" + _Input_RESPONSE.ToJson();
+                                }
+                            }
+                            else
+                            {
+                                //_Input_RESPONSE.ActiveInputSource = src;
+                                _Input_RESPONSE.Result = "FAIL";
+                                _Input_RESPONSE.Message = "Too Many Value";
+                                System.Console.WriteLine(_Input_RESPONSE.ToJson());
+                                output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get option value fail {output}");
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                        }
+                    }
+                }
                 writelog($"ActiveInputSource get exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
@@ -4326,7 +4814,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 CLI_InputList_RESPONSE _Get_InputList_RESPONSE = new CLI_InputList_RESPONSE();
                 List<string> inputs = new List<string>();
-                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -4421,6 +4909,51 @@ namespace DDPM.CLI.Plugins.Display
                             _Get_InputList_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                             _Get_InputList_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Get_InputList_RESPONSE.ServiceTag = tag;
+                            _Get_InputList_RESPONSE.Command = commandLineInput.Command;
+                            _Get_InputList_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+
+                            if (commandLineInput.Options.Count == 0)
+                            {
+                                inputs = GetInputsList(devMgr, (mo.Index).ToString()).Result;
+                                _Get_InputList_RESPONSE.InputSourceList = inputs;
+                                if (inputs.Count == 0)
+                                {
+                                    _Get_InputList_RESPONSE.Result = "FAIL";
+                                    _Get_InputList_RESPONSE.Message = "fail_VCPCapability";
+                                    System.Console.WriteLine(_Get_InputList_RESPONSE.ToJson());
+                                    output += "\n" + _Get_InputList_RESPONSE.ToJson();
+                                }
+                                else
+                                {
+                                    _Get_InputList_RESPONSE.Result = "PASS";
+                                    System.Console.WriteLine(_Get_InputList_RESPONSE.ToJson());
+                                    output += "\n" + _Get_InputList_RESPONSE.ToJson();
+                                }
+                            }
+                            else
+                            {
+                                _Get_InputList_RESPONSE.InputSourceList = inputs;
+                                _Get_InputList_RESPONSE.Result = "FAIL";
+                                _Get_InputList_RESPONSE.Message = "Too Many Value";
+                                System.Console.WriteLine(_Get_InputList_RESPONSE.ToJson());
+                                output += "\n" + _Get_InputList_RESPONSE.ToJson();
+                                return ((int)CLI_ExitCode.fail_Value, output);
+                            }
+                        }
+                    }
+                }
+                else if (commandLineInput.Model.Count != 0)
+                {
+                    foreach (string modelName in commandLineInput.Model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            inputs = new List<string>();
+                            _Get_InputList_RESPONSE.Model = mo.edid.ModelName;
+                            _Get_InputList_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            _Get_InputList_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Get_InputList_RESPONSE.ServiceTag = mo.edid.ModelName;
                             _Get_InputList_RESPONSE.Command = commandLineInput.Command;
                             _Get_InputList_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
@@ -4585,7 +5118,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> ReadColorPreset(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> ReadColorPreset(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             //if (devMgr == null)
             //{
@@ -4618,7 +5151,7 @@ namespace DDPM.CLI.Plugins.Display
                 bool r = false;
                 bool ever_fail = false;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -4638,7 +5171,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
                         //_Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
                         _Set_SupportedColorPreset_RESPONSE.Value = value;
-
+                        
                         if (!r)
                         {
                             _Set_SupportedColorPreset_RESPONSE.Result = "FAIL";
@@ -4747,7 +5280,7 @@ namespace DDPM.CLI.Plugins.Display
                 //List<string> _SupportedColorPreset = new List<string>();
                 string _ActiveColorPreset = string.Empty;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -4848,6 +5381,43 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+
+                // 20240614 jim modify
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.modelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            writelog($"ReadCurrentColorPreset tag Entry");
+                            _ActiveColorPreset = devMgr.ReadCurrentColorPreset(mo).Result;
+
+                            _Get_ActiveColorPresetList_RESPONSE.Model = mo.modelName;
+                            _Get_ActiveColorPresetList_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Get_ActiveColorPresetList_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
+                            _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
+                            //_Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                            _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
+
+                            if (string.IsNullOrEmpty(_ActiveColorPreset))
+                            {
+                                _Get_ActiveColorPresetList_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
+                                return ((int)CLI_ExitCode.functional_error, output);
+                            }
+                            else
+                            {
+                                _Get_ActiveColorPresetList_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
                 writelog($"ReadCurrentColorPreset return exit value{output}");
                 return ((int)CLI_ExitCode.success, output);
             }
@@ -4866,7 +5436,7 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         // jim add 20240607
-        private async Task<(int code, string result)> ActiveColorProfile(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> ActiveColorProfile(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             //if (devMgr == null)
             //{
@@ -4897,7 +5467,7 @@ namespace DDPM.CLI.Plugins.Display
                 bool r = false;
                 int n_index = 0;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -4985,6 +5555,46 @@ namespace DDPM.CLI.Plugins.Display
 
                             _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_AllMonitorProfile_RESPONSE.ServiceTag = tag;
+                            _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                            _Set_AllMonitorProfile_RESPONSE.TargetFeature = "ICCPROFILEBASEDONCOLORPRESET";
+                            _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                            if (!r)
+                            {
+                                _Set_AllMonitorProfile_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Set_AllMonitorProfile_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+
+                // 20240614 jim modify
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            try
+                            {
+                                r = devMgr.SetMonitorProfile(mo, value).Result;
+                            }
+                            catch (Exception ex)
+                            {
+                                writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                            }
+
+                            _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Set_AllMonitorProfile_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                             _Set_AllMonitorProfile_RESPONSE.Command = "SET";
                             _Set_AllMonitorProfile_RESPONSE.TargetFeature = "ICCPROFILEBASEDONCOLORPRESET";
                             _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
@@ -5143,7 +5753,7 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         // jim add 20240607
-        private async Task<(int code, string result)> ActiveColorPreset(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> ActiveColorPreset(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             //if (devMgr == null)
             //{
@@ -5173,7 +5783,7 @@ namespace DDPM.CLI.Plugins.Display
                 CLI_Set_AllActiveColorPreset_RESPONSE _Set_AllActiveColorPreset_RESPONSE = new CLI_Set_AllActiveColorPreset_RESPONSE();
                 bool r = false;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -5240,6 +5850,39 @@ namespace DDPM.CLI.Plugins.Display
 
                             _Set_AllActiveColorPreset_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_AllActiveColorPreset_RESPONSE.ServiceTag = tag;
+                            _Set_AllActiveColorPreset_RESPONSE.Command = "SET";
+                            _Set_AllActiveColorPreset_RESPONSE.TargetFeature = "COLORPRESETBASEDONICCPROFILE";
+                            _Set_AllActiveColorPreset_RESPONSE.Set_AllActiveColorPreset = value;
+
+                            if (!r)
+                            {
+                                _Set_AllActiveColorPreset_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Set_AllActiveColorPreset_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_AllActiveColorPreset_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+
+                // 20240614 jim modify
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            r = devMgr.WriteColorPresetByColorProfile(mo, value).Result;
+
+                            _Set_AllActiveColorPreset_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Set_AllActiveColorPreset_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                             _Set_AllActiveColorPreset_RESPONSE.Command = "SET";
                             _Set_AllActiveColorPreset_RESPONSE.TargetFeature = "COLORPRESETBASEDONICCPROFILE";
                             _Set_AllActiveColorPreset_RESPONSE.Set_AllActiveColorPreset = value;
@@ -5420,7 +6063,7 @@ namespace DDPM.CLI.Plugins.Display
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
-        private async Task<(int code, string result)> RestoreFactoryDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> RestoreFactoryDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             //if (devMgr == null)
             //{
@@ -5440,7 +6083,7 @@ namespace DDPM.CLI.Plugins.Display
                 int n_index = 0;
                 int exit = 0;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -5546,6 +6189,46 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+
+                // 20240614 jim modify
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            // jim modify 20240802
+                            writelog($"RestoreFactoryDefaults tag entry");
+                            r = devMgr.SetVCPCapability(mo, 0x04, 0x01).Result;
+
+                            _Set_CLI_RESPONSE_RESPONSE.Model = mo.edid.ModelName;
+                            _Set_CLI_RESPONSE_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                            _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Set_CLI_RESPONSE_RESPONSE.ServiceTag = mo.edid.ServiceTag;
+                            _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
+                            _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTOREFACTORYDEFAULTS";
+
+                            if (!r)
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreFactoryDefaults tag fail{output}");
+                                if (exit == 0)
+                                    exit = (int)CLI_ExitCode.functional_error;
+                            }
+                            else
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreFactoryDefaults tag pass{output}");
+                            }
+                        }
+                    }
+                }
                 writelog($"RestoreFactoryDefaults exit return value{output}");
                 return (exit, output);
             }
@@ -5562,7 +6245,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> RestoreLevelDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> RestoreLevelDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
@@ -5575,7 +6258,7 @@ namespace DDPM.CLI.Plugins.Display
                 int n_index = 0;
                 int exit = 0;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -5670,6 +6353,42 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            writelog($"RestoreLevelDefaults tag entry");
+                            r = devMgr.SetVCPCapability(mo, 0x05, 0x01).Result;
+
+                            _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
+                            _Set_CLI_RESPONSE_RESPONSE.ServiceTag = mo.edid.ModelName;
+                            _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
+                            _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORELEVELDEFAULTS";
+
+                            if (!r)
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreLevelDefaults tag fail {output}");
+                                if (exit == 0)
+                                    exit = (int)CLI_ExitCode.functional_error;
+                            }
+                            else
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreLevelDefaults tag pass{output}");
+                            }
+                        }
+                    }
+                }
                 writelog($"RestoreLevelDefaults exit return value pass{output}");
                 return (exit, output);
             }
@@ -5686,7 +6405,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> RestoreColorDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> RestoreColorDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
@@ -5794,6 +6513,41 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            writelog($"RestoreColorDefaults tag entry");
+                            r = devMgr.SetVCPCapability(mo, 0x08, 0x01).Result;
+
+                            _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
+                            _Set_CLI_RESPONSE_RESPONSE.ServiceTag = mo.edid.ModelName;
+                            _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
+                            _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "RESTORECOLORDEFAULTS";
+
+                            if (!r)
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreColorDefaults tag fail{output}");
+                                if (exit == 0)
+                                    exit = (int)CLI_ExitCode.functional_error;
+                            }
+                            else
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreColorDefaults tag pass{output}");
+                            }
+                        }
+                    }
+                }
                 writelog($"RestoreColorDefaults exit return value {output}");
                 return (exit, output);
             }
@@ -5810,7 +6564,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> OSD(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        private async Task<(int code, string result)> OSD(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
@@ -5823,7 +6577,7 @@ namespace DDPM.CLI.Plugins.Display
                 int n_index = 0;
                 int exit = 0;
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
@@ -5918,6 +6672,49 @@ namespace DDPM.CLI.Plugins.Display
 
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
                             _Set_CLI_RESPONSE_RESPONSE.ServiceTag = tag;
+                            _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
+                            _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
+                            _Set_CLI_RESPONSE_RESPONSE.Value = value;
+
+                            if (!r)
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "FAIL";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                if (exit == 0)
+                                    exit = (int)CLI_ExitCode.functional_error;
+                            }
+                            else
+                            {
+                                _Set_CLI_RESPONSE_RESPONSE.Result = "PASS";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+
+                if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            switch (value.ToUpper())
+                            {
+                                case "OSDLOCK":
+                                    r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
+                                    break;
+
+                                case "OSDUNLOCK":
+                                    r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
+                                    break;
+                            }
+
+                            _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
+                            _Set_CLI_RESPONSE_RESPONSE.ServiceTag = mo.edid.ModelName;
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
                             _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                             _Set_CLI_RESPONSE_RESPONSE.Value = value;
@@ -6159,7 +6956,7 @@ namespace DDPM.CLI.Plugins.Display
             int ret = 0;
             CLI_RESPONSE cLI_RESPONSE;
 
-            if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0)
+            if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0 && commandLineInput.Model.Count <= 0)
             {
                 bool flag = true;
                 while (flag)
@@ -6220,6 +7017,25 @@ namespace DDPM.CLI.Plugins.Display
                         cLI_RESPONSE.Command = commandLineInput.Command;
                         cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                         cLI_RESPONSE.Index = change_0base_to_1base(i++.ToString()) + ",";
+                        cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
+                        cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                        cLI_RESPONSE.Model = mo.edid.ModelName;
+
+                        var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
+                        ret += tmpRet.code;
+                        output += "\n" + tmpRet.result;
+                    }
+                }
+                int j = 0;
+                foreach (string modelName in commandLineInput.Model)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                    foreach (MonitorInfo mo in tmp)
+                    {
+                        cLI_RESPONSE = new CLI_RESPONSE();
+                        cLI_RESPONSE.Command = commandLineInput.Command;
+                        cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                        cLI_RESPONSE.Index = change_0base_to_1base(j++.ToString()) + ",";
                         cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
                         cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                         cLI_RESPONSE.Model = mo.edid.ModelName;
@@ -7105,7 +7921,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return PowerNap(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                    return PowerNap(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, "").Result;
                 }
             }
             else if (commandLineInput.Command.Equals("SET"))
@@ -7119,7 +7935,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE"))
                         {
-                            var temp = PowerNap(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                            var temp = PowerNap(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput.Options[j].Option_Value).Result;
                             output += "\n" + temp.result;
                             exitcode = temp.code;
                             if (exitcode != 0)
@@ -7147,7 +7963,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> PowerNap(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value)
+        private async Task<(int code, string result)> PowerNap(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value)
         {
             CLI_RESPONSE S_PowerNap_RESPONSE = new CLI_RESPONSE();
             CLI_RESPONSE G_PopwerNap_RESPONSE = new CLI_RESPONSE();
@@ -7167,7 +7983,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
                 }
 
-                if (index.Count == 0 && serviceTag.Count == 0)
+                if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                 {
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
@@ -7380,6 +8196,114 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string tag in serviceTag)
                     {
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo monitor in tmp)
+                        {
+                            S_PowerNap_RESPONSE = new CLI_RESPONSE();
+
+                            S_PowerNap_RESPONSE.Model = monitor.edid.ModelName;
+                            S_PowerNap_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            S_PowerNap_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            S_PowerNap_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            S_PowerNap_RESPONSE.Command = "SET";
+                            S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
+
+                            //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                            read_list.RemoveAll(x => x.SerialNumber == null);
+                            int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
+                            {
+                                PowerNapSetting setting = new PowerNapSetting
+                                {
+                                    Status = false,
+                                    ModelName = monitor.edid.ModelName,
+                                    SerialNumber = monitor.edid.SerialNumber,
+                                    RunType = PowerNapType.Off
+                                };
+                                await devMgr.SavePowerNapSetting(setting);
+                                S_PowerNap_RESPONSE.Result = "PASS";
+                                S_PowerNap_RESPONSE.Value = setting.RunType.ToString();
+                            }
+                            else
+                            {
+                                PowerNapSetting temp = read_list[idx];
+                                value.Replace(".", ",");
+                                List<string> values = value.Split(",").ToList();
+                                foreach (string v in values)
+                                {
+                                    switch (v.ToUpper())
+                                    {
+                                        case "LOCK":
+                                        case "UNLOCK":
+                                            if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = true;
+                                            if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = false;
+                                            await devMgr.SetAppConfigData(ddpmSettings);
+                                            break;
+                                        case "OFF":
+                                            {
+                                                PowerNapSetting setting = new PowerNapSetting
+                                                {
+                                                    Status = false,
+                                                    ModelName = temp.ModelName,
+                                                    SerialNumber = temp.SerialNumber,
+                                                    RunType = PowerNapType.Off
+                                                };
+                                                await devMgr.SavePowerNapSetting(setting);
+                                                break;
+                                            }
+                                        case "SLEEP":
+                                            {
+                                                PowerNapSetting setting = new PowerNapSetting
+                                                {
+                                                    Status = true,
+                                                    ModelName = temp.ModelName,
+                                                    SerialNumber = temp.SerialNumber,
+                                                    RunType = PowerNapType.SleepIfRunning
+                                                };
+                                                await devMgr.SavePowerNapSetting(setting);
+                                                break;
+                                            }
+                                        case "REDUCEBRIGHTNESS":
+                                            {
+                                                PowerNapSetting setting = new PowerNapSetting
+                                                {
+                                                    Status = true,
+                                                    ModelName = temp.ModelName,
+                                                    SerialNumber = temp.SerialNumber,
+                                                    RunType = PowerNapType.ReduceBrightness
+                                                };
+                                                await devMgr.SavePowerNapSetting(setting);
+                                                break;
+                                            }
+                                        default:
+                                            {
+                                                S_PowerNap_RESPONSE.Result = "FAIL";
+                                                S_PowerNap_RESPONSE.Message = "Unsupport Option";
+                                                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
+                                            }
+                                    }
+                                }
+                            }
+                            List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
+                            rst.RemoveAll(x => x.SerialNumber == null);
+                            int idex = rst.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            PowerNapSetting tmp_rst = rst[idex];
+                            S_PowerNap_RESPONSE.Result = "PASS";
+                            if (tmp_rst.RunType.ToString().Equals("SleepIfRunning"))
+                                S_PowerNap_RESPONSE.Value = "Sleep";
+                            else
+                                S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
+
+                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
+
+                            output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
+                        }
+                    }
+                }
+                else if (model.Count != 0)
+                {
+                    foreach (string modelName in model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
                         foreach (MonitorInfo monitor in tmp)
                         {
                             S_PowerNap_RESPONSE = new CLI_RESPONSE();
@@ -8979,7 +9903,7 @@ namespace DDPM.CLI.Plugins.Display
                 _AllInfoMonitors = await devMgr.GetMonitors();
             Get_Capabilitystring get_Capabilitystring = new Get_Capabilitystring();
 
-            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
                 {
@@ -9030,6 +9954,30 @@ namespace DDPM.CLI.Plugins.Display
                         get_Capabilitystring = new Get_Capabilitystring();
                         get_Capabilitystring.Command = commandLineInput.Command;
                         get_Capabilitystring.Model = monitor.modelName;
+                        get_Capabilitystring.TargetFeature = commandLineInput.TargetFeature;
+                        get_Capabilitystring.SerialNumber = monitor.edid.SerialNumber;
+                        get_Capabilitystring.ServiceTag = monitor.edid.ServiceTag;
+                        get_Capabilitystring.Index = change_0base_to_1base((monitor.Index).ToString());
+                        get_Capabilitystring.Result = "PASS";
+                        get_Capabilitystring.Message = "N/A";
+                        get_Capabilitystring.CapabilityString = monitor.CapabilityString;
+
+                        output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
+                        //return ((int)CLI_ExitCode.success, output);
+                    }
+                }
+            }
+            else if (commandLineInput.Model.Count > 0)
+            {
+                foreach (string modelName in commandLineInput.Model)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        get_Capabilitystring = new Get_Capabilitystring();
+                        get_Capabilitystring.Command = commandLineInput.Command;
+                        get_Capabilitystring.Model = monitor.edid.ModelName;
                         get_Capabilitystring.TargetFeature = commandLineInput.TargetFeature;
                         get_Capabilitystring.SerialNumber = monitor.edid.SerialNumber;
                         get_Capabilitystring.ServiceTag = monitor.edid.ServiceTag;
@@ -9182,6 +10130,23 @@ namespace DDPM.CLI.Plugins.Display
                     //Empty ServiceTage will not be added
                 }
             }
+
+            //If -ServiceTag=[{tag0}],[{tag1}],[{tag2}],... is specified
+            if (cmdLineInput.Model.Count > 0)
+            {
+                isAllMonitors = false;
+                foreach (MonitorInfo mi in allMonitors)
+                {
+                    if (!String.IsNullOrWhiteSpace(mi.edid.ServiceTag))
+                    {
+                        //Check if this monitor's service tag in in the -ServiceTag list
+                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.edid.ModelName, StringComparison.OrdinalIgnoreCase));
+                        if (match != null) //If found, add index value to listOut
+                            listOut.Add(mi.Index);
+                    }
+                    //Empty ServiceTage will not be added
+                }
+            }
             //If -Index=[{idx0}],[{idx1}],[{idx2}],... is specified
             if (cmdLineInput.DeviceIndex.Count > 0)
             {
@@ -9245,7 +10210,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Autocolorpreset Entry");
             if (commandLineInput.Command == "SET")
             {
-                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
@@ -9400,11 +10365,64 @@ namespace DDPM.CLI.Plugins.Display
                             writelog($"Autocolorpreset tag exit return value: {output}");
                         }
                     }
+                    foreach (string modelName in commandLineInput.Model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                        foreach (MonitorInfo monitor in tmp)
+                        {
+                            S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+
+                            S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                            S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            S_Autocolorpreset_RESPONSE.Command = "SET";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                            switch (commandLineInput.Options[0].Option_Value)
+                            {
+                                case "ON":
+                                    {
+                                        on_off = "on";
+                                        lock_unlock = false;
+                                        writelog($"Autocolorpreset ON Entry");
+                                        devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                        retcode = true;
+                                        S_Autocolorpreset_RESPONSE.Value = "ON";
+                                        S_Autocolorpreset_RESPONSE.Result = "PASS";
+                                        break;
+                                    }
+                                case "OFF":
+                                    {
+                                        on_off = "off";
+                                        lock_unlock = false;
+                                        writelog($"Autocolorpreset OFF Entry");
+                                        devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
+                                        retcode = true;
+                                        S_Autocolorpreset_RESPONSE.Value = "OFF";
+                                        S_Autocolorpreset_RESPONSE.Result = "PASS";
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        writelog($"Autocolorpreset default Entry");
+                                        S_Autocolorpreset_RESPONSE.Command = "SET";
+                                        S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                                        S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                                        S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                                        retcode = false;
+                                        break;
+                                    }
+                            }
+                            output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                            writelog($"Autocolorpreset tag exit return value: {output}");
+                        }
+                    }
                 }
             }
             else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
             {
-                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                 {
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
@@ -9487,6 +10505,48 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string tag in commandLineInput.ServiceTag)
                     {
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo monitor in tmp)
+                        {
+                            S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+
+                            S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                            S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            S_Autocolorpreset_RESPONSE.Command = "SET";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                            writelog($"Autocolorpreset GET Entry");
+                            restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                            Trace.WriteLine("restult_onoff:", restult_onoff);
+                            if (restult_onoff == "ON")
+                            {
+                                retcode = true;
+                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                                S_Autocolorpreset_RESPONSE.Result = "PASS";
+                            }
+                            else if (restult_onoff == "OFF")
+                            {
+                                retcode = true;
+                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                                S_Autocolorpreset_RESPONSE.Result = "PASS";
+                            }
+                            else
+                            {
+                                writelog($"Autocolorpreset fail");
+                                S_Autocolorpreset_RESPONSE.Command = "SET";
+                                S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                                S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                                S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                                retcode = false;
+                            }
+                            output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                            writelog($"Autocolorpreset tag exit return value: {output}");
+                        }
+                    }
+                    foreach (string modelName in commandLineInput.Model)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
                         foreach (MonitorInfo monitor in tmp)
                         {
                             S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
@@ -9812,7 +10872,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
                 {
@@ -9867,6 +10927,25 @@ namespace DDPM.CLI.Plugins.Display
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
+                foreach (string modelName in commandLineInput.Model)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.edid.ModelName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                        output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
             }
             return ((int)CLI_ExitCode.success, output);
         }
@@ -9896,7 +10975,7 @@ namespace DDPM.CLI.Plugins.Display
                 Directory.CreateDirectory(filepath);
             }
 
-            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
                 {
@@ -9976,6 +11055,33 @@ namespace DDPM.CLI.Plugins.Display
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
+                foreach (string modelName in commandLineInput.Model)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.edid.ModelName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                        devMgr.SaveLogFile(filepath_);
+
+                        if (!File.Exists(file))
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "file is not exist.";
+                        }
+                        else
+                        {
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
             }
             return ((int)CLI_ExitCode.success, output);
         }
@@ -10006,7 +11112,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
                 writelog("ActiveHours get entry");
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
@@ -10058,6 +11164,28 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Command = commandLineInput.Command;
                         cli_Response.TargetFeature = commandLineInput.TargetFeature;
                         cli_Response.Model = monitor.modelName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
+
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+                foreach (string modelName in commandLineInput.Model)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                    writelog("ActiveHours get entry");
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.edid.ModelName;
                         cli_Response.SerialNumber = monitor.edid.SerialNumber;
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -11700,7 +12828,7 @@ namespace DDPM.CLI.Plugins.Display
             switch (commandLineInput.Command)
             {
                 case "GET":
-                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
                         foreach (MonitorInfo monitor in _AllInfoMonitors)
                         {
@@ -11830,11 +12958,55 @@ namespace DDPM.CLI.Plugins.Display
                                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                             }
                         }
+                        foreach (string modelName in commandLineInput.Model)
+                        {
+                            var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                            foreach (MonitorInfo monitor in tmp)
+                            {
+                                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                                ObjGetVCP rc = new ObjGetVCP();
+                                cli_Response.Command = commandLineInput.Command;
+                                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                                cli_Response.Model = monitor.edid.ModelName;
+                                cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                                cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                                cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                                string capability = monitor.CapabilityString;
+                                string[] ss_1 = null;
+
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                                {
+                                    if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                    {
+                                        ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                        if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
+                                        {
+                                            rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
+                                            cli_Response.Value = (rc.value).ToString();
+                                            retcode = true;
+                                        }
+                                    }
+                                }
+                                if (retcode)
+                                {
+                                    cli_Response.Result = "PASS";
+                                    cli_Response.Message = "N/A";
+                                }
+                                else
+                                {
+                                    cli_Response.Result = "FAIL";
+                                    cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
+                                }
+                                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                            }
+                        }
                     }
                     break;
 
                 case "SET":
-                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
                         foreach (MonitorInfo monitor in _AllInfoMonitors)
                         {
@@ -12053,6 +13225,81 @@ namespace DDPM.CLI.Plugins.Display
                                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                             }
                         }
+
+                        foreach (string modelName in commandLineInput.Model)
+                        {
+                            var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                            foreach (MonitorInfo monitor in tmp)
+                            {
+                                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                                cli_Response.Command = commandLineInput.Command;
+                                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                                cli_Response.Model = monitor.edid.ModelName;
+                                cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                                cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                                cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                                string capability = monitor.CapabilityString;
+                                string[] ss_1 = null;
+
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                                {
+                                    if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                    {
+                                        ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+
+                                        if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
+                                        {
+                                            if (capability.Contains(ss_1[1] + "("))
+                                            {
+                                                string[] ss = capability.Split(ss_1[1] + "(");
+                                                ss = ss[1].Split(")");
+                                                if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
+                                                {
+                                                    if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
+                                                    {
+                                                        retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+
+                                                        cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                                        vcp_value = true;
+                                                        Trace.WriteLine($"retcode : {retcode}");
+                                                    }
+                                                }
+                                            }
+                                            else if (capability.Contains(ss_1[1]))
+                                            {
+                                                retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                                cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                                vcp_value = true;
+                                                Trace.WriteLine($"retcode : {retcode}");
+                                            }
+                                        }
+                                    }
+                                }
+                                if (retcode)
+                                {
+                                    cli_Response.Result = "PASS";
+                                    cli_Response.Message = "N/A";
+                                }
+                                else if (!vcp_value)
+                                {
+                                    cli_Response.Result = "FAIL";
+                                    cli_Response.Message = $"Advanced VCP value didn't supported.";
+                                }
+                                else if (!commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
+                                {
+                                    cli_Response.Result = "FAIL";
+                                    cli_Response.Message = $"{commandLineInput.Options[1].Option_Name} value is not supported.";
+                                }
+                                else
+                                {
+                                    cli_Response.Result = "FAIL";
+                                    cli_Response.Message = $"VCP code {commandLineInput.Options[0].Option_Value} is not supported";
+                                }
+                                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                            }
+                        }
                     }
                     break;
             }
@@ -12088,7 +13335,7 @@ namespace DDPM.CLI.Plugins.Display
             switch (commandLineInput.Command)
             {
                 case "GET":
-                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                    if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
                     {
                         foreach (MonitorInfo monitor in _AllInfoMonitors)
                         {
@@ -12164,6 +13411,40 @@ namespace DDPM.CLI.Plugins.Display
                                 cli_Response.Command = commandLineInput.Command;
                                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                                 cli_Response.Model = monitor.modelName;
+                                cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                                cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                                cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                                rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                                if (rc != null)
+                                {
+                                    cli_Response.Value = (rc.value).ToString() + " hours";
+                                    retcode = true;
+                                }
+                                if (retcode)
+                                {
+                                    cli_Response.Result = "PASS";
+                                    cli_Response.Message = "N/A";
+                                }
+                                else
+                                {
+                                    cli_Response.Result = "FAIL";
+                                    cli_Response.Message = "Invalid command line syntax.";
+                                }
+                                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                            }
+                        }
+                        foreach (string modelName in commandLineInput.Model)
+                        {
+                            var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+                            foreach (MonitorInfo monitor in tmp)
+                            {
+                                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                                ObjGetVCP rc = new ObjGetVCP();
+                                cli_Response.Command = commandLineInput.Command;
+                                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                                cli_Response.Model = monitor.edid.ModelName;
                                 cli_Response.SerialNumber = monitor.edid.SerialNumber;
                                 cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                                 cli_Response.ServiceTag = monitor.edid.ServiceTag;
@@ -14004,7 +15285,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                 }
 
-                return FWUpdate(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, deviceTypeList).Result;
+                return FWUpdate(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, deviceTypeList).Result;
 
 
             }
@@ -14021,7 +15302,7 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         // add @ stephen
-        private async Task<(int code, string result)> FWUpdate(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<DeviceType> deviceTypeList, string value = "")
+        private async Task<(int code, string result)> FWUpdate(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, List<DeviceType> deviceTypeList, string value = "")
         {
 
             CLI_RESPONSE S_FWUpdate_RESPONSE = new CLI_RESPONSE();
