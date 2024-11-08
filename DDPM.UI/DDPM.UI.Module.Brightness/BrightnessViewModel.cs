@@ -585,7 +585,13 @@ namespace DDPM.UI.Module.Brightness
                         }
                         //Re-Get Start_ALSConfig
                         if (Start_ALSConfig.AllValue == 0)//Need to Re-Get value
+                        {
                             Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
+                            if (!alsList.Contains(Start_ALSConfig))
+                            {
+                                alsList.Add(Start_ALSConfig);
+                            }
+                        }
                         GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
                         CheckisShowSynchronize(alsList);
                     }
@@ -1901,8 +1907,8 @@ namespace DDPM.UI.Module.Brightness
                 {
                     if (_autoBrightnessStatus)
                     {
-                        string pop_string = "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
-                        if (DdpmCommonHelper.DDPMMesssageBox("Warning", pop_string))
+                        string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
+                        if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
                         {
                             AutoBrightnessStatus = _autoBrightnessStatus = false;
                         }
@@ -1925,8 +1931,8 @@ namespace DDPM.UI.Module.Brightness
         {
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
-                string pop_string = "This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync??";
-                if (DdpmCommonHelper.DDPMMesssageBox("Warning", pop_string))
+                string pop_string = Strings.BrightnessPageNotice0;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
+                if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
                 {
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
                     SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);

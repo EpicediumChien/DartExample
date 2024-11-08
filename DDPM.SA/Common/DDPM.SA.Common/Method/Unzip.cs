@@ -94,7 +94,17 @@ namespace DDPM.SA.Common.Method
         private string GetExeFilePath(string directory)
         {
             // 列舉資料夾中的所有 .exe 檔案
-            string[] exeFiles = Directory.GetFiles(directory, "*.exe");
+            string[] exeFiles = default;
+
+            try
+            {
+                exeFiles = Directory.GetFiles(directory, "*.exe");
+            }
+            catch  (Exception ex)
+            { 
+                _logs?.DebugMsg_1(nameof(Unzip) + "Get exe files in folder fail: " + ex.Message);
+            }
+
             // 如果存在 .exe 檔案，則返回第一個 .exe 檔案的路徑
             if (exeFiles.Length > 0)
             {

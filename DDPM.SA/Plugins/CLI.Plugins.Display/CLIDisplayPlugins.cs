@@ -923,6 +923,17 @@ namespace DDPM.CLI.Plugins.Display
             return $"{input[0].ToString().ToUpper()}{input.Substring(1)}";
         }
 
+        private (int code, string result) DDPMSettingsNullResponse(string command, string targetFeature)
+        {
+            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            cli_Response.Command = command;
+            cli_Response.TargetFeature = targetFeature;
+            cli_Response.Result = "FAIL";
+            cli_Response.Message = "Failed to get DDPMSettings";
+            Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+        }
+
         private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, CommandLineInput commandLineInput, string value = "")
         {
             ConnectedDevices G_ConnectedDevices_RESPONSE = new ConnectedDevices();
@@ -1430,14 +1441,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (ddpmSettings == null)
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Failed to get DDPMSettings";
-                Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                return ((int)CLI_ExitCode.functional_error, output);
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
             }
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
@@ -3907,6 +3911,13 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (index)
             {
+                case "VGA": return "VGA-1";
+                case "VGA1": return "VGA-1";
+                case "VGA-1": return "VGA-1";
+
+                case "VGA2": return "VGA-2";
+                case "VGA-2": return "VGA-2";
+
                 case "HDMI": return "HDMI-1";
                 case "HDMI1": return "HDMI-1";
                 case "HDMI-1": return "HDMI-1";
@@ -3980,14 +3991,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (data == null)
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Failed to get DDPMSettings";
-                Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                return ((int)CLI_ExitCode.functional_error, output);
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
             }
 
             if (commandLineInput.Command == "SET")
@@ -7263,14 +7267,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (ddpmSettings == null)
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = type;
-                cli_Response.TargetFeature = "PowerNap";
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Failed to get DDPMSettings";
-                Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                return ((int)CLI_ExitCode.functional_error, output);
+                return DDPMSettingsNullResponse(type, "PowerNap");
             }
 
             if (type == "SET")
@@ -10719,6 +10716,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (_AllInfoMonitors == null)
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
+
                         _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                         writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
                         if (ss_1[0].ToUpper() == "DISPLAY")
@@ -10733,7 +10731,6 @@ namespace DDPM.CLI.Plugins.Display
                                 ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                                 ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                                 ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
 
                                 // malik
                                 bool retcode = false;
@@ -12356,14 +12353,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (ddpmSettings == null)
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Failed to get DDPMSettings";
-                Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                return ((int)CLI_ExitCode.functional_error, output);
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
             }
 
             if (commandLineInput.Command == "GET")
@@ -13000,14 +12990,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (ddpmSettings == null)
             {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = "FAIL";
-                cli_Response.Message = "Failed to get DDPMSettings";
-                Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output = JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                return ((int)CLI_ExitCode.functional_error, output);
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
             }
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)

@@ -64,24 +64,24 @@ namespace DDPM.UI.WalkThroughData
                         new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
                     }
                 },
-                
+
                 // U2724DE For Test
-                //{ "U2724DE", new List<WalkThroughPageData>
-                //    {
-                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                //    }
-                //},
+                { "U2724DE", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                    }
+                },
 
                 // U2723DE For Test
-                //{ "U2723DE", new List<WalkThroughPageData>
-                //    {
-                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
-                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
-                //        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
-                //    }
-                //},
+                { "U2723DE", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main0, SubText = Strings.WalkThroughDisplay_Sub0, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main1, SubText = Strings.WalkThroughDisplay_Sub1, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughDisplay_Main2, SubText = Strings.WalkThroughDisplay_Sub2, MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                    }
+                },
 
                 // E2422H For Test
                 //{ "E2422H", new List<WalkThroughPageData>
@@ -220,7 +220,7 @@ namespace DDPM.UI.WalkThroughData
                 },
                 
                 // Dell Conferencing Monitor (P2424HEB)
-                { Strings.WalkThroughWebCamWB3023_Sub2, new List<WalkThroughPageData>
+                { "P2424HEB", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/P2424HEB/P2424HEB_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/P2424HEB/P2424HEB_2.png" },

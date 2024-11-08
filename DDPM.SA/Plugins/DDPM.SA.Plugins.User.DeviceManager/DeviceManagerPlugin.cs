@@ -6701,7 +6701,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out DDPMImpExpSettings ImpExpSettings).Result)
+                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
                     if (ImpExpSettings != null)
                     {
@@ -7001,6 +7001,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             return Task.FromResult(false);
+        }
+
+        public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
+        {
+            DDPMImpExpSettings impExpSettings = new DDPMImpExpSettings();
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path)) 
+            {
+                impExpSettings =  _SettingsPlugin.ReadImportSettingsFile(path).Result;
+            }
+            return Task.FromResult(impExpSettings);
         }
 
         #endregion
@@ -8277,7 +8287,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         // 複製指定的 log 文件到選擇的資料夾
                         CopyLogFolder(LogFolder, savePath);
                     }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -8562,11 +8581,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 確保目標資料夾存在
             Directory.CreateDirectory(destDirName);
             // 複製檔案
-            foreach (string file in Directory.GetFiles(sourceDirName))
+            try
             {
-                string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                File.Copy(file, destFile, true);
+                foreach (string file in Directory.GetFiles(sourceDirName))
+                {
+                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                    File.Copy(file, destFile, true);
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+            }
+
             // 複製子資料夾
             if (copySubDirs)
             {

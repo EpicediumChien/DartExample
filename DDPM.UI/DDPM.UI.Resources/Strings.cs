@@ -590,5 +590,10 @@ namespace DDPM.UI.Common
         // Display Restore to Default
         public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
         public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
+
+        //Brightness right view messagebox
+        public static readonly string BrightnessPageWarning = GetString("Warning");
+        public static readonly string BrightnessPageNotice0 = GetString("Brightness.19");
+        public static readonly string BrightnessPageNotice1 = GetString("Brightness.20");
     }
 }
