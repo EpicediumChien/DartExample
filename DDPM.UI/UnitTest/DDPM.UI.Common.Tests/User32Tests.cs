@@ -39,8 +39,6 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void Test_EnumDisplayMonitors()
         {
-            //var pRect = new Rect();
-            // MonitorEnumProc monitorEnum = MonitorEnumProc;
             var result = User32._EnumDisplayMonitors(new IntPtr(), new IntPtr(), MonitorEnum, 1);
             // Assert
             Assert.That(result, Is.EqualTo(true));

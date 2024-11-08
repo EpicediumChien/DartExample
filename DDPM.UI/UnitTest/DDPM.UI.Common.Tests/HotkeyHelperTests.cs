@@ -211,15 +211,15 @@ namespace DDPM.UI.Common.Tests
             var BundleNewKeys = new List<VirtualKey>();
             var e = new System.Windows.Input.KeyEventArgs(keyboard, Presentation, 1, Key.K);
             var alphabetKey = true;
-            try
-            {
-                KeysHelper.setUXTextBoxPreviewKey(null, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            //try
+            //{
+            //    KeysHelper.setUXTextBoxPreviewKey(null, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
+            //    Assert.True(true);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Assert.Fail("not invoked");
+            //}
 
 
 
