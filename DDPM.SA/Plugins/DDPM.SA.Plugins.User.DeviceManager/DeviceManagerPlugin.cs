@@ -4094,7 +4094,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool b = _DisplayManagerPlugin.SetPbpMode(monitorInfo, modeCode).Result;
             if (b && _NKVMPlugin != null)
             {
-                _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE9, (int)modeCode).Wait();
+                _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE9, (int)(uint)modeCode).Wait();
             }
             if (b)
             {
