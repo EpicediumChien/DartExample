@@ -102,7 +102,9 @@ namespace DDPM.UI.Module.WebCameraCapture
         {
             if (sender is Border bdr)
             {
-                var idx = int.Parse(bdr.Tag.ToString()!);
+                int idx;
+                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                if (!r) return;
                 _vm.SetResolution_Selected(idx);
                 InitializeFPS();
                 foreach (var property in _vm.allProperties)
@@ -138,7 +140,9 @@ namespace DDPM.UI.Module.WebCameraCapture
         {
             if (sender is Border bdr)
             {
-                var idx = int.Parse(bdr.Tag.ToString()!);
+                int idx;
+                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                if (!r) return;
                 _vm.SetFPS_Selected(idx);
                 foreach (var property in _vm.allProperties)
                 {
@@ -148,7 +152,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                         var encodingProperties = property.EncodingProperties;
 
                         //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-  
+
                         bool set_ok = false;
                         while (set_ok != true)
                         {

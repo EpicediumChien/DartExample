@@ -197,7 +197,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (_vm != null && _vm.CurrentDeviceInfo != null)
                     {
-                        if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                        if (selectedFrameSourceGroup.Id.Contains(_vm.CurrentDeviceInfo.DeviceSymbolicLink, StringComparison.CurrentCultureIgnoreCase))
                             break;
                     }
                     else
@@ -234,6 +234,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }
 
                 MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
+
+                MessageBox.Show("id:" + frameSourceInfo.Id);
 
                 // 20240626 jim modify
                 _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
