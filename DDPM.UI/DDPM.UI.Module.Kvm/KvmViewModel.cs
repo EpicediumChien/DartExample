@@ -472,9 +472,9 @@ namespace DDPM.UI.Module.Kvm
             HotkeySettings hotkeySettings = new HotkeySettings
             {
                 //DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
-                ModelName = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ModelName,
-                SerialNumber = KvmModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
-                ServiceTag = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag,
+                ModelName = "DDPM",
+                SerialNumber = "DDPM",
+                ServiceTag = "DDPM",
                 HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
             DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);
@@ -529,6 +529,10 @@ namespace DDPM.UI.Module.Kvm
                                 break;
                         }
                     }
+                }
+                if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                {
+                    _autoSwitchChecked = true;
                 }
             }
             catch (Exception ex)
