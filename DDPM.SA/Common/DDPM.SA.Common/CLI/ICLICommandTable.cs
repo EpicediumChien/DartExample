@@ -165,8 +165,11 @@ namespace DDPM.SA.Common
             public List<CommandType_Option> Options { get; set; }//use to store options to get/set device features
 
             public List<string> ServiceTag { get; set; }//for display with servicetag
+            public List<string> Model { get; set; }//for display with model
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
+            public List<string> PPID { get; set; } //for peripherals
+            public List<string> SerialNumber { get; set; } //for peripherals
             public string LogPath { get; set; }
 
             //Here are 3 possible conditions,
@@ -189,8 +192,11 @@ namespace DDPM.SA.Common
             {
                 Options = new List<CommandType_Option>(); //others optional input
                 ServiceTag = new List<string>();
+                Model = new List<string>();
                 DeviceIndex = new List<string>();
                 GuidString = new List<string>();
+                PPID = new List<string>();
+                SerialNumber = new List<string>();
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
 
@@ -293,7 +299,12 @@ namespace DDPM.SA.Common
                             args[i] = args[i].Substring(1);
                         }
 
-                        if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 || args[i].ToUpper().IndexOf("INDEX") == 0 || args[i].ToUpper().IndexOf("GUID") == 0)//判斷是那些裝置
+                        if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 || 
+                            args[i].ToUpper().IndexOf("MODEL") == 0 || 
+                            args[i].ToUpper().IndexOf("INDEX") == 0 || 
+                            args[i].ToUpper().IndexOf("GUID") == 0 || 
+                            args[i].ToUpper().IndexOf("PPID") == 0 || 
+                            args[i].ToUpper().IndexOf("SERIALNUMBER") == 0)//判斷是那些裝置
                         {
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
@@ -321,6 +332,10 @@ namespace DDPM.SA.Common
                                     {
                                         commandInput.ServiceTag.Add(t);
                                     }
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                    {
+                                        commandInput.Model.Add(t);
+                                    }
                                     else if (tmpSS[0].ToUpper().Contains("GUID"))
                                     {
                                         commandInput.GuidString.Add(t);
@@ -329,6 +344,16 @@ namespace DDPM.SA.Common
                                     {
                                         int temp = int.Parse(t) - 1;
                                         commandInput.DeviceIndex.Add(temp.ToString());
+                                    }
+                                    else if (tmpSS[0].ToUpper().Contains("PPID"))
+                                    {
+                                        int temp = int.Parse(t) - 1;
+                                        commandInput.PPID.Add(temp.ToString());
+                                    }
+                                    else if (tmpSS[0].ToUpper().Contains("SERIALNUMBER"))
+                                    {
+                                        int temp = int.Parse(t) - 1;
+                                        commandInput.SerialNumber.Add(temp.ToString());
                                     }
                                     else
                                     {

@@ -18,6 +18,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.User.CLIManager
@@ -170,6 +171,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 Log.Info(text);
             else
                 Log.Error(text);
+        }
+
+        private static void OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            new CLI_RESPONSE().OutputLog(o, commandLineInput);
         }
 
         private void InitializeCliManagerPlugin()
@@ -538,7 +544,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
                 //write result back
                 if (cliEventResult != null)
+                {
                     _CliManagerPlugin.WriteCommandResult(cliEventResult);
+
+                    if (!string.IsNullOrWhiteSpace(commandLineInput.LogPath))
+                    {
+                        OutputLog(JsonConvert.DeserializeObject(cliEventResult.serialize_Json_response) ?? "", commandLineInput);
+                    }
+                }
             });
         }
         #endregion

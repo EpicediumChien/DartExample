@@ -315,11 +315,11 @@ namespace DDPM.CLI.Plugins.Peripherals
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
             if (_deviceinfo == null || _deviceinfo.Count == 0)
             {
-                GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));
+                GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
 
-            if (_commandLineInput.GuidString.Count == 0)
+            if (_commandLineInput.GuidString.Count == 0 && _commandLineInput.Model.Count == 0 && _commandLineInput.ServiceTag.Count == 0 && _commandLineInput.PPID.Count == 0 && _commandLineInput.SerialNumber.Count == 0)
             {
                 int go = 0;
                 Debug.WriteLine($"{_commandLineInput.PluginsType}");
@@ -339,13 +339,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                     GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
                 }
             }
-            else
+            else if (_commandLineInput.GuidString.Count != 0)
             {
                 _commandLineInput.GuidString.ForEach(x =>
                 {
                     if (Guid.TryParse(x, out Guid guid))
                     {
-                        var di = _deviceinfo.Where(x => x.ID == guid).FirstOrDefault();
+                        var di = _deviceinfo.Where(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
                         if (di == null)
                         {
                             GetResults.Add(new CLI_PeripheralRESPONSE(x, "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
@@ -361,6 +361,45 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
                 });
             }
+            else if (_commandLineInput.Model.Count != 0)
+            {
+                _commandLineInput.Model.ForEach(model =>
+                {
+                    var di = _deviceinfo.Where(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    if (di == null)
+                    {
+                        GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, model));
+                    }
+                    else
+                    {
+                        GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                    }
+                });
+            }
+            else if (_commandLineInput.ServiceTag.Count != 0)
+            {
+                _commandLineInput.ServiceTag.ForEach(serviceTag =>
+                {
+                    var di = _deviceinfo.Where(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    if (di == null)
+                    {
+                        GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, null, serviceTag));
+                    }
+                    else
+                    {
+                        GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                    }
+                });
+            }
+            else if (_commandLineInput.PPID.Count != 0)
+            {
+
+            }
+            else if (_commandLineInput.SerialNumber.Count != 0)
+            {
+
+            }
+
             return (int)CLI_ExitCode.success;
         }
 
@@ -371,7 +410,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             int retvalue = 0;
             bool bl = false;
             //string ItemId = string.Empty;
-            string GUID = string.Empty;
+            //string GUID = string.Empty;
             bool retcode = false;
             bool retcode_ = false;
             //bool target = false;
@@ -389,20 +428,20 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return (int)CLI_ExitCode.null_device_manager;
             }
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-            if (_commandLineInput.GuidString.Count == 0)
+            if (_commandLineInput.GuidString.Count == 0 && _commandLineInput.Model.Count == 0 && _commandLineInput.ServiceTag.Count == 0 && _commandLineInput.PPID.Count == 0 && _commandLineInput.SerialNumber.Count == 0)
             {
                 int go = 0;
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
                 {
-                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
+                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty;
                 }
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
-                        GUID = x.ID.ToString();
+                        SetResults.Add(new CLI_PeripheralRESPONSE($"{x.ID}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag));
+                        //GUID = x.ID.ToString();
                         go++;
                     }
                 });
@@ -412,7 +451,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.fail_GetPeripheralProperty;
                 }
             }
-            else
+            else if (_commandLineInput.GuidString.Count != 0)
             {
                 _commandLineInput.GuidString.ForEach(x =>
                 {
@@ -420,17 +459,17 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         var found = false;
                         _deviceinfo?.ForEach(x =>
-                {
-                    if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.ID == guid)
-                    {
-                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
-                        found = true;
-                        GUID = x.ID.ToString();
-                    }
-                });
+                        {
+                            if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.ID == guid)
+                            {
+                                SetResults.Add(new CLI_PeripheralRESPONSE($"{x.ID}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag));
+                                found = true;
+                                //GUID = x.ID.ToString();
+                            }
+                        });
                         if (!found)
                         {
-                            SetResults.Add(new CLI_PeripheralRESPONSE($"{{{guid}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
+                            SetResults.Add(new CLI_PeripheralRESPONSE($"{guid}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
                     else
@@ -438,6 +477,54 @@ namespace DDPM.CLI.Plugins.Peripherals
                         SetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Invalid Guid"));
                     }
                 });
+            }
+            else if (_commandLineInput.Model.Count != 0)
+            {
+                _commandLineInput.Model.ForEach(model =>
+                {
+                    var found = false;
+                    _deviceinfo?.ForEach(x =>
+                    {
+                        if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.ModelNumber == model)
+                        {
+                            SetResults.Add(new CLI_PeripheralRESPONSE($"{x.ID}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag));
+                            found = true;
+                            //GUID = x.ID.ToString();
+                        }
+                    });
+                    if (!found)
+                    {
+                        SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", null, model));
+                    }
+                });
+            }
+            else if (_commandLineInput.ServiceTag.Count != 0)
+            {
+                _commandLineInput.ServiceTag.ForEach(serviceTag =>
+                {
+                    var found = false;
+                    _deviceinfo?.ForEach(x =>
+                    {
+                        if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.DockServiceTag == serviceTag)
+                        {
+                            SetResults.Add(new CLI_PeripheralRESPONSE($"{x.ID}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag));
+                            found = true;
+                            //GUID = x.ID.ToString();
+                        }
+                    });
+                    if (!found)
+                    {
+                        SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", null, null, serviceTag));
+                    }
+                });
+            }
+            else if (_commandLineInput.PPID.Count != 0)
+            {
+
+            }
+            else if (_commandLineInput.SerialNumber.Count != 0)
+            {
+
             }
 
             if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("AUDIO"))// for audio headset RESTOREFACTORYDEFAULTS.
@@ -449,7 +536,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(GUID, true)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.Guid, true)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -480,7 +567,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(GUID, true)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.Guid, true)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -511,7 +598,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(GUID, true)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.Guid, true)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -538,7 +625,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(GUID, true)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.Guid, true)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -572,7 +659,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(GUID, true)).Result;
+                        var result = RunAsyncTimeout(_devMgr.ResetToDefault_webcam(x.Guid, true)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -604,7 +691,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -634,7 +721,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -664,7 +751,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     x.Value = "";
                     if (x.Result == "")
                     {
-                        var result = "0"; //RunAsyncTimeout(_devMgr.(GUID, true)).Result;
+                        var result = "0"; //RunAsyncTimeout(_devMgr.(x.Guid, true)).Result;
                         if (result == "0")
                         {
                             x.Result = "PASS";
@@ -999,19 +1086,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
 
                 case "HDR":
-                    //ItemId = "DellPeripheral.Webcam.0";
-                    if (_devMgr.GetIsPropertyHDRSupported(GUID).Result)
+                    SetResults.ForEach(x =>
                     {
-                        SetResults.ForEach((Action<CLI_PeripheralRESPONSE>)(x =>
+                        x.Value = "";
+                        if (x.Result == "")
                         {
-                            x.Value = "";
-                            if (x.Result == "")
+                            if (_devMgr.GetIsPropertyHDRSupported(x.Guid).Result)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsHDROn(GUID, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsHDROn(x.Guid, bl)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _devMgr.GetIsHDROn(GUID).Result;
+                                    retcode_ = _devMgr.GetIsHDROn(x.Guid).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
@@ -1028,34 +1114,72 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 retcode = (result == "0") ? true : false;
                             }
-                        }));
-                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    }
-                    else
-                    {
-                        SetResults.ForEach(x =>
-                        {
-                            x.Value = "N/A";
-                            x.Result = "FAIL";
-                            x.Message = "Webcam not support HDR";
-                        });
-                        return (int)CLI_ExitCode.command_targetfeature_not_support;
-                    }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "Webcam not support HDR";
+                                retcode = false;
+                            }
+                        }
+                    });
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //ItemId = "DellPeripheral.Webcam.0";
+                    //if (_devMgr.GetIsPropertyHDRSupported(GUID).Result)
+                    //{
+                    //    SetResults.ForEach((Action<CLI_PeripheralRESPONSE>)(x =>
+                    //    {
+                    //        x.Value = "";
+                    //        if (x.Result == "")
+                    //        {
+                    //            var result = RunAsyncTimeout(_devMgr.SetIsHDROn(GUID, bl)).Result;
+                    //            if (result == "0")
+                    //            {
+                    //                x.Result = "PASS";
+                    //                retcode_ = _devMgr.GetIsHDROn(GUID).Result;
+                    //                x.Value = (retcode_) ? "ON" : "OFF";
+                    //                x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                    //                x.Message = "N/A";
+                    //            }
+                    //            else if (result == "1")
+                    //            {
+                    //                x.Result = "FAIL";
+                    //                x.Message = "Timeout";
+                    //            }
+                    //            else
+                    //            {
+                    //                x.Result = "FAIL";
+                    //                x.Message = result;
+                    //            }
+                    //            retcode = (result == "0") ? true : false;
+                    //        }
+                    //    }));
+                    //    return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //}
+                    //else
+                    //{
+                    //    SetResults.ForEach(x =>
+                    //    {
+                    //        x.Value = "N/A";
+                    //        x.Result = "FAIL";
+                    //        x.Message = "Webcam not support HDR";
+                    //    });
+                    //    return (int)CLI_ExitCode.command_targetfeature_not_support;
+                    //}
 
                 case "ANTIFLICKER":
-                    //ItemId = "DellPeripheral.Webcam.0";
-                    if (_devMgr.GetIsPropertyAntiFlickerSupported(GUID).Result)
+                    SetResults.ForEach(x =>
                     {
-                        SetResults.ForEach(x =>
+                        x.Value = "";
+                        if (x.Result == "")
                         {
-                            x.Value = "";
-                            if (x.Result == "")
+                            if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(GUID, val)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(GUID).Result;
+                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(x.Guid).Result;
                                     x.Value = retvalue.ToString();
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
@@ -1072,34 +1196,72 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 retcode = (result == "0") ? true : false;
                             }
-                        });
-                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    }
-                    else
-                    {
-                        SetResults.ForEach(x =>
-                        {
-                            x.Value = "N/A";
-                            x.Result = "FAIL";
-                            x.Message = "Webcam not support AntiFlicker";
-                        });
-                        return (int)CLI_ExitCode.command_targetfeature_not_support;
-                    }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "Webcam not support AntiFlicker";
+                                retcode = false;
+                            }
+                        }
+                    });
+                    return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //ItemId = "DellPeripheral.Webcam.0";
+                    //if (_devMgr.GetIsPropertyAntiFlickerSupported(GUID).Result)
+                    //{
+                    //    SetResults.ForEach(x =>
+                    //    {
+                    //        x.Value = "";
+                    //        if (x.Result == "")
+                    //        {
+                    //            var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(GUID, val)).Result;
+                    //            if (result == "0")
+                    //            {
+                    //                x.Result = "PASS";
+                    //                retvalue = _devMgr.GetAntiFlickerValueByDTP(GUID).Result;
+                    //                x.Value = retvalue.ToString();
+                    //                x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                    //                x.Message = "N/A";
+                    //            }
+                    //            else if (result == "1")
+                    //            {
+                    //                x.Result = "FAIL";
+                    //                x.Message = "Timeout";
+                    //            }
+                    //            else
+                    //            {
+                    //                x.Result = "FAIL";
+                    //                x.Message = result;
+                    //            }
+                    //            retcode = (result == "0") ? true : false;
+                    //        }
+                    //    });
+                    //    return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //}
+                    //else
+                    //{
+                    //    SetResults.ForEach(x =>
+                    //    {
+                    //        x.Value = "N/A";
+                    //        x.Result = "FAIL";
+                    //        x.Message = "Webcam not support AntiFlicker";
+                    //    });
+                    //    return (int)CLI_ExitCode.command_targetfeature_not_support;
+                    //}
 
                 case "AIAUTOFRAMING":
-                    //ItemId = "DellPeripheral.Webcam.0";
-                    if (_devMgr.GetIsPropertyAutoFramingSupported(GUID).Result)
+                    SetResults.ForEach(x =>
                     {
-                        SetResults.ForEach(x =>
+                        x.Value = "";
+                        if (x.Result == "")
                         {
-                            x.Value = "";
-                            if (x.Result == "")
+                            if (_devMgr.GetIsPropertyAutoFramingSupported(x.Guid).Result)
                             {
-                                var result = RunAsyncTimeout(_devMgr.SetIsAutoFramingOn(GUID, bl)).Result;
+                                var result = RunAsyncTimeout(_devMgr.SetIsAutoFramingOn(x.Guid, bl)).Result;
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
-                                    retcode_ = _devMgr.GetIsAutoFramingOn(GUID).Result;
+                                    retcode_ = _devMgr.GetIsAutoFramingOn(x.Guid).Result;
                                     x.Value = (retcode_) ? "ON" : "OFF";
                                     x.Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
@@ -1116,19 +1278,58 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 retcode = (result == "0") ? true : false;
                             }
-                        });
-                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    }
-                    else
-                    {
-                        SetResults.ForEach(x =>
-                        {
-                            x.Value = "N/A";
-                            x.Result = "FAIL";
-                            x.Message = "Webcam not support AI AutoFraming";
-                        });
-                        return (int)CLI_ExitCode.command_targetfeature_not_support;
-                    }
+                            else
+                            {
+                                x.Value = "N/A";
+                                x.Result = "FAIL";
+                                x.Message = "Webcam not support AI AutoFraming";
+                                retcode = false;
+                            }
+                        }
+                    });
+                    return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //ItemId = "DellPeripheral.Webcam.0";
+                    //if (_devMgr.GetIsPropertyAutoFramingSupported(GUID).Result)
+                    //{
+                    //    SetResults.ForEach(x =>
+                    //    {
+                    //        x.Value = "";
+                    //        if (x.Result == "")
+                    //        {
+                    //            var result = RunAsyncTimeout(_devMgr.SetIsAutoFramingOn(GUID, bl)).Result;
+                    //            if (result == "0")
+                    //            {
+                    //                x.Result = "PASS";
+                    //                retcode_ = _devMgr.GetIsAutoFramingOn(GUID).Result;
+                    //                x.Value = (retcode_) ? "ON" : "OFF";
+                    //                x.Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
+                    //                x.Message = "N/A";
+                    //            }
+                    //            else if (result == "1")
+                    //            {
+                    //                x.Result = "FAIL";
+                    //                x.Message = "Timeout";
+                    //            }
+                    //            else
+                    //            {
+                    //                x.Result = "FAIL";
+                    //                x.Message = result;
+                    //            }
+                    //            retcode = (result == "0") ? true : false;
+                    //        }
+                    //    });
+                    //    return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    //}
+                    //else
+                    //{
+                    //    SetResults.ForEach(x =>
+                    //    {
+                    //        x.Value = "N/A";
+                    //        x.Result = "FAIL";
+                    //        x.Message = "Webcam not support AI AutoFraming";
+                    //    });
+                    //    return (int)CLI_ExitCode.command_targetfeature_not_support;
+                    //}
                 case "PRESENCEDETECTION":
                     //ItemId = "DellPeripheral.Webcam.0";
                     SetResults.ForEach(x =>
@@ -1136,11 +1337,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(GUID, bl)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(x.Guid, bl)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
-                                retcode_ = _devMgr.GetIsProximitySensorEnable(GUID).Result;
+                                retcode_ = _devMgr.GetIsProximitySensorEnable(x.Guid).Result;
                                 x.Value = (retcode_) ? "ON" : "OFF";
                                 x.Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
                                 x.Message = "N/A";
@@ -1160,49 +1361,49 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
 
-                case "MICSWITCH_":
-                    //var ItemId_ = "DellPeripheral.Webcam.0";
-                    if (_deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID)?.IsMicEnumerationSupported == true)
-                    {
-                        SetResults.ForEach(x =>
-                        {
-                            x.Value = "";
-                            if (x.Result == "")
-                            {
-                                var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(GUID, bl)).Result;
-                                if (result == "0")
-                                {
-                                    x.Result = "PASS";
-                                    retcode_ = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID).IsMicEnumerationOn;
-                                    x.Value = (retcode_) ? "ON" : "OFF";
-                                    x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
-                                    x.Message = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID).IsMicEnumerationOn.ToString();
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
-                                }
-                                else
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = result;
-                                }
-                                retcode = (result == "0") ? true : false;
-                            }
-                        });
-                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    }
-                    else
-                    {
-                        SetResults.ForEach(x =>
-                        {
-                            x.Value = "N/A";
-                            x.Result = "FAIL";
-                            x.Message = "Webcam not support MicSwitch";
-                        });
-                        return (int)CLI_ExitCode.command_targetfeature_not_support;
-                    }
+                //case "MICSWITCH_":
+                //    //var ItemId_ = "DellPeripheral.Webcam.0";
+                //    if (_deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID)?.IsMicEnumerationSupported == true)
+                //    {
+                //        SetResults.ForEach(x =>
+                //        {
+                //            x.Value = "";
+                //            if (x.Result == "")
+                //            {
+                //                var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(GUID, bl)).Result;
+                //                if (result == "0")
+                //                {
+                //                    x.Result = "PASS";
+                //                    retcode_ = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID).IsMicEnumerationOn;
+                //                    x.Value = (retcode_) ? "ON" : "OFF";
+                //                    x.Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                //                    x.Message = _deviceinfo.FirstOrDefault(x => x.ID.ToString() == GUID).IsMicEnumerationOn.ToString();
+                //                }
+                //                else if (result == "1")
+                //                {
+                //                    x.Result = "FAIL";
+                //                    x.Message = "Timeout";
+                //                }
+                //                else
+                //                {
+                //                    x.Result = "FAIL";
+                //                    x.Message = result;
+                //                }
+                //                retcode = (result == "0") ? true : false;
+                //            }
+                //        });
+                //        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                //    }
+                //    else
+                //    {
+                //        SetResults.ForEach(x =>
+                //        {
+                //            x.Value = "N/A";
+                //            x.Result = "FAIL";
+                //            x.Message = "Webcam not support MicSwitch";
+                //        });
+                //        return (int)CLI_ExitCode.command_targetfeature_not_support;
+                //    }
                 default:
                     SetFailResults("Invalid TargetFeature");
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty_Property;
