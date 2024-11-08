@@ -261,20 +261,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 // 20240626 jim modify
                 _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
-
-
-                writeableBitmap = new(
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
-                    96,
-                    96,
-                    PixelFormats.Bgra32,
-                    null);
-
-                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
-                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
-                CameraImage.Source = writeableBitmap;
-
                 
                 _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
 
@@ -304,6 +290,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 };
                 visibilityAnimation.Completed += ShowGrid;
                 imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+
+                writeableBitmap = new(
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,              
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
+                    96,
+                    96,
+                    PixelFormats.Bgra32,
+                    null);
+                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                CameraImage.Source = writeableBitmap;
+                before_width = (int)mediaFrameSource.CurrentFormat.VideoFormat.Width;
+                before_height = (int)mediaFrameSource.CurrentFormat.VideoFormat.Height;
             }
             catch (Exception Exc)
             {
@@ -555,6 +554,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         WriteableBitmap writeableBitmap;
         SoftwareBitmap backBuffer;
         Int32Rect react;
+        int before_width = 0;
+        int before_height = 0;
 
         [ComImport]
         [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
@@ -572,25 +573,31 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_running) return;
             _running = true;
 
-            /*int frame_drop = 3;
-            count++;
-            if (count != frame_drop)
-            {
-                _running = false;
-                return;
-            }
-            if (count == frame_drop) count = 0;*/
-
             var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
 
-            Thread.Sleep(66);//15fps
+            Thread.Sleep(60);
 
             if (softwareBitmap != null)
             {
-                //ImageSource source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
 
+                    if (before_width != softwareBitmap.PixelWidth || before_height != softwareBitmap.PixelHeight)
+                    {
+                        
+                        writeableBitmap = new(
+                            softwareBitmap.PixelWidth,
+                            softwareBitmap.PixelHeight,
+                            96,
+                            96,
+                            PixelFormats.Bgra32,
+                            null);
+                        react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                        ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                        CameraImage.Source = writeableBitmap;
+                        before_width = softwareBitmap.PixelWidth;
+                        before_height = softwareBitmap.PixelHeight;
+                    }
 
                     writeableBitmap.Lock();
                     using var m = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Read);
@@ -606,15 +613,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             (IntPtr)ptr,
                             (int)capacity,
                             t.Stride);
-                        writeableBitmap.AddDirtyRect(react);
 
                         //way 2:
                         /*CopyMemory(writeableBitmap.BackBuffer, (IntPtr)ptr, ImageBufferSize);
                         writeableBitmap.AddDirtyRect(react);*/
                     }
                     writeableBitmap.Unlock();
-
-                    //CameraImage.Source = source;
                 });
             }
             _running = false;
