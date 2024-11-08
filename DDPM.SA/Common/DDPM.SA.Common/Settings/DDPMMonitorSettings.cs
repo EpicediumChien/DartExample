@@ -129,7 +129,7 @@ namespace DDPM.SA.Common.Settings
         public scheduleInfo scheduleInfo { get; set; }
         public ImpExpSettings ImpExpSettings { get; set; }
         public EasyArrangementDDPM easyArrangementDDPM { get; set; }
-        public uint ALSConfig { get; set; }
+        public uint ALSConfig { get; set; } = 0;
         public Gaming Gaming { get; set; } = new Gaming();
     }
 

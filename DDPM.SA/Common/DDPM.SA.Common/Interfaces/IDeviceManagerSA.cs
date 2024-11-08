@@ -126,13 +126,16 @@ namespace DDPM.SA.Common
 
         Task<bool> SyncNightlightStatus();
         Task<bool> CheckNightLightStatus();
+        Task<bool> CheckNightLightScheduler();
         Task<bool> CheckColorICCStatus();
 
 
         Task<bool> StopRegistryMonitor_NightLight();
+        Task<bool> StopRegistryMonitor_NightLightScheduler();
         Task<bool> StopRegistryMonitor_ICC();
 
         Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
+        Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
 
         #endregion public for ColorPreset
 
@@ -562,6 +565,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+        Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
 
@@ -622,6 +626,8 @@ namespace DDPM.SA.Common
         Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
 
         Task<bool> GetSameModel(MonitorInfo monitorInfo);
+
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
         #endregion public for ImpExpSettings
 

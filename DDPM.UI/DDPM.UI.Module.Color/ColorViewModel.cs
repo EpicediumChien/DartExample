@@ -732,8 +732,9 @@ namespace DDPM.UI.Module.Color
                 DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
 
                 // -- begin add jim 20240604
-                DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
-                DdpmCommonHelper.DeviceManagerSA.CheckNightLightStatus();   
+                //DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightStatus();
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightScheduler();
                 //SyncNightlightStatus();
 
                 // jim remove
@@ -898,6 +899,8 @@ namespace DDPM.UI.Module.Color
                         tempList.Add(new_Appdata);
                     }
                 }
+
+                DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
 
                 //Robert_Lin, 20240528
                 //NEW Added code:

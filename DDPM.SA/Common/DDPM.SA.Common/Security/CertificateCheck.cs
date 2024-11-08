@@ -32,7 +32,7 @@ namespace DDPM.SA.Common.Security
                     ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
                     if (Info.Equals("Complete"))
                     {
-                        Info = ret ? "Check ok" : "Check faile";
+                        Info = ret ? "Check ok" : "Check fail";
                     }
                 }
                 catch (Exception ex)
@@ -53,7 +53,7 @@ namespace DDPM.SA.Common.Security
                     ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
                     if (Info.Equals("Complete"))
                     {
-                        Info = ret ? "Check ok" : "Check faile";
+                        Info = ret ? "Check ok" : "Check fail";
                     }
                 }
                 catch (Exception ex)
@@ -71,8 +71,21 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
+                    if (!DDPMFileSecurity.VerifyExecutableFileSignature(CertificateFilePath, out Info))
+                    {
+#if DEBUG
+                        Console.WriteLine(Info);
+#endif
+                        return false;
+                    }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+
+                    //if(!CheckCertificateIsVaild(certificate))
+                    //{
+                    //    return ret;
+                    //}
+
                     ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
                 }
                 catch (Exception ex)
@@ -90,8 +103,21 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
+                    if (!DDPMFileSecurity.VerifyExecutableFileSignature(CertificateFilePath, out Info))
+                    {
+#if DEBUG
+                        Console.WriteLine(Info);
+#endif
+                        return false;
+                    }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
+
+                    //if(!CheckCertificateIsVaild(certificate))
+                    //{ 
+                    //    return ret; 
+                    //}
+
                     for (int i = 0; i < Stande_Thumbprint.Count; i++)
                     {
                         ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
@@ -197,6 +223,12 @@ namespace DDPM.SA.Common.Security
                 _logs?.DebugMsg_1("[PinPublicKey] certificate null.");
                 return false;
             }
+
+            if(!CheckCertificateIsVaild(certificate2))
+            {
+                return false;
+            }
+
             HttpClient httpClient = sender as HttpClient;
             if (httpClient == null)
             {
@@ -250,7 +282,8 @@ namespace DDPM.SA.Common.Security
             _logs?.DebugMsg_1(string.Format("[GetResponse] result:" + flag));
             return flag;
         }
-        private bool CheckCertificateIsVaild(X509Certificate2 certificate)
+
+        public bool CheckCertificateIsVaild(X509Certificate2 certificate)
         {
             bool result = false;
             try
@@ -506,18 +539,24 @@ namespace DDPM.SA.Common.Security
             chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
 
             bool isChainValid = chain.Build(certificate);
+
             if (isChainValid)
             {
+                _logs?.DebugMsg_1("Credential has been Build.");
                 ret = true;
-                _logs?.DebugMsg_1("Credential has not been revoked.");
+                foreach (X509ChainStatus status in chain.ChainStatus)
+                {
+                    if (status.Status == X509ChainStatusFlags.Revoked)
+                    {
+                        ret = false;
+                        _logs?.DebugMsg_1($"{status.StatusInformation} Credentials may be revoked");
+                        break;
+                    }
+                }
             }
             else
             {
-                _logs?.DebugMsg_1("Credentials may be revoked.");
-                foreach (X509ChainStatus status in chain.ChainStatus)
-                {
-                    _logs?.DebugMsg_1($"Error: {status.StatusInformation}");
-                }
+                _logs?.DebugMsg_1("Credentials has not been Build.");
             }
             return ret;
         }
