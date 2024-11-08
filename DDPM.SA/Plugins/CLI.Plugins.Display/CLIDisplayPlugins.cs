@@ -10939,7 +10939,7 @@ namespace DDPM.CLI.Plugins.Display
                                                 default:
                                                     writelog($"option value not support");
                                                     ApplyConfiguration.ColorManagement = "NOT SUPPORT";
-                                                    output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
+                                                    output += $"\n  \"Result: \": \"ColorManagement not support\"";
                                                     break;
                                             }
                                             break;
