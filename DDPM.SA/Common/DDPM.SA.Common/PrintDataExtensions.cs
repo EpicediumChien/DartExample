@@ -345,10 +345,18 @@ namespace DDPM.SA.Common
                 if (dataRows.Count() > 0)
                 {
                     int maxRowOrdinal = 0;
-                    if (string.IsNullOrEmpty(ordinalColumnName))
-                        maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
-                    else
-                        maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
+
+                    try
+                    {
+                        if (string.IsNullOrEmpty(ordinalColumnName))
+                            maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
+                        else
+                            maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
+                    }
+                    catch (Exception ex) 
+                    {
+                        Console.Write("[PrintRows] error, message: " + ex.Message);
+                    }
 
                     if (maxRowOrdinal > -1)
                         rowOrdinalsLength = maxRowOrdinal.ToString().Length;
@@ -756,10 +764,18 @@ namespace DDPM.SA.Common
                         columnsLength = 7;
 
                     int maxRowOrdinal = 0;
-                    if (string.IsNullOrEmpty(ordinalColumnName))
-                        maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
-                    else
-                        maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
+
+                    try
+                    {
+                        if (string.IsNullOrEmpty(ordinalColumnName))
+                            maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
+                        else
+                            maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write("[PrintListRows] error, message: " + ex.Message);
+                    }
 
                     if (maxRowOrdinal > -1)
                     {
@@ -871,10 +887,18 @@ namespace DDPM.SA.Common
             if (rowOrdinals)
             {
                 IEnumerable<int> ordinals = null;
-                if (string.IsNullOrEmpty(ordinalColumnName))
-                    ordinals = rows.Select(row => row.Table.Rows.IndexOf(row));
-                else
-                    ordinals = rows.Select(row => (int)row[ordinalColumnName]);
+
+                try
+                {
+                    if (string.IsNullOrEmpty(ordinalColumnName))
+                        ordinals = rows.Select(row => row.Table.Rows.IndexOf(row));
+                    else
+                        ordinals = rows.Select(row => (int)row[ordinalColumnName]);
+                }
+                catch (Exception ex) 
+                {
+                    Console.Write("[PrintListRow] error, message: " + ex.Message);
+                }
 
                 objects[0] = "Ordinal";
                 int k = 1;

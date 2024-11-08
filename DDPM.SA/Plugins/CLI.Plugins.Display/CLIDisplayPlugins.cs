@@ -3911,6 +3911,13 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (index)
             {
+                case "VGA": return "VGA-1";
+                case "VGA1": return "VGA-1";
+                case "VGA-1": return "VGA-1";
+
+                case "VGA2": return "VGA-2";
+                case "VGA-2": return "VGA-2";
+
                 case "HDMI": return "HDMI-1";
                 case "HDMI1": return "HDMI-1";
                 case "HDMI-1": return "HDMI-1";
@@ -8424,8 +8431,8 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                     get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
-
-                                get_DeviceData.ColorManagement = "N/A";
+                                writelog($"ColorManagement, ColorManagementType Entry");
+                                get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
                                 writelog($"SpeakerVolume Entry (62, 8D)");
                                 if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
@@ -8831,8 +8838,8 @@ namespace DDPM.CLI.Plugins.Display
                     else
                         get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
                     writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
-
-                    get_DeviceData.ColorManagement = "N/A";
+                    writelog($"ColorManagement, ColorManagementType Entry");
+                    get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
                     writelog($"SpeakerVolume Entry (62, 8D)");
                     if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
@@ -10709,6 +10716,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (_AllInfoMonitors == null)
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
+
                         _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                         writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
                         if (ss_1[0].ToUpper() == "DISPLAY")
@@ -10723,7 +10731,6 @@ namespace DDPM.CLI.Plugins.Display
                                 ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                                 ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                                 ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
 
                                 // malik
                                 bool retcode = false;
@@ -10924,7 +10931,26 @@ namespace DDPM.CLI.Plugins.Display
                                             }
 
                                             break;
-
+                                        case "COLORMANAGEMENT":
+                                            ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
+                                            switch (colorManagementType)
+                                            {
+                                                case ColorManagementRunType.Off:
+                                                case ColorManagementRunType.Byhost:
+                                                case ColorManagementRunType.Bymonitor:
+                                                    writelog($"ColorManagement {colorManagementType.ToString()} entry");
+                                                    retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.ColorManagement = property.Value.ToString();
+                                                    writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
+                                                    break;
+                                                default:
+                                                    writelog($"option value not support");
+                                                    ApplyConfiguration.ColorManagement = "NOT SUPPORT";
+                                                    output += $"\n  \"Result: \": \"ColorManagement not support\"";
+                                                    break;
+                                            }
+                                            break;
                                         case "SPEAKERMICROPHONE":
                                             writelog($"SpeakerMicrophone entry");
                                             if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
@@ -11235,6 +11261,20 @@ namespace DDPM.CLI.Plugins.Display
                 case "LOW": return "2";
                 case "ON": return "2";
                 default: return "0";
+            }
+        }
+
+        private static ColorManagementRunType get_ColorManagement(string priority)
+        {
+            switch (priority)
+            {
+                case "OFF":
+                    return ColorManagementRunType.Off;
+                case "BYMONITOR":
+                    return ColorManagementRunType.Bymonitor;
+                case "BYHOST": 
+                    return ColorManagementRunType.Byhost;
+                default: return ColorManagementRunType.Off;
             }
         }
 

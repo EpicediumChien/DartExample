@@ -564,6 +564,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+        Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
 
@@ -624,6 +625,8 @@ namespace DDPM.SA.Common
         Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
 
         Task<bool> GetSameModel(MonitorInfo monitorInfo);
+
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
         #endregion public for ImpExpSettings
 

@@ -5039,6 +5039,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
         }
 
+        public Task<string> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
+        }
+
         #endregion
 
         #region NKVM implementation
@@ -6701,7 +6706,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out DDPMImpExpSettings ImpExpSettings).Result)
+                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
                     if (ImpExpSettings != null)
                     {
@@ -7001,6 +7006,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             return Task.FromResult(false);
+        }
+
+        public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
+        {
+            DDPMImpExpSettings impExpSettings = new DDPMImpExpSettings();
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path)) 
+            {
+                impExpSettings =  _SettingsPlugin.ReadImportSettingsFile(path).Result;
+            }
+            return Task.FromResult(impExpSettings);
         }
 
         #endregion
@@ -8571,11 +8586,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 確保目標資料夾存在
             Directory.CreateDirectory(destDirName);
             // 複製檔案
-            foreach (string file in Directory.GetFiles(sourceDirName))
+            try
             {
-                string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                File.Copy(file, destFile, true);
+                foreach (string file in Directory.GetFiles(sourceDirName))
+                {
+                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                    File.Copy(file, destFile, true);
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+            }
+
             // 複製子資料夾
             if (copySubDirs)
             {
