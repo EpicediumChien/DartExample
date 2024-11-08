@@ -6272,7 +6272,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         InterruptScreenRoot temp2 = _SettingsPlugin.ReadInterruptScreen().Result;
                         if (temp2 == null || !temp.Equals(temp2))
                         {
-                            result = temp;
+                            result = temp.Clone();
                             foreach (FeaturesList interruptScreenRoot in temp.featuresList)
                             {
                                 if (interruptScreenRoot != null && interruptScreenRoot.content != null)

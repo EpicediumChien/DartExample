@@ -31,6 +31,21 @@ namespace DDPM.SA.Common
             }
             return this.version == other.version && same;
         }
+        public InterruptScreenRoot Clone()
+        {
+            InterruptScreenRoot other = new InterruptScreenRoot();
+            other.version = this.version;
+            other.featuresList = this.featuresList;
+            if (this.featuresList != null)
+            {
+                other.featuresList = new List<FeaturesList>();
+                for (int i = 0; i < this.featuresList.Count; i++)
+                {
+                    other.featuresList.Add(this.featuresList[i].Clone());
+                }
+            }
+            return other;
+        }
     }
     public class FeaturesList
     {
@@ -40,6 +55,17 @@ namespace DDPM.SA.Common
         {
             return this.categoryId == other.categoryId &&
                 this.content.Equals(other.content);
+        }
+        public FeaturesList Clone()
+        {
+            FeaturesList other = new FeaturesList();
+            other.categoryId = this.categoryId;
+            other.content = this.content;
+            if (this.content != null)
+            {
+                other.content = this.content.Clone();
+            }
+            return other;
         }
     }
     public class Content
@@ -78,6 +104,17 @@ namespace DDPM.SA.Common
             return this.id == other.id &&
                 this.imageUrl == other.imageUrl &&
                  same;
+        }
+        public Content Clone()
+        {
+            Content other = new Content();
+            other.id = this.id;
+            other.imageUrl = this.imageUrl;
+            other.image = this.image;
+            other.productLabel = this.productLabel;
+            other.bugDescription = this.bugDescription;
+            other.detailsList = this.detailsList;
+            return other;
         }
     }
     public class ProductLabel

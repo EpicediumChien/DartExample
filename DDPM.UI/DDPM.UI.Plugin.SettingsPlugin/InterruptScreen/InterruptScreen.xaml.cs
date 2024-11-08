@@ -142,6 +142,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     bitmapImage.BeginInit();
                     bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                     bitmapImage.EndInit();
                 }
             }
