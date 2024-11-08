@@ -154,7 +154,8 @@ namespace DDPM.UI.Module.Brightness
                 }
                 Trace.WriteLine($"3. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");*/
                 List<ALSConfig> alsSynchronizeList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
-                vm.CheckisShowSynchronize(alsSynchronizeList);
+                vm.SynchronizeBtnExpectedResult(DdpmCommonHelper.DeviceManagerSA.CheckisShowSynchronize(vm.SelectedHomeDevice.MonitorInfo, alsSynchronizeList).Result);
+                //vm.CheckisShowSynchronize(alsSynchronizeList);
             }
             catch (Exception) { }
         }
