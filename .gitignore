@@ -284,3 +284,5 @@ testcoverage/
 /DdpmSwUpdater/CommonDll/DDPM.SA.Obfuscation.dll
 /DdpmSwUpdater/CommonDll/VcpCore.Common.deps.json
 /DdpmSwUpdater/CommonDll/VcpCore.Common.dll
+/DDPM.UI/CommonDll/DDPM.PowerMon.deps.json
+/DDPM.UI/CommonDll/DDPM.PowerMon.dll

@@ -34,7 +34,8 @@ namespace DDPM.SA.Common
             { "DEVICEDATA", 300 },
             { "DEVICECONFIGURATION", 300 },
             { "EXPORTSETTINGS", 300 },
-            { "IMPORTSETTINGS", 300 }
+            { "IMPORTSETTINGS", 300 },
+            { "PXP", 300 }
         };
 
         //IT feature table

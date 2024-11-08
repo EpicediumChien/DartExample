@@ -662,13 +662,13 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
-                case "ENERGYSAVER":
-                    {
-                        var energysaver = EnergysaverX(devMgr, commandLineInput);
-                        result.ExitCode = energysaver.code;
-                        result.serialize_Json_response = energysaver.result;
-                    };
-                    break;
+                //case "ENERGYSAVER":
+                //    {
+                //        var energysaver = EnergysaverX(devMgr, commandLineInput);
+                //        result.ExitCode = energysaver.code;
+                //        result.serialize_Json_response = energysaver.result;
+                //    };
+                //    break;
 
                 case "CAPABILITIESSTRING":
                     {
@@ -958,6 +958,17 @@ namespace DDPM.CLI.Plugins.Display
                 return string.Empty;
             }
             return $"{input[0].ToString().ToUpper()}{input.Substring(1)}";
+        }
+
+        private (int code, string result) DDPMSettingsNullResponse(string command, string targetFeature)
+        {
+            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            cli_Response.Command = command;
+            cli_Response.TargetFeature = targetFeature;
+            cli_Response.Result = "FAIL";
+            cli_Response.Message = "Failed to get DDPMSettings";
+            Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
         }
 
         private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, CommandLineInput commandLineInput, string value = "")
@@ -1432,7 +1443,8 @@ namespace DDPM.CLI.Plugins.Display
                         index_per++;
 
                         cli_Response2.Index = index_per.ToString();
-                        cli_Response2.Model = g.Name;
+                        cli_Response2.ID = g.ID;
+                        cli_Response2.Model = g.ModelNumber;
                         cli_Response2.FirmwareVersion = g.FirmwareVersion;
                         cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                         cli_Response2.BatteryStatus = g.BatteryStatus;
@@ -1502,6 +1514,11 @@ namespace DDPM.CLI.Plugins.Display
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
+            if (ddpmSettings == null)
+            {
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
+            }
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
@@ -2001,6 +2018,35 @@ namespace DDPM.CLI.Plugins.Display
             return result;
         }
 
+        private async Task<ObjGetVCP> GetVCPCodeMax(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode)
+        {
+            if (devMgr == null)
+            {
+                writelog("GetVCPCodeMax: input null IDeviceManagerSA");
+                return new ObjGetVCP() { result = false, value = null };
+            }
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            ObjGetVCP result = new ObjGetVCP();
+            if (_AllInfoMonitors.Exists(t => t.edid.SerialNumber == mo.edid.SerialNumber))
+            {
+                bool IsHexNumeric_vcpcode = vcpcode.ToLower().Contains("0x") ? (IsHexNumeric(vcpcode.ToLower().Replace("0x", string.Empty)) ? true : false) : false;
+                bool IsNumeric_vcpcode = IsHexNumeric_vcpcode ? true : (IsNumeric(vcpcode) ? true : false);
+                byte byte_vcpcode = IsHexNumeric_vcpcode ? (Convert.ToByte(vcpcode, 16)) : (IsNumeric_vcpcode ? Convert.ToByte(vcpcode, 10) : default);
+
+                if (IsNumeric_vcpcode)
+                    result = await devMgr.GetVCPCapability(mo, byte_vcpcode, 1);
+                else
+                    result = await devMgr.GetVCPCapability(mo, vcpcode, 1);
+            }
+            else
+                return new ObjGetVCP() { result = false, value = null };
+
+            return result;
+        }
+
         private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, int index, string vcpcode)
         {
             if (devMgr == null)
@@ -2058,14 +2104,28 @@ namespace DDPM.CLI.Plugins.Display
                             S_Brightness_RESPONSE.Message = "Format Error";
                             return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         }
-                        else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        //else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        //{
+                        //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                        //    S_Brightness_RESPONSE.Message = "Format Error";
+                        //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        //}
+                        else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                         {
-                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
                             S_Brightness_RESPONSE.Message = "Format Error";
                             return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         }
 
-                        rc = SetVCPCode(devMgr, monitor, "0x10", value).Result;
+                        var setValue = value;
+
+                        if (!monitor.CapabilityDic.ContainsKey("12"))
+                        {
+                            var maxLuminance = GetVCPCodeMax(devMgr, monitor, "0x10").Result;
+                            setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                        }
+
+                        rc = SetVCPCode(devMgr, monitor, "0x10", setValue).Result;
 
                         S_Brightness_RESPONSE.Model = monitor.modelName;
                         S_Brightness_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
@@ -2120,14 +2180,28 @@ namespace DDPM.CLI.Plugins.Display
                             S_Brightness_RESPONSE.Message = "Format Error";
                             return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         }
-                        else if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        //else if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        //{
+                        //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                        //    S_Brightness_RESPONSE.Message = "Format Error";
+                        //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        //}
+                        else if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                         {
-                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
                             S_Brightness_RESPONSE.Message = "Format Error";
                             return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                         }
 
-                        rc = SetVCPCode(devMgr, nidx, "0x10", value).Result;
+                        var setValue = value;
+
+                        if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
+                        {
+                            var maxLuminance = GetVCPCodeMax(devMgr, _AllInfoMonitors[nidx], "0x10").Result;
+                            setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                        }
+
+                        rc = SetVCPCode(devMgr, nidx, "0x10", setValue).Result;
 
                         S_Brightness_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
                         S_Brightness_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
@@ -2178,13 +2252,28 @@ namespace DDPM.CLI.Plugins.Display
                                 S_Brightness_RESPONSE.Message = "Format Error";
                                 return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                             }
-                            else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                            //else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                            //{
+                            //    S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                            //    S_Brightness_RESPONSE.Message = "Format Error";
+                            //    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            //}
+                            else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
                             {
-                                S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                                S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE lager then 100";
                                 S_Brightness_RESPONSE.Message = "Format Error";
                                 return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                             }
-                            rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
+
+                            var setValue = value;
+
+                            if (!mo.CapabilityDic.ContainsKey("12"))
+                            {
+                                var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
+                                setValue = (Int32.Parse(maxLuminance.value.ToString()) * Int32.Parse(value) / 100).ToString();
+                            }
+
+                            rc = SetVCPCode(devMgr, mo, "0x10", setValue).Result;
 
                             S_Brightness_RESPONSE.Model = mo.modelName;
                             S_Brightness_RESPONSE.SerialNumber = mo.edid.SerialNumber;
@@ -2330,6 +2419,8 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
+                                var maxLuminance = GetVCPCodeMax(devMgr, monitor, "0x10").Result;
+
                                 CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
 
                                 G_Luminus_RESPONSE.Model = monitor.modelName;
@@ -2338,7 +2429,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
                                 G_Luminus_RESPONSE.Command = "GET";
                                 G_Luminus_RESPONSE.TargetFeature = "LUMINANCE";
-                                G_Luminus_RESPONSE.Value = $"{rc.value}";
+                                G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
                                 //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -2391,6 +2482,8 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
+                                var maxLuminance = GetVCPCodeMax(devMgr, _AllInfoMonitors[nidx], "0x10").Result;
+
                                 CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
                                 G_Luminus_RESPONSE.Model = _AllInfoMonitors[nidx].modelName;
                                 G_Luminus_RESPONSE.SerialNumber = _AllInfoMonitors[nidx].edid.SerialNumber;
@@ -2398,7 +2491,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
                                 G_Luminus_RESPONSE.Command = "GET";
                                 G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
-                                G_Luminus_RESPONSE.Value = $"{rc.value}";
+                                G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
                                 //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -2448,6 +2541,8 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 else
                                 {
+                                    var maxLuminance = GetVCPCodeMax(devMgr, mo, "0x10").Result;
+
                                     CLI_Get_Luminus_RESPONSE G_Luminus_RESPONSE = new CLI_Get_Luminus_RESPONSE();
                                     G_Luminus_RESPONSE.Model = mo.modelName;
                                     G_Luminus_RESPONSE.SerialNumber = mo.edid.SerialNumber;
@@ -2455,7 +2550,7 @@ namespace DDPM.CLI.Plugins.Display
                                     G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                     G_Luminus_RESPONSE.Command = "GET";
                                     G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
-                                    G_Luminus_RESPONSE.Value = $"{rc.value}";
+                                    G_Luminus_RESPONSE.Value = $"{(int)((double)Int32.Parse(rc.value.ToString()) / Int32.Parse(maxLuminance.value.ToString()) * 100)}";
                                     //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Luminus_RESPONSE.Result = "PASS";
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -4167,6 +4262,13 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (index)
             {
+                case "VGA": return "VGA-1";
+                case "VGA1": return "VGA-1";
+                case "VGA-1": return "VGA-1";
+
+                case "VGA2": return "VGA-2";
+                case "VGA-2": return "VGA-2";
+
                 case "HDMI": return "HDMI-1";
                 case "HDMI1": return "HDMI-1";
                 case "HDMI-1": return "HDMI-1";
@@ -4237,6 +4339,11 @@ namespace DDPM.CLI.Plugins.Display
             string output = string.Empty;
             bool ispass = true;
             DDPMSettings data = devMgr.ReloadAppConfigData().Result;
+
+            if (data == null)
+            {
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
+            }
 
             if (commandLineInput.Command == "SET")
             {
@@ -7974,6 +8081,11 @@ namespace DDPM.CLI.Plugins.Display
             List<PowerNapSetting> read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
+            if (ddpmSettings == null)
+            {
+                return DDPMSettingsNullResponse(type, "PowerNap");
+            }
+
             if (type == "SET")
             {
                 if (string.IsNullOrWhiteSpace(value))
@@ -9243,8 +9355,8 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                     get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
-
-                                get_DeviceData.ColorManagement = "N/A";
+                                writelog($"ColorManagement, ColorManagementType Entry");
+                                get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
                                 writelog($"SpeakerVolume Entry (62, 8D)");
                                 if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
@@ -9650,8 +9762,8 @@ namespace DDPM.CLI.Plugins.Display
                     else
                         get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
                     writelog($"USB_CPrioritization, USBCPrioritizationType Exit return value: {get_DeviceData.USB_CPrioritization}");
-
-                    get_DeviceData.ColorManagement = "N/A";
+                    writelog($"ColorManagement, ColorManagementType Entry");
+                    get_DeviceData.ColorManagement = devMgr.GetColorManagementStatus(monitor).Result;
 
                     writelog($"SpeakerVolume Entry (62, 8D)");
                     if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
@@ -11732,6 +11844,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (_AllInfoMonitors == null)
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
+
                         _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                         writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
                         if (ss_1[0].ToUpper() == "DISPLAY")
@@ -11746,7 +11859,6 @@ namespace DDPM.CLI.Plugins.Display
                                 ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
                                 ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
                                 ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
 
                                 // malik
                                 bool retcode = false;
@@ -11947,7 +12059,26 @@ namespace DDPM.CLI.Plugins.Display
                                             }
 
                                             break;
-
+                                        case "COLORMANAGEMENT":
+                                            ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
+                                            switch (colorManagementType)
+                                            {
+                                                case ColorManagementRunType.Off:
+                                                case ColorManagementRunType.Byhost:
+                                                case ColorManagementRunType.Bymonitor:
+                                                    writelog($"ColorManagement {colorManagementType.ToString()} entry");
+                                                    retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.ColorManagement = property.Value.ToString();
+                                                    writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
+                                                    break;
+                                                default:
+                                                    writelog($"option value not support");
+                                                    ApplyConfiguration.ColorManagement = "NOT SUPPORT";
+                                                    output += $"\n  \"Result: \": \"ColorManagement not support\"";
+                                                    break;
+                                            }
+                                            break;
                                         case "SPEAKERMICROPHONE":
                                             writelog($"SpeakerMicrophone entry");
                                             if (monitor.CapabilityDic.ContainsKey("62") && monitor.CapabilityDic.ContainsKey("8D"))
@@ -12261,11 +12392,27 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        private static ColorManagementRunType get_ColorManagement(string priority)
+        {
+            switch (priority)
+            {
+                case "OFF":
+                    return ColorManagementRunType.Off;
+                case "BYMONITOR":
+                    return ColorManagementRunType.Bymonitor;
+                case "BYHOST": 
+                    return ColorManagementRunType.Byhost;
+                default: return ColorManagementRunType.Off;
+            }
+        }
+
         private static USBCPrioritizationType get_USBCPrioritization(string priority)
         {
             switch (priority)
             {
-                case "High Speed": return USBCPrioritizationType.HighDataSpeed;
+                case "High Speed":
+                case "High Data Speed":
+                    return USBCPrioritizationType.HighDataSpeed;
                 case "High Resolution": return USBCPrioritizationType.HighResolution;
                 default: return USBCPrioritizationType.Unknow;
             }
@@ -13518,6 +13665,11 @@ namespace DDPM.CLI.Plugins.Display
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
+            if (ddpmSettings == null)
+            {
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
+            }
+
             if (commandLineInput.Command == "GET")
             {
                 writelog("Easyarrange get entry");
@@ -14149,6 +14301,11 @@ namespace DDPM.CLI.Plugins.Display
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
+            if (ddpmSettings == null)
+            {
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
+            }
 
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {

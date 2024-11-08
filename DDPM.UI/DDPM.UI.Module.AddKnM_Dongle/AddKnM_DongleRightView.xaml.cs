@@ -46,7 +46,10 @@ namespace DDPM.UI.Module.AddKnM_Dongle
             else
                 ChangeToHorizontalLayout();
 
-            txtAlert.Width = bdrAlert.ActualWidth - 50;
+            //Derek 1107 in debug mode ，ActualWidth maybe 0
+            if (bdrAlert.ActualWidth > 50)
+                txtAlert.Width = bdrAlert.ActualWidth - 50;
+
             AdjustBorderHeight();
         }
 

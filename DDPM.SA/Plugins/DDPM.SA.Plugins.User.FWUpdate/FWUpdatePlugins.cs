@@ -447,7 +447,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
                                 DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
-                                NeedUpdated = int.Parse(newVer) > int.Parse(oldVer) ? true : false,
+                                NeedUpdated = true,
                                 ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                 FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                 Model = updateHelper.UpdateItems[i].DeviceModelNumber,
@@ -456,6 +456,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                SHA256 = updateHelper.UpdateItems[i].SHA256,
                                 //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                 Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
                                 IsUOD = (isUODMode &&
@@ -481,7 +482,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
                                     DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
-                                    NeedUpdated = int.Parse(newVer) > int.Parse(oldVer) ? true : false,
+                                    NeedUpdated = true,
                                     ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                     FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                     Model = updateHelper.UpdateItems[i].DeviceModelNumber,
@@ -490,6 +491,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                     DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                    SHA256 = updateHelper.UpdateItems[i].SHA256,
                                     //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                     Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
                                     IsUOD = (isUODMode &&

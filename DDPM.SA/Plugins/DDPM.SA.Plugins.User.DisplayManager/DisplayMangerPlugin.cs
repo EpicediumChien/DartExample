@@ -2196,6 +2196,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             for (int i = 0; i < monitorInfos.Count; i++)
             {
+                if (string.IsNullOrEmpty(monitorInfos[i].CapabilityString) || !monitorInfos[i].CapabilityString.Contains("AA"))
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation {monitorInfos[i].modelName} is no contains AA");
+                    continue;
+                }
                 int count = 0;
                 ObjGetVCP ObjGetVCP;
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation GetVCPCapability go");
@@ -3324,7 +3329,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Gaming_ResponseTime ResponseTime = Gaming_ResponseTime.Disable;
             try
             {
-                ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_ResponseTime)).Result; 
+                ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_ResponseTime)).Result;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
@@ -3348,7 +3353,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Gaming_DarkStabilizer DarkStabilizer = Gaming_DarkStabilizer.Disable;
             try
             {
-                ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_DarkStabilizer)).Result; 
+                ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_DarkStabilizer)).Result;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
@@ -3411,7 +3416,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Gaming_DualResolutionType DualResolutionType = Gaming_DualResolutionType.Unknow;
             try
             {
-                ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, "USB-C Prioritization").Result; 
+                ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, "USB-C Prioritization").Result;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
@@ -3435,7 +3440,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (monitorInfo.modelName.Contains("G"))
                 {
-                    ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result; 
+                    ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                     if (ObjGetVCP.result == true)
                     {
@@ -3448,7 +3453,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} done Result : {current_VisionEngineType}" );
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} done Result : {current_VisionEngineType}");
             return Task.FromResult(current_VisionEngineType);
         }
 
@@ -3460,7 +3465,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (monitorInfo.modelName.Contains("G"))
                 {
-                    ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result; 
+                    ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                     if (ObjGetVCP.result == true)
                     {

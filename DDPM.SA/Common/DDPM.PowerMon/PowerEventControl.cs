@@ -58,5 +58,15 @@ namespace DDPM.PowerMon
                 _pwr_Mon.ShowDialog();
             }
         }
+
+        public void Close_Event()
+        {
+            if (_pwr_Mon != null)
+            {
+                _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                _pwr_Mon.CloseByCaller();
+                _pwr_Mon = null;
+            }
+        }
     }
 }

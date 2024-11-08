@@ -32,7 +32,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
 
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.regPath, _vm.regKeyForQRCode, true);
+                    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.RegPath, _vm.RegKeyForQRCode, true);
                 }
                 _vm._log.Info($"[HeadsetViewModel] CloseDescription ....... success");
             }
@@ -61,7 +61,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
             //loadDialog.Top = windowTop;
             //loadDialog.ShowDialog();
             /////////////////////////////////////////////////////////////////////////////////
-            var parameter = "";
+            var parameter = _vm.Name;
             AdvancedAction action;
 
             //Window parentWindow = Window.GetWindow(this);

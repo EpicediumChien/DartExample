@@ -414,12 +414,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                     }
                     if (sub2 != null)
                     {
+                        Trace.WriteLine(sub2.Code.ToString());
                         UInt16 sub2Code = (UInt16)(sub2.Code & 0x001F);
                         sub2Code = (UInt16)(sub2Code << 5);
                         wSetValue |= sub2Code;
                     }
                     if (sub3 != null)
                     {
+                        Trace.WriteLine(sub2.Code.ToString());
                         UInt16 sub3Code = (UInt16)(sub3.Code & 0x001F);
                         sub3Code = (UInt16)(sub3Code << 10);
                         wSetValue |= sub3Code;
