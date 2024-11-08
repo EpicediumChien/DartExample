@@ -1759,10 +1759,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
                         return Task.FromResult(ImpSettings);
+                    }
                     try
                     {
-                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
+                        //WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)
