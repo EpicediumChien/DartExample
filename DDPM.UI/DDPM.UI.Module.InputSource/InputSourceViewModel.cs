@@ -355,6 +355,14 @@ namespace DDPM.UI.Module.InputSource
                     {
                         InputSourceList item = InputsList[idx];
                         _selectInput = item;
+                        foreach (var device in ModuleOwner.HomeDevices)
+                        {
+                            if (device.MonitorInfo.edid.ServiceTag == e.monitor.edid.ServiceTag &&
+                                device.MonitorInfo.edid.SerialNumber == e.monitor.edid.SerialNumber)
+                            {
+                                device.MonitorInfo.inputSource = e.value;
+                            }
+                        }
                         OnPropertyChanged("Items_Selected");
                     }
                 }

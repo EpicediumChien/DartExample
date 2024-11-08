@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common.Display;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
@@ -24,5 +25,11 @@ namespace DDPM.SA.Common
         //public int monitorIndex { get; set; }
         public string jsonstring { get; set; }
         public HotkeyInfo HotkeyInfo { get; set; }
+    }
+
+    public class UsbKvmPBP
+    {
+        public bool isPBPmode { get; set; } = false;
+        public MonitorInfo MonitorInfo { get; set; }
     }
 }

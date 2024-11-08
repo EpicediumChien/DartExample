@@ -435,19 +435,22 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                     }
                                     else
                                     {
-                                        _switchInput1Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[0].Name));//hotkeyInfo.InputSource[0].Name));
-                                        _switchInput2Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[1].Name));//hotkeyInfo.InputSource[1].Name));
-                                        if (_switchInput1Selected == null || _switchInput2Selected == null)
+                                        InputSourceObj? inputSourceObj0 = inputSourceObjs.ElementAtOrDefault(0);
+                                        InputSourceObj? inputSourceObj1 = inputSourceObjs.ElementAtOrDefault(1);
+                                        if (inputSourceObj0 != null && inputSourceObj1 != null && !string.IsNullOrEmpty(inputSourceObj0.Name) && !string.IsNullOrEmpty(inputSourceObj1.Name))
                                         {
-                                            //set default
-                                            _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                                            if (_switchInput1Selected != null)
-                                                _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
-                                            if (_switchInput1Selected != null && _switchInput2Selected != null)
-                                            {
-                                                SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
-                                                SaveHotkeySettings(new InputSourceObj((ushort)_switchInput2Selected.inputCode, _switchInput2Selected.inputSource), "SwitchCombobox2");
-                                            }
+                                            _switchInput1Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[0].Name));//hotkeyInfo.InputSource[0].Name));
+                                            _switchInput2Selected = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[1].Name));//hotkeyInfo.InputSource[1].Name));
+                                        }
+
+                                        //set default
+                                        _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                                        if (_switchInput1Selected != null)
+                                            _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                        if (_switchInput1Selected != null && _switchInput2Selected != null)
+                                        {
+                                            SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
+                                            SaveHotkeySettings(new InputSourceObj((ushort)_switchInput2Selected.inputCode, _switchInput2Selected.inputSource), "SwitchCombobox2");
                                         }
                                     }
                                 }

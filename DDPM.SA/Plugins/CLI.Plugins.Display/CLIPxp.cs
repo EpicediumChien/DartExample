@@ -64,6 +64,7 @@ namespace CLI.Plugins.Display
             response.TargetFeature = cmdLineInput.TargetFeature;
             response.Index = String.Join(",", cmdLineInput.DeviceIndex.ToArray());
             response.ServiceTag = String.Join(",", cmdLineInput.ServiceTag.ToArray());
+            response.Model = String.Join(",", cmdLineInput.Model.ToArray());
             if (devMgr == null)
             {
                 response.Result = "ERROR";
@@ -1088,6 +1089,22 @@ namespace CLI.Plugins.Display
             {
                 isAllMonitors = false;
                 foreach (string idxString in cmdLineInput.DeviceIndex)
+                {
+                    int idx;
+                    if (int.TryParse(idxString, out idx))
+                    {
+                        if ((idx >= 0) && (idx < allMonitors.Count))
+                        {
+                            listOut.Add(idx);
+                        }
+                    }
+                }
+            }
+
+            if (cmdLineInput.Model.Count > 0)
+            {
+                isAllMonitors = false;
+                foreach (string idxString in cmdLineInput.Model)
                 {
                     int idx;
                     if (int.TryParse(idxString, out idx))
