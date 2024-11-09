@@ -457,6 +457,9 @@ namespace DDPM.UI.Common
         public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
 
         //WalkThrough
+        public static readonly string NextStr_0 = GetString("Kvm.1");
+        public static readonly string WalkThrough_1 = GetString("WalkThrough.1");
+        public static readonly string WalkThrough_2 = GetString("WalkThrough.2");
         public static readonly string WalkThroughDDPM_Main0 = GetString("WalkThroughDDPM_Main.0");
         public static readonly string WalkThroughDDPM_Sub0 = GetString("WalkThroughDDPM_Sub.0");
         public static readonly string WalkThroughDDPM_Main1 = GetString("WalkThroughDDPM_Main.1");
@@ -528,8 +531,8 @@ namespace DDPM.UI.Common
         //OpenAction
         public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
         public static readonly string OpenFileDesc = "Click the browse button to select a file";
-        public static readonly string OpenFolderDesc = "Click the browse button to select a folder";
-        public static readonly string OpenWebPageDesc = "Type the URL to the web page in the box below";
+        public static readonly string OpenFolderDesc = "Click the \"Browse\" button to select a folder";
+        public static readonly string OpenWebPageDesc = "Type the URL of the web page in the box below";
         public static readonly string OpenFileWaterMark = "File Name";
         public static readonly string OpenFolderWaterMark = "Folder Name";
 
@@ -543,6 +546,8 @@ namespace DDPM.UI.Common
         public static readonly string HeadsetAudioSettingsToolTip_7 = GetString("HeadsetAudioSettings.26");
         public static readonly string HeadsetAudioSettingsToolTip_8 = GetString("HeadsetAudioSettings.27");
         public static readonly string HeadsetAudioSettingsToolTip_9 = GetString("HeadsetAudioSettings.28");
+        public static readonly string HeadsetAudioSettingsToolTip_10 = GetString("HeadsetAudioSettings.29");
+        public static readonly string HeadsetAudioSettingsToolTip_11 = GetString("HeadsetAudioSettings.30");
 
         public static readonly string HeadsetAutomatedActionsToolTip_1 = GetString("HeadsetAutomatedActions.9");
         public static readonly string HeadsetAutomatedActionsToolTip_2 = GetString("HeadsetAutomatedActions.10");
@@ -569,6 +574,8 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
         public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
         public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+        public static readonly string ImpExp_Tooltip1 = GetString("DisplayOthers.7");
+        public static readonly string ImpExp_Tooltip2 = GetString("DisplayOthers.8");
 
         // Pair/Unpair
         public static readonly string Caption = "Are you sure?";
@@ -585,5 +592,10 @@ namespace DDPM.UI.Common
         // Display Restore to Default
         public static readonly string RestoreToDefalutText = "Are you sure you want to restore all default settings on your device?";
         public static readonly string DisplayDefault0 = GetString("DisplayDefault.0");
+
+        //Brightness right view messagebox
+        public static readonly string BrightnessPageWarning = GetString("Warning");
+        public static readonly string BrightnessPageNotice0 = GetString("Brightness.19");
+        public static readonly string BrightnessPageNotice1 = GetString("Brightness.20");
     }
 }

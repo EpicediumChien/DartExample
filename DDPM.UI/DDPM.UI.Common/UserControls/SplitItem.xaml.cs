@@ -289,16 +289,32 @@ namespace DDPM.UI.Common.UserControls
                 if (ISplitCtrl != null)
                 {
                     eaid = ISplitCtrl.EAID;
-                    foreach(CellObj objCell in ISplitCtrl.CellList)
-                    {
-                        CellJson cj = new CellJson();
-                        cj.Name = objCell.Name;
-                        cj.x = objCell.rcRatio.Left;
-                        cj.y = objCell.rcRatio.Top;
-                        cj.w = objCell.rcRatio.Width;
-                        cj.h = objCell.rcRatio.Height;
-                        cells.Add(cj);
-                    }
+                    //if ((CellCount == 0) && (SplitKey == 'B'))
+                    //{
+                    //    foreach (CellBorder cellBorder in ISplitCtrl.CellBorders)
+                    //    {
+                    //        CellJson cj = new CellJson();
+                    //        cj.Name = cellBorder.CellName;
+                    //        cj.x = cellBorder.rcRatio.Left;
+                    //        cj.y = cellBorder.rcRatio.Top;
+                    //        cj.w = cellBorder.rcRatio.Width;
+                    //        cj.h = cellBorder.rcRatio.Height;
+                    //        cells.Add(cj);
+                    //    }
+                    //}
+                    //else
+                    //{
+                        foreach (CellObj objCell in ISplitCtrl.CellList)
+                        {
+                            CellJson cj = new CellJson();
+                            cj.Name = objCell.Name;
+                            cj.x = objCell.rcRatio.Left;
+                            cj.y = objCell.rcRatio.Top;
+                            cj.w = objCell.rcRatio.Width;
+                            cj.h = objCell.rcRatio.Height;
+                            cells.Add(cj);
+                        }
+                    //}
                 }
                 return new SA.Common.Display.SplitJson()
                 {
@@ -365,6 +381,7 @@ namespace DDPM.UI.Common.UserControls
             //Copy data
             ISplitCtrl.Settings = new List<double>(args.SplitJson.Settings);
             ISplitCtrl.FriendlyName = args.SplitJson.CustomName;
+            ISplitCtrl.EAID = args.SplitJson.EAID;
             //CustomId = args.CustomId;
 
             vm.NotifyPropertyChanged_TooltipText();

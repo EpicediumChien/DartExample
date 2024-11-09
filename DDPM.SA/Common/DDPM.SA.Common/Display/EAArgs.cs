@@ -27,6 +27,7 @@ namespace DDPM.SA.Common
         //Default ctor
         public EAArgs()
         {
+            SplitJson = new SplitJson();
         }
 
         //Copy ctor

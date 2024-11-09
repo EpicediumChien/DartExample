@@ -1,5 +1,6 @@
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
@@ -157,7 +158,7 @@ namespace DDPM.EABroker
         #endregion
 
 
-        public EAEditWindow EditWindow { get { return _editWindow; } }
+        //public EAEditWindow EditWindow { get { return _editWindow; } }
 
 
         public void SetWorkSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
@@ -169,49 +170,23 @@ namespace DDPM.EABroker
             }
         }
 
-
-        /*
-        public EventHandler<string>? EditSave;
-
-        public EventHandler<string>? EditCancel;
-
-        private void saveCustomWidow_CancelButtonClick(object sender, string e)
+        public void NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
         {
-
-            if (EditReturn != null)
+            EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
+            if (workWindow != null)
             {
-                EAArgs retArgs = new EAArgs(_eaArgs);
-                retArgs.Result = false;
-                retArgs.Command = "EditReturn";
-                retArgs.Message = "User cancel the editing.";
-                EditReturn(this, retArgs);
+                workWindow.SetWorkingSplit(spJson);
             }
-            _editWindow.InvokeClose();
-            _saveCustomWindow.Hide();
-
-            _vmArrange.IsWorkUIEnabled = true;
         }
 
-        private void saveCustomWidow_SaveButtonClick(object sender, string e)
+        /// <summary>
+        /// Called from EAPlugin, when SettingsManager.SettingReadyEvent is triggered.
+        /// </summary>
+        public void NotifySettingsManagerIsInitializedDone()
         {
-            //if (EditCompleted != null)
-            //    EditCompleted(this, "");
-
-            if (EditReturn != null)
-            {
-                EAArgs retArgs = new EAArgs(_eaArgs);
-                retArgs.Result = true;
-
-                retArgs.Settings = _editWindow.GetSettings();
-                retArgs.CustomName = e;
-                retArgs.Command = "EditReturn";
-                EditReturn(this, retArgs);
-            }
-            _editWindow.InvokeClose();
-            _saveCustomWindow.Hide();
-            _vmArrange.IsWorkUIEnabled = true;
+            if (_vm != null)
+                _vm.ReloadEzSettingsFromUserSettingsFile();
         }
-        */
     }
 
 }

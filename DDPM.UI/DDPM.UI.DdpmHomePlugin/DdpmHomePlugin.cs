@@ -4,6 +4,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using DDPM.UI.WalkThroughData;
@@ -24,10 +25,12 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.IO;
 using VcpCore.Common;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
 using static Dell.Client.Framework.Security.LocalAccounts;
+using static Dell.Client.Framework.UX.WPF.WinApi;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using DDPMConstants = DDPM.UI.Common.Constants;
 
@@ -98,16 +101,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             { "Consent", 1}, //Add by Derek 2024/10/24
             { "DDPM", 2 },
             { "Displays", 3 },
-            { "Webcam", 4 },
-            { "Keyboard", 5 },
-            { "Mice", 6 },
-            { "Stylus", 7 },
-            { "Headset", 8 },
-            { "Speakerphone", 9 },
-            { "Soundbar", 10 },
-            { "Audio", 11 },
-            { "Docks", 12 }
+            { "LogicalWebcam", 4 },
+            { "LogicalKeyboard", 5 },
+            { "LogicalMouse", 6 },
+            { "LogicalPen", 7 },
+            { "LogicalHeadset", 8 }
         };
+
+        private GlobalSettingParam _globalSettings = null;
 
         /// <summary>
         /// Default constructor
@@ -214,8 +215,42 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             //Derek_Du, 2024-10-21 add send process ID to SA
                             Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
+                            _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
+
                             await GetDdpmDevicesAsync(_deviceManager);
 
+                            //1030 get global settings for telemetry consent page using
+                            _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
+                            //1030 Dean
+                            //For Hess to read global setting "_globalSettings"
+                            //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
+                            if (DdpmCommonHelper.Settings_Cache == null)
+                            {
+                                if (DdpmCommonHelper.DeviceManagerSA != null)
+                                    DdpmCommonHelper.ReadDDPMSettings();
+                            }
+                            if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
+                            {
+                                // << 241108 added by Hess to delete setting file at first time
+                                if (!DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                {
+                                    var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+                                    if (Directory.Exists(fileFolder))
+                                        Directory.Delete(fileFolder, true);
+
+                                    fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
+                                    if (Directory.Exists(fileFolder))
+                                        Directory.Delete(fileFolder, true);
+                                }
+                                // >>
+
+                                if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                {
+                                    _viewModel.ShowConsent();
+                                    DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
+                                    DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
+                                }
+                            }
 
                             if (_deviceManager == null)
                             {
@@ -235,13 +270,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     _iconGear.GlowEffect_Start();
                             }
                         }
-                        await CheckAndQueueDevice("DDPM", "DDPM");
+                        await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
                         if (WalkThroughQueue.Count != 0 && _showPluginById == false)
                         {
                             _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start DDPM");
                             _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                             _showPluginById = true;
                         }
+
+                        CheckIfNeedImportSetting_Display();
                     }
                 }
             }
@@ -310,6 +347,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             ShowDdpmHome();
                         }
                     }
+
+                    CheckIfNeedImportSetting_Display();
                 }
                 else
                 {
@@ -330,6 +369,46 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
                 }
             }
+        }
+
+        private void CheckIfNeedImportSetting_Display()
+        {
+            //For existing monitor to check if need to pop-up message to import setting
+            Task.Run(() =>
+            {
+                if (_monitorInfos == null && _monitorInfos.Count == 0)
+                    return;
+                List<MonitorInfo> temp_mos = _monitorInfos;
+                //make sure no walkthrough page displaying
+                while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
+                {
+                    Thread.Sleep(5000);
+                }
+                string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
+
+                foreach (MonitorInfo info in temp_mos)
+                {
+                    string model = info.modelName;//"U2724DE";
+                    string serviceTag = info.edid.ServiceTag;
+                    string exportpath = path + "\\" + model + "_" + serviceTag + ".json";
+                    _log.Info("[CheckIfNeedImportSetting_Display] export path : " + exportpath);
+                    //if(can popup messagebox && not yet to import / already click no need import)
+                    if (File.Exists(exportpath))
+                    {
+                        //avoid timing issue to cause monitor updated
+                        if (temp_mos.Count != _monitorInfos.Count)
+                            return;
+
+                        //force return here to avoid page trigger, need Jason handle it
+                        //return;
+                        if (_viewModel != null)
+                        {
+                            _viewModel.InvokeImportQuestion(info);
+                        }
+                    }
+                }
+            });
         }
 
         private void _deviceManager_notifyDeviceDisConnected(object? sender, EventArgs e)
@@ -559,7 +638,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow;
             Mouse.OverrideCursor = null;
             DdpmCommonHelper.MyConsole = PluginIoc.GetService<IConsole>();
-            DdpmCommonHelper.MyShowPluginManager= PluginIoc.GetService<IShowPluginManager>();
+            DdpmCommonHelper.MyShowPluginManager = PluginIoc.GetService<IShowPluginManager>();
 
 
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
@@ -988,7 +1067,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// </summary>
         /// <param name="device">DeviceInfo list</param>
         /// <returns>Task</returns>
-        private async Task CheckAndQueueDevice(String modelNumber, String modelType)
+        private async Task CheckAndQueueDevice(String modelNumber, String modelType, object info)
         {
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
             object regValue;
@@ -1001,7 +1080,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
             string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
 
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
 
             try
             {
@@ -1024,7 +1103,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
                     {
-                        WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM"));
+                        WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM", info));
                     }
                 }
 
@@ -1045,7 +1124,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     // Add the device to the queue and update the registry
                     if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber))
                     {
-                        WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType));
+                        WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType, info));
                     }
 
                     //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                    
@@ -1055,7 +1134,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     _log.Info($"[Walkthrough] Device {modelNumber} reg is true, skipping.");
                 }
-                await DeviceSort(new WalkThroughInfo(modelNumber, modelType));
+                await DeviceSort(new WalkThroughInfo(modelNumber, modelType, info));
             }
             catch (Exception ex)
             {
@@ -1079,13 +1158,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 foreach (var monitor in monitorInfos)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Monitor)");
-                    await CheckAndQueueDevice(monitor.modelName, "Displays");
+                    await CheckAndQueueDevice(monitor.modelName, "Displays", monitor);
                 }
 
                 foreach (var device in deviceHelper.deviceInfo)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
-                    await CheckAndQueueDevice(device.ModelNumber, device.PhysicalDeviceType.ToString());
+                    await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
                 if (WalkThroughQueue.Count != 0 && _showPluginById == false)

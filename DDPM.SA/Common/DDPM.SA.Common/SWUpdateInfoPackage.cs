@@ -68,6 +68,7 @@ namespace DDPM.SA.Common
         public string SHA256 { get; set; }
         public string SHA512 { get; set; }
         public string Thumbprint { get; set; }
+        public string Available_date { get; set; }
 
         public bool Equals(SWUpdateInfo swUpdateInfo)
         {
@@ -93,6 +94,7 @@ namespace DDPM.SA.Common
         CAFail = 12,
         NamedPipeServerIsNoSafe = 13,
         FileCheckFail = 14,
+        ServiceNotRunning = 15,
         Unknow = 99
     }
 

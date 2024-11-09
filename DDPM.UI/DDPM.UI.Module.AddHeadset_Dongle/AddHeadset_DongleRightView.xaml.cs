@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.Windows.Controls;
 using Windows.Management;
 
@@ -12,9 +13,7 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
         private readonly AddDeviceViewModel _vm;
 
         // 10/15 Derek for RWD
-        private readonly Int16 breakPoints = 910;
-        private Double textBlockWidth = 250;
-        private Double borderHeight = 240, borderWidth = 303;
+        private readonly int breakPoints = 1050;
 
         //private readonly string Step1 = "Connect your USB wireless receiver to your system";
         //private readonly string Step2 = "Power OFF headset. Hold mic mute button and power ON again.";
@@ -29,8 +28,7 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
             //txtStep2.Text = Step2;
             //txtStep3.Text = Step3;
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            breakPoints = DdpmCommonHelper.GetBreakPoints();
         }
 
         //10/13 Derek 需要根据breakpoints来调整布局
@@ -42,7 +40,8 @@ namespace DDPM.UI.Module.AddHeadset_Dongle
                 ChangeToHorizontalLayout();
 
             //bdrAlert.Width = this.ActualWidth;
-            txtAlert.Width = bdrAlert.ActualWidth - 50;
+            if (bdrAlert.ActualWidth > 50) //Derek 1107 in debug mode ，ActualWidth maybe 0
+                txtAlert.Width = bdrAlert.ActualWidth - 50;
 
             AdjustBorderHeight();
         }

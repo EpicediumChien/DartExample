@@ -1,9 +1,12 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Windows.Devices.Geolocation;
+using DDPM.SA.Common;
 
 namespace DDPM.UI.Module.HeadsetDeviceSettings
 {
@@ -13,16 +16,30 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
     public partial class HeadsetDeviceSettingsRightView : UserControl
     {
         private readonly HeadsetViewModel _vm;
-
+             
         public HeadsetDeviceSettingsRightView(HeadsetViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
+
         }
 
         private void CloseDescription(object sender, MouseButtonEventArgs e)
         {
-            _vm.DeviceSettingsDownloadDellAudioPageShow = false;
+            try
+            {
+                _vm.DeviceSettingsDownloadDellAudioPageShow = false;
+
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.RegPath, _vm.RegKeyForQRCode, true);
+                }
+                _vm._log.Info($"[HeadsetViewModel] CloseDescription ....... success");
+            }
+            catch (Exception ex)
+            {
+                _vm._log.Info($"[HeadsetViewModel] CloseDescription ....... {ex.ToString()}");
+            }
         }
 
         private void LearnmoreButton_Click(object sender, RoutedEventArgs e)
@@ -44,7 +61,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
             //loadDialog.Top = windowTop;
             //loadDialog.ShowDialog();
             /////////////////////////////////////////////////////////////////////////////////
-            var parameter = "";
+            var parameter = _vm.Name;
             AdvancedAction action;
 
             //Window parentWindow = Window.GetWindow(this);

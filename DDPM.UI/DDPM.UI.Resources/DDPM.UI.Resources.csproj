@@ -39,6 +39,7 @@
     <None Remove="Resources\Images\CheckOK.png" />
     <None Remove="Resources\Images\CloseX.png" />
     <None Remove="Resources\Images\CloseXX.png" />
+    <None Remove="Resources\Images\ConsentBg.png" />
     <None Remove="Resources\Images\Disconnected.png" />
     <None Remove="Resources\Images\Dock.png" />
     <None Remove="Resources\Images\Dongle.png" />
@@ -87,20 +88,12 @@
     <None Remove="Resources\Images\Headset_whitedot.png" />
     <None Remove="Resources\Images\info.png" />
     <None Remove="Resources\Images\info18.png" />
-    <None Remove="Resources\Images\KB3121W.png" />
     <None Remove="Resources\Images\KB500.png" />
-    <None Remove="Resources\Images\KB500S.png" />
     <None Remove="Resources\Images\KB525C.png" />
     <None Remove="Resources\Images\KB555.png" />
-    <None Remove="Resources\Images\KB555S.png" />
     <None Remove="Resources\Images\KB700.png" />
-    <None Remove="Resources\Images\kB700S.png" />
-    <None Remove="Resources\Images\KB7120W.png" />
-    <None Remove="Resources\Images\KB7221W.png" />
     <None Remove="Resources\Images\KB740.png" />
-    <None Remove="Resources\Images\KB740S.png" />
     <None Remove="Resources\Images\KB900.png" />
-    <None Remove="Resources\Images\KB900S.png" />
     <None Remove="Resources\Images\Key1.png" />
     <None Remove="Resources\Images\Key2.png" />
     <None Remove="Resources\Images\Key3.png" />
@@ -108,6 +101,7 @@
     <None Remove="Resources\Images\Key5.png" />
     <None Remove="Resources\Images\Key6.png" />
     <None Remove="Resources\Images\KM714.png" />
+    <None Remove="Resources\Images\KM717.png" />
     <None Remove="Resources\Images\KnM.png" />
     <None Remove="Resources\Images\Left.png" />
     <None Remove="Resources\Images\Link.png" />
@@ -149,7 +143,7 @@
     <None Remove="Resources\Images\MS700.png" />
     <None Remove="Resources\Images\MS700_7.png" />
     <None Remove="Resources\Images\MS7421W.png" />
-    <None Remove="Resources\Images\MS7421W_1.png" />
+    <None Remove="Resources\Images\MS7421W_6.png" />
     <None Remove="Resources\Images\MS900.png" />
     <None Remove="Resources\Images\MultiDevice.png" />
     <None Remove="Resources\Images\P2424HEB.png" />
@@ -254,6 +248,7 @@
     <None Remove="Resources\Images\undo2.png" />
     <None Remove="Resources\Images\Up.png" />
     <None Remove="Resources\Images\Usb24.png" />
+    <None Remove="Resources\Images\UV514.png" />
     <None Remove="Resources\Images\Video.png" />
     <None Remove="Resources\Images\Warring.png" />
     <None Remove="Resources\Images\WB3023.png" />
@@ -283,12 +278,15 @@
     <None Remove="Resources\Images\Wired.png" />
     <None Remove="Resources\Images\WiredConnection.png" />
     <None Remove="Resources\Images\WK636.png" />
+    <None Remove="Resources\Images\WK717.png" />
     <None Remove="Resources\Images\WL3024.png" />
     <None Remove="Resources\Images\WL5024.png" />
     <None Remove="Resources\Images\WL7024.png" />
     <None Remove="Resources\Images\WM116.png" />
     <None Remove="Resources\Images\WM126.png" />
+    <None Remove="Resources\Images\WM326.png" />
     <None Remove="Resources\Images\WM514.png" />
+    <None Remove="Resources\Images\WM527.png" />
     <None Remove="Resources\Images\ZoomIn.png" />
     <None Remove="Resources\Images\ZoomInS.png" />
     <None Remove="Resources\Images\ZoomOut.png" />
@@ -385,6 +383,7 @@
     <Resource Include="Resources\Images\CheckOK.png" />
     <Resource Include="Resources\Images\CloseX.png" />
     <Resource Include="Resources\Images\CloseXX.png" />
+    <Resource Include="Resources\Images\ConsentBg.png" />
     <Resource Include="Resources\Images\Disconnected.png" />
     <Resource Include="Resources\Images\Dock.png" />
     <Resource Include="Resources\Images\Dongle.png" />
@@ -412,6 +411,7 @@
     </Resource>
     <Resource Include="Resources\Images\info18.png" />
     <Resource Include="Resources\Images\KB740.png" />
+    <Resource Include="Resources\Images\KM717.png" />
     <Resource Include="Resources\Images\PanD.png" />
     <Resource Include="Resources\Images\PanL.png" />
     <Resource Include="Resources\Images\PanR.png" />
@@ -530,6 +530,7 @@
     <Resource Include="Resources\Images\TrashCan.png" />
     <Resource Include="Resources\Images\undo.png" />
     <Resource Include="Resources\Images\undo2.png" />
+    <Resource Include="Resources\Images\UV514.png" />
     <Resource Include="Resources\Images\WB5023.png" />
     <Resource Include="Resources\Images\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -552,6 +553,7 @@
     <Resource Include="Resources\Images\Wired.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\WK717.png" />
     <Resource Include="Resources\Images\WL3024.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -581,14 +583,6 @@
     </Resource>
     <Resource Include="Resources\Images\Headset_whitedot.png" />
     <Resource Include="Resources\Images\info.png" />
-    <Resource Include="Resources\Images\KB3121W.png" />
-    <Resource Include="Resources\Images\KB500S.png" />
-    <Resource Include="Resources\Images\KB555S.png" />
-    <Resource Include="Resources\Images\KB7221W.png" />
-    <Resource Include="Resources\Images\kB700S.png" />
-    <Resource Include="Resources\Images\KB7120W.png" />
-    <Resource Include="Resources\Images\KB740S.png" />
-    <Resource Include="Resources\Images\KB900S.png" />
     <Resource Include="Resources\Images\Key1.png" />
     <Resource Include="Resources\Images\Key2.png" />
     <Resource Include="Resources\Images\Key3.png" />
@@ -642,7 +636,7 @@
     <Resource Include="Resources\Images\MS5320W.png" />
     <Resource Include="Resources\Images\MS700.png" />
     <Resource Include="Resources\Images\MS700_7.png" />
-    <Resource Include="Resources\Images\MS7421W_1.png" />
+    <Resource Include="Resources\Images\MS7421W_6.png" />
     <Resource Include="Resources\Images\MS7421W.png" />
     <Resource Include="Resources\Images\MS900.png" />
     <Resource Include="Resources\Images\MultiDevice.png" />
@@ -748,7 +742,9 @@
     </Resource>
     <Resource Include="Resources\Images\WK636.png" />
     <Resource Include="Resources\Images\WM116.png" />
+    <Resource Include="Resources\Images\WM326.png" />
     <Resource Include="Resources\Images\WM514.png" />
+    <Resource Include="Resources\Images\WM527.png" />
     <Resource Include="Resources\Images\ZoomIn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

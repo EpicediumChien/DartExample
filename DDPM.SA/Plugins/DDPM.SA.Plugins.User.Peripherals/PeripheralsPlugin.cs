@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -195,6 +196,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null && _deviceInfo.DpiLevel != newDPILevel)
                     {
+                        writelog($"SetDPILevel: Guid:{deviceId} NewValue: {newDPILevel}");
+                        Debug.WriteLine($"SetDPILevel: Guid:{deviceId} NewValue: {newDPILevel}");
                         _logicalDevice3.SetDPILevel(newDPILevel);
                         _deviceInfo.DpiLevel = newDPILevel;
                         break;
@@ -213,6 +216,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null && _deviceInfo.DpiValue != newDPIValue.ToString())
                     {
+                        writelog($"SetDPIValue: Guid:{deviceId} NewValue: {newDPIValue}");
+                        Debug.WriteLine($"SetDPIValue: Guid:{deviceId} NewValue: {newDPIValue}");
                         _logicalDevice2.SetDPIValue(newDPIValue);
                         _deviceInfo.DpiValue = newDPIValue.ToString();
                         break;
@@ -650,7 +655,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 break;
                         }
                         var bandGainNewValue = SetBandsGainValue(_logicalDeviceHeadset, _deviceInfo);
-                        _logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
+                        // Elie, Mask this code becasue R16 has changed this function. 2024/11/09.
+                        //_logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
                         break;
                     }
                 }
@@ -1283,7 +1289,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
                         info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                         info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
-                        info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
+                        //info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
                         info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
                         info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
                         info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
@@ -1362,40 +1368,141 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     if (item is ILogicalDeviceDock _logicalDeviceDock)
                     {
-                        info.MonitorCount = _logicalDeviceDock.MonitorCount;
-                        info.DockInfo = _logicalDeviceDock.DockInfo;
-                        info.DockType = _logicalDeviceDock.DockType;
-                        info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
-                        info.FirmwareVersion = _logicalDeviceDock.DockPackageFwVersion;
-                        info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
-                        info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
-                        info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
+                        info.DockInfo = _logicalDeviceDock.GetDockInfo();
                         try
                         {
-                            string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
-                            Debug.WriteLine(textString);
-                            DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
-                            if (dockData != null)
+                            byte[] dokc_bytes = _logicalDeviceDock.GetMonitorCount();
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
                             {
-                                info.DockData = dockData;
-                                info.ModelNumber = dockData.MarketingName;
-                                info.Name = $"Dell Dock";
-                                if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
                                 {
-                                    info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            string payloadElement = root.GetProperty("Payload").ToString();
+                                            int temp_int = 0;
+                                            if (!string.IsNullOrEmpty(payloadElement) && int.TryParse(payloadElement, out temp_int))
+                                            {
+                                                info.MonitorCount = temp_int;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount Error : {ex.Message}");
+                                    }
                                 }
-                                if (string.IsNullOrEmpty(info.DockServiceTag))
+                            }
+                            dokc_bytes = _logicalDeviceDock.GetDockData();
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockData byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockData dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockData dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
                                 {
-                                    info.DockServiceTag = dockData.ServiceTag;
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            JsonElement payloadElement = root.GetProperty("Payload");
+                                            DockData dockData = JsonSerializer.Deserialize<DockData>(payloadElement.GetRawText());
+                                            if (dockData != null)
+                                            {
+                                                info.DockData = dockData;
+                                                info.DockType = dockData.DockType;
+                                                info.ModelNumber = dockData.MarketingName;
+                                                info.Name = $"Dell Dock";
+                                                if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                                                {
+                                                    info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                                                }
+                                                if (!string.IsNullOrEmpty(dockData.ServiceTag))
+                                                {
+                                                    info.DockServiceTag = dockData.ServiceTag;
+                                                }
+                                                if (!string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
+                                                {
+                                                    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
+                                                    info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockData Error : {ex.Message}");
+                                    }
                                 }
-                                if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
+                            }
+                            dokc_bytes = _logicalDeviceDock.GetDockFwUpdateStatus();
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockFwUpdateStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockFwUpdateStatus dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockFwUpdateStatus dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
                                 {
-                                    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            string payloadElement = root.GetProperty("ReturnCode").ToString();
+                                            int temp_int = 0;
+                                            if (!string.IsNullOrEmpty(payloadElement) && int.TryParse(payloadElement, out temp_int))
+                                            {
+                                                info.DockFwUpdateStatus = temp_int;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockFwUpdateStatus Error : {ex.Message}");
+                                    }
+                                }
+                            }
+                            dokc_bytes = _logicalDeviceDock.GetDockTBTConnectionStatus();
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
+                                {
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            string payloadElement = root.GetProperty("Payload").ToString();
+                                            int temp_int = 0;
+                                            if (!string.IsNullOrEmpty(payloadElement) && int.TryParse(payloadElement, out temp_int))
+                                            {
+                                                info.DockTBTConnectionStatus = temp_int;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus Error : {ex.Message}");
+                                    }
                                 }
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] Dock Data Error : {ex.Message}");
                         }
                     }
                     _deviceHelper.deviceInfo.Add(info);
@@ -1451,19 +1558,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     rfdongle.IsMultipleDongleFound = true;
                 }
-                else
+                rfInfo = new DongleInfo()
                 {
-                    rfInfo = new DongleInfo()
-                    {
-                        ID = _iPhysicalAudioDeviceDongle.Id,
-                        DeviceType = _iPhysicalAudioDeviceDongle.Type,
-                        IsMultipleDongleFound = false,
-                        MaxPairingSlots = _iPhysicalAudioDeviceDongle.MaxPairingSlots,
-                        PairedDeviceCount = _iPhysicalAudioDeviceDongle.PairedDeviceCount,
-                        LogicalDeviceIDs = _iPhysicalAudioDeviceDongle.Devices.Select(x => x.Id).ToList()
-                    };
-                    _rfDeviceHelper.dongleInfo.Add(rfInfo);
-                }
+                    ID = _iPhysicalAudioDeviceDongle.Id,
+                    DeviceType = _iPhysicalAudioDeviceDongle.Type,
+                    IsMultipleDongleFound = false,
+                    MaxPairingSlots = _iPhysicalAudioDeviceDongle.MaxPairingSlots,
+                    PairedDeviceCount = _iPhysicalAudioDeviceDongle.PairedDeviceCount,
+                    LogicalDeviceIDs = _iPhysicalAudioDeviceDongle.Devices.Select(x => x.Id).ToList()
+                };
+                _rfDeviceHelper.dongleInfo.Add(rfInfo);
             }
             else if (device is IPhysicalDeviceDongle _iPhysicalDeviceDongle)
             {
@@ -1473,19 +1577,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     rfdongle.IsMultipleDongleFound = true;
                 }
-                else
+                rfInfo = new DongleInfo()
                 {
-                    rfInfo = new DongleInfo()
-                    {
-                        ID = _iPhysicalDeviceDongle.Id,
-                        DeviceType = _iPhysicalDeviceDongle.Type,
-                        IsMultipleDongleFound = false,
-                        MaxPairingSlots = _iPhysicalDeviceDongle.MaxPairingSlots,
-                        PairedDeviceCount = _iPhysicalDeviceDongle.PairedDeviceCount,
-                        LogicalDeviceIDs = _iPhysicalDeviceDongle.Devices.Select(x => x.Id).ToList()
-                    };
-                    _rfDeviceHelper.dongleInfo.Add(rfInfo);
-                }
+                    ID = _iPhysicalDeviceDongle.Id,
+                    DeviceType = _iPhysicalDeviceDongle.Type,
+                    IsMultipleDongleFound = false,
+                    MaxPairingSlots = _iPhysicalDeviceDongle.MaxPairingSlots,
+                    PairedDeviceCount = _iPhysicalDeviceDongle.PairedDeviceCount,
+                    LogicalDeviceIDs = _iPhysicalDeviceDongle.Devices.Select(x => x.Id).ToList()
+                };
+                _rfDeviceHelper.dongleInfo.Add(rfInfo);
             }
         }
 
@@ -1820,7 +1921,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 if (arg2 == 0)
                     return;
-                deviceInfo.DpiLevel = arg2 - 1;
+                //deviceInfo.DpiLevel = arg2 - 1;
+                deviceInfo.DpiLevel = arg2;
+                Debug.WriteLine($"New DpiLevel: {arg2}");
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -2306,9 +2409,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _updateItems.Priority = updateItem.Priority;
                     _updateItems.ServerPath = updateItem.ServerPath;
                     _updateItems.SupplierID = updateItem.SupplierID;
+                    _updateItems.SHA256 = updateItem.SHA256;
                     //_updateItems.SHA512 = updateItem.SHA512;
                     _updateItems.Thumbprint = updateItem.Thumbprint;
-
 
                     _updateHelper.UpdateItems.Add(_updateItems);
                 }

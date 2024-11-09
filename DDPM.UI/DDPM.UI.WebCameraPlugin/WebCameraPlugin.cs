@@ -42,6 +42,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
 
+        private DispatcherTimer timer = new();
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -51,6 +53,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _console = console;
             _log = console.CreateLog("WebCamera");
             _log.Info($"{nameof(LaunchView)} - Constructed");
+
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            timer.Tick += Timer_Tick;
         }
 
 
@@ -64,7 +72,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         if (_viewModel.IsMicEnumerationOnEnabled)
                         {
-                            _viewModel!.OnGoBackClicked();
+                            _viewModel.AlertType = WebcamAlert.Alert4;
+                            _viewModel.AlertVisibility = System.Windows.Visibility.Visible;
+                            timer.Start();
+                            //_viewModel!.OnGoBackClicked();
                         }
                     }
                     return;
@@ -73,6 +84,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
                     {
+                        timer.Stop();
                         _console.ShowPluginById(PluginId);
                         GetPeripheralsAsync();
                         _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
@@ -82,6 +94,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            //if (!_viewModel!.DeviceInfos.ContainsKey(CurrentDeviceID))
+            _viewModel!.OnGoBackClicked();
+            timer.Stop();
         }
 
         private void GetPeripheralsAsync()

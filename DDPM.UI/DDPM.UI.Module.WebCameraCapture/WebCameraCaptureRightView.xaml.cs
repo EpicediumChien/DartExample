@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Linq;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 
 namespace DDPM.UI.Module.WebCameraCapture
 {
@@ -29,6 +30,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             _vm = vm;
 
             txtCaptureFolder.Text = Utility.CheckTextLength(_vm.VideoCaptureFolder, 155, 14);
+            btnOpen.Caption = LangHelper.Instance["WebCameraCapture.2"];
             InitializeResolution();
             InitializeFPS();
         }
@@ -96,11 +98,14 @@ namespace DDPM.UI.Module.WebCameraCapture
             }
             _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
         }
-        private void btnResolution_Click(object sender, MouseButtonEventArgs e)
+        private async void btnResolution_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
             {
-                var idx = int.Parse(bdr.Tag.ToString()!);
+                int idx;
+                if (!(bdr.Tag is string)) return;
+                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                if (!r) return;
                 _vm.SetResolution_Selected(idx);
                 InitializeFPS();
                 foreach (var property in _vm.allProperties)
@@ -109,18 +114,37 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        bool set_ok = false;
+                        while (set_ok != true)
+                        {
+                            try
+                            {
+                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                set_ok = true;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }
+
                         break;
                     }
                 }
             }
         }
 
-        private void btnFPS_Click(object sender, MouseButtonEventArgs e)
+        private async void btnFPS_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
             {
-                var idx = int.Parse(bdr.Tag.ToString()!);
+                int idx;
+                if (!(bdr.Tag is string)) return;
+                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                if (!r) return;
                 _vm.SetFPS_Selected(idx);
                 foreach (var property in _vm.allProperties)
                 {
@@ -128,7 +152,24 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+
+                        bool set_ok = false;
+                        while (set_ok != true)
+                        {
+                            try
+                            {
+                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                set_ok = true;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(250);
+                            }
+                        }
+
                         break;
                     }
                 }
@@ -162,6 +203,11 @@ namespace DDPM.UI.Module.WebCameraCapture
                 else
                     _vm.Redo();
             }
+        }
+
+        private void Open_Click(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

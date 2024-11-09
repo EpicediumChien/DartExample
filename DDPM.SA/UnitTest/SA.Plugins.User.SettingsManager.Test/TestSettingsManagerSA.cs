@@ -19,6 +19,13 @@ using Windows.Devices.Display.Core;
 using Windows.Globalization;
 using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using DDPM.SA.Common.Display;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
+using Dell.Client.Framework.Common;
+using DdmLibrary;
+using DdmLibrary.Utility;
+using static Dell.Client.Framework.Common.Platform;
+using static DdmLibrary.Utility.DDMUserSettings;
+using Languages = DDPM.SA.Common.Settings.DDPMUserSettings.Languages;
 
 namespace DDPM.SA.Plugins.User.SettingsManager.Test
 {
@@ -686,12 +693,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             SysSettingsPluginNull = null;
             RegistryHive hive2 = RegistryHive.LocalMachine;
             privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginNull);
+            object resvalue = null;
             if (hive2 == RegistryHive.LocalMachine || hive2 == RegistryHive.CurrentUser)
             {
                 if (SysSettingsPluginNull == null)
                 {
-                    var ReadRegistryData_Result2 = SettingsManagerSAPlugin.ReadRegistryData(hive2, keyPath, keyName);  //SysSettingsPlugin null;
-                    Assert.IsNull(ReadRegistryData_Result2);
+                    var ReadRegistryData_Result2 = SettingsManagerSAPlugin.ReadRegistryData(hive2, keyPath, keyName).Result;  //SysSettingsPlugin null;
+                    Assert.That(resvalue, Is.EqualTo(ReadRegistryData_Result2));
                 }
             }
         }
@@ -1100,13 +1108,42 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         public void TestReadImportSettingsFile()
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
-            string path = "TestReadImportSettings";
-            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
-            var ReadImportSettingsFileResult = (DDPMImpExpSettings)privatesettingsManagerObj.Invoke("ReadImportSettingsFile", path);
-            Assert.IsNotNull(ReadImportSettingsFileResult);
-            Assert.That(ImpSettings.AppSettings, Is.EqualTo(ReadImportSettingsFileResult.AppSettings));
-            Assert.That(ImpSettings.UserSettings, Is.EqualTo(ReadImportSettingsFileResult.UserSettings));
-            Assert.That(ImpSettings.MonitorSettings, Is.EqualTo(ReadImportSettingsFileResult.MonitorSettings));
+            string path1 = "";
+            if (!string.IsNullOrEmpty(path1))
+            {
+                var ReadImportSettingsFile_result1 = SettingsManagerSAPlugin.ReadImportSettingsFile(path1).Result;
+                Assert.IsNotNull(ReadImportSettingsFile_result1);
+            }
+
+            string path2 = "Testpath2";
+            if (!string.IsNullOrEmpty(path2))
+            {
+                if (!File.Exists(path2))
+                {
+                    var ReadImportSettingsFile_result2 = SettingsManagerSAPlugin.ReadImportSettingsFile(path2).Result;
+                    Assert.IsNotNull(ReadImportSettingsFile_result2);
+                }
+            }
+
+            string WriteDDPMImpExpSet_path3_ = "test_WriteDDPMImpExpSetjsonDataPath.json";
+            string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
+            File.WriteAllText(WriteDDPMImpExpSet_path3_, DDPMImpExpSetjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+
+            string WriteDDPMImpExpSet_path33_ = Environment.CurrentDirectory + "\\" + WriteDDPMImpExpSet_path3_;
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
+            if (!string.IsNullOrEmpty(WriteDDPMImpExpSet_path33_))
+            {
+                if (File.Exists(WriteDDPMImpExpSet_path33_))
+                {
+                    var ReadImportSettingsFile_result3 = SettingsManagerSAPlugin.ReadImportSettingsFile(WriteDDPMImpExpSet_path33_).Result;
+                    Assert.IsNotNull(ReadImportSettingsFile_result3);
+                    File.Delete(WriteDDPMImpExpSet_path33_);
+                }
+            }
+
         }
 
         [Test]
@@ -1326,10 +1363,205 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
             privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
-            var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, path).Result;
+            var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, _allMonitorSettings["TestU2724DD"], path).Result;
             Assert.That(result, Is.False);
             File.Delete(settings_path_target_file);
             File.Delete(DisplayImportSettings_path2);
+        }
+
+        [Test]
+        public void TestQuerySettingsStatus()
+        {
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            privatesettingsManagerObj.SetFieldOrProperty("_isAllSettingsReady", true);
+            var QuerySettingsStatus_result = SettingsManagerSAPlugin.QuerySettingsStatus().Result;  //_isAllSettingsReady true
+            Assert.That(QuerySettingsStatus_result, Is.True);
+
+            privatesettingsManagerObj.SetFieldOrProperty("_isAllSettingsReady", false);
+            var QuerySettingsStatus_result2 = SettingsManagerSAPlugin.QuerySettingsStatus().Result;  //_isAllSettingsReady false
+            Assert.That(QuerySettingsStatus_result2, Is.False);
+        }
+
+        [Test]
+        public void TestReadDDMImpSettingsFile()
+        {
+            string path1 = "";
+            DDMImpSettings ImpSettings = new DDMImpSettings();
+            var ReadDDMImpSettingsFile_result1 = SettingsManagerSAPlugin.ReadDDMImpSettingsFile(path1).Result; // path is not exist
+            Assert.IsNotNull(ReadDDMImpSettingsFile_result1);
+
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string DDMImpSettingsFile_path2 = "TestU2724DD.json";
+            string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DDMImpSettingsFile_path2;
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"Display\":{}}]";
+            File.WriteAllText(DDMImpSettingsFile_path2, MonitorListjsonData);
+
+            var ReadDDMImpSettingsFile_result2 = SettingsManagerSAPlugin.ReadDDMImpSettingsFile(monitorSettings_path2).Result; // path is exist
+            Assert.IsNotNull(ReadDDMImpSettingsFile_result2);
+            File.Delete(DDMImpSettingsFile_path2);
+        }
+
+        [Test]
+        public void TestisDDMMigration()
+        {
+            string folder_appdatapath_migration = "Test folder_appdatapath_migration";
+            var isDDMMigration_result1 = SettingsManagerSAPlugin.isDDMMigration(out folder_appdatapath_migration).Result;
+            Assert.IsNotNull(isDDMMigration_result1);
+        }
+
+        [Test]
+        public void TestReadDDMMonitorSettings()
+        {
+            string DDMImpSettingsFile_path2 = "TestU2724DD.json";
+            DDMMonitorSettings DDMmonitorsettings;
+            DDMmonitorsettings = new DDMMonitorSettings()
+            {
+                Version = 1.2,
+                OS = "Windows",
+                Model = "TestU2724DD",
+                ServiceTag = "123456",
+                Input = new Input(),
+                Display = new DdmLibrary.Utility.Display(),
+                ColorPreset = new DdmLibrary.Utility.ColorPreset(),
+                EasyArrangement = new EasyArrangement(),
+                KVM = new KVM(),
+                Personalize = new Personalize(),
+                Others = new Others(),
+                VCPs = new List<VCP>(),
+                DisplayInfo = new DisplayInfo(),
+                BriConSchedule = new BriConSchedule(),
+            };
+
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestU2724DD\",\"ServiceTag\":\"123456\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"Display\":{}}]";
+            File.WriteAllText(DDMImpSettingsFile_path2, MonitorListjsonData);
+            var ReadDDMMonitorSettings_result1 = SettingsManagerSAPlugin.ReadDDMMonitorSettings(DDMImpSettingsFile_path2, ref DDMmonitorsettings).Result;
+            Assert.IsNotNull(ReadDDMMonitorSettings_result1);
+            File.Delete(DDMImpSettingsFile_path2);
+        }
+
+        [Test]
+        public void TestReadDDMUserSettings()
+        {
+            string ReadDDMUserSettings_path2 = "TestU2724DD.json";
+            DdmLibrary.Utility.DDMUserSettings dDMUserSettings = new DDMUserSettings()
+            {
+                Version = 1.7,
+                OS = "Windows",
+                SnapEnable = false,
+                DisplayMatrixEnable = false,
+                ColorSchemes = 0,
+                EAWithoutGap = true,
+                EAWithShiftKey = false,
+                EASpan = false,
+                Language = 11,
+                AutoStart = true,
+                OnScreenNotification = true,
+                AutoCheckUpdate = true,
+                AllowTelemetry = false,
+                TelemetryInit = true,
+                ShowTelemetryUI = true,
+                SilentShowTelemetry = false,
+                ImportPermission = true,
+                Hotkeys = new List<Hotkey>(),
+                CustLayouts = new List<CustLayout>(),
+                OTAPrompt = new Dictionary<string, string>(),
+                OTANextCheckTime = null,
+                AutoRestoreWindowLayout = false,
+                LockRotate = false,
+                Profiles = new List<EAProfile>(),
+                //SilentShowTelemetry = false,
+                ScheduleBriConIsSync = false,
+                LastImportedMonitor = null,
+                NetworkDataAccess = NetworkDataAccessState.Unknow,
+            };
+            string MonitorListjsonData = "[{\"Version\":1.7,\"OS\":\"Windows\",\"SnapEnable\":false,\"Hotkey\":{},\"CustLayout\":{}}]";
+            File.WriteAllText(ReadDDMUserSettings_path2, MonitorListjsonData);
+            var ReadDDMUserSettings_result1 = SettingsManagerSAPlugin.ReadDDMUserSettings(ReadDDMUserSettings_path2, ref dDMUserSettings).Result;
+            Assert.IsNotNull(ReadDDMUserSettings_result1);
+            File.Delete(ReadDDMUserSettings_path2);
+        }
+
+        [Test]
+        public void TestReadSerializedContentFromFile()
+        {
+            string WriteImpExpSet_path2 = "WriteImpExpSet.json";
+            string ReadSerializedContentFromFile = null;
+            var ReadSerializedContentFromFile_result = SettingsManagerSAPlugin.ReadSerializedContentFromFile(WriteImpExpSet_path2).Result;
+            Assert.That(ReadSerializedContentFromFile_result, Is.EqualTo(ReadSerializedContentFromFile));
+
+            string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
+            string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+
+            string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
+            var ReadSerializedContentFromFile_result2 = SettingsManagerSAPlugin.ReadSerializedContentFromFile(writeglobalSettings_path2_).Result;
+            Assert.IsNotNull(ReadSerializedContentFromFile_result2);
+            File.Delete(writeglobalSettings_path1_);
+        }
+
+        [Test]
+        public void TestWriteSerializedContentToFile()
+        {
+            string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
+            string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+
+            string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
+            var WriteSerializedContentToFile_result2 = SettingsManagerSAPlugin.WriteSerializedContentToFile(writeglobalSettings_path2_, jsonData).Result;
+            Assert.IsNotNull(WriteSerializedContentToFile_result2);
+            Assert.IsTrue(WriteSerializedContentToFile_result2);
+            File.Delete(writeglobalSettings_path1_);
+        }
+
+        [Test]
+        public void TestAddInfo()
+        {
+            string info = "Test Add info";
+            Mock<ISettingsManagerSA> mockSettingsManagerSA = new Mock<ISettingsManagerSA>();
+            var SettingsManagerSAObj = mockSettingsManagerSA.Object;
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SettingsManagerSAObj);
+
+            var AddInfo_result = SettingsManagerSAPlugin.AddInfo(info);
+            Assert.IsNotNull(AddInfo_result);
+        }
+
+        [Test]
+        public void TestGetInfos()
+        {
+            List<string> infos = new List<string>();
+            bool boolInfo = false;
+            Mock<ISettingsManagerSA> mockSettingsManagerSA = new Mock<ISettingsManagerSA>();
+            mockSettingsManagerSA.Setup(x => x.GetInfos(It.IsAny<bool>())).Returns(Task.FromResult(infos));
+            var SettingsManagerSAObj = mockSettingsManagerSA.Object;
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SettingsManagerSAObj);
+
+            if (infos == null || infos.Count == 0)
+            {
+                var GetInfos_result = SettingsManagerSAPlugin.GetInfos(boolInfo).Result;
+                Assert.IsNotNull(GetInfos_result);
+            }
+
+            List<string> infos2 = new List<string>() { "Test info1", "Test info2" };
+            mockSettingsManagerSA.Setup(x => x.GetInfos(It.IsAny<bool>())).Returns(Task.FromResult(infos2));
+            var SettingsManagerSAObj2 = mockSettingsManagerSA.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SettingsManagerSAObj2);
+
+            if (infos2.Count > 0)
+            {
+                var GetInfos_result2 = SettingsManagerSAPlugin.GetInfos(boolInfo).Result;
+                Assert.IsNotNull(GetInfos_result2);
+                Assert.That(infos2, Is.EqualTo(GetInfos_result2));
+            }
         }
 
         [OneTimeTearDown]

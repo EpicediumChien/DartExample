@@ -50,6 +50,9 @@ namespace DDPM.EABroker
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
+            InitLayoutList();
+            //InitPresetLayoutsComboBox();
         }
         #endregion Init
 
@@ -131,10 +134,16 @@ namespace DDPM.EABroker
                     _vm.StartMovingMsg = $"GetProcessPathName causes an exception: {e1.Message}";
                     _vm.WriteLog("GetProcessPathName() causes EXCEPTION", e1);
 
-                    //Temporary allow to continue moving
-                    _vm.IsMoving = true;
-                    //Robert_Lin Debug, let it contine
-                    //return;
+                    //Robert_Lin, 2024-10-26, Option 1: when moving an administrator window
+                    // the WorkWindow will display the selected layout on the target screen
+                    //=> comment-out below will "Not display"
+                    //_vm.IsMoving = true;
+
+                    //Robert_Lin 2024-10-26,Option 2:
+                    // Comment out below 2 statements will show Workwindow when user moving a
+                    // administrator window. (but Admin window will not be moved)
+                    _vm.IsMoving = false;
+                    return;
                 }
             }
             else
@@ -143,6 +152,7 @@ namespace DDPM.EABroker
                 _vm.WriteLog($"@OnWindowStartMovingProc, {_vm.StartMovingMsg}");
             }
 
+            //Get current Screen from cursor
             _vm.RefreshWorkScreen();
 
             //Step_2, Set flags to show windows
@@ -153,7 +163,8 @@ namespace DDPM.EABroker
 
             if (_vm.IsAwsWindowVisible)
             {
-                _vm.AwsWindow.ReloadRecentList(_vm.WorkScreen.DeviceName);
+                //AwsWindowVisibilityChange will trigger to call this method
+                //_vm.AwsWindow.ReloadRecentList(_vm.WorkScreen.DeviceName);
             }
 
             //Temporary always update
@@ -209,16 +220,24 @@ namespace DDPM.EABroker
             Rect rcArrange = hoveringCellObj.rc;
 
             if (_vm.HoveringWindow.Equals("aws"))
-                rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
-
+            {
+                rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow(); 
+                if (rcArrange.IsEmpty)
+                    rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+            }
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vm.IsWithoutGap)
             {
                 rcArrange.Inflate(6, 6);
             }
             if (!rcArrange.IsEmpty)
+            {
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
-
+                if (_vm != null)
+                {
+                    _vm.SendTelemetry_EasyArrangeLayout();
+                }
+            }
         }
 
 
@@ -283,5 +302,29 @@ namespace DDPM.EABroker
         }
 
         #endregion Window Event Handlers
+
+        #region Layouts
+        private void InitLayoutList()
+        {
+            foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
+            {
+                lbLayouts.Items.Add($"({isp.EAID}) {isp.CtrlClass}");
+            }
+        }
+        private void reloadCustomLayoutsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void sekectLayoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            object selItem = lbLayouts.SelectedItem;
+            if (selItem != null)
+            {
+                System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+                Screen scr = Screen.FromHandle(wndHelper.Handle);
+            }
+        }
+        #endregion
+
     }
 }

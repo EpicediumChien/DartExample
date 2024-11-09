@@ -3,6 +3,7 @@ using DDPM.SA.Common.Alert;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -70,22 +71,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
                 }
-                string path = "DDPM.exe";
-                string processName = "DDPM";
-                Process[] processes = Process.GetProcessesByName(processName);
-                if (processes.Length > 0)
-                {
-                    foreach (Process process in processes)
-                    {
-                        // Close process by sending a close message to its main window.
-                        process.CloseMainWindow();
-                        // Free resources associated with process.
-                        process.Close();
-                    }
-                }
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
                 {
-                    Process.Start(path);
+                    string exePath = Assembly.GetExecutingAssembly().Location;
+                    string folderPath = Path.GetDirectoryName(exePath);
+                    Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
+                    t1.Start();
                 }
             }
             Dispatcher.BeginInvoke(new Action(() =>
@@ -104,7 +95,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             else
                 ChangeToHorizontalLayout();
 
-            alertBase.Width = spSAAlert.ActualWidth - 50;
+            if (spSAAlert.ActualWidth > 50) //Derek 1107 in debug mode ，ActualWidth maybe 0
+                alertBase.Width = spSAAlert.ActualWidth - 50;
         }
 
         private void ChangeToVerticalLayout()

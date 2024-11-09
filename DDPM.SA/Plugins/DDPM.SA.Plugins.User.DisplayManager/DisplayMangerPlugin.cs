@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using static DDPM.SA.Common.Settings.DDPMUserSettings;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 
@@ -187,7 +188,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " + 
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " +
                 millisecond.ToString() + $" requested, process ID[{processID}]");
 
             if (-0xFF != processID)
@@ -199,7 +200,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
 
         private Task<bool> CreateProcessExitEvent(int processID)
-        { 
+        {
             bool result = true;
 
             try
@@ -217,7 +218,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
             }
 
-            return Task.FromResult(result); 
+            return Task.FromResult(result);
         }
 
         private async void Process_Exited(object sender, EventArgs e)
@@ -1933,12 +1934,28 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #region Bruce display properties implementation
 
+        public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties start");
+            DisplaySupportedProperties rc = null;
+            if (_DisplayPropertiesPlugin != null)
+            {
+                _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
+                rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+            }
+            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
+            return Task.FromResult(rc);
+        }
+
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
         {
+            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplayPropertiesInfo start");
             string setParam = "USB-C Prioritization";
             string capabilityString = monitorInfos.CapabilityString;
             USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
             bool supportedHDR = IsSupportHDR(capabilityString), supportedUSBC = IsSupportUSBCPrioritization(capabilityString);
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supportedHDR:{supportedHDR}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo supportedUSBC:{supportedUSBC}");
             bool isHDREnable = false;
             if (supportedHDR)
             {
@@ -1957,6 +1974,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (hdrType.Equals((uint)ObjGetVCP.value))
                         {
                             isHDREnable = true;
+                            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo isHDREnable:{isHDREnable}");
                             break;
                         }
                     }
@@ -1974,6 +1992,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (ObjGetVCP.result == true)
                 {
                     PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo PrioritizationType:{PrioritizationType}");
                 }
             }
             return Task.FromResult(_DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result);
@@ -1981,6 +2000,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties start");
             DisplayCurrentPropertiesInfo ret = new DisplayCurrentPropertiesInfo();
             if (_DisplayPropertiesPlugin != null)
             {
@@ -1989,9 +2009,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string capabilityString = monitorInfo.CapabilityString;
                 USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
                 bool supportedHDR = IsSupportHDR(capabilityString), supportedUSBC = IsSupportUSBCPrioritization(capabilityString);
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties supportedHDR:{supportedHDR}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties supportedUSBC:{supportedUSBC}");
                 if (supportedHDR)
                 {
                     ret.isHDREnable = _DisplayPropertiesPlugin.GetHDRStatus(monitorInfo.edid).Result;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties isHDREnable:{ret.isHDREnable}");
                 }
                 if (supportedUSBC)
                 {
@@ -2005,50 +2028,61 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (ObjGetVCP.result == true)
                     {
                         PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                        _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties PrioritizationType:{PrioritizationType}");
                     }
                     ret.USBCPrioritizationType = PrioritizationType;
                 }
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties done");
             return Task.FromResult(ret);
         }
 
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest start");
             bool ret = false;
             if (monitorInfos != null && properties != null)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
                 //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
                 isSWSetOrientation = true;
                 SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
                 ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
                 isSWSetOrientation = false;
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest done");
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetResolutions start");
             bool ret = false;
             if (monitorInfos != null && properties != null)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetResolutions go");
                 isSWSetOrientation = true;
                 ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
                 isSWSetOrientation = false;
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetResolutions done");
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation start");
             bool ret = false;
             if (monitorInfos != null)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetOrientation go");
                 isSWSetOrientation = true;
                 SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
                 ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(ret);
         }
 
@@ -2059,19 +2093,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus start");
             string capabilityString = monitorInfos.CapabilityString;
             bool supportedHDR = IsSupportHDR(capabilityString);
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus supportedHDR :{supportedHDR}");
             if (supportedHDR)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.GetHDRStatus go");
                 return Task.FromResult(_DisplayPropertiesPlugin.GetHDRStatus(monitorInfos.edid).Result);
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(false);
         }
 
         public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
         {
+            bool ret = false;
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off:{onoff}");
             if (onoff)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode go");
                 _DisplayPropertiesPlugin.SetExtendMode(monitorInfos);
                 if (monitorInfos.CapabilityString != "" && monitorInfos.CapabilityString.Length > 10)
                 {
@@ -2082,12 +2124,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     ss = ss[0].Split(" ");
                     for (int i = 0; i < ss.Length; i++)
                     {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus ss:{ss[i]}");
                         if (ss[i].Equals(desktop_E2))
                         {
                             var hexStyle = System.Globalization.NumberStyles.HexNumber;
                             int number;
                             if (int.TryParse(desktop_F0, hexStyle, CultureInfo.CurrentCulture, out number))
                             {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability(monitorInfos, {0xF0},{(uint)number} )");
                                 SetVCPCapability(monitorInfos, 0xF0, (uint)number).Wait();
                                 break;
                             }
@@ -2095,64 +2140,93 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
-            return Task.FromResult(_DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result);
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus done");
+            ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
+            return Task.FromResult(ret);
         }
 
         public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
         {
+            bool ret = false;
             try
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType start");
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType ontype:{type}");
                 if (type != USBCPrioritizationType.Unknow)
                 {
                     string setParam = "USB-C Prioritization";
                     string PrioritizationType = type == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
-                    if (!SetVCPCapability(monitorInfos, setParam, PrioritizationType).Result)
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType PrioritizationType is {PrioritizationType}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType SetVCPCapability go");
+                    if (SetVCPCapability(monitorInfos, setParam, PrioritizationType).Result)
                     {
-                        return Task.FromResult(false);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType SetVCPCapability is done");
+                        ret = true;
                     }
-                    return Task.FromResult(true);
                 }
                 else
                 {
-                    return Task.FromResult(false);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType type is Unknow");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Task.FromResult(false);
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType error:{ex.Message}");
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType done");
+            return Task.FromResult(ret);
         }
 
         //0603 Bruce 根據VCPChange事件來判斷是否AA(自動旋轉畫面)被更改了，如果是的話將旋轉角度傳入插件的方法裡去設定OS的方向，設定是否鎖定
         public void SetEnableLockOrientation(bool isLock)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetEnableLockOrientation isLock : {isLock}");
             isLockOrientation = isLock;
         }
-
+        /// <summary>
+        /// Set screen orientation for all monitors when monitors are plugged in and out
+        /// </summary>
+        /// <param name="monitorInfos">all monitors</param>
+        /// <returns></returns>
         public Task<List<bool>> SetDisplayOrientation(List<MonitorInfo> monitorInfos)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] Plugged trigger SetDisplayOrientation start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation monitorInfos.Count : {monitorInfos.Count}");
             bool[] bools = new bool[monitorInfos.Count];
 
             for (int i = 0; i < monitorInfos.Count; i++)
             {
+                if (string.IsNullOrEmpty(monitorInfos[i].CapabilityString) || !monitorInfos[i].CapabilityString.Contains("AA"))
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation {monitorInfos[i].modelName} is no contains AA");
+                    continue;
+                }
                 int count = 0;
                 ObjGetVCP ObjGetVCP;
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation GetVCPCapability go");
                 do
                 {
                     ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
                     count++;
                 } while (ObjGetVCP.result != true && count < 3);
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation ObjGetVCP.result :{ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
                     uint retValue;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation ObjGetVCP.value :{ObjGetVCP.value}");
                     if (uint.TryParse(ObjGetVCP.value.ToString(), out retValue))
                     {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation retValue :{retValue}");
                         if (_DisplayPropertiesPlugin != null)
                         {
+                            _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayOrientation go");
                             DisplayOrientation currentOrientation = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
+                            _logs.DebugMsg($"[DisplayMangerPlugin] currentOrientation : {currentOrientation}");
                             DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
+                            _logs.DebugMsg($"[DisplayMangerPlugin] orientation : {orientation}");
                             if (!currentOrientation.Equals(orientation))
                             {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest go");
                                 Properties properties = new Properties();
                                 bools[i] = SetDisplayPropertiest(monitorInfos[i], properties, orientation).Result;
                             }
@@ -2160,68 +2234,102 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation done");
             return Task.FromResult(bools.ToList());
         }
 
         public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation start");
             int count = 0;
             ObjGetVCP ObjGetVCP;
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation GetVCPCapability go");
             do
             {
                 ObjGetVCP = GetVCPCapability(monitorInfo, 0xAA).Result;
                 count++;
             } while (ObjGetVCP.result != true && count < 3);
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation ObjGetVCP.result :{ObjGetVCP.result}");
             if (ObjGetVCP.result == true)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation ObjGetVCP.value :{ObjGetVCP.value.ToString()}");
                 uint retValue;
                 if (uint.TryParse(ObjGetVCP.value.ToString(), out retValue))
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation retValue :{retValue}");
                     return Task.FromResult(OrientationString[retValue]);
                 }
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation done");
             return Task.FromResult("");
         }
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
+            bool? ret = null;
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation orientation : {orientation}");
             if (monitorInfo != null && !string.IsNullOrEmpty(orientation))
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation go");
                 if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
                 {
+                    ret = false;
                     for (int i = 1; i < OrientationString.Length; i++)
                     {
                         if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
                         {
-                            return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
+                            _logs.DebugMsg($"[DisplayMangerPlugin] SetVCPCapability go");
+                            _logs.DebugMsg($"[DisplayMangerPlugin] SetVCPCapability(monitorInfo, 0xAA, {(uint)(i & 0xFFFF)})");
+                            ret = SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result;
                         }
                     }
-                    return Task.FromResult<bool?>(false);
+                }
+                else
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation Is no Support write OSD Orientation");
                 }
             }
-            return Task.FromResult<bool?>(null);
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation ret : {ret}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation done");
+            return Task.FromResult(ret);
         }
-
+        /// <summary>
+        /// Trigger display screen rotation when VCP has AA event
+        /// </summary>
+        /// <param name="vcpchangedEventArgs"></param>
+        /// <returns></returns>
         private Task<bool> SetDisplayOrientation(VCPchangedEventArgs vcpchangedEventArgs)
         {
+            bool ret = true;
+            _logs.DebugMsg($"[DisplayMangerPlugin] VCPchangedEventArgs trigger SetDisplayOrientation start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation isLockOrientation : {isLockOrientation}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation isSWSetOrientation : {isSWSetOrientation}");
             if (!isLockOrientation && !isSWSetOrientation)
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation vcpchangedEventArgs.vcpcode:{vcpchangedEventArgs.vcpcode}");
                 if (vcpchangedEventArgs.vcpcode == "AA")
                 {
                     int retValue;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation vcpchangedEventArgs.value:{vcpchangedEventArgs.value}");
                     if (int.TryParse(vcpchangedEventArgs.value, out retValue))
                     {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation retValue:{retValue}");
                         DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation orientation:{orientation}");
                         Properties properties = new Properties();
-                        return Task.FromResult(SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation go");
+                        ret = SetDisplayPropertiest(vcpchangedEventArgs.monitor, properties, orientation).Result;
                     }
                 }
             }
-            return Task.FromResult(true);
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayOrientation done");
+            return Task.FromResult(ret);
         }
 
         private bool IsSupportHDR(string s)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportHDR s : {s}");
             try
             {
                 if (s == "" || s.Length < 10)
@@ -2230,6 +2338,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 string[] ss = s.Split("E2(");
                 ss = ss[1].Split(")");
+                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportHDR ss : {ss}");
                 ss = ss[0].Split(" ");
                 string[] stand = new string[] { "25", "23", "24", "26", "27", "3A", "3B", "3C" };
                 for (int i = 0; i < ss.Length; i++)
@@ -2253,6 +2362,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private bool IsSupportUSBCPrioritization(string s)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportUSBCPrioritization s : {s}");
             try
             {
                 if (s == "" || s.Length < 10)
@@ -2261,6 +2371,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 string[] ss = s.Split("EA(");
                 ss = ss[1].Split(")");
+                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportUSBCPrioritization ss : {ss}");
                 ss = ss[0].Split(" ");
                 string[] stand = new string[] { "F8", "F800", "F801" };
                 for (int i = 0; i < ss.Length; i++)
@@ -2284,6 +2395,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private bool IsSupportWriteOSDOrientation(string s)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation s : {s}");
             try
             {
                 if (string.IsNullOrEmpty(s) || s.Length < 10)
@@ -2292,6 +2404,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 string[] ss = s.Split("AA(");
                 ss = ss[1].Split(")");
+                _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ss : {ss}");
+                ss = ss[0].Split(" ");
                 ss = ss[0].Split(" ");
                 string stand = "00";
                 for (int i = 0; i < ss.Length; i++)
@@ -2307,6 +2421,83 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 return (false);
             }
+        }
+
+        public Task<string> GetMonitorCurrentResolution(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayPropertiesPlugin != null)
+            {
+                var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isCurrent)
+                        {
+                            rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(rc);
+        }
+
+        public Task<string> GetMonitorMaxResolution(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayPropertiesPlugin != null)
+            {
+                var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isRecommended)
+                        {
+                            rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(rc);
+        }
+
+        public Task<string> GetMonitorRefreshRate(MonitorInfo monitor)
+        {
+            var rc = string.Empty;
+
+            if (_DisplayPropertiesPlugin != null)
+            {
+                var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
+                if (r != null)
+                {
+                    foreach (Properties tmp in r.Properties)
+                    {
+                        if (tmp.isCurrent)
+                        {
+                            rc = tmp.Frequency.ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(rc);
+        }
+
+        public Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName)
+        {
+            if (_DisplayPropertiesPlugin != null)
+            {
+                DisplayOrientation rc = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(DisplayName).Result;
+                return Task.FromResult(rc);
+            }
+
+            return Task.FromResult(DisplayOrientation.Unknow);
         }
 
         #endregion
@@ -2724,7 +2915,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
-
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaService != null)
+            {
+                return _eaService.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+            }
+            return Task.FromResult(false);
+        }
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
         //{
@@ -3013,7 +3211,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetGamingProperties_SupportedList) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetGamingProperties_SupportedList)} start");
             GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
 
             gamingDisplayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
@@ -3023,6 +3221,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (ss.Length == 2)
             {
                 ss = ss[1].Split(")");
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetGamingProperties_SupportedList)} ss : {ss}");
                 ss = ss[0].Split(" ");
                 foreach (string temps in ss)
                 {
@@ -3101,159 +3300,190 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.Supported_VisionEngineType.Count];
                 }
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetGamingProperties_SupportedList) + " done");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetGamingProperties_SupportedList)} done");
             return Task.FromResult(gamingDisplayPropertiesInfo);
         }
 
         public Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGame_EnhancementMode) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} start");
             GamingChangeEventByPass = true;
             Gaming_GameEnhancementMode GameEnhancementMode = Gaming_GameEnhancementMode.Disable;
             try
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} GetVCPCapability go");
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_GameEnhancementMode)).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                     GameEnhancementMode = (Gaming_GameEnhancementMode)(uint)ObjGetVCP.value;
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGame_EnhancementMode) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} Error : {ex.ToString()}");
             }
             GamingChangeEventByPass = false;
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGame_EnhancementMode) + " done:Result " + GameEnhancementMode);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} done Result : {GameEnhancementMode}");
             return Task.FromResult(GameEnhancementMode);
         }
 
         public Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_ResponseTime) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} start");
             GamingChangeEventByPass = true;
             Gaming_ResponseTime ResponseTime = Gaming_ResponseTime.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_ResponseTime)).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                     ResponseTime = (Gaming_ResponseTime)(uint)ObjGetVCP.value;
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_ResponseTime) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_ResponseTime) + " done:Result " + ResponseTime);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} done Result : {ResponseTime}");
             GamingChangeEventByPass = false;
             return Task.FromResult(ResponseTime);
         }
 
         public Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_DarkStabilizer) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} start");
             GamingChangeEventByPass = true;
             Gaming_DarkStabilizer DarkStabilizer = Gaming_DarkStabilizer.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_DarkStabilizer)).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                     DarkStabilizer = (Gaming_DarkStabilizer)(uint)ObjGetVCP.value;
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_DarkStabilizer) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_DarkStabilizer) + " done:Result " + DarkStabilizer);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} done Result : {DarkStabilizer}");
             GamingChangeEventByPass = false;
             return Task.FromResult(DarkStabilizer);
         }
 
         public Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_HDRType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} start");
             GamingChangeEventByPass = true;
             Gaming_HDRType HDRType = Gaming_HDRType.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_HDRType)).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                     HDRType = (Gaming_HDRType)(uint)ObjGetVCP.value;
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_HDRType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_HDRType) + " done:Result " + HDRType);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} Result : {HDRType}");
             GamingChangeEventByPass = false;
+            if (HDRType != Gaming_HDRType.Disable)
+            {
+                UInt16 PipMode_Off = 0;
+                ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} GetPxpMode ret.result: {ret.result}");
+                if (ret.result)
+                {
+                    UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} GetPxpMode _curPxpMode : {_curPxpMode}");
+                    if (_curPxpMode != PipMode_Off)
+                    {
+                        HDRType = Gaming_HDRType.Disable;
+                    }
+                }
+            }
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} done");
             return Task.FromResult(HDRType);
         }
 
         public Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_DualResolutionType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} start");
             Gaming_DualResolutionType DualResolutionType = Gaming_DualResolutionType.Unknow;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, "USB-C Prioritization").Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                 if (ObjGetVCP.result == true)
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                     DualResolutionType = ObjGetVCP.value.ToString() == "4K" ? Gaming_DualResolutionType._4K : Gaming_DualResolutionType._FHD; ;
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_DualResolutionType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_DualResolutionType) + " done:Result " + DualResolutionType);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} done Result : {DualResolutionType}");
             return Task.FromResult(DualResolutionType);
         }
 
         public Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} start");
             Gaming_VisionEngineType current_VisionEngineType = Gaming_VisionEngineType.off;
             try
             {
                 if (monitorInfo.modelName.Contains("G"))
                 {
                     ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                     if (ObjGetVCP.result == true)
                     {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                         current_VisionEngineType = (Gaming_VisionEngineType)((uint)ObjGetVCP.value & 0xf);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineType) + " done:Result " + current_VisionEngineType);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} done Result : {current_VisionEngineType}");
             return Task.FromResult(current_VisionEngineType);
         }
 
         public Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineEnableType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} start");
             bool[] IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length];
             try
             {
                 if (monitorInfo.modelName.Contains("G"))
                 {
                     ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} GetVCPCapability ObjGetVCP.result : {ObjGetVCP.result}");
                     if (ObjGetVCP.result == true)
                     {
-                        _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineEnableType) + " VCP " + ObjGetVCP.value);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} GetVCPCapability ObjGetVCP.result : {(uint)ObjGetVCP.value}");
                         // 右移8位，將後半段不要的曲調
                         uint ea_Ret = ((uint)ObjGetVCP.value >> 8);
                         //轉成二進制
                         string binaryString = Convert.ToString(ea_Ret, 2).PadLeft(8, '0');
                         // 反向字串，使得順向
                         string reversedBinaryString = Algorithm.ReverseString(binaryString);
+                        _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} GetVCPCapability reversedBinaryString : {reversedBinaryString}");
                         Debug.WriteLine(reversedBinaryString);
                         for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
                         {
@@ -3268,99 +3498,99 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineEnableType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGaming_VisionEngineEnableType) + " done:Result " + IsEnable_VisionEngineType.Length);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} done Result :  {IsEnable_VisionEngineType.Length}");
             return Task.FromResult(IsEnable_VisionEngineType);
         }
 
         public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGameEnhancementMode)} start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.GameEnhancementMode;
                 uint param = (uint)GameEnhancementMode;
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " value:" + title + param);
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGameEnhancementMode)} title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGameEnhancementMode)} Error : {ex.ToString()}");
             }
             GamingChangeEventByPass = false;
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGameEnhancementMode)} done Result : ret");
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_ResponseTime) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_ResponseTime)} start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.ResponseTime;
                 uint param = (uint)ResponseTime;
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " value:" + title + param);
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_ResponseTime)} title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_ResponseTime) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_ResponseTime)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_ResponseTime) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_ResponseTime)} done Result : {ret}");
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_DarkStabilizer) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DarkStabilizer)} start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.DarkStabilizer;
                 uint param = (uint)DarkStabilizer;
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " value:" + title + param);
+                _logs.DebugMsg($"[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_DarkStabilizer) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DarkStabilizer)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_DarkStabilizer) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DarkStabilizer)} done Result : {ret}");
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_HDRType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_HDRType)} start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.HDRType;
                 uint param = (uint)HDRType;
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " value:" + title + param);
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_HDRType)} title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_HDRType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_HDRType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_HDRType) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_HDRType)} done Result : {ret}");
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_DualResolutionType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DualResolutionType)} start");
             bool ret = false;
             try
             {
@@ -3368,21 +3598,21 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     string setParam = "USB-C Prioritization";
                     string PrioritizationType = DualResolutionType == Gaming_DualResolutionType._4K ? "4K" : "FHD";
-                    _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " value:" + PrioritizationType);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DualResolutionType)} value:" + PrioritizationType);
                     ret = SetVCPCapability(monitorInfo, setParam, PrioritizationType).Result;
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_DualResolutionType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DualResolutionType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_DualResolutionType) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DualResolutionType)} done Result : {ret}");
             return Task.FromResult(ret);
         }
 
         public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_VisionEngineEnableType)} start");
             bool ret = false;
             try
             {
@@ -3409,7 +3639,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     command = Algorithm.BinaryToHex(command);
                     var hexStyle = System.Globalization.NumberStyles.HexNumber;
                     int number;
-                    _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " value:" + command);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_VisionEngineEnableType)} value : {command}");
                     if (int.TryParse(command, hexStyle, CultureInfo.CurrentCulture, out number))
                     {
                         ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
@@ -3418,33 +3648,33 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_VisionEngineEnableType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_VisionEngineEnableType)} done Result : {ret}");
             return Task.FromResult(ret);
         }
 
         public Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SwitchGaming_VisionEngineType)} start");
             bool ret = false;
             try
             {
                 uint param = (uint)VisionEngineType;
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " value:" + param);
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SwitchGaming_VisionEngineType)} value : {param}");
                 ret = SetVCPCapability(monitorInfo, 0xEC, param).Result;
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SwitchGaming_VisionEngineType)} Error : {ex.ToString()}");
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(SetGaming_VisionEngineEnableType) + " done:Result" + ret);
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SwitchGaming_VisionEngineType)} done Result : {ret}");
             return Task.FromResult(ret);
         }
 
         private bool GetCurrentGamingParam(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGamingParam) + " start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGamingParam)} start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
@@ -3460,7 +3690,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] " + nameof(GetCurrentGamingParam) + " Error:" + ex.ToString());
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGamingParam)} Error : {ex.ToString()}");
             }
             GamingChangeEventByPass = false;
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGamingParam)} done:Result {ret}");
@@ -3469,14 +3699,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private void GamingChangeEventHandle(VCPchangedEventArgs vcpchangedEventArgs)
         {
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GamingChangeEventHandle)} start");
             if (!GamingChangeEventByPass && vcpchangedEventArgs.vcpcode == "F4")
             {
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GamingChangeEventHandle)} vcpchangedEventArgs.vcpcode is F4");
                 GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
                 if (GetCurrentGamingParam(vcpchangedEventArgs.monitor, ref gamingDisplayPropertiesInfo))
                 {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GamingChangeEventHandle)} send GamingChangeEvent");
                     GamingChangeEvent?.AsyncFireAndForget(this, gamingDisplayPropertiesInfo, System.Threading.CancellationToken.None);
                 }
             }
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GamingChangeEventHandle)} done");
         }
 
         #endregion
@@ -3587,6 +3821,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
                                     firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                     firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
+                                    firmwares_item.SupplierID = monitorInfo.SupplierID;
+                                    firmwares_item.D_Ctrl = monitorInfo.D_Ctrl;
                                     if (firmwares_item.SupportedPlatform != null)
                                     {
                                         string currentPlatform = GetSystemArchitecture();

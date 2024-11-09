@@ -13,7 +13,8 @@
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
-             Unloaded="LaunchView_Unloaded">
+                     SizeChanged="UserControl_SizeChanged"
+  Unloaded="LaunchView_Unloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -133,23 +134,23 @@
                                             SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                             ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                             SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
-        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" />
+        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged"/>
       </Grid>
       <!--Layer 2 : Nav and Vbar-->
       <Grid Grid.Column="0" Height="auto">
         <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
-          <Viewbox Name="largeImage" Margin="30,0" MaxHeight="500">
+          <Viewbox Name="largeImage" Margin="20,0,85,35" MaxWidth="700" >
             <Grid>
               <Grid>
                 <Image Name="imgDevice" Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
               </Grid>
-              <Grid Width="704" Height="396" x:Name="gridPreview" Margin="0,0,0,12">
+              <Grid MaxWidth="700" Height="400" x:Name="gridPreview" Margin="0,0,0,12">
                 <StackPanel ZIndex ="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                   <TextBlock Name="CountdownText" Foreground="WhiteSmoke" FontSize="120" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
-                <Image Grid.Row="0"  Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" Name="CameraImage" Width="704" Height="396" Stretch="Fill" />
+                <Image Grid.Row="0"  Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" Name="CameraImage" Width="700" Height="400" Stretch="UniformToFill" />
                 <!-- Add grid lines -->
                 <Grid x:Name="grdPreview" Visibility="{Binding WebcamGrid, Converter={StaticResource BoolToVisibilityConverter}}" Opacity="0">
                   <Grid.RowDefinitions>
@@ -219,8 +220,8 @@
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
               </Image.InputBindings>
             </Image>
-            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
-                                                Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                    Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
           </StackPanel>
           <StackPanel Orientation="Horizontal">
             <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"

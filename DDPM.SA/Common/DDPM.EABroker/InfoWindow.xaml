@@ -24,104 +24,182 @@
     <Grid Margin="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
+        <!-- DashBoard -->
+        <Grid Grid.Row="0">
+            <ScrollViewer>
+                <StackPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Cursor(" />
+                        <TextBlock Text="{Binding xCursor}" />
+                        <TextBlock Text="," />
+                        <TextBlock Text="{Binding yCursor}" />
+                        <TextBlock Text="), " />
+
+                        <TextBlock Text="IsMoving=" />
+                        <TextBlock Text="{Binding IsMoving}" />
+
+                    </WrapPanel>
+                    <!-- EzSettings -->
+                    <WrapPanel>
+                        <CheckBox Content="IsAwsEnabled" IsChecked="{Binding IsAwsEnabled, Mode=TwoWay}" />
+                        <TextBlock Text=", IsOnlyShift=" />
+                        <TextBlock Text="{Binding IsOnlyShift}" />
+                        <TextBlock Text=", IsShiftPressed=" />
+                        <TextBlock Text="{Binding IsShiftPressed}" />
+                    </WrapPanel>
+                    <!-- Hovering -->
+                    <WrapPanel>
+                        <TextBlock Text=", HoveringWindow=" />
+                        <TextBlock Text="{Binding HoveringWindow}" />
+                        <TextBlock Text=", HoveringAwsIconText="/>
+                        <TextBlock Text="{Binding HoveringAwsIconText}"/>
+                        <TextBlock Text=", HoveringCell="/>
+                        <TextBlock Text="{Binding HoveringCell}"/>
+
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <!-- TabControl -->
+        <TabControl Grid.Row="1">
+            <TabItem Header="General">
+                
+            </TabItem>
+            <TabItem Header="Work">
+                <ScrollViewer>
+                    <StackPanel>
+                        <WrapPanel>
+                            <TextBlock Text="WorkWindowCount="/>
+                            <TextBlock Text="{Binding WorkWindowUsedCount}"/>
+                            <TextBlock Text=", IsWorkUIEnabled=" />
+                            <TextBlock Text="{Binding IsWorkUIEnabled}" />
+                            <TextBlock Text=", IsWorkWindowVisible=" />
+                            <TextBlock Text="{Binding IsWorkWindowVisible}" />
+                        </WrapPanel>
+                        <ListBox ItemsSource="{Binding WorkWinCellInfos}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="AWS Win">
+                <ScrollViewer>
+                    <StackPanel>
+                        <!-- AWS Window -->
+                        <WrapPanel>
+                            <TextBlock Text=", IsAwsVisible=" />
+                            <TextBlock Text="{Binding IsAwsWindowVisible}" />
+                            <TextBlock Text=", AwsPos(" />
+                            <TextBlock Text="{Binding xAwsWindow}" />
+                            <TextBlock Text="," />
+                            <TextBlock Text="{Binding yAwsWindow}" />
+                            <TextBlock Text="), " />
+
+                        </WrapPanel>
+                        <!-- AwsBuddyWindow -->
+                        <WrapPanel>
+                            <TextBlock Text="IsAwsBuddyWindowVisible=" />
+                            <TextBlock Text="{Binding IsAwsBuddyWindowVisible}" />
+
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="AWS Hover">
+                <ScrollViewer>
+                    <StackPanel>
+                        <WrapPanel>
+                            <TextBlock Text="AwsWindowRect: "/>
+                            <TextBlock Text="{Binding AwsWindowRectText}"/>
+                            <TextBlock Text="{Binding AwsWindowHoverMsg}"/>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <TextBlock Text="AwsIcon0:"/>
+                            <TextBlock Text="{Binding AwsIcon0Info}"/>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <TextBlock Text="AwsIcon1:"/>
+                            <TextBlock Text="{Binding AwsIcon1Info}"/>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <TextBlock Text="AwsIcon2:"/>
+                            <TextBlock Text="{Binding AwsIcon2Info}"/>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <TextBlock Text="AwsIcon3:"/>
+                            <TextBlock Text="{Binding AwsIcon3Info}"/>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <TextBlock Text="AwsIcon4:"/>
+                            <TextBlock Text="{Binding AwsIcon4Info}"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Screen">
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="WorkScreen=" />
+                        <TextBlock Text="{Binding WorkScreenName}" />
+                        <TextBlock Text=", ScreenScale=" />
+                        <TextBlock Text="{Binding ScreenScale}" />
+                        <TextBlock Text=", " />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="App">
+                <ScrollViewer>
+                    <StackPanel>
+                        <WrapPanel>
+
+                            <TextBlock Text=", hWndForeground=" />
+                            <TextBlock Text="{Binding hWndForeground}" />
+                            <TextBlock Text=", StartMovingMsg=" />
+                            <TextBlock Text="{Binding StartMovingMsg}" />
+                        </WrapPanel>
+                        <WrapPanel>
+                            <TextBlock Text="PathName=" />
+                            <TextBlock Text="{Binding PathNameForeground}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Layouts">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Name="lbLayouts" Grid.Row="0" MaxHeight="200"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                    <WrapPanel Grid.Row="1">
+                        <Button Content="Select" Click="sekectLayoutButton_Click"/>
+                        <Button Content="Reload" Click="reloadCustomLayoutsButton_Click"/>
+                        <Button Content="Edit"/>
+                    </WrapPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
         
         <!-- Row 0: Window Moving info -->
         <StackPanel Grid.Row="0">
             <!-- Moving Window -->
-            <WrapPanel>
-                <TextBlock Text="Cursor(" />
-                <TextBlock Text="{Binding xCursor}" />
-                <TextBlock Text="," />
-                <TextBlock Text="{Binding yCursor}" />
-                <TextBlock Text="), " />
-                <TextBlock Text="WorkScreen=" />
-                <TextBlock Text="{Binding WorkScreenName}" />
-                <TextBlock Text=", ScreenScale=" />
-                <TextBlock Text="{Binding ScreenScale}" />
-                <TextBlock Text=", " />
-                <TextBlock Text="IsMoving=" />
-                <TextBlock Text="{Binding IsMoving}" />
-
-                <TextBlock Text=", hWndForeground=" />
-                <TextBlock Text="{Binding hWndForeground}" />
-                <TextBlock Text=", StartMovingMsg=" />
-                <TextBlock Text="{Binding StartMovingMsg}" />
-            </WrapPanel>
-            <WrapPanel>
-                <TextBlock Text="PathName=" />
-                <TextBlock Text="{Binding PathNameForeground}" />
-            </WrapPanel>
-            <!-- EzSettings -->
-            <WrapPanel>
-                <TextBlock Text=", IsAwsEanbled="/>
-                <TextBlock Text="{Binding IsAwsEnabled}" />
-                <TextBlock Text=", IsOnlyShift=" />
-                <TextBlock Text="{Binding IsOnlyShift}" />
-                <TextBlock Text=", IsShiftPressed=" />
-                <TextBlock Text="{Binding IsShiftPressed}" />
-            </WrapPanel>
-            <!-- Hovering -->
-            <WrapPanel>
-                <TextBlock Text=", HoveringWindow=" />
-                <TextBlock Text="{Binding HoveringWindow}" />
-                <TextBlock Text=", HoveringAwsIconText="/>
-                <TextBlock Text="{Binding HoveringAwsIconText}"/>
-                <TextBlock Text=", HoveringCell="/>
-                <TextBlock Text="{Binding HoveringCell}"/>
-
-            </WrapPanel>
-            <!-- AWS Window -->
-            <WrapPanel>
-                <TextBlock Text=", IsAwsVisible=" />
-                <TextBlock Text="{Binding IsAwsWindowVisible}" />
-                <TextBlock Text=", AwsPos(" />
-                <TextBlock Text="{Binding xAwsWindow}" />
-                <TextBlock Text="," />
-                <TextBlock Text="{Binding yAwsWindow}" />
-                <TextBlock Text="), " />
-
-            </WrapPanel>
-            <!-- AwsBuddyWindow -->
-            <WrapPanel>
-                <TextBlock Text="IsAwsBuddyWindowVisible=" />
-                <TextBlock Text="{Binding IsAwsBuddyWindowVisible}" />
-                
-            </WrapPanel>
         </StackPanel>
         <!-- Row 1: AWS Icons -->
         <StackPanel Grid.Row="1">
-            <WrapPanel>
-                <TextBlock Text="AwsIcon1:"/>
-                <TextBlock Text="{Binding AwsIcon1Info}"/>
-            </WrapPanel>
-            <WrapPanel>
-                <TextBlock Text="AwsIcon2:"/>
-                <TextBlock Text="{Binding AwsIcon2Info}"/>
-            </WrapPanel>
-            <WrapPanel>
-                <TextBlock Text="AwsIcon3:"/>
-                <TextBlock Text="{Binding AwsIcon3Info}"/>
-            </WrapPanel>
-            <WrapPanel>
-                <TextBlock Text="AwsIcon4:"/>
-                <TextBlock Text="{Binding AwsIcon4Info}"/>
-            </WrapPanel>
         </StackPanel>
         <!-- Row 2: WorkWindows -->
         <StackPanel Grid.Row="2">
-            <WrapPanel>
-                <TextBlock Text="WorkWindowCount="/>
-                <TextBlock Text="{Binding WorkWindowUsedCount}"/>
-                <TextBlock Text=", IsWorkUIEnabled=" />
-                <TextBlock Text="{Binding IsWorkUIEnabled}" />
-                <TextBlock Text=", IsWorkWindowVisible=" />
-                <TextBlock Text="{Binding IsWorkWindowVisible}" />
-            </WrapPanel>
-            <ListBox ItemsSource="{Binding WorkWinCellInfos}"/>
         </StackPanel>
     </Grid>
 </Window>

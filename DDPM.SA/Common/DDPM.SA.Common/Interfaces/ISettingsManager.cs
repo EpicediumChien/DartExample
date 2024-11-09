@@ -25,6 +25,7 @@ namespace DDPM.SA.Common
         Task<DDPMITConfig> ReadITConfigData(bool force_reload = false);
 
         Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list);
+
     }
 
     /// <summary>
@@ -34,6 +35,8 @@ namespace DDPM.SA.Common
     public interface ISettingsManagerSA : IFrameworkPlugin
     {
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        //For FW/SW update lock event
+        event EventHandler<bool> FWSWUpdateSettingChange;
 
         Task<DDPMITConfig> GetITGlobalConfigs(bool force_reload = false);
 
@@ -53,6 +56,7 @@ namespace DDPM.SA.Common
         Task<List<string>> GetInfos(bool force_reload = false);
 
         Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
+        
     }
 
     /// <summary>
@@ -96,14 +100,16 @@ namespace DDPM.SA.Common
         //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
 
         //ImpExpSettings
-        Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
+        Task<bool> DisplayExportSettings(string modelname, string seriveTag, List<DDPMMonitorSettings> monitorSettings, string path);
 
-        Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings);
+
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
 
-        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
+        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true);
 
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
@@ -133,5 +139,7 @@ namespace DDPM.SA.Common
         Task AddInfo(string info);
 
         Task<List<string>> GetInfos(bool force_reload = false);
+
+        Task<bool> QuerySettingsStatus();
     }
 }

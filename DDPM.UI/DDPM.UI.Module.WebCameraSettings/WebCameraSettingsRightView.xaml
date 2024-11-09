@@ -101,7 +101,7 @@
                         </Image.ToolTip>
                       </Image>
                     </StackPanel>
-                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsAutoFramingOn}" Content="{Binding Path=IsAutoFramingOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" />
+                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsAutoFramingOn}" Content="{Binding Path=IsAutoFramingOnText}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotRecording}"/>
                   </Grid>
                   <Grid Margin="32,12,16,0" Visibility="{Binding AutoFramingTransitionVisibility}">
                     <StackPanel Orientation="Horizontal">
@@ -410,7 +410,7 @@
                   </Border>
                 </StackPanel>
               </Border>
-              <Border Background="#99132F54" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
+              <Border Name="bdrPrioritize" Background="#99132F54" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
                 <Border.ToolTip>
                   <ToolTip Style="{StaticResource DisableToolTipStyle}" Visibility="{Binding TooltipVisibility}">
                     <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />
@@ -427,10 +427,10 @@
                       </Image.ToolTip>
                     </Image>
                   </StackPanel>
-                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_PrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsPrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
                 </Grid>
               </Border>
-              <Border Background="#99132F54" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
+              <Border x:Name="brdHello" Background="#99132F54" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
                 <Border.ToolTip>
                   <ToolTip Style="{StaticResource DisableToolTipStyle}" Visibility="{Binding TooltipVisibility}">
                     <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />

@@ -111,6 +111,12 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (deviceInfo.LogicalDeviceType.Contains("Keyboard"))
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+
+                if (EOLKBList.Contains(deviceInfo.Name))
+                {
+                    deviceInfo.ModelNumber = deviceInfo.Name;
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                }
             }
         }
 
@@ -1083,6 +1089,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void RestoreToDefault()
         {
+            DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAllAssignedActions(CurrentDeviceID.ToString());
             foreach (var keyAction in KeyboardAction.KeyActions.Values)
             {
                 keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID);

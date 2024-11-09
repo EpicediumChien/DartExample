@@ -3,11 +3,13 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using Dell.Client.Framework.UX.WPF;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using VcpCore.Common;
 using static DDPM.UI.WalkThroughData.WalkThroughData;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
@@ -19,7 +21,9 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public int _currentTotalPage = 0;// Control button Visibility.Collapsed 
         public int _currentPageIndex = 0;
         public string _currentDeviceModel = string.Empty;
-        private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages();
+        private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+        public object _currentDeviceinfo = string.Empty;
+        private string last_logicalDeviceType = string.Empty;
 
         public WalkThroughPageViewModel()
         {
@@ -52,7 +56,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 // If _devicePages ContainsKey ModelNumber
                 if (_devicePages.ContainsKey(device.ModelName))
                 {
-                    InitializeDevice(device.ModelName);
+                    InitializeDevice(device.ModelName, device.DeviceInfo);
                     break;
                 }
                 else
@@ -68,9 +72,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
         }
 
-        public void InitializeDevice(string deviceModel)
+        public void InitializeDevice(string deviceModel, object info)
         {
             _currentDeviceModel = deviceModel;
+            _currentDeviceinfo = info;
             _currentPageIndex = 0;
 
             if (_devicePages.ContainsKey(deviceModel))
@@ -91,6 +96,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         /// </summary>
         private void UpdatePageContent()
         {
+            _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
             if (_devicePages.ContainsKey(_currentDeviceModel) && _currentPageIndex < _devicePages[_currentDeviceModel].Count)
             {
                 var pageData = _devicePages[_currentDeviceModel][_currentPageIndex];
@@ -112,6 +118,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
             else
             {
+                if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 1)
+                {
+                    last_logicalDeviceType = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType;
+                }
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
@@ -146,8 +156,35 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{_currentDeviceModel}";
             DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-            IConsole? console = WalkThroughPlugin.PluginIoc.GetService<IConsole>();
-            console?.ShowHomePage();
+            IShowPluginManager? _showPluginManager = WalkThroughPlugin.PluginIoc.GetService<IShowPluginManager>();
+            //_showPluginManager?.ShowHomePage();
+            switch (last_logicalDeviceType)
+            {
+                case "DDPM":
+                    _showPluginManager?.ShowHomePage();
+                    break;
+                case "Displays":
+                    _showPluginManager?.ShowHomePage(); //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.DisplayPluginId);
+                    break;
+                case "LogicalWebcam":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId, _currentDeviceinfo.ToString());
+                    break;
+                case "LogicalKeyboard":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, _currentDeviceinfo.ToString());
+                    break;
+                case "LogicalMouse":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, _currentDeviceinfo.ToString());
+                    break;
+                case "LogicalPen":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, _currentDeviceinfo.ToString());
+                    break;
+                case "LogicalHeadset":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, _currentDeviceinfo.ToString());
+                    break;
+                default:
+                    _showPluginManager?.ShowHomePage();
+                    break;
+            }
         }
 
         public void UpdateButtonVisibility()

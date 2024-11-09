@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -39,16 +40,17 @@ namespace DDPM.SA.Common.Settings
                 }
             }
         }
-        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey)
+        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {
             SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();
-            CertificateCheck certificateCheck = new CertificateCheck();
+            CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA)
             {
                 if (!certificateCheck.CheckURLCACertificate(URL))
                 {
                     info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                    logs?.DebugMsg_1(info);
                     return data;
                 }
             }
@@ -94,27 +96,42 @@ namespace DDPM.SA.Common.Settings
                             {
                                 foreach (Software software in data.Softwares)
                                 {
-                                    string version =
-                                    Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                                    string version;
+                                    if (int.TryParse(software.SoftwareVersion, out _))
+                                    {
+                                        version = Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString(), @"(?<=\d)(?=(\d{2})*$)", ".").TrimEnd('.');
+                                    }
+                                    else
+                                    {
+                                        data = new SWUpdateHelper();
+                                        info = $"{nameof(GetSWMetadata)} software.SoftwareVersion TryParse fail: {software.SoftwareVersion}";
+                                        logs?.DebugMsg_1(info);
+                                        return data;
+                                    }
+                                    software.SoftwareVersion = version;
                                     software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}");
                                     software.DdpmSwUpdaterServer_path = software.DdpmSwUpdaterServer_path.Replace("%21", $"DdpmSwUpdater");
                                 }
                                 info = $"{nameof(GetSWMetadata)} done";
+                                logs?.DebugMsg_1(info);
                             }
                             else
                             {
                                 info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                                logs?.DebugMsg_1(info);
                             }
                         }
                         else
                         {
                             info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty.";
+                            logs?.DebugMsg_1(info);
                         }
                     }
                     catch (JsonException ex)
                     {
                         data = new SWUpdateHelper();
                         info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
+                        logs?.DebugMsg_1(info);
                     }
                 }
             }
@@ -122,6 +139,7 @@ namespace DDPM.SA.Common.Settings
             {
                 data = new SWUpdateHelper();
                 info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
+                logs?.DebugMsg_1(info);
             }
             return data;
         }

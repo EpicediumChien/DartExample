@@ -44,6 +44,8 @@ namespace DDPM.SA.Common
 
         Task<bool> ReceiveTelemetryInfo(string EventTag, string EventValue, Telementry_Frequency Frequency);
 
+        Task<bool> SentKVMtoTelementry(MonitorInfo monitorInfo, string mode, string val);
+
         #endregion TelemetryScheduler
 
         #region EaM
@@ -72,6 +74,8 @@ namespace DDPM.SA.Common
 
         event EventHandler<string> Coloreset_manual_ChangeEvent;
 
+        event EventHandler<string> NightLightStatus_ChangeEvent;
+
         Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
 
         void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);
@@ -79,7 +83,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool showOSD = true);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, string reqAppName = null, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -119,6 +123,19 @@ namespace DDPM.SA.Common
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
         Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
+
+        Task<bool> SyncNightlightStatus();
+        Task<bool> CheckNightLightStatus();
+        Task<bool> CheckNightLightScheduler();
+        Task<bool> CheckColorICCStatus();
+
+
+        Task<bool> StopRegistryMonitor_NightLight();
+        Task<bool> StopRegistryMonitor_NightLightScheduler();
+        Task<bool> StopRegistryMonitor_ICC();
+
+        Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
+        Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
 
         #endregion public for ColorPreset
 
@@ -239,6 +256,7 @@ namespace DDPM.SA.Common
         public event EventHandler<EAArgs> EASettingsChanged;
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
@@ -294,9 +312,9 @@ namespace DDPM.SA.Common
 
         public Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList);
 
-        public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile);
+        public Task<bool> WriteUserEAProfileDDPM(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
 
-        public Task<bool> UpdateUserEAProfileDDPM(EAProfileDDPM eaProfile);
+        public Task<bool> UpdateUserEAProfileDDPM(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
 
         public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM();
 
@@ -513,8 +531,8 @@ namespace DDPM.SA.Common
 
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false);
-        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType= DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "");
@@ -526,8 +544,11 @@ namespace DDPM.SA.Common
         Task<bool> SetSkipCA(bool isSkipCA);
 
         Task<bool> GetSkipCA();
+
         Task<bool> SetServerURL(string url);
+
         Task<string> GetServerURL();
+        Task<bool> CallDDPMUI(string DDPMPath);
 
         #endregion public for FW Update by Bruce
 
@@ -544,6 +565,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+        Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
 
@@ -605,6 +627,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetSameModel(MonitorInfo monitorInfo);
 
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
+
         #endregion public for ImpExpSettings
 
         //public for GUI to get the changes of display and peripherals
@@ -656,36 +680,42 @@ namespace DDPM.SA.Common
         #region Mouse
 
         Task<int> GetDpiValue(string Guid);
-
         Task<JArray> GetMouseProgrammableKeys(string Guid);
-
         Task<JArray> GetAppSpecificProfiles(string Guid);
-
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
+
         Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<string> GetMouseKeystrokeDisplayData(string Guid);
+        Task<bool> StartMouseKeystrokeRecording(string Guid);
+        Task<bool> StopMouseKeystrokeRecording(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
-
         Task SetMouseAction(string Guid, byte[] newValue);
-
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
-
         Task DeleteMouseAssignedAction(string Guid, int newValue);
+
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
+
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
 
-        #endregion
+        #endregion Mouse
 
         #region Keyboard
-        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
+
         Task<JArray> GetKeyboardDeviceItemsEx();
+
         Task<JArray> GetKbProgrammableKeys(string Guid);
+        Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+
+        Task DeleteKeyboardAssignedAction(string Guid, int newValue);
         Task SetKbAssignedAction(string Guid, string newValue);
+
         Task SetKbAssignDialogAction(string Guid, string newValue);
+
         Task SetKbAssignKeystrokeAction(string Guid, string newValue);
 
-        #endregion Mouse
+        #endregion Keyboard
 
         #region Pen
 
@@ -752,32 +782,21 @@ namespace DDPM.SA.Common
         #region Webcam
 
         Task<JArray> GetPresetProfiles(string Guid);
-
         Task<JArray> GetCustomProfiles(string Guid);
-
         Task<string> GetProfile(string Guid);
-
         Task<string> GetProfileName(string Guid);
-
         Task<int> GetBrightness(string Guid);
-
         Task<string> GetCameraFirmwareVersionByDTP(string Guid);
-
         Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
-
         Task<int> GetFieldOfView(string Guid);
-
         Task<bool> GetIsPropertyHDRSupported(string Guid);
-
         Task<bool> GetIsHDROn(string Guid);
-
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
-
         Task<int> GetAntiFlickerValueByDTP(string Guid);
-
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
-
         Task<bool> GetIsAutoFramingOn(string Guid);
+        Task<string> GetSupportedResolutions(string Guid);
+        Task<string> GetSelectedResolution(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
@@ -1017,6 +1036,7 @@ namespace DDPM.SA.Common
         ////////////////////////////////Get////////////////////////////////
 
         Task<string> GetProfileAsync(string item);
+
         Task<int> GetBassAsync(string Guid);
 
         Task<int> GetMidRangeAsync(string Guid);
@@ -1028,6 +1048,7 @@ namespace DDPM.SA.Common
         Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid);
 
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
+
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         #endregion Wires Audio
@@ -1035,11 +1056,16 @@ namespace DDPM.SA.Common
         #region Dongle
 
         Task<string> GetFirmwareVersionAsyncForDongle(string Guid);
+
         Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid);
+
         Task<string> GetDeviceIdAsyncForDongle(string Guid);
+
         Task<string> GetPluginIdAsyncForDongle(string Guid);
+
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
-        #endregion
+
+        #endregion Dongle
 
         #endregion public for DTPProxy
 
@@ -1052,6 +1078,8 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type, bool State);
 
         Task ShowOSD(object monitorInfo, OSDType type);
+
+        Task ShowOSD(object monitorInfo, OSDType type, bool State, (string, string, bool) args);
 
         #endregion OSD
 

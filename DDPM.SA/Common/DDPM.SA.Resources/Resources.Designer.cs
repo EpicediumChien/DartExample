@@ -97,6 +97,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager.
+        /// </summary>
+        internal static string App_Name {
+            get {
+                return ResourceManager.GetString("App_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrange Windows.
+        /// </summary>
+        internal static string Arrange_Windows {
+            get {
+                return ResourceManager.GetString("Arrange_Windows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto Brightness is currently enabled.Do you wish to override it?.
         /// </summary>
         internal static string Auto_Brightness_is_currently_enabled {
@@ -115,6 +133,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Battery Low.
+        /// </summary>
+        internal static string Battery_Low {
+            get {
+                return ResourceManager.GetString("Battery_Low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CA check fail.
         /// </summary>
         internal static string CA_check_fail {
@@ -129,6 +156,96 @@ namespace DDPM.SA.Resources {
         internal static string can_be_updated_to {
             get {
                 return ResourceManager.GetString("can_be_updated_to", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel_0 {
+            get {
+                return ResourceManager.GetString("Cancel_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caps Lock Off.
+        /// </summary>
+        internal static string Caps_Lock_Off {
+            get {
+                return ResourceManager.GetString("Caps_Lock_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caps Lock On.
+        /// </summary>
+        internal static string Caps_Lock_On {
+            get {
+                return ResourceManager.GetString("Caps_Lock_On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ComfortView.
+        /// </summary>
+        internal static string ComfortView_0 {
+            get {
+                return ResourceManager.GetString("ComfortView_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cool.
+        /// </summary>
+        internal static string Cool_0 {
+            get {
+                return ResourceManager.GetString("Cool_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom 1.
+        /// </summary>
+        internal static string Custom_1 {
+            get {
+                return ResourceManager.GetString("Custom_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom 2.
+        /// </summary>
+        internal static string Custom_2 {
+            get {
+                return ResourceManager.GetString("Custom_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom 3.
+        /// </summary>
+        internal static string Custom_3 {
+            get {
+                return ResourceManager.GetString("Custom_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Color.
+        /// </summary>
+        internal static string Custom_Color {
+            get {
+                return ResourceManager.GetString("Custom_Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom layout.
+        /// </summary>
+        internal static string Custom_layout {
+            get {
+                return ResourceManager.GetString("Custom_layout", resourceCulture);
             }
         }
         
@@ -165,6 +282,15 @@ namespace DDPM.SA.Resources {
         internal static string Delay {
             get {
                 return ResourceManager.GetString("Delay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desktop.
+        /// </summary>
+        internal static string Desktop_0 {
+            get {
+                return ResourceManager.GetString("Desktop_0", resourceCulture);
             }
         }
         
@@ -241,11 +367,38 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust your current window arrangement, edit the name (if desired), and click “Save”  to store the arrangement..
+        /// </summary>
+        internal static string EA_MSG_0 {
+            get {
+                return ResourceManager.GetString("EA_MSG_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Easy Memory.
+        /// </summary>
+        internal static string Easy_Memory {
+            get {
+                return ResourceManager.GetString("Easy_Memory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for.
+        /// </summary>
+        internal static string Export_MSG_0 {
+            get {
+                return ResourceManager.GetString("Export_MSG_0", resourceCulture);
             }
         }
         
@@ -277,6 +430,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Firmware update aborted. Ensure only one device of same model is connected to system..
+        /// </summary>
+        internal static string Firmware_update_aborted_same_model_is_connected {
+            get {
+                return ResourceManager.GetString("Firmware_update_aborted_same_model_is_connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware update in progress. Fail to abort..
+        /// </summary>
+        internal static string Firmware_update_in_progress_Fail_to_abort {
+            get {
+                return ResourceManager.GetString("Firmware_update_in_progress_Fail_to_abort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firmware update unsuccessful..
         /// </summary>
         internal static string Firmware_update_unsuccessful {
@@ -304,6 +475,69 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game.
+        /// </summary>
+        internal static string Game_0 {
+            get {
+                return ResourceManager.GetString("Game_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game1.
+        /// </summary>
+        internal static string Game_1 {
+            get {
+                return ResourceManager.GetString("Game_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game2.
+        /// </summary>
+        internal static string Game_2 {
+            get {
+                return ResourceManager.GetString("Game_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game3.
+        /// </summary>
+        internal static string Game_3 {
+            get {
+                return ResourceManager.GetString("Game_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game HDR.
+        /// </summary>
+        internal static string Game_HDR {
+            get {
+                return ResourceManager.GetString("Game_HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to Widget Settings.
+        /// </summary>
+        internal static string Go_to_Widget_Settings {
+            get {
+                return ResourceManager.GetString("Go_to_Widget_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for %1?.
+        /// </summary>
+        internal static string ImpExp_Message_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installing.
         /// </summary>
         internal static string Installing {
@@ -318,6 +552,24 @@ namespace DDPM.SA.Resources {
         internal static string Invalid_ID {
             get {
                 return ResourceManager.GetString("Invalid_ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is muted.
+        /// </summary>
+        internal static string is_muted {
+            get {
+                return ResourceManager.GetString("is_muted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is Unmuted.
+        /// </summary>
+        internal static string is_Unmuted {
+            get {
+                return ResourceManager.GetString("is_Unmuted", resourceCulture);
             }
         }
         
@@ -340,11 +592,65 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Metro.
+        /// </summary>
+        internal static string Metro_0 {
+            get {
+                return ResourceManager.GetString("Metro_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie.
+        /// </summary>
+        internal static string Movie_0 {
+            get {
+                return ResourceManager.GetString("Movie_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie HDR.
+        /// </summary>
+        internal static string Movie_HDR {
+            get {
+                return ResourceManager.GetString("Movie_HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multimedia.
+        /// </summary>
+        internal static string Multimedia_0 {
+            get {
+                return ResourceManager.GetString("Multimedia_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Multiple docks are detected. Keep only one dock connected to prevent damage to your docks..
         /// </summary>
         internal static string Multiple_docks_are_detected {
             get {
                 return ResourceManager.GetString("Multiple_docks_are_detected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Native.
+        /// </summary>
+        internal static string Native_0 {
+            get {
+                return ResourceManager.GetString("Native_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nature.
+        /// </summary>
+        internal static string Nature_0 {
+            get {
+                return ResourceManager.GetString("Nature_0", resourceCulture);
             }
         }
         
@@ -376,6 +682,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Num Lock Off.
+        /// </summary>
+        internal static string Num_Lock_Off {
+            get {
+                return ResourceManager.GetString("Num_Lock_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Num Lock On.
+        /// </summary>
+        internal static string Num_Lock_On {
+            get {
+                return ResourceManager.GetString("Num_Lock_On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OFF.
         /// </summary>
         internal static string OFF {
@@ -403,6 +727,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paper.
+        /// </summary>
+        internal static string Paper_0 {
+            get {
+                return ResourceManager.GetString("Paper_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presence detection sensor is covered.
+        /// </summary>
+        internal static string Presence_detection_sensor_is_covered {
+            get {
+                return ResourceManager.GetString("Presence_detection_sensor_is_covered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Presets.
         /// </summary>
         internal static string Presets {
@@ -417,6 +759,51 @@ namespace DDPM.SA.Resources {
         internal static string Processing {
             get {
                 return ResourceManager.GetString("Processing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To access Quick Settings Widget again, press and hold [Alt + Z] on your keyboard..
+        /// </summary>
+        internal static string QAM_OSD_Msg {
+            get {
+                return ResourceManager.GetString("QAM_OSD_Msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reference.
+        /// </summary>
+        internal static string Reference_0 {
+            get {
+                return ResourceManager.GetString("Reference_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        internal static string Save_0 {
+            get {
+                return ResourceManager.GetString("Save_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Lock Off.
+        /// </summary>
+        internal static string Scroll_Lock_Off {
+            get {
+                return ResourceManager.GetString("Scroll_Lock_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Lock On.
+        /// </summary>
+        internal static string Scroll_Lock_On {
+            get {
+                return ResourceManager.GetString("Scroll_Lock_On", resourceCulture);
             }
         }
         
@@ -457,11 +844,56 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sport.
+        /// </summary>
+        internal static string Sport_0 {
+            get {
+                return ResourceManager.GetString("Sport_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SPORTS Game.
+        /// </summary>
+        internal static string SPORTS_Game {
+            get {
+                return ResourceManager.GetString("SPORTS_Game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard.
+        /// </summary>
+        internal static string Standard_0 {
+            get {
+                return ResourceManager.GetString("Standard_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard HDR.
+        /// </summary>
+        internal static string Standard_HDR {
+            get {
+                return ResourceManager.GetString("Standard_HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SW info.
         /// </summary>
         internal static string SW_info {
             get {
                 return ResourceManager.GetString("SW_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        internal static string Text_0 {
+            get {
+                return ResourceManager.GetString("Text_0", resourceCulture);
             }
         }
         
@@ -620,11 +1052,56 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to USB wireless receiver firmware is unable to support device firmware upgrade.
+        /// </summary>
+        internal static string USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade {
+            get {
+                return ResourceManager.GetString("USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User 1.
+        /// </summary>
+        internal static string User_1 {
+            get {
+                return ResourceManager.GetString("User_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User 2.
+        /// </summary>
+        internal static string User_2 {
+            get {
+                return ResourceManager.GetString("User_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User 3.
+        /// </summary>
+        internal static string User_3 {
+            get {
+                return ResourceManager.GetString("User_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User aborted firmware update.
         /// </summary>
         internal static string User_aborted_firmware_update {
             get {
                 return ResourceManager.GetString("User_aborted_firmware_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        internal static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
         
@@ -638,11 +1115,38 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vivid HDR.
+        /// </summary>
+        internal static string Vivid_HDR {
+            get {
+                return ResourceManager.GetString("Vivid_HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Walk Away Lock.
+        /// </summary>
+        internal static string Walk_Away_Lock {
+            get {
+                return ResourceManager.GetString("Walk_Away_Lock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warm.
         /// </summary>
         internal static string Warm {
             get {
                 return ResourceManager.GetString("Warm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warm.
+        /// </summary>
+        internal static string Warm_0 {
+            get {
+                return ResourceManager.GetString("Warm_0", resourceCulture);
             }
         }
         

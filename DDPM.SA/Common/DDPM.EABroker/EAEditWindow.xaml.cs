@@ -1,5 +1,6 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using nsWinEventHook;
@@ -18,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static DDPM.Win32Lib.Win32;
 
 namespace DDPM.EABroker
 {
@@ -29,6 +31,7 @@ namespace DDPM.EABroker
         #region Private members
         private readonly ILog? _log;
         private string _orgFriendlyName = string.Empty;
+        private List<CellJson> _cellJsons = new List<CellJson>();
 
         #endregion Private members
 
@@ -145,6 +148,11 @@ namespace DDPM.EABroker
             return inputSplitCtrl.Settings;
         }
 
+        public List<CellJson> GetCellJsons()
+        {
+            return _cellJsons;
+        }
+
         #endregion Input SplitCtrl
 
         #region Show and Edit
@@ -155,11 +163,11 @@ namespace DDPM.EABroker
         public bool ShowAndEdit(EAArgs args, Screen scr)
         {
             _inputArgs = args;
-            if ((args.CellCount == 0) && (args.SplitKey == 'B'))
+            if ((args.SplitJson.CellCount == 0) && (args.SplitJson.SplitKey == 'B'))
             {
                 this.Dispatcher.Invoke(() => { UI_ShowAndEdit_AddedCustom(args, scr); });
             }
-            else if (ISplitCtrl.IsExisted(args.CellCount, args.SplitKey))
+            else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
             {
                 this.Dispatcher.Invoke(() => { UI_ShowAndEdit_PredefinedCustom(args, scr); });
             }
@@ -258,12 +266,16 @@ namespace DDPM.EABroker
             List<double> settings = new List<double>();
             settings.Add(0); //BorderCount will be updated later
             settings.Add(scale);
-            settings.Add(screen.Bounds.Width);
-            settings.Add(screen.Bounds.Height);
+            settings.Add(screen.WorkingArea.Width);
+            settings.Add(screen.WorkingArea.Height);
+
+            double xRatio = 1.0000 / (double)screen.WorkingArea.Width;
+            double yRatio = 1.0000 / (float)screen.WorkingArea.Height;
 
             //Enumerate all Window handle which will be fitered by IsTargetWindow()
             List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
             WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
+            _cellJsons.Clear();
             int idx = -1;
             int addCount = 0;
             //Second phase to filter out from the hWnd
@@ -359,10 +371,37 @@ namespace DDPM.EABroker
                 settings.Add(border.Width);
                 settings.Add(border.Height);
                 WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
+
+                CellJson cellJson = new CellJson();
+                cellJson.Name = $"0b{addCount}";
+                cellJson.x = (double)left * xRatio;
+                cellJson.y = (double)top * yRatio;
+                cellJson.w = (double)border.Width * xRatio;
+                cellJson.h = (double)border.Height * yRatio;
+                _cellJsons.Add(cellJson);
             }
             WriteLog($"  * Detected window count = [{addCount}]");
             settings[0] = addCount;
             inputSplitCtrl.Settings = settings;
+            inputSplitCtrl.CellList.Clear();
+
+
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)inputSplitCtrl;
+            ///spCtrl0B.RatioRects.Clear();
+            foreach (CellJson cellJson in _cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                inputSplitCtrl.CellBorders.Add(cellBorder);
+
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                inputSplitCtrl.CellList.Add(cellObj);
+
+                ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
+            }
+
         }
 
         //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
@@ -391,6 +430,14 @@ namespace DDPM.EABroker
             {
                 return false;
             }
+
+            //Check if the window is minimized
+            uint uiStyles = (uint) Win32._GetWindowLong(hWnd, (int)WindowLongFlags.GWL_STYLE);
+            uint uiMinimizeStyle = (uint)Win32.WindowStyles.WS_MINIMIZE;
+            bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
+            if (isMinimized)
+                return false;
+
             return true;
         }
         #endregion

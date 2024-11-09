@@ -63,7 +63,7 @@ namespace DDPM.UI.Module.Color
 
       
         // add jim 20240604
-        public RegistryMonitor_NightLight registryMonitor_NightLight = null;
+        //public RegistryMonitor_NightLight registryMonitor_NightLight = null;
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
@@ -92,6 +92,8 @@ namespace DDPM.UI.Module.Color
         public bool SmartHDR_ON { get; set; } = false;
 
         private bool IsColorEnable = false;
+
+        public bool Is_ColorPreset_ManualFirst = true;
 
         public bool ColorEnable
         {
@@ -296,7 +298,7 @@ namespace DDPM.UI.Module.Color
                                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                                     {
                                         if (hd.MonitorInfo.IsDellMonitor)
-                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, false);
+                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, null,false);
                                     }
                                 }
                             }
@@ -719,16 +721,21 @@ namespace DDPM.UI.Module.Color
 
                 UpdateHDRStatus();
 
-                if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
-                    Is_Game_DeviceName = true;
+                //if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
+                //    Is_Game_DeviceName = true;
 
                 //OSD control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
 
                 DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
 
+                DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
+
                 // -- begin add jim 20240604
-                SyncNightlightStatus();
+                //DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightStatus();
+                DdpmCommonHelper.DeviceManagerSA.CheckNightLightScheduler();
+                //SyncNightlightStatus();
 
                 // jim remove
                 //WatchForProcessStart();
@@ -831,15 +838,20 @@ namespace DDPM.UI.Module.Color
                     else 
                         strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
 
-                    string strSync_ColorPresetName = string.Empty;
+                    //string strSync_ColorPresetName = string.Empty;
                     //strSync_ColorPresetName = Sync_CurrentColorPreset(strColorPresetName);
-                    strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+                    //strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
+                    if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
+                        strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
 
                     //int pIdx = SupportColorPresets.FindIndex(x =>
                     //                    x.Trim() == value.ColorPresetName.Trim());
 
+                    //int pIdx = SupportColorPresets.FindIndex(x =>
+                    //                    x.Trim() == strSync_ColorPresetName.Trim());
+
                     int pIdx = SupportColorPresets.FindIndex(x =>
-                                        x.Trim() == strSync_ColorPresetName.Trim());
+                                        x.Trim() == strSync_CurrentColorPreset.Trim());
 
 
                     Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ?
@@ -887,6 +899,8 @@ namespace DDPM.UI.Module.Color
                         tempList.Add(new_Appdata);
                     }
                 }
+
+                DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
 
                 //Robert_Lin, 20240528
                 //NEW Added code:
@@ -1030,6 +1044,16 @@ namespace DDPM.UI.Module.Color
             }         
         }
 
+        ~ColorViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+                DdpmCommonHelper.DeviceManagerSA.Coloreset_manual_ChangeEvent -= OnColoresetManualChangeHandler;
+                DdpmCommonHelper.DeviceManagerSA.NightLightStatus_ChangeEvent -= OnNightLightStatusChangeHandler;
+            }
+        }
+
         private void OnColoresetManualChangeHandler(object sender, string e)
         {
             int index = 0;      
@@ -1091,7 +1115,17 @@ namespace DDPM.UI.Module.Color
 
                 RefreshUI();
             }));
-        }       
+        }
+
+        private void OnNightLightStatusChangeHandler(object sender, string e)
+        {
+            NightlightStatus = e;
+
+            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+            { 
+                RefreshUI();
+            }));
+        }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1130,6 +1164,10 @@ namespace DDPM.UI.Module.Color
                     //Result is failed.
                 }
             }
+
+            WatchForProcessStart();
+            WatchForProcessEnd();
+
             //UpdateHDRStatus();
         }
 
@@ -1176,7 +1214,8 @@ namespace DDPM.UI.Module.Color
 
             //UpdateHDRStatus();
         }
-
+        
+        /*
         private void SyncNightlightStatus()
         {
             // 20240627 jim modify
@@ -1250,7 +1289,9 @@ namespace DDPM.UI.Module.Color
                 }));
             }
         }
+        */
 
+        /*
         // add jim 20240604
         public void StopRegistryMonitor()
         {
@@ -1275,7 +1316,7 @@ namespace DDPM.UI.Module.Color
         {
             StopRegistryMonitor();
         }   
-
+        */
         private ObservableCollection<AppData> _appsList;
 
         public ObservableCollection<AppData> AppsList
@@ -1312,14 +1353,14 @@ namespace DDPM.UI.Module.Color
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;
-                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
+                //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
 
             }
             else
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
-                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
+                //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
             }
 
             Visibility vis_ad;

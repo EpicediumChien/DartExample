@@ -13,7 +13,9 @@ namespace DDPM.SA.Common
         public GlobalSetting_General GlobalSetting_General { get; set; }
         public GlobalSetting_WidgetSettings GlobalSetting_WidgetSettings { get; set; }
         public GlobalSetting_About GlobalSetting_About { get; set; }
-        public bool isTelemetryConsentOn { get; set; } = true;
+        public bool isTelemetryConsentOn { get; set; } = false;//1030 set to false as default
+        public bool isSetTelemetryOverInstaller { get; set; } = false;
+
         public GlobalSettingParam()
         {
             GlobalSetting_General = new GlobalSetting_General();
@@ -43,8 +45,8 @@ namespace DDPM.SA.Common
         public bool EnableQuickAccessWidget_Reminder { get; set; }
         public GlobalSetting_WidgetSettings()
         {
-            EnableQuickAccessWidget = false;
-            EnableQuickAccessWidget_Reminder = false;
+            EnableQuickAccessWidget = true;
+            EnableQuickAccessWidget_Reminder = true;
         }
     }
     public class GlobalSetting_About

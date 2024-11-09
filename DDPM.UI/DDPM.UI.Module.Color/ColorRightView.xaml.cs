@@ -117,7 +117,10 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessStart_Stop();
             vm.WatchForProcessEnd_Stop();
 
-            vm.StopRegistryMonitor();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLight();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_NightLightScheduler();
+            DdpmCommonHelper.DeviceManagerSA.StopRegistryMonitor_ICC();
+            //vm.StopRegistryMonitor();
 
             //Lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -331,10 +334,11 @@ namespace DDPM.UI.Module.Color
 
         private void nightlight_config_Click(object sender, RoutedEventArgs e)
         {
-            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
+            //string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
-            ColorViewModel vm = (ColorViewModel)DataContext;
+            //ColorViewModel vm = (ColorViewModel)DataContext;
 
+            /*
             if (vm.registryMonitor_NightLight == null)
             {
                 vm.registryMonitor_NightLight = new RegistryMonitor_NightLight(keyName);
@@ -342,6 +346,7 @@ namespace DDPM.UI.Module.Color
                 vm.registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(vm.OnError_NightLight);
                 vm.registryMonitor_NightLight.Start();
             }
+            */
 
             var psi = new System.Diagnostics.ProcessStartInfo();
 
@@ -376,9 +381,42 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
+                    if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
-                    int i = 0;
+                    //int i = 0;
+
+                    if (!vm.Is_ColorPreset_ManualFirst)
+                    {
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+
+                        int index=-1;
+
+                        if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                            index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+
+                        if (index >= 0)
+                        {
+                            int nVCPE2_Value = Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual;
+                            string strColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(nVCPE2_Value).Result;
+
+                            string strSync_ColorPresetName_Manual = string.Empty;
+                            //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
+                            if (DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo != null)
+                                strSync_ColorPresetName_Manual = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName_Manual).Result;
+
+                            if (!string.IsNullOrEmpty(strSync_ColorPresetName_Manual))
+                            {
+                                int idx = vm.ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_ColorPresetName_Manual.ToUpper()));
+                                if (idx >= 0)
+                                {
+                                    vm.ColorPresetSelectedIndex = idx;
+                                }
+                            }
+                        }
+                    }
+                    else
+                        vm.Is_ColorPreset_ManualFirst = false;
                 }));
             }
             else if (expander_sender.Name == "Expander_Auto")
@@ -387,9 +425,10 @@ namespace DDPM.UI.Module.Color
 
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
+                    if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
-                    int j = 0;
+                    //int j = 0;
                 })); 
             
             }
@@ -502,48 +541,55 @@ namespace DDPM.UI.Module.Color
                     //strFileName = shortcut.TargetPath;
 
                     FileStream fileStream = File.Open(targetPath, FileMode.Open, FileAccess.Read);
-                    using (System.IO.BinaryReader fileReader = new BinaryReader(fileStream))
+
+                    try
                     {
-                        fileStream.Seek(0x14, SeekOrigin.Begin);     // Seek to flags
-                        uint flags = fileReader.ReadUInt32();        // Read flags
-                        if ((flags & 1) == 1)
-                        {                      // Bit 1 set means we have to
-                                               // skip the shell item ID list
-                            fileStream.Seek(0x4c, SeekOrigin.Begin); // Seek to the end of the header
-                            uint offset = fileReader.ReadUInt16();   // Read the length of the Shell item ID list
-                            fileStream.Seek(offset, SeekOrigin.Current); // Seek past it (to the file locator info)
-                        }
-
-                        long fileInfoStartsAt = fileStream.Position; // Store the offset where the file info
-                                                                     // structure begins
-                        uint totalStructLength = fileReader.ReadUInt32(); // read the length of the whole struct
-                        fileStream.Seek(0xc, SeekOrigin.Current); // seek to offset to base pathname
-                        uint fileOffset = fileReader.ReadUInt32(); // read offset to base pathname
-                                                                   // the offset is from the beginning of the file info struct (fileInfoStartsAt)
-                        fileStream.Seek((fileInfoStartsAt + fileOffset), SeekOrigin.Begin); // Seek to beginning of
-                                                                                            // base pathname (target)
-                        long pathLength = (totalStructLength + fileInfoStartsAt) - fileStream.Position - 2; // read
-                                                                                                            // the base pathname. I don't need the 2 terminating nulls.
-                        char[] linkTarget = fileReader.ReadChars((int)pathLength); // should be unicode safe
-                        var link = new string(linkTarget);
-
-                        int begin = link.IndexOf("\0\0");
-                        if (begin > -1)
+                        using (System.IO.BinaryReader fileReader = new BinaryReader(fileStream))
                         {
-                            int end = link.IndexOf("\\\\", begin + 2) + 2;
-                            end = link.IndexOf('\0', end) + 1;
+                            fileStream.Seek(0x14, SeekOrigin.Begin);     // Seek to flags
+                            uint flags = fileReader.ReadUInt32();        // Read flags
+                            if ((flags & 1) == 1)
+                            {                      // Bit 1 set means we have to
+                                                   // skip the shell item ID list
+                                fileStream.Seek(0x4c, SeekOrigin.Begin); // Seek to the end of the header
+                                uint offset = fileReader.ReadUInt16();   // Read the length of the Shell item ID list
+                                fileStream.Seek(offset, SeekOrigin.Current); // Seek past it (to the file locator info)
+                            }
 
-                            string firstPart = link.Substring(0, begin);
-                            string secondPart = link.Substring(end);
-                            
-                            strFileName = firstPart + secondPart;
-                        }
-                        else
-                        {
-                            strFileName = link;
+                            long fileInfoStartsAt = fileStream.Position; // Store the offset where the file info
+                                                                         // structure begins
+                            uint totalStructLength = fileReader.ReadUInt32(); // read the length of the whole struct
+                            fileStream.Seek(0xc, SeekOrigin.Current); // seek to offset to base pathname
+                            uint fileOffset = fileReader.ReadUInt32(); // read offset to base pathname
+                                                                       // the offset is from the beginning of the file info struct (fileInfoStartsAt)
+                            fileStream.Seek((fileInfoStartsAt + fileOffset), SeekOrigin.Begin); // Seek to beginning of
+                                                                                                // base pathname (target)
+                            long pathLength = (totalStructLength + fileInfoStartsAt) - fileStream.Position - 2; // read
+                                                                                                                // the base pathname. I don't need the 2 terminating nulls.
+                            char[] linkTarget = fileReader.ReadChars((int)pathLength); // should be unicode safe
+                            var link = new string(linkTarget);
+
+                            int begin = link.IndexOf("\0\0");
+                            if (begin > -1)
+                            {
+                                int end = link.IndexOf("\\\\", begin + 2) + 2;
+                                end = link.IndexOf('\0', end) + 1;
+
+                                string firstPart = link.Substring(0, begin);
+                                string secondPart = link.Substring(end);
+
+                                strFileName = firstPart + secondPart;
+                            }
+                            else
+                            {
+                                strFileName = link;
+                            }
                         }
                     }
-
+                    catch
+                    { 
+                        // No log function in this project
+                    }
 
                 }
                

@@ -118,14 +118,14 @@
                                         </Grid.RowDefinitions>
                                         <UXControls:UXRadioButton Grid.Row="0"
                                                                   AutomationProperties.AutomationId="LargeRB1"
-                                                                  Content="Reduce brightness"
+                                                                  Content="{Binding [DisplayOthers.0], Source={x:Static lang:LangHelper.Instance}}"
                                                                   RadioButtonSize="Large" Foreground="#F5F6F7"
                                                                   HorizontalAlignment="Left"
                                                                   IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
                                                                   FontSize="16" IsChecked="{Binding Reducebrt_Checked}" />
                                         <UXControls:UXRadioButton Grid.Row="1"
                                                                   AutomationProperties.AutomationId="LargeRB1"
-                                                                  Content="Put the display to sleep"
+                                                                  Content="{Binding [DisplayOthers.1], Source={x:Static lang:LangHelper.Instance}}"
                                                                   RadioButtonSize="Large" Foreground="#F5F6F7"
                                                                   HorizontalAlignment="Left"
                                                                   IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
@@ -193,7 +193,7 @@
                                                     </Border.Resources>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [DisplayOthers.7], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            <TextBlock Text="{Binding Tooltip_Settings}" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>

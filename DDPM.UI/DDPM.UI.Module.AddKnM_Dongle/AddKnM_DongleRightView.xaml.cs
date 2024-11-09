@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.AddKnM_Dongle
@@ -11,7 +12,7 @@ namespace DDPM.UI.Module.AddKnM_Dongle
         private readonly AddDeviceViewModel _vm;
 
         // 10/15 Derek for RWD
-        private readonly Int16 breakPoints = 910;
+        private readonly int breakPoints = 1050;
 
         //private readonly string Step1 = "Connect your USB wireless receiver to your system";
         //private readonly string Step2 = "Slide the power switch to OFF.";
@@ -29,8 +30,7 @@ namespace DDPM.UI.Module.AddKnM_Dongle
             //txtStep3.Text = Step3;
             //txtStep4.Text = Step4;
 
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                breakPoints = width;
+            breakPoints = DdpmCommonHelper.GetBreakPoints();
         }
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -46,7 +46,10 @@ namespace DDPM.UI.Module.AddKnM_Dongle
             else
                 ChangeToHorizontalLayout();
 
-            txtAlert.Width = bdrAlert.ActualWidth - 50;
+            //Derek 1107 in debug mode ，ActualWidth maybe 0
+            if (bdrAlert.ActualWidth > 50)
+                txtAlert.Width = bdrAlert.ActualWidth - 50;
+
             AdjustBorderHeight();
         }
 

@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
@@ -12,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.ServiceProcess;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using VcpCore.Common;
@@ -27,6 +30,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
+
+        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
+        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
 
         /// <summary>
         /// Default constructor
@@ -196,7 +202,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                     //Apply device category
                     DeviceType devType = di.Type;
-                    if (devType.ToString().Contains("Keyboard"))
+                    if (EOLKBList.Contains(di.Name))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.KB;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxKB;
+                        idxKB++;
+                    }
+                    else if (EOLMouseList.Contains(di.Name))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Mouse;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
+                        idxKB++;
+                    }
+                    else if (devType.ToString().Contains("Keyboard"))
                     {
                         dev.DeviceCategory = eDeviceCategory.KB;
                         //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
@@ -239,7 +257,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 imagepath = "Resources/WebCamModel_U3224KB_Small.png";
                                 break;
 
+                            case "U3224KBA": // internal webcamera
+                                imagepath = "Resources/WebCamModel_U3224KB_Small.png";
+                                break;
+
                             case "P2424HEB": //internal webcamera
+                                imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
+                                break;
+
+                            case "P2724DEB": //internal webcamera
+                                imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
+                                break;
+
+                            case "P3424WEB": //internal webcamera
                                 imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                 break;
 
@@ -487,6 +517,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             set => SetProperty(ref _isPleaseWaitVisible, value);
         }
 
+        public event EventHandler<EventArgs> ShowConsentRequested;
+        public void ShowConsent()
+        {
+            ShowConsentRequested?.Invoke(this, EventArgs.Empty);
+        }
+
         public void Invoke_PleaseWait()
         {
             BackgroundWorker bw = new BackgroundWorker
@@ -513,18 +549,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             while (sc.Status == ServiceControllerStatus.Stopped ||
                 sc.Status == ServiceControllerStatus.StopPending)
             {
-                PleaseWaitMessage = "DellTechHub service is not running";
+                PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
                 Thread.Sleep(200);
             }
             while (!IsDeviceManagerReady)
             {
-                PleaseWaitMessage = "DDPM.Subagent.DeviceManager is not ready";
+                PleaseWaitMessage = LangHelper.Instance["Wait_DevMgr"]; //"DDPM.Subagent.DeviceManager is not ready";
                 Thread.Sleep(200);
             }
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
-                PleaseWaitMessage = "No device detected";
+                PleaseWaitMessage = LangHelper.Instance["Wait_NoDevice"];// "No device detected";
                 Thread.Sleep(500);
                 if (sw.ElapsedMilliseconds > timeoutMsec)
                     break;
@@ -561,6 +597,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             {
                 homeDev.DumpInfoToLog(_log);
             }
+        }
+        #endregion
+
+        #region Import question with full page dialog
+        public EventHandler<MonitorInfo> ImportNotify;
+
+        public void InvokeImportQuestion(MonitorInfo mo)
+        {
+            EventHandler<MonitorInfo> handler = ImportNotify;
+            handler?.Invoke(this, mo);
         }
         #endregion
     }

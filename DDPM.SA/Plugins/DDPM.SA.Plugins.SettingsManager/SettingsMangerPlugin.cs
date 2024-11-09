@@ -36,6 +36,7 @@ using Windows.Storage;
 using DDPM.SA.Obfuscation;
 using System.Net.NetworkInformation;
 using System.Windows.Interop;
+using DDPMSettings = DDPM.SA.Common.Settings;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -70,7 +71,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         //Basic
-        private static string path_programdata = Path.Combine( Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
+        private static string path_programdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
         private static string folder_product = "Dell Display and Peripheral Manager";
         private static string filename_appsettings_IT = "DDPM.Configs.json";
         private static string filename_appsettings_Info = "DDPM.Infos.json";
@@ -95,11 +96,12 @@ namespace DDPM.SA.Plugins.SettingsManager
         #region ISettingsManagerSA implementation
 
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        public event EventHandler<bool> FWSWUpdateSettingChange;
 
         //Target to notify User setting
         private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
         {
-            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
+            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty || e.target_object == null)
                 return;
 
             EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
@@ -107,6 +109,19 @@ namespace DDPM.SA.Plugins.SettingsManager
             {
                 Handler.Invoke(this, e);
                 WriteLog($"ITSettingsActionEvent Invoked");
+            }
+
+            foreach (var item in e.IT_Feature_TriggerList)
+            {
+                if (item.Equals("Lock_Settings_Updates"))
+                {
+                    EventHandler<bool> Handler2 = FWSWUpdateSettingChange;//FW/SW plugin should register this event
+                    if (Handler != null)
+                    {
+                        Handler2.Invoke(this, e.target_object.Lock_Settings_Updates);
+                        WriteLog($"FWSWUpdateSettingChange Invoked");
+                    }
+                }
             }
         }
 
@@ -125,14 +140,14 @@ namespace DDPM.SA.Plugins.SettingsManager
         {
             return Task.FromResult(_settingsAccessVer);
         }
-        
+
         public Task<string> QueryAccessInfoAddr()
         {
             return Task.FromResult(_settingsAccessAddr);
         }
         #endregion
 
-        #region ISettingsManagerIT implementation
+        #region ISettingsManagerIT implementation        
 
         public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
         {
@@ -164,12 +179,12 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam)
         {
-            if(globalSettingParam == null)
+            if (globalSettingParam == null)
             {
                 WriteLog($"WriteGlobalSettingsToITConfig: null data, failed");
                 return Task.FromResult(false);
             }
-            if(_settings == null || _settings.global_setting == null)
+            if (_settings == null || _settings.global_setting == null)
             {
                 WriteLog($"WriteGlobalSettingsToITConfig: null cache, failed");
                 return Task.FromResult(false);
@@ -177,9 +192,9 @@ namespace DDPM.SA.Plugins.SettingsManager
             _settings.global_setting = globalSettingParam;
             string info = string.Empty;
             bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_settings).ToString(), _settings_path, out info);
-            if(!result)
+            if (!result)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: write failed, reasion: {info}");
+                WriteLog($"WriteGlobalSettingsToITConfig: write failed, reason: {info}");
             }
             return Task.FromResult(result);
         }
@@ -236,6 +251,8 @@ namespace DDPM.SA.Plugins.SettingsManager
 
             InitDDPMITConfigFile();
             InitInfoConfigFile();
+            InitRegUpdateLock();
+            GetTelemetryRegistryAndApplyData();
         }
 
         #endregion
@@ -293,6 +310,46 @@ namespace DDPM.SA.Plugins.SettingsManager
         #endregion
 
         #region Private methods
+        private void GetTelemetryRegistryAndApplyData()
+        {
+            bool ret = false;
+            string URL = null;
+            WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} start");
+
+            string KeyPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager";
+            string KeyName = @"TelemetryConsent";
+            object o = ReadRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName).Result;
+            if (o == null)
+            {
+                WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} Telemetry consent key is null");
+                return;
+            }
+            string result = o.ToString();
+            if (result.ToUpper().Equals("TRUE") || result.ToUpper().Equals("FALSE"))
+            {
+                if (_settings != null && _settings.global_setting != null)
+                {
+                    _settings.global_setting.isSetTelemetryOverInstaller = true;//config that no consent page shown in UI, DDPMW-1254
+                    if (result.ToUpper().Equals("TRUE"))
+                        _settings.global_setting.isTelemetryConsentOn = true;
+                    if (result.ToUpper().Equals("FALSE"))
+                        _settings.global_setting.isTelemetryConsentOn = false;
+                    WriteGlobalSettingsToITConfig(_settings.global_setting);
+                    WriteRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName, "DONE");
+                }
+                else
+                {
+                    WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} system _settings/global is null");
+                }
+            }
+            else
+            {
+                WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} Telemetry consent is {o.ToString()}");
+                return;
+            }
+
+            WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} done");
+        }
 
         /// <summary>
         /// //
@@ -327,13 +384,41 @@ namespace DDPM.SA.Plugins.SettingsManager
             AddInfo(InfoHash.Info_Hash.Trim());
             return _infos;
         }
+        private void InitRegUpdateLock()
+        {
+            WriteLog($"[InitRegUpdateLock] start");
+            if (SettingsAccess.QueryRegistryUpdateLock(out bool isUpdateLock, out string info))
+            {
+                WriteLog($"[InitRegUpdateLock] QueryRegistryUpdateLock is ok");
+                WriteLog($"[InitRegUpdateLock] isUpdateLock is {isUpdateLock}");
+                DDPMITConfig DDPMITConfig = ReadITConfigData().Result;
+                DDPMITConfig.Lock_Settings_Updates = isUpdateLock;
+                if (WriteITConfigData(DDPMITConfig, new List<string>() { "Lock_Settings_Updates" }).Result)
+                {
+                    WriteLog($"[InitRegUpdateLock] WriteITConfigData is ok");
+                    if (SettingsAccess.DeleteRegistryUpdateLock(out string info_2))
+                    {
+                        WriteLog($"[InitRegUpdateLock] DeleteRegistryUpdateLock is ok");
+                    }
+                    else
+                    {
+                        WriteLog($"[InitRegUpdateLock] DeleteRegistryUpdateLock is fail info:{info_2}");
+                    }
+                }
+            }
+            else
+            {
+                WriteLog($"[InitRegUpdateLock] QueryRegistryUpdateLock is fail info:{info}");
+            }
+            WriteLog($"[InitRegUpdateLock] done");
+        }
 
         public Task<List<string>> GetInfos(bool force_reload = false)
         {
-            if(_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
+            if (_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
             {
                 _infos = new InfoObject();
-                if(_infos.Infos == null)
+                if (_infos.Infos == null)
                 {
                     _infos.Infos = new List<string>();
                     _infos.Infos.Add(InfoHash.Info_Hash.Trim());
@@ -345,14 +430,14 @@ namespace DDPM.SA.Plugins.SettingsManager
                     return Task.FromResult(_infos.Infos);
                 }
             }
-            if(force_reload)
+            if (force_reload)
             {
                 string msg2 = string.Empty;
                 string read = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _info_path, out msg2);
                 try
                 {
                     InfoObject obj = JsonConvert.DeserializeObject<InfoObject>(read);
-                    if ( obj != null)
+                    if (obj != null)
                     {
                         _infos = obj;
                         WriteLog($"[GetInfos] read info config ok");
@@ -378,7 +463,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             {
                 _infos.Infos.Add(info);
                 string msg = string.Empty;
-                if(!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JToken.FromObject(_infos).ToString(), _info_path, out msg))
                 {
                     WriteLog($"[AddInfo] update data failed: {msg}");
                 }
@@ -392,7 +477,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         private object InitSysSettingsData(string type, string filePath)
-        { 
+        {
             FileInfo fInfo = new FileInfo(filePath);
             string folder = fInfo.DirectoryName;// path_programdata + "\\" + folder_product;
             WriteLog($"[InitSysSubagentData][{type}] data folder path: {folder}");
@@ -419,9 +504,9 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"[{type}]re-create system settings folder success");
                 }
                 //AclChecker aclChecker = new AclChecker();
-                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                //if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo)) // apply acl at the bottom of function
                 string info2 = string.Empty;
-                if(DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
+                if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 {
                     //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
                     WriteLog($"[{type}]Directory symbolic check got symlink ({info2})");
@@ -442,7 +527,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"[InitSysSettingsData][{type}]Apply ACL to folder failed ({ex.Message})");
                 return null;
             }
-            switch(type)
+            switch (type)
             {
                 case "ITConfig":
                     _settings_path = filePath;
@@ -473,7 +558,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         WriteLog($"[{type}]File ACLs for system setting contained unprivileged write access for one or more identity");
                         File.Delete(filePath);
                         WriteLog($"[{type}]Exist file deleted.");
-                    }                    
+                    }
                 }
             }
 
@@ -500,11 +585,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                 }
                 else
                 {
-                    WriteLog($"[InitSysSettingsData][{type}] GetSerializedJsonString: " + info);                    
+                    WriteLog($"[InitSysSettingsData][{type}] GetSerializedJsonString: " + info);
                 }
             }
             object result = null;
-            if(need_reWrite)
+            if (need_reWrite)
             {
                 bool write = false;
                 WriteLog($"[InitSysSettingsData][{type}] *** Init cache from file fail, re-create default settings to file");
@@ -530,6 +615,8 @@ namespace DDPM.SA.Plugins.SettingsManager
             //ACL apply
             if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(filePath, out info))
                 WriteLog($"[InitSysSettingsData][{type}] {info}");
+            else
+                WriteLog($"[InitSysSettingsData][{type}] ACL apply success");
 
             WriteLog($"[InitSysSettingsData][{type}] finish");
             return result;
@@ -553,10 +640,10 @@ namespace DDPM.SA.Plugins.SettingsManager
                         return obj;
                     });
                     //WriteLog("[System setting plugin] read registry finish.");
-                }                
+                }
                 if (obj == null)
                     WriteLog($"[System setting plugin] read registry value return null");
-                return Task.FromResult( obj );
+                return Task.FromResult(obj);
             }
             catch (Exception e)
             {
@@ -572,12 +659,12 @@ namespace DDPM.SA.Plugins.SettingsManager
                 if (hive == Common.Settings.RegistryHive.CurrentUser)
                 {
                     WTSFunction.ImpersonateUser_WriteRegistry(Log, keyPath, keyName, value);
-                    WriteLog("[System setting plugin] Impersonate user write OK.");                    
+                    WriteLog("[System setting plugin] Impersonate user write OK.");
                 }
                 else
                 {
                     DDPMRegistryHelper.WriteRegistryKey(hive, keyPath, keyName, value);
-                    WriteLog($"[System setting plugin] Write data {value} finish");                    
+                    WriteLog($"[System setting plugin] Write data {value} finish");
                 }
                 return Task.FromResult(true);
             }
@@ -594,6 +681,6 @@ namespace DDPM.SA.Plugins.SettingsManager
     public class InfoObject
     {
         //string: info value, bool: isActived
-        public List<string>Infos { get; set; } = new List<string>();
+        public List<string> Infos { get; set; } = new List<string>();
     }
 }

@@ -109,6 +109,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             OnNotify(new DeviceChangedEventArgs());
         }
 
+
+
+        #region mouse
         public async Task<int> GetDpiValue(string Guid)
         {
             if (!await GetItemIDAsync("Mouse", Guid))
@@ -136,33 +139,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-
-        public async Task SetDpiValue(string Guid, int newValue)
-        {
-            if (!await GetItemIDAsync("Mouse", Guid))
-            { return; }
-
-            if (_mouseMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
-                }
-                else
-                {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
-                writelog($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
-            }
-
-        }
-
-        #region mouse
         public async Task<JArray> GetMouseAssignableActions(string Guid)
         {
             if (!await GetItemIDAsync("Mouse", Guid))
@@ -200,24 +176,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
-        public async Task<JArray> GetAppSpecificProfiles(string Guid)
-        {
-            if (!await GetItemIDAsync("Mouse", Guid))
-            { return new JArray(); }
-
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
-            {
-                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
-                Debug.WriteLine($"{value ?? ""}");
-                return value == null ? new JArray() : (JArray)value;
-            }
-            else
-            {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
-                return new JArray();
-            }
-        }
         public async Task<bool> DeleteMouseAllAssignedActions(string Guid)
         {
             if (!await GetItemIDAsync("Mouse", Guid))
@@ -236,7 +194,103 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
+        public async Task<JArray> GetAppSpecificProfiles(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return new JArray(); }
 
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AppSpecificProfiles");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
+        public async Task<string> GetMouseKeystrokeDisplayData(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return string.Empty; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "KeystrokeDisplayData");
+                Debug.WriteLine($"{value ?? ""}");
+                return (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return string.Empty;
+            }
+        }
+        public async Task<bool> StartMouseKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "StartKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<bool> StopMouseKeystrokeRecording(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "StopKeystrokeRecording");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+
+        public async Task SetDpiValue(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return; }
+
+            if (_mouseMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
+                writelog($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
+            }
+
+        }
         public async Task SetMouseAction(string Guid, byte[] newValue)
         {
             if (!await GetItemIDAsync("Mouse", Guid))
@@ -352,6 +406,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
                 writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
                 return new JArray();
+            }
+        }
+        public async Task<bool> DeleteKeyboardAllAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "DeleteAllAssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return (bool)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardInterfaceType} for the {Guid} item.");
+                return false;
             }
         }
 
@@ -790,6 +862,60 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
+            }
+
+        }
+        public async Task<string> GetSupportedResolutions(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return string.Empty; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "SupportedResolutions");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetSupportedResolutions]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    writelog($"[GetSupportedResolutions]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetSupportedResolutions]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                writelog($"[GetSupportedResolutions]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                return string.Empty;
+            }
+
+        }
+        public async Task<string> GetSelectedResolution(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return string.Empty; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "SelectedResolution");
+                    return Encoding.UTF8.GetString((byte[])value);
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetSelectedResolution]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    writelog($"[GetSelectedResolution]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetSelectedResolution]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                writelog($"[GetSelectedResolution]Could not retrieve the Commodity Interface for the {Guid} item. _webcamMethodInfo is null");
+                return string.Empty;
             }
 
         }
@@ -1247,8 +1373,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
             }
         }
 
@@ -1263,8 +1389,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
             }
         }
 
@@ -2306,6 +2432,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
+        public async Task ResetToDefault_Pen()
+        {
+        }
 
         #endregion
 
@@ -2315,7 +2444,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2341,7 +2471,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2367,7 +2498,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2393,7 +2525,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2419,7 +2552,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2445,7 +2579,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2471,7 +2606,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2497,7 +2633,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2523,7 +2660,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2549,7 +2687,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2575,7 +2714,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2601,7 +2741,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2627,7 +2768,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guidString)) return false;
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
 
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
@@ -2657,7 +2799,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2681,7 +2824,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return default;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return default;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2705,7 +2849,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2729,7 +2874,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2753,7 +2899,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2777,7 +2924,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2801,7 +2949,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2825,7 +2974,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2849,7 +2999,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2873,7 +3024,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2897,7 +3049,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2921,7 +3074,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2945,7 +3099,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2969,7 +3124,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -2993,7 +3149,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3017,7 +3174,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3041,7 +3199,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3065,7 +3224,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3090,7 +3250,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3114,7 +3275,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3138,7 +3300,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3162,7 +3325,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3186,7 +3350,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3210,7 +3375,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3234,7 +3400,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3258,7 +3425,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3282,7 +3450,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3306,7 +3475,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3330,7 +3500,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3354,7 +3525,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3378,7 +3550,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3402,7 +3575,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3426,7 +3600,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3450,7 +3625,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3474,7 +3650,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3498,7 +3675,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3522,7 +3700,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3546,7 +3725,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3570,7 +3750,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3594,7 +3775,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3618,7 +3800,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3642,7 +3825,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3666,7 +3850,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3690,7 +3875,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return null;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3714,7 +3900,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3738,7 +3925,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3762,7 +3950,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return -1;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -3786,7 +3975,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Headset", guid)) return false;
+                if (!await GetItemIDAsync("Headset", guid))
+                    return false;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
                 if (commodity is ICommodity)
@@ -4035,7 +4225,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid)) return null;
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
@@ -4704,8 +4895,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
+                writelog($"commodity: {commodity.GetType().Name} Property: {property}");
                 Debug.WriteLine($"commodity: {commodity.GetType().Name} Property: {property}");
-                return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
+                var obj = interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
+                Debug.WriteLine($"{obj.ToString()}");
+                return obj;
             }
             catch (Exception ex)
             {

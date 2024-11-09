@@ -22,8 +22,7 @@ namespace DDPM.UI.Module.ButtonSettings
         private readonly SolidColorBrush buttonFocusedBKColor2 = new(System.Windows.Media.Color.FromArgb(0x99, 0x20, 0x4A, 0x82));
         private readonly Dictionary<string, string> ButtonCaptions = new();
 
-        //private string SelectedMouseAction = "";
-        //int SelectedActionID = -1;
+        int SelectedActionID = -1;
         private string ActiveActionSection = "";
 
         public ButtonSettingsRightView(MouseViewModel vm)
@@ -60,11 +59,13 @@ namespace DDPM.UI.Module.ButtonSettings
                 txtCaption.Text = Strings.ButtonCustomizeCaption;
                 imgBack.Visibility = Visibility.Collapsed;
                 Section1.Visibility = Visibility.Visible;
-                //SelectedActionID = -1;
+                SelectedActionID = -1;
             }
             else
             {
                 Section1.Visibility = Visibility.Collapsed;
+                SelectedActionID = _vm.SelectedActionID;
+                //RefreshAction();
                 LoadButtonInfo();
             }
         }
@@ -84,10 +85,10 @@ namespace DDPM.UI.Module.ButtonSettings
                 SectionOffice.Visibility = Visibility.Collapsed;
                 RefreshAction();
 
-                if (_vm.SuggestedActions.Contains(_vm.SelectedActionID))
+                if (_vm.SuggestedActions.Contains(SelectedActionID))
                 {
                     RefreshAction("Suggested");
-                    var sections = GetActionSection(_vm.SelectedActionID);
+                    var sections = GetActionSection(SelectedActionID);
                     if (sections.Length > 1)
                     { RefreshAction(sections[1]); }
                     if (ActiveActionSection != "Suggested")
@@ -99,7 +100,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 {
                     var cat = ActionCategory.None;
                     if (_vm.SelectedActionID != -1)
-                        cat = Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
+                        cat = Actions.KnMActions[SelectedActionID].Category!.Value;
                     if (cat == ActionCategory.None)
                     {
                         if (ActiveActionSection != "")
@@ -272,7 +273,7 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             var rb = (UXRadioButton)sender;
             var id = int.Parse(rb.Name.Replace("Radio", "").Replace("_A", ""));
-            if (id == _vm.SelectedActionID)
+            if (id == SelectedActionID)
             { return; }
 
             var section = GetActionSection(id);
@@ -302,12 +303,25 @@ namespace DDPM.UI.Module.ButtonSettings
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
+
+                if (action == AdvancedAction.AssignKeystroke)
+                {
+                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task.Result;
+                }
                 if (modalDialog.ShowDialog()!.Value)
                 {
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task1.Result;
+                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
+                    var keystroke = task2.Result;
                     parameter = modalDialog.Parameter;
+                    parameter = keystroke;
                 }
                 else
                 {
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
+                    _ = task1.Result;
                     Initialize();
                     return;
                 }
@@ -319,7 +333,7 @@ namespace DDPM.UI.Module.ButtonSettings
             {
                 RefreshAction(section[1]);
             }
-            var sectionOld = GetActionSection(_vm.SelectedActionID);
+            var sectionOld = GetActionSection(SelectedActionID);
             if (sectionOld[0] != section[0] && sectionOld[0] != "")
             {
                 RefreshAction(sectionOld[0]);
@@ -328,7 +342,7 @@ namespace DDPM.UI.Module.ButtonSettings
                     RefreshAction(sectionOld[1]);
                 }
             }
-            //SelectedActionID = id;
+            SelectedActionID = id;
             if (id == 0 || SectionAction.Visibility == Visibility.Collapsed)
                 Initialize();
         }
@@ -359,6 +373,9 @@ namespace DDPM.UI.Module.ButtonSettings
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
+            if (action == AdvancedAction.AssignKeystroke)
+            { DdpmCommonHelper.DeviceManagerSA!.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString()); }
+
             if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
             {
                 _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
@@ -412,7 +429,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 rb.Name = $"Radio{id}";
                 rb.Content = id > 100 ? Actions.OfficeActions[id].Caption : Actions.KnMActions[id].Caption;
                 if (rb.Tag.ToString() != "search")
-                    rb.IsChecked = id == _vm.SelectedActionID;
+                    rb.IsChecked = id == SelectedActionID;
             }
             else if (sender is ActionButton btn)
             {
@@ -442,7 +459,7 @@ namespace DDPM.UI.Module.ButtonSettings
             else if (sender is StackPanel sp)
             {
                 id = (int)((StackPanel)sender).DataContext;
-                sp.Visibility = id == _vm.SelectedActionID && id != _vm.SelectedMouseAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
+                sp.Visibility = id == SelectedActionID && id != _vm.SelectedMouseAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -523,19 +540,19 @@ namespace DDPM.UI.Module.ButtonSettings
                 switch (ActiveActionSection)
                 {
                     case "Productivity":
-                        index = _vm.ProductivityActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.ProductivityActions.IndexOf(SelectedActionID);
                         break;
 
                     case "Windows":
-                        index = _vm.WindowsActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.WindowsActions.IndexOf(SelectedActionID);
                         break;
 
                     case "Multimedia":
-                        index = _vm.MultimediaActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.MultimediaActions.IndexOf(SelectedActionID);
                         break;
 
                     case "Office":
-                        index = _vm.MultimediaActions.IndexOf(_vm.SelectedActionID);
+                        index = _vm.MultimediaActions.IndexOf(SelectedActionID);
                         index = _vm.SelectedApp switch
                         {
                             "Word" => _vm.WordActions.IndexOf(_vm.SelectedActionID),

@@ -43,7 +43,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 DataContext = _vm;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
 
-                if (_vm.EOLList.Contains(_vm.Model))
+                if (_vm.EOLMouseList.Contains(_vm.Model))
                 {
                     Battery.Visibility = Visibility.Collapsed;
                     //btnRestore.Visibility = Visibility.Collapsed;
@@ -165,7 +165,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm!.Model != "MS700" && !_vm.EOLList.Contains(_vm.Model))
+            if (_vm!.Model != "MS700" && !_vm.EOLMouseList.Contains(_vm.Model))
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -367,6 +367,9 @@ namespace DDPM.UI.Plugin.MousePlugin
         private void SetBLConnectionStatus()
         {
             string hostName = Dns.GetHostName();
+            if (hostName.Length > 15)
+                hostName = hostName.Substring(0, 15);
+
             //var hostIndex = _vm!.PairedHostName1.ToUpper() == hostName.ToUpper() ? 1 : (_vm.PairedHostName2.ToUpper() == hostName.ToUpper() ? 2 : 3);
             txt1.Style = ConnectionStyle2;
             imgBL1.Source = img2;
@@ -452,6 +455,12 @@ namespace DDPM.UI.Plugin.MousePlugin
                     txtBLHost2.Style = ConnectionStyle1;
                     break;
             }
+            if (txtBLHost1.Text.Length > 15)
+                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+            if (txtBLHost2.Text.Length > 15)
+                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+            if (txtBLHost3.Text.Length > 15)
+                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
         }
 
         private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -611,6 +620,21 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 button.Foreground = buttonColorFocusedF;
             }
+        }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
+        }
+
+        private void ChangeDevNameWidth()
+        {
+            devName.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+        }
+
+        private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
         }
     }
 }

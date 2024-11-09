@@ -286,6 +286,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wireless Receiver Connection.
+        /// </summary>
+        internal static string AddDevice_KnM_14 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Slide power switch slider to ON.
         /// </summary>
         internal static string AddDevice_KnM_2 {
@@ -583,6 +592,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager.
+        /// </summary>
+        internal static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assign Keystroke.
         /// </summary>
         internal static string AssignKeystroke {
@@ -745,11 +763,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Brightness is currently enabled. Do you wish to disable it to continue?.
+        /// </summary>
+        internal static string Brightness_19 {
+            get {
+                return ResourceManager.GetString("Brightness.19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Smart HDR .
         /// </summary>
         internal static string Brightness_2 {
             get {
                 return ResourceManager.GetString("Brightness.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?.
+        /// </summary>
+        internal static string Brightness_20 {
+            get {
+                return ResourceManager.GetString("Brightness.20", resourceCulture);
             }
         }
         
@@ -1348,6 +1384,42 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Help us improve.
+        /// </summary>
+        internal static string Consent_1 {
+            get {
+                return ResourceManager.GetString("Consent.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about .
+        /// </summary>
+        internal static string Consent_2 {
+            get {
+                return ResourceManager.GetString("Consent.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, I don&apos;t consent.
+        /// </summary>
+        internal static string ConsentNo {
+            get {
+                return ResourceManager.GetString("ConsentNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, I consent.
+        /// </summary>
+        internal static string ConsentYes {
+            get {
+                return ResourceManager.GetString("ConsentYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         internal static string Continue {
@@ -1483,6 +1555,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disconnect all USB storage devices from monitor..
+        /// </summary>
+        internal static string Disconnect_all_USB_storage_devices_from_monitor {
+            get {
+                return ResourceManager.GetString("Disconnect_all_USB_storage_devices_from_monitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display.
         /// </summary>
         internal static string Display {
@@ -1501,7 +1582,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to reset your monitor to factory settings now?.
+        ///   Looks up a localized string similar to Are you sure you want to restore all default settings on your device?.
         /// </summary>
         internal static string DisplayDefault_0 {
             get {
@@ -1636,6 +1717,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can export your favorite configuration from here and import into another monitor of the same model without hassle..
+        /// </summary>
+        internal static string DisplayOthers_8 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
         internal static string DisplayProperties {
@@ -1740,6 +1830,15 @@ namespace DDPM.UI.Resources {
         internal static string Documents {
             get {
                 return ResourceManager.GetString("Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driver version.
+        /// </summary>
+        internal static string Driver_version {
+            get {
+                return ResourceManager.GetString("Driver_version", resourceCulture);
             }
         }
         
@@ -2482,11 +2581,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applies when you&apos;re on a conference call.
+        /// </summary>
+        internal static string HeadsetAudioSettings_29 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.29", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         internal static string HeadsetAudioSettings_3 {
             get {
                 return ResourceManager.GetString("HeadsetAudioSettings.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applies when you&apos;re listening to multimedia, such as music or podcasts.
+        /// </summary>
+        internal static string HeadsetAudioSettings_30 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.30", resourceCulture);
             }
         }
         
@@ -2554,7 +2671,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensitivity.
+        ///   Looks up a localized string similar to Sensitive.
         /// </summary>
         internal static string HeadsetAutomatedActions_1 {
             get {
@@ -2869,11 +2986,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not prompt again for the same model.
+        /// </summary>
+        internal static string ImpExp_CheckBox_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_CheckBox.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatically apply the settings when the same model is detected.
         /// </summary>
         internal static string ImpExp_Message_0 {
             get {
                 return ResourceManager.GetString("ImpExp_Message.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to import the application settings for ease of use?.
+        /// </summary>
+        internal static string ImpExp_Message_1 {
+            get {
+                return ResourceManager.GetString("ImpExp_Message.1", resourceCulture);
             }
         }
         
@@ -2901,6 +3036,15 @@ namespace DDPM.UI.Resources {
         internal static string ImpExp_SuccessMsg_1 {
             get {
                 return ResourceManager.GetString("ImpExp_SuccessMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An new monitor %1 is detected..
+        /// </summary>
+        internal static string ImpExp_Title_0 {
+            get {
+                return ResourceManager.GetString("ImpExp_Title.0", resourceCulture);
             }
         }
         
@@ -2982,6 +3126,15 @@ namespace DDPM.UI.Resources {
         internal static string InputSource_4 {
             get {
                 return ResourceManager.GetString("InputSource.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid URL.
+        /// </summary>
+        internal static string InvalidURL {
+            get {
+                return ResourceManager.GetString("InvalidURL", resourceCulture);
             }
         }
         
@@ -3387,6 +3540,15 @@ namespace DDPM.UI.Resources {
         internal static string LearnMore {
             get {
                 return ResourceManager.GetString("LearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        internal static string Left {
+            get {
+                return ResourceManager.GetString("Left", resourceCulture);
             }
         }
         
@@ -4129,6 +4291,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preview Changes.
+        /// </summary>
+        internal static string Preview_Changes {
+            get {
+                return ResourceManager.GetString("Preview_Changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick Note.
         /// </summary>
         internal static string QuickNote {
@@ -4269,6 +4440,15 @@ namespace DDPM.UI.Resources {
         internal static string RestoreToDefaultActions {
             get {
                 return ResourceManager.GetString("RestoreToDefaultActions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right.
+        /// </summary>
+        internal static string Right {
+            get {
+                return ResourceManager.GetString("Right", resourceCulture);
             }
         }
         
@@ -4422,6 +4602,15 @@ namespace DDPM.UI.Resources {
         internal static string SmartHDR {
             get {
                 return ResourceManager.GetString("SmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Software version.
+        /// </summary>
+        internal static string Software_version {
+            get {
+                return ResourceManager.GetString("Software_version", resourceCulture);
             }
         }
         
@@ -4615,6 +4804,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stop Preview.
+        /// </summary>
+        internal static string Stop_Preview {
+            get {
+                return ResourceManager.GetString("Stop_Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Success.
         /// </summary>
         internal static string Success {
@@ -4656,6 +4854,15 @@ namespace DDPM.UI.Resources {
         internal static string Third_Party_Licenses {
             get {
                 return ResourceManager.GetString("Third_Party_Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third Party License.
+        /// </summary>
+        internal static string ThirdPartyLicense_Title {
+            get {
+                return ResourceManager.GetString("ThirdPartyLicense.Title", resourceCulture);
             }
         }
         
@@ -4723,6 +4930,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This feature enables our eyes to adapt to a desired setting..
+        /// </summary>
+        internal static string Tooltips_Schedule {
+            get {
+                return ResourceManager.GetString("Tooltips_Schedule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Undo.
         /// </summary>
         internal static string Undo {
@@ -4768,7 +4984,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
         /// </summary>
         internal static string Updates_1 {
             get {
@@ -4921,11 +5137,56 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DDPM.Subagent.DeviceManager is not ready.
+        /// </summary>
+        internal static string Wait_DevMgr {
+            get {
+                return ResourceManager.GetString("Wait_DevMgr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DellTechHub service is not running.
+        /// </summary>
+        internal static string Wait_DTH {
+            get {
+                return ResourceManager.GetString("Wait_DTH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No device detected.
+        /// </summary>
+        internal static string Wait_NoDevice {
+            get {
+                return ResourceManager.GetString("Wait_NoDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FEATURE HIGHLIGHT.
         /// </summary>
         internal static string WalkThrough_0 {
             get {
                 return ResourceManager.GetString("WalkThrough.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        internal static string WalkThrough_1 {
+            get {
+                return ResourceManager.GetString("WalkThrough.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go to App.
+        /// </summary>
+        internal static string WalkThrough_2 {
+            get {
+                return ResourceManager.GetString("WalkThrough.2", resourceCulture);
             }
         }
         
@@ -5749,7 +6010,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to P2424HEB.
+        ///   Looks up a localized string similar to Enable High Dynamic Range to enhance image quality, particularly in extreme lighting conditions.
         /// </summary>
         internal static string WalkThroughWebCamWB3023_Sub_2 {
             get {

@@ -45,6 +45,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
         {
             CurrentDeviceInfo = new DeviceInfo() { IsWiredAudioIMicNSEnable = true, IsWiredAudioMicMuteSoundEnable = true, WiredAudioVolumeAdjustmentTone = 1 };
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
+            deviceManagerMock.Setup(x => x.GetProfileAsync(It.IsAny<string>())).Returns(Task.FromResult("SpeakerProfile"));
             speakerAudioPresetRightView = new SpeakerAudioPresetRightView(vm);
             privateObject = new PrivateObject(speakerAudioPresetRightView);
             // Assert

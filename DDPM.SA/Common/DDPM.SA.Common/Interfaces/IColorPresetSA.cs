@@ -21,6 +21,8 @@ namespace DDPM.SA.Common
 
         event EventHandler<string> Coloreset_manual_ChangeEvent;
 
+        event EventHandler<string> NightLightStatus_ChangeEvent;
+
         void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false);
 
         Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities, bool SmartHDR_ON = false);
@@ -64,6 +66,15 @@ namespace DDPM.SA.Common
         Task<bool> Import(MonitorInfo MonitorInfo, ColorPresetSettings colorPresetSetting_Import, ISettingsManagerDev _SettingsPlugin);
 
         Task<ColorPresetSettings> Export(MonitorInfo MonitorInfo, ISettingsManagerDev _SettingsPlugin);
+
+        Task<bool> SyncNightlightStatus();
+        Task<bool> CheckNightLightStatus();
+        Task<bool> CheckNightLightScheduler();
+        Task<bool> CheckColorICCStatus();
+
+        Task<bool> StopRegistryMonitor_NightLight();
+        Task<bool> StopRegistryMonitor_NightLightScheduler();
+        Task<bool> StopRegistryMonitor_ICC();
 
         #endregion public for  Color Preset Plugin
     }

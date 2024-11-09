@@ -1,9 +1,14 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
-    public class BatteryInfo
+    public class BatteryInfo : IDisposable
     {
+        public void Dispose()
+        {
+
+        }
         [StructLayout(LayoutKind.Sequential)]
         public struct SYSTEM_POWER_STATUS
         {

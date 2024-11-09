@@ -26,6 +26,7 @@ using System.Windows.Media.Animation;
 using VcpCore.Common;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
+using DDPM.SA.Common.Telemetry;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -35,6 +36,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     [PublishedUnelevatedInterface(new[] { typeof(IEasyArrangeService) })]
     //[PublishedInterface(new[] { typeof(IPipPbpService) })]
     [DependencyKnownTypes(new[] { typeof(IDisplayService) })]
+    [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
+    [PluginRequires(Id = IDs.Device_Manager_Plugin_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.Display_Manager_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
     public class EAPlugin : BaseAgentPlugin, IDisposableObservable, IEasyArrangeService
     {
@@ -63,6 +66,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private IDeviceManagerSA _deviceManagerPlugin;
         private PluginCondition _deviceManagerPluginCondition;
         private bool _deviceManagerPluginUsable = false;
+
+        //DDPM Subagent Plugins - SettingsManager
+        private ISettingsManagerDev _settingsManagerPlugin;
+        private PluginCondition _settingsManagerPluginCondition;
+        private bool _settingsManagerPluginUsable = false;
+
+        //DDPM Subagent Plugins - TelemetryScheduler
+        private ITelementryScheduler _telementrySchedulerPlugin;
+        private readonly object _PluginConditionLock_TelementryScheduler = new object();
+        private bool _telementrySchedulerPluginUsable = false;
+        private GlobalSettingParam? _globalSettingParam = null;
 
         //Lock objects
         private readonly object _PluginConditionLock = new object();
@@ -165,6 +179,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             // 2024-08-06 Elie, Mask InitializeDeviceManagerPlugin() function to skip .NET 8 for more than two monitor cause exception issue. ==> System.IO.IOException: 'Cannot locate resource 'eaworkwindow.baml'.'
             //if (isDebug20241008()) 
             {
+                InitializeSettingsManagerPlugin();
                 InitializeDeviceManagerPlugin();
                 InitializeDisplayManagerPlugin();
             }
@@ -302,11 +317,168 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             GetCurrentDisplayManagerPluginCondition();
         }
 
+        // SettingsManager Plugin
+        //
+        private void InitializeSettingsManagerPlugin()
+        {
+            //If SettingsManager plugin is got already then return, prevent to call twice
+            if (_settingsManagerPlugin != null)
+                return;
+
+            _settingsManagerPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerDev>(PluginResolution.Dynamic);
+
+            if (_settingsManagerPlugin is IFrameworkPluginConditionNotification SettingsManagerCondition)
+            {
+                SettingsManagerCondition.PluginConditionChangeHandler += OnSettingsManagerPluginConditionChangeHandler;
+                GetCurrentSettingsManagerPluginCondition();
+            }
+            _log?.Info($"Initializing SettingsManager plugin.");
+        }
+
+        private void OnSettingsManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentSettingsManagerPluginCondition();
+        }
+
+        private void GetCurrentSettingsManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_settingsManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+
+                lock (_PluginConditionLock)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        _log?.Info($"SettingsManager plugin is in an error condition");
+                        _settingsManagerPluginCondition = pluginCondition;
+                        _settingsManagerPluginUsable = false;
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        _log?.Info($"SettingsManager plugin is in a started condition");
+                        _settingsManagerPluginCondition = pluginCondition;
+                        _settingsManagerPluginUsable = true;
+                        //Robert_Lin, 2024-11-6 Register a hander when SettingsMnager Init donw.
+                        //We need to reload settings in that handler
+                        _settingsManagerPlugin.SettingReadyEvent += _settingsManagerPlugin_SettingReadyEvent;
+                        //_vmArrange.DeviceManager = _deviceManagerPlugin;
+                        if (CheckIfReadyToStartEABorker())
+                        {
+                            ConfigureServices();
+                            //Only after all required Plugins are ready to use, will start the EasyArrange service
+                            EABroker_Start();
+                        }
+                    }
+                    else
+                    {
+                        _log?.Info($"SettingsManager plugin is in others condition");
+                    }
+                }
+            });
+        }
+
+        //Called (event) when SettingsManager has init done
+        private void _settingsManagerPlugin_SettingReadyEvent(object? sender, EventArgs e)
+        {
+            //If eaBroker
+            if (_eaBroker != null)
+            {
+                _eaBroker.NotifySettingsManagerIsInitializedDone();
+            }
+            //Unregister the event handler
+            if (_settingsManagerPlugin != null)
+            {
+                _settingsManagerPlugin.SettingReadyEvent -= _settingsManagerPlugin_SettingReadyEvent;
+            }
+        }
+
+        //TelemetryScheduler Plugin
+        //
+        private void InitializeTelementrySchedulerPlugin()
+        {
+            if (_telementrySchedulerPlugin != null)
+                return;
+
+            _telementrySchedulerPlugin = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
+
+            if (_telementrySchedulerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
+                GetCurrentTelementrySchedulerCondition();
+            }
+        }
+        private void OnTelementrySchedulerConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentTelementrySchedulerCondition();
+        }
+        private void GetCurrentTelementrySchedulerCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_telementrySchedulerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_TelementryScheduler)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
+                        _telementrySchedulerPluginUsable = false;
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
+
+                        if (_GlobalSettingParam != null)
+                        {
+                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                            _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                            _telementrySchedulerPluginUsable = true;
+                        }
+                        else
+                        {
+                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+                            _telementrySchedulerPluginUsable = false;
+                        }
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
+
+                        if (_GlobalSettingParam != null)
+                        {
+                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+                            _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+                            _telementrySchedulerPluginUsable = true;
+                        }
+                        else
+                        {
+                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+                            _telementrySchedulerPluginUsable = false;
+                        }
+                    }
+                }
+            });
+        }
+        private GlobalSettingParam? _GlobalSettingParam
+        {
+            get
+            {
+                if (_globalSettingParam == null)
+                {
+                    if (_deviceManagerPlugin == null)
+                        return null;
+                    _globalSettingParam = _deviceManagerPlugin.GetGlobalSettingParam().Result;
+                }
+                return _globalSettingParam;
+            }
+        }
+
+
         private object _lockCheckIfReadyToStartEABorker = new object();
 
         /// <summary>
         /// Determine if all depended DDPM.SA plugins are ready to start EABroker, which will initiate
-        /// EasyArrange subagent to run.
+        /// EasyArrange subagent to run. 
         /// </summary>
         /// <returns></returns>
         private bool CheckIfReadyToStartEABorker()
@@ -318,10 +490,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //return true;
 
                 //If both DeviceManager and DisplayManager are ready to call
-                if (!_displayManagerPluginUsable || !_deviceManagerPluginUsable)
+                if (!_displayManagerPluginUsable || !_deviceManagerPluginUsable || !_settingsManagerPluginUsable)
                 {
                     //Either DisplayManager or DeviceManager is not ready
-                    _log?.Info("@ CheckIfReadyToStartEABorker: DisplayManager or DeviceManager not ready.");
+                    _log?.Info("@ CheckIfReadyToStartEABorker: DisplayManager, SettingsManager, or DeviceManager not ready.");
                     return false;
                 }
                 //If EABroker is already started
@@ -332,30 +504,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     return false;
                 }
 
-                //Robert_Lin 2024-0910, comment out below statements
-                //Let EABRoker start event if there is no Monitor connected
-                //We will refresh when DisplaySettingsChanged event
-                /*
-                List<MonitorInfo>? monitors = GetMonitors();
-                if (monitors == null)
-                {
-                    _log?.Info("@ CheckIfReadyToStartEABorker: Monitors is null.");
-                    return false;
-                }
-                if (!monitors.Any())
-                {
-                    _log?.Info("@ CheckIfReadyToStartEABorker: Monitors is empty.");
-                    return false;
-                }
-
-                _log?.Info($"@ CheckIfReadyToStartEABorker: Monitor count={monitors.Count}");
-                */
                 return true;
             }
         }
         #endregion PluginManager related
 
         #region IEasyArrangeService Implementation
+
         #region CLI Flags: Enabled/Locked
         //Robert_Lin, 2024-10-23, this flag should be saved in user settings 
         //Temporary always true
@@ -423,6 +578,20 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         }
 
+        /// <summary>
+        /// Called from DDPM.UI, when user select a layout. UI will update UI and save setting after changed.
+        /// This method will only notify working windows to update their UI only.
+        /// </summary>
+        /// <returns></returns>
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_eaBroker != null)
+            {
+                _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
 
 
         // EditCommand() and related events (Robert_Lin 2024-0910)
@@ -746,129 +915,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return true;
         }
 
-
-        //private bool STA_SetEASelectedLayout_OLD(MonitorInfo monitorInfo, SplitJson spJson)
-        //{
-        //    //Step I. Check if spJson is an existing layout (either in CustomList or WinLists)
-        //    //
-        //    //Read EAMonitorSettings
-        //    EAMonitorSettings? eaSettings = _vmArrange.ReadEAMonitorSettings(monitorInfo);
-        //    if (eaSettings == null)
-        //    {
-        //        LogInfo(" SetEASelectedLayout() return false: ReadEAMonitorSettings return null.");
-        //        return false;
-        //    }
-        //    List<SplitJson> recentList = new List<SplitJson>();
-        //    recentList.AddRange(eaSettings.RecentList);
-
-        //    //_dump_SplitJsonList(recentList.ToList<SplitJson>());
-        //    //If the spJson is a custom layout
-        //    if (spJson.CustomId != 0)
-        //    {
-        //        //Read CustomList
-        //        SplitJson[] customArray = _deviceManagerPlugin.ReadEACustomList().Result;
-        //        if (customArray != null)
-        //        {
-        //            List<SplitJson> customList = customArray.ToList<SplitJson>();
-        //            //Check if it's exist in CustomList
-        //            SplitJson? cusSplit = customList.Find(x => x.IsEquals(spJson));
-        //            if (cusSplit == null)
-        //            {
-        //                LogInfo(" SetEASelectedLayout() return false: Specified layout is not found in custom list.");
-        //                return false;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //Check if it's a valid WinList item
-        //        if (!ISplitCtrl.IsExisted(spJson.CellCount, spJson.SplitKey))
-        //        {
-        //            LogInfo(" SetEASelectedLayout() return false: Specified layout is not a valid predefined layout.");
-        //            return false;
-        //        }
-        //    }
-
-        //    //Step II. Find the index of spJson in RecentList
-        //    //int idxRecent = eaSettings.RecentList.FindIndex(x => x.IsEquals(spJson));
-        //    int idxRecent = recentList.FindIndex(x => x.IsEquals(spJson));
-        //    //If found in RecentList
-        //    if (idxRecent >= 0)
-        //    {
-        //        //Step III. Move the recentSplit to RecentList[0]
-        //        //If it's not at [0]
-        //        if (idxRecent > 0)
-        //        {
-        //            //eaSettings.RecentList.RemoveAt(idxRecent);
-        //            //eaSettings.RecentList.Insert(0, spJson.Clone());
-        //            recentList.RemoveAt(idxRecent);
-        //            recentList.Insert(0, spJson.Clone());
-        //        }
-        //    }
-        //    else //Not found in RecentList, need to clone then add into RecentList
-        //    {
-        //        //Step IV.
-        //        //If the RecentList.Count < 5, then Insert new (clone) item to RecentList[0]
-        //        //if (eaSettings.RecentList.Count < EAEMConstants.MaxRecentItems - 1)
-        //        if (recentList.Count < EAEMConstants.MaxRecentItems)
-        //        {
-        //            //Insert to RecentList[0]
-        //            //eaSettings.RecentList.Insert(0, spJson.Clone());
-        //            recentList.Insert(0, spJson.Clone());
-        //        }
-        //        else //RecentList.Count >= 5-1, need to remove the latest item, then insert new (clone) item to RecentList[0]
-        //        {
-        //            //eaSettings.RecentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
-        //            //eaSettings.RecentList.Insert(0, spJson.Clone());
-        //            recentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
-        //            recentList.Insert(0, spJson.Clone());
-        //        }
-        //    }
-        //    //Step V. Save Settings
-        //    _dump_SplitJsonList(recentList);
-        //    //Update the selected layout
-        //    eaSettings.SelectedSplit = spJson;
-        //    eaSettings.RecentList = recentList.ToArray();
-        //    //Save the settings to MonitorSettings file
-        //    bool isOKSaveSettings = _vmArrange.WriteEAMonitorSettings(monitorInfo, eaSettings);
-        //    if (!isOKSaveSettings)
-        //    {
-        //        LogInfo(" SetEASelectedLayout() return false: Fail to write to MonitorSettings file.");
-        //        return false;
-        //    }
-
-        //    //Step VI. Notify to Windows in EAPlugin
-        //    //1 Notify WorkWins to refresh WorkSplit and show fadeout animation
-        //    //2 Notify AwsWindow to release RecentList from settings file
-
-        //    EAWorkWindow? workWin = _vmArrange.FindWorkWindowByDisplayName2(monitorInfo.DisplayName);
-        //    if (workWin != null)
-        //    {
-        //        bool isOKRefreshWorkWin = workWin.SetWorkingSplit(spJson.CellCount, spJson.SplitKey, spJson.Settings);
-        //        LogInfo(" SetEASelectedLayout() return true but it fails to refresh settings to WorkWindow.");
-        //    }
-        //    else
-        //    {
-        //        LogInfo(" SetEASelectedLayout() return true but it fails to get WorkWindow of curent Screen.");
-        //    }
-
-        //    _vmArrange.RefreshAwsWindowIcons();
-
-        //    //Step VII. Notify to EASettingsChanged event handler (the end handler should be DDPM.UI)
-        //    if (EASettingsChanged != null)
-        //    {
-        //        //Only below properties are used currently
-        //        // Command: 
-        //        // Message: "{MonitorModel}|{MonitorServiceTag}"
-        //        string model = monitorInfo.modelName;
-        //        string serviceTag = monitorInfo.edid.ServiceTag;
-        //        EAArgs eaArgs = new EAArgs();
-        //        eaArgs.Message = $"{model}|{serviceTag}";
-        //        EASettingsChanged(this, eaArgs);
-        //    }
-        //    return true;
-        //}
-
         /// <summary>
         /// For developer debug used, dump list of SplitJson to VS2022 Output console.
         /// </summary>
@@ -1021,8 +1067,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
             _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
         }
-
-
 
         //It should be call once DeviceManagerSA & DisplayManager are loaded
         private void ConfigureServices()
@@ -1733,11 +1777,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if ((EditReturn != null) && (_eaArgs != null))
             {
                 EAArgs retArgs = new EAArgs(_eaArgs);
+                retArgs.Command = "EditReturn";
                 retArgs.Result = true;
 
-                retArgs.Settings = _editWindow.GetSettings();
+                retArgs.SplitJson.CustomName = e;
+                retArgs.SplitJson.Settings = _editWindow.GetSettings();
+
+                //Can be removed
                 retArgs.CustomName = e;
-                retArgs.Command = "EditReturn";
+                retArgs.Settings = _editWindow.GetSettings();
+
                 EditReturn(this, retArgs);
             }
             if (_editWindow != null)
@@ -1958,7 +2007,20 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + msg);
         }
-
+        public void WriteLog(string msg, Exception? e = null)
+        {
+            if (_log != null)
+            {
+                if (e == null)
+                {
+                    _log.Info(msg);
+                }
+                else
+                {
+                    _log.Error(e, msg);
+                }
+            }
+        }
         #endregion Debug Msg
 
         #region General DDPM.SA Plugins Methods
@@ -1972,6 +2034,31 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #endregion General DDPM.SA Plugins Methods
+
+        #region Telemetry
+        public void SendEasyArrangeLayoutTelemetry(string eventValue, MonitorInfo? mi = null, Telementry_Frequency frequency = Telementry_Frequency.RealTime)
+        {
+            if (_telementrySchedulerPlugin == null)
+                return;
+
+            if (_telementrySchedulerPluginUsable)
+            {
+                EasyArrangeLayoutTelemetry easyArrangeLayoutTelemetry = new EasyArrangeLayoutTelemetry();
+                easyArrangeLayoutTelemetry.EasyArrangeLayout = eventValue;
+                easyArrangeLayoutTelemetry.CommunicationPath = "Video";
+                easyArrangeLayoutTelemetry.GraphicCardName = string.Empty;
+                easyArrangeLayoutTelemetry.MonitorName = (mi == null) ? "" : mi.AliasDeviceName;
+                easyArrangeLayoutTelemetry.D_Ctrl = (mi == null) ? "" : mi.D_Ctrl;
+                easyArrangeLayoutTelemetry.SupplierID = (mi == null) ? "" : mi.SupplierID;
+                easyArrangeLayoutTelemetry.FirmwareVersion = (mi == null) ? "" : mi.FwVersion;
+                easyArrangeLayoutTelemetry.DisplayModelname = (mi == null) ? "" : mi.modelName;
+                easyArrangeLayoutTelemetry.DisplayServiceTag = (mi == null) ? "" : mi.edid.ServiceTag;
+                easyArrangeLayoutTelemetry.DsiplayResolution = string.Empty;
+                easyArrangeLayoutTelemetry.MaxDisplayResolution = string.Empty;
+                _telementrySchedulerPlugin.ReceiveTelemetryInfo("DisplayFeatures", easyArrangeLayoutTelemetry.ToJson(), frequency);
+            }
+        }
+        #endregion Telemetry
 
     }
 }

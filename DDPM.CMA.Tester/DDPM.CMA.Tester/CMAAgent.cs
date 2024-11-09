@@ -5,13 +5,28 @@ using Dell.UnifiedAgent.Common;
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.PluginConditions;
+using System.Text.RegularExpressions;
+using System.Text.Json;
 
 namespace DDPM.CMA.Tester
 {
+    public static class StringExtensions
+    {
+        public static string PlainJsonString(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+
+            return input.Replace("\n", "").Replace("\r", "").Replace(" ", "");
+        }
+    }
+
     public class CMAAgent
     {
         #region Fields
-
+        private static Stopwatch stopwatch = new Stopwatch();
         private Guid _UniqueAgentGuid;
         private Guid _UserProcessMutexGuid;
         private string _ProductName = "CMA.Tester";
@@ -97,7 +112,6 @@ namespace DDPM.CMA.Tester
                 //Console.WriteLine("Reg");
 
                 // while (!isresponse) { }
-
                 runRequest(args);
 
 
@@ -114,137 +128,166 @@ namespace DDPM.CMA.Tester
 
         }
 
-        private void runRequest(string[] args)
+        private async void runRequest(string[] args)
         {
             Boolean isRunning = true;
+            #region Load Options
+            List<Task<string>> loadJsonTasks = new List<Task<string>>() {
+                ReadJsonFileAsync("ActHours"),
+                ReadJsonFileAsync("GetDisplayMulti"),
+                ReadJsonFileAsync("FwDisplay"),
+                ReadJsonFileAsync("FwDock"),
+                ReadJsonFileAsync("FwKb"),
+                ReadJsonFileAsync("FwMouse"),
+                ReadJsonFileAsync("Device"),
+                ReadJsonFileAsync("DeviceData"),
+                ReadJsonFileAsync("Report"),
+                ReadJsonFileAsync("DeviceConfig"),
+                ReadJsonFileAsync("DeviceConfig2"),
+                ReadJsonFileAsync("DeviceConfig3"),
+                ReadJsonFileAsync("ConfigLess"),
+                ReadJsonFileAsync("DeviceDataDisplay"),
+                ReadJsonFileAsync("Test"),
+                ReadJsonFileAsync("FwDisplayByOption"),
+                ReadJsonFileAsync("FwDisplayTest"),
+                ReadJsonFileAsync("TestLock"),
+                ReadJsonFileAsync("ShowDock"),
+                ReadJsonFileAsync("DockConfiguration"),
+                ReadJsonFileAsync("DockDiagnosticReport"),
+                ReadJsonFileAsync("DockDeviceDataOptions")
+            };
 
-            string deviceconfig = "{\r\n  \"Index\": \"1\",\r\n  \"DeviceType\": \"Display\",\r\n  \"Model\": \"DELLC2722DE\",\r\n  \"SerialNumber\": \"808596812\",\r\n  \"ServiceTag\": \"CN073K0\",\r\n  \"Manufacturer\": \"Dell\",\r\n  \"ManufacturingYear\": \"2021\",\r\n  \"ManufacturingWeek\": \"ISO week 3\",\r\n  \"FirmwareVersion\": \"M3T112\",\r\n  \"MonitorActiveHour\": \"713 hours\",\r\n  \"DisplayTechnologyType\": \"LCD (active matrix)\",\r\n  \"ScreenSize\": \"600 x 340 mm (27.15 in)\",\r\n  \"OptimalResolution\": \"2560 x 1440 at 60.00Hz\",\r\n  \"Resolution\": \"1920 x 1200 at 120.00Hz\",\r\n  \"ActiveInputSource\": \"USB-C\",\r\n  \"ColorPreset\": \"Standard/Native\",\r\n  \"ScreenOrientation\": \"Landscape\",\r\n  \"BrightnessLevel\": \"90%\",\r\n  \"ContrastLevel\": \"90%\",\r\n  \"LuminanceLevel\": \"N/A\",\r\n  \"AutoBrightness\": \"off\",\r\n  \"AutoBrightnessRangeLevel\": \"N/A\",\r\n  \"AutoColorTemp\": \"off\",\r\n  \"PrimaryMonitorForSync\": \"off\",\r\n  \"AspectRatio\": \"16:9\",\r\n  \"USB_CPrioritization\": \"NOT SUPPORT\",\r\n  \"ColorManagement\": \"N/A\",\r\n  \"SpeakerMicrophone\": \"N/A\",\r\n  \"SpeakerVolume\": \"24\",\r\n  \"MicrophoneControl\": \"N/A\",\r\n  \"Uniformity\": \"N/A\",\r\n  \"PowerNap\": \"Off\",\r\n  \"OSD_language\": \"English\",\r\n  \"PID\": \"DEL421F\"\r\n}";
+            string[] loadResult = await Task.WhenAll(loadJsonTasks);
+            string jsonActHours = loadResult[0].PlainJsonString();
+            string jsonGetDisplayMulti = loadResult[1].PlainJsonString();
+            string jsonFwDisplay = loadResult[2].PlainJsonString();
+            string jsonFwDock = loadResult[3].PlainJsonString();
+            string jsonFwKb = loadResult[4].PlainJsonString();
+            string jsonFwMouse = loadResult[5].PlainJsonString();
+            string jsonDevice = loadResult[6].PlainJsonString();
+            string jsonDeviceData = loadResult[7].PlainJsonString();
+            string jsonReport = loadResult[8].PlainJsonString();
+            string deviceConfig = loadResult[9].PlainJsonString();
+            // DeviceConfig2 DEVICECONFIGURATION value is required
+            string jsonDeviceConfig2 = loadResult[10].PlainJsonString();
+            string jsonDeviceConfig3 = loadResult[11].PlainJsonString();
+            string configLess = loadResult[12].PlainJsonString();
+            string jsonDeviceDataDisplay = loadResult[13].PlainJsonString();
+            string test = loadResult[14].PlainJsonString();
+            string jsonFwDisplayByOption = loadResult[15].PlainJsonString();
+            string fwDisplayTest = loadResult[16].PlainJsonString();
+            string testLock = loadResult[17].PlainJsonString();
+            string showDock = loadResult[18].PlainJsonString();
+            string dockConfiguration = loadResult[19].PlainJsonString();
+            string dockDiagnosticReport = loadResult[20].PlainJsonString();
+            string dockDeviceDataOptions = loadResult[21].PlainJsonString();
+            #endregion
 
-            string jsonacthours = @"{""sid"":""1727362336"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}}]}";
-            string jsongetdisplaymulti = @"{""sid"":""1727362335"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ActiveHours"",""options"":{}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""Brightnesslevel"",""options"":{}}]}";
-
-            string jsonfwdisplay = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DISPLAY"",""options"":{}}]}";
-            string jsonfwdock = @"{""sid"":""1728273741"",""req"":[{""tid"":1,""active"":""fw"",""devicetype"":""DOCK"",""options"":{}}]}";
-
-            string jsondevice = @"{""sid"":""1728380239"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""ConnectedDevices"",""options"":{}}]}";
-            string jsondevicedata = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DeviceData"",""options"":{}}]}";
-
-
-            string jsonreport = @"{""sid"":""1728647205"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""C:\\temp"",""options"":{}}]}";
-
-
-            string jsondeviceconfig2 = "{\"sid\":\"1728380251\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + deviceconfig + ",\"options\":{}}]}";
-            string configless = "{\"Index\": \"1\",\"DeviceType\": \"Display\",\"BrightnessLevel\": \"90%\",\"ContrastLevel\": \"90%\"}";
-            string jsondeviceconfig3 = "{\"sid\":\"1728380278\",\"req\":[{\"tid\":1,\"active\":\"set\",\"devicetype\":\"display\",\"command\":\"DeviceConfiguration\",\"value\":" + configless + ",\"options\":{}}]}";
-
-            string test = @"{""sid"":""1729840262"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""APP"",""command"":""DiagnosticsReport"",""value"":""c:\temp"",""options"":{""index"":""1"",""servicetag"":""aaaaa"",""devicemodel"":""dell ea"",""uod"":true,""forcewithnotice"":true,""updatesilent"":true,""minversion"":""1.0.0.5""}},{""tid"":2,""active"":""get"",""devicetype"":""DISPLAY"",""command"":""ConnectedDevices"",""options"":{}}]}";
-
-            string jsondevicedatadisplay = @"{""sid"":""1728380255"",""req"":[{""tid"":1,""active"":""get"",""devicetype"":""display"",""command"":""DeviceData"",""options"":{}}]}";
-
-            RemoteRequestArgs cmarequest = new RemoteRequestArgs();
+            #region Subscribe Events
+            RemoteRequestArgs cmaRequest = new RemoteRequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
             _CMAManagerPlugin.DisplayConnected += DisplayConnected;
             _CMAManagerPlugin.DisplayDisconnected += DisplayDisconnected;
             Console.WriteLine("Subscribe Event Success");
+            #endregion
 
             // manager.Info(json);
+            PrintOptions();
 
             while (isRunning)
             {
-                Console.WriteLine("\nCMAManagerPlugin Demo: ");
-                Console.WriteLine("1. Show ConnectedDevices.");
-                Console.WriteLine("2. Show Display FWUpdate.");
-                Console.WriteLine("3. Show DeviceData.");
-                Console.WriteLine("4. Show DeviceConfiguration.");
-                Console.WriteLine("5. Show DiagnosticsReport.");
-                Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
-                Console.WriteLine("7. Show Dock FWUpdate.");
+                string input = Console.ReadLine() ?? string.Empty;
+                if(Int32.TryParse(input, out int sel)) { 
+                    stopwatch.Reset();
+                    switch (sel)
+                    {
+                        case 1:
+                            cmaRequest.remote_request = jsonDevice;
+                            break;
 
+                        case 2:
+                            cmaRequest.remote_request = jsonFwDisplay;
+                            break;
 
-                Console.WriteLine("21. Show 2 task.");
-                Console.WriteLine("22. DeviceConfiguration with only few attributes.");
-                Console.WriteLine("23. Show DeviceData - Display.");
+                        case 3:
+                            cmaRequest.remote_request = jsonDeviceData;
+                            break;
 
-                Console.WriteLine("0. Exit.");
+                        case 4:
+                            cmaRequest.remote_request = jsonDeviceConfig2;
+                            break;
 
-                Console.WriteLine("Enter the number to run ?");
-                int sel = Convert.ToInt32(Console.ReadLine());
+                        case 5:
+                            cmaRequest.remote_request = jsonReport;
+                            break;
 
-                switch (sel)
-                {
-                    case 1:
-                        Console.WriteLine($"json String = {jsondevice}");
-                        cmarequest.remote_request = jsondevice;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 6:
+                            cmaRequest.remote_request = jsonGetDisplayMulti;
+                            break;
 
-                    case 2:
-                        Console.WriteLine($"json String = {jsonfwdisplay}");
-                        cmarequest.remote_request = jsonfwdisplay;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 7:
+                            cmaRequest.remote_request = jsonFwDock;
+                            break;
 
-                    case 3:
-                        Console.WriteLine($"json String = {jsondevicedata}");
-                        cmarequest.remote_request = jsondevicedata;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 8:
+                            cmaRequest.remote_request = jsonFwKb;
+                            break;
 
-                    case 4:
-                        Console.WriteLine($"json String = {jsondeviceconfig2}");
-                        cmarequest.remote_request = jsondeviceconfig2;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 9:
+                            cmaRequest.remote_request = jsonFwMouse;
+                            break;
 
-                    case 5:
-                        Console.WriteLine($"json String = {jsonreport}");
-                        cmarequest.remote_request = jsonreport;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 21:
+                            cmaRequest.remote_request = test;
+                            break;
 
-                    case 6:
-                        Console.WriteLine($"json String = {jsongetdisplaymulti}");
-                        cmarequest.remote_request = jsongetdisplaymulti;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 22:
+                            cmaRequest.remote_request = jsonDeviceConfig3;
+                            break;
 
-                    case 7:
-                        Console.WriteLine($"json String = {jsonfwdock}");
-                        cmarequest.remote_request = jsonfwdock;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 23:
+                            cmaRequest.remote_request = jsonDeviceDataDisplay;
+                            break;
 
-                    case 21:
-                        Console.WriteLine($"json String = {test}");
-                        cmarequest.remote_request = test;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 24:
+                            cmaRequest.remote_request = jsonFwDisplayByOption;
+                            break;
 
-                    case 22:
-                        Console.WriteLine($"json String = {jsondeviceconfig3}");
-                        cmarequest.remote_request = jsondeviceconfig3;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 31:
+                            cmaRequest.remote_request = fwDisplayTest;
+                            break;
 
-                    case 23:
-                        Console.WriteLine($"json String = {jsondevicedatadisplay}");
-                        cmarequest.remote_request = jsondevicedatadisplay;
-                        _CMAManagerPlugin.Info(cmarequest);
-                        break;
+                        case 32:
+                            cmaRequest.remote_request = testLock;
+                            break;
 
-                    default:
-                        isRunning = false;
-                        break;
+                        case 41:
+                            cmaRequest.remote_request = showDock;
+                            break;
 
+                        case 42:
+                            cmaRequest.remote_request = dockConfiguration;
+                            break;
 
+                        case 43:
+                            cmaRequest.remote_request = dockDiagnosticReport;
+                            break;
+
+                        case 44:
+                            cmaRequest.remote_request = dockDeviceDataOptions;
+                            break;
+
+                        default:
+                            isRunning = false;
+                            break;
+                    }
+                    stopwatch.Start();
+                    Console.WriteLine($"json String = {cmaRequest.remote_request}");
+                    _CMAManagerPlugin.Info(cmaRequest);
                 }
-
                 while (!isresponse) { }
-
             }
-
-
         }
 
         private void InitializeCMAManagerPlugin()
@@ -284,11 +327,56 @@ namespace DDPM.CMA.Tester
             });
         }
 
+        private async Task<string> ReadJsonFileAsync(string fileName)
+        {
+            string filePath = $"..\\..\\..\\json\\{fileName}.json";
+            if (File.Exists(filePath))
+            {
+                // Read the entire file content as text
+                return await File.ReadAllTextAsync(filePath);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        private void PrintOptions()
+        {
+            Console.WriteLine("\nCMAManagerPlugin Demo: ");
+            Console.WriteLine("1. Show ConnectedDevices.");
+            Console.WriteLine("2. Show Display FWUpdate.");
+            Console.WriteLine("3. Show DeviceData All (No filter).");
+            Console.WriteLine("4. Show DeviceConfiguration with json in value.");
+            Console.WriteLine("5. Show DiagnosticsReport export to c:\\temp\\.");
+            Console.WriteLine("6. Show Multi-command get display's activehour and brightnesslevel.");
+            Console.WriteLine("7. Show Dock FWUpdate.");
+            Console.WriteLine("8. Show Keyboard FWUpdate.");
+            Console.WriteLine("9. Show Mouse FWUpdate.");
+            Console.WriteLine("10. Show Mouse FWUpdate.");
+
+            Console.WriteLine("21. Show 2 task.");
+            Console.WriteLine("22. DeviceConfiguration with only few attributes.");
+            Console.WriteLine("23. Show DeviceData - Display.");
+            Console.WriteLine("24. Show DeviceData - Display with Options.");
+
+            Console.WriteLine("31. Show Fwupdate Display with options.");
+            Console.WriteLine("32. Show Lock/Unlock.");
+
+            Console.WriteLine("41. Show Dock.");
+            Console.WriteLine("42. Get DockConfiguration.");
+            Console.WriteLine("43. Get Dock Diagnostic Report.");
+            Console.WriteLine("44. Dock Device Data update firmware with Options.");
+
+            Console.WriteLine("0. Exit.");
+
+            Console.WriteLine("Enter the number to run ?");
+        }
         #endregion
 
         #region Event Handlers
 
-        private void PluginsStarted(object sender, PluginsStartedEventArgs e)
+        private void PluginsStarted(object? sender, PluginsStartedEventArgs e)
         {
             if (e == null)
                 return;
@@ -297,32 +385,30 @@ namespace DDPM.CMA.Tester
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            Console.WriteLine($"{e.ChangedPlugins.GetType().Name}");
-
             if (e.ChangedPlugins.OfType<IRemoteManagement>().Any())
             {
                 InitializeCMAManagerPlugin();
             }
         }
 
-        private void OnCMAManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnCMAManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             InitializeCMAManagerPlugin();
         }
 
-        private static void Notification(object sender, NotifyArgs e)
+        private void Notification(object? sender, NotifyArgs e)
         {
-
             Console.WriteLine("CMA Notification Alert");
-            Console.WriteLine("CMA Notification Alert eventtype : " + e.eventType);
+            Console.WriteLine("CMA Notification Alert event type : " + e.eventType);
             Console.WriteLine("CMA Notification Alert notification : " + e.notification);
-
             isresponse = true;
+            stopwatch.Stop();
+            Console.WriteLine($"Request finished in {stopwatch.Elapsed.TotalSeconds} seconds.");
+            PrintOptions();
         }
 
-        private static void DisplayConnected(object sender, NotifyArgs e)
+        private static void DisplayConnected(object? sender, NotifyArgs e)
         {
-
             Console.WriteLine("CMA DisplayConnected Alert");
             Console.WriteLine("CMA DisplayConnected Alert eventtype : " + e.eventType);
             Console.WriteLine("CMA DisplayConnected Alert notification : " + e.notification);
@@ -330,7 +416,7 @@ namespace DDPM.CMA.Tester
             isresponse = true;
         }
 
-        private static void DisplayDisconnected(object sender, NotifyArgs e)
+        private static void DisplayDisconnected(object? sender, NotifyArgs e)
         {
 
             Console.WriteLine("CMA DisplayDisconnected Alert");

@@ -317,6 +317,10 @@ namespace DDPM.UI.Common.UserControls
         {
             return vm.FindItemBySplitJson(spj);
         }
+        public SplitItem? FindItemByEAID(int EAID)
+        {
+            return vm.FindItemByEAID(EAID);
+        }
 
         public SplitItem? GetLatestItem()
         {

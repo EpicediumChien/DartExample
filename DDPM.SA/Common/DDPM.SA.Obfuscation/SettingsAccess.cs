@@ -221,5 +221,90 @@ namespace DDPM.SA.Obfuscation
             }
             return (string.Empty, string.Empty, string.Empty);
         }
+        public static bool QueryRegistryUpdateLock(out bool isUpdateLock, out string info)
+        {
+            //info = string.Empty;
+            if (!IsUserElevated())
+            {
+                //info = "Caller doesn't has elevated privilege";
+                isUpdateLock = false;
+                info = "QueryRegistryUpdateLock IsUserElevated";
+                return (false);
+            }
+
+
+            // target registry path
+            string registryKey = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\";
+
+            try
+            {
+                // open and sequential read to compare.
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+                //using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) // DDPM-Setup-2.0.0.40.exe is x86-32bit
+                {
+                    if (key != null)
+                    {
+                        string value = key.GetValue("InAppUpdateLock") as string;
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            isUpdateLock = value.Equals("1") ? true : false;
+                            info = $"QueryRegistryUpdateLock ok";
+                            return true;
+                        }
+                        else
+                        {
+                            info = $"QueryRegistryUpdateLock value == null";
+                        }
+                    }
+                    else
+                    {
+                        info = $"QueryRegistryUpdateLock key == null";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                info = $"QueryRegistryUpdateLock error:{ex.Message}";
+            }
+            isUpdateLock = false;
+            return (false);
+        }
+        public static bool DeleteRegistryUpdateLock(out string info)
+        {
+            //info = string.Empty;
+            if (!IsUserElevated())
+            {
+                //info = "Caller doesn't has elevated privilege";
+                info = "DeleteRegistryUpdateLock IsUserElevated";
+                return false;
+            }
+
+            // target registry path
+            string registryKey = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\";
+
+            try
+            {
+                // open and sequential read to compare.
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey, true))
+                //using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) // DDPM-Setup-2.0.0.40.exe is x86-32bit
+                {
+                    if (key != null)
+                    {
+                        key.DeleteValue("InAppUpdateLock");
+                        info = $"DeleteRegistryUpdateLock ok";
+                        return true;
+                    }
+                    else
+                    {
+                        info = $"DeleteRegistryUpdateLock key == null";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                info = $"DeleteRegistryUpdateLock error:{ex.Message}";
+            }
+            return false;
+        }
     }
 }

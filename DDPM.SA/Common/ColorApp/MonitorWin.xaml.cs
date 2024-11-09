@@ -70,6 +70,7 @@ namespace DDPM.ColorApp
         // jim add 20240605
         public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON, List<string> ColorPresetSupportList)
         {
+            Pre_reqKey = -1;
             b_AUTO_ColorPresetConfig = blAUTO;
             b_SmartHDR_ON = blSmartHDR_ON;
             _supported_preset = ColorPresetSupportList;
@@ -460,7 +461,7 @@ namespace DDPM.ColorApp
                                 //
                                 //Set request key to update color preset and draw OSD
                                 string outmsg = string.Empty;
-                                set_monitor_preset_by_request_key(actived_mi, reqKey, out outmsg, b_SmartHDR_ON);
+                                set_monitor_preset_by_request_key(actived_mi, reqKey, out outmsg, b_SmartHDR_ON, reqAppName);
                                 //tmp = actived_mi.AliasDeviceName + ":" + reqKey;
                                 break;
                             }
@@ -490,7 +491,7 @@ namespace DDPM.ColorApp
         }
 
         //public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, string reqKey, out string outmsg, bool isDrawOSD = true)
-        public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, int reqKey, out string outmsg, bool b_SmartHDR_ON, bool isDrawOSD = true)
+        public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, int reqKey, out string outmsg, bool b_SmartHDR_ON, string reqAppName = null, bool isDrawOSD = true)
         {
             //if (string.IsNullOrEmpty(reqKey))
             if (reqKey == -1)
@@ -517,7 +518,7 @@ namespace DDPM.ColorApp
             else
                 strSync_CurrentColorPreset = strColorPresetName;    
 
-            bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1).Result;
+            bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1, reqAppName).Result;
 
             return true;
         }

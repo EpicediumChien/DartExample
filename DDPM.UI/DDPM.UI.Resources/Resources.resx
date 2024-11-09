@@ -187,7 +187,7 @@
     <value>Update available</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
+    <value>Dell Display and Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
     <value>Check for updates</value>
@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Export a configuration and important to another monitor of the same model</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>You can export your favorite configuration from here and import into another monitor of the same model without hassle.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>High Data Speed</value>
   </data>
@@ -847,7 +850,7 @@
     <value>Wear Detection</value>
   </data>
   <data name="HeadsetAutomatedActions.1" xml:space="preserve">
-    <value>Sensitivity</value>
+    <value>Sensitive</value>
   </data>
   <data name="HeadsetAutomatedActions.2" xml:space="preserve">
     <value>Low</value>
@@ -1948,7 +1951,7 @@
     <value>Select a preset that reflects how you want to appear on camera or  create your own</value>
   </data>
   <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
-    <value>P2424HEB</value>
+    <value>Enable High Dynamic Range to enhance image quality, particularly in extreme lighting conditions</value>
   </data>
   <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
     <value>Convenient buttons</value>
@@ -2143,7 +2146,7 @@
     <value>Automatically apply the settings when the same model is detected</value>
   </data>
   <data name="DisplayDefault.0" xml:space="preserve">
-    <value>Do you want to reset your monitor to factory settings now?</value>
+    <value>Are you sure you want to restore all default settings on your device?</value>
   </data>
   <data name="RestoreToDefaultActions" xml:space="preserve">
     <value>Restore to default actions</value>
@@ -2252,5 +2255,89 @@
   </data>
   <data name="VisionEngine_Crosshair" xml:space="preserve">
     <value>Crosshair</value>
+  </data>
+  <data name="Software_version" xml:space="preserve">
+    <value>Software version</value>
+  </data>
+  <data name="Driver_version" xml:space="preserve">
+    <value>Driver version</value>
+  </data>
+  <data name="Preview_Changes" xml:space="preserve">
+    <value>Preview Changes</value>
+  </data>
+  <data name="Stop_Preview" xml:space="preserve">
+    <value>Stop Preview</value>
+  </data>
+  <data name="Tooltips_Schedule" xml:space="preserve">
+    <value>This feature enables our eyes to adapt to a desired setting.</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Disconnect all USB storage devices from monitor.</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>Wireless Receiver Connection</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>No, I don't consent</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>Yes, I consent</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>Help us improve</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>Help Dell improve its products and services by automatically sending diagnostics and usage data. Learn more about </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>Do not prompt again for the same model</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>Do you want to import the application settings for ease of use?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>An new monitor %1 is detected.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>DDPM.Subagent.DeviceManager is not ready</value>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>DellTechHub service is not running</value>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>No device detected</value>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>Invalid URL</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>Go to App</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>Applies when you're on a conference call</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>Applies when you're listening to multimedia, such as music or podcasts</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>Auto Brightness is currently enabled. Do you wish to disable it to continue?</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Third Party License</value>
   </data>
 </root>
