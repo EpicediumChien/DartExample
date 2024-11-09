@@ -655,7 +655,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 break;
                         }
                         var bandGainNewValue = SetBandsGainValue(_logicalDeviceHeadset, _deviceInfo);
-                        _logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
+                        // Elie, Mask this code becasue R16 has changed this function. 2024/11/09.
+                        //_logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
                         break;
                     }
                 }
