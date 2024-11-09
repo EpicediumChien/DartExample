@@ -63,8 +63,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings) vm.IsBusy = false;
                     }
                     else
                     {
@@ -124,7 +126,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                         if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                         {
+                            vm.IsBusy = true;
                             bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                            if (saveSettings) vm.IsBusy = false;
                             //vm.Invoke_RefreshData();
                         }
                         else
@@ -200,8 +204,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
                         if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                         {
+                            vm.IsBusy = true;
                             bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                             //vm.Invoke_RefreshData();
+                            if (saveSettings) vm.IsBusy = false;
                         }
                         else
                         {
@@ -259,7 +265,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        if (saveSettings) vm.IsBusy = false;
                         //vm.Invoke_RefreshData();
                     }
                     else
@@ -309,7 +317,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        if (saveSettings) vm.IsBusy = false;
                         //vm.Invoke_RefreshData();
                     }
                     else

@@ -93,7 +93,7 @@ namespace DDPM.UI.Module.Kvm
         private const int WM_ACTIVATE = 0x0006;
         private const int WM_NCACTIVATE = 0x0086;
 
-        public DDPMWindowPos(IntPtr hwnd, IntPtr parent) 
+        public DDPMWindowPos(IntPtr hwnd, IntPtr parent)
         {
             this._hwnd = hwnd;
             this._parent = parent;
@@ -116,22 +116,22 @@ namespace DDPM.UI.Module.Kvm
                         }
                     }
                     break;
-                //case WM_ACTIVATE: // WM_ACTIVATE
-                //    {
-                //        if (m.WParam != IntPtr.Zero && _hwnd != IntPtr.Zero)
-                //        {
-                //            User32_SetWindowPos.SetWindowPos(this.Handle, User32_SetWindowPos.HWND_BOTTOM, 0, 0, 0, 0, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
-                //        }
-                //    }
-                //    break;
-                //case WM_NCACTIVATE: // WM_NCACTIVATE
-                //    {
-                //        if (m.WParam != IntPtr.Zero && _hwnd != IntPtr.Zero)
-                //        {
-                //            User32_SetWindowPos.SetWindowPos(this.Handle, User32_SetWindowPos.HWND_BOTTOM, 0, 0, 0, 0, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
-                //        }
-                //    }
-                //    break;
+                    //case WM_ACTIVATE: // WM_ACTIVATE
+                    //    {
+                    //        if (m.WParam != IntPtr.Zero && _hwnd != IntPtr.Zero)
+                    //        {
+                    //            User32_SetWindowPos.SetWindowPos(this.Handle, User32_SetWindowPos.HWND_BOTTOM, 0, 0, 0, 0, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
+                    //        }
+                    //    }
+                    //    break;
+                    //case WM_NCACTIVATE: // WM_NCACTIVATE
+                    //    {
+                    //        if (m.WParam != IntPtr.Zero && _hwnd != IntPtr.Zero)
+                    //        {
+                    //            User32_SetWindowPos.SetWindowPos(this.Handle, User32_SetWindowPos.HWND_BOTTOM, 0, 0, 0, 0, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
+                    //        }
+                    //    }
+                    //    break;
             }
             base.WndProc(ref m);
         }
@@ -408,9 +408,9 @@ namespace DDPM.UI.Module.Kvm
         public bool isUSBKVMButton { get; set; } = true;
         public double USBKVMButtonOpacity { get; set; } = 1;
 
-        public bool isNKVMEanble {  get; set; } = true;
+        public bool isNKVMEanble { get; set; } = true;
         public double NKVM_Opacity { get; set; } = 1;
-        public Visibility LockNKVM_Visibility {  get; set; } = Visibility.Collapsed;
+        public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
 
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
@@ -472,9 +472,9 @@ namespace DDPM.UI.Module.Kvm
             HotkeySettings hotkeySettings = new HotkeySettings
             {
                 //DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
-                ModelName = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ModelName,
-                SerialNumber = KvmModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
-                ServiceTag = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag,
+                ModelName = "DDPM",
+                SerialNumber = "DDPM",
+                ServiceTag = "DDPM",
                 HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
             DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);
@@ -529,6 +529,10 @@ namespace DDPM.UI.Module.Kvm
                                 break;
                         }
                     }
+                }
+                if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                {
+                    _autoSwitchChecked = true;
                 }
             }
             catch (Exception ex)
@@ -630,6 +634,7 @@ namespace DDPM.UI.Module.Kvm
                     //Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
+                    List<InputSourceObj> result = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     if (subInputList != null)
                     {
                         subInputs.Clear();
@@ -730,7 +735,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
                     }
-                    else 
+                    else
                     {
                         isUSBKVMButton = false;
                         USBKVMButtonOpacity = 0.5;
@@ -1197,7 +1202,7 @@ namespace DDPM.UI.Module.Kvm
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(strFullPath, out FileInfo))
             {
-                Trace.WriteLine($"{nameof(OpenNKVMUI)} {FileInfo}");                
+                Trace.WriteLine($"{nameof(OpenNKVMUI)} {FileInfo}");
             }
             Trace.WriteLine($"NKVM full path is {strFullPath}");
 

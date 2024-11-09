@@ -1987,6 +1987,31 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 writelog("FWUpdate_Line 1963");
                                                 _recode = true;
                                             }
+                                            if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
+                                            {
+                                                writelog("FWUpdate_Line 1963_1");
+                                                _recode = true;
+                                            }
+                                            if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
+                                            {
+                                                writelog("FWUpdate_Line 1963_2");
+                                                _recode = true;
+                                            }
+                                            if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
+                                            {
+                                                writelog("FWUpdate_Line 1963_2");
+                                                _recode = true;
+                                            }
+                                            if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
+                                            {
+                                                writelog("FWUpdate_Line 1963_2");
+                                                _recode = true;
+                                            }
+                                            if (ss_1[0].ToUpper().Equals("DONGLE"))
+                                            {
+                                                writelog("FWUpdate_Line 1963_2");
+                                                _recode = true;
+                                            }
                                         }
 
                                         if (_recode)
@@ -2610,7 +2635,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             writelog("FWUpdate_Line 2579");
 
-                            if (g.LogicalDeviceType == "LogicalDock" && commandLineInput.TargetType.Equals("DOCK"))
+                            if (g.LogicalDeviceType == "LogicalDock" && commandLineInput.TargetType.ToUpper().Equals("DOCK"))
                             {
                             writelog("FWUpdate_Line 2583");
 
@@ -3119,7 +3144,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 {
                                         writelog("FWUpdate_Line 3087");
                                         //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                                        installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
+                                        Debug.WriteLine("commandLineInput.Options[0].Option_Value" + commandLineInput.Options[0].Option_Value);
+                                        installPath = commandLineInput.Options[0].Option_Value;
+
+                                        installPath = installPath.Replace("\"", "");
+
+                                        //installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
                                                     Trace.WriteLine($"installPath = {installPath}");
                                                     isShowInfo = true;
                                                     var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true);
@@ -3526,6 +3556,8 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             try
             {
+                Debug.WriteLine("installPath = " + installPath);
+
                 List<DeviceType> deviceTypes = new List<DeviceType>();
                 DeviceType deviceType = DeviceType.Unknown;
                 if (commandLineInput.Options.Count > 0)
@@ -3548,7 +3580,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     Task.Run(new Action(() =>
                     {
-                        FWUErrorCode ret = _devMgr.Install(installPath, false).Result;
+                        FWUErrorCode ret = _devMgr.Install(installPath, false, deviceType).Result;
                         Trace.WriteLine($"ret = {ret}");
 
                         cli_FWU_RESPONSE.Model = "retFWUpdateInfo.Model";
@@ -3836,10 +3868,27 @@ namespace DDPM.CLI.Plugins.Peripherals
                     deviceTypes.Add(DeviceType.LogicalPen);
                     deviceType = DeviceType.LogicalPen;
                     break;
+                case "DONGLE":
+                    deviceTypes.Add(DeviceType.PhysicalAudioDongle);
+                    deviceTypes.Add(DeviceType.PhysicalDongle);
+                    break;
                 default:
                     deviceType = DeviceType.Unknown;
                     break;
             }
+            switch (commandLineInput.TargetType)
+            {
+
+                case "DOCK":
+                    deviceTypes.Add(DeviceType.LogicalDock);
+                    deviceTypes.Add(DeviceType.PhysicalWiredDock);
+                    deviceType = DeviceType.LogicalDock;
+                    break;
+                default:
+                    
+                    break;
+            }
+
             return (deviceType, deviceTypes);
         }
         private void Download_Event(object o, List<FWUpdateInfo> e)
