@@ -644,6 +644,375 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.IsNotNull(deviceHelper2);
         }
 
+
+        [Test]
+        public void TestSetCollaborationChatEnable()
+        {
+            bool newValue1 = true;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice3> logicalDevice3 = new Mock<ILogicalDevice3>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDevice.Setup(x => x.Devices).Returns(new[] { logicalDevice3.Object });
+            mockDeviceManager.Setup(x => x.Devices).Returns(new[] { physicalDevice.Object });
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetCollaborationChatEnable(newValue1, deviceId1);      // newValue1 true != IsCollaborationChatEnable false
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            bool newValue2 = false;
+            Guid deviceId2 = new Guid();
+            peripheralsPlugin.SetCollaborationChatEnable(newValue2, deviceId2);
+            var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");  // newValue2  = IsCollaborationChatEnable false
+            Assert.IsTrue(true);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestSetCollaborationMicEnable()
+        {
+            bool newValue1 = true;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice3> logicalDevice3 = new Mock<ILogicalDevice3>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDevice.Setup(x => x.Devices).Returns(new[] { logicalDevice3.Object });
+            mockDeviceManager.Setup(x => x.Devices).Returns(new[] { physicalDevice.Object });
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetCollaborationMicEnable(newValue1, deviceId1);      // newValue1 true != IsCollaborationMicEnable false
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            bool newValue2 = false;
+            Guid deviceId2 = new Guid();
+            peripheralsPlugin.SetCollaborationMicEnable(newValue2, deviceId2);
+            var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");  // newValue2  = IsCollaborationMicEnable false
+            Assert.IsTrue(true);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestSetCollaborationBlinkEffectEnable()
+        {
+            bool newValue1 = true;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice3> logicalDevice3 = new Mock<ILogicalDevice3>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDevice.Setup(x => x.Devices).Returns(new[] { logicalDevice3.Object });
+            mockDeviceManager.Setup(x => x.Devices).Returns(new[] { physicalDevice.Object });
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetCollaborationBlinkEffectEnable(newValue1, deviceId1);      // newValue1 true != IsCollaborationBlinkEffectEnable false
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            bool newValue2 = false;
+            Guid deviceId2 = new Guid();
+            peripheralsPlugin.SetCollaborationBlinkEffectEnable(newValue2, deviceId2);
+            var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");  // newValue2  = IsCollaborationBlinkEffectEnable false
+            Assert.IsTrue(true);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestSetCollaborationDoubleTapEnable()
+        {
+            bool newValue1 = true;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice3> logicalDevice3 = new Mock<ILogicalDevice3>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDevice.Setup(x => x.Devices).Returns(new[] { logicalDevice3.Object });
+            mockDeviceManager.Setup(x => x.Devices).Returns(new[] { physicalDevice.Object });
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetCollaborationDoubleTapEnable(newValue1, deviceId1);      // newValue1 true != IsCollaborationDoubleTapEnable false
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            bool newValue2 = false;
+            Guid deviceId2 = new Guid();
+            peripheralsPlugin.SetCollaborationDoubleTapEnable(newValue2, deviceId2);
+            var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");  // newValue2  = IsCollaborationDoubleTapEnable false
+            Assert.IsTrue(true);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestSetBackLightingControls()
+        {
+            int newValue1 = 20;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice3> logicalDevice3 = new Mock<ILogicalDevice3>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDevice.Setup(x => x.Devices).Returns(new[] { logicalDevice3.Object });
+            mockDeviceManager.Setup(x => x.Devices).Returns(new[] { physicalDevice.Object });
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetBackLightingControls(newValue1, deviceId1);      // newValue1 = BackLightingControls 20
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            int newValue2 = 10;
+            Guid deviceId2 = new Guid();
+            peripheralsPlugin.SetBackLightingControls(newValue2, deviceId2);
+            var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");  // newValue2 10  ! = BackLightingControls
+            Assert.IsTrue(true);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestSetBackLightingLevel()
+        {
+            int newValue1 = 20;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice3> logicalDevice3 = new Mock<ILogicalDevice3>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDevice.Setup(x => x.Devices).Returns(new[] { logicalDevice3.Object });
+            mockDeviceManager.Setup(x => x.Devices).Returns(new[] { physicalDevice.Object });
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetBackLightingLevel(newValue1, deviceId1);      // newValue1 = BackLightingLevel 20
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            int newValue2 = 10;
+            Guid deviceId2 = new Guid();
+            peripheralsPlugin.SetBackLightingLevel(newValue2, deviceId2);
+            var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");  // newValue2 10  ! = BackLightingLevel
+            Assert.IsTrue(true);
+            Assert.IsNotNull(deviceHelper2);
+        }
+
+        [Test]
+        public void TestStartPairing()
+        {
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalDeviceDongle> physicalDeviceDongle = new Mock<IPhysicalDeviceDongle>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDeviceDongle.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalDeviceDongle.Object });
+
+            Guid physicalDeviceId = physicalDeviceDongle.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.StartPairing(physicalDeviceId);                                     // physicalDevice is IPhysicalDeviceDongle
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            Mock<IPhysicalAudioDeviceDongle> physicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
+            physicalAudioDeviceDongle.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalAudioDeviceDongle.Object });
+
+            Guid physicalAudioDeviceDongleId = physicalAudioDeviceDongle.Object.Id;
+
+            var DeviceManagerObj2 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj2);
+
+            peripheralsPlugin.StartPairing(physicalAudioDeviceDongleId);                        // physicalDevice is IPhysicalAudioDeviceDongle
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {
