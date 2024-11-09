@@ -13,6 +13,8 @@ using VcpCore.Common;
 using DDPM.SA.Common.Settings;
 using System.Windows.Shell;
 using DDPM.SA.Resources.Helper;
+using DDPM.SA.Common.Display;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 { 
@@ -30,13 +32,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
     public class DisplayDeviceHelper
     {
-        private ISettingsManagerDev settingsManagerDev;
+        private static ISettingsManagerDev settingsManagerDev = null;
+        private static IDeviceManagerSA devManagerSA = null;
+        private static IDisplayService displayService = null;
+
         private string path = string.Empty;
 
         public enum log_type
         {
             info = 0,
             error
+        }
+
+        public void UpdateDDPMPluginInstances(ISettingsManagerDev settings = null, IDeviceManagerSA devMgr = null, IDisplayService displaySrv = null)
+        {
+            if (settings != null)
+                settingsManagerDev = settings;
+            if(devMgr != null)
+                devManagerSA = devMgr;
+            if(displaySrv != null)
+                displayService = displaySrv;
         }
 
         private static ILog _log = null;
@@ -49,12 +64,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             };
         }
 
-        private void WriteLog(string text, log_type log_type = log_type.info)
+        private void WriteLog(string text, log_type log_type = log_type.info, 
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DeviceManager][Display] {text}";
+            string className = this.GetType().Name;
+            text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper] {text}, Class:{className}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (_log != null)
             {
@@ -198,6 +217,113 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Length < 3");
             }
         }
+
+        //for PIMS-288826
+        public bool isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            if(moLists == null || moLists.Count <= 1)
+            {
+                return false; 
+            }
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease ||
+                job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+            {
+                bool isSyncEnable = false;
+                DeviceMangerPlugin? devMgr = (DeviceMangerPlugin)devManagerSA;
+                if (devMgr == null)
+                {
+                    WriteLog("[isHotkeySyncBrightnessContrastToAllMonitors] default is false since null deviceManager");
+                    return false;
+                }
+                DDPMSettings data = devMgr.ReloadAppConfigData().Result;
+                isSyncEnable = data.UserSettings.IsSynchronizemonitor;
+                string actionType = CheckisShowSynchronize(displayService, moLists, currentMoInfo, alsSynchronizeList).Result;
+                if(actionType.Equals("A") || actionType.Equals("B") || actionType.Equals("C"))
+                {
+                    if (isSyncEnable)
+                        WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] should sync {job} between monitor");
+                    else
+                        WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] should *not* sync {job} between monitor");
+                    return isSyncEnable;
+                }
+                else
+                {
+                    WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] sync option isn't active ({actionType})");
+                }
+            }
+            else
+            {
+                WriteLog($"[isHotkeySyncBrightnessContrastToAllMonitors] job is not belong to Bri/Con/Lum");
+            }
+
+            return false;
+        }
+
+        //for PIMS-288826
+        public void PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            if (devManagerSA == null)
+            {
+                WriteLog("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
+                return;
+            }
+            bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(job, moLists, currentMoInfo, alsSynchronizeList);
+            byte code = 0x10;
+
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.BrightnessReduce ||
+                job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
+            {
+                code = 0x10;
+            }
+            else if (job == HotkeyType.ContrastIncrease || job == HotkeyType.ContrastReduce)
+            {
+                code = 0x12;
+            }
+            else
+            {
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job1: {job}");
+                return;
+            }
+            ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
+            uint targetValue = (uint)obVCPValue.value;
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
+                targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
+            else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+                targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
+            else
+            {
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
+                return;
+            }
+            bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue).Result;
+            WriteLog($"{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
+
+            if (doSync)
+            {
+                foreach (MonitorInfo mi in moLists)
+                {
+                    if(currentMoInfo.modelName.Equals(mi.modelName) && currentMoInfo.edid.ServiceTag.Equals(mi.edid.ServiceTag))
+                    {
+                        //already set, next loop
+                        continue;
+                    }
+                    //obVCPValue = devManagerSA.GetVCPCapability(mi, code, 0).Result;
+                    if (obVCPValue.result)
+                    {
+                        //targetValue = (uint)obVCPValue.value;
+                        if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
+                            targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
+                        else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+                            targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
+                        else
+                            continue;
+                        ret = devManagerSA.SetVCPCapability(mi, code, targetValue).Result;
+                        WriteLog($"{job}:[{mi.edid.ModelName}:{mi.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
+                    }
+                }
+            }
+        }
+
         public Task<string> CheckisShowSynchronize(IDisplayService _displayManagerPlugin, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
         {
             if (moLists == null || _displayManagerPlugin == null)
