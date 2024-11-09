@@ -1659,6 +1659,26 @@ namespace ColorPreset.Plugins
 
             writelog("ColorPresetPlugin Sync_ColorPresetName requested ...");
 
+
+            var colorPresetsUP32 = new Dictionary<string, string>
+            {
+                { "AdobeRGB1", "Adobe RGB D65 G2.2 L160" },
+                { "AdobeRGB2", "Adobe RGB D50 G2.2 L160" },
+                { "Rec.709 / BT.709", "BT.709 D65 BT1886 L100" },
+                { "Rec.2020 / BT.2020", "BT.2020 D65 BT1886 L100" },
+                { "sRGB", "sRGB D65 sRGB L120" }
+            };
+
+            var colorPresetsUP27 = new Dictionary<string, string>
+            {
+                { "AdobeRGB1", "Adobe RGB D65 G2.2 L250" },
+                { "AdobeRGB2", "Adobe RGB D50 G2.2 L250" },
+                { "sRGB", "sRGB D65 sRGB L250" },
+                { "Rec.709 / BT.709", "BT.709 D65 BT1886 L100" },
+                { "Rec.2020 / BT.2020", "BT.2020 D65 BT1886 L100" }
+            };
+
+
             string strSync_ColorPreset_Name = string.Empty;
 
             int index = -1;
@@ -1770,7 +1790,12 @@ namespace ColorPreset.Plugins
 
             if (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K"))
             {
+                if (colorPresetsUP32.TryGetValue(ColorPreset_Name, out var presetValue))
+                {
+                    strSync_ColorPreset_Name = presetValue;
+                }
 
+                /*
                 if (ColorPreset_Name == "AdobeRGB1")
                     strSync_ColorPreset_Name = "Adobe RGB D65 G2.2 L160";
 
@@ -1785,10 +1810,17 @@ namespace ColorPreset.Plugins
 
                 if (ColorPreset_Name == "sRGB")
                     strSync_ColorPreset_Name = "sRGB D65 sRGB L120";
+                */
 
             }
             else if (monitorInfo.modelName.StartsWith("UP27"))
             {
+                if (colorPresetsUP27.TryGetValue(ColorPreset_Name, out var presetValue))
+                {
+                    strSync_ColorPreset_Name = presetValue;
+                }
+
+                /*
                 if (ColorPreset_Name == "AdobeRGB1")
                     strSync_ColorPreset_Name = "Adobe RGB D65 G2.2 L250";
 
@@ -1802,7 +1834,8 @@ namespace ColorPreset.Plugins
                     strSync_ColorPreset_Name = "BT.709 D65 BT1886 L100";
 
                 if (ColorPreset_Name == "Rec.2020 / BT.2020")
-                    strSync_ColorPreset_Name = "BT.2020 D65 BT1886 L100";               
+                    strSync_ColorPreset_Name = "BT.2020 D65 BT1886 L100"; 
+                */
 
             }
 
