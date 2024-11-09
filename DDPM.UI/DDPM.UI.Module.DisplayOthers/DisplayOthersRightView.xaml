@@ -193,7 +193,7 @@
                                                     </Border.Resources>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [DisplayOthers.7], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            <TextBlock Text="{Binding Tooltip_Settings}" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>

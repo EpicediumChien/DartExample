@@ -18,6 +18,8 @@ namespace DDPM.Easy.Common
         public Border bd { get; set; } //Attached to the UI Element (Border)
         public Rect rcRatio { get; set; } //Rect if Border is in a (x,y)=(0,0)1x1 screen
 
+        public CellBorder CellBd { get; set; }
+
         #endregion Native data members
 
         #region Ctor
@@ -34,6 +36,12 @@ namespace DDPM.Easy.Common
         {
             Name = name;
             rc = new Rect();
+        }
+
+        public CellObj(string name, CellBorder cellBd)
+        {
+            Name = name;
+            CellBd = cellBd;
         }
         #endregion Ctor
     }

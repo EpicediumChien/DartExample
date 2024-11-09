@@ -1717,6 +1717,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can export your favorite configuration from here and import into another monitor of the same model without hassle..
+        /// </summary>
+        internal static string DisplayOthers_8 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
         internal static string DisplayProperties {
@@ -2662,7 +2671,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensitivity.
+        ///   Looks up a localized string similar to Sensitive.
         /// </summary>
         internal static string HeadsetAutomatedActions_1 {
             get {
@@ -4845,6 +4854,15 @@ namespace DDPM.UI.Resources {
         internal static string Third_Party_Licenses {
             get {
                 return ResourceManager.GetString("Third_Party_Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third Party License.
+        /// </summary>
+        internal static string ThirdPartyLicense_Title {
+            get {
+                return ResourceManager.GetString("ThirdPartyLicense.Title", resourceCulture);
             }
         }
         

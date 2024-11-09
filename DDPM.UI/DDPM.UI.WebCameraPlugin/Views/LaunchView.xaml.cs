@@ -257,29 +257,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
-
-                // 20240626 jim modify
-                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
-
-
-                writeableBitmap = new(
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
-                    96,
-                    96,
-                    PixelFormats.Bgra32,
-                    null);
-
-                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
-                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
-                CameraImage.Source = writeableBitmap;
-
-                
-                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
-
-                await _vm.MediaFrameReader.StartAsync();
-
+                //Derek 1108 Move to here to fix Webcam PIMS-314613
                 // Query all properties [resolution and frame rate] of the webcam device
                 _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
 
@@ -296,6 +274,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
                 }
 
+                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
+
+                // 20240626 jim modify
+                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
+                
+                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
+
+                await _vm.MediaFrameReader.StartAsync();
+
                 DoubleAnimation visibilityAnimation = new()
                 {
                     From = 1,
@@ -304,6 +291,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 };
                 visibilityAnimation.Completed += ShowGrid;
                 imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+
+                writeableBitmap = new(
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,              
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
+                    96,
+                    96,
+                    PixelFormats.Bgra32,
+                    null);
+                react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                CameraImage.Source = writeableBitmap;
+                before_width = (int)mediaFrameSource.CurrentFormat.VideoFormat.Width;
+                before_height = (int)mediaFrameSource.CurrentFormat.VideoFormat.Height;
             }
             catch (Exception Exc)
             {
@@ -555,6 +555,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         WriteableBitmap writeableBitmap;
         SoftwareBitmap backBuffer;
         Int32Rect react;
+        int before_width = 0;
+        int before_height = 0;
 
         [ComImport]
         [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
@@ -572,25 +574,31 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_running) return;
             _running = true;
 
-            /*int frame_drop = 3;
-            count++;
-            if (count != frame_drop)
-            {
-                _running = false;
-                return;
-            }
-            if (count == frame_drop) count = 0;*/
-
             var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
 
-            Thread.Sleep(66);//15fps
+            Thread.Sleep(60);
 
             if (softwareBitmap != null)
             {
-                //ImageSource source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
 
+                    if (before_width != softwareBitmap.PixelWidth || before_height != softwareBitmap.PixelHeight)
+                    {
+                        
+                        writeableBitmap = new(
+                            softwareBitmap.PixelWidth,
+                            softwareBitmap.PixelHeight,
+                            96,
+                            96,
+                            PixelFormats.Bgra32,
+                            null);
+                        react = new Int32Rect(0, 0, writeableBitmap.PixelWidth, writeableBitmap.PixelHeight);
+                        ImageBufferSize = writeableBitmap.PixelWidth * writeableBitmap.PixelHeight * 4;
+                        CameraImage.Source = writeableBitmap;
+                        before_width = softwareBitmap.PixelWidth;
+                        before_height = softwareBitmap.PixelHeight;
+                    }
 
                     writeableBitmap.Lock();
                     using var m = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Read);
@@ -606,15 +614,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             (IntPtr)ptr,
                             (int)capacity,
                             t.Stride);
-                        writeableBitmap.AddDirtyRect(react);
 
                         //way 2:
                         /*CopyMemory(writeableBitmap.BackBuffer, (IntPtr)ptr, ImageBufferSize);
                         writeableBitmap.AddDirtyRect(react);*/
                     }
                     writeableBitmap.Unlock();
-
-                    //CameraImage.Source = source;
                 });
             }
             _running = false;
@@ -1318,6 +1323,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdatePVMargin(_vm!.VbarSelectedIndex);
+            ChangeDevNameWidth();
         }
 
         private void UpdatePVMargin(int index)
@@ -1332,6 +1338,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
             largeImage.Margin = new Thickness(40, mT, mR, mB);
+        }
+
+        private void ChangeDevNameWidth()
+        {
+            txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+        }
+
+        private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
         }
     }
 }

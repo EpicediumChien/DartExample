@@ -56,7 +56,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     {
         //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-        
+
         public static string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
         #region Private Members
 
@@ -595,6 +595,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage delayFUpdateInfo.Model : {delayFUpdateInfo.Model}");
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
+                                    fwUpdateInfo.IsUOD = delayFUpdateInfo.IsUOD;
+                                    fwUpdateInfo.Available_date = delayFUpdateInfo.Available_date;
                                     if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable > 0)
                                     {
                                         _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.DelayTimesAvailable : {_DelayFWUpdateInfoPackage.DelayTimesAvailable}");
@@ -958,9 +960,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType)
         {
             _logs.DebugMsg_1($"{nameof(Install)} start");
+            _logs.DebugMsg_1($"{nameof(Install)} installPath : {installPath}");
+            _logs.DebugMsg_1($"{nameof(Install)} deviceType : {deviceType}");
             FWUErrorCode ret = FWUErrorCode.Unknow;
             if (!string.IsNullOrEmpty(installPath))
             {
@@ -970,6 +974,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
+                            DeviceType = deviceType,
                             InstallPaths = installPath,
                             IsDisplay = isOnlyDisplay
                         };

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Text;
 using static VcpCore.Common.User32;
 
 namespace DDPM.UI.Common
@@ -243,5 +244,41 @@ namespace DDPM.UI.Common
         }
 
         public delegate bool MonitorEnumProc(IntPtr hDesktop, IntPtr hdc, ref Rect pRect, int dwData);
+
+
+        #region Read/Write INI file
+
+        //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
+        public static int IniReadInt(string sec, string key, int def, string pathName)
+        {
+            return _GetPrivateProfileInt(sec, key, def, pathName);
+        }
+
+        //Usage: int value=GetPrivateProfileInt("sectionName", "key", 3, @"C:\temp\a.ini");
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
+
+        private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
+        {
+            return GetPrivateProfileInt(section, key, def, filePath);
+        }
+
+        //Uage:
+        // //allocate string buffer, for large string you can allocate 4096 chars.
+        // StringBuilder sb1=new StringBuilder(255);
+        // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
+        // string result=sb1.ToString();
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+
+        public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
+        {
+            return GetPrivateProfileString(section, key, def, retVal, size, filePath);
+        }
+
+        #endregion Read/Write INI file
+
     }
 }

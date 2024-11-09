@@ -43,7 +43,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 DataContext = _vm;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
 
-                if (_vm.EOLList.Contains(_vm.Model))
+                if (_vm.EOLMouseList.Contains(_vm.Model))
                 {
                     Battery.Visibility = Visibility.Collapsed;
                     //btnRestore.Visibility = Visibility.Collapsed;
@@ -165,7 +165,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm!.Model != "MS700" && !_vm.EOLList.Contains(_vm.Model))
+            if (_vm!.Model != "MS700" && !_vm.EOLMouseList.Contains(_vm.Model))
             {
                 moduleGroup = new ModuleGroup()
                 {
