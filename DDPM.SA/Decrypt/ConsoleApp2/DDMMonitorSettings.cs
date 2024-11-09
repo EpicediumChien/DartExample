@@ -474,7 +474,17 @@ namespace DdmLibrary.Utility
 
         public static bool restoreDDMMonitorSettings(ref DDMMonitorSettings monitorSettings, string filename)
         {
-            byte[] content = File.ReadAllBytes(filename);
+            byte[] content = default;
+
+            try
+            {
+                content = File.ReadAllBytes(filename);
+            }
+            catch
+            {
+                return false;
+            }
+
             //Decrypted with AESKey in new setting file
             var key = Decryption.GetAESKeyFromKeyContainer();
             var decryptAES = Decryption.Decrypt(content, key);
