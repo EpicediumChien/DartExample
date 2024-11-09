@@ -263,7 +263,7 @@ namespace DDPM.UI.Module.Kvm
                         _isNKVM = false;
                         //isOnNKVM(false);
                     }
-                    bool b = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM").Result;
+                    DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
                 }
             }
         }
@@ -1279,6 +1279,39 @@ namespace DDPM.UI.Module.Kvm
             }
             DdpmCommonHelper.DeviceManagerSA.SetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
         }
+
+        #region KVM Loading
+
+        public void NKVMOpenUI()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += NKVMOpenUI_Dowork;
+            bw.RunWorkerCompleted += NKVMOpenUI_Done;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
+        }
+        private void NKVMOpenUI_Dowork(object sender, DoWorkEventArgs e)
+        {
+            DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
+            if (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            {
+                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+            }
+            OpenNKVMUI(0, 100, 100);
+            isOnNKVM(true);
+        }
+        private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
+        }
+
+        #endregion
 
         public void OnPropertyChanged_Lock()
         {
