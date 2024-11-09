@@ -72,7 +72,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper]{memberName}:{sourceFilePath}:{sourceLineNumber}: {text}";
+            //text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper] {text} ({memberName}:{sourceFilePath}:{sourceLineNumber})";
+            string className = this.GetType().Name;
+            text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper] {text}, Class:{className}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (_log != null)
             {
@@ -254,6 +256,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return false;
         }
 
+        //for PIMS-288826
         public void PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
         {
             if (devManagerSA == null)
@@ -261,7 +264,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 WriteLog("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
                 return;
             }
-            bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType.BrightnessReduce, moLists, currentMoInfo, alsSynchronizeList);
+            bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(job, moLists, currentMoInfo, alsSynchronizeList);
             byte code = 0x10;
             
             if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.BrightnessReduce ||
@@ -299,10 +302,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //already set, next loop
                         continue;
                     }
-                    obVCPValue = devManagerSA.GetVCPCapability(mi, code, 0).Result;
+                    //obVCPValue = devManagerSA.GetVCPCapability(mi, code, 0).Result;
                     if (obVCPValue.result)
                     {
-                        targetValue = (uint)obVCPValue.value;
+                        //targetValue = (uint)obVCPValue.value;
                         if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
                             targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
                         else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
