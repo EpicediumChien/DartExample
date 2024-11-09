@@ -4245,12 +4245,18 @@ namespace DDPM.CLI.Plugins.Display
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void writelog(string text, log_type log_type = log_type.info)
+        private void writelog(string text,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0,
+            log_type log_type = log_type.info)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = "[CLI Plugin Display] " + text;
+            string className = this.GetType().Name;
+
+            text = $"[CLI Plugin Display] {text}, Calss:{className}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             //Console.WriteLine(text);
             if (log_type == log_type.info)
                 Log.Info(text);
@@ -5278,7 +5284,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
                         //_Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
                         _Set_SupportedColorPreset_RESPONSE.Value = value;
-                        
+
                         if (!r)
                         {
                             _Set_SupportedColorPreset_RESPONSE.Result = "FAIL";
@@ -5585,7 +5591,7 @@ namespace DDPM.CLI.Plugins.Display
                         catch (Exception ex)
                         {
                             writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
-                        }                        
+                        }
 
                         _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
@@ -5619,7 +5625,7 @@ namespace DDPM.CLI.Plugins.Display
                         catch (Exception ex)
                         {
                             writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
-                        }                        
+                        }
 
                         // jim modify 20240608
                         _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
@@ -5658,7 +5664,7 @@ namespace DDPM.CLI.Plugins.Display
                             catch (Exception ex)
                             {
                                 writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
-                            }                            
+                            }
 
                             _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             _Set_AllMonitorProfile_RESPONSE.ServiceTag = tag;
@@ -5742,7 +5748,7 @@ namespace DDPM.CLI.Plugins.Display
                         catch (Exception ex)
                         {
                             writelog($"GetMonitorProfile Exception {ex.Message.ToString()}");
-                        }                                               
+                        }
 
                         // jim modify 20240608
                         _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -5771,7 +5777,7 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string idx in index)
                     {
                         Key_Profile_Name = string.Empty;
-                        
+
                         try
                         {
                             Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
@@ -5812,7 +5818,7 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             Key_Profile_Name = string.Empty;
-                            
+
                             try
                             {
                                 Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
@@ -7057,7 +7063,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-             monitorCount = _AllInfoMonitors.Count;
+            monitorCount = _AllInfoMonitors.Count;
 
             string output = string.Empty;
             int ret = 0;
@@ -7301,7 +7307,7 @@ namespace DDPM.CLI.Plugins.Display
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
                                 }
                             }
-                            if(ret == false)
+                            if (ret == false)
                                 return ((int)CLI_ExitCode.fail_SetVCPCapability, null);
                         }
                     }
@@ -7545,7 +7551,7 @@ namespace DDPM.CLI.Plugins.Display
                                                             displayPropertiesInfo.CurrentOrientation).Result;
 
                                                     }
-                                                }                                                 
+                                                }
                                                 else
                                                 {
                                                     cLI_RESPONSE.Result = "FAIL";
@@ -7568,7 +7574,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
 
                                 }
-                            }                    
+                            }
                             else
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -12400,7 +12406,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ColorManagementRunType.Off;
                 case "BYMONITOR":
                     return ColorManagementRunType.Bymonitor;
-                case "BYHOST": 
+                case "BYHOST":
                     return ColorManagementRunType.Byhost;
                 default: return ColorManagementRunType.Off;
             }
@@ -13743,7 +13749,7 @@ namespace DDPM.CLI.Plugins.Display
                         elable_ea = true;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
                     }
-                    else if(commandLineInput.Options[0].Option_Value == "DISABLE")
+                    else if (commandLineInput.Options[0].Option_Value == "DISABLE")
                     {
                         elable_ea = false;
                         ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
@@ -14188,14 +14194,14 @@ namespace DDPM.CLI.Plugins.Display
                 //    //LaunchNetworkkvmApp(); //Open DDM console for debug
 
                 //    MonitorInfo monitor = _AllInfoMonitors[idx];
-                    
-                    NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    //cli_Response.Model = monitor.modelName;
-                    //cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.modelName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
                 if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
                 {
@@ -14229,7 +14235,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 }
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 //}
             }
             if (commandLineInput.Command == "GET")
@@ -14241,27 +14247,27 @@ namespace DDPM.CLI.Plugins.Display
 
                 //foreach (int idx in _monitorIndeies)
                 //{
-                    //LaunchNetworkkvmApp(); //Open DDM console for debug
-                    writelog($"Networkkvm get entry");
+                //LaunchNetworkkvmApp(); //Open DDM console for debug
+                writelog($"Networkkvm get entry");
 
                 //MonitorInfo monitor = _AllInfoMonitors[idx];
 
-                    NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    //cli_Response.Model = monitor.modelName;
-                    //cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    //cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //cli_Response.Model = monitor.modelName;
+                //cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                //cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                //cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    CLIActionEvent += OnCLINKVMv2;
-                    await devMgr.GetNKVMStatus();
-                    Sleep(10000);
-                    
+                CLIActionEvent += OnCLINKVMv2;
+                await devMgr.GetNKVMStatus();
+                Sleep(10000);
 
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-             }
+
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            }
             //}
             writelog($"Networkkvm exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
@@ -14759,7 +14765,7 @@ namespace DDPM.CLI.Plugins.Display
                 //foreach (int idx in _monitorIndeies)
                 //{
                 LaunchNetworkkvmApp(Log); //Open DDM console for debug
-                                       //MonitorInfo monitor = _AllInfoMonitors[idx];
+                                          //MonitorInfo monitor = _AllInfoMonitors[idx];
                 NKVM_RESPONSE cli_Response = new NKVM_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -14864,9 +14870,9 @@ namespace DDPM.CLI.Plugins.Display
                         _AllInfoMonitors = devMgr.GetMonitors().Result;
                     _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-                //foreach (int idx in _monitorIndeies)
-                //{
-                LaunchNetworkkvmApp(Log); //Open DDM console for debug
+                    //foreach (int idx in _monitorIndeies)
+                    //{
+                    LaunchNetworkkvmApp(Log); //Open DDM console for debug
 
                     //MonitorInfo monitor = _AllInfoMonitors[idx];
 
@@ -15558,7 +15564,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
-            
+
             bool retcode = false;
 
             if (_AllInfoMonitors == null)
@@ -15591,8 +15597,8 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         retcode = devMgr.DisplayImportSettings(monitor, false, filepath).Result;
-                    } 
-                     
+                    }
+
 
                     cli_Response.Result = retcode == true ? "PASS" : "FAIL";
                     //cli_Response.Value = $"IMPORTSETTINGS";
