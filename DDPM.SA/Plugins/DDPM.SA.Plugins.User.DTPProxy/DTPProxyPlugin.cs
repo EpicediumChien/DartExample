@@ -104,6 +104,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public event EventHandler<bool> UpdateNotify;
 
+        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+
+        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
+
         public void NotifyNow()
         {
             OnNotify(new DeviceChangedEventArgs());
@@ -4859,6 +4863,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamlecom)
+            {
+                try
+                {
+                    _Webcamlecom.Connected += _comdity_Connected;
+                    _Webcamlecom.Disconnected += _comdity_Disconnected;
+                    _Webcamlecom.ZoomChanged += ZoomChanged;
+                    _Webcamlecom.ZoomMeetingTypeChanged += ZoomMeetingTypeChanged;
+                    writelog($"Webcam Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -4936,12 +4957,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         private void _comdity_Disconnected(object sender, DisconnectedArgs e)
         {
-            Debug.WriteLine($"Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            writelog($"[DTPProxy] Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
 
         private void _comdity_Connected(object sender, ConnectedArgs e)
         {
-            Debug.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+            writelog($"[DTPProxy] Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+        private void ZoomChanged(object sender, ZoomChangedArgs e)
+        {
+            writelog($"[DTPProxy] ZoomChanged e : {e}");
+            ZoomChanged_Notify?.Invoke(this, e);
+        }
+        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        {
+            writelog($"[DTPProxy] ZoomMeetingTypeChanged e : {e}");
+            ZoomMeetingTypeChanged_Notify?.Invoke(this, e);
         }
 
         #region Headset Event

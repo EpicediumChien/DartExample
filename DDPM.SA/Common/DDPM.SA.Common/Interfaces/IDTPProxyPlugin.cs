@@ -11,8 +11,10 @@
 #endregion
 
 using Dell.Client.Framework.Common;
+using Dell.TechHub.Commodity.Peripheral;
 using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -163,6 +165,10 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWakeonApproachEnable(string Guid);
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+
+        public event EventHandler<ZoomChangedArgs> ZoomChanged_Notify;
+
+        public event EventHandler<ZoomMeetingTypeChangedArgs> ZoomMeetingTypeChanged_Notify;
 
         #endregion
 

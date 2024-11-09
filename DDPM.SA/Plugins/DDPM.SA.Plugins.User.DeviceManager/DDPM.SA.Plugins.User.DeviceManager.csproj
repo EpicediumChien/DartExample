@@ -26,6 +26,9 @@
     <Reference Include="DdmLibrary">
       <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="DDPM.Peripherals.interface">
+      <HintPath>..\..\dll\DDPM.Peripherals.interface.dll</HintPath>
+    </Reference>
     <Reference Include="DPeMClientBroker">
       <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
     </Reference>

@@ -31,6 +31,7 @@ using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Dell.TechHub.Commodity.Peripheral;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -8954,7 +8955,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region WebCamera
-
+        private void ZoomChanged(object sender, ZoomChangedArgs e)
+        {
+            writelog($"[DeviceManager] ZoomChanged e : {e}");
+        }
+        private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
+        {
+            writelog($"[DeviceManager] ZoomMeetingTypeChanged e : {e}");
+        }
         private void QAMCloseEvent(object o, EventArgs e)
         {
             if (_QAM != null)
