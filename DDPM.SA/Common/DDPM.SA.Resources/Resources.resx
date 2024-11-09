@@ -492,4 +492,10 @@
   <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
     <value>Firmware update in progress. Fail to abort.</value>
   </data>
+  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Unable_to_synchronize_the_corresponding_ ICC_profile" xml:space="preserve">
+    <value>Unable to synchronize the corresponding ICC profile for</value>
+  </data>
 </root>
