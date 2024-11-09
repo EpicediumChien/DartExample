@@ -53,9 +53,9 @@ namespace DDPM.UI.Common.ViewModels
                 else if (SplitCtrl != null)
                 {
                     //Release version:
-                    return $"{SplitCtrl.FriendlyName}";
+                    //return $"{SplitCtrl.FriendlyName}";
                     //Debug version
-                    //return $"[{CustomId}]{SplitCtrl.FriendlyName}";
+                    return $"[{SplitCtrl.EAID}]{SplitCtrl.FriendlyName}";
                 }
                 return "";
             }

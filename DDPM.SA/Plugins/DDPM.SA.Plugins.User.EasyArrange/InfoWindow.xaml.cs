@@ -230,7 +230,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Rect rcArrange = _vmArrange.HoveringCellObj.rc;
 
             if (_vmArrange.HoveringWindow.Equals("aws"))
+            {
                 rcArrange = _vmArrange.AwsWindow.CalculateHoveringCellArrangeRect();
+            }
 
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vmArrange.EzSettings.IsWidthoutGap)
