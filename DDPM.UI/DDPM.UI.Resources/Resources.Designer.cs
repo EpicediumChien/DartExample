@@ -4858,6 +4858,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Third Party License.
+        /// </summary>
+        internal static string ThirdPartyLicense_Title {
+            get {
+                return ResourceManager.GetString("ThirdPartyLicense.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Toggle Vision Engine.
         /// </summary>
         internal static string Toggle_Vision_Engine {
