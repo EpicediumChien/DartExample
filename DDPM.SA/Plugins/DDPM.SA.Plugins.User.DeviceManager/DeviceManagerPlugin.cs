@@ -560,7 +560,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Info = "Unable to synchronize the corresponding ICC profile for"+m.modelName,
                         IsInfo = true,
                         IsOnlyUpdate = false,
-                        StayOpen = true,
+                        StayOpen = false,
                         Timeout = 5,
                     };
                     CallPopup(this, popupContentPackage);
