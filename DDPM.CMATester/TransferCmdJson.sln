@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferCmdJson", "TransferCmdJson\TransferCmdJson.csproj", "{C7DFCE87-E9D7-4B3E-BC78-7EDDF84AED3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransferCmdJson", "TransferCmdJson\TransferCmdJson.csproj", "{C7DFCE87-E9D7-4B3E-BC78-7EDDF84AED3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMATester", "CMATester\CMATester.csproj", "{A3C20428-B3E0-43CE-85A1-EEE5F91DC416}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C7DFCE87-E9D7-4B3E-BC78-7EDDF84AED3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7DFCE87-E9D7-4B3E-BC78-7EDDF84AED3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7DFCE87-E9D7-4B3E-BC78-7EDDF84AED3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3C20428-B3E0-43CE-85A1-EEE5F91DC416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3C20428-B3E0-43CE-85A1-EEE5F91DC416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3C20428-B3E0-43CE-85A1-EEE5F91DC416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3C20428-B3E0-43CE-85A1-EEE5F91DC416}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
