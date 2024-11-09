@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Export a configuration and important to another monitor of the same model</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>You can export your favorite configuration from here and import into another monitor of the same model without hassle.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>High Data Speed</value>
   </data>
