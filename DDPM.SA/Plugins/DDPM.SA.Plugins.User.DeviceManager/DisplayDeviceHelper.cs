@@ -221,6 +221,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //for PIMS-288826
         public bool isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
         {
+            if(moLists == null || moLists.Count <= 1)
+            {
+                return false; 
+            }
             if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease ||
                 job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
             {
