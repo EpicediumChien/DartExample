@@ -18,7 +18,6 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.User.CLIManager
@@ -173,9 +172,20 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 Log.Error(text);
         }
 
-        private static void OutputLog(object o, CommandLineInput commandLineInput)
+        private static void OutputLog(string output, CommandLineInput commandLineInput)
         {
-            new CLI_RESPONSE().OutputLog(o, commandLineInput);
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(output);
+                }
+            }
         }
 
         private void InitializeCliManagerPlugin()
@@ -546,11 +556,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 if (cliEventResult != null)
                 {
                     _CliManagerPlugin.WriteCommandResult(cliEventResult);
-
-                    if (!string.IsNullOrWhiteSpace(commandLineInput.LogPath))
-                    {
-                        OutputLog(JsonConvert.DeserializeObject(cliEventResult.serialize_Json_response) ?? "", commandLineInput);
-                    }
+                    OutputLog(cliEventResult.serialize_Json_response, commandLineInput);
                 }
             });
         }
