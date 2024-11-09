@@ -64,12 +64,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             };
         }
 
-        private void WriteLog(string text, log_type log_type = log_type.info)
+        private void WriteLog(string text, log_type log_type = log_type.info, 
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DeviceManager][Display] {text}";
+            text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper]{memberName}:{sourceFilePath}:{sourceLineNumber}: {text}";
             Console.WriteLine(text);
             if (_log != null)
             {
@@ -254,7 +257,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public void PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType job, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
         {
             if (devManagerSA == null)
+            {
+                WriteLog("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
                 return;
+            }
             bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(HotkeyType.BrightnessReduce, moLists, currentMoInfo, alsSynchronizeList);
             byte code = 0x10;
             
@@ -269,38 +275,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
                 return;
-            
+
+            ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
+            uint targetValue = (uint)obVCPValue.value;
+            if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
+                targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
+            else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
+                targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
+            else
+            {
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job: {job}");
+                return;
+            }
+            bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue).Result;
+            WriteLog($"{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
+
             if (doSync)
             {
                 foreach (MonitorInfo mi in moLists)
                 {
-                    ObjGetVCP obBrightness = devManagerSA.GetVCPCapability(mi, code, 0).Result;
-                    if (obBrightness.result)
+                    if(currentMoInfo.modelName.Equals(mi.modelName) && currentMoInfo.edid.ServiceTag.Equals(mi.edid.ServiceTag))
                     {
-                        uint brightnessValue = (uint)obBrightness.value;
+                        //already set, next loop
+                        continue;
+                    }
+                    obVCPValue = devManagerSA.GetVCPCapability(mi, code, 0).Result;
+                    if (obVCPValue.result)
+                    {
+                        targetValue = (uint)obVCPValue.value;
                         if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
-                            brightnessValue = ((uint)obBrightness.value) >= 95 ? 100 : ((uint)obBrightness.value + 5);
+                            targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
                         else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
-                            brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
+                            targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
                         else
                             continue;
-                        bool ret = devManagerSA.SetVCPCapability(mi, code, brightnessValue).Result;
-                        WriteLog($"{job}:[{mi.edid.ModelName}:{mi.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+                        ret = devManagerSA.SetVCPCapability(mi, code, targetValue).Result;
+                        WriteLog($"{job}:[{mi.edid.ModelName}:{mi.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
                     }
                 }
-            }
-            else
-            {
-                ObjGetVCP obBrightness = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
-                uint brightnessValue = (uint)obBrightness.value;
-                if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
-                    brightnessValue = ((uint)obBrightness.value) >= 95 ? 100 : ((uint)obBrightness.value + 5);
-                else if (job == HotkeyType.BrightnessReduce || job == HotkeyType.LuminanceReduce || job == HotkeyType.ContrastReduce)
-                    brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
-                else
-                    return;
-                bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, brightnessValue).Result;
-                WriteLog($"{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
             }
         }
 
