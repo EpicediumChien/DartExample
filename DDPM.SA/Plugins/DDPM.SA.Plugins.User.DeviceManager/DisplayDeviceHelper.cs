@@ -72,7 +72,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            //text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper] {text} ({memberName}:{sourceFilePath}:{sourceLineNumber})";
             string className = this.GetType().Name;
             text = $"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")}[DisplayDeviceHelper] {text}, Class:{className}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
