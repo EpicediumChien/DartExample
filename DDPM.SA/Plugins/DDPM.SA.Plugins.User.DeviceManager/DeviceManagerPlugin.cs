@@ -5378,7 +5378,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_disDevHelper == null)
                 return Task.FromResult("null");
-            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors, currentMoInfo, alsSynchronizeList).Result);
         }
 
         #endregion
@@ -9506,7 +9506,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (deviceInfo.Type == DeviceType.LogicalDock)
                     {
-                        dockCount++;
+                        if (_peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
+                        {
+                            dockCount++;
+                        }
                     }
                     if (dockCount >= 2)
                     {
