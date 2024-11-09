@@ -13,6 +13,7 @@ using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -900,10 +901,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (IsPresetOpen)
             { btnPreset_Click(this, null); }
             btnPreset.IsEnabled = false;
+
+            //Derek 1110 for Webcam PIMS-315440
+            //During video recording, do"Restart" &"Shutdown"action in SUT,
+            //the video which I just recorded will have no length.
+            SystemEvents.SessionEnding += new SessionEndingEventHandler(SystemEvents_SessionEnding);
+
             StartRecord();
         }
 
+        private void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            //if (e.Reason == SessionEndReasons.SystemShutdown)
+            //{
+            //    UserStopRecord();
+            //}
+            //else if (e.Reason == SessionEndReasons.Logoff)
+            //{
+            //    UserStopRecord();
+            //}
+
+            UserStopRecord();
+        }
+
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            UserStopRecord();
+        }
+
+        private void UserStopRecord()
         {
             StopRecord();
             RecordingTimer.Stop();
