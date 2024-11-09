@@ -242,6 +242,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private string debugPreMsg = string.Empty;
         private System.Drawing.Point previousCursorPosition = new System.Drawing.Point { X = 0, Y = 0 };
         private bool isKvm_Auto_SwitchKbMsKey = false;
+        private bool isKvm_Auto_SwitchKbMsWideMove = false;
         private int KvmAutoSwitchCounter = 0;
         private void OnUsbKvmAutoSwitchTimedRaise(object sender, ElapsedEventArgs e)
         {
@@ -253,6 +254,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (monitorInfo != null)
             {
                 string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+
+                if (isKvm_Auto_SwitchKbMsWideMove)
+                {
+                    if ((cursorPosition.X <= (previousCursorPosition.X - 50)) || (cursorPosition.X >= (previousCursorPosition.X + 50)) ||
+                        (cursorPosition.Y <= (previousCursorPosition.Y - 50)) || (cursorPosition.Y >= (previousCursorPosition.Y + 50)))
+                    {
+                        isKvm_Auto_SwitchKbMsWideMove = false;
+                    }
+                    return;
+                }
                 if (isUsbKvmCursorEdge(monitorInfo, currentScreen, cursorPosition))
                 {
                     KvmAutoSwitchCounter += 1;
@@ -281,6 +292,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //send usbKvm switch
 
                     isKvm_Auto_SwitchKbMsKey = true;
+                    isKvm_Auto_SwitchKbMsWideMove = true;
                     KvmAutoSwitchCounter = 0;
                     previousCursorPosition = cursorPosition;
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_Auto_SwitchKbMsKey));
@@ -5307,7 +5319,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<string> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
         {
-            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors, currentMoInfo, alsSynchronizeList).Result);
         }
 
         #endregion
