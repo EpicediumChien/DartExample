@@ -50,6 +50,9 @@ namespace DDPM.EABroker
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
+            InitLayoutList();
+            //InitPresetLayoutsComboBox();
         }
         #endregion Init
 
@@ -149,6 +152,7 @@ namespace DDPM.EABroker
                 _vm.WriteLog($"@OnWindowStartMovingProc, {_vm.StartMovingMsg}");
             }
 
+            //Get current Screen from cursor
             _vm.RefreshWorkScreen();
 
             //Step_2, Set flags to show windows
@@ -159,7 +163,8 @@ namespace DDPM.EABroker
 
             if (_vm.IsAwsWindowVisible)
             {
-                _vm.AwsWindow.ReloadRecentList(_vm.WorkScreen.DeviceName);
+                //AwsWindowVisibilityChange will trigger to call this method
+                //_vm.AwsWindow.ReloadRecentList(_vm.WorkScreen.DeviceName);
             }
 
             //Temporary always update
@@ -215,8 +220,11 @@ namespace DDPM.EABroker
             Rect rcArrange = hoveringCellObj.rc;
 
             if (_vm.HoveringWindow.Equals("aws"))
-                rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
-
+            {
+                rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow(); 
+                if (rcArrange.IsEmpty)
+                    rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+            }
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vm.IsWithoutGap)
             {
@@ -294,5 +302,29 @@ namespace DDPM.EABroker
         }
 
         #endregion Window Event Handlers
+
+        #region Layouts
+        private void InitLayoutList()
+        {
+            foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
+            {
+                lbLayouts.Items.Add($"({isp.EAID}) {isp.CtrlClass}");
+            }
+        }
+        private void reloadCustomLayoutsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void sekectLayoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            object selItem = lbLayouts.SelectedItem;
+            if (selItem != null)
+            {
+                System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+                Screen scr = Screen.FromHandle(wndHelper.Handle);
+            }
+        }
+        #endregion
+
     }
 }

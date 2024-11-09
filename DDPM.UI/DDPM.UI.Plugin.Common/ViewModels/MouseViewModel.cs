@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -186,8 +187,13 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if (deviceInfo.LogicalDeviceType.Contains("Mouse"))
+                if (deviceInfo.LogicalDeviceType.Contains("Mouse") && !DeviceInfos.ContainsKey(deviceInfo.ID))
                 {
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                }
+                if (EOLMouseList.Contains(deviceInfo.Name))
+                {
+                    deviceInfo.ModelNumber = deviceInfo.Name;
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
             }
@@ -207,7 +213,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             //IsDPIValueVisible = CurrentDeviceInfo.IsDPIValueSupported;
             //IsDPIValueVisible = false;
-            if (IsDPIValueVisible && !EOLList.Contains(Model))
+            if (IsDPIValueVisible && !EOLMouseList.Contains(Model))
             {
                 //DPIMax = CurrentDeviceInfo.DpiMax;
                 //DPIMin = CurrentDeviceInfo.DpiMin;

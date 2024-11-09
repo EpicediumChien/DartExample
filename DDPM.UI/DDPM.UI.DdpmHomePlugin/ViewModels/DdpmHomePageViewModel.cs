@@ -31,6 +31,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
+        private List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
+        private List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -199,7 +202,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                     //Apply device category
                     DeviceType devType = di.Type;
-                    if (devType.ToString().Contains("Keyboard"))
+                    if (EOLKBList.Contains(di.Name))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.KB;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxKB;
+                        idxKB++;
+                    }
+                    else if (EOLMouseList.Contains(di.Name))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Mouse;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
+                        idxKB++;
+                    }
+                    else if (devType.ToString().Contains("Keyboard"))
                     {
                         dev.DeviceCategory = eDeviceCategory.KB;
                         //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
@@ -256,7 +271,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                             case "P3424WEB": //internal webcamera
                                 imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
-                                break;                                
+                                break;
 
                             case "U3223QZ": //internal webcamera
                                 imagepath = "Resources/WebCamModel_U3223QZ_Small.png";

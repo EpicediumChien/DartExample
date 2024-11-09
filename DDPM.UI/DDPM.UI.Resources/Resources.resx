@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Export a configuration and important to another monitor of the same model</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>You can export your favorite configuration from here and import into another monitor of the same model without hassle.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>High Data Speed</value>
   </data>
@@ -847,7 +850,7 @@
     <value>Wear Detection</value>
   </data>
   <data name="HeadsetAutomatedActions.1" xml:space="preserve">
-    <value>Sensitivity</value>
+    <value>Sensitive</value>
   </data>
   <data name="HeadsetAutomatedActions.2" xml:space="preserve">
     <value>Low</value>
@@ -2327,5 +2330,14 @@
   </data>
   <data name="HeadsetAudioSettings.30" xml:space="preserve">
     <value>Applies when you're listening to multimedia, such as music or podcasts</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>Auto Brightness is currently enabled. Do you wish to disable it to continue?</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Third Party License</value>
   </data>
 </root>

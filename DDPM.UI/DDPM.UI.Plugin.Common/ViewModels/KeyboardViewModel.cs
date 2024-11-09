@@ -111,6 +111,12 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (deviceInfo.LogicalDeviceType.Contains("Keyboard"))
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+
+                if (EOLKBList.Contains(deviceInfo.Name))
+                {
+                    deviceInfo.ModelNumber = deviceInfo.Name;
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                }
             }
         }
 

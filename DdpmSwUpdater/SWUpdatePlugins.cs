@@ -75,6 +75,9 @@ namespace DdpmSwUpdater
         private string URL = $"https://clientperipherals.dell.com/DDPM/";
         private string URL_Folder = $"/Windows/Application/";
         private string TestURL_Folder = $"/ddpm/Application/";
+        private bool _bFirstInstance;
+        private Mutex? _instanceMutex;
+        private string? _applicationName;
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
 
@@ -104,7 +107,7 @@ namespace DdpmSwUpdater
                 {
                     SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                     {
-                        TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
+                        TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,
                         ServerPath = swUpdateHelper.Softwares[i].ServerPath,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath,
@@ -127,6 +130,21 @@ namespace DdpmSwUpdater
             }
             LogManage.LogMessage($"swUpdateInfos ok");
             LogManage.LogMessage($"swUpdateInfos.Count {swUpdateInfos.Count}");
+            foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
+            {
+                string appName = Path.GetFileName(swUpdateInfo.ServerPath);
+                LogManage.LogMessage($"appName : {appName}");
+                _instanceMutex = new Mutex(false, appName, out _bFirstInstance);
+                if (!_bFirstInstance)
+                {
+                    LogManage.LogMessage($"The program is already running and a new instance cannot be started");
+                    swUpdateInfo.SWUErrorCode = SWUErrorCode.ServiceNotRunning;
+                    return Task.FromResult(swUpdateInfos);
+                }
+            }
+            LogManage.LogMessage($"_instanceMutex?.Dispose() go");
+            _instanceMutex?.Dispose();
+            LogManage.LogMessage($"_instanceMutex?.Dispose() done");
             Thread.Sleep(5000);
             try
             {
@@ -291,7 +309,7 @@ namespace DdpmSwUpdater
                 }
                 _notificationStr = $"{_SWUpdateInfo.SoftwareName} Update failed due to network error. Try again.";
                 NotificationFWupdate("Error", _notificationStr);
-                LogManage.LogMessage(nameof(DownloadAndInstall) + " Error：Update failed due to network error. Try again. ex:" + ex.Message); // 輸出錯誤訊息
+                LogManage.LogMessage(nameof(DownloadAndInstall) + " Error：" + ex.Message); // 輸出錯誤訊息
                 return Task.FromResult(swUpdateInfos);
             }
         }

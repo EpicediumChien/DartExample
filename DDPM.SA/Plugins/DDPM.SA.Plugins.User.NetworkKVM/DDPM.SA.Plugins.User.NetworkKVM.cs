@@ -241,6 +241,7 @@ namespace NetworkKVM.Plugins
             if (pipeServer.IsConnected)
             {
                 MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
+                _COMMAND.UpdateChecksum();
                 WriteAsync(_COMMAND.ToJson()).Wait();
             }
             return Task.CompletedTask;
@@ -322,7 +323,7 @@ namespace NetworkKVM.Plugins
                     cid = cid + 1;
                     ON_NKVM _COMMAND = new ON_NKVM();
                     _COMMAND.cid = cid;
-                    _COMMAND.Checksum = _COMMAND.CalculateChecksum();
+                    _COMMAND.UpdateChecksum();
                     //_COMMAND.type = "ON_NKVM";
                     NKVMState = true;
                     WriteAsync(_COMMAND.ToJson()).Wait();
@@ -341,7 +342,7 @@ namespace NetworkKVM.Plugins
                     cid = cid + 1;
                     OFF_NKVM _COMMAND = new OFF_NKVM();
                     _COMMAND.cid = cid;
-                    _COMMAND.Checksum = _COMMAND.CalculateChecksum();
+                    _COMMAND.UpdateChecksum();
                     //_COMMAND.type = "OFF_NKVM";
                     NKVMState = false;
                     WriteAsync(_COMMAND.ToJson()).Wait();
@@ -1224,13 +1225,37 @@ namespace NetworkKVM.Plugins
                                         }
                                         else
                                         {
-                                            var matches = Regex.Matches(response, @"\{.*?\}");
-                                            if (matches != null)
+                                            //var matches = Regex.Matches(response, @"\{.*?\}");
+                                            List<string> respList = new List<string>();
+                                            int braceCount = 0;
+                                            int startIndex = 0;
+
+                                            for (int l = 0; l < response.Length; l++)
                                             {
-                                                foreach (Match match in matches)
+                                                if (response[l] == '{')
                                                 {
-                                                    _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
-                                                    JsonstringParse(match.Value).Wait(); //read json type
+                                                    if (braceCount == 0)
+                                                    {
+                                                        startIndex = l;
+                                                    }
+                                                    braceCount++;
+                                                }
+                                                else if (response[l] == '}')
+                                                {
+                                                    braceCount--;
+
+                                                    if (braceCount == 0)
+                                                    {
+                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                    }
+                                                }
+                                            }
+                                            if (respList != null)
+                                            {
+                                                foreach (string resp  in respList)
+                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                    JsonstringParse(resp).Wait(); //read json type
                                                 }
                                             }
                                         }
@@ -1319,13 +1344,37 @@ namespace NetworkKVM.Plugins
                                         }
                                         else
                                         {
-                                            var matches = Regex.Matches(response, @"\{.*?\}");
-                                            if (matches != null)
+                                            //var matches = Regex.Matches(response, @"\{.*?\}");
+                                            List<string> respList = new List<string>();
+                                            int braceCount = 0;
+                                            int startIndex = 0;
+
+                                            for (int l = 0; l < response.Length; l++)
                                             {
-                                                foreach (Match match in matches)
+                                                if (response[l] == '{')
                                                 {
-                                                    _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
-                                                    JsonstringParse(match.Value).Wait(); //read json type
+                                                    if (braceCount == 0)
+                                                    {
+                                                        startIndex = l;
+                                                    }
+                                                    braceCount++;
+                                                }
+                                                else if (response[l] == '}')
+                                                {
+                                                    braceCount--;
+
+                                                    if (braceCount == 0)
+                                                    {
+                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                    }
+                                                }
+                                            }
+                                            if (respList != null)
+                                            {
+                                                foreach (string resp in respList)
+                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                    JsonstringParse(resp).Wait(); //read json type
                                                 }
                                             }
                                         }
@@ -1468,11 +1517,11 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] Client Connect....");
             try
             {
-#if RELEASE
+//#if RELEASE
             string info;
             if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
             {
-#endif
+//#endif
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 if (isMonintorChange)
                 {
@@ -1481,7 +1530,7 @@ namespace NetworkKVM.Plugins
                 }
                 ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
-#if RELEASE
+//#if RELEASE
             }
             else
             {
@@ -1489,7 +1538,7 @@ namespace NetworkKVM.Plugins
                 Disconnect();
                 CreateNamedPipe_init();
             }
-#endif
+//#endif
             }
             catch (Exception ex)
             {
@@ -1538,7 +1587,20 @@ namespace NetworkKVM.Plugins
         private async Task<string> ReadAsync()
         {
             byte[] buffer = new byte[2048];
-            int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            int bytesRead = default;
+
+            try
+            {
+                bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            }
+            catch (Exception ex) 
+            { 
+                _logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
+                return string.Empty;
+            }
+
             string readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
             _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
             return readmessage;
@@ -1550,152 +1612,159 @@ namespace NetworkKVM.Plugins
             string reStr = string.Empty;
             if (!string.IsNullOrEmpty(jsonstring))
             {
-                JToken jToken = JToken.Parse(jsonstring);
-                if (jToken != null)
+                try
                 {
-                    if (jToken.Type == JTokenType.Object)
+                    JToken jToken = JToken.Parse(jsonstring);
+                    if (jToken != null)
                     {
-                        _logs.DebugMsg("[NetworkKVM] jsonstring is JObject");
-                        JObject json = (JObject)jToken;
-                        if (json.ContainsKey("type"))
+                        if (jToken.Type == JTokenType.Object)
                         {
-                            if (json["type"].Type != JTokenType.Null)
+                            _logs.DebugMsg("[NetworkKVM] jsonstring is JObject");
+                            JObject json = (JObject)jToken;
+                            if (json.ContainsKey("type"))
                             {
-                                type = (string)json["type"];
-                                _logs.DebugMsg("[NetworkKVM] type: " + type);
-                                switch (type)
+                                if (json["type"].Type != JTokenType.Null)
                                 {
-                                    case "SET_VCP":
-                                        SetVCP(jsonstring).Wait();
-                                        break;
+                                    type = (string)json["type"];
+                                    _logs.DebugMsg("[NetworkKVM] type: " + type);
+                                    switch (type)
+                                    {
+                                        case "SET_VCP":
+                                            SetVCP(jsonstring).Wait();
+                                            break;
 
-                                    case "GET_VCP":
-                                        GetVCP(jsonstring).Wait();
-                                        break;
+                                        case "GET_VCP":
+                                            GetVCP(jsonstring).Wait();
+                                            break;
 
-                                    case "GET_MONITOR_INFO":
-                                        GetMonitorInfo(jsonstring).Wait();
-                                        break;
+                                        case "GET_MONITOR_INFO":
+                                            GetMonitorInfo(jsonstring).Wait();
+                                            break;
 
-                                    case "GET_CURRENT_MONITOR_INDEX":
-                                        GetCurrentMonitorIndex(jsonstring).Wait();
-                                        break;
+                                        case "GET_CURRENT_MONITOR_INDEX":
+                                            GetCurrentMonitorIndex(jsonstring).Wait();
+                                            break;
 
-                                    case "IS_HOTKEY_AVAILABLE":
-                                        isHotkeyAvailable(jsonstring).Wait();
-                                        break;
+                                        case "IS_HOTKEY_AVAILABLE":
+                                            isHotkeyAvailable(jsonstring).Wait();
+                                            break;
 
-                                    case "DISCONNECT":
-                                        Disconnect();
-                                        break;
+                                        case "DISCONNECT":
+                                            Disconnect();
+                                            break;
 
-                                    case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            ResponseSupportedMonitor().Wait();
-                                        }
-                                        else
-                                        {
-                                            OnNKVM().Wait();
-                                        }
-                                        break;
+                                        case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                ResponseSupportedMonitor().Wait();
+                                            }
+                                            else
+                                            {
+                                                OnNKVM().Wait();
+                                            }
+                                            break;
 
-                                    case "ON_NKVM_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            OnNKVM().Wait();
-                                        }
-                                        break;
+                                        case "ON_NKVM_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                OnNKVM().Wait();
+                                            }
+                                            break;
 
-                                    case "OFF_NKVM_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            OffNKVM().Wait();
-                                        }
-                                        break;
+                                        case "OFF_NKVM_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                OffNKVM().Wait();
+                                            }
+                                            break;
 
-                                    case "SET_HOTKEY":
-                                        GetSetHotkey(jsonstring).Wait();
-                                        break;
+                                        case "SET_HOTKEY":
+                                            GetSetHotkey(jsonstring).Wait();
+                                            break;
 
-                                    case "SET_HOTKEY_RESPONSE":
-                                        if (!ResponseSucces(json).Result && _HotkeyInfo != null)
-                                        {
-                                            bool b = SetHotkey(_HotkeyInfo).Result;
-                                        }
-                                        break;
+                                        case "SET_HOTKEY_RESPONSE":
+                                            if (!ResponseSucces(json).Result && _HotkeyInfo != null)
+                                            {
+                                                bool b = SetHotkey(_HotkeyInfo).Result;
+                                            }
+                                            break;
 
-                                    case "GET_NKVM_VERSION_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetVersionResponse(jsonstring);
-                                        }
-                                        break;
+                                        case "GET_NKVM_VERSION_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetVersionResponse(jsonstring);
+                                            }
+                                            break;
 
-                                    case "GET_NKVM_STATUS_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetStatusResponse(jsonstring);
-                                        }
-                                        break;
+                                        case "GET_NKVM_STATUS_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetStatusResponse(jsonstring);
+                                            }
+                                            break;
 
-                                    case "GET_NKVM_AUTO_CONNECT_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetAutoConnectResponse(jsonstring);
-                                        }
-                                        break;
+                                        case "GET_NKVM_AUTO_CONNECT_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetAutoConnectResponse(jsonstring);
+                                            }
+                                            break;
 
-                                    case "GET_NKVM_CONTENT_TRANSFER_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetContentTransferResponse(jsonstring);
-                                        }
-                                        break;
+                                        case "GET_NKVM_CONTENT_TRANSFER_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetContentTransferResponse(jsonstring);
+                                            }
+                                            break;
 
-                                    case "GET_NKVM_INCOMMING_PORT_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetIncommingPortResponse(jsonstring);
-                                        }
-                                        break;
-                                    case "GET_NKVM_OUTGOING_PORT_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetOutgoingPortResponse(jsonstring);
-                                        }
-                                        break;
+                                        case "GET_NKVM_INCOMMING_PORT_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetIncommingPortResponse(jsonstring);
+                                            }
+                                            break;
+                                        case "GET_NKVM_OUTGOING_PORT_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetOutgoingPortResponse(jsonstring);
+                                            }
+                                            break;
 
-                                    case "GET_NKVM_CONTENT_TRANSFER_PORT_RESPONSE":
-                                        if (!ResponseSucces(json).Result)
-                                        {
-                                            GetContentTransfedPortResponse(jsonstring);
-                                        }
-                                        break;
+                                        case "GET_NKVM_CONTENT_TRANSFER_PORT_RESPONSE":
+                                            if (!ResponseSucces(json).Result)
+                                            {
+                                                GetContentTransfedPortResponse(jsonstring);
+                                            }
+                                            break;
 
-                                    default:
-                                        //NotFindType(json).Wait();
-                                        break;
+                                        default:
+                                            //NotFindType(json).Wait();
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg("[NetworkKVM] json type is null");
                                 }
                             }
                             else
                             {
-                                _logs.DebugMsg("[NetworkKVM] json type is null");
+                                _logs.DebugMsg("[NetworkKVM] jsonstring is not find type");
                             }
                         }
                         else
                         {
-                            _logs.DebugMsg("[NetworkKVM] jsonstring is not find type");
+                            _logs.DebugMsg("[NetworkKVM] jsonstring is not JObject");
                         }
                     }
                     else
                     {
-                        _logs.DebugMsg("[NetworkKVM] jsonstring is not JObject");
+                        _logs.DebugMsg("[NetworkKVM] jToken is null");
                     }
                 }
-                else
+                catch(Exception ex)
                 {
-                    _logs.DebugMsg("[NetworkKVM] jToken is null");
+                    _logs.DebugMsg("[NetworkKVM] JsonstringParse exception : " + ex.ToString());
                 }
             }
             else
@@ -2388,18 +2457,35 @@ namespace NetworkKVM.Plugins
         private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
         {
             _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
-            if (e.vcpcode.Equals("60") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
+            if (e.vcpcode.Equals("input select") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
             {
                 _logs.DebugMsg("[NetworkKVM] VCPchanged " + e.vcpcode);
                 try
                 {
-                    int vcpcode = Convert.ToInt32(e.vcpcode);
-                    int value = Convert.ToInt32(e.value);
+                    int vcpcode = 0;
+                    int value = 0;
+                    if (e.vcpcode.Equals("input select"))
+                    {
+                        vcpcode = 96;
+                        ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x60).Result;
+                        if (objGetVCP != null && objGetVCP.result)
+                        {
+                            value = (int)(uint)objGetVCP.value;
+                            _logs.DebugMsg("[NetworkKVM] VCPcode value " + value);
+                        }
+                    }
+                    else
+                    {
+                        vcpcode = Convert.ToInt32(e.vcpcode, 16);
+                        _logs.DebugMsg("[NetworkKVM] VCPcode " + vcpcode);
+                        value = Convert.ToInt32(e.value);
+                        _logs.DebugMsg("[NetworkKVM] VCPcode value " + value);
+                    }
                     SetVCPNotify(e.monitor, vcpcode, value);
                 }
-                catch
+                catch(Exception ex) 
                 {
-                    ;
+                    _logs.DebugMsg("[NetworkKVM] VCPchanged exception : " + ex.ToString());
                 }
             }
         }

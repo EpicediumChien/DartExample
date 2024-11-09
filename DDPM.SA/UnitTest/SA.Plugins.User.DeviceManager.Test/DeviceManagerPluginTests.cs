@@ -9,6 +9,8 @@ using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
+using DPeMPublic.Common.Enums;
+
 //using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
 using Moq;
 using System.Security.Cryptography;
@@ -1651,7 +1653,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
-            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUErrorCode()));
+            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<DeviceType>())).Returns(Task.FromResult(new FWUErrorCode()));
             privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
             // Execute and Verify
 

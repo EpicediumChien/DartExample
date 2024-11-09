@@ -1895,19 +1895,35 @@ namespace ColorPreset.Plugins
         // Compute the file's SHA256 hash.
         private byte[] GetHashSha256(string filename)
         {
-            using (FileStream stream = System.IO.File.OpenRead(filename))
+            try
             {
-                return Sha256.ComputeHash(stream);
+                using (FileStream stream = System.IO.File.OpenRead(filename))
+                {
+                    return Sha256.ComputeHash(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetHashSha256 exception, message: ({ex.Message})");
+                return default;
             }
         }
 
         // Compute the file's SHA512 hash.
         private byte[] GetHashSha512(string filename)
         {
-            using (FileStream stream = System.IO.File.OpenRead(filename))
+            try
             {
-                return Sha512.ComputeHash(stream);
+                using (FileStream stream = System.IO.File.OpenRead(filename))
+                {
+                    return Sha512.ComputeHash(stream);
+                }
             }
+            catch (Exception ex)
+            {
+                writelog($"GetHashSha512 exception, message: ({ex.Message})");
+                return default;
+            }            
         }
 
         // 驗證伺服器證書
@@ -2110,6 +2126,26 @@ namespace ColorPreset.Plugins
                 writelog("[PinPublicKey] certificate null.");
                 return false;
             }
+
+            try
+            {
+                X509Chain x509Chain = new X509Chain();
+                x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+                x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                x509Chain.ChainPolicy.UrlRetrievalTimeout = new System.TimeSpan(0, 1, 0);
+                x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+                if(!x509Chain.Build(certificate2))
+                {
+                    writelog("[PinPublicKey] Certificate is invaild!");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {                
+                writelog("[PinPublicKey] error: " + ex.Message);
+            }
+
+
             HttpWebRequest httpWebRequest = sender as HttpWebRequest;
             if (httpWebRequest == null)
             {

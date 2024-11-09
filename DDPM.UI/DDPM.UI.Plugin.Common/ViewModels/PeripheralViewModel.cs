@@ -52,7 +52,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
-        public List<string> EOLList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        //public List<string> EOLList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
+        public List<string> EOLKBList = new() { "WK636", "WK717", "KM714", "KM717", "WM126", "UV514" };
+        public List<string> EOLMouseList = new() { "WK717", "KM714", "KM717", "WM126", "WM116", "WM326", "WM527", "WM514", "UV514" };
         //public DDPMSettings? DDPMSettings;
         //public WebcamSettings WebcamSettings = new();
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
@@ -157,20 +159,30 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsIDInvalid = true;
                 return false;
             }
-
+            switch (CurrentDeviceInfo.ModelNumber)
             {
-                //var arr = CurrentDeviceInfo.Name.Split(' ');
-                //if (arr.Length > 0)
-                //{
-                //    Model = arr[arr.Length - 1];
-                //}
-                //else
-                //{
-                Model = CurrentDeviceInfo.ModelNumber;
-                //}
-                //ID = CurrentDeviceInfo.ID.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
-                Name = CurrentDeviceInfo.Name;
+                case "KB740":
+                case "KB7120W":
+                    Model = "KB740";
+                    break;
+                case "KB500":
+                case "KB3121W":
+                    Model = "KB500";
+                    break;
+                case "KB700":
+                case "KB7221W":
+                    Model = "KB700";
+                    break;
+
+                case "MS300":
+                case "MS3121W":
+                    Model = "MS300";
+                    break;
+                default:
+                    Model = CurrentDeviceInfo.ModelNumber;
+                    break;
             }
+            Name = CurrentDeviceInfo.Name;
             if (instenceNo == "")
             {
                 Model2 = Model;

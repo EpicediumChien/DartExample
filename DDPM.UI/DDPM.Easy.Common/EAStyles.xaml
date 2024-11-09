@@ -103,22 +103,31 @@
                 <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Normal}" />
             </DataTrigger>
 
+            <!--<Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}"/>
+            </Trigger>-->
+            <!--<Trigger Property="IsMouseDirectlyOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}"/>
+            </Trigger>-->
+
             <!-- When in Edit mode, enter hover state when isMouseOver -->
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEditMode}" Value="True" />
-                    <Condition Binding="{Binding IsMouseOver}" Value="True" />
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                    <!--<Condition Binding="{Binding IsMouseDirectlyOver, RelativeSource={RelativeSource Self}}" Value="True" />-->
+                    <!--<Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=GridSplitter}}" Value="True" />-->
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}" />
             </MultiDataTrigger>
 
-            <MultiDataTrigger>
+            <!--<MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEditMode}" Value="True" />
                     <Condition Binding="{Binding IsMouseOver}" Value="False" />
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Normal}" />
-            </MultiDataTrigger>
+            </MultiDataTrigger>-->
 
             <Trigger Property="IsDragging" Value="True">
                 <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}" />
@@ -157,18 +166,18 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEditMode}" Value="True" />
-                    <Condition Binding="{Binding IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
                 </MultiDataTrigger.Conditions>
-                <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Normal}" />
+                <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}" />
             </MultiDataTrigger>
 
-            <MultiDataTrigger>
+            <!--<MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsEditMode}" Value="True" />
                     <Condition Binding="{Binding IsMouseOver}" Value="True" />
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}" />
-            </MultiDataTrigger>
+            </MultiDataTrigger>-->
 
             <Trigger Property="IsDragging" Value="True">
                 <Setter Property="Background" Value="{StaticResource SplitSplitter_Edit_Hover}" />

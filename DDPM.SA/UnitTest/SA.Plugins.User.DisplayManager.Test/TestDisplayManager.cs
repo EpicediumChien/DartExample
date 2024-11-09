@@ -1243,7 +1243,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         [Test]
         public void TestSetDisplayOrientation()
         {
-            string capabilitystring = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801)";
+            string capabilitystring0 = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801)"; //capabilitystring no Contains("AA")
+            monitorInfo1.CapabilityString = capabilitystring0;
+            string Orientation = "Portrait";
+            List<MonitorInfo> monitorInfos01 = new List<MonitorInfo>();
+            monitorInfos01.Add(monitorInfo1);
+
+            var SetOSDOrientation_result0 = displayPlugin.SetDisplayOrientation(monitorInfos01).Result;
+            Assert.IsNotNull(SetOSDOrientation_result0);
+            Assert.IsFalse(SetOSDOrientation_result0[0]);
+
+            string capabilitystring = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801) AA(00)"; //capabilitystring need Contains("AA")
             monitorInfo1.CapabilityString = capabilitystring;
 
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
@@ -1299,6 +1309,108 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
             Assert.IsTrue(bools[0]);
             Assert.IsTrue(result1[0]);
+        }
+
+        [Test]
+        public void TestGetOSDOrientation()
+        {
+            string capabilitystring = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801) AA(00)"; //capabilitystring need Contains("AA")
+            monitorInfo1.CapabilityString = capabilitystring;
+
+            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
+            monitorInfos.Add(monitorInfo1);
+
+            var isLock = false;
+            PrivateObject privateObject = new PrivateObject(displayPlugin);
+            displayPlugin.SetEnableLockOrientation(isLock);
+            var isLockOrientation = (bool)privateObject.GetField("isLockOrientation");
+            Assert.That(isLock, Is.EqualTo(isLockOrientation));
+            bool IsLockOrientation = false;
+
+            ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 2u }; //0xAA  "Screen Orientation" 1u=Angle0,2u=Angle90
+            var ObjGetvcpValue = 2u;
+            var ObjGetvcpResult = true;
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            var VcpCoreServiceObject = VcpCoreService.Object;
+            PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
+            privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+
+            string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };
+            string OrientationString_result;
+            var OrientationString_result1 = displayPlugin.GetOSDOrientation(monitorInfo1).Result;
+            if (!IsLockOrientation)
+            {
+                if (ObjGetvcpResult == true)
+                {
+                    uint retValue;
+
+                    if (uint.TryParse(ObjGetvcpValue.ToString(), out retValue))
+                    {
+                        if (displayPropertiesPlugin != null)
+                        {
+
+                            OrientationString_result = OrientationString[retValue];
+                            OrientationString[2] = "Portrait";
+                        }
+                    }
+                }
+            }
+            Assert.IsNotNull(OrientationString_result1);
+            Assert.That(OrientationString_result1, Is.EqualTo(OrientationString[2]));
+            Assert.That(OrientationString[2], Is.EqualTo("Portrait"));
+        }
+
+        [Test]
+        public void TestSetOSDOrientation()
+        {
+            bool? ret = null;
+            string capabilitystring0 = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801)"; //capabilitystring no Contains("AA")
+            monitorInfo1.CapabilityString = capabilitystring0;
+            string Orientation = "Portrait";
+            var SetOSDOrientation_result0 = displayPlugin.SetOSDOrientation(monitorInfo1, Orientation).Result;
+            Assert.IsNull(SetOSDOrientation_result0);
+            Assert.That(ret, Is.EqualTo(SetOSDOrientation_result0));
+
+
+            string capabilitystring = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801) AA(00)"; //capabilitystring need Contains("AA")
+            monitorInfo1.CapabilityString = capabilitystring;
+
+            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
+            monitorInfos.Add(monitorInfo1);
+
+            var isLock = false;
+            PrivateObject privateObject = new PrivateObject(displayPlugin);
+            displayPlugin.SetEnableLockOrientation(isLock);
+            var isLockOrientation = (bool)privateObject.GetField("isLockOrientation");
+            Assert.That(isLock, Is.EqualTo(isLockOrientation));
+            bool IsLockOrientation = false;
+
+            var ObjGetvcpResult = true;
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(ObjGetvcpResult));
+            var VcpCoreServiceObject = VcpCoreService.Object;
+            PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
+            privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+
+            string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };
+
+            var SetOSDOrientation_result1 = displayPlugin.SetOSDOrientation(monitorInfo1, Orientation).Result;
+            if (!IsLockOrientation)
+            {
+                if (ObjGetvcpResult == true)
+                {
+                    ret = false;
+                    for (int i = 1; i < OrientationString.Length; i++)
+                    {
+                        if (Orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                        {
+                            ret = true;
+                        }
+                    }
+                }
+            }
+            Assert.IsNotNull(SetOSDOrientation_result1);
+            Assert.IsTrue(SetOSDOrientation_result1);
+            Assert.IsTrue(ret);
         }
 
         [Test]

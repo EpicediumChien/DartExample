@@ -763,11 +763,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Brightness is currently enabled. Do you wish to disable it to continue?.
+        /// </summary>
+        internal static string Brightness_19 {
+            get {
+                return ResourceManager.GetString("Brightness.19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Smart HDR .
         /// </summary>
         internal static string Brightness_2 {
             get {
                 return ResourceManager.GetString("Brightness.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?.
+        /// </summary>
+        internal static string Brightness_20 {
+            get {
+                return ResourceManager.GetString("Brightness.20", resourceCulture);
             }
         }
         
@@ -1695,6 +1713,15 @@ namespace DDPM.UI.Resources {
         internal static string DisplayOthers_7 {
             get {
                 return ResourceManager.GetString("DisplayOthers.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can export your favorite configuration from here and import into another monitor of the same model without hassle..
+        /// </summary>
+        internal static string DisplayOthers_8 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.8", resourceCulture);
             }
         }
         
@@ -2644,7 +2671,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensitivity.
+        ///   Looks up a localized string similar to Sensitive.
         /// </summary>
         internal static string HeadsetAutomatedActions_1 {
             get {
@@ -4827,6 +4854,15 @@ namespace DDPM.UI.Resources {
         internal static string Third_Party_Licenses {
             get {
                 return ResourceManager.GetString("Third_Party_Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third Party License.
+        /// </summary>
+        internal static string ThirdPartyLicense_Title {
+            get {
+                return ResourceManager.GetString("ThirdPartyLicense.Title", resourceCulture);
             }
         }
         

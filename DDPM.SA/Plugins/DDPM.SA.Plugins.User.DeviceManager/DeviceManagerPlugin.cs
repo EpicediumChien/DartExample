@@ -17,6 +17,7 @@ using DDPM.PowerMon;
 using DDPM.QAM;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Screen;
 using DDPM.SA.Common.Settings;
@@ -44,6 +45,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,6 +57,7 @@ using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
@@ -176,6 +179,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static System.Timers.Timer _PowerNapTimer = new System.Timers.Timer(2000);
 
+        //USBKVM auto switch USB upstream ports in PBP side-by-side mode
+        private static System.Timers.Timer _USBKVMAutoSwitchTimer = new System.Timers.Timer(1500);
+
+
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
 
@@ -223,12 +230,273 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PowerNapTimer.Elapsed += OnPowerNapTimedRaise;
             _PowerNapTimer.AutoReset = true;
             _PowerNapTimer.Enabled = true;
+
+            _USBKVMAutoSwitchTimer.Elapsed += OnUsbKvmAutoSwitchTimedRaise;
+            _USBKVMAutoSwitchTimer.AutoReset = true;
+            _USBKVMAutoSwitchTimer.Enabled = true;
+
             UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
         }
 
+        private string debugPreMsg = string.Empty;
+        private System.Drawing.Point previousCursorPosition = new System.Drawing.Point { X = 0, Y = 0 };
+        private bool isKvm_Auto_SwitchKbMsKey = false;
+        private int KvmAutoSwitchCounter = 0;
+        private void OnUsbKvmAutoSwitchTimedRaise(object sender, ElapsedEventArgs e)
+        {
+            //cursor position
+            System.Drawing.Point cursorPosition = Cursor.Position;
+            // retrieve the monitor object from cursor's position
+            Screen currentScreen = Screen.FromPoint(cursorPosition);
+            MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+            if (monitorInfo != null)
+            {
+                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+                if (isUsbKvmCursorEdge(monitorInfo, currentScreen, cursorPosition))
+                {
+                    KvmAutoSwitchCounter += 1;
+                }
+                else
+                {
+                    KvmAutoSwitchCounter = 0;
+                }
+                if (KvmAutoSwitchCounter >= 3)
+                {
+                    if (!debugPreMsg.Equals(debugMsg))
+                    {
+                        debugPreMsg = debugMsg;
+                        Debug.WriteLine($"{debugMsg}");
+                    }
+
+                    if (isKvm_Auto_SwitchKbMsKey || (previousCursorPosition.X.Equals(cursorPosition.X) && previousCursorPosition.Y.Equals(cursorPosition.Y)))
+                    {
+                        Debug.WriteLine($"[USBKVM_Auto_Switch],previous.X={previousCursorPosition.X},previous.Y={previousCursorPosition.Y};Curs.X={cursorPosition.X},Curs.Y={cursorPosition.Y};isKvm_Auto_SwitchKbMsKey= {isKvm_Auto_SwitchKbMsKey}");
+                        writelog($"[USBKVM_Auto_Switch],previous.X={previousCursorPosition.X},previous.Y={previousCursorPosition.Y};Curs.X={cursorPosition.X},Curs.Y={cursorPosition.Y};isKvm_Auto_SwitchKbMsKey= {isKvm_Auto_SwitchKbMsKey}");
+                        previousCursorPosition = cursorPosition;
+                        KvmAutoSwitchCounter = 0;
+                        return;
+                    }
+                    writelog($"[USBKVM_Auto_Switch] Kvm_Auto_SwitchKbMsKey:monitor:{monitorInfo.edid.ServiceTag} Enqueue");
+                    //send usbKvm switch
+
+                    isKvm_Auto_SwitchKbMsKey = true;
+                    KvmAutoSwitchCounter = 0;
+                    previousCursorPosition = cursorPosition;
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_Auto_SwitchKbMsKey));
+                }
+            }
+        }
+        private bool isUsbKvmCursorEdge(MonitorInfo monitorInfo, Screen currentScreen, System.Drawing.Point cursorPosition)
+        {
+            bool ret = false;
+            if (monitorInfo != null)
+            {
+                if (GetOnUSBKVM(monitorInfo).Result)
+                {
+                    //check 
+                    if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+                    {
+                        _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
+                    }
+                    if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+                    {
+                        HotkeySettings hotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (hotkeySettings != null)
+                        {
+                            if (hotkeySettings.HotkeyOptions.Count > 0 && hotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                            {
+                                //check cursor position at the edge
+                                //1.get PBP mode sub input source 
+                                Rectangle bounds = currentScreen.Bounds;
+                                Dictionary<string, InputInfo> inputSourcelist = GetInputSourcelist(monitorInfo).Result;
+                                List<ushort> subInputListRet = GetSubInputList(monitorInfo).Result;
+                                //var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitorInfo).Result;
+                                //GetUSBKVMPCsList(monitorInfo);
+                                bool isEdge = false;
+                                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+                                if (monitorInfo.inputCable.Equals(monitorInfo.inputSource))
+                                {
+                                    // PBP as main inputSource ,screen is left
+                                    writelog($"[USBKVM_Auto_Switch]as PBP main input:{debugMsg}");
+                                    if (cursorPositionXSide("left", currentScreen, cursorPosition.X))
+                                    {
+                                        Debug.WriteLine($"left edge: approach");
+                                        writelog($"[USBKVM_Auto_Switch] [left edge: approach]\r\n {debugMsg}");
+                                        isEdge = true;
+                                    }
+                                }
+                                else
+                                {
+                                    // PBP as sub imputSource,screen is right
+                                    writelog($"[USBKVM_Auto_Switch]as PBP subinput:{debugMsg}");
+                                    if (cursorPositionXSide("right", currentScreen, cursorPosition.X))
+                                    {
+                                        Debug.WriteLine($"right edge: approach");
+                                        writelog($"[USBKVM_Auto_Switch] [right edge: approach] \r\n {debugMsg}");
+                                        isEdge = true;
+                                    }
+                                }
+                                if (isEdge)
+                                {
+                                    lock (USBKVM_PBPmode_lock)
+                                    {
+                                        UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                                        if (usbKvmPBP1 != null && usbKvmPBP1.isPBPmode)
+                                        {
+                                            ret = true;
+                                        }
+                                        else
+                                        {
+                                            foreach (var item in usbKvmPBPs)
+                                            {
+                                                Debug.WriteLine($"{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                                writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} USBKVM OFF");
+                }
+            }
+            return ret;
+        }
+        private void Kvm_Auto_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
+        {
+            bool usbSwitch = UsbSwitch1(monitorInfo).Result;
+            if (usbSwitch)
+                isKvm_Auto_SwitchKbMsKey = false;
+            writelog($"Kvm_Auto_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
+        }
+        private bool cursorPositionXSide(string side, Screen screen, int x)
+        {
+
+            bool ret = false;
+            int xPos = -1;
+            if ("left".Equals(side))
+            {
+                int v = Math.Abs(screen.WorkingArea.X - x) - screen.WorkingArea.Width;
+                xPos = Math.Abs(v);
+            }
+            if ("right".Equals(side))
+            {
+                int v = Math.Abs(screen.WorkingArea.X - x);
+                xPos = Math.Abs(v);
+            }
+            if (xPos >= 0 && xPos <= 30)
+                ret = true;
+            return ret;
+        }
+
+        private List<UsbKvmPBP> usbKvmPBPs = new List<UsbKvmPBP>();
+        private object USBKVM_PBPmode_lock = new object();
+        private void updatePBPModeStatus(MonitorInfo monitorInfo, string vcpcode)
+        {
+            if ("E7".Equals(vcpcode, StringComparison.OrdinalIgnoreCase))
+            {
+                System.Drawing.Point cursorPosition = Cursor.Position;
+                // retrieve the monitor object from cursor's position
+                Screen currentScreen = Screen.FromPoint(cursorPosition);
+                MonitorInfo monitorInfoFind = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
+                if (monitorInfoFind != null)
+                {
+                    if (monitorInfoFind.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && monitorInfoFind.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber))
+                    {
+                        previousCursorPosition = cursorPosition;
+                        KvmAutoSwitchCounter = 0;
+                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} =>vcpcode:E7; cursorPosition = {cursorPosition};Timer:{_USBKVMAutoSwitchTimer.Enabled}");
+                    }
+                }
+            }
+            if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
+            {
+                ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
+                UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
+                UInt16 _curPxpMode = 0;
+                if (ret != null && ret.result)
+                {
+                    _curPxpMode = Convert.ToUInt16(ret.value);
+                    switch (_curPxpMode)
+                    {
+                        case 0x11:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+
+                        case 0x12:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+
+                        case 0x24:
+                        case 0x2F:
+                        case 0x26:
+                        case 0x28:
+                        case 0x2A:
+                        case 0x2C:
+                        case 0x2E:
+                        case 0x25:
+                        case 0x27:
+                        case 0x29:
+                        case 0x2B:
+                        case 0x2D:
+                        case 0x31:
+                        case 0x32:
+                        case 0x33:
+                        case 0x34:
+                        case 0x35:
+                        case 0x41:
+                        case 0x42:
+                            usbKvmPBP.isPBPmode = true;
+                            break;
+                        default:
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+                    }
+                    lock (USBKVM_PBPmode_lock)
+                    {
+                        if (usbKvmPBPs.Count > 0)
+                        {
+                            UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                            if (usbKvmPBP1 != null)
+                            {
+                                usbKvmPBP1.isPBPmode = usbKvmPBP.isPBPmode;
+                            }
+                            else
+                            {
+                                usbKvmPBPs.Add(usbKvmPBP);
+                            }
+                        }
+                        else
+                        {
+                            usbKvmPBPs.Add(usbKvmPBP);
+                        }
+                        if (usbKvmPBPs.Any(x => x.isPBPmode))
+                        {
+                            _USBKVMAutoSwitchTimer.Stop();
+                            _USBKVMAutoSwitchTimer.Start();
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode ON");
+                        }
+                        else
+                        {
+                            _USBKVMAutoSwitchTimer.Stop();
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode OFF");
+                        }
+                    }
+                }
+            }
+        }
         private void UXSystemParametersChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
@@ -4110,7 +4378,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool b = _DisplayManagerPlugin.SetPbpMode(monitorInfo, modeCode).Result;
             if (b && _NKVMPlugin != null)
             {
-                _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE9, (int)modeCode).Wait();
+                _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE9, (int)(uint)modeCode).Wait();
             }
             if (b)
             {
@@ -4218,6 +4486,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
+            if (_FWUpdatePlugin == null)
+            {
+                writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
+                return Task.FromResult(new List<FWUpdateInfo>());
+            }
             _UpdateProgress = null;
             writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
@@ -4231,7 +4504,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_UpdateProgress != null)
             {
                 writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
-                _FWUpdatePlugin.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
             }
@@ -4258,7 +4532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(tmpFWUpdateInfos);
         }
 
-        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown)
         {
             writelog("[DeviceMangerPlugin] Install start");
             writelog($"[DeviceMangerPlugin] Install isOnlyDisplay : {isOnlyDisplay}");
@@ -4270,7 +4544,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //if (_UpdateProgress != null)
                 //{
                 writelog($"[DeviceMangerPlugin] Install _FWUpdatePlugin.Install go");
-                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay).Result;
+                ret = _FWUpdatePlugin.Install(installPath, isOnlyDisplay, deviceType).Result;
                 //}
 
             }
@@ -4483,6 +4757,65 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
+        public Task<bool> MiniMizeDDPMUI()
+        {
+            writelog($"{nameof(MiniMizeDDPMUI)} start");
+            bool ret = false;
+            try
+            {
+                string processName = "DDPM";
+                Process[] processes = Process.GetProcessesByName(processName);
+                writelog($"{nameof(MiniMizeDDPMUI)} processes.Length {processes.Length}");
+                if (processes.Length > 0)
+                {
+                    foreach (var process in processes)
+                    {
+                        IntPtr hwnd = CallUser32dll._FindWindow(null, process.MainWindowTitle);
+                        if (hwnd != IntPtr.Zero)
+                        {
+                            writelog($"{process.ProcessName} SW_MINIMIZE go");
+                            CallUser32dll._ShowWindow(hwnd, (int)CallUser32dll.WindowState.SW_MINIMIZE);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(MiniMizeDDPMUI)} Error : {ex.Message}");
+            }
+            writelog($"{nameof(MiniMizeDDPMUI)} done");
+            return Task.FromResult(ret);
+        }
+        public Task<bool> RestoreDDPMUI()
+        {
+            writelog($"{nameof(RestoreDDPMUI)} start");
+            bool ret = false;
+            try
+            {
+                string processName = "DDPM";
+                Process[] processes = Process.GetProcessesByName(processName);
+                writelog($"{nameof(RestoreDDPMUI)} processes.Length {processes.Length}");
+                if (processes.Length > 0)
+                {
+                    foreach (var process in processes)
+                    {
+                        IntPtr hwnd = CallUser32dll._FindWindow(null, process.MainWindowTitle);
+                        if (hwnd != IntPtr.Zero)
+                        {
+                            writelog($"{process.ProcessName} SW_RESTORE go");
+                            CallUser32dll._ShowWindow(hwnd, (int)CallUser32dll.WindowState.SW_RESTORE);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(RestoreDDPMUI)} Error : {ex.Message}");
+            }
+            writelog($"{nameof(RestoreDDPMUI)} done");
+            return Task.FromResult(ret);
+        }
+
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
             if (_SettingsPlugin != null)
@@ -4638,7 +4971,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
-                _FWUpdatePlugin.ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+                ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
                 Dispatcher.Run();
             });
@@ -5055,6 +5390,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
         }
 
+        public Task<string> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
+        {
+            if (_disDevHelper == null)
+                return Task.FromResult("null");
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
+        }
+
         #endregion
 
         #region NKVM implementation
@@ -5297,6 +5639,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                //Telemetry
+                SendEasyArrangeTelemetry("Change_layout");
+            }
+            return Task.FromResult(false);
+        }
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
         //{
@@ -6670,7 +7022,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         writelog("[SentSettingstoTelementry] Send_Settings_Telementry is success");
                                     }
-                                    writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                    else
+                                    {
+                                        writelog("[SentSettingstoTelementry] Send_Settings_Telementry is fail");
+                                    }
                                 }
                                 else
                                 {
@@ -6714,7 +7069,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out DDPMImpExpSettings ImpExpSettings).Result)
+                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
                 {
                     if (ImpExpSettings != null)
                     {
@@ -7014,6 +7369,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             return Task.FromResult(false);
+        }
+
+        public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
+        {
+            DDPMImpExpSettings impExpSettings = new DDPMImpExpSettings();
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path))
+            {
+                impExpSettings = _SettingsPlugin.ReadImportSettingsFile(path).Result;
+            }
+            return Task.FromResult(impExpSettings);
         }
 
         #endregion
@@ -8200,6 +8565,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
             LauchNightLightStatusMonitor();
+            foreach (var monitor in _AllInfoMonitors)
+            {
+                Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+            }
         }
 
         #region OutReport
@@ -8290,7 +8659,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         // 複製指定的 log 文件到選擇的資料夾
                         CopyLogFolder(LogFolder, savePath);
                     }
-                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-MiniInstall";
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                    LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
                     if (DirectoryContainsFiles(LogFolder))
                     {
                         // 取得資料夾名稱
@@ -8575,11 +8953,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // 確保目標資料夾存在
             Directory.CreateDirectory(destDirName);
             // 複製檔案
-            foreach (string file in Directory.GetFiles(sourceDirName))
+            try
             {
-                string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                File.Copy(file, destFile, true);
+                foreach (string file in Directory.GetFiles(sourceDirName))
+                {
+                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                    File.Copy(file, destFile, true);
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+            }
+
             // 複製子資料夾
             if (copySubDirs)
             {
@@ -8671,6 +9057,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 try
                 {
+                    if (_UpdateProgress != null && _FWUpdatePlugin != null)
+                    {
+                        writelog($"DisplaySettingsChanged: Rrconnect FWU eventv go");
+                        _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+                        ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                        ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                        writelog($"DisplaySettingsChanged: Rrconnect FWU eventv don");
+                    }
                     writelog($"DisplaySettingsChanged: displayInOut is true");
 
                     if (isLetDisplayServiceIdle == true)
@@ -8925,10 +9320,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
+            writelog($"{nameof(OnProgressUpdateEvent)} start");
             //ProgressUpdate_Notify?.Invoke(this, fWUpdateInfo);
             EventHandler<UpdateProgressInfo> handler = ProgressUpdate_Notify;
+            writelog($"{nameof(OnProgressUpdateEvent)} handler : {handler}");
             if (handler != null)
+            {
+                writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
+            }
+            writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
 
         private void OnUILockEvent(bool isLockFWU_UI)
@@ -9026,7 +9427,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var CancellationToken = Cancellation.Token;
 
             DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
-
+            if (_UpdateProgress != null && _FWUpdatePlugin != null)
+            {
+                writelog($"OnDeviceChanged: Rrconnect FWU eventv go");
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+                ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                writelog($"OnDeviceChanged: Rrconnect FWU eventv don");
+            }
             if (type == DeviceChangedType.NotifyOnly)
             {
                 //writelog("[OnDeviceChanged] Notify event to registers");
@@ -9178,6 +9587,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _VCPchangedEventArgs.value = e.value;
             //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
             _VCPchangedEventArgs.monitor = e.monitor;
+            Debug.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
+            //1106 add PBP mode status
+            Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             OnVCPchanged(_VCPchangedEventArgs);
         }
 
@@ -9621,6 +10033,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             GetLockRotateStatus();
             writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
+
+            _disDevHelper?.UpdateDDPMPluginInstances(_SettingsPlugin, this, _DisplayManagerPlugin);
         }
 
         private void GetCurrentColorPresetCondition()
@@ -9955,7 +10369,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
                         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
                         //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         _FWUpdatePlugin.CollCheckUpdate += show_fwCheckUpdateScheduleEvent;
                         _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
                         _FWUpdatePlugin.StartCheckUpdateScheduleTimer();
@@ -9973,7 +10386,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
                         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
                         //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         _FWUpdatePlugin.CollCheckUpdate += show_fwCheckUpdateScheduleEvent;
                         _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
                         _FWUpdatePlugin.StartCheckUpdateScheduleTimer();
@@ -10207,10 +10619,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 //new
                 settings.Add(hotkeySettings);
+                _USBKVMAutoSwitchTimer.Stop();
+                _USBKVMAutoSwitchTimer.Start();
             }
             else
             {
                 find.HotkeyOptions = hotkeySettings.HotkeyOptions;
+                HotkeyOption hotkeyOption = hotkeySettings.HotkeyOptions.ElementAtOrDefault(0);
+                if (hotkeyOption.Equals(HotkeyOption.KvmAutoApply))
+                {
+                    _USBKVMAutoSwitchTimer.Stop();
+                    _USBKVMAutoSwitchTimer.Start();
+                }
+                else
+                {
+                    _USBKVMAutoSwitchTimer.Stop();
+                }
             }
             WriteHotkeySettings(settings);
             ReloadHotkeyConfigData();
@@ -11674,13 +12098,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obBrightness.result)
-                {
-                    uint brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                    writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.BrightnessReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11688,13 +12106,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obBrightness.result)
-                {
-                    uint brightnessValue = (((uint)obBrightness.value) + 5) >= 100 ? 100 : ((uint)obBrightness.value + 5);
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                    writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.BrightnessIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11702,13 +12114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-                if (obContrast.result)
-                {
-                    uint contrastValue = ((uint)obContrast.value) <= 5 ? 0 : (uint)obContrast.value - 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                    writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.ContrastReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11716,13 +12122,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-                if (obContrast.result)
-                {
-                    uint contrastValue = ((uint)obContrast.value) + 5 >= 100 ? 100 : (uint)obContrast.value + 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                    writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.ContrastIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11730,13 +12130,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obLuminance.result)
-                {
-                    uint luminanceValue = ((uint)obLuminance.value) <= 5 ? 0 : (uint)obLuminance.value - 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                    writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.LuminanceReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -11744,14 +12138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
-                if (obLuminance.result && obLuminanceMax.result)
-                {
-                    uint luminanceValue = ((uint)obLuminance.value) + 5 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                    writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.LuminanceIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 

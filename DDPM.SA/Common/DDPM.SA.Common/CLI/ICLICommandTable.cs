@@ -34,7 +34,8 @@ namespace DDPM.SA.Common
             { "DEVICEDATA", 300 },
             { "DEVICECONFIGURATION", 300 },
             { "EXPORTSETTINGS", 300 },
-            { "IMPORTSETTINGS", 300 }
+            { "IMPORTSETTINGS", 300 },
+            { "PXP", 300 }
         };
 
         //IT feature table
@@ -165,6 +166,7 @@ namespace DDPM.SA.Common
             public List<CommandType_Option> Options { get; set; }//use to store options to get/set device features
 
             public List<string> ServiceTag { get; set; }//for display with servicetag
+            public List<string> Model { get; set; }//for display with model
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
             public string LogPath { get; set; }
@@ -189,6 +191,7 @@ namespace DDPM.SA.Common
             {
                 Options = new List<CommandType_Option>(); //others optional input
                 ServiceTag = new List<string>();
+                Model = new List<string>();
                 DeviceIndex = new List<string>();
                 GuidString = new List<string>();
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
@@ -293,7 +296,7 @@ namespace DDPM.SA.Common
                             args[i] = args[i].Substring(1);
                         }
 
-                        if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 || args[i].ToUpper().IndexOf("INDEX") == 0 || args[i].ToUpper().IndexOf("GUID") == 0)//判斷是那些裝置
+                        if (args[i].ToUpper().IndexOf("SERVICETAG") == 0 || args[i].ToUpper().IndexOf("MODEL") == 0 || args[i].ToUpper().IndexOf("INDEX") == 0 || args[i].ToUpper().IndexOf("GUID") == 0)//判斷是那些裝置
                         {
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
@@ -320,6 +323,10 @@ namespace DDPM.SA.Common
                                     if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
                                     {
                                         commandInput.ServiceTag.Add(t);
+                                    }
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                    {
+                                        commandInput.Model.Add(t);
                                     }
                                     else if (tmpSS[0].ToUpper().Contains("GUID"))
                                     {
