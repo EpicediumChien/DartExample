@@ -36,6 +36,9 @@ using DDPMConstants = DDPM.UI.Common.Constants;
 
 //using VcpCore.Interfaces;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
+using DDPM.UI.Plugin.SettingsPlugin;
+using System.Windows.Threading;
+using DDPM.SA.Common.UpdateProgressPage;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -912,18 +915,36 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <returns>True if YES, either FW or SW is available.</returns>
         private static bool CheckIfSwFwUpdateAvailable(IDeviceManagerSA devMgr)
         {
+            bool ret=false;
             Requires.NotNull(devMgr, nameof(devMgr));
             //Get FW avaiable count
-            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false).Result;
+            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, false, false, null, false, false, false).Result;
+            SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, false, false, false).Result;
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0)
-                return true;
+                ret= true;
 
             //Check SW avaiable count
-            SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false).Result;
+            
             if (sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
-                return true;
+            {
+                InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
+                if (myDeserializedClass != null)
+                {
+                    bool? b = false;
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                    {
+                        InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
+                        b = interruptScreen.ShowDialog();
+                        if (b == true)
+                        {
+                        }
+                    }));
+                }
+                ret= true;
+            }
 
-            return false;
+
+            return ret;
         }
 
         #endregion SW/FW Update

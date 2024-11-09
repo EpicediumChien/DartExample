@@ -1,0 +1,241 @@
+﻿<Window x:Class="DDPM.UI.Plugin.SettingsPlugin.InterruptScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+        xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+        xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+        mc:Ignorable="d"
+        Title="InterruptScreen"
+        Height="600"
+        Width="1000"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        Background="Black"
+        Topmost="True"
+        Closing="Window_Closing">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Border Background="#132F54">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="340" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0"
+                      Margin="32,32,68,32">
+                    <Grid>
+                        <UXControls:UXTextBlock Grid.Column="0"
+                                                Width="276"
+                                                FontSize="40"
+                                                FontFamily="Roboto"
+                                                TextWrapping="WrapWithOverflow"
+                                                Style="{StaticResource ModuleCaptionStyle}"
+                                                Text="{Binding Available_Title}" />
+                        <UXControls:UXButton ButtonType="Primary"
+                                             Click="UXButton_Click"
+                                             AutomationProperties.Name="Primary1"
+                                             ButtonSize="Medium"
+                                             Content="{Binding [Update], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                             HorizontalAlignment="Left"
+                                             VerticalAlignment="Bottom"
+                                             Width="164"
+                                             Height="40" />
+                    </Grid>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Image Source="../Resources/Background_InterruptScreen.png"
+                           Stretch="Fill" />
+                    <UXControls:UXScrollViewer>
+                        <Grid>
+                            <StackPanel Margin="50">
+                                <Grid Grid.Column="1"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Top"
+                                      MouseDown="Grid_MouseDown"
+                                      Background="Transparent">
+                                    <Path VerticalAlignment="Center"
+                                          Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
+                                          Fill="#CCCCCC" />
+                                </Grid>
+                                <Grid x:Name="NewSupportedDevices">
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock  Grid.Column="0"
+                                                                 Width="400"
+                                                                 FontSize="24"
+                                                                 FontFamily="Roboto"
+                                                                 TextWrapping="WrapWithOverflow"
+                                                                 Style="{StaticResource ModuleCaptionStyle}"
+                                                                 Text="{Binding [New_Supported_Devices], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                                 Margin="0,0,0,24" />
+                                        <StackPanel HorizontalAlignment="Left"
+                                                    Margin="0,0,0,24">
+                                            <Image Width="400"
+                                                   Height="200"
+                                                   Source="{Binding BackgroundImage}"
+                                                   Margin="10" />
+                                            <UXControls:UXTextBlock Text="{Binding NewDeviceName}"
+                                                                    HorizontalAlignment="Center"
+                                                                    FontSize="18"
+                                                                    Margin="10" />
+                                        </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding NewSupportedDevicesCollection}"
+                                                      Name="listTopics"
+                                                      Background="Transparent"
+                                                      BorderThickness="0"
+                                                      Margin="0,0,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Margin="0,0,0,24">
+                                                        <Path VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center"
+                                                              Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
+                                                              Fill="#31A2E3"
+                                                              Margin="0,0,15,0" />
+                                                        <UXControls:UXTextBlock  Grid.Column="0"
+                                                                                 Width="400"
+                                                                                 FontSize="16"
+                                                                                 TextWrapping="WrapWithOverflow"
+                                                                                 Style="{StaticResource ModuleCaptionStyle}"
+                                                                                 Text="{Binding Title}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid x:Name="NewFeatures">
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock  Grid.Column="0"
+                                                                 Width="400"
+                                                                 FontSize="24"
+                                                                 FontFamily="Roboto"
+                                                                 TextWrapping="WrapWithOverflow"
+                                                                 Style="{StaticResource ModuleCaptionStyle}"
+                                                                 Text="{Binding [New_Features], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                                 Margin="0,0,0,24" />
+                                        <ItemsControl ItemsSource="{Binding NewFeaturesList}"
+                                                      Background="Transparent"
+                                                      BorderThickness="0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,0,0,0">
+                                                        <Image  Grid.Column="0"
+                                                                Width="524"
+                                                                HorizontalAlignment="Left"
+                                                                Source="{Binding NewFeatures_Image}"
+                                                                Margin="0,0,0,24" />
+                                                        <ItemsControl ItemsSource="{Binding NewSupportedDevicesCollection}"
+                                                                      Background="Transparent"
+                                                                      BorderThickness="0">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal"
+                                                                                Margin="0,0,0,24">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="*" />
+                                                                                <ColumnDefinition Width="*" />
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <Path Grid.Column="0"
+                                                                                  VerticalAlignment="Top"
+                                                                                  Margin="0,5,0,5"
+                                                                                  HorizontalAlignment="Center"
+                                                                                  Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
+                                                                                  Fill="#31A2E3" />
+                                                                            <UXControls:UXTextBlock  Grid.Column="1"
+                                                                                                     Width="400"
+                                                                                                     Margin="15,0,0,5"
+                                                                                                     FontSize="16"
+                                                                                                     TextWrapping="WrapWithOverflow"
+                                                                                                     Style="{StaticResource ModuleCaptionStyle}"
+                                                                                                     Text="{Binding Content}" />
+                                                                        </Grid>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid x:Name="BugFixes">
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock  Grid.Column="0"
+                                                                 Width="400"
+                                                                 FontSize="24"
+                                                                 FontFamily="Roboto"
+                                                                 TextWrapping="WrapWithOverflow"
+                                                                 Style="{StaticResource ModuleCaptionStyle}"
+                                                                 Text="{Binding [Bug_Fixes], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                                 Margin="0,0,0,24" />
+                                        <ItemsControl ItemsSource="{Binding BugFixesList}"
+                                                      Background="Transparent"
+                                                      BorderThickness="0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Margin="0,0,0,24">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <Path Grid.Column="0"
+                                                                  VerticalAlignment="Top"
+                                                                  Margin="0,5,0,5"
+                                                                  HorizontalAlignment="Center"
+                                                                  Data="M 3,0 A 3,3 0 1,0 3,6 A 3,3 0 1,0 3,0 Z"
+                                                                  Fill="#31A2E3" />
+                                                            <UXControls:UXTextBlock  Grid.Column="1"
+                                                                                     Width="400"
+                                                                                     Margin="15,0,0,5"
+                                                                                     FontSize="16"
+                                                                                     TextWrapping="WrapWithOverflow"
+                                                                                     Style="{StaticResource ModuleCaptionStyle}"
+                                                                                     Text="{Binding BugFixesContent}" />
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <UXControls:UXLink Content="Learn more for software"
+                                                           IconPosition="IconRight"
+                                                           LinkSize="Medium"
+                                                           LinkColorScheme="Primary"
+                                                           LinkType="InLine"
+                                                           Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"
+                                                           Height="40" />
+                                        <UXControls:UXLink Content="Learn more for firmware"
+                                                           IconPosition="IconRight"
+                                                           LinkSize="Medium"
+                                                           LinkColorScheme="Primary"
+                                                           LinkType="InLine"
+                                                           Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"
+                                                           Height="40" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </UXControls:UXScrollViewer>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

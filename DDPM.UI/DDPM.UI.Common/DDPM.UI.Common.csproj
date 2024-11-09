@@ -31,6 +31,7 @@
     <None Remove="Resources\Arrow-Right.png" />
     <None Remove="Resources\AW.png" />
     <None Remove="Resources\Background_Glow.png" />
+    <None Remove="Resources\Background_InterruptScreen.png" />
     <None Remove="Resources\BatteryOutline.png" />
     <None Remove="Resources\Camera.png" />
     <None Remove="Resources\CameraCapture.png" />
@@ -184,6 +185,12 @@
 
   <ItemGroup>
     <Resource Include="Resources\AW.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Background_InterruptScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Background_Glow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\CBvector.png">

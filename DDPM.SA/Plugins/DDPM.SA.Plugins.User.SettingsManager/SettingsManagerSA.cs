@@ -93,6 +93,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private static string filename_hotkey_peruser = "HotkeySetting.json";
         private static string filename_powernap_peruser = "PowerNapSetting.json";
         private static string filename_GlobalSetting_peruser = "GlobalSetting.json";
+        private static string filename_InterruptScreen_peruser = "InterruptScreen.json";
+        
 
         //---
         private ISettingsManagerSA? _SysSettingsPlugin;
@@ -127,6 +129,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _GlobalSetting_path { get; set; } = string.Empty;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
         public event EventHandler SettingReadyEvent;
+
+        private string _InterruptScreen_path { get; set; } = string.Empty;
+        private InterruptScreenRoot _InterruptScreenParam = new InterruptScreenRoot();
 
         private static DDPMITConfig _DDPMITConfig {  get; set; } = new DDPMITConfig();
 
@@ -300,6 +305,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
+            InitInterruptScreenFile();
 
             updateITandGlobalSetting();
 
@@ -1931,6 +1937,115 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
         #endregion Global settings
 
+        #region InterruptScreen
+        public Task<InterruptScreenRoot> ReadInterruptScreen()
+        {
+            if (string.IsNullOrEmpty(_InterruptScreen_path))
+            {
+                _InterruptScreenParam = null;
+            }
+            else
+            {
+                string strFilePath = _InterruptScreen_path;
+
+                if (File.Exists(strFilePath))
+                {
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _InterruptScreenParam = null;
+                        return Task.FromResult(_InterruptScreenParam);
+                    }
+                    try
+                    {
+                        _InterruptScreenParam = RunInterruptScreenDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _InterruptScreenParam = null;
+                        //return Task.FromResult(_GlobalSettingParam);
+                    }
+                }
+                else
+                {
+                    _InterruptScreenParam = null;// File.Create(strFilePath).Close();
+                }
+            }
+            return Task.FromResult(_InterruptScreenParam);
+        }
+
+        public Task<bool> WriteInterruptScreen(InterruptScreenRoot interruptScreenParam)
+        {
+            bool result = WriteSettings_Common(interruptScreenParam, "interrupt");
+
+            //apply setting to system IT config
+            if (interruptScreenParam != null && result)
+            {
+                string info;
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(interruptScreenParam).ToString(), _InterruptScreen_path, out info))
+                {
+                    WriteLog(info);
+                    result= false;
+                }
+            }
+
+            return Task.FromResult(result);
+        }
+        /*private string RunSerializeObject(GlobalSettingParam globalSettingParam, string filePath)
+        {
+            string jsonString = string.Empty;
+            jsonString = JsonConvert.SerializeObject(globalSettingParam);
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.Write(jsonString);
+            }
+            return jsonString;
+        }
+        private string RunSerializeObject(GlobalSettingParam globalSettingParam)
+        {
+            string jsonString = string.Empty;
+            jsonString = JsonConvert.SerializeObject(globalSettingParam);
+            string jsonpath = _GlobalSetting_path;
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(jsonpath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
+            using (StreamWriter writer = new StreamWriter(jsonpath))
+            {
+                writer.Write(jsonString);
+            }
+            return jsonString;
+        }*/
+        private InterruptScreenRoot RunInterruptScreenDeserializeObject(string value)
+        {
+            InterruptScreenRoot retList = new InterruptScreenRoot();
+            try
+            {
+                retList = JsonConvert.DeserializeObject<InterruptScreenRoot>(value);
+            }
+            catch (Exception)
+            {
+
+            }
+            return retList;
+        }
+        #endregion InterruptScreen
+
         private DDPMSettings InitDDPMUserConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
@@ -2019,6 +2134,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 case "powernap":
                     settings_path = _powerNapsettings_path;
                     break;
+                case "interrupt":
+                    settings_path = _InterruptScreen_path;
+                    break;
                 default:
                     WriteLog($"[WriteSettings_Common] type:{type} is not defined in common code!");
                     return false;
@@ -2057,6 +2175,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     break;
                 case "powernap":
                     _powerNapSettings = (List<PowerNapSetting>)dataObj;
+                    break;
+                case "interrupt":
+                    _InterruptScreenParam = (InterruptScreenRoot)dataObj;
                     break;
                 default:
                     WriteLog($"[WriteSettings_Common] type:{type} is not defined in common code!");
@@ -2140,6 +2261,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             if (pnap != null && pnap.Count == 0)
                                 need_new = true;
                             break;
+                        case "interrupt":
+                            InterruptScreenRoot interrupt = ReadInterruptScreen().Result;
+                            new_obj = interrupt;
+                            if (interrupt != null)
+                                need_new = true;
+                            break;
                         default:
                             WriteLog($"[InitDDPMUserSettings_Common] config type {config_type} not support!!");
                             return null;
@@ -2184,6 +2311,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             WriteLog("[WriteHotkeySettings] write new power nap setting failed");
                         }
                         new_obj = pnap;//keep memory data to allow program work properly
+                        break;
+                    case "interrupt":
+                        InterruptScreenRoot interrupt = new InterruptScreenRoot();
+                        if (!WriteInterruptScreen(interrupt).Result)
+                        {
+                            WriteLog("[WriteInterruptScreen] write new Interrupt ScreenRoot setting failed");
+                        }
+                        new_obj = interrupt;
                         break;
                     default:
                         new_obj = null;
@@ -2460,6 +2595,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _GlobalSettingParam = (GlobalSettingParam)InitDDPMUserSettings_Common(_GlobalSetting_path, "global");
 
             return _GlobalSettingParam;
+        }
+        private InterruptScreenRoot InitInterruptScreenFile()
+        {
+            string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"InitGlobalSettingConfigFile: appdata path: {folder}");
+            string file_path = Path.Combine(folder, folder_product, filename_InterruptScreen_peruser);
+            _InterruptScreen_path = file_path;
+            _InterruptScreenParam = (InterruptScreenRoot)InitDDPMUserSettings_Common(_InterruptScreen_path, "interrupt");
+
+            return _InterruptScreenParam;
         }
 
         #region Registry key read/write over system setting manager (only support local machine)

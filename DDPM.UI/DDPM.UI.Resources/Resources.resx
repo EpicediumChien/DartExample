@@ -2334,4 +2334,19 @@
   <data name="Brightness.20" xml:space="preserve">
     <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>
   </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>Update Available Version</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>New Supported Devices</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>New Features</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>Bug Fixes</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
 </root>
