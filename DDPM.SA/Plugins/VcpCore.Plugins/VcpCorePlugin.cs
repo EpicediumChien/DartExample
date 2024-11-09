@@ -3997,7 +3997,18 @@ namespace VcpCore.Plugins
                 using (FileLock fileLock = new FileLock(path, PathCheckOption.None, lockNow: true))
                 {
                     if (File.Exists(path))
-                        _SupportClassification = File.ReadAllText(targetFile);
+                    {
+                        try
+                        {
+                            _SupportClassification = File.ReadAllText(targetFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            _SupportClassification = string.Empty;
+                            _logs.DebugMsg("[VCPCore plugin] Get_SupportListFile IsFilePathValid exception : " + ex.Message);
+                        }
+
+                    }
 
                     if (!string.IsNullOrEmpty(_SupportClassification))
                         _SupportDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<modelinfos>>>(_SupportClassification);

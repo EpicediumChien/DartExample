@@ -227,7 +227,14 @@ namespace DdmLibrary.Utility
         public static bool restoreDDMUserSettings(ref DDMUserSettings userSettings, string filePath)
         {
             byte[] content;
-            content = File.ReadAllBytes(filePath);
+            try
+            {
+                content = File.ReadAllBytes(filePath);
+            }
+            catch
+            {
+                return false;
+            }
 
             //Decrypted with AESKey in new setting file                              
             var key = Decryption.GetAESKeyFromKeyContainer();

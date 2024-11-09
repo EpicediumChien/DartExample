@@ -156,6 +156,29 @@ namespace DDPM.UI.Common.ViewModels
             bw.RunWorkerAsync();
         }
 
+        public void NotifySelectedLayoutChangedToSA()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += delegate
+            {
+#if ENABLE_CALL_SA
+                if ((_deviceManagerSA != null) && (SelectedSplitItem != null))
+                {
+                    bool res = _deviceManagerSA.NotifyEASelectedLayoutChanged(_homeDevice.MonitorInfo, SelectedSplitItem.ToSplitJson).Result;
+                }
+#endif
+            };
+            bw.RunWorkerCompleted += delegate
+            {
+                //IsBusy = false;
+            };
+            //IsBusy = true;
+            bw.RunWorkerAsync();
+        }
         #endregion Get/Set to SA
 
         #region ListViewItem Click Commands

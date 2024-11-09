@@ -52,7 +52,14 @@
                 {
                     if (asyncState != null)
                     {
-                        this._Stream.BeginRead(asyncState, 0, NamedPipeStreamBase.BUFFER_LENGTH, new AsyncCallback(this.EndRead), asyncState);
+                        try
+                        {
+                            this._Stream.BeginRead(asyncState, 0, NamedPipeStreamBase.BUFFER_LENGTH, new AsyncCallback(this.EndRead), asyncState);
+                        }
+                        catch (Exception ex) 
+                        {
+                            Console.WriteLine($"[NamedPipeStreamConnection] EndRead exception, message: {ex.Message}");                            
+                        }
                     }
                 }
             }

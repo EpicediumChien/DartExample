@@ -37,7 +37,7 @@ namespace DDPM.SA.Common
 
 
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath);
-        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay);
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType);
         Task<bool> RestartService();
 
         void SetDeviceinfo(List<DeviceInfo> DeviceInfos);

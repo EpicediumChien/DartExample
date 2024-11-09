@@ -13,7 +13,8 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Topmost="True"
-        Background="Transparent" Loaded="Window_Loaded"
+        Background="Transparent" 
+        Loaded="Window_Loaded" IsVisibleChanged="Window_IsVisibleChanged"
         >
     <Window.Resources>
         <SolidColorBrush x:Key="OuterBorder_BkBrush" Color="#F20D121A"/>
@@ -30,7 +31,7 @@
         </Style>
     
     </Window.Resources>
-    <Grid>
+    <Grid Name="rootGrid" IsVisibleChanged="rootGrid_IsVisibleChanged">
         <Grid.Style>
             <Style TargetType="Grid">
                 <Setter Property="Visibility" Value="Hidden"/>

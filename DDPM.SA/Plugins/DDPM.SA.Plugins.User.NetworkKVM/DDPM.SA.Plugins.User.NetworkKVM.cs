@@ -1225,13 +1225,37 @@ namespace NetworkKVM.Plugins
                                         }
                                         else
                                         {
-                                            var matches = Regex.Matches(response, @"\{.*?\}");
-                                            if (matches != null)
+                                            //var matches = Regex.Matches(response, @"\{.*?\}");
+                                            List<string> respList = new List<string>();
+                                            int braceCount = 0;
+                                            int startIndex = 0;
+
+                                            for (int l = 0; l < response.Length; l++)
                                             {
-                                                foreach (Match match in matches)
+                                                if (response[l] == '{')
                                                 {
-                                                    _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
-                                                    JsonstringParse(match.Value).Wait(); //read json type
+                                                    if (braceCount == 0)
+                                                    {
+                                                        startIndex = l;
+                                                    }
+                                                    braceCount++;
+                                                }
+                                                else if (response[l] == '}')
+                                                {
+                                                    braceCount--;
+
+                                                    if (braceCount == 0)
+                                                    {
+                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                    }
+                                                }
+                                            }
+                                            if (respList != null)
+                                            {
+                                                foreach (string resp  in respList)
+                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                    JsonstringParse(resp).Wait(); //read json type
                                                 }
                                             }
                                         }
@@ -1320,13 +1344,37 @@ namespace NetworkKVM.Plugins
                                         }
                                         else
                                         {
-                                            var matches = Regex.Matches(response, @"\{.*?\}");
-                                            if (matches != null)
+                                            //var matches = Regex.Matches(response, @"\{.*?\}");
+                                            List<string> respList = new List<string>();
+                                            int braceCount = 0;
+                                            int startIndex = 0;
+
+                                            for (int l = 0; l < response.Length; l++)
                                             {
-                                                foreach (Match match in matches)
+                                                if (response[l] == '{')
                                                 {
-                                                    _logs.DebugMsg("[NetworkKVM] response string :" + match.Value);
-                                                    JsonstringParse(match.Value).Wait(); //read json type
+                                                    if (braceCount == 0)
+                                                    {
+                                                        startIndex = l;
+                                                    }
+                                                    braceCount++;
+                                                }
+                                                else if (response[l] == '}')
+                                                {
+                                                    braceCount--;
+
+                                                    if (braceCount == 0)
+                                                    {
+                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                    }
+                                                }
+                                            }
+                                            if (respList != null)
+                                            {
+                                                foreach (string resp in respList)
+                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                    JsonstringParse(resp).Wait(); //read json type
                                                 }
                                             }
                                         }
@@ -1539,7 +1587,20 @@ namespace NetworkKVM.Plugins
         private async Task<string> ReadAsync()
         {
             byte[] buffer = new byte[2048];
-            int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            int bytesRead = default;
+
+            try
+            {
+                bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            }
+            catch (Exception ex) 
+            { 
+                _logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
+                return string.Empty;
+            }
+
             string readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
             _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
             return readmessage;
@@ -2396,18 +2457,35 @@ namespace NetworkKVM.Plugins
         private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
         {
             _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
-            if (e.vcpcode.Equals("60") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
+            if (e.vcpcode.Equals("input select") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
             {
                 _logs.DebugMsg("[NetworkKVM] VCPchanged " + e.vcpcode);
                 try
                 {
-                    int vcpcode = Convert.ToInt32(e.vcpcode);
-                    int value = Convert.ToInt32(e.value);
+                    int vcpcode = 0;
+                    int value = 0;
+                    if (e.vcpcode.Equals("input select"))
+                    {
+                        vcpcode = 96;
+                        ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(e.monitor, 0x60).Result;
+                        if (objGetVCP != null && objGetVCP.result)
+                        {
+                            value = (int)(uint)objGetVCP.value;
+                            _logs.DebugMsg("[NetworkKVM] VCPcode value " + value);
+                        }
+                    }
+                    else
+                    {
+                        vcpcode = Convert.ToInt32(e.vcpcode, 16);
+                        _logs.DebugMsg("[NetworkKVM] VCPcode " + vcpcode);
+                        value = Convert.ToInt32(e.value);
+                        _logs.DebugMsg("[NetworkKVM] VCPcode value " + value);
+                    }
                     SetVCPNotify(e.monitor, vcpcode, value);
                 }
-                catch
+                catch(Exception ex) 
                 {
-                    ;
+                    _logs.DebugMsg("[NetworkKVM] VCPchanged exception : " + ex.ToString());
                 }
             }
         }

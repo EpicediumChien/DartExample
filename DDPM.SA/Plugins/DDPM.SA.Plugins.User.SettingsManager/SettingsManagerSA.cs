@@ -603,9 +603,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         }
                     }
                     string strReadJson = string.Empty;
-                    using (var reader = new StreamReader(monitorSettings_path))
+
+                    try
                     {
-                        strReadJson = reader.ReadToEnd();
+                        using (var reader = new StreamReader(monitorSettings_path))
+                        {
+                            strReadJson = reader.ReadToEnd();
+                        }
+                    }
+                    catch (Exception ex) 
+                    {
+                        WriteLog("[ReloadMonitorSettings] exception, message: " + ex.Message);
                     }
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
@@ -904,10 +912,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             string strReadJson = string.Empty;
-            using (var reader = new StreamReader(filePath))
+            try
             {
-                strReadJson = reader.ReadToEnd();
+                using (var reader = new StreamReader(filePath))
+                {
+                    strReadJson = reader.ReadToEnd();
+                }
             }
+            catch (Exception ex)
+            {
+                WriteLog("[ImportPowerNapSettings] exception, message: " + ex.Message);
+            }
+            
 
             if (strReadJson == string.Empty || strReadJson.Length == 0)
                 return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
@@ -1759,10 +1775,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
                         return Task.FromResult(ImpSettings);
+                    }
                     try
                     {
-                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
+                        //WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)

@@ -20,6 +20,12 @@ using Windows.Media.AppRecording;
 using static DDPM.UI.Common.User32;
 using UserControl = System.Windows.Controls.UserControl;
 using Rect = System.Windows.Rect;
+using VcpCore.Common;
+using User32 = DDPM.UI.Common.User32;
+using System.Windows.Media.Imaging;
+using Microsoft.Win32;
+using DDPM.SA.Common.Popup;
+using System.Windows.Interop;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -103,6 +109,12 @@ namespace DDPM.UI.Module.EzArrange
         {
             //InitRecentListView();
             //InitListViewItems();
+
+            if (IniReadInt("DDPMDebug", "EzArrange.SaveSplitCtrlsToPngFilesButtonEnabled", 0, @"C:\temp\DDPMDebug.txt") == 1)
+            {
+                saveSplitCtrlsToPngImagesButton.Visibility = Visibility.Visible;
+            }
+
         }
         #endregion
 
@@ -157,6 +169,18 @@ namespace DDPM.UI.Module.EzArrange
                         spItem = splitListView_4w.AddItemToList(newSplit.UC);
                         break;
 
+                    case 5:
+                        spItem = splitListView_5w.AddItemToList(newSplit.UC);
+                        break;
+
+                    case 6:
+                        spItem = splitListView_6w.AddItemToList(newSplit.UC);
+                        break;
+
+                    case 7:
+                        spItem = splitListView_7w.AddItemToList(newSplit.UC);
+                        break;
+
                     default:
                         break;
                 }
@@ -201,6 +225,12 @@ namespace DDPM.UI.Module.EzArrange
                     spCtrl.Settings = new List<double>(spj.Settings);
                     spCtrl.SplitMode = eSplitModes.Icon;
                     spCtrl.FriendlyName = spj.CustomName;
+                    spCtrl.EAID = spj.EAID;
+
+                    if (spCtrl.IsAddedCustomLayout)
+                    {
+                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                    }
 
                     SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
                     itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
@@ -298,7 +328,12 @@ namespace DDPM.UI.Module.EzArrange
                         spCtrl.Settings = new List<double>(spj.Settings);
                     spCtrl.SplitMode = eSplitModes.Icon;
                     spCtrl.FriendlyName = spj.CustomName;
+                    spCtrl.EAID = spj.EAID;
 
+                    if (spCtrl.IsAddedCustomLayout)
+                    {
+                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                    }
                     SplitItem itemRecent = splitListView_Recent.AddItemToList(spCtrl.UC);
                     itemRecent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
                     itemRecent.CustomId = spj.CustomId;
@@ -345,6 +380,7 @@ namespace DDPM.UI.Module.EzArrange
 
             //D Add all custom items which has no Buddy into Recent list
             //
+            /*
             foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
             {
                 //Robert_Lin, 2024-10-4 Check maximun items
@@ -371,8 +407,10 @@ namespace DDPM.UI.Module.EzArrange
                     _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) CustomList[{ispCustom.CellCount}{ispCustom.SplitKey}], CustomId={itemCustom.CustomId}, CustomName=[{itemCustom.CustomName}], No Buddy setup to RecentList");
                 }
             }
+            */
 
             //E Add all Window items which has no buddy into recent list
+            /*
             foreach (SplitItem itemWin in splitListView_2w.SplitList)
             {
                 //Robert_Lin, 2024-10-4 Check maximun items
@@ -434,6 +472,7 @@ namespace DDPM.UI.Module.EzArrange
                     itemRecent.CustomId = itemWin.CustomId;
                 }
             }
+            */
 
             //Setup the Selected Item
             if (eaSettings != null)
@@ -451,6 +490,32 @@ namespace DDPM.UI.Module.EzArrange
 
             //Workaround, if RecentList[0] is not selected layout, then let ite move to 2nd position 
             splitListView_Recent.MoveSelectedItemToSecondPosition();
+        }
+
+        private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
+        {
+            if (!ispCtrl.IsAddedCustomLayout)
+                return;
+
+            SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
+            spCtrl0B.CellList.Clear();
+            if (spCtrl0B.CellBorders != null)
+                spCtrl0B.CellBorders.Clear();
+            else
+                spCtrl0B.CellBorders = new List<CellBorder>();
+
+            foreach (CellJson cellJson in cellJsons)
+            {
+                CellBorder cellBorder = new CellBorder();
+                cellBorder.CellName = cellJson.Name;
+                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellBorders.Add(cellBorder);
+
+                CellObj cellObj = new CellObj(cellJson.Name);
+                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                spCtrl0B.CellList.Add(cellObj);
+            }
+
         }
 
         private void InitSplitListViews_Unused()
@@ -499,7 +564,8 @@ namespace DDPM.UI.Module.EzArrange
 
             //Set as current Selected item
             _vm.SelectedSplitItem = spItem;
-            _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+            //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+            _vm.NotifySelectedLayoutChangedToSA();
 
             //Need to set it's buddy as IsSelected
             
@@ -744,8 +810,11 @@ namespace DDPM.UI.Module.EzArrange
                 //Find in CustomList, for the item with the same CustomName
                 SplitItem? itemCustom = splitListView_Custom.FindItemByFriendlyName(e.SplitJson.CustomName);
                 //If found in CustomList
-                if (itemCustom != null)
+                if ((itemCustom != null) && (itemCustom.ISplitCtrl != null))
                 {
+                    //Reuse the EAID of the Replaced item
+                    int eaid = itemCustom.ISplitCtrl.EAID;
+                    e.SplitJson.EAID = eaid;
                     //Replace data from return data
                     itemCustom.ReplaceByEAArgs(e);
 
@@ -783,7 +852,8 @@ namespace DDPM.UI.Module.EzArrange
                         }
                         ispCustom.Settings = e.SplitJson.Settings;
                         ispCustom.FriendlyName = e.SplitJson.CustomName;
-                        ispCustom.EAID = e.SplitJson.EAID;
+                        int newEAID = GetUnusedCustomEAID();
+                        ispCustom.EAID = newEAID;
                         //Insert to the first (DDPMW-861)
                         itemCustom = splitListView_Custom.InsertSplitCtrlToList(ispCustom, 0);
                         itemCustom.CustomId = GenerateCustomId();
@@ -805,7 +875,11 @@ namespace DDPM.UI.Module.EzArrange
                     {
                         itemCustom = splitListView_Custom.GetAt(0);
                         if (itemCustom == null) return;
+                        if (itemCustom.ISplitCtrl == null) return;
 
+                        //Reuse the EAID of the Replaced item
+                        int eaid = itemCustom.ISplitCtrl.EAID;
+                        e.SplitJson.EAID = eaid;
                         //Replace data from return data
                         itemCustom.ReplaceByEAArgs(e);
 
@@ -828,29 +902,40 @@ namespace DDPM.UI.Module.EzArrange
                     if (itemCustom.ISplitCtrl != null)
                     {
                         SplitCtrl0B sp0B = (SplitCtrl0B)itemCustom.ISplitCtrl;
-                        List<System.Windows.Rect>? ratioRects = sp0B.ConvertSettingsToRatioRects(new System.Windows.Rect(0,0,1,1));
+
                         List<CellBorder> cellBorders = new List<CellBorder>();
-                        if (ratioRects != null)
+                        if (e.SplitJson.Cells != null)
                         {
-                            //To create CellBorders for SplitCtrl
-                            int idx = 0;
-                            foreach (Rect rc in ratioRects)
+                            foreach(CellJson cellJson in e.SplitJson.Cells)
                             {
-                                idx++;
                                 CellBorder cellBorder = new CellBorder();
-                                cellBorder.rcRatio = rc;
-                                cellBorder.Name = $"Cb{idx}";
+                                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                                cellBorder.CellName = cellJson.Name;
                                 cellBorders.Add(cellBorder);
                             }
-                            sp0B.CellBorders.Clear();
-                            sp0B.CellBorders.AddRange(cellBorders);
-
                         }
+                        //List<System.Windows.Rect>? ratioRects = sp0B.ConvertSettingsToRatioRects(new System.Windows.Rect(0, 0, 1, 1));
+                        //if (ratioRects != null)
+                        //{
+                        //    //To create CellBorders for SplitCtrl
+                        //    int idx = 0;
+                        //    foreach (Rect rc in ratioRects)
+                        //    {
+                        //        idx++;
+                        //        CellBorder cellBorder = new CellBorder();
+                        //        cellBorder.rcRatio = rc;
+                        //        cellBorder.Name = $"Cb{idx}";
+                        //        cellBorders.Add(cellBorder);
+                        //    }
+                        //}
+                        sp0B.CellBorders.Clear();
+                        sp0B.CellBorders.AddRange(cellBorders);
                     }
                 }
                 
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
-                _vm.SetWorkSplit(e.CellCount, e.SplitKey, e.Settings);
+                //_vm.SetWorkSplit(e.CellCount, e.SplitKey, e.Settings);
+                _vm.NotifySelectedLayoutChangedToSA();
                 SaveEaSettings(true);
 
             }));
@@ -890,6 +975,32 @@ namespace DDPM.UI.Module.EzArrange
             //IDeviceManagerSA must be ready
             if (_deviceManagerSA == null) return;
 
+            //Check if this custom layout is used by EasyMemory?
+            //Debug, assume YES
+            bool isLayoutUsedByEM = false;
+            if (isLayoutUsedByEM)
+            {
+                //Try to get hWnd of MainWindow
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+               //Show a message box to get comfirm from user
+                string headerText = string.Empty;
+                string subHeaderText = "The corresponding Easy Memory profile will be deleted too. Do you want to continue";
+                string leftButtonContent = "No";
+                string rightButtonContent = "Yes";
+                object ob = null;
+                bool isStayOny = false;
+                int autoCloseTimeSec = 0;
+                DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
+                    headerText, subHeaderText, leftButtonContent, rightButtonContent, ob, isStayOny, autoCloseTimeSec);
+                popBase.Owner = mainWindow;
+
+                bool? popResult = popBase.ShowDialog();
+                //popResult: Close=null; LeftButton=false; RightButton=true
+                if (popResult != true)
+                    return;
+
+            }
+
             //Find its Buddy in RecentList
             SplitItem? itemRecent = spItem.Buddy;
             //If Buddy exist (should be true)
@@ -906,7 +1017,8 @@ namespace DDPM.UI.Module.EzArrange
                 //Force to selected Split0A
                 SplitItem item0A = splitListView_Recent.SplitList[0];
                 _vm.SelectedSplitItem = item0A;
-                _vm.SetWorkSplit(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey, _vm.SelectedSplitItem.Settings);
+                //_vm.SetWorkSplit(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey, _vm.SelectedSplitItem.Settings);
+                _vm.NotifySelectedLayoutChangedToSA();
             }
             SaveEaSettings(true);
         }
@@ -935,7 +1047,7 @@ namespace DDPM.UI.Module.EzArrange
             //Save UserSettings: CustomList
             if (includeCustomList)
             {
-                splitListView_Custom.RefreshCustomEAID();
+                //splitListView_Custom.RefreshCustomEAID();
 
                 List<SplitJson> customList = new List<SplitJson>();
                 foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
@@ -1031,6 +1143,19 @@ namespace DDPM.UI.Module.EzArrange
         {
             long unixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             return unixTime;
+        }
+
+        private int GetUnusedCustomEAID()
+        {
+            int eaid = EAEMConstants.EAID_FirstCustom;
+            for (int i=0; i<EAEMConstants.MaxCustomItems; i++)
+            {
+                SplitItem? spItem = splitListView_Custom.FindItemByEAID(eaid);
+                if (spItem == null)
+                    return eaid;
+                eaid++;
+            }
+            return 0;
         }
 
         //private string GenerateCustomFriendlyName()
@@ -1199,5 +1324,107 @@ namespace DDPM.UI.Module.EzArrange
             return null;
         }
         #endregion
+
+        #region Save Layout Icons to PNG files
+        private void saveSplitCtrlsToPngImagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            //DDPM.SA.Common.Popup.PopupBase popupBase = new DDPM.SA.Common.Popup.PopupBase(true, true, "HeaderText", "SubHeaderText");
+            //popupBase.ShowDialog(this);
+
+            OpenFolderDialog ofd = new OpenFolderDialog()
+            {
+                Title = "Select a folder",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                SaveLayoutIconsToPngFiles(ofd.FolderName);
+            }
+        }
+        private void SaveLayoutIconsToPngFiles(string folderPath)
+        {
+            //2 Windows
+            foreach (SplitItem spItem in splitListView_2w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //3 Windows
+            foreach (SplitItem spItem in splitListView_3w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //4 Windows
+            foreach (SplitItem spItem in splitListView_4w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //5 Windows
+            foreach (SplitItem spItem in splitListView_5w.SplitList)
+            {
+
+
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //6 Windows
+            foreach (SplitItem spItem in splitListView_6w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+            //7 Windows
+            foreach (SplitItem spItem in splitListView_7w.SplitList)
+            {
+                if (spItem.ISplitCtrl == null)
+                    continue;
+                ISplitCtrl isp = spItem.ISplitCtrl;
+                BitmapSource bmpSrc = isp.CreateBitmapSource();
+                if (bmpSrc != null)
+                {
+                    string pathName = System.IO.Path.Combine(folderPath, $"EA-{isp.EAID}.PNG");
+                    ISplitCtrl.SaveBitmapSourceAsPngFile(bmpSrc, pathName);
+                }
+            }
+        }
+        #endregion
+
     }
 }

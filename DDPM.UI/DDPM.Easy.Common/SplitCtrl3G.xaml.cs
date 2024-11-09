@@ -86,6 +86,53 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("3G2", cell_3G2) { rcRatio = new Rect(0.5, 0.7, 0.5, 0.3) });
             cellListV.Add(new CellObj("3G3", cell_3G3) { rcRatio = new Rect(0, 0.7, 0.5, 0.3) });
         }
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to CellList[i].rcRect
+        /// </summary>
+        public void UpdateRatioRectsFromSettings()
+        {
+            if (VM.Settings_Double.Count < 4)
+                return;
+
+            if (VM.IsVertical)
+            {
+                if (cellListV.Count < 3)
+                    return;
+
+                double cx = VM.Settings_Double[1] + VM.Settings_Double[0];
+                double cy = VM.Settings_Double[2] + VM.Settings_Double[3];
+                if ((cx > 0) && (cy > 0))
+                {
+                    //3G1
+                    cellListV[0].rcRatio = new Rect(0, 0, 1, VM.Settings_Double[2] / cy);
+                    double h = VM.Settings_Double[3] / cy;
+                    double y = cellListV[0].rcRatio.Bottom;
+                    //3G3
+                    cellListV[2].rcRatio = new Rect(0, y, VM.Settings_Double[1] / cx, h);
+                    //3G2
+                    cellListV[1].rcRatio = new Rect(cellListV[2].rcRatio.Right, y, VM.Settings_Double[0] / cx, h);
+                }
+            }
+            else //Horz
+            {
+                if (cellListH.Count < 3)
+                    return;
+
+                double cx = VM.Settings_Double[2] + VM.Settings_Double[3];
+                double cy = VM.Settings_Double[0] + VM.Settings_Double[1];
+                if ((cx > 0) && (cy > 0))
+                {
+                    //3g1
+                    cellListH[0].rcRatio = new Rect(0, 0, VM.Settings_Double[2] / cx, 1);
+                    double x = cellListH[0].rcRatio.Right;
+                    double w = VM.Settings_Double[3] / cx;
+                    //3g2
+                    cellListH[1].rcRatio = new Rect(x, 0, w, VM.Settings_Double[0] / cy);
+                    //3g3
+                    cellListH[2].rcRatio = new Rect(x, cellListH[1].rcRatio.Bottom, w, VM.Settings_Double[1] / cy);
+                }
+            }
+        }
         #endregion Cell List
 
         #region CellBorders
@@ -126,8 +173,8 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 3.7 2 rows, equal splits. Column 1, 70 30 percent splits. Column 2, no split.";
-        private string _defaultVertName = "Option 3.7 2 rows, 30 70 percent splits. Row 1, equal splits. Row 2, no split.";
+        private string _defaultHorzName = "Option 3.7: 2 rows, split equally. Column 1, split 70/30%. Column 2, no split.";
+        private string _defaultVertName = "Option 3.7: 2 rows, split 30/70%. Row 1, split equally, Row 2, no split.";
         public string FriendlyName
         {
             get
