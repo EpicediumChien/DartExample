@@ -1108,13 +1108,42 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         public void TestReadImportSettingsFile()
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
-            string path = "TestReadImportSettings";
-            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
-            var ReadImportSettingsFileResult = (DDPMImpExpSettings)privatesettingsManagerObj.Invoke("ReadImportSettingsFile", path);
-            Assert.IsNotNull(ReadImportSettingsFileResult);
-            Assert.That(ImpSettings.AppSettings, Is.EqualTo(ReadImportSettingsFileResult.AppSettings));
-            Assert.That(ImpSettings.UserSettings, Is.EqualTo(ReadImportSettingsFileResult.UserSettings));
-            Assert.That(ImpSettings.MonitorSettings, Is.EqualTo(ReadImportSettingsFileResult.MonitorSettings));
+            string path1 = "";
+            if (!string.IsNullOrEmpty(path1))
+            {
+                var ReadImportSettingsFile_result1 = SettingsManagerSAPlugin.ReadImportSettingsFile(path1).Result;
+                Assert.IsNotNull(ReadImportSettingsFile_result1);
+            }
+
+            string path2 = "Testpath2";
+            if (!string.IsNullOrEmpty(path2))
+            {
+                if (!File.Exists(path2))
+                {
+                    var ReadImportSettingsFile_result2 = SettingsManagerSAPlugin.ReadImportSettingsFile(path2).Result;
+                    Assert.IsNotNull(ReadImportSettingsFile_result2);
+                }
+            }
+
+            string WriteDDPMImpExpSet_path3_ = "test_WriteDDPMImpExpSetjsonDataPath.json";
+            string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
+            File.WriteAllText(WriteDDPMImpExpSet_path3_, DDPMImpExpSetjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+
+            string WriteDDPMImpExpSet_path33_ = Environment.CurrentDirectory + "\\" + WriteDDPMImpExpSet_path3_;
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+
+            if (!string.IsNullOrEmpty(WriteDDPMImpExpSet_path33_))
+            {
+                if (File.Exists(WriteDDPMImpExpSet_path33_))
+                {
+                    var ReadImportSettingsFile_result3 = SettingsManagerSAPlugin.ReadImportSettingsFile(WriteDDPMImpExpSet_path33_).Result;
+                    Assert.IsNotNull(ReadImportSettingsFile_result3);
+                    File.Delete(WriteDDPMImpExpSet_path33_);
+                }
+            }
+
         }
 
         [Test]

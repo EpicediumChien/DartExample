@@ -819,7 +819,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 //Derek 2024/11/06
                 if (IsAutoFramingOn)
                 {
-                    SetFOV_Selected(2); //Webcam PIMS-316915 FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
+                    //Derek 2024/11/06
+                    //Webcam PIMS-316915 FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
+                    //SetFOV_Selected(2); 
+
+                    //Derek 1109 change to selected the max support FOV due to not all camera will support all FOVs
+                    var FOV = CurrentDeviceInfo!.FOVValues;
+                    SetFOV_Selected(FOV.Length - 1);
 
                     //Derek 2024/11/06 Webcam PIMS-317629 
                     //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)

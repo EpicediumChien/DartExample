@@ -232,6 +232,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
+                                // << 241108 added by Hess to delete setting file at first time
+                                if (!DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                {
+                                    var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+                                    if (Directory.Exists(fileFolder))
+                                        Directory.Delete(fileFolder, true);
+
+                                    fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
+                                    if (Directory.Exists(fileFolder))
+                                        Directory.Delete(fileFolder, true);
+                                }
+                                // >>
+
                                 if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
                                 {
                                     _viewModel.ShowConsent();

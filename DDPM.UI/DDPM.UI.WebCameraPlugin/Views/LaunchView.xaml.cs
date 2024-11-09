@@ -1323,6 +1323,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdatePVMargin(_vm!.VbarSelectedIndex);
+            ChangeDevNameWidth();
         }
 
         private void UpdatePVMargin(int index)
@@ -1337,6 +1338,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
             largeImage.Margin = new Thickness(40, mT, mR, mB);
+        }
+
+        private void ChangeDevNameWidth()
+        {
+            txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+        }
+
+        private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
         }
     }
 }

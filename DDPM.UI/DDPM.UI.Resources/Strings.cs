@@ -459,7 +459,7 @@ namespace DDPM.UI.Common
         //WalkThrough
         public static readonly string NextStr_0 = GetString("Kvm.1");
         public static readonly string WalkThrough_1 = GetString("WalkThrough.1");
-        public static readonly string WalkThrough_2 = GetString("WalkThrough.2");       
+        public static readonly string WalkThrough_2 = GetString("WalkThrough.2");
         public static readonly string WalkThroughDDPM_Main0 = GetString("WalkThroughDDPM_Main.0");
         public static readonly string WalkThroughDDPM_Sub0 = GetString("WalkThroughDDPM_Sub.0");
         public static readonly string WalkThroughDDPM_Main1 = GetString("WalkThroughDDPM_Main.1");
@@ -531,8 +531,8 @@ namespace DDPM.UI.Common
         //OpenAction
         public static readonly string AssignKeystrokeDesc = "Enter a key combination to create a shortcut";
         public static readonly string OpenFileDesc = "Click the browse button to select a file";
-        public static readonly string OpenFolderDesc = "Click the browse button to select a folder";
-        public static readonly string OpenWebPageDesc = "Type the URL to the web page in the box below";
+        public static readonly string OpenFolderDesc = "Click the \"Browse\" button to select a folder";
+        public static readonly string OpenWebPageDesc = "Type the URL of the web page in the box below";
         public static readonly string OpenFileWaterMark = "File Name";
         public static readonly string OpenFolderWaterMark = "Folder Name";
 
@@ -574,6 +574,8 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
         public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
         public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+        public static readonly string ImpExp_Tooltip1 = GetString("DisplayOthers.7");
+        public static readonly string ImpExp_Tooltip2 = GetString("DisplayOthers.8");
 
         // Pair/Unpair
         public static readonly string Caption = "Are you sure?";

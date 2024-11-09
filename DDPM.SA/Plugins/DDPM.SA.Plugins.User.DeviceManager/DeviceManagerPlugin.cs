@@ -5377,6 +5377,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<string> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)
         {
+            if (_disDevHelper == null)
+                return Task.FromResult("null");
             return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
         }
 
@@ -5622,6 +5624,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                //Telemetry
+                SendEasyArrangeTelemetry("Change_layout");
+            }
+            return Task.FromResult(false);
+        }
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
         //{
@@ -10013,6 +10025,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             GetLockRotateStatus();
             writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
+
+            _disDevHelper?.UpdateDDPMPluginInstances(_SettingsPlugin, this, _DisplayManagerPlugin);
         }
 
         private void GetCurrentColorPresetCondition()
@@ -12076,13 +12090,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obBrightness.result)
-                {
-                    uint brightnessValue = ((uint)obBrightness.value) <= 5 ? 0 : ((uint)obBrightness.value - 5);
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                    writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.BrightnessReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -12090,13 +12098,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obBrightness.result)
-                {
-                    uint brightnessValue = (((uint)obBrightness.value) + 5) >= 100 ? 100 : ((uint)obBrightness.value + 5);
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                    writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.BrightnessIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -12104,13 +12106,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-                if (obContrast.result)
-                {
-                    uint contrastValue = ((uint)obContrast.value) <= 5 ? 0 : (uint)obContrast.value - 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                    writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.ContrastReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -12118,13 +12114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-                if (obContrast.result)
-                {
-                    uint contrastValue = ((uint)obContrast.value) + 5 >= 100 ? 100 : (uint)obContrast.value + 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                    writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.ContrastIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -12132,13 +12122,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                if (obLuminance.result)
-                {
-                    uint luminanceValue = ((uint)obLuminance.value) <= 5 ? 0 : (uint)obLuminance.value - 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                    writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.LuminanceReduce, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 
@@ -12146,14 +12130,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-                ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
-                if (obLuminance.result && obLuminanceMax.result)
-                {
-                    uint luminanceValue = ((uint)obLuminance.value) + 5 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 5;
-                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                    writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
-                }
+                _disDevHelper.PerformHotKeyBrightnessContrastLuminanceAction(HotkeyType.LuminanceIncrease, _AllInfoMonitors, monitorInfo, GetAllExistAlsConfig().Result);
             }
         }
 

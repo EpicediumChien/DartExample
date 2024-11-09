@@ -655,7 +655,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 break;
                         }
                         var bandGainNewValue = SetBandsGainValue(_logicalDeviceHeadset, _deviceInfo);
-                        _logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
+                        // Elie, Mask this code becasue R16 has changed this function. 2024/11/09.
+                        //_logicalDeviceHeadset.SetBandsGain(bandGainNewValue);
                         break;
                     }
                 }
@@ -1557,19 +1558,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     rfdongle.IsMultipleDongleFound = true;
                 }
-                else
+                rfInfo = new DongleInfo()
                 {
-                    rfInfo = new DongleInfo()
-                    {
-                        ID = _iPhysicalAudioDeviceDongle.Id,
-                        DeviceType = _iPhysicalAudioDeviceDongle.Type,
-                        IsMultipleDongleFound = false,
-                        MaxPairingSlots = _iPhysicalAudioDeviceDongle.MaxPairingSlots,
-                        PairedDeviceCount = _iPhysicalAudioDeviceDongle.PairedDeviceCount,
-                        LogicalDeviceIDs = _iPhysicalAudioDeviceDongle.Devices.Select(x => x.Id).ToList()
-                    };
-                    _rfDeviceHelper.dongleInfo.Add(rfInfo);
-                }
+                    ID = _iPhysicalAudioDeviceDongle.Id,
+                    DeviceType = _iPhysicalAudioDeviceDongle.Type,
+                    IsMultipleDongleFound = false,
+                    MaxPairingSlots = _iPhysicalAudioDeviceDongle.MaxPairingSlots,
+                    PairedDeviceCount = _iPhysicalAudioDeviceDongle.PairedDeviceCount,
+                    LogicalDeviceIDs = _iPhysicalAudioDeviceDongle.Devices.Select(x => x.Id).ToList()
+                };
+                _rfDeviceHelper.dongleInfo.Add(rfInfo);
             }
             else if (device is IPhysicalDeviceDongle _iPhysicalDeviceDongle)
             {
@@ -1579,19 +1577,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     rfdongle.IsMultipleDongleFound = true;
                 }
-                else
+                rfInfo = new DongleInfo()
                 {
-                    rfInfo = new DongleInfo()
-                    {
-                        ID = _iPhysicalDeviceDongle.Id,
-                        DeviceType = _iPhysicalDeviceDongle.Type,
-                        IsMultipleDongleFound = false,
-                        MaxPairingSlots = _iPhysicalDeviceDongle.MaxPairingSlots,
-                        PairedDeviceCount = _iPhysicalDeviceDongle.PairedDeviceCount,
-                        LogicalDeviceIDs = _iPhysicalDeviceDongle.Devices.Select(x => x.Id).ToList()
-                    };
-                    _rfDeviceHelper.dongleInfo.Add(rfInfo);
-                }
+                    ID = _iPhysicalDeviceDongle.Id,
+                    DeviceType = _iPhysicalDeviceDongle.Type,
+                    IsMultipleDongleFound = false,
+                    MaxPairingSlots = _iPhysicalDeviceDongle.MaxPairingSlots,
+                    PairedDeviceCount = _iPhysicalDeviceDongle.PairedDeviceCount,
+                    LogicalDeviceIDs = _iPhysicalDeviceDongle.Devices.Select(x => x.Id).ToList()
+                };
+                _rfDeviceHelper.dongleInfo.Add(rfInfo);
             }
         }
 
