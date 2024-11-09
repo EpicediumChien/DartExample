@@ -269,7 +269,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(job, moLists, currentMoInfo, alsSynchronizeList);
             byte code = 0x10;
-            
+
             if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.BrightnessReduce ||
                 job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
             {
@@ -280,8 +280,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 code = 0x12;
             }
             else
+            {
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job1: {job}");
                 return;
-
+            }
             ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
             uint targetValue = (uint)obVCPValue.value;
             if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.LuminanceIncrease || job == HotkeyType.ContrastIncrease)
@@ -290,7 +292,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
             else
             {
-                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job: {job}");
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
                 return;
             }
             bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue).Result;
