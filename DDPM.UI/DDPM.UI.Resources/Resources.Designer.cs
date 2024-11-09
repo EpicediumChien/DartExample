@@ -2662,7 +2662,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensitivity.
+        ///   Looks up a localized string similar to Sensitive.
         /// </summary>
         internal static string HeadsetAutomatedActions_1 {
             get {
@@ -4845,6 +4845,15 @@ namespace DDPM.UI.Resources {
         internal static string Third_Party_Licenses {
             get {
                 return ResourceManager.GetString("Third_Party_Licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third Party License.
+        /// </summary>
+        internal static string ThirdPartyLicense_Title {
+            get {
+                return ResourceManager.GetString("ThirdPartyLicense.Title", resourceCulture);
             }
         }
         

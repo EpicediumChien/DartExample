@@ -2334,4 +2334,7 @@
   <data name="Brightness.20" xml:space="preserve">
     <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>
   </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Third Party License</value>
+  </data>
 </root>
