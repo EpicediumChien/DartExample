@@ -5,6 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using DDPM.UI.Common;
 
 //Add this class to solve PIMS-313975
 namespace DDPM.UI.Plugin.SettingsPlugin
@@ -125,7 +126,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private static ContextMenu CreateContextMenu(TextBlock textBlock)
         {
             var contextMenu = new ContextMenu();
-            var copyMenuItem = new MenuItem { Header = "Copy" };
+            var copyMenuItem = new MenuItem { Header = Strings.Copy };
             copyMenuItem.Click += (s, e) =>
             {
                 var selectedText = textBlock.Tag as string;
