@@ -108,7 +108,7 @@ namespace DdpmSwUpdater
                     SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                     {
                         TheLatestVersion = swUpdateHelper.Softwares[i].SoftwareVersion,
-                        ServerPath = "https://clientperipherals.dell.com/DDPM/3fcf51beb3c8//Windows/Application/DDPM-Setup-v2.0.1.47.exe",
+                        ServerPath = swUpdateHelper.Softwares[i].ServerPath,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath,
                         SHA256 = swUpdateHelper.Softwares[i].SHA256,
