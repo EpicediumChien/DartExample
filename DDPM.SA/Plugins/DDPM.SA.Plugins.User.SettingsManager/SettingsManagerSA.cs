@@ -1094,7 +1094,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                 WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
                                 if (!string.IsNullOrEmpty(_export_path))
                                 {
-                                    string _exportpath = _export_path + "\\" + modelname + "_" + seriveTag + ".json";
+                                    string _exportpath = _export_path + "\\" + modelname + ".json";
                                     if (WriteImpExpSettings(_exportpath, impexpSettings))
                                     {
                                         WriteLog("[ExportSettingsFile] Monitor settings file create and write to export file success");
@@ -1127,11 +1127,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out DDPMImpExpSettings ImpExpSettings)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            ImpExpSettings = ReadImportSettingsFile(path);
+            ImpExpSettings = ReadImportSettingsFile(path).Result;
             //List<VCPCode> vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
@@ -1180,7 +1180,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             {
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
-                                    if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                                    if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
+                                        (settings.ServiceTag == serviceTag && isSameModel == true))
                                     {
                                         settings.Input = monitorSettings.Input;
                                         settings.KVM = monitorSettings.KVM;
@@ -1206,10 +1207,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                             }
                                         }
                                     }
-                                }
-                                if (isSameModel)
-                                {
-                                    return Task.FromResult(true);
                                 }
                             }
                             else
@@ -1587,7 +1584,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private Dictionary<string, List<DDPMMonitorSettings>> ReadAllMonitorSettings()
         {
-            string[] files = Directory.GetFiles(_display_path, "*.json");
+
+            string[] files = default;
+
+            try
+            {
+                files = Directory.GetFiles(_display_path, "*.json");
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine($"[Dictionary] Get files in folder failed, message: {ex.Message}");
+            }
 
             return _AllMonitorSettings;
         }
@@ -1727,7 +1734,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return true;
         }
 
-        private DDPMImpExpSettings ReadImportSettingsFile(string path)
+        public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
 
@@ -1740,7 +1747,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                     {
                         WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
-                        return ImpSettings;
+                        return Task.FromResult(ImpSettings);
                     }
                     string strReadJson = string.Empty;
                     //using (var reader = new StreamReader(path))
@@ -1752,11 +1759,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
-                        return ImpSettings;
+                    {
+                        WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
+                        return Task.FromResult(ImpSettings);
+                    }
                     try
                     {
-
-                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
+                        //WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)
@@ -1769,7 +1778,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     WriteLog("[ReadImportSettingsFile] path : " + path);
                 }
             }
-            return ImpSettings;
+            return Task.FromResult(ImpSettings);
         }
         public Task<DDMImpSettings> ReadDDMImpSettingsFile(string path) 
         {

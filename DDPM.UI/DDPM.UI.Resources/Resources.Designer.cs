@@ -763,11 +763,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Brightness is currently enabled. Do you wish to disable it to continue?.
+        /// </summary>
+        internal static string Brightness_19 {
+            get {
+                return ResourceManager.GetString("Brightness.19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Smart HDR .
         /// </summary>
         internal static string Brightness_2 {
             get {
                 return ResourceManager.GetString("Brightness.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?.
+        /// </summary>
+        internal static string Brightness_20 {
+            get {
+                return ResourceManager.GetString("Brightness.20", resourceCulture);
             }
         }
         

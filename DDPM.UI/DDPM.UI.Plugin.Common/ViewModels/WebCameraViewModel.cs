@@ -815,6 +815,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAutoFramingOnText));
                 OnPropertyChanged(nameof(PanArrowVisibility));
+
+                //Derek 2024/11/06
+                if (IsAutoFramingOn)
+                {
+                    SetFOV_Selected(2); //Webcam PIMS-316915 FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
+
+                    //Derek 2024/11/06 Webcam PIMS-317629 
+                    //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
+                    IsFocusOn = true;
+                }
+   
             }
         }
 
@@ -906,10 +917,13 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsFocusOn;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
-                SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsFocusOnText));
+                if (value != IsFocusOn) //Derek 1108 for Webcam PIMS-317629 
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
+                    SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsFocusOnText));
+                }
             }
         }
         public string IsFocusOnText
@@ -1375,12 +1389,6 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(Undo2Visibility));
             OnPropertyChanged(nameof(RedoVisibility));
             OnPropertyChanged(nameof(Redo2Visibility));
-
-            //Derek 2024/11/06
-            //Webcam PIMS-316915
-            //FOV not go back to 90 and greyed out when switch AI Auto-Framing option to on.
-            if (IsAutoFramingOn)
-                SetFOV_Selected(2);
         }
 
         public void ClearUndo()

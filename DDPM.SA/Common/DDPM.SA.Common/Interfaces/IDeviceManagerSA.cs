@@ -531,7 +531,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
-        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false);
+        Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType= DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "");
@@ -564,6 +564,7 @@ namespace DDPM.SA.Common
         Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+        Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
 
         #endregion public ALS functions
 
@@ -624,6 +625,8 @@ namespace DDPM.SA.Common
         Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
 
         Task<bool> GetSameModel(MonitorInfo monitorInfo);
+
+        Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
         #endregion public for ImpExpSettings
 
