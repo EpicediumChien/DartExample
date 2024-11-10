@@ -96,6 +96,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 model = (string)options["model"];
 
+                // add @ 20241110 stephen
+                upgradetolatest = (bool)options["upgradetolatest"];
 
             }
 
@@ -103,6 +105,8 @@ namespace DDPM.SA.Plugins.CMAManager
             public string servicetag { get; set; } = string.Empty;
             public string minversion { get; set; } = string.Empty;
             public string model { get; set; } = string.Empty;
+            // add @ 20241110 stephen
+            public bool upgradetolatest { get; set; } = false;
 
         }
 

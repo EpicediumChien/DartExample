@@ -5,6 +5,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -355,6 +356,18 @@ namespace DDPM.SA.Plugins.CMAManager
                 {
                     command = command + (" value=" + option.model + ",model");
                 }
+
+                // add start @ 20241110 stephen
+                if (option.upgradetolatest)
+                {
+                    command = command + (" upgradetolatest=" + option.upgradetolatest);
+                }
+                // *****CLI use 'miniversion'*****
+                if (command.Contains("miniversion") && command.Contains("upgradetolatest"))
+                {
+                    throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
+                }
+                // add end @ 20241110
             }
 
             return command;
