@@ -520,11 +520,51 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
             else if (_commandLineInput.PPID.Count != 0)
             {
+                _commandLineInput.PPID.ForEach(ppid =>
+                {
+                    var found = false;
 
+                    // waiting for DeviceInfo.PPID implement
+
+                    //_deviceinfo?.ForEach(x =>
+                    //{
+                    //    if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.PPID == ppid)
+                    //    {
+                    //        SetResults.Add(new CLI_PeripheralRESPONSE($"{x.ID}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag));
+                    //        found = true;
+                    //        //GUID = x.ID.ToString();
+                    //    }
+                    //});
+
+                    if (!found)
+                    {
+                        SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
+                    }
+                });
             }
             else if (_commandLineInput.SerialNumber.Count != 0)
             {
+                _commandLineInput.SerialNumber.ForEach(serialNumber =>
+                {
+                    var found = false;
 
+                    // waiting for DeviceInfo.SerialNumber implement
+
+                    //_deviceinfo?.ForEach(x =>
+                    //{
+                    //    if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.SerialNumber == serialNumber)
+                    //    {
+                    //        SetResults.Add(new CLI_PeripheralRESPONSE($"{x.ID}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", x.Name, x.ModelNumber, x.DockServiceTag));
+                    //        found = true;
+                    //        //GUID = x.ID.ToString();
+                    //    }
+                    //});
+
+                    if (!found)
+                    {
+                        SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
+                    }
+                });
             }
 
             if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("AUDIO"))// for audio headset RESTOREFACTORYDEFAULTS.
