@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Text;
+using DDPM.UI.Resources.Helper;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -139,13 +140,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (CurrentDeviceInfo.IsIlluminationSupported)
             {
-                TabOffCaption = Strings.Off;
+                TabOffCaption = LangHelper.Instance["Off2"];
                 //TabOffInfoTip = Resources.Resources.Keyboard_Illumination_Off_ToolTip;
-                TabOffInfoTip = "To change the brightness\nlevel, press the F8 key";
+                TabOffInfoTip = LangHelper.Instance["Illumination.2"];
                 TabAdaptiveLightCaption = Strings.AdaptiveLight;
-                TabAdaptiveLightInfoTip = "Adaptive Light automatically adjusts the\nbrightness levels of your keyboard based on\nthe amount of light in your environment.";
+                TabAdaptiveLightInfoTip = LangHelper.Instance["Illumination.3"];
                 TabManualCaption = Strings.Manual;
-                TabManualInfoTip = "Adjust your Keyboard's Brightness";
+                TabManualInfoTip = LangHelper.Instance["Illumination.4"];
 
                 IlluminationSelectedTabIndex = CurrentDeviceInfo.BackLightTabIndex;
                 BackLightingLevel = CurrentDeviceInfo.BackLightingLevel;
