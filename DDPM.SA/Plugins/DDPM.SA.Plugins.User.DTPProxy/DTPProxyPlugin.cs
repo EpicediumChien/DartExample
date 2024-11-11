@@ -1668,6 +1668,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Headset" => _headsetMethodInfo,
                 "Speaker" => _speakerMethodInfo,
                 "Dongle" => _dongleMethodInfo,
+                "Dock" => _dockMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
@@ -1679,6 +1680,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Headset" => _headsetInterfaceType,
                 "Speaker" => _speakerInterfaceType,
                 "Dongle" => _dongleInterfaceType,
+                "Dock" => _dockInterfaceType,
                 _ => null
             };
 
@@ -4565,6 +4567,63 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #endregion
 
+        #region Dock
+
+        public async Task<string> GetFirmwareVersionAsyncForDock(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Dock", guid))
+                {
+                    writelog(" [Dock] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
+                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<string> GetDockServiceTagAsyncForDock(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Dock", guid))
+                {
+                    writelog(" [Dock] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
+                    writelog($"[Dock] GetDockServiceTagAsyncForDock succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Dock] GetDockServiceTagAsyncForDock failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Dock] GetDockServiceTagAsyncForDock failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
         #region Overriding methods
 
         protected override void OnPluginStarting()
@@ -4855,6 +4914,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     _donglecom.Connected += _comdity_Connected;
                     _donglecom.Disconnected += _comdity_Disconnected;
+                    writelog($"Dongle Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
+
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IDockCommodity>(new ItemId("DellPeripheral.Dock"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IDockCommodity _Dockcom)
+            {
+                try
+                {
+                    _Dockcom.Connected += _comdity_Connected;
+                    _Dockcom.Disconnected += _comdity_Disconnected;
                     writelog($"Dongle Commodity event registered");
                 }
                 catch (Exception e)
