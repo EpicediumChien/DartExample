@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Failed to open application</value>
   </data>
-  <data name="will_be_updated_to " xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>will be updated to </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -495,7 +495,7 @@
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
-  <data name="Unable_to_synchronize_the_corresponding_ ICC_profile" xml:space="preserve">
+  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>Unable to synchronize the corresponding ICC profile for</value>
   </data>
 </root>

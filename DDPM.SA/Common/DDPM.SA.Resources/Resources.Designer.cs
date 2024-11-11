@@ -936,9 +936,9 @@ namespace DDPM.SA.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Unable to synchronize the corresponding ICC profile for.
         /// </summary>
-        internal static string Unable_to_synchronize_the_corresponding__ICC_profile {
+        internal static string Unable_to_synchronize_the_corresponding_ICC_profile {
             get {
-                return ResourceManager.GetString("Unable_to_synchronize_the_corresponding_ ICC_profile", resourceCulture);
+                return ResourceManager.GetString("Unable_to_synchronize_the_corresponding_ICC_profile", resourceCulture);
             }
         }
         
@@ -1180,9 +1180,9 @@ namespace DDPM.SA.Resources {
         /// <summary>
         ///   Looks up a localized string similar to will be updated to .
         /// </summary>
-        internal static string will_be_updated_to_ {
+        internal static string will_be_updated_to {
             get {
-                return ResourceManager.GetString("will_be_updated_to ", resourceCulture);
+                return ResourceManager.GetString("will_be_updated_to", resourceCulture);
             }
         }
         

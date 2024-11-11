@@ -824,8 +824,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     PopupContentPackage popupContentPackage = new PopupContentPackage()
                     {
-                        Title = "Dell Display and Peripheral Manager",
-                        Info = "Unable to synchronize the corresponding ICC profile for"+m.modelName,
+                        Title = Strings.Dell_Display_and_Peripheral_Manager0,
+                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + m.modelName,
                         IsInfo = true,
                         IsOnlyUpdate = false,
                         StayOpen = false,
@@ -7961,6 +7961,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetIsPropertyAutoFramingSupported(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyAutoFramingSupported(Guid));
+        }
+
+        public async Task<bool> GetIsESISupported(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsESISupported(Guid));
         }
 
         public async Task<bool> GetIsAutoFramingOn(string Guid)
