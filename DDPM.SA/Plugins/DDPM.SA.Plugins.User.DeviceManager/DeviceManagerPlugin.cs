@@ -9511,7 +9511,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (deviceInfo.Type == DeviceType.LogicalDock)
                     {
-                        dockCount++;
+                        if (_peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
+                        {
+                            dockCount++;
+                        }
                     }
                     if (dockCount >= 2)
                     {
