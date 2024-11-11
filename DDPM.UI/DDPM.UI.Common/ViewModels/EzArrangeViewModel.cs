@@ -300,26 +300,8 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         public ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
-        //public ObservableCollection<Bind_AddFullPage_AppCollectionData> BindApps
-        //{
-        //    get => _bind_apps;
-        //    set => SetProperty(ref _bind_apps, value);
-        //}
 
-        // List for managing all apps without triggering UI updates
         public IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
-        //public IList<Bind_AddFullPage_AppCollectionData> AppsAll
-        //{
-        //    get => _apps_all;
-        //    set
-        //    {
-        //        if (_apps_all != value)
-        //        {
-        //            _apps_all = value;
-        //            OnPropertyChanged(nameof(AppsAll));
-        //        }
-        //    }
-        //}
 
         //存取 RightView 的 SplitListView
         public SplitListView _splitListRightView;

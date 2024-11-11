@@ -44,9 +44,6 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        //private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
-        //private ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps { get; set; } = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
-        //private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
         public EzMemoryAddApplication(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
@@ -103,9 +100,6 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyName_Ascending_Click(object sender, EventArgs e)
         {
-            //btnSortbyName_Ascending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyName_Descending.Visibility = System.Windows.Visibility.Visible;
-
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
             TempSorted = _vm._bind_apps.OrderBy(x => x.AppName).ToList();
@@ -128,9 +122,6 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyName_Descending_Click(object sender, EventArgs e)
         {
-            //btnSortbyName_Descending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyName_Ascending.Visibility = System.Windows.Visibility.Visible;
-
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
             TempSorted = _vm._bind_apps.OrderByDescending(x => x.AppName).ToList();
@@ -153,9 +144,6 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyDate_Ascending_Click(object sender, EventArgs e)
         {
-            //btnSortbyDate_Ascending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyDate_Descending.Visibility = System.Windows.Visibility.Visible;
-
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
             TempSorted = _vm._bind_apps.OrderBy(x => x.InstalledDate).ToList();
@@ -178,8 +166,6 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyDate_Descending_Click(object sender, EventArgs e)
         {
-            //btnSortbyDate_Descending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyDate_Ascending.Visibility = System.Windows.Visibility.Visible;
 
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
@@ -203,37 +189,6 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
-
-            //string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
-            //strFolder += "\\";
-
-            //if (!System.IO.Directory.Exists(strFolder))
-            //    System.IO.Directory.CreateDirectory(strFolder);
-
-            //foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
-            //{
-            //    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
-
-            //    new_Appdata.AppName = kvp.Value.AppName;
-            //    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
-            //    new_Appdata.AppPath = kvp.Value.AppInstallPath;
-            //    new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
-            //    new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
-
-            //    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
-            //    {
-            //        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
-            //    }
-            //    else
-            //    {
-            //        new_Appdata.AppIcon = "Assets/palette.png";
-            //    }
-
-            //    _vm._bind_apps.Add(new_Appdata);
-            //    _vm._apps_all.Add(new_Appdata);
-
-            //}
             lb_Installed_App.ItemsSource = _vm._bind_apps;
         }
 
