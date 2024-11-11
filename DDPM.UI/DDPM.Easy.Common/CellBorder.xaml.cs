@@ -28,8 +28,15 @@ namespace DDPM.Easy.Common
 
             AllowDrop = true;
             this.Drop += OnDrop;
+            this.Unloaded += OnUnloaded;
 
             #endregion 
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            this.Drop -= OnDrop;
+            this.Unloaded -= OnUnloaded;
         }
 
         private string _cellName = "";
