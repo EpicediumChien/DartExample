@@ -455,6 +455,7 @@ namespace DDPM.UI.Common
         public static readonly string AssignPageSubText = GetString("EazyMemory.37");
         public static readonly string LaunchOptionPageMainText = GetString("EazyMemory.35");
         public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
+        public static readonly string BlankProfileSubText = GetString("EazyMemory.40");
 
         //WalkThrough
         public static readonly string NextStr_0 = GetString("Kvm.1");

@@ -2340,4 +2340,7 @@
   <data name="ThirdPartyLicense.Title" xml:space="preserve">
     <value>Third Party License</value>
   </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>Please enter profile name.</value>
+  </data>
 </root>

@@ -23,8 +23,14 @@ namespace DDPM.Easy.Common
         public CellBorder()
         {
             InitializeComponent();
-        }
 
+            #region Em Use
+
+            AllowDrop = true;
+            this.Drop += OnDrop;
+
+            #endregion 
+        }
 
         private string _cellName = "";
         public string CellName
@@ -147,5 +153,131 @@ namespace DDPM.Easy.Common
         {
             childGrid.Children.Add(ele);
         }
+
+        #region Em Use
+
+        public event EventHandler<Dictionary<int, CellAppData>>? DropOccurred;
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var cellBorder = sender as CellBorder;
+                if (cellBorder != null)
+                {
+                    int cellNumber = cellBorder.CellNumber;
+                    BitmapImage bitmapImage = new BitmapImage();
+                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                    string filePath = files[0];
+                    string fileName = System.IO.Path.GetFileName(filePath);
+
+                    // MemoryImage
+                    System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
+                    if (icon != null)
+                    {
+                        using (var iconStream = new System.IO.MemoryStream())
+                        {
+                            icon.Save(iconStream);
+                            iconStream.Seek(0, System.IO.SeekOrigin.Begin);
+                            bitmapImage.BeginInit();
+                            bitmapImage.StreamSource = iconStream;
+                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmapImage.EndInit();
+                            //cellBorder.MemoryImage = bitmapImage;
+                        }
+                    }
+                    else
+                    {
+                        // MemoryText
+                        //this.MemoryText = this.MemoryText + ": " + fileName;
+                    }
+                    //if(_cellAppName.ContainsValue(filePath))// 重複APP
+                    //{
+                    //    //Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    //    //Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    //    //DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    //    return;
+                    //}
+                    //if(_cellAppName.ContainsKey(cellNumber))// 更新APP
+                    //{
+                    //    _cellAppName[cellNumber] = fileName;
+                    //}
+                    //else
+                    //{
+                    //    _cellAppName.Add(cellNumber, filePath);// 新增APP
+                    //}
+                    _cellAppInfo.Clear();
+                    CellAppData appInfo = new CellAppData();
+                    appInfo.Number = cellNumber;
+                    appInfo.FileName = fileName;
+                    appInfo.FilePath = filePath;
+                    appInfo.Image = bitmapImage;
+                    appInfo.Cell = cellBorder;
+                    _cellAppInfo.Add(cellNumber, appInfo);
+                    DropOccurred?.Invoke(this, _cellAppInfo);
+                }
+            }
+        }
+
+        public static readonly DependencyProperty IsEmModeProperty = DependencyProperty.Register(
+    "IsEmMode", typeof(bool), typeof(CellBorder), new PropertyMetadata(false));
+
+        public bool IsEmMode
+        {
+            get => (bool)GetValue(IsEmModeProperty);
+            set => SetValue(IsEmModeProperty, value);
+        }
+
+        public ImageSource MemoryImage
+        {
+            get => memoryImage.Source;
+            set => memoryImage.Source = value;
+        }
+
+        public string MemoryText
+        {
+            get => memoryTB.Text;
+            set => memoryTB.Text = value;
+        }
+
+        Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
+        //public Dictionary<int, CellAppData> CellAppInfo
+        //{
+        //    get => _cellAppInfo;
+        //    //set => _cellAppInfo = value;
+        //}
+
+        public int CellNumber
+        {
+            get { return (int)GetValue(CellNumberProperty); }
+            set { SetValue(CellNumberProperty, value); }
+        }
+
+        public static readonly DependencyProperty CellNumberProperty =
+            DependencyProperty.Register("CellNumber", typeof(int), typeof(CellBorder), new PropertyMetadata(0));
+
+        public class CellAppData
+        {
+            public int Number { get; set; }
+
+            public string FileName { get; set; }
+
+            public string FilePath { get; set; }
+
+            public BitmapImage Image { get; set; }
+
+            public CellBorder Cell { get; set; }
+
+            public CellAppData(int number, string fileName, string filePath, BitmapImage image, CellBorder cell)
+            {
+                Number = number;
+                FileName = fileName;
+                FilePath = filePath;
+                Image = image;
+                Cell = cell;
+            }
+
+            public CellAppData() { }
+        }
+        #endregion
     }
 }

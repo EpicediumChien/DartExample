@@ -29,6 +29,11 @@
                 <Setter Property="Background" Value="#F20D121A"/>
                 <Setter Property="BorderBrush" Value="White" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding IsEmMode}" Value="True">
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Background" Value="#F20D121A"/>
+                <Setter Property="BorderBrush" Value="White" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 

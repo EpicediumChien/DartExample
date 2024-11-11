@@ -107,6 +107,13 @@
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
                                 </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEmMode}" Value="True"/>
+                                        <Condition Binding="{Binding HoveringCell}" Value="2B1"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Background" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+                                </MultiDataTrigger>
                             </Style.Triggers>
                         </Style>
                     </local:CellBorder.Style>
@@ -125,6 +132,13 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding IsAwsMode}" Value="True"/>
+                                        <Condition Binding="{Binding HoveringCell}" Value="2B2"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Background" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEmMode}" Value="True"/>
                                         <Condition Binding="{Binding HoveringCell}" Value="2B2"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>

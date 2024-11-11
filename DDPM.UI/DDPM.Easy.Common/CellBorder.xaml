@@ -6,32 +6,30 @@
              xmlns:local="clr-namespace:DDPM.Easy.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <Border x:Name="bd" BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}}"
             BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=UserControl}}"
             CornerRadius="{Binding Radius, RelativeSource={RelativeSource AncestorType=UserControl}}"
             Background="{Binding BkBrush, RelativeSource={RelativeSource AncestorType=UserControl}}">
-
-        <Grid Name="outterGrid">
+        <Grid>
             <!-- For AwsIcon0, will show MonitorId Text -->
-            <Grid x:Name="childGrid"/>
+        <!--<Grid x:Name="childGrid"/>-->
+        <Grid x:Name="childGrid"/>
+            <Grid x:Name="memoryGrid" Visibility="{Binding IsEmMode, Converter={StaticResource BooleanToVisibilityConverter}}" AllowDrop ="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0">
+                    <TextBlock x:Name="memoryTB" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="White"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1">
+                    <Image x:Name="memoryImage" Grid.Column="1" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,0,0,0"/>
+                </StackPanel>
 
- 
+            </Grid>
         </Grid>
-
-        <!-- 
-        <Border.Style>
-            <Style TargetType="Border">
-                <Setter Property="BorderBrush" Value="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                        <Setter Property="BorderBrush" Value="Red"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style> 
-        -->
-        <!--<TextBlock Foreground="Red" FontSize="9"
-                   Text="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}">
-        </TextBlock>-->
     </Border>
 </UserControl>
