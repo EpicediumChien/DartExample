@@ -4230,11 +4230,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                 cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                 if (cLI_SWU_RESPONSE != null)
                 {
-                    output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
+                    //output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
+                    output = JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
                 }
                 else
                 {
-                    output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+                    //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
+                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
                 }
                 if (ret == true)
                 {
