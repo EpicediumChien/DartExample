@@ -178,8 +178,8 @@ namespace DDPM.UI.Module.Collaboration
             }
             else
             {
-                txtAlert1.Text = Strings.Alert4;
-                bdrAlert1.Visibility = Visibility.Visible;
+                //txtAlert1.Text = Strings.Alert4;
+                //bdrAlert1.Visibility = Visibility.Visible;
             }
 
             spAlert.Visibility = _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
