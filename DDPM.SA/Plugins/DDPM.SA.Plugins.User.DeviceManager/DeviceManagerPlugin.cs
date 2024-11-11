@@ -1896,44 +1896,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("Set VCP code 0x04 Fail...");
             }
 
-            Task.Run(() =>
+            //Telementry Collection
+            var rt = false;
+            var Displaysettings_Function = new Displaysettings_Function();
+            switch (code)
             {
-                //Telementry Collection
-                var rt = false;
-                var Displaysettings_Function = new Displaysettings_Function();
-                switch (code)
-                {
-                    case 0x10:
+                case 0x10:
 
-                        if (monitorInfo.CapabilityDic.ContainsKey("12"))
+                    if (monitorInfo.CapabilityDic.ContainsKey("12"))
+                    {
+                        Task.Run(() =>
                         {
                             writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
                             rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                             if (rt) writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
                             else writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
-                        }
-                        else
+                        }).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        Task.Run(() =>
                         {
                             writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
                             rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                             if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
                             else writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
-                        }
-                        break;
+                        }).ConfigureAwait(false);
+                    }
+                    break;
 
-                    case 0x12:
+                case 0x12:
 
+                    Task.Run(() =>
+                    {
                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
                         rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                         if (rt) writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
                         else writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
+                    }).ConfigureAwait(false);
+                    break;
 
-                        break;
-
-                    default:
-                        break;
-                }
-            }).ConfigureAwait(false);
+                default:
+                    break;
+            }
 
             return Task.FromResult(r);
         }
@@ -9527,7 +9532,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (deviceInfo.Type == DeviceType.LogicalDock)
                     {
-                        dockCount++;
+                        if (_peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
+                        {
+                            dockCount++;
+                        }
                     }
                     if (dockCount >= 2)
                     {
@@ -10577,7 +10585,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            TelemetryDdpmSwUpdater();
+                            Task.Run(() => TelemetryDdpmSwUpdater()).ConfigureAwait(false);
                         }
                         else
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
@@ -10590,7 +10598,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
                             _TelementryScheduler.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            TelemetryDdpmSwUpdater();
+                            Task.Run(() => TelemetryDdpmSwUpdater()).ConfigureAwait(false);
                         }
                         else
                             writelog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");

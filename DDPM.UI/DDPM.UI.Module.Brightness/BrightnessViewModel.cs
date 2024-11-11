@@ -1904,20 +1904,6 @@ namespace DDPM.UI.Module.Brightness
 
             set
             {
-                if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0)
-                {
-                    if (_autoBrightnessStatus)
-                    {
-                        string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
-                        if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string))
-                        {
-                            AutoBrightnessStatus = _autoBrightnessStatus = false;
-                        }
-                        else
-                            return;
-                    }
-                }
-
                 Brightness_Value = value;
                 Brightness_Debouncer.Debounce(value);
                 NotifyPropertyChanged("BrightnessValue");
@@ -2134,21 +2120,57 @@ namespace DDPM.UI.Module.Brightness
 
         private void Set_Brightness_Value(object value_)
         {
-            var value = Convert.ToDouble(value_);
-            uint nNewValue = Convert.ToUInt32(value);
+            bool r = false;
 
-            if (IsSynchronize)
+            void SET_Brightness()
             {
-                foreach (HomeDevice hd in ModuleOwner.HomeDevices)
+
+                var value = Convert.ToDouble(value_);
+                uint nNewValue = Convert.ToUInt32(value);
+
+                if (IsSynchronize)
                 {
-                    if (hd.MonitorInfo.IsDellMonitor)
-                        DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
+                    foreach (HomeDevice hd in ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                            DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
+                    }
+                }
+                else
+                    DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
+
+                //NotifyPropertyChanged("BrightnessValue");                
+            }
+
+
+            if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0)
+            {
+                if (_autoBrightnessStatus)
+                {
+                    string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
+
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string);
+                    }));
+                    if (r)
+                        AutoBrightnessStatus = _autoBrightnessStatus = false;
+                    else
+                    {
+                        if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
+                            Brightness_Value = 40;
+                        else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
+                            Brightness_Value = 60;
+                        else
+                            Brightness_Value = 100;
+
+                        NotifyPropertyChanged("BrightnessValue");
+                        return;
+                    }
                 }
             }
-            else
-                DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
 
-            //NotifyPropertyChanged("BrightnessValue");
+            SET_Brightness();
         }
 
         private double Get_Contrast_Value()

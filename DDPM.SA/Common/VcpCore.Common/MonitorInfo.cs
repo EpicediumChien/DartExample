@@ -6,24 +6,24 @@ namespace VcpCore.Common
     [Serializable]
     public class MonitorInfo : IEquatable<MonitorInfo>
     {
-        public string AliasDeviceName;
-        public bool IsDellMonitor { get; set; }
-        public int Index { get; set; }
-        public string CapabilityString { get; set; }
-        public string DisplayName { get; set; }
-        public bool DDCisON { get; set; }
-        public EDID edid { get; set; }
-        public string FwVersion { get; set; }
-        public string inputSource { get; set; }
-        public string inputCable { get; set; }
-        public Dictionary<string, List<string>> CapabilityDic;
-        public string modelName { get; set; }
-        public string series { get; set; }
-        public string MarketingName { get; set; }
-        public string ImageFileName { get; set; }
-        public string SupplierID { get; set; }
-        public string D_Ctrl { get; set; }
-        public double scalingFactor { get; set; }
+        public string AliasDeviceName = string.Empty;
+        public bool IsDellMonitor { get; set; } = false;
+        public int Index { get; set; } = 0x0;
+        public string CapabilityString { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public bool DDCisON { get; set; } = false;
+        public EDID edid { get; set; } = new EDID();
+        public string FwVersion { get; set; } = string.Empty;
+        public string inputSource { get; set; } = string.Empty;
+        public string inputCable { get; set; } = string.Empty;
+        public Dictionary<string, List<string>> CapabilityDic = new Dictionary<string, List<string>>();
+        public string modelName { get; set; } = string.Empty;
+        public string series { get; set; } = string.Empty;
+        public string MarketingName { get; set; } = string.Empty;
+        public string ImageFileName { get; set; } = string.Empty;
+        public string SupplierID { get; set; } = string.Empty;
+        public string D_Ctrl { get; set; } = string.Empty;
+        public double scalingFactor { get; set; } = 0x0;
 
         public override bool Equals(object obj)
         {
