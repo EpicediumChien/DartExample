@@ -22,6 +22,11 @@
         /// The SplitCtrl is unsing AWS (Application Window Snap) mode
         /// Robert_Lin, 2024-10-2 add
         /// </summary>
-        AWS
+        AWS,
+
+        /// <summary>
+        /// The SplitCtrl is unsing EasyMemory mode
+        /// </summary>
+        Em
     }
 }

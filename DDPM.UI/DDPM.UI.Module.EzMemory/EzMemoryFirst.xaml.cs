@@ -265,6 +265,13 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (InputText.Text == "")
+            {
+                Thickness headMargin = new Thickness(24, 30, 45, 24);
+                Thickness subMargin = new Thickness(24, -16, 24, 8);
+                DdpmCommonHelper.DDPMEzMesssageBox("", Strings.BlankProfileSubText, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                return;
+            }
             if (_vm.SelectedSplitItem.CellCount < 2)
             {
                 return;
@@ -713,9 +720,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
                 _vm.SelectedSplitItem = spItem;
-                _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
+                //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);//EM no need
 
-                splitListView_Recent.MoveSelectedItemToSecondPosition();
+                //splitListView_Recent.MoveSelectedItemToSecondPosition();//EM no need
                 //SaveEaSettings();
                 //_deviceManagerSA.WriteEasyArrangeSettings()
             }

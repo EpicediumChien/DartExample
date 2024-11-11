@@ -2352,4 +2352,7 @@
   <data name="Off2" xml:space="preserve">
     <value>Off</value>
   </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>Please enter profile name.</value>
+  </data>
 </root>
