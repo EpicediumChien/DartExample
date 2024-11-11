@@ -1842,13 +1842,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     PhysicalDevices1.Remove(iPhysicalDevice.Id);
 
-                    if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
-                    {
-                        DeviceChangedEventArgs _EventArgs = new();
-                        _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
-                        _EventArgs.changedProperty = "PhysicalDeviceRemoved";
-                        OnNotify(_EventArgs);
-                    }
+                }
+                if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
+                    _EventArgs.changedProperty = "PhysicalDeviceRemoved";
+                    OnNotify(_EventArgs);
                 }
             }
         }
@@ -1874,6 +1874,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IPhysicalDevice_DeviceRemovedEvent(ILogicalDevice iLogicalDevice)
         {
+            Debug.WriteLine($"ID: {iLogicalDevice.Id}, Type:{iLogicalDevice.Type}");
+            Debug.WriteLine($"DeviceCount: {_deviceHelper.deviceInfo.Count}");
             _deviceHelper.deviceInfo.Where(x => x.ID == iLogicalDevice.Id).ToList().ForEach(device =>
             {
                 device.IsConnected = false;
