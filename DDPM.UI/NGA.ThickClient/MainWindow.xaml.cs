@@ -15,6 +15,7 @@ using Dell.Client.Framework.UX.WPF.Console;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -33,6 +34,8 @@ namespace NGA.ThickClient
         /// Log object specific to MainWindow
         /// </summary>
         private readonly ILog? _log;
+
+        private readonly IConsole? _Console;
 
         /// <summary>
         ///  75% of the height of the usable area
@@ -112,6 +115,7 @@ namespace NGA.ThickClient
                 RegisterEvents(console);
             }
             _log?.Info($"{nameof(MainWindow)} - Constructed");
+            _Console = console;
         }
 
         #region Private Methods
@@ -402,6 +406,20 @@ namespace NGA.ThickClient
         private void ConsoleWindow_Closed(object sender, EventArgs e)
         {
             _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Closed");
+        }
+
+        private void ConsoleWindow_Activated(object sender, EventArgs e)
+        {
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Activated");
+            if (_Console != null)
+                _Console.RaiseEvent(ConsoleEventNames.MainWindow_Activate, this, new EventManagerArgs());
+        }
+
+        private void ConsoleWindow_DeActivated(object sender, EventArgs e)
+        {
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Deactivated");
+            if (_Console != null)
+                _Console.RaiseEvent(ConsoleEventNames.MainWindow_DeActivate, this, new EventManagerArgs());
         }
     }
 }

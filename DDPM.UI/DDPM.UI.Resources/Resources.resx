@@ -2332,7 +2332,7 @@
     <value>Applies when you're listening to multimedia, such as music or podcasts</value>
   </data>
   <data name="Brightness.19" xml:space="preserve">
-    <value>Auto Brightness is currently enabled. Do you wish to disable it to continue?</value>
+    <value>Auto Brightness is currently enabled. Do you wish to override it?</value>
   </data>
   <data name="Brightness.20" xml:space="preserve">
     <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>

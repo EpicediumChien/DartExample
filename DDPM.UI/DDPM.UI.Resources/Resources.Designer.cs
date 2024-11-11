@@ -763,7 +763,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Auto Brightness is currently enabled. Do you wish to disable it to continue? 的當地語系化字串。
+        ///   查詢類似 Auto Brightness is currently enabled. Do you wish to override it? 的當地語系化字串。
         /// </summary>
         internal static string Brightness_19 {
             get {
@@ -2986,7 +2986,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 To change the brightness level, press the F8 key 的當地語系化字串。
+        ///   查詢類似 Do not prompt again for the same model 的當地語系化字串。
         /// </summary>
         internal static string Illumination_2 {
             get {
