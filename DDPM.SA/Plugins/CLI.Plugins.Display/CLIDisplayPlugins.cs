@@ -9084,6 +9084,66 @@ namespace DDPM.CLI.Plugins.Display
 
         #endregion PIP/PBP - (Robert_Lin 2024-6-13, Unused) (Added by Robert_Lin, 2024-6-5)i
 
+        #region Helper functions (Robert_Lin 2024-6-13 Unused if remove PIP/PBP region)
+
+        //Try to convert input string to int.
+        // strIn    outValue
+        // "20"     20
+        // 20h"     32
+        // "0x20"   32
+        //Logic:
+        // 1 Trim the starting/ending white-space characters
+        // 2 If start with "0x" => base=16
+        // 3 if end with 'h' => trim end 'h' and base=16
+        // 4 otherwise => base=10
+        // 5 return int.TryParse(strIn, base, outValue)
+        //Unit Test: using below code to do test
+        /*
+            int outValue = 0;
+            string[] testCases =
+            {
+                " 20", "20h", "0x20", "  0x20  ", "   20h  ", " 0x20h  "
+            };
+            foreach (string strIn in testCases)
+            {
+                Console.WriteLine($"ConvertToInt(\"{strIn}\") return {ConvertToInt(strIn, out outValue)}, outValue={outValue}");
+            }
+        */
+
+        private bool ConvertToInt(string strIn, out int outValue)
+        {
+            strIn = strIn.Trim();
+            NumberStyles numStyle = NumberStyles.Integer;
+            if (strIn.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                strIn = strIn.Substring(2);
+                numStyle = NumberStyles.HexNumber;
+            }
+            else if (strIn.EndsWith('h') || strIn.EndsWith('H'))
+            {
+                strIn = strIn.TrimEnd(new char[] { 'h', 'H' });
+                numStyle = NumberStyles.HexNumber;
+            }
+            CultureInfo provider = new CultureInfo("en-US");
+            return int.TryParse(strIn, numStyle, provider, out outValue);
+        }
+
+        //Helper function, convert string to ePxpInputs
+        public static ePxpInputs ConvertPxpInputsFromString(string str)
+        {
+            try
+            {
+                ePxpInputs ret = (ePxpInputs)System.Enum.Parse(typeof(ePxpInputs), str, true);
+                return ret;
+            }
+            catch (Exception e)
+            {
+            }
+            return ePxpInputs.invalid;
+        }
+
+        #endregion Helper functions (Robert_Lin 2024-6-13 Unused if remove PIP/PBP region)
+
         #region PxP CLI - Robert_Lin 2024-6-13 for new CLI command syntax
 
         private async Task<(int code, string result)> CLI_Pxp(IDeviceManagerSA devMgr, CommandLineInput cmdLineInput)
@@ -10930,7 +10990,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 jsonString = r.ReadToEnd();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine($"[DiagnosticReport] StreamReader read failed, message: {ex.Message}");
             }
