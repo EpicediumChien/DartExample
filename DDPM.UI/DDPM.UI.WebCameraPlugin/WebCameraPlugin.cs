@@ -59,6 +59,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 Interval = TimeSpan.FromSeconds(5)
             };
             timer.Tick += Timer_Tick;
+
+            if(_console != null)
+            {
+                _console.RegisterForEvent(ConsoleEventNames.MainWindow_Activate, MainWindowActivate);
+                _console.RegisterForEvent(ConsoleEventNames.MainWindow_DeActivate, MainWindowDeActivate);
+            }
         }
 
 
@@ -166,6 +172,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         ~WebCameraplugin()
         {
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+        }
+
+        private void MainWindowActivate(object sender, EventManagerArgs e)
+        {
+            this._log?.Write(LogMsgType.Debug, "Webcamera plugin receive MainWindow Activate event");
+            //Dispatcher.Invoke(new Action(() => //dispatch since different thread
+            //{
+            //    //your ui action    
+            //}));
+        }
+
+        private void MainWindowDeActivate(object sender, EventManagerArgs e)
+        {
+            this._log?.Write(LogMsgType.Debug, "Webcamera plugin receive MainWindow DeActivate event");
+            //Dispatcher.Invoke(new Action(() => //dispatch since different thread
+            //{
+            //    //your ui action    
+            //}));
         }
     }
 }
