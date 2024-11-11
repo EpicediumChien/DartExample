@@ -46,7 +46,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
@@ -5379,7 +5378,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_disDevHelper == null)
                 return Task.FromResult("null");
-            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors,  currentMoInfo, alsSynchronizeList).Result);
+            return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors, currentMoInfo, alsSynchronizeList).Result);
         }
 
         #endregion
@@ -8285,6 +8284,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
+        public async Task<bool> GetIsZoomMeetingActive(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(guid));
+        }
+        public async Task<bool> GetZoomMeetingType(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingType(guid));
+        }
+        public async Task<bool> GetIsZoomScreenShareActive(string guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomScreenShareActive(guid));
+        }
 
         #endregion
 
@@ -8967,13 +8978,84 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region WebCamera
+        public enum ZoomMeetingType
+        {
+            CONF_3RD_EVENT_MEETING = 0,
+            CONF_3RD_EVENT_PHONE = 1,
+            CONF_3RD_EVENT_WEBINAR = 2,
+            CONF_3RD_EVENT_WEBINAR_VIEWONLY = 3
+        }
+        private bool _IsZoomScreenShareActive;
+        private bool _IsZoomMeetingActive;
+        private ZoomMeetingType _ZoomMeetingType;
+        private void HandleQAM()
+        {
+            writelog($"HandleQAM start");
+            writelog($"CallQAM_UI: GetDevices_WithoutAwait go");
+            List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+            writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+            if (deviceInfos!=null&& deviceInfos.Count==0)
+            {
+
+            }
+            if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING && _QAM == null)
+            {
+                if (deviceInfos != null && deviceInfos.Count == 1)
+                {
+                    CallQAM_UI(this);
+                }
+            }
+            else if (_QAM != null)
+            {
+                QAMClose();
+            }
+            if (_QAM != null)
+            {
+                if (_IsZoomScreenShareActive)
+                {
+                    QAMHide();
+                }
+                else
+                {
+
+                }
+            }
+            writelog($"HandleQAM done");
+        }
         private void ZoomChanged(object sender, ZoomChangedArgs e)
         {
-            writelog($"[DeviceManager] ZoomChanged e : {e}");
+            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+            if (e != null)
+            {
+                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.Zoom: {e.Zoom}");
+            }
         }
         private void ZoomMeetingTypeChanged(object sender, ZoomMeetingTypeChangedArgs e)
         {
-            writelog($"[DeviceManager] ZoomMeetingTypeChanged e : {e}");
+            writelog($"[DeviceManager] ZoomMeetingTypeChanged e == null: {e == null}");
+            if (e != null)
+            {
+                writelog($"[DeviceManager] ZoomMeetingTypeChanged e.ZoomMeetingType: {e.ZoomMeetingType}");
+                _ZoomMeetingType = (ZoomMeetingType)e.ZoomMeetingType;
+            }
+        }
+        private void IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
+        {
+            writelog($"[DeviceManager] IsZoomMeetingActiveChanged e == null: {e == null}");
+            if (e != null)
+            {
+                writelog($"[DeviceManager] IsZoomMeetingActiveChanged e.IsZoomMeetingActive: {e.IsZoomMeetingActive}");
+                _IsZoomMeetingActive = e.IsZoomMeetingActive;
+            }
+        }
+        private void IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
+        {
+            writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e == null: {e == null}");
+            if (e != null)
+            {
+                writelog($"[DeviceManager] IsZoomScreenShareActiveChanged e.IsZoomScreenShareActive: {e.IsZoomScreenShareActive}");
+                _IsZoomScreenShareActive = e.IsZoomScreenShareActive;
+            }
         }
         private void QAMCloseEvent(object o, EventArgs e)
         {
@@ -8982,20 +9064,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
+                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                {
+                    ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                }
             }
         }
-
+        private void QAMHide()
+        {
+            writelog($"QAMHide Start");
+            if (_QAM == null)
+            {
+                writelog($"QAMHide QAMHide go");
+                _QAM.Hide();
+                writelog($"QAMHide QAMHide done");
+            }
+            writelog($"QAMHide done");
+        }
+        private void QAMClose()
+        {
+            writelog($"QAMClose Start");
+            if (_QAM == null)
+            {
+                writelog($"QAMClose _QAM.Close go");
+                _QAM.Close();
+                writelog($"QAMClose _QAM.Close done");
+            }
+            writelog($"QAMClose done");
+        }
         private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             writelog($"CallQAM_UI: Start");
             if (_QAM == null)
             {
                 writelog($"CallQAM_UI: Go");
-                List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo;
-                if (deviceInfos != null)
                 {
-                    writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                    if (deviceInfos.Any(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam))))
                     {
                         writelog($"CallQAM_UI: have Webcam show QAM");
                         Thread thread1 = new Thread(() =>
@@ -13714,6 +13817,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
                             return Task.CompletedTask;
                         }
+                    case OSDType.QAM:
+                        {
+                            _showosd(monitorInfo, OSDType.QAM, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -14067,7 +14175,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             }
                                         }
                                         break;
-
+                                    case OSDType.QAM:
+                                        {
+                                            try
+                                            {
+                                                _OSD_Controler.QAMHotKeyWin_CloseWindow();
+                                                _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                writelog($"[_showosd] ERROR - OSDType.QAM: {ex.Message}");
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }
