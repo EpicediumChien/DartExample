@@ -2196,6 +2196,15 @@ namespace DDPM.UI.Resources {
         /// <summary>
         ///   查詢類似 Error 的當地語系化字串。
         /// </summary>
+        internal static string EazyMemory_40 {
+            get {
+                return ResourceManager.GetString("EazyMemory.40", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Error 的當地語系化字串。
+        /// </summary>
         internal static string EazyMemory_5 {
             get {
                 return ResourceManager.GetString("EazyMemory.5", resourceCulture);

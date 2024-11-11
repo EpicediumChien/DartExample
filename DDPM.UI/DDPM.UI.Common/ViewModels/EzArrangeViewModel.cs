@@ -3,17 +3,26 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Microsoft.VisualBasic.Logging;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Runtime.ConstrainedExecution;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using VcpCore.Common;
+using static DDPM.Easy.Common.CellBorder;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace DDPM.UI.Common.ViewModels
@@ -31,10 +40,10 @@ namespace DDPM.UI.Common.ViewModels
         public int _currentTotalPage = 0;// Control button Visibility.Collapsed 
         public int _currentPageIndex = 0;
         public string _currentDeviceModel = "EzMemory";
-        public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
         public EAProfileDDPM currentEditprofile;
         public EzProfileSettingDDPM currentEditprofileSetting;
+        public ISplitCtrl? ispCtrl;
 
         #endregion
 
@@ -283,6 +292,35 @@ namespace DDPM.UI.Common.ViewModels
 
         #region EzMemoryViewModel
 
+        public void PopUpAlreadyexistsMessage(Window Owner)
+        {
+            Thickness headMargin = new Thickness(24, 30, 45, 24);
+            Thickness subMargin = new Thickness(24, -16, 24, 8);
+            DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Owner, 417, 148, headMargin, subMargin);
+        }
+
+        public ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
+        //public ObservableCollection<Bind_AddFullPage_AppCollectionData> BindApps
+        //{
+        //    get => _bind_apps;
+        //    set => SetProperty(ref _bind_apps, value);
+        //}
+
+        // List for managing all apps without triggering UI updates
+        public IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
+        //public IList<Bind_AddFullPage_AppCollectionData> AppsAll
+        //{
+        //    get => _apps_all;
+        //    set
+        //    {
+        //        if (_apps_all != value)
+        //        {
+        //            _apps_all = value;
+        //            OnPropertyChanged(nameof(AppsAll));
+        //        }
+        //    }
+        //}
+
         //存取 RightView 的 SplitListView
         public SplitListView _splitListRightView;
         public SplitListView splitListRightView
@@ -510,6 +548,44 @@ namespace DDPM.UI.Common.ViewModels
 
         #region Assign page
 
+        public int GetTextBlockNumber(string btnName)
+        {
+            switch (btnName)
+            {
+                case "AddButton2_1":
+                    return 1;
+                case "AddButton2_2":
+                    return 2;
+                case "AddButton1":
+                    return 1;
+                case "AddButton2":
+                    return 2;
+                case "AddButton3":
+                    return 3;
+                case "AddButton4":
+                    return 4;
+                case "AddButton5":
+                    return 5;
+                case "AddButton6":
+                    return 6;
+                case "AddButton7":
+                    return 7;
+                case "AddButton8":
+                    return 8;
+                case "AddButton9":
+                    return 9;
+                case "AddButton10":
+                    return 10;
+                case "AddButton11":
+                    return 11;
+                case "AddButton12":
+                    return 12;
+                default:
+                    return 0;
+            }
+
+        }
+
         public void UpdateTextBlockAppName(string btnName, string appName)
         {
             switch (btnName)
@@ -520,7 +596,8 @@ namespace DDPM.UI.Common.ViewModels
                 case "AddButton2_2":
                     Window2_2AppName = appName;
                     break;
-                case "AddButton1":
+                case "AddButton1":                   
+                    //ispCtrl.CellList[0].CellBd.MemoryImage = LoadImage(_sortApps["AddButton1"].AppIcon);
                     Window1AppName = appName;
                     break;
                 case "AddButton2":
@@ -562,10 +639,189 @@ namespace DDPM.UI.Common.ViewModels
 
         }
 
+        private void UpdateWindowAppName(int index, string appName)
+        {
+            switch (index)
+            {
+                case 1:
+                    Window2_1AppName = appName;
+                    Window1AppName = appName;
+                    break;
+                case 2:
+                    Window2_2AppName = appName;
+                    Window2AppName = appName;
+                    break;
+                case 3:
+                    Window3AppName = appName;
+                    break;
+                case 4:
+                    Window4AppName = appName;
+                    break;
+                case 5:
+                    Window5AppName = appName;
+                    break;
+                case 6:
+                    Window6AppName = appName;
+                    break;
+                case 7:
+                    Window7AppName = appName;
+                    break;
+                case 8:
+                    Window8AppName = appName;
+                    break;
+                case 9:
+                    Window9AppName = appName;
+                    break;
+                case 10:
+                    Window10AppName = appName;
+                    break;
+                case 11:
+                    Window11AppName = appName;
+                    break;
+                case 12:
+                    Window12AppName = appName;
+                    break;
+            }
+        }
+
+        public void AlignCellNumberAndAppName(int no, CellObj cel)
+        {
+            switch (no.ToString())
+            {
+                case "1":
+                    FillOut(cel, "AddButton2_1", no);
+                    FillOut(cel, "AddButton1", no);
+                    break;
+                case "2":
+                    FillOut(cel, "AddButton2_2", no);
+                    FillOut(cel, "AddButton2", no);
+                    break;
+                case "3":
+                    FillOut(cel, "AddButton3", no);
+                    break;
+                case "4":
+                    FillOut(cel, "AddButton4", no);
+                    break;
+                case "5":
+                    FillOut(cel, "AddButton5", no);
+                    break;
+                case "6":
+                    FillOut(cel, "AddButton6", no);
+                    break;
+                case "7":
+                    FillOut(cel, "AddButton7", no);
+                    break;
+                case "8":
+                    FillOut(cel, "AddButton8", no);
+                    break;
+                case "9":
+                    FillOut(cel, "AddButton9", no);
+                    break;
+                case "10":
+                    FillOut(cel, "AddButton10", no);
+                    break;
+                case "11":
+                    FillOut(cel, "AddButton11", no);
+                    break;
+                case "12":
+                    FillOut(cel, "AddButton12", no);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        public void FillOut(CellObj _cel, string _btnName, int _no)
+        {
+            if (_sortApps.ContainsKey(_btnName))
+            {
+                _cel.CellBd.CellNumber = _no;
+                _cel.CellBd.MemoryText = _no.ToString();
+                _cel.CellBd.MemoryImage = LoadImage(_sortApps[_btnName].AppIcon);
+            }
+            else
+            {
+                _cel.CellBd.CellNumber = _no;
+            }
+        }
+
+        public void RegisterCellBorder(CellBorder cellBorder, int index)
+        {
+            cellBorder.DropOccurred += (sender, fileName) =>
+            {
+                if (HasDuplicateApp(fileName.First().Value.FileName)) // fileName KEY值為cell編號而且只會有1個觸發進來，所以判斷第一個即可
+                {
+                    _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
+                    PopUpAlreadyexistsMessage(null);
+                    return;
+                }
+
+                if (_sortApps.Values.Any(a =>a.AppName.Equals(fileName.First().Value.FileName, StringComparison.OrdinalIgnoreCase) || a.AppPath.Equals(fileName.First().Value.FilePath, StringComparison.OrdinalIgnoreCase)))
+                {
+                    _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
+                    PopUpAlreadyexistsMessage(null);
+                    return;
+                }
+                    var appData = new Bind_AddFullPage_AppCollectionData
+                {
+                    AppType = "True" // Desktop
+                };
+
+                UpdateAppInfo(index, fileName, appData);
+            };
+        }
+
+        private void UpdateAppInfo(int index, Dictionary<int, CellAppData> fileName, Bind_AddFullPage_AppCollectionData appData)
+        {
+            string buttonKey = $"AddButton{index}";
+            string additionalButtonKey = index == 1 ? "AddButton2_1" : index == 2 ? "AddButton2_2" : null;
+
+            if (additionalButtonKey != null && (_sortApps.ContainsKey(additionalButtonKey) || _sortApps.ContainsKey(buttonKey)))
+            {
+                _sortApps.Remove(additionalButtonKey);
+                _sortApps.Remove(buttonKey);
+            }
+            else if (_sortApps.ContainsKey(buttonKey))
+            {
+                _sortApps.Remove(buttonKey);
+            }
+
+            // 設定 Cell 的 MemoryImage
+            fileName[index].Cell.MemoryImage = fileName[index].Image;
+
+            // 檢查 _totalApps 中是否有相同的 AppName
+            var existingApp = _bind_apps.FirstOrDefault(app => app.AppPath.ToUpper() == fileName[index].FilePath.ToUpper());
+            if (existingApp != null)
+            {
+                appData.AppIcon = existingApp.AppIcon;
+            }
+            else
+            {
+                appData.AppIcon = fileName[index].Image.ToString();
+            }
+
+            // 更新 appData 的屬性
+            appData.AppName = fileName[index].FileName;
+            appData.AppPath = fileName[index].FilePath;
+
+            // 將 appData 加入到 _sortApps
+            if (additionalButtonKey != null && ispCtrl.CellList.Count <= 2)
+            {
+                _sortApps.Add(additionalButtonKey, appData);
+            }
+            else
+            {
+                _sortApps.Add(buttonKey, appData);
+            }
+
+            // 更新對應的 WindowAppName 屬性
+            UpdateWindowAppName(index, fileName[index].FileName);
+        }
+
         public void ClearTextBlockAppName()
         {
             _sortApps.Clear();
-            _seletcApps.Clear();
             Window2_1AppName = "";
             Window2_2AppName = "";
             Window1AppName = "";
@@ -580,6 +836,38 @@ namespace DDPM.UI.Common.ViewModels
             Window10AppName = "";
             Window11AppName = "";
             Window12AppName = "";
+        }
+
+        public ImageSource LoadImage(string filePath)
+        {
+            if (System.IO.File.Exists(filePath))
+            {
+                ImageSource _imageSource;
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(filePath, UriKind.Absolute);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad; 
+                bitmap.EndInit();
+                bitmap.Freeze();
+                _imageSource = bitmap;
+                return _imageSource;
+            }
+            return null;
+        }
+
+        public bool HasDuplicateApp(string appName)
+        {
+            bool hasDuplicate = false;
+
+            foreach (var app in _sortApps.Values)
+            {
+                if (app.AppName == appName)
+                {
+                    hasDuplicate = true;
+                    return hasDuplicate;
+                }
+            }
+            return hasDuplicate;
         }
 
         private string _window2_1AppName;
