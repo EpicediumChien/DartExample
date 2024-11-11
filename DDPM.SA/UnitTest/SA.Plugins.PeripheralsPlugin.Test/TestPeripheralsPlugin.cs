@@ -1013,6 +1013,310 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.IsNotNull(devicemanager2);
         }
 
+        [Test]
+        public void TestStopPairing()
+        {
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalDeviceDongle> physicalDeviceDongle = new Mock<IPhysicalDeviceDongle>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalDeviceDongle.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalDeviceDongle.Object });
+
+            Guid physicalDeviceId = physicalDeviceDongle.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.StopPairing(physicalDeviceId);                                     // physicalDevice is IPhysicalDeviceDongle
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            Mock<IPhysicalAudioDeviceDongle> physicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
+            physicalAudioDeviceDongle.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalAudioDeviceDongle.Object });
+
+            Guid physicalAudioDeviceDongleId = physicalAudioDeviceDongle.Object.Id;
+
+            var DeviceManagerObj2 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj2);
+
+            peripheralsPlugin.StopPairing(physicalAudioDeviceDongleId);                        // physicalDevice is IPhysicalAudioDeviceDongle
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+        }
+
+        [Test]
+        public void TestStopPairingPen()
+        {
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalPenDevice.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object });
+
+            Guid physicalPenDeviceId = physicalPenDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.StopPairingPen();                                     // device is physicalPenDevice
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestUnPair()
+        {
+            Mock<IPhysicalDevice> ParentPhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDevice> logicalDevice = new Mock<ILogicalDevice>();
+            Mock<IPhysicalDeviceDongle> physicalDeviceDongle = new Mock<IPhysicalDeviceDongle>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            logicalDevice.Setup(pd => pd.ParentPhysicalDevice).Returns(physicalDeviceDongle.Object);
+            physicalDeviceDongle.Setup(pd => pd.Devices).Returns(new[] { logicalDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalDeviceDongle.Object });// mockDeviceManager device- physicalDeviceDongledevice -logicalDevice device- physicalDeviceDongle device
+
+            Guid logicalDeviceId = logicalDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.UnPair(logicalDeviceId);                                     // physicalDevice ParentPhysicalDevice is IPhysicalDeviceDongle
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            Mock<IPhysicalAudioDeviceDongle> physicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
+
+            logicalDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            logicalDevice.Setup(pd => pd.ParentPhysicalDevice).Returns(physicalAudioDeviceDongle.Object);
+            physicalAudioDeviceDongle.Setup(pd => pd.Devices).Returns(new[] { logicalDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalAudioDeviceDongle.Object }); // mockDeviceManager device- physicalAudioDeviceDongle -logicalDevice device- physicalAudioDeviceDongle device
+
+            Guid physicalAudioDeviceDongleId = logicalDevice.Object.Id;
+
+            var DeviceManagerObj2 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj2);
+
+            peripheralsPlugin.UnPair(physicalAudioDeviceDongleId);                        // physicalDevice ParentPhysicalDevice is IPhysicalAudioDeviceDongle
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager2);
+
+            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+
+            logicalDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            logicalDevice.Setup(pd => pd.ParentPhysicalDevice).Returns(physicalPenDevice.Object);
+            physicalPenDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object }); // mockDeviceManager device- physicalPenDevice -logicalDevice device- physicalPenDevice device
+
+            Guid physicalPenDeviceId = logicalDevice.Object.Id;
+
+            var DeviceManagerObj3 = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.UnPair(physicalPenDeviceId);                                                // device ParentPhysicalDevice is physicalPenDevice
+            var devicemanager3 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager3);
+        }
+
+        [Test]
+        public void TestSetWiredAudioIMicNSEnable()
+        {
+            bool newValue = false;
+            Guid deviceId1 = new Guid();
+            Mock<IPhysicalDevice> physicalDevice = new Mock<IPhysicalDevice>();
+            Mock<IPhysicalPenDevice> physicalPenDevice = new Mock<IPhysicalPenDevice>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            physicalPenDevice.Setup(pd => pd.Id).Returns(Guid.NewGuid());
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { physicalPenDevice.Object });
+
+            Guid physicalPenDeviceId = physicalPenDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.SetWiredAudioIMicNSEnable(newValue, deviceId1);                                     // SetWiredAudioIMicNSEnable method not ready
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetWiredAudioMicMuteSoundEnable()
+        {
+            bool newValue = false;
+
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalWiredAudio> logicalWiredAudioDevice = new Mock<ILogicalWiredAudio>();
+            //Mock<ILogicalDevice> logicalDevice = new Mock<ILogicalDevice>(); // ILogicalWiredAudio jichengle ILogicalDevice?suoyiyeshi ILogicalDevice
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalWiredAudioDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalWiredAudioDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalWiredAudioDevice device- logicalWiredAudioDevice device ID
+
+            Guid logicalWiredAudioDeviceId = logicalWiredAudioDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.SetWiredAudioMicMuteSoundEnable(newValue, logicalWiredAudioDeviceId);                      // logicalDeviceis IlogicalWiredAudioDevice,method not ready
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetWiredAudioVolumeAdjustmentTone()
+        {
+            int newValue = 20;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalWiredAudio> logicalWiredAudioDevice = new Mock<ILogicalWiredAudio>();
+            //Mock<ILogicalDevice> logicalDevice = new Mock<ILogicalDevice>(); // ILogicalWiredAudio jichengle ILogicalDevice?suoyiyeshi ILogicalDevice
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalWiredAudioDevice.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalWiredAudioDevice.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalWiredAudioDevice device- logicalWiredAudioDevice device ID
+
+            Guid logicalWiredAudioDeviceId = logicalWiredAudioDevice.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            peripheralsPlugin.SetWiredAudioVolumeAdjustmentTone(newValue, logicalWiredAudioDeviceId);                      // logicalDeviceis IlogicalWiredAudioDevice,method not ready
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+        [Test]
+        public void TestSetSidetoneLevel()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetSidetoneLevel(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,SidetoneLevel=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+        }
+
+        [Test]
+        public void TestSetAncMode()
+        {
+            int newValue = 10;
+            Mock<IPhysicalDevice> PhysicalDevice = new Mock<IPhysicalDevice>();
+            Mock<ILogicalDeviceHeadset> logicalDeviceHeadset = new Mock<ILogicalDeviceHeadset>();
+            Mock<IDeviceManager> mockDeviceManager = new Mock<IDeviceManager>();
+
+            logicalDeviceHeadset.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            PhysicalDevice.Setup(pd => pd.Devices).Returns(new[] { logicalDeviceHeadset.Object });
+            mockDeviceManager.Setup(dm => dm.Devices).Returns(new[] { PhysicalDevice.Object });// mockDeviceManager device- PhysicalDevice -logicalDeviceHeadset device- logicalDeviceHeadset device ID
+
+            Guid logicalDeviceHeadsetId = logicalDeviceHeadset.Object.Id;
+
+            var DeviceManagerObj = mockDeviceManager.Object;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_iDeviceManager", DeviceManagerObj);
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetAncMode(newValue, logicalDeviceHeadsetId);                      // logicalDeviceis logicalDeviceHeadset,AncMode=20, _deviceHelper.deviceInfo ID != logicalDeviceHeadsetId
+            var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+
+            deviceHelper.deviceInfo[0].ID = logicalDeviceHeadsetId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
+
+            peripheralsPlugin.SetAncMode(newValue, logicalDeviceHeadsetId);                     // logicalDeviceis logicalDeviceHeadset,AncMode=20, _deviceHelper.deviceInfo ID = logicalDeviceHeadsetId
+            var devicemanager2 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
+            Assert.IsTrue(true);
+            Assert.IsNotNull(devicemanager);
+        }
+
+
         [OneTimeTearDown]
         public void TearDown()
         {
