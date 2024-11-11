@@ -183,6 +183,19 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
             Name = CurrentDeviceInfo.Name;
+            if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
+            {
+                string[] s = CurrentDeviceInfo.Name.Split(" ");
+                Name = "";
+                foreach (string temps in s)
+                {
+                    Name += temps + " ";
+                    if (temps.ToUpper().Equals("DOCK"))
+                    {
+                        break;
+                    }
+                }
+            }
             if (instenceNo == "")
             {
                 Model2 = Model;
@@ -218,7 +231,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 //0617 Bruce 新增Dock連線方式的濾字串的方式
                 case DeviceType.PhysicalWiredDock:
-                    if (CurrentDeviceInfo.ModelNumber.ToString().Contains("TB 5"))
+                    if (CurrentDeviceInfo.ModelNumber.ToString().Contains("TB5"))
                     {
                         ConnectionType = "USB-C (TB 5)";
                     }

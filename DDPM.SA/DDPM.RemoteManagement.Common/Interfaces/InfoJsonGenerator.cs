@@ -116,6 +116,8 @@ namespace DDPM.RemoteManagement.Common.Interfaces
 
                 // attribut for fwupdate
                 public string minversion { get; set; }
+                // add @ 20241110 stephen
+                public bool upgradetolatest { get; set; }
 
 
                 public string toString()
@@ -169,6 +171,22 @@ namespace DDPM.RemoteManagement.Common.Interfaces
                         }
                         result = result + $"\"minversion\":\"{minversion}\"";
                         hasValue = true;
+                    }
+
+                    if (upgradetolatest)
+                    {
+                        if (hasValue)
+                        {
+                            result = result + ",";
+                        }
+                        result = result + $"\"upgradetolatest\":true";
+                        hasValue = true;
+                    }
+
+                    // add @ 20241110 stephen
+                    if (result.Contains("minversion") && result.Contains("upgradetolatest")) 
+                    {
+                        throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
                     }
 
 

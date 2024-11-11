@@ -282,7 +282,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 foreach (DeviceInfo deviceInfo in DeviceInfos)
                 {
-                    if (GetDevicePNPDeviceID(deviceInfo.ModelNumber).Equals(UODFWUInfo.FWUpdateInfo.PNPDeviceID))
+                    if (deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
                     {
                         string Ver = deviceInfo.FirmwareVersion;
                         if (!int.TryParse(Ver, out _))
@@ -305,7 +305,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
             }
-            else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.PNPDeviceID))
+            else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
             {
                 TimeSpan difference = new TimeSpan(0);
                 if (UODFWUInfo.SaveTime != null)
@@ -417,12 +417,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            {
-                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            }
+                            //if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
+                            //{
+                            //    _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
+                            //    //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
+                            //    updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
+                            //}
                         }
                         if (deviceTypeList == null)
                         {
@@ -449,7 +449,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 IsDisplay = false,
                                 SupplierID = deviceSupplierID,
                                 Connectivity = deviceConnectivity,
-                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
+                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                                ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
+
                             };
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                             _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -484,7 +487,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     IsDisplay = false,
                                     SupplierID = deviceSupplierID,
                                     Connectivity = deviceConnectivity,
-                                    Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
+                                    Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                                    ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
                                 };
                                 _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                                 _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -1437,10 +1442,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!string.IsNullOrEmpty(AppDataPath))
                 {
                     string path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
-                    if (fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock || fwUpdateInfo.DeviceType == DeviceType.LogicalDock)
-                    {
-                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\Dock_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
-                    }
 
                     if (!Directory.Exists(path))
                     {

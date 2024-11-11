@@ -5,19 +5,19 @@ namespace VcpCore.Common
     [Serializable]
     public class EDID : IEquatable<EDID>
     {
-        public string ManufactureID { get; set; }
-        public string PID { get; set; }
-        public string VendorID { get; set; }
-        public int Year { get; set; }
-        public int Month;
-        public int Week;
-        public string ModelName { get; set; }
-        public string EdidVersion { get; set; }
-        public string VideoInputType { get; set; }
-        public float Size { get; set; }
-        public string ServiceTag { get; set; }
-        public string SerialNumber { get; set; }
-        public string Edid { get; set; }
+        public string ManufactureID { get; set; } = string.Empty;
+        public string PID { get; set; } = string.Empty;
+        public string VendorID { get; set; } = string.Empty;
+        public int Year { get; set; } = 0x0;
+        public int Month = 0x0;
+        public int Week = 0x0;
+        public string ModelName { get; set; } = string.Empty;
+        public string EdidVersion { get; set; } = string.Empty;
+        public string VideoInputType { get; set; } = string.Empty;
+        public float Size { get; set; } = 0x0;
+        public string ServiceTag { get; set; } = string.Empty;
+        public string SerialNumber { get; set; } = string.Empty;
+        public string Edid { get; set; } = string.Empty;
 
         public override bool Equals(object obj)
         {

@@ -17,7 +17,7 @@ namespace TransferCmdJson
         {
 
             string strJson = string.Empty;
-            string[] cmds = src.Split(' ');
+            string[] cmds = src.ToLower().Split(' ');
 
             string active = string.Empty;
             string devicetype = string.Empty;
@@ -44,6 +44,15 @@ namespace TransferCmdJson
                     if (s1[1].Equals("firmwareupdate"))
                     {
                         active = "fw";
+                        devicetype = s1[0];
+                        continue;
+                    }
+
+                    if (s1[1].Equals("silentfwupdate"))
+                    {
+                        active = "fw";
+                        devicetype = s1[0];
+                        continue;
                     }
 
                     devicetype = s1[0];
@@ -86,7 +95,7 @@ namespace TransferCmdJson
 
                 // others, options
 
-                string[] s = cmds[i].ToLower().Split('=');
+                string[] s = cmds[i].ToLower().Replace("\"", "").Split('=');
 
                 if (s[0].Equals("value"))
                 {
@@ -138,7 +147,7 @@ namespace TransferCmdJson
 
         private static void readFile()
         {
-            const string PATH = @"C::\cmacmd\";
+            const string PATH = @"C:\cmacmd\";
 
             List<string> list = new List<string>();
 
