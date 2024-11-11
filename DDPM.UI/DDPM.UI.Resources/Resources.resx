@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Export a configuration and important to another monitor of the same model</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>You can export your favorite configuration from here and import into another monitor of the same model without hassle.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>High Data Speed</value>
   </data>
@@ -2333,5 +2336,8 @@
   </data>
   <data name="Brightness.20" xml:space="preserve">
     <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Third Party License</value>
   </data>
 </root>

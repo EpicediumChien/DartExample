@@ -62,13 +62,29 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Title = resManager.GetString($"Title{i + 1}"),
                         Content = resManager.GetString($"Content{i + 1}")
                     });
+
+                    //PIMS-313975
+                    TextToCopy += Title;
+                    TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
                 }
             }
+            OnPropertyChanged("TextToCopy");
             OnPropertyChanged("ThirdPartyLicensesList");
         }
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.Close();
+        }
+
+        private string _textToCopy = string.Empty;
+        public string TextToCopy
+        {
+            get => _textToCopy;
+            set
+            {
+                _textToCopy = value;
+                //OnPropertyChanged("TextToCopy");
+            }
         }
     }
     public class UI_ThirdPartyLicenses

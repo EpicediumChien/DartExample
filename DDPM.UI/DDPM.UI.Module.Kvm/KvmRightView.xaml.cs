@@ -181,6 +181,10 @@ namespace DDPM.UI.Module.Kvm
 
         private void SelectNoKVM(object sender, RoutedEventArgs e)
         {
+            RadioButton radioButton = sender as RadioButton;
+
+            radioButton.IsEnabled = false;
+
             Button button_USB = (Button)FindName("USBKVM");
             Button button_OnUSB = (Button)FindName("ONUSBKVM");
             Button button_USBHotkeys = (Button)FindName("USBKVMHotkeys");
@@ -193,17 +197,15 @@ namespace DDPM.UI.Module.Kvm
                 button_Net.Visibility = Visibility.Collapsed;
                 vm.isNoKVM = true;
             }
+
+            radioButton.IsEnabled = true;
         }
 
         private void OpenNKVM(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
-            if (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-            {
-                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-            }
-            vm.OpenNKVMUI(0, 100, 100);
-            vm.isOnNKVM(true);
+            vm.NKVMOpenUI();
+            //vm.OpenNKVMUI(0, 100, 100);
+            //vm.isOnNKVM(true);
         }
 
         private void USBKVMHotkeys_Click(object sender, RoutedEventArgs e)
