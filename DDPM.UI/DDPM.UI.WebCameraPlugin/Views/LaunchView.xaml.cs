@@ -278,7 +278,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 // 20240626 jim modify
                 _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
-                
+
                 _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
 
                 await _vm.MediaFrameReader.StartAsync();
@@ -293,7 +293,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
 
                 writeableBitmap = new(
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,              
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
                     (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
                     96,
                     96,
@@ -363,7 +363,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 await CleanupMediaCaptureAsync();
 
-                if(_pwr_Mon != null)
+                if (_pwr_Mon != null)
                 {
                     _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
                     _pwr_Mon.Close_Event();
@@ -425,7 +425,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+            if (_vm.MicList.Contains(_vm.Model))
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -571,7 +571,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         int count = 0;
         private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
         {
-            if (_running) return;
+            if (_running)
+                return;
             _running = true;
 
             var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
@@ -585,7 +586,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (before_width != softwareBitmap.PixelWidth || before_height != softwareBitmap.PixelHeight)
                     {
-                        
+
                         writeableBitmap = new(
                             softwareBitmap.PixelWidth,
                             softwareBitmap.PixelHeight,
