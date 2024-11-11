@@ -28,8 +28,15 @@ namespace DDPM.Easy.Common
 
             AllowDrop = true;
             this.Drop += OnDrop;
+            this.Unloaded += OnUnloaded;
 
             #endregion 
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            this.Drop -= OnDrop;
+            this.Unloaded -= OnUnloaded;
         }
 
         private string _cellName = "";
@@ -185,26 +192,7 @@ namespace DDPM.Easy.Common
                             //cellBorder.MemoryImage = bitmapImage;
                         }
                     }
-                    else
-                    {
-                        // MemoryText
-                        //this.MemoryText = this.MemoryText + ": " + fileName;
-                    }
-                    //if(_cellAppName.ContainsValue(filePath))// 重複APP
-                    //{
-                    //    //Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    //    //Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    //    //DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    //    return;
-                    //}
-                    //if(_cellAppName.ContainsKey(cellNumber))// 更新APP
-                    //{
-                    //    _cellAppName[cellNumber] = fileName;
-                    //}
-                    //else
-                    //{
-                    //    _cellAppName.Add(cellNumber, filePath);// 新增APP
-                    //}
+
                     _cellAppInfo.Clear();
                     CellAppData appInfo = new CellAppData();
                     appInfo.Number = cellNumber;
@@ -240,11 +228,6 @@ namespace DDPM.Easy.Common
         }
 
         Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
-        //public Dictionary<int, CellAppData> CellAppInfo
-        //{
-        //    get => _cellAppInfo;
-        //    //set => _cellAppInfo = value;
-        //}
 
         public int CellNumber
         {
