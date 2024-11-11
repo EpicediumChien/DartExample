@@ -691,6 +691,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
+        
 
 
         private bool _isPrioritizeExternalWebcam = false;
@@ -1525,6 +1526,19 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
 
+        public bool running_state = true;
+        public void webcamera_stop()
+        {
+            if (MediaFrameReader == null) return;
+            MediaFrameReader.StopAsync();
+            
+        }
+
+        public void webcamera_restart()
+        {
+            if (MediaFrameReader == null) return;
+            MediaFrameReader.StartAsync();
+        }
     }
 
     public class StreamResolution

@@ -12,8 +12,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Windows.Threading;
+using Windows.Graphics.Imaging;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -176,20 +180,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void MainWindowActivate(object sender, EventManagerArgs e)
         {
-            this._log?.Write(LogMsgType.Debug, "Webcamera plugin receive MainWindow Activate event");
-            //Dispatcher.Invoke(new Action(() => //dispatch since different thread
-            //{
-            //    //your ui action    
-            //}));
+            this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow Activate event");
+            if (_viewModel == null) return;
+            _viewModel.running_state = true;
+            _viewModel.webcamera_restart();
         }
 
         private void MainWindowDeActivate(object sender, EventManagerArgs e)
         {
-            this._log?.Write(LogMsgType.Debug, "Webcamera plugin receive MainWindow DeActivate event");
-            //Dispatcher.Invoke(new Action(() => //dispatch since different thread
-            //{
-            //    //your ui action    
-            //}));
+            this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow DeActivate event");
+
+            if (_viewModel == null) return;
+            _viewModel.running_state = false;
+            _viewModel.webcamera_stop();
         }
     }
 }

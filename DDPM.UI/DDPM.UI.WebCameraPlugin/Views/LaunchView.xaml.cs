@@ -574,18 +574,31 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_running) return;
             _running = true;
 
+            if(cameraimage_hide)
+            {
+                if (_vm.running_state)
+                {
+                    
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        CameraImage.Visibility = Visibility.Visible;
+                    });
+                    cameraimage_hide = false;
+                }
+            }
+
             var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
 
             Thread.Sleep(60);
 
-            if (softwareBitmap != null)
+            if (softwareBitmap != null && _vm.running_state)
             {
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
 
                     if (before_width != softwareBitmap.PixelWidth || before_height != softwareBitmap.PixelHeight)
                     {
-                        
+
                         writeableBitmap = new(
                             softwareBitmap.PixelWidth,
                             softwareBitmap.PixelHeight,
@@ -622,8 +635,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     writeableBitmap.Unlock();
                 });
             }
+            else
+            {
+                if (!_vm.running_state)
+                {
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        CameraImage.Visibility = Visibility.Hidden;
+                    });
+                    cameraimage_hide = true;
+                }
+            }
+
             _running = false;
         }
+        public bool cameraimage_hide = false;
 
         /// <summary>
         /// MediaFrameReader FrameArrived event
