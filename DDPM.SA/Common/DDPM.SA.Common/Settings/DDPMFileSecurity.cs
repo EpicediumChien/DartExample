@@ -55,7 +55,7 @@ namespace DDPM.SA.Common.Settings
                 log.Error(message);
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Using DPAPI to protect data
         /// </summary>
         /// <param name="data"></param>
@@ -95,7 +95,7 @@ namespace DDPM.SA.Common.Settings
 #endif
                 return null;
             }
-        }
+        }*/
 
         /// <summary>
         /// Apply DDPM data security [Write settings]
@@ -108,7 +108,7 @@ namespace DDPM.SA.Common.Settings
         /// <param name="target_file">Describe your target file to save</param>
         /// <param name="info">Read this param for detail info if return false</param>
         /// <returns>true or false as result</returns>
-        public static bool SetJsonContentFromSerializedString(string accessInfo, string serialized_string, string target_file, out string info, bool isEncrypt = false)
+        public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info)//, bool isEncrypt = false)
         {
             info = "Success";
             if (string.IsNullOrEmpty(serialized_string))
@@ -132,13 +132,19 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 //0905 apply DDPM private key rule
-                if (accessInfo == null || accessInfo.Length < 32)
+                /*if (accessInfo == null || accessInfo.Length < 32)
                 {
                     info = "DDPM AccessInfo value is abnormal";
                     return false;
                 }
                 //signature = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
-                signature = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
+                signature = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), serialized_string);*/
+                DateTimeOffset utcNow = DateTimeOffset.UtcNow;
+                string strRandom = SettingsAccess.GenerateReferenceInfo();
+                string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
+                string strTicketToFile = utcNow.ToString();
+                signature = SettingsAccess.GenerateSignature(strTicket, strRandom, serialized_string);
+                signature = strRandom + ";;" + strTicketToFile + ";;" + signature; //combine as single key
             }
             catch (Exception e)
             {
@@ -183,14 +189,14 @@ namespace DDPM.SA.Common.Settings
                 string modifiedJson = temp;// jObject.ToString();
                 //convert whole content and protect it as bytes array
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
-                //3. Data protect if need
-                if (isEncrypt)
-                {
-                    byte[] encrypted_data = DataProtect(body_array);
-                    //From bytes array to base64 string
-                    write_string = Convert.ToBase64String(encrypted_data);
-                }
-                else
+                //3. Data protect if need (11/11 drop this action)
+                //if (isEncrypt)
+                //{
+                //    byte[] encrypted_data = DataProtect(body_array);
+                //    //From bytes array to base64 string
+                //    write_string = Convert.ToBase64String(encrypted_data);
+                //}
+                //else
                     write_string = modifiedJson;
             }
             catch (Exception ex)
@@ -227,7 +233,7 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         /// <param name="filePath">Source file for reading content</param>
         /// <returns>Empty string returned if any error occur</returns>
-        public static string GetSerializedJsonString(string accessInfo, string filePath, out string info, bool isEncrypt = false)
+        public static string GetSerializedJsonString(string filePath, out string info)
         {
             info = "Success";
             if (!IsFilePathValid(filePath, out info))
@@ -235,11 +241,11 @@ namespace DDPM.SA.Common.Settings
                 info = $"[GetSerializedJsonString] {info}";
                 return string.Empty;
             }
-            if (accessInfo == null || accessInfo.Length < 32)
-            {
-                info = "DDPM AccessInfo value is abnormal";
-                return string.Empty;
-            }
+            //if (accessInfo == null || accessInfo.Length < 32)
+            //{
+            //    info = "DDPM AccessInfo value is abnormal";
+            //    return string.Empty;
+            //}
 
             string json_content = string.Empty;
             try
@@ -268,17 +274,17 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 //From base64 string to byte array
-                if (isEncrypt)
-                {
-                    byte[] read_data = Convert.FromBase64String(json_content);
-                    //2. assume input data already be encrypted, so decrypt it
-                    byte[] decrypted_data = DataUnprotect(read_data);
-                    //Serialized string with signature
-                    serialized = Encoding.UTF8.GetString(decrypted_data);
-                }
-                else
-                    //Serialized string with signature
-                    serialized = json_content;
+                //if (isEncrypt)
+                //{
+                //    byte[] read_data = Convert.FromBase64String(json_content);
+                //    //2. assume input data already be encrypted, so decrypt it (11/11 drop this action)
+                //    byte[] decrypted_data = DataUnprotect(read_data);
+                //    //Serialized string with signature
+                //    serialized = Encoding.UTF8.GetString(decrypted_data);
+                //}
+                //else
+                //Serialized string with signature
+                serialized = json_content;
             }
             catch (Exception e)
             {
@@ -296,7 +302,7 @@ namespace DDPM.SA.Common.Settings
             // Parse the JSON string into a JObject
             string modifiedJson = string.Empty;
             string signature = string.Empty;
-            JObject jObject;
+            //JObject jObject;
             //3. retrieve signature for comparison
             try
             {
@@ -360,9 +366,26 @@ namespace DDPM.SA.Common.Settings
 
             // Convert the modified JObject back to a JSON string
             string cal_sign;
+            string strRandom;
+            string strTicket;
             try
             {
-                cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
+                string[] strArray = signature.Split(";;");
+                if(strArray.Length != 3)
+                {
+                    info = "signature key is not composed with DDPM key format!";
+                    return string.Empty;
+                }
+                strRandom = strArray[0];
+                strTicket = strArray[1];
+                signature = strArray[2];
+                if (string.IsNullOrEmpty(strRandom) || string.IsNullOrEmpty(strTicket) || string.IsNullOrEmpty(signature))
+                {
+                    info = $"a part of key is null (1){signature},(2){strRandom},(3){strTicket}";
+                    return string.Empty;
+                }
+                //cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
+                cal_sign = SettingsAccess.GenerateSignature(strTicket, strRandom, modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
@@ -375,7 +398,8 @@ namespace DDPM.SA.Common.Settings
                 return string.Empty;
             }
             //4. Check if signature valid
-            if (cal_sign.ToLower().Equals(signature.ToLower()))
+            //if (cal_sign.ToLower().Equals(signature.ToLower()))
+            if(SettingsAccess.VerifySignature(strTicket, strRandom, modifiedJson, signature))
                 //5. return serialized string
                 return modifiedJson;
             else

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Principal;
@@ -54,7 +55,7 @@ namespace DDPM.SA.Obfuscation
         }*/
 
         //HashAlgorithmName.SHA512 as default
-        public static string ComputeAccessInfo2(byte[] key, string message)//, HashAlgorithmName hashAlgorithm)
+        /*public static string ComputeAccessInfo2(byte[] key, string message)//, HashAlgorithmName hashAlgorithm)
         {
             try
             {
@@ -91,7 +92,7 @@ namespace DDPM.SA.Obfuscation
                 Console.WriteLine($"Unable to generate HMAC: {e.Message}");
                 return "";
             }
-        }
+        }*/
 
         private static byte[] DeriveKey(string password, byte[] salt, int iterations, int keyLength)
         {
@@ -148,7 +149,7 @@ namespace DDPM.SA.Obfuscation
         }
 
         private static (string id, string ver, string location) AppInfo { get; } = QueryAppAccessInfo();
-        public static string AppAccessInfo { get; } = AppInfo.id;
+        //public static string AppAccessInfo { get; } = AppInfo.id;
         public static string AppAccessVer { get; } = AppInfo.ver;
         public static string AppAccessAddr { get; } = AppInfo.location;
 
@@ -306,5 +307,269 @@ namespace DDPM.SA.Obfuscation
             }
             return false;
         }
+
+        #region XOR-random-number for secret key
+        public static byte[] ComputeBytes(byte[] guid, byte[] randomBytes)
+        {
+            // Perform XOR operation
+            try
+            {
+                if (guid.Length > randomBytes.Length) throw new Exception("The length of the GUID and Random Bytes are not equal.");
+                byte[] xorResult = new byte[guid.Length];
+                for (int i = 0; i < guid.Length; i++)
+                {
+                    xorResult[i] = (byte)(guid[i] ^ randomBytes[i]);
+                }
+
+                // Convert the XOR result to a hexadecimal string
+                string xorHex = BitConverter.ToString(xorResult).Replace("-", "");
+
+                Console.WriteLine($"GUID: {guid}");
+                Console.WriteLine($"Random Bytes: {BitConverter.ToString(randomBytes).Replace("-", "")}");
+                Console.WriteLine($"XOR Result: {xorHex}");
+                return xorResult;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to generate HMAC: {e.Message}");
+                return [];
+            }
+        }
+
+        public static string GenerateReferenceInfo()
+        {
+            // Generate a random number
+            byte[] randomNumber = new byte[16]; // 128 bits
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+
+            // Convert the random number to a hexadecimal string
+            string hexRandomNumber = BitConverter.ToString(randomNumber).Replace("-", "");
+
+            return hexRandomNumber;
+        }
+
+        public static string GenerateReferenceTicket(DateTimeOffset utcNow)
+        {
+            //generate hMAC using timestamp and random number with a XOR predefined GUID
+            long timestamp = utcNow.ToUnixTimeSeconds();
+
+            // Convert the timestamp to a hexadecimal string
+            string hexTimestamp = Convert.ToString(timestamp, 16);
+
+            return hexTimestamp;
+        }
+
+        public static string GenerateSignature(string referenceTicket, string referenceInfo, string content)
+        {
+            string hexTimestamp = referenceTicket;
+            string hexRandomNumber = referenceInfo;
+            // Combine the timestamp and random number
+            string combined = hexTimestamp + hexRandomNumber;
+
+            //Console.WriteLine("Timestamp: " + utcNow.ToString());
+            Console.WriteLine("*** Timestamp (Hex): " + hexTimestamp + "," + hexTimestamp.Length);
+            Console.WriteLine("*** Random Number (Hex): " + hexRandomNumber + "," + hexRandomNumber.Length);
+            Console.WriteLine("*** Combined: " + combined + "," + combined.Length);
+
+            string token = content;// "This is a placeholder secret";
+            byte[] secToken = Encoding.UTF8.GetBytes(token);
+            Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
+
+            byte[] byteArray = ComputeBytes(secToken, Encoding.UTF8.GetBytes(hexRandomNumber));
+            string hMAC1 = ComputeHMACSHA512(byteArray, Encoding.UTF8.GetBytes("Dell Display and Peripheral Manager"), HashAlgorithmName.SHA512);
+            Console.WriteLine($"*** Message 1: {hMAC1}");
+
+            return hMAC1;
+
+            // --------------------
+            /*byte[] random = VerifyTimestamp(utcNow.ToString(), combined);
+            //    byte[] byteArray = Encoding.UTF8.GetBytes(token);
+            byteArray = ComputeBytes(secToken, random);
+
+            string hMAC2 = ComputeHMACSHA512(byteArray, Encoding.UTF8.GetBytes("Dell Display and Peripheral Manager"), HashAlgorithmName.SHA512);
+            Console.WriteLine($"Message 2: {hMAC2}");*/
+        }
+
+        public static bool VerifySignature(string referenceTicket, string referenceInfo, string content, string signature)
+        {
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            string format = "M/d/yyyy h:mm:ss tt zzz";
+            long timestamp = DateTimeOffset.ParseExact(referenceTicket, format, provider, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal).ToUnixTimeSeconds();
+
+            string hexTimestamp = Convert.ToString(timestamp, 16);
+
+            //string hexTimestamp = referenceTicket;
+            string hexRandomNumber = referenceInfo;
+            // Combine the timestamp and random number
+            string combined = hexTimestamp + hexRandomNumber;
+
+            //Console.WriteLine("Timestamp: " + utcNow.ToString());
+            Console.WriteLine("*** Timestamp (Hex): " + hexTimestamp + "," + hexTimestamp.Length);
+            Console.WriteLine("*** Random Number (Hex): " + hexRandomNumber + "," + hexRandomNumber.Length);
+            Console.WriteLine("*** Combined: " + combined + "," + combined.Length);
+
+            // return combined;
+
+            string token = content;// "This is a placeholder secret";
+            byte[] secToken = Encoding.UTF8.GetBytes(token);
+            Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
+
+            //byte[] byteArray = ComputeBytes(secToken, Encoding.UTF8.GetBytes(hexRandomNumber));
+            //string hMAC1 = ComputeHMACSHA512(byteArray, Encoding.UTF8.GetBytes("Hello World"), HashAlgorithmName.SHA512);
+            //Console.WriteLine($"Message 1: {hMAC1}");
+
+            // --------------------
+            byte[] random = VerifyTimestamp(referenceTicket, combined);// utcNow.ToString(), combined);
+            //    byte[] byteArray = Encoding.UTF8.GetBytes(token);
+            byte[] byteArray = ComputeBytes(secToken, random);
+
+            string hMAC2 = ComputeHMACSHA512(byteArray, Encoding.UTF8.GetBytes("Dell Display and Peripheral Manager"), HashAlgorithmName.SHA512);
+            Console.WriteLine($"*** Message 2: {hMAC2}");
+
+            return hMAC2.ToUpper().Equals(signature.ToUpper());
+        }
+
+        public static byte[] VerifyTimestamp(string utctimestamp, string combined)
+        {
+            CultureInfo provider = CultureInfo.InvariantCulture;
+            string format = "M/d/yyyy h:mm:ss tt zzz";
+            long timestamp = DateTimeOffset.ParseExact(utctimestamp, format, provider, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal).ToUnixTimeSeconds();
+
+            string hexTimestamp = Convert.ToString(timestamp, 16);
+
+            int lastIndex = combined.LastIndexOf(hexTimestamp) + hexTimestamp.Length;// + 1;
+
+            Console.WriteLine($"*** Reversed secret random number: {timestamp.ToString()} {lastIndex} {combined.Substring(lastIndex)}");
+            string str = combined.Substring(lastIndex);
+
+            return Encoding.UTF8.GetBytes(str);
+        }
+
+        /*public static char ShiftCharacters(char c, int index)
+        {
+            try
+            {
+                if (char.IsLetter(c))
+                {
+                    char offset = char.IsUpper(c) ? 'A' : 'a';
+                    return (char)((c + index - offset) % 26 + offset);
+                }
+                if (char.IsNumber(c))
+                {
+
+                    return Convert.ToChar(c ^ index);
+                }
+                return '\0';
+                //  throw new ArgumentException("Character must be a letter.");
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine($"Argument Exception: {e.Message}");
+                return '\0';
+            }
+        }*/
+
+        public static string ComputeHMACSHA512(byte[] key, byte[] message, HashAlgorithmName hashAlgorithm)
+        {
+            try
+            {
+                switch (hashAlgorithm.Name)
+                {
+                    case "SHA512":
+                        {
+                            using (var hmacsha512 = new HMACSHA512(key))
+                            {
+                                byte[] hashBytes = hmacsha512.ComputeHash(message);
+                                Console.WriteLine($"*** ComputeHMACSHA512: {BitConverter.ToString(hashBytes).Replace("-", "").ToLower()}");
+
+                                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                            }
+                        }
+                    case "SHA256":
+                        {
+                            using (var hmacsha256 = new HMACSHA256(key))
+                            {
+                                byte[] hashBytes = hmacsha256.ComputeHash(message);
+                                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                            }
+                        }
+                    default:
+                        throw new Exception("*** Underlying HMAC mechanism must leverage HMACSHA256 or higher");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"*** Unable to generate HMAC: {e.Message}");
+                return "";
+            }
+        }
+
+        public static void generaterandomnumber()
+        {
+            //generate hMAC using timestamp and random number with a XOR predefined GUID
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            DateTimeOffset utcNow = DateTimeOffset.UtcNow;
+
+
+            // Convert the timestamp to a hexadecimal string
+            string hexTimestamp = Convert.ToString(timestamp, 16);
+
+            // Generate a random number
+            byte[] randomNumber = new byte[16]; // 128 bits
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+
+            // Convert the random number to a hexadecimal string
+            string hexRandomNumber = BitConverter.ToString(randomNumber).Replace("-", "");
+
+            // Combine the timestamp and random number
+            string combined = hexTimestamp + hexRandomNumber;
+
+            Console.WriteLine("Timestamp: " + utcNow.ToString());
+            Console.WriteLine("Timestamp (Hex): " + hexTimestamp + "," + hexTimestamp.Length);
+            Console.WriteLine("Random Number (Hex): " + hexRandomNumber + "," + hexRandomNumber.Length);
+            Console.WriteLine("Combined: " + combined + "," + combined.Length);
+
+            // return combined;
+
+            string token = "This is a placeholder secret";
+            byte[] secToken = Encoding.UTF8.GetBytes(token);
+            Console.WriteLine($"Generaterandomnumber {secToken.Length} {hexRandomNumber.Length}");
+
+            byte[] byteArray = ComputeBytes(secToken, Encoding.UTF8.GetBytes(hexRandomNumber));
+
+            // Convert the byte array to a hexadecimal string
+            // StringBuilder hex = new StringBuilder(byteArray.Length * 2);
+            //  foreach (byte b in byteArray)
+            //  {
+            ///      hex.AppendFormat("{0:x2}", b);
+            ///  }
+
+            //  byte[] byteArray = ComputeBytes(Encoding.UTF8.GetBytes(hex.ToString()), Encoding.UTF8.GetBytes(hexRandomNumber));
+
+            //  Console.WriteLine($"Generaterandomnumber {guid.Length} {hexRandomNumber.Length}");
+            // byteArray = ComputeBytes(byteArray, randomNumber);
+            string hMAC1 = ComputeHMACSHA512(byteArray, Encoding.UTF8.GetBytes("Hello World"), HashAlgorithmName.SHA512);
+            Console.WriteLine($"Message 1: {hMAC1}");
+
+
+
+            // --------------------
+
+
+            byte[] random = VerifyTimestamp(utcNow.ToString(), combined);
+            //    byte[] byteArray = Encoding.UTF8.GetBytes(token);
+            byteArray = ComputeBytes(secToken, random);
+
+
+            string hMAC2 = ComputeHMACSHA512(byteArray, Encoding.UTF8.GetBytes("Hello World"), HashAlgorithmName.SHA512);
+            Console.WriteLine($"Message 2: {hMAC2}");
+        }
+        #endregion
     }
 }
