@@ -43,7 +43,7 @@ namespace DDPM.UI.Common.ViewModels
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
         public EAProfileDDPM currentEditprofile;
         public EzProfileSettingDDPM currentEditprofileSetting;
-        public ISplitCtrl? ispCtrl;
+        public ISplitCtrl? ispCtrlForEm;
 
         #endregion
 
@@ -441,7 +441,14 @@ namespace DDPM.UI.Common.ViewModels
         #endregion
 
         #region First page
-       
+
+        private int _currentSelectsEAID;
+        public int CurrentSelectsEAID
+        {
+            get => _currentSelectsEAID;
+            set => SetProperty(ref _currentSelectsEAID, value);
+        }
+
         private SplitItem _currentSelectspItem;
         public SplitItem CurrentSelectspItem
         {
@@ -579,7 +586,6 @@ namespace DDPM.UI.Common.ViewModels
                     Window2_2AppName = appName;
                     break;
                 case "AddButton1":                   
-                    //ispCtrl.CellList[0].CellBd.MemoryImage = LoadImage(_sortApps["AddButton1"].AppIcon);
                     Window1AppName = appName;
                     break;
                 case "AddButton2":
@@ -788,7 +794,7 @@ namespace DDPM.UI.Common.ViewModels
             appData.AppPath = fileName[index].FilePath;
 
             // 將 appData 加入到 _sortApps
-            if (additionalButtonKey != null && ispCtrl.CellList.Count <= 2)
+            if (additionalButtonKey != null && ispCtrlForEm.CellList.Count <= 2)
             {
                 _sortApps.Add(additionalButtonKey, appData);
             }
