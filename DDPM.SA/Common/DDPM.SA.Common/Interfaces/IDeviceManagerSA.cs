@@ -1073,6 +1073,10 @@ namespace DDPM.SA.Common
 
         #endregion Dongle
 
+        #region Dock
+        Task<DockData> GetDockData(string guid);
+        #endregion
+
         #endregion public for DTPProxy
 
         #region OSD

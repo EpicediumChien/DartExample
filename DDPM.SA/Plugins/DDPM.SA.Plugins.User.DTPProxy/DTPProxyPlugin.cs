@@ -4606,25 +4606,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog(" [Dock] Failed to retrieve guid.");
                     return null;
                 }
-                var commodity =  GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
                 {
+                    writelog($"[Dock] GetPropertyValue go");
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockData");
-                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
-                    Debug.WriteLine(value);
+                    writelog($"[Dock] GetPropertyValue done for {guid}");
+                    writelog($"[Dock] GetPropertyValue value is null = {(value == null ? "Yes" : "No")}");
                     if (value != null && value is byte[])
                     {
+                        writelog($"[Dock] GetPropertyValue value is byte[] Yes");
                         try
                         {
                             byte[] dokc_bytes = (byte[])value;
-                            writelog($"[PeripheralsPlugin] GetDockData byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            writelog($"[Dock] GetDockData byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                             if (dokc_bytes != null)
                             {
-                                writelog($"[PeripheralsPlugin] GetDockData dokc_bytes.Length : {dokc_bytes.Length}");
+                                writelog($"[Dock] GetDockData dokc_bytes.Length : {dokc_bytes.Length}");
                                 string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
-                                writelog($"[PeripheralsPlugin] GetDockData dokc_bytes to string : " + textString);
+                                writelog($"[Dock] GetDockData textString IsNullOrEmpty = {(string.IsNullOrEmpty(textString) ? "Yes" : "No")}");
                                 if (!string.IsNullOrEmpty(textString))
                                 {
+                                    writelog($"[Dock] GetDockData dokc_bytes to string : {textString}");
                                     try
                                     {
                                         using (JsonDocument doc = JsonDocument.Parse(textString))
@@ -4632,8 +4635,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                             JsonElement root = doc.RootElement;
                                             JsonElement payloadElement = root.GetProperty("Payload");
                                             DockData dockData = JsonSerializer.Deserialize<DockData>(payloadElement.GetRawText());
+                                            writelog($"[Dock] GetDockData dockData is null = {(dockData == null ? "Yes" : "No")}");
                                             if (dockData != null)
                                             {
+                                                writelog($"[Dock] GetDockData dockData.ServiceTag : {dockData.ServiceTag}");
+                                                writelog($"[Dock] GetDockData dockData.PackageFirmwareVersion : {dockData.PackageFirmwareVersion}");
                                                 if (dockData.MarketingName.ToUpper().StartsWith("WD19S"))
                                                 {
                                                     dockData.MarketingName = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
@@ -4644,25 +4650,25 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                     }
                                     catch (Exception ex)
                                     {
-                                        writelog($"[PeripheralsPlugin] GetDockData Error : {ex.Message}");
+                                        writelog($"[Dock] GetDockData JsonSerializer.Deserialize Error : {ex.Message}");
                                     }
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            writelog($"[PeripheralsPlugin] Dock Data Error : {ex.Message}");
+                            writelog($"[Dock] GetDockData Dock Data Error : {ex.Message}");
                         }
                     }
                     return null;
                 }
 
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[Dock] GetDockData failed: Could not retrieve commodity interface for {guid}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
+                writelog($"[Dock] GetDockData failed for {guid} - Exception: {ex.Message}");
                 return null;
             }
         }
