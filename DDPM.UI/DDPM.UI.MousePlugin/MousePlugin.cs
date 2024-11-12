@@ -143,7 +143,11 @@ namespace DDPM.UI.Plugin.MousePlugin
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (IsEventRegistered)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                IsEventRegistered = false;
+            }
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
@@ -152,11 +156,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             if (!IsEventRegistered)
             {
-                if (IsEventRegistered)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
-                    IsEventRegistered = false;
-                }
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             ConfigureServices();

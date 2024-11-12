@@ -58,7 +58,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _vm.DeviceBarItemClickCommand = new RelayCommand<DeviceBarItem>(OnDeviceBarItemClicked!);
 
             BuildModuleGroups();
-            if(_vm.RightViewHeaders != null)
+            if (_vm.RightViewHeaders != null)
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
@@ -146,12 +146,12 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             //if(newItem.Id == _vm!.DeviceBarSelectedIndex) { return; }
 
-            if(_vm!.DeviceBarSelectedIndex >= 0)
+            if (_vm!.DeviceBarSelectedIndex >= 0)
                 _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = false;
 
             _vm.DeviceBarSelectedIndex = newItem.Id;
 
-            if(_vm.RightViewHeaders != null)
+            if (_vm.RightViewHeaders != null)
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
                 rightViewHeaderCtrl.SelectedIndex = _vm.SelectedGroup!.HeaderSelectedIndex;
@@ -169,16 +169,16 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //  return;
 
             int newSelId = rightViewHeaderCtrl.SelectedIndex;
-            if(newSelId != selectedTab)
+            if (newSelId != selectedTab)
             {
-                if(_vm != null)
+                if (_vm != null)
                 {
                     _vm.RightViewHeaderSelectedIndex = newSelId;
                 }
                 selectedTab = newSelId;
             }
 
-            if(newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 3 || _vm!.DeviceBarSelectedIndex == 4))
+            if (newSelId == 1 && (_vm!.DeviceBarSelectedIndex == 2 || _vm!.DeviceBarSelectedIndex == 3 || _vm!.DeviceBarSelectedIndex == 4))
             {
                 StartPairing();
             }
@@ -190,9 +190,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void StartPairing()
         {
-            if(_vm!.DeviceBarSelectedIndex == 2 && _vm.DongleInfos.Count == 1)
+            if (_vm!.DeviceBarSelectedIndex == 2 && _vm.DongleInfos.Count == 1)
             {
-                if(_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
+                if (_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
                     return;
@@ -203,9 +203,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     _vm!.StartPairing(_vm!.DongleInfos.Keys.First());
                 }
             }
-            if(_vm!.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
+            if (_vm!.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
             {
-                if(_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
+                if (_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
                     return;
@@ -224,7 +224,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             MessageModalDialog messageModalDialog = new(caption, text, button1Caption, button2Caption);
             Window parentWindow = Window.GetWindow(this);
-            if(parentWindow != null)
+            if (parentWindow != null)
             {
                 messageModalDialog.Owner = parentWindow;
             }
@@ -233,21 +233,21 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void PairingStatusChanged(object sender, TextChangedEventArgs e)
         {
-            switch(txtPairingStatus.Text)
+            switch (txtPairingStatus.Text)
             {
                 case "Request":
-                    if(_vm!.IsPairing)
+                    if (_vm!.IsPairing)
                     {
                         WaitingModalDialog waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {_vm.RequestDeviceName}", WaitingAlert);
                         Window parentWindow = Window.GetWindow(this);
-                        if(parentWindow != null)
+                        if (parentWindow != null)
                         {
                             waitingModalDialog.Owner = parentWindow;
                         }
                         waitingModalDialog.ShowDialog();
-                        if(_vm.NewDevice == null)
+                        if (_vm.NewDevice == null)
                         {
-                            ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
+                            //ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
                             _vm!.StopPairing();
                             rightViewHeaderCtrl.SelectedIndex = 0;
                         }
@@ -276,7 +276,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     break;
 
                 case "TimeOut":
-                    if(_vm.IsPairing)
+                    if (_vm.IsPairing)
                     {
                         ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
                         _vm!.StopPairing();

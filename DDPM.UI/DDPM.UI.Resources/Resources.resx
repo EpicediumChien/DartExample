@@ -2355,4 +2355,7 @@
   <data name="EazyMemory.40" xml:space="preserve">
     <value>Please enter profile name.</value>
   </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
 </root>
