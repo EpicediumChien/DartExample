@@ -18,6 +18,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace DDPM.EABroker
 {
@@ -346,10 +347,20 @@ namespace DDPM.EABroker
 
         #region Determine Hovering
 
+        /// <summary>
+        /// Walkthrough all display Cells in SplitCttrls. and determine if any Cell will be hovered.
+        /// When the hovering cell is determined, the CellObj will be in Hover state, and return itself.
+        /// This method must be called under a Dispatcher thread.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
+            
             CellObj? hoveringCell = null;
             HoveringWindow = "";
+
 
             if (IsAwsWindowVisible)
             {
@@ -411,10 +422,9 @@ namespace DDPM.EABroker
                     }
                     else
                         HoveringWindow = "";
-                    
                 }
             }
-            if (IsWorkWindowVisible)
+            else if (IsWorkWindowVisible)
             {
                 int idxWorkWin = -1;
                 foreach (EAWorkWindow workWin in _workWindows)
@@ -423,14 +433,14 @@ namespace DDPM.EABroker
                     if (!workWin.IsUsed)
                         continue;
 
-                    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
+                    hoveringCell = workWin.DetermineHoveringCellObj(x, y);
                     if (hoveringCell != null)
                     {
                         //HoveringScreen = workWin.ScreenDeviceName;
-                        HoveringCellObj = cellObj;
+                        HoveringCellObj = hoveringCell;
                         HoveringWindow = $"w{idxWorkWin}";
-                        WriteLog($" * HoveringCell=Work{cellObj.Name}");
-                        return cellObj;
+                        WriteLog($" * HoveringCell=Work{hoveringCell.Name}");
+                        return hoveringCell;
                     }
                 }
             }

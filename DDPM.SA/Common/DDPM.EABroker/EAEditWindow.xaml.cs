@@ -55,6 +55,8 @@ namespace DDPM.EABroker
         {
             this.Dispatcher.Invoke(() =>
             {
+                //Robert_Lin, clear the previous editing SplitCtrl before Hode
+                splitCtrl.Content = null;
                 Hide();
             });
         }
@@ -306,6 +308,13 @@ namespace DDPM.EABroker
                     continue;
                 }
 
+                //Check if the window is totally inside screen
+                if (!screen.Bounds.Contains(rcWnd))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
+                    continue;
+                }
+
                 //Get the Process from hWnd
                 Process process;
                 string msg = "";
@@ -437,6 +446,9 @@ namespace DDPM.EABroker
             bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
             if (isMinimized)
                 return false;
+
+            //Check if the window across screen boundary
+            //It need Screen rect, will be check after returned
 
             return true;
         }

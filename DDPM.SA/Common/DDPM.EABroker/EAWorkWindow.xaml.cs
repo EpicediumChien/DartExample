@@ -398,54 +398,73 @@ namespace DDPM.EABroker
 
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
+            //if (!Dispatcher.CheckAccess())
+            //    return null;
+
             if (_workingSplit == null)
                 return null;
 
             CellObj? hoverCell = null;
             ISplitCtrl localSplit = _workingSplit as ISplitCtrl;
-            if (localSplit != null)
+            if (localSplit == null)
+                return null;
+
+            //For Overlap layout (SplitCtrl0B), the hover state is set to IsHover.
+            //And need to refresh once changed
+            if (localSplit.IsOverlapCustomLayout)
             {
-                foreach(CellObj objCell in localSplit.CellList)
+                foreach (CellObj objCell in localSplit.CellList)
                 {
                     //If the hoverCell is not determined now
                     if (hoverCell == null)
                     {
-                        //If this CellObj will be a hovering cell
+                        //Check if cursor(x,y) is inside this CellBorder
                         if (objCell.rc.Contains(x, y))
                         {
+                            //Yes, this cell will be the HoveringCell
+                            //Set this CellBorder to Hover
+                            //objCell.CellBd.IsHover = true;
+                            objCell.CellBd.Dispatcher_SetIsHover(true);
+                            //Store it in the return object
                             hoverCell = objCell;
-                            localSplit.HoveringCell = hoverCell.Name;
-                            if (localSplit.IsOverlapCustomLayout)
-                            {
-                                hoverCell.CellBd.Dispatcher_SetIsHover(true);
-                            }
-                            else
-                            {
-                                return hoverCell;
-                            }
                         }
                         else
                         {
-                            if (localSplit.IsOverlapCustomLayout)
-                            {
-                                hoverCell.CellBd.Dispatcher_SetIsHover(false);
-                            }
+                            //No, set this CellBorder.IsHover to false
+                            //objCell.CellBd.IsHover = false;
+                            objCell.CellBd.Dispatcher_SetIsHover(false);
                         }
                     }
                     else
                     {
-                        if (localSplit.IsOverlapCustomLayout)
-                        {
-                            hoverCell.CellBd.Dispatcher_SetIsHover(false);
-                        }
+                        //hoverCell has been determined, so the other CellBorder will set IsHover to false
+                        //objCell.CellBd.IsHover = false;
+                        objCell.CellBd.Dispatcher_SetIsHover(false);
                     }
-                }
+                } //foreach
+                return hoverCell;
             }
+            //Else: Not Overlap layout, will hover/unhover the cell by DataTrigger with HoveringCell property
 
+            foreach (CellObj objCell in localSplit.CellList)
+            {
+                //Check if cursor(x,y) is inside this CellBorder
+                if (objCell.rc.Contains(x, y))
+                {
+                    //Trigger it to Hover state by HoveringCell property (Cell.Name)
+                    localSplit.HoveringCell = objCell.Name;
+                    //Store it in the return object
+                    hoverCell = objCell;
+                    //We can return immediately, all other CellObjs not been triggerd will be non-Hover
+                    return hoverCell;
+                }
+
+            } //foreach
 
             return null;
         }
 
+        
         #endregion DetermineHoveringCell
 
         #region Cells
