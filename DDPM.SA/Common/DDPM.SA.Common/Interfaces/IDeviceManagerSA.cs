@@ -507,6 +507,8 @@ namespace DDPM.SA.Common
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
+        public Task<bool> ByPassHotkey(bool bypass);
+
         #endregion public for hotkey
 
         #region public for PowerNap

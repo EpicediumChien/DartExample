@@ -2662,7 +2662,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sensitivity.
+        ///   Looks up a localized string similar to Sensitive.
         /// </summary>
         internal static string HeadsetAutomatedActions_1 {
             get {
@@ -2946,6 +2946,33 @@ namespace DDPM.UI.Resources {
         internal static string Hotkey_6 {
             get {
                 return ResourceManager.GetString("Hotkey.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hotkey Warning.
+        /// </summary>
+        internal static string hotkey_7 {
+            get {
+                return ResourceManager.GetString("hotkey.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed?.
+        /// </summary>
+        internal static string hotkey_8 {
+            get {
+                return ResourceManager.GetString("hotkey.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it?.
+        /// </summary>
+        internal static string hotkey_9 {
+            get {
+                return ResourceManager.GetString("hotkey.9", resourceCulture);
             }
         }
         

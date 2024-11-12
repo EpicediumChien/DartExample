@@ -42,6 +42,7 @@ namespace DDPM.UI.Common
 
         //reload inputsourece name if renamed
         public static bool bInputSourceRenamed { get; set; }
+        public static bool isHotkeyBypass { get; set; } = false;
         //DdpmHomePlugin will set this value
         public static IConsole? MyConsole { get; set; }
         public static IShowPluginManager? MyShowPluginManager { get; set; }

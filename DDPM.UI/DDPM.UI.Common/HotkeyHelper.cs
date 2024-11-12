@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common.Display;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Text;
@@ -96,11 +97,11 @@ namespace DDPM.UI.Common
                     break;
 
                 case HotkeyWarning.SingleKey:
-                    result = DdpmCommonHelper.DDPMMesssageBox("Hotkey Warning", "The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed?");
+                    result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.8"]);
                     break;
 
                 case HotkeyWarning.ConflictInbox:
-                    result = DdpmCommonHelper.DDPMMesssageBox("Hotkey Warning", "This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it?");
+                    result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.9"]);
                     break;
             }
             return result;
@@ -209,8 +210,13 @@ namespace DDPM.UI.Common
             if (tmp.Contains(VirtualKey.Shift)) tmp.Remove(VirtualKey.Shift);
             return !(tmp.Count > 0);
         }
+
+
         public static void setUXTextBoxPreviewKey(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, ref List<VirtualKey> BundleNewKeys, ref bool alphabetKey)
         {
+            //bypass
+            if (!DdpmCommonHelper.isHotkeyBypass)
+                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(true).Result;
             e.Handled = true;
             if (e.IsRepeat) return;
             newKeys = newKeys.Distinct().ToList();

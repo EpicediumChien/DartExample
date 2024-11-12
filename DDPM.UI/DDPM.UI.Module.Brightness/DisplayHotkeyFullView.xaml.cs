@@ -73,8 +73,14 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            vm.IsBusy = false;
+                        }
                     }
                     else
                     {
@@ -131,8 +137,14 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            vm.IsBusy = false;
+                        }
                     }
                     else
                     {
@@ -264,8 +276,14 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            vm.IsBusy = false;
+                        }
                     }
                     else
                     {
@@ -314,8 +332,14 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            vm.IsBusy = false;
+                        }
                     }
                     else
                     {
@@ -364,8 +388,14 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            vm.IsBusy = false;
+                        }
                     }
                     else
                     {
@@ -414,8 +444,14 @@ namespace DDPM.UI.Module.Brightness
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            vm.IsBusy = false;
+                        }
                     }
                     else
                     {

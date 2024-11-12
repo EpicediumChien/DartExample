@@ -1,7 +1,11 @@
-﻿using Dell.Client.Framework.Common;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +13,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
+using Windows.System;
 
 namespace DDPM.PowerMon
 {
@@ -68,6 +75,131 @@ namespace DDPM.PowerMon
             return UnregisterPowerSettingNotification(Handle);
         }
 
+        //for hotkey
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+
+        [DllImport("kernel32.dll")]
+        public static extern ushort GlobalAddAtom(string lpString);
+
+        private List<ushort> _hotkeyIds = new List<ushort>();
+        public event EventHandler<KeyPressedEventArgs> HotkeyPressed;
+
+        private ushort _currentId;
+        public bool isKeyRegistered;
+        private IntPtr _handle;
+        public void RegisterHotKey(List<HotkeyInfo> hotkeyInfos)
+        {
+            foreach (HotkeyInfo hotkeyInfo in hotkeyInfos)
+            {
+                if (hotkeyInfo != null && hotkeyInfo.Hotkey.Count > 0)
+                {
+                    string uniqueID = Guid.NewGuid().ToString("N");
+                    _currentId = GlobalAddAtom(uniqueID);
+                    int lastError = -1;
+                    Dispatcher.Invoke((() =>
+                    {
+                        isKeyRegistered = RegisterHotKey(_handle, _currentId, hotkeyInfo.ModifiersEnum, (int)hotkeyInfo.KeyCode);
+                        lastError = Marshal.GetLastWin32Error();
+                    }));
+                    if (!isKeyRegistered)
+                    {
+                        switch (lastError)
+                        {
+                            case 1409:
+                                WriteLog($"RegisterHotKey:[{hotkeyInfo.ModifiersEnum} + {hotkeyInfo.KeyCode}],Id:{_currentId},Hot key is already registered.");
+                                break;
+                            case 1408:
+                                WriteLog($"RegisterHotKey:[{hotkeyInfo.ModifiersEnum} + {hotkeyInfo.KeyCode}],Id:{_currentId},Invalid window; it belongs to other thread.");
+                                break;
+                            case 1400:
+                                WriteLog($"RegisterHotKey:[{hotkeyInfo.ModifiersEnum} + {hotkeyInfo.KeyCode}],Id:{_currentId},Invalid window handle.");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        _hotkeyIds.Add(_currentId);
+                        hotkeyInfo.ID = _currentId;
+                        Debug.WriteLine($"RegisterHotKey:[{hotkeyInfo.ModifiersEnum} + {hotkeyInfo.KeyCode}],id:{_currentId},The operation RegisterHotKey successfully.");
+                        WriteLog($"RegisterHotKey:[{hotkeyInfo.ModifiersEnum} + {hotkeyInfo.KeyCode}],id:{_currentId},The operation RegisterHotKey successfully.");
+                    }
+                }
+            }
+
+        }
+
+        public void UnRegisterHotKey(ushort id)
+        {
+            bool v = false;
+            int lastError = -1;
+            Dispatcher.Invoke((() =>
+            {
+                v = UnregisterHotKey(_handle, id);
+                lastError = Marshal.GetLastWin32Error();
+            }));
+            if (!v)
+            {
+                switch (lastError)
+                {
+                    case 1409:
+                        WriteLog($"UnRegisterHotKey[Id:{id}],Hot key is already registered.");
+                        break;
+                    case 1408:
+                        WriteLog($"UnRegisterHotKey[Id:{id}],Invalid window; it belongs to other thread.");
+                        break;
+                    case 1400:
+                        WriteLog($"UnRegisterHotKey[Id:{id}],Invalid window handle.");
+                        break;
+                }
+
+            }
+            else
+            {
+                WriteLog($"id:UnRegisterHotKey[Id:{id}],The operation RegisterHotKey successfully.");
+            }
+            isKeyRegistered = !v;
+        }
+        public void UnRegisterAllHotKey()
+        {
+            bool v = false;
+            int lastError = -1;
+            foreach (ushort id in _hotkeyIds)
+            {
+                Dispatcher.Invoke((() =>
+                {
+                    v = UnregisterHotKey(_handle, id);
+                    lastError = Marshal.GetLastWin32Error();
+                }));
+                if (!v)
+                {
+                    switch (lastError)
+                    {
+                        case 1409:
+                            WriteLog($"UnRegisterHotKey[Id:{id}],Hot key is already registered.");
+                            break;
+                        case 1408:
+                            WriteLog($"UnRegisterHotKey[Id:{id}],Invalid window; it belongs to other thread.");
+                            break;
+                        case 1400:
+                            WriteLog($"UnRegisterHotKey[Id:{id}],Invalid window handle.");
+                            break;
+                    }
+
+                }
+                else
+                {
+                    WriteLog($"id:UnRegisterHotKey[Id:{id}],The operation RegisterHotKey successfully.");
+                }
+            }
+        }
+        //for hotkey end
+
         public event EventHandler MonitorTurnedOn;
         //public event EventHandler MonitorTurnedOff;
         //public event EventHandler PowerSettingChanged;
@@ -82,6 +214,7 @@ namespace DDPM.PowerMon
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowInteropHelper helper = new WindowInteropHelper(this);
+            _handle = helper.Handle;
             HwndSource source = HwndSource.FromHwnd(helper.Handle);
             source.AddHook(WndProc);
 
@@ -95,6 +228,7 @@ namespace DDPM.PowerMon
                 _UnregisterPowerSettingNotification(m_hPowerNotify);
                 m_hPowerNotify = IntPtr.Zero;
             }
+            UnRegisterAllHotKey();
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -103,6 +237,8 @@ namespace DDPM.PowerMon
             //const int PBT_APMRESUMEAUTOMATIC = 0x12; // Resume Automatic
             //const int PBT_APMSUSPEND = 0x04; // Suspend
             const int PBT_POWERSETTINGCHANGE = 0x8013;
+
+            const int WM_HOTKEY = 0x0312;
 
             //WriteLog($"Power event {msg.ToString()}");
             switch (msg)
@@ -120,7 +256,7 @@ namespace DDPM.PowerMon
                         handled = true;
                         //WriteLog($"Power event {msg.ToString()} PBT_APMRESUMEAUTOMATIC handled");
                     }
-                    else*/ 
+                    else*/
                     if (wParam.ToInt32() == PBT_POWERSETTINGCHANGE)
                     {
                         POWERBROADCAST_SETTING pPwrSetting = (POWERBROADCAST_SETTING)Marshal.PtrToStructure(lParam, typeof(POWERBROADCAST_SETTING));
@@ -142,6 +278,17 @@ namespace DDPM.PowerMon
                         //PowerSettingChanged?.Invoke(this, EventArgs.Empty);
                         handled = true;
                     }
+                    break;
+                case WM_HOTKEY:
+                    KeyPressedEventArgs keyPressedEventArgs = new KeyPressedEventArgs();
+                    VirtualKey key = (VirtualKey)(((int)lParam >> 16) & 0xFFFF);
+                    ModifierKeys modifier = (ModifierKeys)((int)lParam & 0xFFFF);
+                    int hotkeyId = (int)wParam;
+                    keyPressedEventArgs.HotkeyInfo.ID = (ushort)hotkeyId;
+                    Task.Run(() =>
+                    {
+                        HotkeyPressed?.Invoke(this, keyPressedEventArgs);
+                    });
                     break;
                 default:
                     break;
