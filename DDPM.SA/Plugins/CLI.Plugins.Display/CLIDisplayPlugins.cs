@@ -10983,19 +10983,23 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
 
-            StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
+            StreamReader r = default;
 
             string jsonString = string.Empty;
             try
             {
+                r = new StreamReader(commandLineInput.Options[0].Option_Value);
                 jsonString = r.ReadToEnd();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[DiagnosticReport] StreamReader read failed, message: {ex.Message}");
             }
+            finally
+            {
+                r.Close();
+            }
 
-            r.Close();
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
@@ -11418,9 +11422,21 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                StreamReader r = new StreamReader(ss_1[1]);
-                jsonString = r.ReadToEnd();
-                r.Close();
+                StreamReader sr = default;
+
+                try
+                {
+                    sr = new StreamReader(ss_1[1]);
+                    jsonString = sr.ReadToEnd();
+                }
+                catch(Exception ex)
+                {
+                    Trace.WriteLine($"[CLIDisplayPlugins] ApplyConfiguration_v1 exception, message: {ex.Message}");
+                }
+                finally
+                {
+                    sr.Close();
+                }
             }
             // modiffy end @ 20241022
 
