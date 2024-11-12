@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +21,24 @@ namespace DDPM.Easy.Common
     /// </summary>
     public partial class CellBorder : UserControl
     {
+        private static double _screenScale = -1;
+        
+
         public CellBorder()
         {
             InitializeComponent();
+
+            if (_screenScale < 0)
+            {
+                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                if (dpiXProperty != null)
+                {
+                    var varX = (int)dpiXProperty.GetValue(null, null);
+                    double dpiX = (double)varX / (double)96;
+                    if (dpiX >= 1.0000)
+                        _screenScale = dpiX;
+                }
+            }
 
             #region Em Use
 
@@ -148,10 +164,14 @@ namespace DDPM.Easy.Common
         {
             if (_isHover != isHover)
             {
-                this.Dispatcher.Invoke(() =>
+                //this.Dispatcher.Invoke(() =>
+                //{
+                //    IsHover = isHover;
+                //    //IsEnabled = !isHover;
+                //});
+                Dispatcher.BeginInvoke(delegate()
                 {
                     IsHover = isHover;
-                    //IsEnabled = !isHover;
                 });
             }
         }
@@ -262,5 +282,25 @@ namespace DDPM.Easy.Common
             public CellAppData() { }
         }
         #endregion
+        
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is bool)
+            {
+                bool isVisible = (bool)e.NewValue;
+                if (!isVisible)
+                    return;
+            }
+            if ((ActualWidth == 0) || (ActualHeight == 0))
+                return;
+
+            if (_screenScale < 0)
+                return;
+
+            System.Windows.Point ptTopLeft = PointToScreen(new System.Windows.Point(0, 0));
+            double w = ActualWidth * _screenScale;
+            double h = ActualHeight * _screenScale;
+            rect = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+        }
     }
 }

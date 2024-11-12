@@ -1,13 +1,27 @@
+using Dell.Client.Framework.Agent;
+using Dell.Client.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using VcpCore.Common;
 
 namespace VcpCore.Plugins
 {
-    public class RsaEncrypt
+    public class RsaEncrypt : BaseAgentPlugin
     {
+        private static Logs _logs;
+        private IAgent _agent;
+        private const string PluginLogId = "RsaEncrypt";
+
+        protected RsaEncrypt(IAgent agent, string logId) : base(agent, logId)
+        {
+            _logs ??= new Logs(Log);
+            _agent = agent;
+
+        }
+
         public static KeyValuePair<string, string> GetKeyPair()
         {
             RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
@@ -35,14 +49,34 @@ namespace VcpCore.Plugins
                     buffer = new byte[copyLength];
                     Array.Copy(dataEncoded, pos, buffer, 0, copyLength);
                     pos += copyLength;
-                    ms.Write(rsa.Encrypt(buffer, false), 0, decryptionBufferSize);
+
+                    try
+                    {
+                        ms.Write(rsa.Encrypt(buffer, false), 0, decryptionBufferSize);
+                    }
+                    catch (Exception ex) 
+                    {
+                        _logs.Info($"[RsaEncrypt] Encrypt failed, message: {ex.Message}");
+                    }
+
                     Array.Clear(buffer, 0, copyLength);
                     if (pos >= dataEncoded.Length)
                     {
                         break;
                     }
                 }
-                var res = Convert.ToBase64String(ms.ToArray());
+
+                string res = string.Empty;
+
+                try
+                {
+                     res = Convert.ToBase64String(ms.ToArray());
+                }
+                catch (Exception ex) 
+                {
+                    _logs.Info($"Convert.ToBase64String failed, message: {ex.Message}");
+                }
+
                 return res;
             }
 

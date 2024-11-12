@@ -20,6 +20,9 @@
     <Compile Update="SaveCustomWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ScreenIdWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="AwsBuddyWindow.xaml">
@@ -44,6 +47,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SaveCustomWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ScreenIdWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

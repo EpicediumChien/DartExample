@@ -508,6 +508,10 @@ namespace DDPM.SA.Common
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
+        public Task<bool> ByPassHotkey(bool bypass);
+
+        public Task<bool> UnRegistAllHotkey();
+
         #endregion public for hotkey
 
         #region public for PowerNap
@@ -876,6 +880,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
 
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
+
+        Task<bool> GetIsESISupported(string Guid);
 
         #endregion Webcam
 
