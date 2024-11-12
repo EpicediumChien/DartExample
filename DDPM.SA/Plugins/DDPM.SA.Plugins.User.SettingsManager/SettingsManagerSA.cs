@@ -307,19 +307,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             SettingReadyEvent?.Invoke(this, new EventArgs());
             _isAllSettingsReady = true;
-
-            HMAC_Secret_Test();
         }
 
-        private void HMAC_Secret_Test()
+        /*private void HMAC_Secret_Test()
         {
             DateTimeOffset utcNow = DateTimeOffset.UtcNow;
             string strRandom = SettingsAccess.GenerateReferenceInfo();
             string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
             string strTicketToFile = utcNow.ToString();
 
+            GlobalSettingParam temp = new GlobalSettingParam();
+
             string content = string.Empty;
-            JToken token = JToken.FromObject(_GlobalSettingParam);
+            JToken token = JToken.FromObject(temp);
             if (token.Type == JTokenType.Object)
             {
                 JObject obj = (JObject)token;
@@ -336,7 +336,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string signature = SettingsAccess.GenerateSignature(strTicket, strRandom, content);
             bool result = SettingsAccess.VerifySignature(strTicketToFile, strRandom, content, signature);
             Console.WriteLine($"The comparison result is {result}");
-        }
+        }*/
 
         public Task<bool> QuerySettingsStatus()
         {

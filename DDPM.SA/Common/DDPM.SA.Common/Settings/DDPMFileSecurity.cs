@@ -129,31 +129,25 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             string signature;
+            string strTicketToFile;
+            string strRandom;
             try
             {
-                //0905 apply DDPM private key rule
-                /*if (accessInfo == null || accessInfo.Length < 32)
-                {
-                    info = "DDPM AccessInfo value is abnormal";
-                    return false;
-                }
-                //signature = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
-                signature = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), serialized_string);*/
                 DateTimeOffset utcNow = DateTimeOffset.UtcNow;
-                string strRandom = SettingsAccess.GenerateReferenceInfo();
                 string strTicket = SettingsAccess.GenerateReferenceTicket(utcNow);
-                string strTicketToFile = utcNow.ToString();
+                strRandom = SettingsAccess.GenerateReferenceInfo();                
+                strTicketToFile = utcNow.ToString();
                 signature = SettingsAccess.GenerateSignature(strTicket, strRandom, serialized_string);
-                signature = strRandom + ";;" + strTicketToFile + ";;" + signature; //combine as single key
+                //signature = strRandom + ";;" + strTicketToFile + ";;" + signature; //combine as single key
             }
             catch (Exception e)
             {
                 info = "Calculate signature failed." + e.Message;
                 return false;
             }
-            if (string.IsNullOrEmpty(signature))
+            if (string.IsNullOrEmpty(signature) || string.IsNullOrEmpty(strTicketToFile) || string.IsNullOrEmpty(strRandom))
             {
-                info = "Got null signature";
+                info = $"Got null DDPM object, (1){signature},(2){strRandom},(3){strTicketToFile}";
                 return false;
             }
             string write_string;
@@ -166,7 +160,9 @@ namespace DDPM.SA.Common.Settings
                 {
                     JObject obj = (JObject)token;
                     // Handle object
-                    obj.Add("Signature", signature);
+                    obj.Add("DDPM.Ticket", strTicketToFile);
+                    obj.Add("DDPM.Info", strRandom);
+                    obj.Add("DDPM.Signature", signature);
                     temp = obj.ToString();
                 }
                 else if (token.Type == JTokenType.Array)
@@ -176,7 +172,9 @@ namespace DDPM.SA.Common.Settings
                     //JObject newObject = new JObject();
                     //newObject["Signature"] = signature;
                     //array.Add(newObject);
-                    array.Add("Signature : " + signature);
+                    array.Add("DDPM.Ticket : " + strTicketToFile);
+                    array.Add("DDPM.Info : " + strRandom);
+                    array.Add("DDPM.Signature : " + signature);
                     temp = array.ToString();
                 }
                 if (string.IsNullOrEmpty(temp))
@@ -190,14 +188,8 @@ namespace DDPM.SA.Common.Settings
                 //convert whole content and protect it as bytes array
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 //3. Data protect if need (11/11 drop this action)
-                //if (isEncrypt)
-                //{
-                //    byte[] encrypted_data = DataProtect(body_array);
-                //    //From bytes array to base64 string
-                //    write_string = Convert.ToBase64String(encrypted_data);
-                //}
-                //else
-                    write_string = modifiedJson;
+                
+                write_string = modifiedJson;
             }
             catch (Exception ex)
             {
@@ -241,11 +233,6 @@ namespace DDPM.SA.Common.Settings
                 info = $"[GetSerializedJsonString] {info}";
                 return string.Empty;
             }
-            //if (accessInfo == null || accessInfo.Length < 32)
-            //{
-            //    info = "DDPM AccessInfo value is abnormal";
-            //    return string.Empty;
-            //}
 
             string json_content = string.Empty;
             try
@@ -270,54 +257,46 @@ namespace DDPM.SA.Common.Settings
 #endif 
                 return string.Empty;
             }
-            string serialized;
-            try
-            {
-                //From base64 string to byte array
-                //if (isEncrypt)
-                //{
-                //    byte[] read_data = Convert.FromBase64String(json_content);
-                //    //2. assume input data already be encrypted, so decrypt it (11/11 drop this action)
-                //    byte[] decrypted_data = DataUnprotect(read_data);
-                //    //Serialized string with signature
-                //    serialized = Encoding.UTF8.GetString(decrypted_data);
-                //}
-                //else
-                //Serialized string with signature
-                serialized = json_content;
-            }
-            catch (Exception e)
-            {
-                info = e.Message;
-                return string.Empty;
-            }
-            if (string.IsNullOrEmpty(serialized))
-            {
-                info = "Retrieve content of json file failed";
-#if DEBUG 
-                Console.WriteLine(info);
-#endif
-                return string.Empty;
-            }
+            string serialized = json_content;
             // Parse the JSON string into a JObject
             string modifiedJson = string.Empty;
             string signature = string.Empty;
-            //JObject jObject;
+            string sInfo = string.Empty;
+            string ticket = string.Empty;
             //3. retrieve signature for comparison
             try
             {
-                //jObject = JObject.Parse(serialized);
                 JToken token = JToken.Parse(serialized);
                 string temp = string.Empty;
                 if (token.Type == JTokenType.Object)
                 {
                     JObject obj = (JObject)token;
                     // Handle object
-                    signature = (string)obj["Signature"];
+                    signature = (string)obj["DDPM.Signature"];
                     // Remove the "signature" property for hash generating
-                    if (!obj.Remove("Signature"))
+                    if (!obj.Remove("DDPM.Signature"))
                     {
                         info = "Remove signature field of json failed";
+#if DEBUG 
+                        Console.WriteLine(info);
+#endif
+                        return string.Empty;
+                    }
+                    sInfo = (string)obj["DDPM.Info"];
+                    // Remove the "Info" property for hash generating
+                    if (!obj.Remove("DDPM.Info"))
+                    {
+                        info = "Remove Info field of json failed";
+#if DEBUG 
+                        Console.WriteLine(info);
+#endif
+                        return string.Empty;
+                    }
+                    ticket = (string)obj["DDPM.Ticket"];
+                    // Remove the "Ticket" property for hash generating
+                    if (!obj.Remove("DDPM.Ticket"))
+                    {
+                        info = "Remove Ticket field of json failed";
 #if DEBUG 
                         Console.WriteLine(info);
 #endif
@@ -329,12 +308,12 @@ namespace DDPM.SA.Common.Settings
                 {
                     JArray array = (JArray)token;
                     // Handle array
-                    var signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("Signature"));
+                    var signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("DDPM.Signature"));
                     foreach (var sign in signatureStrings)
                     {
                         if (sign != null && !string.IsNullOrEmpty(sign.ToString()))
                         {
-                            signature = sign.ToString().Replace("Signature", "").Trim();
+                            signature = sign.ToString().Replace("DDPM.Signature", "").Trim();
                             if (signature.StartsWith(":"))
                             {
                                 signature = signature.Substring(1).Trim();
@@ -343,7 +322,34 @@ namespace DDPM.SA.Common.Settings
                             break;
                         }
                     }
-
+                    signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("DDPM.Info"));
+                    foreach (var sign in signatureStrings)
+                    {
+                        if (sign != null && !string.IsNullOrEmpty(sign.ToString()))
+                        {
+                            sInfo = sign.ToString().Replace("DDPM.Info", "").Trim();
+                            if (sInfo.StartsWith(":"))
+                            {
+                                sInfo = sInfo.Substring(1).Trim();
+                            }
+                            array.Remove(sign);
+                            break;
+                        }
+                    }
+                    signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("DDPM.Ticket"));
+                    foreach (var sign in signatureStrings)
+                    {
+                        if (sign != null && !string.IsNullOrEmpty(sign.ToString()))
+                        {
+                            ticket = sign.ToString().Replace("DDPM.Ticket", "").Trim();
+                            if (ticket.StartsWith(":"))
+                            {
+                                ticket = ticket.Substring(1).Trim();
+                            }
+                            array.Remove(sign);
+                            break;
+                        }
+                    }
                     modifiedJson = array.ToString();
                 }
                 if (string.IsNullOrEmpty(signature))
@@ -366,26 +372,26 @@ namespace DDPM.SA.Common.Settings
 
             // Convert the modified JObject back to a JSON string
             string cal_sign;
-            string strRandom;
-            string strTicket;
+            //string strRandom;
+            //string strTicket;
             try
             {
-                string[] strArray = signature.Split(";;");
-                if(strArray.Length != 3)
+                //string[] strArray = signature.Split(";;");
+                //if(strArray.Length != 3)
+                //{
+                //    info = "signature key is not composed with DDPM key format!";
+                //    return string.Empty;
+                //}
+                //strRandom = strArray[0];
+                //strTicket = strArray[1];
+                //signature = strArray[2];
+                if (string.IsNullOrEmpty(sInfo) || string.IsNullOrEmpty(ticket) || string.IsNullOrEmpty(signature))
                 {
-                    info = "signature key is not composed with DDPM key format!";
-                    return string.Empty;
-                }
-                strRandom = strArray[0];
-                strTicket = strArray[1];
-                signature = strArray[2];
-                if (string.IsNullOrEmpty(strRandom) || string.IsNullOrEmpty(strTicket) || string.IsNullOrEmpty(signature))
-                {
-                    info = $"a part of key is null (1){signature},(2){strRandom},(3){strTicket}";
+                    info = $"a part of key is null (1){signature},(2){sInfo},(3){ticket}";
                     return string.Empty;
                 }
                 //cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
-                cal_sign = SettingsAccess.GenerateSignature(strTicket, strRandom, modifiedJson);
+                cal_sign = SettingsAccess.GenerateSignature(ticket, sInfo, modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
@@ -397,14 +403,23 @@ namespace DDPM.SA.Common.Settings
                 info = "Calculate signature for verify failed. " + ex.Message;
                 return string.Empty;
             }
-            //4. Check if signature valid
-            //if (cal_sign.ToLower().Equals(signature.ToLower()))
-            if(SettingsAccess.VerifySignature(strTicket, strRandom, modifiedJson, signature))
-                //5. return serialized string
-                return modifiedJson;
-            else
+
+            try
             {
-                info = "Signature comparison result is FALSE";
+                //4. Check if signature valid
+                //if (cal_sign.ToLower().Equals(signature.ToLower()))
+                if (SettingsAccess.VerifySignature(ticket, sInfo, modifiedJson, signature))
+                    //5. return serialized string
+                    return modifiedJson;
+                else
+                {
+                    info = "Signature comparison result is FALSE";
+                    return string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = "Verify Signature exception: " + ex.Message;
                 return string.Empty;
             }
         }
