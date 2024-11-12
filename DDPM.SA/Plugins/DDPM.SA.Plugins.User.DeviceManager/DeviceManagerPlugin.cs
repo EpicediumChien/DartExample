@@ -587,9 +587,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (_pwr_Mon == null)
                 {
                     _pwr_Mon = new PowerEventControl(Log);
-                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
-                    _pwr_Mon.HotkeyPressed += HotkeyPressed;
+                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;                    
                     _pwr_Mon.Enable_Event();
+                    _pwr_Mon.HotkeyPressed += HotkeyPressed;
+                    _pwr_Mon.Enable_HotkeyHook();
                 }
                 System.Windows.Threading.Dispatcher.Run();
             });

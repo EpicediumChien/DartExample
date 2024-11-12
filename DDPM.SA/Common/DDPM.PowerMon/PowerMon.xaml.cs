@@ -29,6 +29,9 @@ namespace DDPM.PowerMon
     /// </summary>
     public partial class PowerMonitor : Window
     {
+        public bool isWindowLoaded { get; private set; } = false;
+        public bool isHotkeyHooked { get; private set; } = false;
+
         private enum log_type
         {
             info = 0,
@@ -214,11 +217,13 @@ namespace DDPM.PowerMon
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowInteropHelper helper = new WindowInteropHelper(this);
-            _handle = helper.Handle;
-            HwndSource source = HwndSource.FromHwnd(helper.Handle);
-            source.AddHook(WndProc);
+            //_handle = helper.Handle;
+            //HwndSource source = HwndSource.FromHwnd(helper.Handle);
+            //source.AddHook(WndProc);
 
             m_hPowerNotify = _RegisterPowerSettingNotification(helper.Handle, ref GUID_MONITOR_POWER_ON, 0);
+
+            isWindowLoaded = true;
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
@@ -228,7 +233,25 @@ namespace DDPM.PowerMon
                 _UnregisterPowerSettingNotification(m_hPowerNotify);
                 m_hPowerNotify = IntPtr.Zero;
             }
-            UnRegisterAllHotKey();
+            if(isHotkeyHooked)
+                UnRegisterAllHotKey();
+
+            isWindowLoaded = false;
+            isHotkeyHooked = false;
+        }
+
+        public void Enable_HotkeyHook()
+        {
+            if (!isWindowLoaded)
+            {
+                WriteLog("Window isn't active, drop enable hotkey hook");
+                return;
+            }
+            WindowInteropHelper helper = new WindowInteropHelper(this);
+            _handle = helper.Handle;
+            HwndSource source = HwndSource.FromHwnd(helper.Handle);
+            source.AddHook(WndProc);
+            isHotkeyHooked = true;
         }
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -244,19 +267,6 @@ namespace DDPM.PowerMon
             switch (msg)
             {
                 case WM_POWERBROADCAST:
-                    /*if (wParam.ToInt32() == PBT_APMRESUMEAUTOMATIC)
-                    {
-                        MonitorTurnedOn?.Invoke(this, EventArgs.Empty);
-                        handled = true;
-                        //WriteLog($"Power event {msg.ToString()} PBT_APMRESUMEAUTOMATIC handled");
-                    }
-                    else if (wParam.ToInt32() == PBT_APMSUSPEND)
-                    {
-                        MonitorTurnedOff?.Invoke(this, EventArgs.Empty);
-                        handled = true;
-                        //WriteLog($"Power event {msg.ToString()} PBT_APMRESUMEAUTOMATIC handled");
-                    }
-                    else*/
                     if (wParam.ToInt32() == PBT_POWERSETTINGCHANGE)
                     {
                         POWERBROADCAST_SETTING pPwrSetting = (POWERBROADCAST_SETTING)Marshal.PtrToStructure(lParam, typeof(POWERBROADCAST_SETTING));
