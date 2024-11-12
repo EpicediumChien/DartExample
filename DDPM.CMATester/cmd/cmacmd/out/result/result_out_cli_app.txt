@@ -1,0 +1,32 @@
+2024 Nov 12 14:05:12.663	out_cli_app.txt Start test.
+
+Test Json = {"sid":"1731380053","req":[{"tid":1,"active":"get","devicetype":"app","command":"update","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380053","gid": "03084a54-39ed-4598-8508-163281b8744e","response": [{"tid": 1,"result": 0,"msg": "","data": [{
+  "SWUpdateRESPONSE": [],
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "UPDATE",
+  "Value": "N/A",
+  "Result": "PASS",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380054","req":[{"tid":1,"active":"get","devicetype":"app","command":"updatesourcelocation","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380054","gid": "ae01ab22-9816-4368-8e44-2a97fc2bdf6d","response": [{"tid": 1,"result": 0,"msg": "","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "UPDATESOURCELOCATION",
+  "Value": "https://clientperipherals.dell.com/DDPM/3fcf51beb3c8/",
+  "Result": "PASS",
+  "Message": "N/A"
+}]}]}
+2024 Nov 12 14:05:28.823	out_cli_app.txt End test.
+
+

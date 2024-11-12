@@ -1,0 +1,571 @@
+2024 Nov 12 14:15:01.018	out_cli_peripheral.txt Start test.
+
+Test Json = {"sid":"1731380189","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"fwversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380189","gid": "7d5fe92a-bb8d-4843-92d5-adfdcf6dbe1a","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "FWVERSION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380190","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"fieldofview","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380190","gid": "257ef316-f8fb-4040-badd-7db5f409f9de","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "FIELDOFVIEW",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380191","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"hdr","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380191","gid": "80bb9419-9ab8-4250-b0e7-cacf0cd1a346","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "HDR",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380192","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"hdr","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380192","gid": "bb35ced2-7370-48d5-bba3-ac93dda6abb1","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "HDR",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380193","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"antiflicker","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380193","gid": "d6ff6fb1-5107-42e8-953b-fbe1b6b89854","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "ANTIFLICKER",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380194","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"antiflicker","value":"50","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380194","gid": "35190c12-843c-47c2-8c4a-fd5e6b227255","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "ANTIFLICKER",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380195","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"micswitch","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380195","gid": "0d36c13c-a7ed-4fcb-b811-7e271ebc4690","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "MICSWITCH",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380196","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"micswitch","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380196","gid": "abe9c1de-c6ed-4c02-b58c-9cd385ae276e","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "MICSWITCH",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380197","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"aiautoframing","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380197","gid": "1f4d6fee-d1b3-4fe8-9bea-99f98e56bd0e","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "AIAUTOFRAMING",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380198","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"aiautoframing","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380198","gid": "deeb5ff9-ece4-4f0b-b842-603e00d73786","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "AIAUTOFRAMING",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380199","req":[{"tid":1,"active":"get","devicetype":"webcam","command":"presencedetection","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380199","gid": "16a3a31c-bd08-459f-8c1b-e829de619fad","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "PRESENCEDETECTION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380200","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"presencedetection","value":"disable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380200","gid": "d1fe61e2-aa09-40f1-8652-443115663c4f","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "PRESENCEDETECTION",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380201","req":[{"tid":1,"active":"get","devicetype":"audio","command":"fwversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380201","gid": "827e0589-9b99-40ff-b01c-413253bc289e","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "FWVERSION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380202","req":[{"tid":1,"active":"get","devicetype":"audio","command":"ancmode","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380202","gid": "a8502530-ee12-4c14-a2cb-cc8cfeadfa0d","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "ANCMODE",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380203","req":[{"tid":1,"active":"set","devicetype":"audio","command":"ancmode","value":"disable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380203","gid": "f94a7347-92dc-4ceb-88e2-2257aa6448de","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "ANCMODE",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380204","req":[{"tid":1,"active":"get","devicetype":"audio","command":"micnoisecancellation","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380204","gid": "3c2d3b5a-52cf-4e34-b512-afd0e3931b51","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "MICNOISECANCELLATION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380205","req":[{"tid":1,"active":"set","devicetype":"audio","command":"micnoisecancellation","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380205","gid": "f4188cf6-708c-4bb5-bec1-52cd779c14c2","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "MICNOISECANCELLATION",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380206","req":[{"tid":1,"active":"get","devicetype":"audio","command":"weardetection","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380206","gid": "8e336cab-f69c-4cea-ab07-e5099ee62334","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "WEARDETECTION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380207","req":[{"tid":1,"active":"set","devicetype":"audio","command":"weardetection","value":"disable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380207","gid": "0f12248a-c004-4668-be54-ba3b95638531","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "WEARDETECTION",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380208","req":[{"tid":1,"active":"get","devicetype":"keyboard","command":"fwversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380208","gid": "d05e94ef-e3a4-4c74-a0d7-6d26ee5fabd0","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "FWVERSION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380209","req":[{"tid":1,"active":"set","devicetype":"keyboard","command":"restorefactorydefaults","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380209","gid": "3ee66670-74de-47d2-9791-cbf278699422","response": [{"tid": 1,"result": 501,"msg": "Option value [] not support","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESTOREFACTORYDEFAULTS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "Option value [] not support"
+}]}]}
+Test Json = {"sid":"1731380210","req":[{"tid":1,"active":"get","devicetype":"keyboard","command":"collabcameraenable","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380210","gid": "27ebae62-50bf-4ddd-8501-b42b97c3b8af","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "COLLABCAMERAENABLE",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380211","req":[{"tid":1,"active":"get","devicetype":"keyboard","command":"collabmicmute","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380211","gid": "22013c58-8b47-4130-b8ee-14cf32001a87","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "COLLABMICMUTE",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380212","req":[{"tid":1,"active":"get","devicetype":"keyboard","command":"collabscreenshare","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380212","gid": "410dedc3-507b-4a66-956a-8982125a4c9a","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "COLLABSCREENSHARE",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380213","req":[{"tid":1,"active":"set","devicetype":"keyboard","command":"collabscreenshare","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380213","gid": "6f4acf0c-ae60-48fb-8a4c-4131b9b2dac8","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "COLLABSCREENSHARE",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380214","req":[{"tid":1,"active":"get","devicetype":"keyboard","command":"collabchatenable","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380214","gid": "b3d219d3-be8e-46b7-aea6-379ff6856f14","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "COLLABCHATENABLE",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380215","req":[{"tid":1,"active":"get","devicetype":"mouse","command":"fwversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380215","gid": "35e7ef77-84d9-45b4-b362-fcdf2121e614","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "FWVERSION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380216","req":[{"tid":1,"active":"set","devicetype":"mouse","command":"restorefactorydefaults","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380216","gid": "73464d43-5365-4c04-9457-e4899462be0b","response": [{"tid": 1,"result": 501,"msg": "Option value [] not support","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESTOREFACTORYDEFAULTS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "Option value [] not support"
+}]}]}
+Test Json = {"sid":"1731380217","req":[{"tid":1,"active":"get","devicetype":"dock","command":"fwversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380217","gid": "8cff517a-313f-4a8b-a46d-fe3403df0e80","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "GET",
+    "TargetFeature": "FWVERSION",
+    "Value": "",
+    "Result": "Fail",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380218","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"hdr","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380218","gid": "e3f05984-9009-4186-bc58-156ce133f22a","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "HDR",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380219","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"antiflicker","value":"60","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380219","gid": "c6c23e54-7752-421e-b8e8-aa957bd2b286","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "ANTIFLICKER",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380220","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"micswitch","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380220","gid": "0abd3431-c02b-41de-b6ab-e1d42e2dd474","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "MICSWITCH",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380221","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"aiautoframing","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380221","gid": "8ccc94dd-7fbe-4e2a-8037-2fb7c3a9b8e8","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "AIAUTOFRAMING",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380222","req":[{"tid":1,"active":"set","devicetype":"webcam","command":"presencedetection","value":"enable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380222","gid": "b921cd12-0e3e-4ad2-852e-fbc9b9441baf","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "PRESENCEDETECTION",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380223","req":[{"tid":1,"active":"set","devicetype":"audio","command":"ancmode","value":"enable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380223","gid": "3605f9c7-d193-4b45-93ca-26910cc042a0","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "ANCMODE",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380224","req":[{"tid":1,"active":"set","devicetype":"audio","command":"micnoisecancellation","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380224","gid": "43909668-a14e-4c11-8259-35bf816a3f01","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "MICNOISECANCELLATION",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380225","req":[{"tid":1,"active":"set","devicetype":"audio","command":"weardetection","value":"enable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380225","gid": "95f9c682-b085-4199-a8a6-854c1d705c80","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "WEARDETECTION",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+Test Json = {"sid":"1731380226","req":[{"tid":1,"active":"set","devicetype":"keyboard","command":"collabscreenshare","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380226","gid": "2e94f478-c18c-477c-acaa-9ba52882a9e7","response": [{"tid": 1,"result": 501,"msg": "Device not found","data": [[
+  {
+    "Name": "N/A",
+    "Model": "N/A",
+    "ServiceTag": "N/A",
+    "Guid": "N/A",
+    "Command": "SET",
+    "TargetFeature": "COLLABSCREENSHARE",
+    "Value": "",
+    "Result": "FAIL",
+    "Message": "Device not found"
+  }
+]]}]}
+2024 Nov 12 14:17:39.399	out_cli_peripheral.txt End test.
+
+
