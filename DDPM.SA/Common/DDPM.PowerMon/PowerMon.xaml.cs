@@ -289,6 +289,7 @@ namespace DDPM.PowerMon
                     {
                         HotkeyPressed?.Invoke(this, keyPressedEventArgs);
                     });
+                    handled = true;
                     break;
                 default:
                     break;

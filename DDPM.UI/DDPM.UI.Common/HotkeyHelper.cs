@@ -216,7 +216,10 @@ namespace DDPM.UI.Common
         {
             //bypass
             if (!DdpmCommonHelper.isHotkeyBypass)
+            {
                 DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(true).Result;
+                bool v = DdpmCommonHelper.DeviceManagerSA.UnRegistAllHotkey().Result;
+            }
             e.Handled = true;
             if (e.IsRepeat) return;
             newKeys = newKeys.Distinct().ToList();

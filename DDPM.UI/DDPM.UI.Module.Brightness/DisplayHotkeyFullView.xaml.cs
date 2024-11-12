@@ -75,7 +75,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        vm.Invoke_RefreshHotkeySettings();
                         if (saveSettings)
                         {
                             DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
@@ -139,7 +139,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        vm.Invoke_RefreshHotkeySettings();
                         if (saveSettings)
                         {
                             DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
@@ -278,7 +278,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        vm.Invoke_RefreshHotkeySettings();
                         if (saveSettings)
                         {
                             DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
@@ -334,7 +334,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        vm.Invoke_RefreshHotkeySettings();
                         if (saveSettings)
                         {
                             DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
@@ -390,7 +390,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        vm.Invoke_RefreshHotkeySettings();
                         if (saveSettings)
                         {
                             DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
@@ -446,7 +446,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         vm.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                        //vm.Invoke_RefreshData();
+                        vm.Invoke_RefreshHotkeySettings();
                         if (saveSettings)
                         {
                             DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;

@@ -624,6 +624,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey(id:{hotkeyInfo.ID}) => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
                                 HotkeyType job = hotkeyInfo.Job;
                                 ExecHotkeyJob(settings, job);
+                                return;
                             }
                         }
                     }
@@ -14298,6 +14299,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             isBypassHotkey = bypass;
             return Task.FromResult(isBypassHotkey);
+        }
+
+        public Task<bool> UnRegistAllHotkey()
+        {
+            _pwr_Mon.UnRegisterAllHotKey();
+            return Task.FromResult(true);
         }
     }
 }

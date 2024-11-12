@@ -509,6 +509,8 @@ namespace DDPM.SA.Common
 
         public Task<bool> ByPassHotkey(bool bypass);
 
+        public Task<bool> UnRegistAllHotkey();
+
         #endregion public for hotkey
 
         #region public for PowerNap
