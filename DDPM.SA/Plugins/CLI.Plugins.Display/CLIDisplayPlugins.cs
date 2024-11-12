@@ -1453,6 +1453,20 @@ namespace DDPM.CLI.Plugins.Display
                         output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
                     }
                 }
+
+                if (string.IsNullOrWhiteSpace(output))
+                {
+                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                    {
+                        Command = commandLineInput.Command,
+                        TargetFeature = commandLineInput.TargetFeature,
+                        Message = "No Device connected",
+                    };
+
+                    recode_per = true;
+                    output += "\n" + JsonConvert.SerializeObject(rsp, Formatting.Indented);
+                }
+
                 return ((int)CLI_ExitCode.success, output);
             }
             else
@@ -11103,6 +11117,17 @@ namespace DDPM.CLI.Plugins.Display
                 Directory.CreateDirectory(filepath);
             }
 
+            var result = "PASS";
+            var message = "N/A";
+
+            devMgr.SaveLogFile(filepath_);
+
+            if (!File.Exists(file))
+            {
+                result = "FAIL";
+                message = "file is not exist.";
+            }
+
             if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
             {
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
@@ -11114,19 +11139,8 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Message = filepath;
-                    devMgr.SaveLogFile(filepath_);
-
-                    if (!File.Exists(file))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file is not exist.";
-                    }
-                    else
-                    {
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
+                    cli_Response.Result = result;
+                    cli_Response.Message = message;
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
@@ -11142,18 +11156,8 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base(idx);
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    devMgr.SaveLogFile(filepath_);
-
-                    if (!File.Exists(file))
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file is not exist.";
-                    }
-                    else
-                    {
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                    }
+                    cli_Response.Result = result;
+                    cli_Response.Message = message;
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
                 foreach (string tag in commandLineInput.ServiceTag)
@@ -11168,18 +11172,8 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.SerialNumber = monitor.edid.SerialNumber;
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                        devMgr.SaveLogFile(filepath_);
-
-                        if (!File.Exists(file))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "file is not exist.";
-                        }
-                        else
-                        {
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
+                        cli_Response.Result = result;
+                        cli_Response.Message = message;
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -11195,22 +11189,23 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.SerialNumber = monitor.edid.SerialNumber;
                         cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                         cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                        devMgr.SaveLogFile(filepath_);
-
-                        if (!File.Exists(file))
-                        {
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "file is not exist.";
-                        }
-                        else
-                        {
-                            cli_Response.Result = "PASS";
-                            cli_Response.Message = "N/A";
-                        }
+                        cli_Response.Result = result;
+                        cli_Response.Message = message;
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
             }
+            
+            if (string.IsNullOrWhiteSpace(output))
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = result;
+                cli_Response.Message = message;
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            }
+
             return ((int)CLI_ExitCode.success, output);
         }
 
