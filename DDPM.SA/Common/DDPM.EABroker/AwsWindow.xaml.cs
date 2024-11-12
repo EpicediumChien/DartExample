@@ -177,8 +177,8 @@ namespace DDPM.EABroker
             }
 
             //Load RecentList to IconList
-            this.Dispatcher.Invoke(() =>
-            {
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
                 bool isRecentListLoaded = false;
                 if (isSupportedMonitor)
                 {
@@ -217,7 +217,7 @@ namespace DDPM.EABroker
                 _vm.WriteLog($"  * AwsWindow.ReloadRecentList() elapsed {sw0.ElapsedMilliseconds} msec.");
 
                 Dispatcher_RefreshCellRects();
-            });
+            //}));
         }
 
         private void RefreshAwsIconRects()
@@ -304,11 +304,11 @@ namespace DDPM.EABroker
         #region Hovering
         public CellObj? DetermineHoverigCellObj_Icon0(int x, int y)
         {
-            if (!IsCursorInsideAwsWindow(x, y))
-            {
-                _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
-                return null;
-            }
+            //if (!IsCursorInsideAwsWindow(x, y))
+            //{
+            //    _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
+            //    return null;
+            //}
 
             CellObj? hoverCell = null;
             hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon0, x, y);
@@ -347,11 +347,11 @@ namespace DDPM.EABroker
                 return null;
             }
 
-            if (!IsCursorInsideAwsWindow(x, y))
-            {
-                _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
-                return null;
-            }
+            //if (!IsCursorInsideAwsWindow(x, y))
+            //{
+            //    _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
+            //    return null;
+            //}
 
 
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
@@ -798,7 +798,7 @@ namespace DDPM.EABroker
 
         public void RefreshCellRects(int flag = 0)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
                 Dispatcher_RefreshCellRects(flag);
 
@@ -806,7 +806,7 @@ namespace DDPM.EABroker
                 {
                     _vm.rcAwsWindow = _vm.GetFrameworkElementRect(this);
                 }
-            });
+            }));
         }
 
         private void Dispatcher_RefreshCellRects(int flag = 0)
@@ -824,9 +824,6 @@ namespace DDPM.EABroker
             {
                 _areCellRectsRefreshed = false;
             }
-
-
-
 
             _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
             _vm.WriteLog($"@ RefreshCellRects() - Icon1: {ArrangeVM.FormatRect(_rcIcon1)}");
@@ -1013,7 +1010,7 @@ namespace DDPM.EABroker
             {
                 if (flag == 0)
                 {
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(1); }, null, 100, Timeout.Infinite);
+                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
                 }
             }
             _vm.OnPropertyChanged_AwsIconInfos();
@@ -1084,47 +1081,72 @@ namespace DDPM.EABroker
             if (!isVisible)
                 return;
 
-            //Get the Screen of the cursor
-            Screen showScreen = _vm.GetScreenFromCursor();
-            //Check if the showScreen is WorkScreen of AwsWindow
-            _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
-            System.Windows.Point ptAws = CalculateAwsPosition();
-            _vm.xAwsWindow = ptAws.X;
-            _vm.yAwsWindow = ptAws.Y;
-
-            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
-
-            //Get current working screen
-            Screen? scr = _vm.GetScreenFromCursor();
-            if (scr != null)
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                ReloadRecentList(scr.DeviceName);
-            }
-            RefreshAwsIconRects();
-            RefreshCellBordersInAwsIcons();
-            RefreshCellRects();
-            RefreshIcon0();
+                //Get the Screen of the cursor
+                Screen showScreen = _vm.GetScreenFromCursor();
+
+                //Check if the showScreen is WorkScreen of AwsWindow
+                _vm.WriteLog($"@ AwsWindow.HandleAwsWindowVisibilityChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+                System.Windows.Point ptAws = CalculateAwsPosition();
+                _vm.xAwsWindow = ptAws.X;
+                _vm.yAwsWindow = ptAws.Y;
+
+                //Move window to the new WorkScreen
+                Left = ptAws.X;
+                Top = ptAws.Y;
+                Topmost = true;
+
+                //Get current working screen
+                Screen? scr = _vm.GetScreenFromCursor();
+                if (scr != null)
+                {
+                    ReloadRecentList(scr.DeviceName);
+                }
+
+                RefreshAwsIconRects();
+                RefreshCellBordersInAwsIcons();
+                RefreshCellRects();
+                RefreshIcon0();
+
+            }));
+
+
         }
 
         private void HandleWorkScreenChanged(object? sender, Screen newScreen)
         {
             _vm.WriteLog($"@AwsWindow.HandleWorkScreenChanged(newScreen={newScreen.DeviceName})");
 
-            //Trace.WriteLine($"Actual={ActualWidth}x{ActualHeight}, Size={Width}x{Height}");
+            if (!_vm.IsAwsWindowVisible)
+                return;
 
-            _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
-            System.Windows.Point ptAws = CalculateAwsPosition();
-            _vm.xAwsWindow = ptAws.X;
-            _vm.yAwsWindow = ptAws.Y;
-
-            Dispatcher_MoveWindow(ptAws.X, ptAws.Y);
-
-            //Get current working screen
-            Screen? scr = _vm.GetScreenFromCursor();
-            if (scr != null)
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                ReloadRecentList(scr.DeviceName);
-            }
+
+                _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
+                System.Windows.Point ptAws = CalculateAwsPosition();
+                _vm.xAwsWindow = ptAws.X;
+                _vm.yAwsWindow = ptAws.Y;
+
+                //Move window to the new WorkScreen
+                Left = ptAws.X;
+                Top = ptAws.Y;
+                Topmost = true;
+
+                //Get current working screen
+                Screen? scr = _vm.GetScreenFromCursor();
+                if (scr != null)
+                {
+                    ReloadRecentList(scr.DeviceName);
+                }
+
+                RefreshAwsIconRects();
+                RefreshCellBordersInAwsIcons();
+                RefreshCellRects();
+                RefreshIcon0();
+
+            }));
         }
 
         #endregion ViewModel Event Handlers
@@ -1132,7 +1154,7 @@ namespace DDPM.EABroker
         #region Icon0 - Monitors
         private void RefreshIcon0()
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
                 //if (_vm.AwsIcon0 != null)
                 //{
@@ -1220,14 +1242,14 @@ namespace DDPM.EABroker
                     idxScr++;
                 }
                 _vm.OnPropertyChanged_AwsIconInfos();
-            });
+            }));
 
 
         }
 
         private void HoverCellInAwsIcon0(string hoverName)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke(new Action(() =>
             {
                 foreach (var item in icon0Canvas.Children)
                 {
@@ -1241,7 +1263,7 @@ namespace DDPM.EABroker
 
                     }
                 }
-            });
+            }));
         }
 
         private void UI_RefreshIcon0_SplitCtrl0B()

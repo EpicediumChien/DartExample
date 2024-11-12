@@ -178,8 +178,6 @@ namespace DDPM.EABroker
             //}
 
             _vm.RefreshCellRects();
-            //_vmArrange.RefreshCellRects();
-            //_isRefresCellsCountAfterStartMoving = 0;
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
@@ -225,15 +223,23 @@ namespace DDPM.EABroker
 
             Rect rcArrange = hoveringCellObj.rc;
 
-            if (_vm.HoveringWindow.Equals("aws"))
+            if (_vm.HoveringWindow.Equals("scr"))
+            {
+                rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow();
+                if (rcArrange.IsEmpty)
+                    rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+                if (rcArrange.IsEmpty)
+                    return;
+            }
+            else if (_vm.HoveringWindow.Equals("aws"))
             {
                 rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow(); 
                 if (rcArrange.IsEmpty)
                     rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
+                if (rcArrange.IsEmpty)
+                    return;
             }
 
-            if (rcArrange.IsEmpty)
-                return;
 
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vm.IsWithoutGap)
@@ -274,39 +280,21 @@ namespace DDPM.EABroker
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
-            //}));
-            //this.Dispatcher.Invoke(() =>
-            //{
-
 
                 CellObj orgCell = _vm.HoveringCellObj;
-             CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
-            //CellObj? newCell = null; // _vm.DetermineHoveringCellObj(x, y);
+                CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
 
-            if (orgCell != _vm.HoveringCellObj)
-            {
-                string strOrg = "null";
-                if (orgCell != null)
-                    strOrg = orgCell.Name;
-                string strNew = "null";
-                if (_vm.HoveringCellObj != null)
-                    strNew = _vm.HoveringCell;
+                if (orgCell != _vm.HoveringCellObj)
+                {
+                    string strOrg = "null";
+                    if (orgCell != null)
+                        strOrg = orgCell.Name;
+                    string strNew = "null";
+                    if (_vm.HoveringCellObj != null)
+                        strNew = _vm.HoveringCell;
 
-                Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
-            }
-                //if (_vm.HoveringCellObj != null)
-                //{
-                //    _vm.HoveringCell = _vm.HoveringCellObj.Name;
-                //}
-                //else
-                //{
-                //    _vmArrange.HoveringCell = "";
-                //}
-                //if (_workingSplit != null)
-                //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
-
-                //Set WorkWins to topmost
-
+                    Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+                }
             }));
 
         }
