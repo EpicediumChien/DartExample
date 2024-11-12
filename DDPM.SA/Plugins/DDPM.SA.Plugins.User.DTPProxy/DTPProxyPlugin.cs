@@ -27,6 +27,7 @@ using Dell.TechHub.Commodity.Peripheral;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using DPeMPublic.Common.Enums;
+using System.Text.Json;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -1696,6 +1697,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Headset" => _headsetMethodInfo,
                 "Speaker" => _speakerMethodInfo,
                 "Dongle" => _dongleMethodInfo,
+                "Dock" => _dockMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
@@ -1707,6 +1709,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Headset" => _headsetInterfaceType,
                 "Speaker" => _speakerInterfaceType,
                 "Dongle" => _dongleInterfaceType,
+                "Dock" => _dockInterfaceType,
                 _ => null
             };
 
@@ -4593,6 +4596,131 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #endregion
 
+        #region Dock
+        public Task<DockData> GetDockData(string guid)
+        {
+            try
+            {
+                if (!GetItemIDAsync("Dock", guid).Result)
+                {
+                    writelog(" [Dock] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity =  GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dockInterfaceType, commodity, "DockData");
+                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
+                    Debug.WriteLine(value);
+                    if (value != null && value is byte[])
+                    {
+                        try
+                        {
+                            byte[] dokc_bytes = (byte[])value;
+                            writelog($"[PeripheralsPlugin] GetDockData byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                            if (dokc_bytes != null)
+                            {
+                                writelog($"[PeripheralsPlugin] GetDockData dokc_bytes.Length : {dokc_bytes.Length}");
+                                string textString = System.Text.Encoding.UTF8.GetString(dokc_bytes);
+                                writelog($"[PeripheralsPlugin] GetDockData dokc_bytes to string : " + textString);
+                                if (!string.IsNullOrEmpty(textString))
+                                {
+                                    try
+                                    {
+                                        using (JsonDocument doc = JsonDocument.Parse(textString))
+                                        {
+                                            JsonElement root = doc.RootElement;
+                                            JsonElement payloadElement = root.GetProperty("Payload");
+                                            DockData dockData = JsonSerializer.Deserialize<DockData>(payloadElement.GetRawText());
+                                            if (dockData != null)
+                                            {
+                                                if (dockData.MarketingName.ToUpper().StartsWith("WD19S"))
+                                                {
+                                                    dockData.MarketingName = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                                                }
+                                                return Task.FromResult(dockData);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[PeripheralsPlugin] GetDockData Error : {ex.Message}");
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"[PeripheralsPlugin] Dock Data Error : {ex.Message}");
+                        }
+                    }
+                    return null;
+                }
+
+                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<string> GetFirmwareVersionAsyncForDock(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Dock", guid))
+                {
+                    writelog(" [Dock] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
+                    writelog($"[Dock] GetFirmwareVersionAsyncForDock succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Dock] GetFirmwareVersionAsyncForDock failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<string> GetDockServiceTagAsyncForDock(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Dock", guid))
+                {
+                    writelog(" [Dock] Failed to retrieve guid.");
+                    return null;
+                }
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dongleMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
+                    writelog($"[Dock] GetDockServiceTagAsyncForDock succeeded for {guid}");
+                    return (string)value;
+                }
+
+                writelog($"[Dock] GetDockServiceTagAsyncForDock failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Dock] GetDockServiceTagAsyncForDock failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        #endregion
+
         #region Overriding methods
 
         protected override void OnPluginStarting()
@@ -4802,6 +4930,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         writelog($"Find IDongleCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
+                    writelog($"Find IDockCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    _dockInterfaceType = FindCommodityInterfaceType("IDockCommodity");
+                    if (_dockInterfaceType != null)
+                    {
+                        _dockMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                    .MakeGenericMethod(_dockInterfaceType);
+                        writelog($"Find IDockCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+
                     _ = RegisterEventAsync();
                 });
             }
@@ -4891,6 +5032,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
+            writelog($"Register Dock Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IDockCommodity>(new ItemId("DellPeripheral.Dock"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IDockCommodity _Dockcom)
+            {
+                try
+                {
+                    _Dockcom.Connected += _comdity_Connected;
+                    _Dockcom.Disconnected += _comdity_Disconnected;
+                    writelog($"Dock Commodity event registered");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)

@@ -8372,6 +8372,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
 
+        public Task<DockData> GetDockData(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetDockData(guid).Result);
+        }
+
         #endregion
 
         #endregion
