@@ -838,6 +838,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
+        public async Task<bool> GetIsESISupported(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsESISupported");
+                    return (bool)value;
+                }
+                else
+                {
+                    Debug.WriteLine($"[CheckIsESISupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[CheckIsESISupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[CheckIsESISupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[CheckIsESISupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
         public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))

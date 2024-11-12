@@ -1135,6 +1135,7 @@ namespace DDPM.SA.Common
         public bool IsWakeonApproachEnable { get; set; }
         public bool IsWalkAwayLockEnable { get; set; }
         public int WALTime { get; set; }
+        
 
         public string DeviceSymbolicLink
         {
