@@ -172,6 +172,22 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 Log.Error(text);
         }
 
+        private static void OutputLog(string output, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(output);
+                }
+            }
+        }
+
         private void InitializeCliManagerPlugin()
         {
             if (_CliManagerPlugin != null)
@@ -538,7 +554,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
                 //write result back
                 if (cliEventResult != null)
+                {
                     _CliManagerPlugin.WriteCommandResult(cliEventResult);
+                    OutputLog(cliEventResult.serialize_Json_response, commandLineInput);
+                }
             });
         }
         #endregion

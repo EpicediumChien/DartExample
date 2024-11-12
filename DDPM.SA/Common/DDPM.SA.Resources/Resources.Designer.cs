@@ -286,6 +286,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dell Display and Peripheral Manager.
+        /// </summary>
+        internal static string Dell_Display_and_Peripheral_Manager {
+            get {
+                return ResourceManager.GetString("Dell_Display_and_Peripheral_Manager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Desktop.
         /// </summary>
         internal static string Desktop_0 {
@@ -925,6 +934,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to synchronize the corresponding ICC profile for.
+        /// </summary>
+        internal static string Unable_to_synchronize_the_corresponding_ICC_profile {
+            get {
+                return ResourceManager.GetString("Unable_to_synchronize_the_corresponding_ICC_profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UOD update completed..
         /// </summary>
         internal static string UOD_update_completed {
@@ -1162,9 +1180,9 @@ namespace DDPM.SA.Resources {
         /// <summary>
         ///   Looks up a localized string similar to will be updated to .
         /// </summary>
-        internal static string will_be_updated_to_ {
+        internal static string will_be_updated_to {
             get {
-                return ResourceManager.GetString("will_be_updated_to ", resourceCulture);
+                return ResourceManager.GetString("will_be_updated_to", resourceCulture);
             }
         }
         

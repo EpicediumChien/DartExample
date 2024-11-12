@@ -86,6 +86,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<WebcamOperation> WCOperations = new();
         private int OPIndex = -1;
         const int MaxOPs = 30;
+        public List<string> MicList = new() { "WB5023", "WB3023" };
 
         // 20240926 jim add
         private bool showLockMask = false;
@@ -145,12 +146,67 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isChecked_ProximitySensor; }
             set
             {
-                _isChecked_ProximitySensor = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
-                OnPropertyChanged("IsChecked_ProximitySensor");
-                OnPropertyChanged("ProximitySensorStatus_String");
+                if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
+                {
+                    _isChecked_ProximitySensor = value;
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                    OnPropertyChanged("IsChecked_ProximitySensor");
+                    OnPropertyChanged("ProximitySensorStatus_String");
 
+                    //Derek 11/12
+                    //PIMS - 319099
+                    //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
+                    //Internal Presence Sensor. DUT is with HPD_MPS FW
+                    ChangeUPDStatus();
+                }
+            }
+        }
+
+        private bool _isWALTimerEnable = false;
+        public bool IsWALTimerEnable
+        {
+            get { return _isWALTimerEnable; }
+
+            set
+            {
+                if (value != _isWALTimerEnable)
+                {
+                    _isWALTimerEnable = value;
+
+                    OnPropertyChanged("IsWALTimerEnable");
+                }
+            }
+        }
+
+        private bool _isSnoozeEnable = false;
+        public bool IsSnoozeEnable
+        {
+            get { return _isSnoozeEnable; }
+
+            set
+            {
+                if (value != _isSnoozeEnable)
+                {
+                    _isSnoozeEnable = value;
+
+                    OnPropertyChanged("IsSnoozeEnable");
+                }
+            }
+        }
+
+        private void ChangeUPDStatus()
+        {
+            if (_isChecked_ProximitySensor) 
+            {
+                IsWALTimerEnable = IsChecked_WalkAwayLock;
+                IsSnoozeEnable = IsChecked_WalkAwayLock;
+            }
+            else 
+            {
+                IsWALTimerEnable = false;
+                IsChecked_Snooze = false;
+                IsSnoozeEnable = false;
             }
         }
 
@@ -195,6 +251,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
                 OnPropertyChanged("IsChecked_WalkAwayLock");
                 OnPropertyChanged("WalkAwayLockStatus_String");
+
+                IsWALTimerEnable = value;
+                IsSnoozeEnable = value;
             }
         }
 
@@ -693,6 +752,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaFrameReader? MediaFrameReader;
 
 
+
         private bool _isPrioritizeExternalWebcam = false;
         public bool IsPrioritizeExternalWebcam
         {
@@ -831,7 +891,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
                     IsFocusOn = true;
                 }
-   
+
             }
         }
 
@@ -929,6 +989,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsFocusOnText));
+                    if (!value)
+                        SetFocus();
                 }
             }
         }
@@ -1525,6 +1587,21 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
 
+        public bool running_state = true;
+        public void webcamera_stop()
+        {
+            if (MediaFrameReader == null)
+                return;
+            MediaFrameReader.StopAsync();
+
+        }
+
+        public void webcamera_restart()
+        {
+            if (MediaFrameReader == null)
+                return;
+            MediaFrameReader.StartAsync();
+        }
     }
 
     public class StreamResolution

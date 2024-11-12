@@ -1,0 +1,50 @@
+2024 Nov 12 14:36:01.251	updatetolatest.txt Start test.
+
+Test Json = {"sid":"1731245527","req":[{"tid":1,"active":"get","devicetype":"app","command":"DiagnosticsReport","value":"c:\temp","options":{"index":"1","servicetag":"aaaaa","model":"dell ea","minversion":"1.0.0.5","upgratetolatest":true}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731245527","gid": "8d9798fe-b16b-442a-9fb0-0cd1848ed396","response": [{"tid": 1,"result": 501,"msg": "Index number larger than real count of monitor: 0","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "DIAGNOSTICSREPORT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "Index number larger than real count of monitor: 0"
+}]}]}
+Test Json = {"sid":"1731245527","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"upgradetolatest":true,"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 99
+CMA Notification Alert eventtype : System.ArgumentException: Command 'minversion' and 'upgradetolatest' can't be exist in the same task
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.createCommandFw(CmaTask task) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 355
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.initCommandTask(String guid, String request) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 556
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.Info(RemoteRequestArgs request) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 779; {"sid":"1731245527","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"upgradetolatest":true,"minversion":"0010"}}]}
+Test Json = {"sid":"1731380147","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"upgradetolatest":false,"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380147","gid": "ce76ef8a-7879-4efa-94be-ae7ffe912258","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380148","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"minversion":"0010"}}]}
+CMA Notification Alert eventtype : 5
+CMA Notification Alert eventtype : {"sid": "1731380148","gid": "bd4d7001-c6a0-42ac-8abc-e82edd3551c5","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "FIRMWAREUPDATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+2024 Nov 12 14:36:21.385	updatetolatest.txt End test.
+
+

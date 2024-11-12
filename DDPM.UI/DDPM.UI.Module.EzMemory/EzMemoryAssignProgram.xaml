@@ -12,7 +12,8 @@
              mc:Ignorable="d" 
              Background="#FF0D121A"
              d:DesignHeight="671" 
-             d:DesignWidth="1378">
+             d:DesignWidth="1378"
+             Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -27,8 +28,39 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,8,0" />
             </Style>
+            
+            <Style x:Key="DynamicButtonStyle" TargetType="UXControls:UXButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="UXControls:UXButton">
+                            <Grid>
+                                <Image x:Name="PART_Image" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/EzRemove.png" Width="30" Height="30"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
 
-            <Style x:Key="TransparentButtonStyle" TargetType="UXControls:UXButton">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="UXControls:UXButton">
+                                    <Grid>
+                                        <Image x:Name="PART_Image" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/EzAdd.png" Width="30" Height="30"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+
+
+            <!--<Style x:Key="TransparentButtonStyle" TargetType="UXControls:UXButton">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="UXControls:UXButton">
@@ -41,13 +73,14 @@
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                <!-- 透明遮罩 -->
+                --><!-- 透明遮罩 --><!--
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="Transparent"/>
                     </Trigger>
                 </Style.Triggers>
-            </Style>
+            </Style>-->
+            
             <local:WindowGridVisibilityConverter x:Key="WindowGridVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -164,9 +197,21 @@
                     </Grid>
                 </Grid>
 
+                <Path Grid.Column="1" Data="M360.797,1 H3.06681 C1.92534,1 1,1.93342 1,3.08485 V207.053 C1,208.205 1.92534,209.138 3.06681,209.138 H360.797 C361.938,209.138 362.863,208.205 362.863,207.053 V3.08485 C362.863,1.93342 361.938,1 360.797,1 Z"
+          Stroke="White" StrokeThickness="0.646185" StrokeMiterLimit="10" Margin="210,65,0,0"/>
+                <Path Grid.Column="1" Data="M191.376,261.044 V209.071 H170.818 V261.044 C170.819,261.746 171.099,262.419 171.595,262.914 C172.092,263.41 172.765,263.689 173.467,263.689 H188.731 C189.432,263.689 190.105,263.41 190.601,262.914 C191.098,262.418 191.376,261.746 191.376,261.044 Z"
+          Stroke="White" StrokeThickness="0.323092" StrokeMiterLimit="10" Margin="210,65,0,0"/>
+                <Path Grid.Column="1" Data="M170.821,260.406 H108.458 C108.087,260.406 107.722,260.504 107.401,260.69 C107.08,260.876 106.813,261.144 106.629,261.466 C106.444,261.788 106.348,262.153 106.35,262.524 C106.351,262.895 106.451,263.259 106.638,263.579 L114.07,276.269 C114.256,276.586 114.521,276.85 114.841,277.033 C115.16,277.216 115.521,277.313 115.89,277.313 H246.638 C246.996,277.314 247.347,277.223 247.66,277.05 C247.972,276.877 248.235,276.627 248.424,276.323 L256.378,263.634 C256.578,263.315 256.689,262.948 256.699,262.572 C256.709,262.196 256.618,261.824 256.436,261.494 C256.254,261.165 255.987,260.89 255.663,260.699 C255.339,260.507 254.969,260.406 254.593,260.406 H191.379"
+          Stroke="White" StrokeThickness="0.258474" StrokeMiterLimit="10" Margin="210,65,0,0"/>
+                <Path Grid.Column="1" Data="M107.41,264.905 L113.384,278.212 C113.623,278.742 114.009,279.192 114.497,279.508 C114.985,279.824 115.554,279.992 116.136,279.993 H246.147 C246.706,279.993 247.254,279.837 247.729,279.544 C248.205,279.25 248.59,278.83 248.841,278.331 L255.593,264.922"
+          Stroke="White" StrokeThickness="0.258474" StrokeMiterLimit="10" Margin="210,65,0,0"/>
+
+                <Canvas x:Name="MainCanvas" Grid.Column="1" Background="#193457" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="216,70,0,0" Width="351.525" Height="197.733"/>
+                <ContentControl Name="EMsplitCtrl" Grid.Column="1" Background="#193457" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="216,70,0,0" Width="351.525" Height="197.733"/>
+
                 <!-- Only 2 -->
                 <!--<Grid x:Name="RightGridPage2" Visibility="Hidden" Grid.Column="1" Width="657" Margin="64, 96, 96, 0">-->
-                <Grid x:Name="RightGridPage2" Visibility="{Binding IsRightGridPage2Visible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" Width="657" Margin="64, 96, 96, 0">
+                <Grid x:Name="RightGridPage2" Visibility="{Binding IsRightGridPage2Visible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" Width="657" Margin="64, 110, 96, 0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -175,10 +220,10 @@
                     </Grid.RowDefinitions>
 
                     <!-- Monitor Outline Image -->
-                    <Image Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Monitor_Outline.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="361.86" Height="280" />
+                    <!--<Image Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Monitor_Outline.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="361.86" Height="280" />-->
 
                     <!-- Bottom Control Panel -->
-                    <Border Grid.Row="1" Background="#1B385F" CornerRadius="10" Margin="0,16,0,0" Padding="16" Width="415" Height="auto" HorizontalAlignment="Center">
+                    <Border Grid.Row="1" Background="#1B385F" CornerRadius="10" Margin="0,246,0,0" Padding="16" Width="415" Height="auto" HorizontalAlignment="Center">
                         <StackPanel>
                             <!-- Window 1 Control -->
                             <Grid Margin="0,0,0,8">
@@ -189,10 +234,10 @@
                                 </Grid.ColumnDefinitions>
 
                                 <UXControls:UXTextBlock Text="{Binding [EazyMemory.21], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
-                                <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="80,0,0,0">
-                                    <UXControls:UXTextBlock Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window2_1AppName}" Tag="{Binding ElementName=Window2_1TextBlock}"/>
+                                <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Background="#141D2B" Margin="80,0,0,0">
+                                    <UXControls:UXTextBox x:Name="Window1_1TextBlock" Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window2_1AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2_1TextBlock}"/>
                                 </Border>
-                                <UXControls:UXButton Grid.Column="2" x:Name="AddButton2_1" Margin="16,0,0,0" Style="{StaticResource TransparentButtonStyle}" Click="AddButton1_Click"/>
+                                <UXControls:UXButton Grid.Column="2" x:Name="AddButton2_1" Margin="16,0,0,0" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window1_1TextBlock}" Click="AddButton1_Click"/>
                             </Grid>
 
                             <!-- Window 2 Control -->
@@ -204,10 +249,10 @@
                                 </Grid.ColumnDefinitions>
 
                                 <UXControls:UXTextBlock Text="{Binding [EazyMemory.22], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
-                                <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="80,0,0,0">
-                                    <UXControls:UXTextBlock Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextAlignment="Left"  Text="{Binding Window2_2AppName}" Tag="{Binding ElementName=Window2_2TextBlock}"/>
+                                <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Background="#141D2B" Margin="80,0,0,0">
+                                    <UXControls:UXTextBox x:Name="Window1_2TextBlock" Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextAlignment="Left" TextWrapping="NoWrap" Text="{Binding Window2_2AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2_2TextBlock}"/>
                                 </Border>
-                                <UXControls:UXButton Grid.Column="2" x:Name="AddButton2_2" Margin="16,0,0,0" Style="{StaticResource TransparentButtonStyle}" Click="AddButton1_Click"/>
+                                <UXControls:UXButton Grid.Column="2" x:Name="AddButton2_2" Margin="16,0,0,0" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window1_2TextBlock}" Click="AddButton1_Click"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -216,172 +261,186 @@
 
                 <!-- Total -->
                 <!--<Grid x:Name="RightGridPageTotal" Visibility="Hidden" Grid.Column="1" Width="657" Margin="64, 72, 96, 0">-->
-                <Grid x:Name="RightGridPageTotal" Visibility="{Binding IsRightGridPageTotalVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" Width="657" Margin="64, 72, 96, 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <Grid x:Name="RightGridPageTotal" Visibility="{Binding IsRightGridPageTotalVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" Width="657" Margin="64, 92, 96, 0">
+        <StackPanel>
+        <Border x:Name="RightBorderManyPage" Grid.Row="6" Background="#1B385F" CornerRadius="10" Margin="0,215,0,-262" Padding="16" Width="630" Height="Auto" HorizontalAlignment="Center" Opacity="0.8">
+                        <!--Window 1 Control-->
 
-                    <!-- Monitor Outline Image -->
-                    <Image Grid.Row="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Monitor_Outline.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="361.86" Height="280" />
+                        <Grid Margin="0,-8,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                    <!-- Bottom Control Panel -->
-                    <Border x:Name="RightBorderManyPage" Grid.Row="1" Background="#1B385F" CornerRadius="10" Margin="0,-48,0,0" Padding="16" Width="630" Height="Auto" HorizontalAlignment="Center" Opacity="0.8">
-                        <StackPanel >
-                            <!-- Window 1 Control -->
-                            <Grid Margin="0,-8,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                
-                                <!--Windows 1 Row1-->
-                                <Grid x:Name="WindowGrid_1" Grid.Column="0" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=1}">
-                                    <DockPanel x:Name="DockPanel1">
-                                        <UXControls:UXTextBlock x:Name="Window1Label" Text="{Binding [EazyMemory.21], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14"/>
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" >
-                                            <UXControls:UXTextBlock x:Name="Window1TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window1AppName}" Tag="{Binding ElementName=Window1TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton1" Style="{StaticResource TransparentButtonStyle}" Margin="16,0,16,0" Click="AddButton1_Click" />
-                                    </DockPanel>
-                                </Grid>
-                                
-                                <!--Windows 2-->
-                                <Grid x:Name="WindowGrid_2" Grid.Column="1" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=2}">
-                                    <DockPanel Visibility="Visible">
-                                        <UXControls:UXTextBlock Grid.Column="3" x:Name="Window2Label" Text="{Binding [EazyMemory.22], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,0,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" >
-                                            <UXControls:UXTextBlock x:Name="Window2TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window2AppName}" Tag="{Binding ElementName=Window2TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton Grid.Column="5" x:Name="AddButton2" Style="{StaticResource TransparentButtonStyle}" Margin="16,0,0,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
+                            <!--Windows 1 Row1-->
 
-                                <!--Windows 3 Row2-->
-                                <Grid x:Name="WindowGrid_3" Grid.Column="0" Grid.Row="2" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=3}">
-                                    <DockPanel Visibility="Visible">
-                                        <UXControls:UXTextBlock x:Name="Window3Label" Text="{Binding [EazyMemory.23], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,8,0">
-                                            <UXControls:UXTextBlock x:Name="Window3TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window3AppName}" Tag="{Binding ElementName=Window3TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton  x:Name="AddButton3" Style="{StaticResource TransparentButtonStyle}" Margin="8,16,16,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-                                        
-                                <!--Windows 4-->
-                                <Grid x:Name="WindowGrid_4" Grid.Column="1" Grid.Row="2" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=4}">
-                                    <DockPanel>
-                                        <UXControls:UXTextBlock x:Name="Window4Label" Text="{Binding [EazyMemory.24], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,0,0" >
-                                            <UXControls:UXTextBlock x:Name="Window4TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window4AppName}" Tag="{Binding ElementName=Window4TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton4" Style="{StaticResource TransparentButtonStyle}" Margin="16,16,0,0"  Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-                                
-                                <!--Windows 5 Row3-->
-                                <Grid x:Name="WindowGrid_5" Grid.Column="0" Grid.Row="3" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=5}">
-                                    <DockPanel >
-                                        <UXControls:UXTextBlock x:Name="Window5Label" Text="{Binding [EazyMemory.25], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0">
-                                            <UXControls:UXTextBlock x:Name="Window5TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window5AppName}" Tag="{Binding ElementName=Window5TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton5" Style="{StaticResource TransparentButtonStyle}" Margin="16,16,16,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-
-                                <!--Windows 6-->
-                                <Grid x:Name="WindowGrid_6" Grid.Column="1" Grid.Row="3" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=6}">
-                                    <DockPanel >
-                                        <UXControls:UXTextBlock x:Name="Window6Label" Text="{Binding [EazyMemory.26], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0">
-                                            <UXControls:UXTextBlock x:Name="Window6TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window6AppName}" Tag="{Binding ElementName=Window6TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton  x:Name="AddButton6" Style="{StaticResource TransparentButtonStyle}" Margin="8,16,0,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-                                
-                                <!--Windows 7 Row4-->
-                                <Grid  x:Name="WindowGrid_7" Grid.Column="0" Grid.Row="4" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=7}">
-                                    <DockPanel>
-                                        <UXControls:UXTextBlock x:Name="Window7Label" Text="{Binding [EazyMemory.27], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0">
-                                            <UXControls:UXTextBlock x:Name="Window7TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window7AppName}" Tag="{Binding ElementName=Window7TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton  x:Name="AddButton7" Style="{StaticResource TransparentButtonStyle}" Margin="16,16,16,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-
-                                <!--Windows 8-->
-                                <Grid x:Name="WindowGrid_8" Grid.Column="1" Grid.Row="4" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=8}">
-                                    <DockPanel>
-                                        <UXControls:UXTextBlock x:Name="Window8Label" Text="{Binding [EazyMemory.28], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0">
-                                            <UXControls:UXTextBlock x:Name="Window8TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window8AppName}" Tag="{Binding ElementName=Window8TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton8" Style="{StaticResource TransparentButtonStyle}" Margin="8,16,0,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-
-                                <!--Windows 9 Row5-->
-                                <Grid x:Name="WindowGrid_9" Grid.Column="0" Grid.Row="5" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=9}">
-                                    <DockPanel>
-                                        <UXControls:UXTextBlock x:Name="Window9Label" Text="{Binding [EazyMemory.29], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0">
-                                            <UXControls:UXTextBlock x:Name="Window9TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window9AppName}" Tag="{Binding ElementName=Window9TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton  x:Name="AddButton9" Style="{StaticResource TransparentButtonStyle}" Margin="16,16,16,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-
-                                <!--Windows 10-->
-                                <Grid x:Name="WindowGrid_10" Grid.Column="1" Grid.Row="5" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=10}">
-                                    <DockPanel>
-                                        <UXControls:UXTextBlock x:Name="Window10Label" Text="{Binding [EazyMemory.30], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0">
-                                            <UXControls:UXTextBlock x:Name="Window10TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window10AppName}" Tag="{Binding ElementName=Window10TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton10" Style="{StaticResource TransparentButtonStyle}" Margin="8,16,0,0" Click="AddButton1_Click"/>
-                                 </DockPanel>
-                                </Grid>
-
-                                <!--Windows 11 Row6-->
-                                <Grid x:Name="WindowGrid_11" Grid.Column="0" Grid.Row="6" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=11}">
-                                    <DockPanel>
-                                        <UXControls:UXTextBlock x:Name="Window11Label" Text="{Binding [EazyMemory.31], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0">
-                                            <UXControls:UXTextBlock x:Name="Window11TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window11AppName}" Tag="{Binding ElementName=Window11TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton11" Style="{StaticResource TransparentButtonStyle}" Margin="16,16,16,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-                                        <!--Windows 12-->
-                                <Grid x:Name="WindowGrid_12" Grid.Column="1" Grid.Row="6" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=12}">
-                                    <DockPanel >
-                                        <UXControls:UXTextBlock x:Name="Window12Label" Text="{Binding [EazyMemory.32], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
-                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0">
-                                            <UXControls:UXTextBlock x:Name="Window12TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window12AppName}" Tag="{Binding ElementName=Window12TextBlock}"/>
-                                        </Border>
-                                        <UXControls:UXButton x:Name="AddButton12" Style="{StaticResource TransparentButtonStyle}" Margin="8,16,0,0" Click="AddButton1_Click"/>
-                                    </DockPanel>
-                                </Grid>
-                                
+                            <Grid x:Name="WindowGrid_1" Grid.Column="0" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=1}">
+                                <DockPanel x:Name="DockPanel1">
+                                    <UXControls:UXTextBlock x:Name="Window1Label" Text="{Binding [EazyMemory.21], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14"/>
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window1TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window1AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window1TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton1" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window1TextBlock}" Margin="16,0,16,0" Click="AddButton1_Click" />
+                                </DockPanel>
                             </Grid>
-                        </StackPanel>
+
+
+                            <!--Windows 2-->
+
+                            <Grid x:Name="WindowGrid_2" Grid.Column="1" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=2}">
+                                <DockPanel Visibility="Visible">
+                                    <UXControls:UXTextBlock Grid.Column="1" x:Name="Window2Label" Text="{Binding [EazyMemory.22], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,0,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window2TextBlock" Width="150" Height="40" Margin="0,0,0,0" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window2AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window2TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton Grid.Column="1" x:Name="AddButton2" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window2TextBlock}" Margin="16,0,0,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 3 Row2-->
+
+                            <Grid x:Name="WindowGrid_3" Grid.Column="0" Grid.Row="2" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=3}">
+                                <DockPanel Visibility="Visible">
+                                    <UXControls:UXTextBlock x:Name="Window3Label" Text="{Binding [EazyMemory.23], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,8,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window3TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window3AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window3TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton  x:Name="AddButton3" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window3TextBlock}" Margin="8,16,16,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 4-->
+
+                            <Grid x:Name="WindowGrid_4" Grid.Column="1" Grid.Row="2" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=4}">
+                                <DockPanel>
+                                    <UXControls:UXTextBlock x:Name="Window4Label" Text="{Binding [EazyMemory.24], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,0,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window4TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window4AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window4TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton4" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window4TextBlock}" Margin="16,16,0,0"  Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 5 Row3-->
+
+                            <Grid x:Name="WindowGrid_5" Grid.Column="0" Grid.Row="3" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=5}">
+                                <DockPanel >
+                                    <UXControls:UXTextBlock x:Name="Window5Label" Text="{Binding [EazyMemory.25], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window5TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window5AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window5TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton5" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window5TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 6-->
+
+                            <Grid x:Name="WindowGrid_6" Grid.Column="1" Grid.Row="3" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=6}">
+                                <DockPanel >
+                                    <UXControls:UXTextBlock x:Name="Window6Label" Text="{Binding [EazyMemory.26], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window6TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window6AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window6TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton  x:Name="AddButton6" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window6TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 7 Row4-->
+
+                            <Grid  x:Name="WindowGrid_7" Grid.Column="0" Grid.Row="4" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=7}">
+                                <DockPanel>
+                                    <UXControls:UXTextBlock x:Name="Window7Label" Text="{Binding [EazyMemory.27], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window7TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window7AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window7TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton  x:Name="AddButton7" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window7TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 8-->
+
+                            <Grid x:Name="WindowGrid_8" Grid.Column="1" Grid.Row="4" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=8}">
+                                <DockPanel>
+                                    <UXControls:UXTextBlock x:Name="Window8Label" Text="{Binding [EazyMemory.28], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window8TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window8AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window8TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton8" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window8TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 9 Row5-->
+
+                            <Grid x:Name="WindowGrid_9" Grid.Column="0" Grid.Row="5" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=9}">
+                                <DockPanel>
+                                    <UXControls:UXTextBlock x:Name="Window9Label" Text="{Binding [EazyMemory.29], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window9TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window9AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window9TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton  x:Name="AddButton9" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window9TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 10-->
+
+                            <Grid x:Name="WindowGrid_10" Grid.Column="1" Grid.Row="5" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=10}">
+                                <DockPanel>
+                                    <UXControls:UXTextBlock x:Name="Window10Label" Text="{Binding [EazyMemory.30], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window10TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window10AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window10TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton10" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window10TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+
+                            <!--Windows 11 Row6-->
+
+                            <Grid x:Name="WindowGrid_11" Grid.Column="0" Grid.Row="6" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=11}">
+                                <DockPanel>
+                                    <UXControls:UXTextBlock x:Name="Window11Label" Text="{Binding [EazyMemory.31], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="0,16,8,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="0,16,0,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window11TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window11AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window11TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton11" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window11TextBlock}" Margin="16,16,16,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+
+                            <!--Windows 12-->
+
+                            <Grid x:Name="WindowGrid_12" Grid.Column="1" Grid.Row="6" Visibility="{Binding SelectedValue, Converter={StaticResource WindowGridVisibilityConverter}, ConverterParameter=12}">
+                                <DockPanel >
+                                    <UXControls:UXTextBlock x:Name="Window12Label" Text="{Binding [EazyMemory.32], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="76" Height="24" Margin="16,16,0,0" VerticalAlignment="Center" Foreground="White" FontSize="14" />
+                                        <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="8,16,8,0" Background="#141D2B">
+                                            <UXControls:UXTextBox x:Name="Window12TextBlock" Width="150" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextWrapping="NoWrap" Text="{Binding Window12AppName, Mode=TwoWay}" Tag="{Binding ElementName=Window12TextBlock}"/>
+                                    </Border>
+                                        <UXControls:UXButton x:Name="AddButton12" Style="{StaticResource DynamicButtonStyle}" Tag="{Binding Text, ElementName=Window12TextBlock}" Margin="8,16,0,0" Click="AddButton1_Click"/>
+                                </DockPanel>
+                            </Grid>
+                        </Grid>
                     </Border>
+                    </StackPanel>
                 </Grid>
             </Grid>
         </StackPanel>

@@ -49,6 +49,7 @@
     <None Remove="Resources\Images\DownloadTileG.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
     <None Remove="Resources\Images\EzAdd.png" />
+    <None Remove="Resources\Images\EzRemove.png" />
     <None Remove="Resources\Images\Folder.png" />
     <None Remove="Resources\Images\G.png" />
     <None Remove="Resources\Images\GearConnection.png" />
@@ -393,6 +394,9 @@
     <Resource Include="Resources\Images\DownloadTileG.png" />
     <Resource Include="Resources\Images\EOLDongle.png" />
     <Resource Include="Resources\Images\EzAdd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\EzRemove.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\Folder.png" />

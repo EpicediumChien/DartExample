@@ -129,8 +129,7 @@ namespace DDPM.CMA.Tester
             RemoteRequestArgs cmaRequest = new RemoteRequestArgs();
 
             _CMAManagerPlugin.Notify += Notification;
-/*            _CMAManagerPlugin.DisplayConnected += DisplayConnected;
-            _CMAManagerPlugin.DisplayDisconnected += DisplayDisconnected;*/
+
             Console.WriteLine("Subscribe Event Success");
 
 
@@ -143,8 +142,6 @@ namespace DDPM.CMA.Tester
 
                 txtOutputStringBuilder = new StringBuilder();
                 txtOutputStringBuilder.Append(DateTime.Now.ToString("yyyy MMM dd HH:mm:sss.fff") + "\t" + file.Name + " Start test.\n\n");
-
-                //txtOutput = txtOutput + DateTime.Now.ToString("yyyy MMM dd HH:mm:sss.fff") + "\t" + file.Name + " Start test.\n\n";
 
                 Console.WriteLine(txtOutputStringBuilder.ToString());
 
@@ -195,17 +192,19 @@ namespace DDPM.CMA.Tester
 
                 // write files in the folder
 
-                /*                try {
-                                    if (!(System.IO.Directory.Exists(PATH + "result")))
-                                    {
-                                        System.IO.Directory.CreateDirectory(PATH + "result");
-                                    }
-                                }
-                                catch (Exception e) { 
-                                    Console.WriteLine("CreateDirectory Exception: " + e.Message); 
-                                }*/
+                try
+                {
+                    if (!(System.IO.Directory.Exists(PATH + "result")))
+                    {
+                        System.IO.Directory.CreateDirectory(PATH + "result");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("CreateDirectory Exception: " + e.Message);
+                }
 
-                File.WriteAllLines(PATH + "result_" + file.Name, txtOutputStringBuilder.ToString().Split('\n'));
+                File.WriteAllLines(PATH + "result\\result_" + file.Name, txtOutputStringBuilder.ToString().Split('\n'));
 
                 Thread.Sleep(5000);
 
@@ -284,8 +283,8 @@ namespace DDPM.CMA.Tester
             Console.WriteLine("CMA Notification Alert eventtype : " + e.eventType);
             Console.WriteLine("CMA Notification Alert notification : " + e.notification);
 
-            txtOutputStringBuilder.Append("CMA Notification Alert eventtype : \"" + e.eventType + "\n");
-            txtOutputStringBuilder.Append("CMA Notification Alert eventtype : \"" + e.notification + "\n");
+            txtOutputStringBuilder.Append("CMA Notification Alert eventtype : " + e.eventType + "\n");
+            txtOutputStringBuilder.Append("CMA Notification Alert eventtype : " + e.notification + "\n");
 
             //txtOutput = txtOutput + "CMA Notification Alert eventtype : \"" + e.eventType + "\n";
             //txtOutput = txtOutput + "CMA Notification Alert eventtype : \"" + e.notification + "\n";
@@ -293,25 +292,6 @@ namespace DDPM.CMA.Tester
             isresponse = true;
         }
 
-/*        private static void DisplayConnected(object? sender, NotifyArgs e)
-        {
-
-            Console.WriteLine("CMA DisplayConnected Alert");
-            Console.WriteLine("CMA DisplayConnected Alert eventtype : " + e.eventType);
-            Console.WriteLine("CMA DisplayConnected Alert notification : " + e.notification);
-
-            isresponse = true;
-        }
-
-        private static void DisplayDisconnected(object? sender, NotifyArgs e)
-        {
-
-            Console.WriteLine("CMA DisplayDisconnected Alert");
-            Console.WriteLine("CMA DisplayDisconnected Alert eventtype : " + e.eventType);
-            Console.WriteLine("CMA DisplayDisconnected Alert notification : " + e.notification);
-
-            isresponse = true;
-        }*/
         #endregion
     }
 }

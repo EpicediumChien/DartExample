@@ -455,6 +455,7 @@ namespace DDPM.UI.Common
         public static readonly string AssignPageSubText = GetString("EazyMemory.37");
         public static readonly string LaunchOptionPageMainText = GetString("EazyMemory.35");
         public static readonly string LaunchOptionPageSubText = GetString("EazyMemory.38");
+        public static readonly string BlankProfileSubText = GetString("EazyMemory.40");
 
         //WalkThrough
         public static readonly string NextStr_0 = GetString("Kvm.1");
@@ -582,7 +583,7 @@ namespace DDPM.UI.Common
         public static readonly string MessageMouse = "Unpairing your mouse can limit your ability to use this computer. Make sure you have an alternative mouse setup before unpairing.";
         public static readonly string MessageKeyboard = "Unpairing your keyboard can limit your ability to use this computer. Make sure you have an alternative keyboard setup before unpairing.";
         public static readonly string MessagePen = "Unpairing your pen can limit your ability to use this computer. Make sure you have an alternative pen setup before unpairing.";
-        public static readonly string MessageHeadset = "This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of [NAME] .";
+        public static readonly string MessageHeadset = "This will unpair your headset from its USB wireless receiver. You can still pair and use the headset on this system via Bluetooth. If required, you may pair the headset back to the wireless receiver from + icon on top right of the home screen of DDPM.";
         public static readonly string Continue = "Continue";
         public static readonly string Imcompatible = "This device is not compatible with";
         public static readonly string PenAlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";

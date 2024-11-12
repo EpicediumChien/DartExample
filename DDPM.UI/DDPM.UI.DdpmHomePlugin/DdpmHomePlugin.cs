@@ -139,7 +139,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
         {
             _log.Info($"{nameof(PluginManager_PluginsStarted)} started");

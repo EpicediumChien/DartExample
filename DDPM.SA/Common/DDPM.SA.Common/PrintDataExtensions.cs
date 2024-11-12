@@ -1051,8 +1051,14 @@ namespace DDPM.SA.Common
                 buffer = encoding.GetBytes(value);
             else
                 buffer = encoding.GetBytes(string.Format(value, args));
-
-            stream.Write(buffer, 0, buffer.Length);
+            try
+            {
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex) 
+            {
+                Console.Write($"[StreamWrite] error, message: {ex.Message}");
+            }
         }
 
         private static void StreamWriteLine(Stream stream, Encoding encoding, string value = null, params object[] args)
@@ -1065,11 +1071,27 @@ namespace DDPM.SA.Common
                     buffer = encoding.GetBytes(value);
                 else
                     buffer = encoding.GetBytes(string.Format(value, args));
-                stream.Write(buffer, 0, buffer.Length);
+
+                try
+                {
+                    stream.Write(buffer, 0, buffer.Length);
+                }
+                catch (Exception ex)
+                {
+                    Console.Write($"[StreamWriteLine] error_1, message: {ex.Message}");
+                }
             }
 
             buffer = encoding.GetBytes(Environment.NewLine);
-            stream.Write(buffer, 0, buffer.Length);
+            try
+            {
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.Write($"[StreamWriteLine] error_2, message: {ex.Message}");
+
+            }
         }
 
         #endregion Stream

@@ -288,3 +288,15 @@ testcoverage/
 /DDPM.UI/CommonDll/DDPM.PowerMon.dll
 /DDPM.SA/dll/DDPM.Easy.Common.deps.json
 /DDPM.SA/dll/DdmLibrary.deps.json
+/DDPM.SA/dll/DdmLibrary.deps.json
+/DDPM.SA/dll/DDPM.Easy.Common.deps.json
+/DDPM.UI/CommonDll/Obfuscar/DDPM.SA.Obfuscation.dll
+/DDPM.UI/CommonDll/DDPM.PowerMon.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.DockCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.DongleCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.HeadsetCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.KeyboardCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.MouseCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.PenCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.SpeakerCommodity.dll
+/DDPM.SA/dll/Dell.TechHub.Plugins.WebcamCommodity.dll

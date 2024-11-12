@@ -2196,6 +2196,15 @@ namespace DDPM.UI.Resources {
         /// <summary>
         ///   查詢類似 Error 的當地語系化字串。
         /// </summary>
+        internal static string EazyMemory_40 {
+            get {
+                return ResourceManager.GetString("EazyMemory.40", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Error 的當地語系化字串。
+        /// </summary>
         internal static string EazyMemory_5 {
             get {
                 return ResourceManager.GetString("EazyMemory.5", resourceCulture);
@@ -2982,6 +2991,33 @@ namespace DDPM.UI.Resources {
         internal static string Illumination_1 {
             get {
                 return ResourceManager.GetString("Illumination.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Do not prompt again for the same model 的當地語系化字串。
+        /// </summary>
+        internal static string Illumination_2 {
+            get {
+                return ResourceManager.GetString("Illumination.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Adjusts the brightness levels of keyboard based on amount of light in environment 的當地語系化字串。
+        /// </summary>
+        internal static string Illumination_3 {
+            get {
+                return ResourceManager.GetString("Illumination.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Adjust your keyboard’s brightness manually 的當地語系化字串。
+        /// </summary>
+        internal static string Illumination_4 {
+            get {
+                return ResourceManager.GetString("Illumination.4", resourceCulture);
             }
         }
         
@@ -3882,6 +3918,15 @@ namespace DDPM.UI.Resources {
         internal static string Off {
             get {
                 return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Off 的當地語系化字串。
+        /// </summary>
+        internal static string Off2 {
+            get {
+                return ResourceManager.GetString("Off2", resourceCulture);
             }
         }
         
