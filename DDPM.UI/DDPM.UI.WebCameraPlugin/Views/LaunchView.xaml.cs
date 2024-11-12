@@ -13,6 +13,7 @@ using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -257,7 +258,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                //Derek 1108 Move to here for PIMS 314613
+                //Derek 1108 Move to here to fix Webcam PIMS-314613
                 // Query all properties [resolution and frame rate] of the webcam device
                 _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
 
@@ -278,7 +279,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 // 20240626 jim modify
                 _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
-                
+
                 _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
 
                 await _vm.MediaFrameReader.StartAsync();
@@ -293,7 +294,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
 
                 writeableBitmap = new(
-                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,              
+                    (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
                     (int)mediaFrameSource.CurrentFormat.VideoFormat.Height,
                     96,
                     96,
@@ -363,7 +364,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 await CleanupMediaCaptureAsync();
 
-                if(_pwr_Mon != null)
+                if (_pwr_Mon != null)
                 {
                     _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
                     _pwr_Mon.Close_Event();
@@ -425,7 +426,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+            if (_vm.MicList.Contains(_vm.Model))
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -571,21 +572,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         int count = 0;
         private async void MediaFrameReader_FrameArrived(MediaFrameReader sender, MediaFrameArrivedEventArgs args)
         {
-            if (_running) return;
+            if (_running)
+                return;
             _running = true;
+
+            if(cameraimage_hide)
+            {
+                if (_vm.running_state)
+                {
+                    
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        CameraImage.Visibility = Visibility.Visible;
+                    });
+                    cameraimage_hide = false;
+                }
+            }
 
             var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
 
             Thread.Sleep(60);
 
-            if (softwareBitmap != null)
+            if (softwareBitmap != null && _vm.running_state)
             {
                 _ = CameraImage.Dispatcher.BeginInvoke(() =>
                 {
 
                     if (before_width != softwareBitmap.PixelWidth || before_height != softwareBitmap.PixelHeight)
                     {
-                        
+
                         writeableBitmap = new(
                             softwareBitmap.PixelWidth,
                             softwareBitmap.PixelHeight,
@@ -622,8 +637,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     writeableBitmap.Unlock();
                 });
             }
+            else
+            {
+                if (!_vm.running_state)
+                {
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        CameraImage.Visibility = Visibility.Hidden;
+                    });
+                    cameraimage_hide = true;
+                }
+            }
+
             _running = false;
         }
+        public bool cameraimage_hide = false;
 
         /// <summary>
         /// MediaFrameReader FrameArrived event
@@ -900,10 +928,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (IsPresetOpen)
             { btnPreset_Click(this, null); }
             btnPreset.IsEnabled = false;
+
+            //Derek 1110 for Webcam PIMS-315440
+            //During video recording, do"Restart" &"Shutdown"action in SUT,
+            //the video which I just recorded will have no length.
+            SystemEvents.SessionEnding += new SessionEndingEventHandler(SystemEvents_SessionEnding);
+
             StartRecord();
         }
 
+        private void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
+        {
+            //if (e.Reason == SessionEndReasons.SystemShutdown)
+            //{
+            //    UserStopRecord();
+            //}
+            //else if (e.Reason == SessionEndReasons.Logoff)
+            //{
+            //    UserStopRecord();
+            //}
+
+            UserStopRecord();
+        }
+
         private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            UserStopRecord();
+        }
+
+        private void UserStopRecord()
         {
             StopRecord();
             RecordingTimer.Stop();
@@ -1323,6 +1376,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdatePVMargin(_vm!.VbarSelectedIndex);
+            ChangeDevNameWidth();
         }
 
         private void UpdatePVMargin(int index)
@@ -1337,6 +1391,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
             largeImage.Margin = new Thickness(40, mT, mR, mB);
+        }
+
+        private void ChangeDevNameWidth()
+        {
+            txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+        }
+
+        private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChangeDevNameWidth();
         }
     }
 }

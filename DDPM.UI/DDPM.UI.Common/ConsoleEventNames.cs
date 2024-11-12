@@ -22,9 +22,14 @@ namespace DDPM.UI.Common
         public const string MainWindow_SetToBottomWindow = "MainWindow.SetToBottomWindow";
 
         /// <summary>
-        /// Activate MainWindow with Window.Activate(). Registered by MainWindow. 
+        /// Activate MainWindow with Window.Activate(). Registered by MainWindow and Webcamera plugin
         /// </summary>
         public const string MainWindow_Activate = "MainWindow.Activate";
+
+        /// <summary>
+        /// DeActivate MainWindow with Window.DeActivate(). Registered by Webcamera plugin. 
+        /// </summary>
+        public const string MainWindow_DeActivate = "MainWindow.DeActivate";
         #endregion MainWindow
 
         #region DisplayPlugin

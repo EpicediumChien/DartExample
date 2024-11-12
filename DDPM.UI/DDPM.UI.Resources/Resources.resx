@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Export a configuration and important to another monitor of the same model</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>You can export your favorite configuration from here and import into another monitor of the same model without hassle.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>High Data Speed</value>
   </data>
@@ -2329,10 +2332,28 @@
     <value>Applies when you're listening to multimedia, such as music or podcasts</value>
   </data>
   <data name="Brightness.19" xml:space="preserve">
-    <value>Auto Brightness is currently enabled. Do you wish to disable it to continue?</value>
+    <value>Auto Brightness is currently enabled. Do you wish to override it?</value>
   </data>
   <data name="Brightness.20" xml:space="preserve">
     <value>This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Third Party License</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>To change the brightness level, press the F8 key</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>Adjusts the brightness levels of keyboard based on amount of light in environment</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>Adjust your keyboard’s brightness manually</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>Please enter profile name.</value>
   </data>
   <data name="hotkey.7" xml:space="preserve">
     <value>Hotkey Warning</value>

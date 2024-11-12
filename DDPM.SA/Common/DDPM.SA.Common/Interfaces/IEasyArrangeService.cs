@@ -25,6 +25,7 @@ namespace DDPM.SA.Common.Interfaces
 
         #region Methods
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson);
 
         public Task<bool> EditCommand(MonitorInfo monitorInfo, EAArgs args);
 

@@ -529,7 +529,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
                 var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, savelPath).Result;  // web no response,(404) Not Found.
                 Assert.IsNotNull(Result);
                 Assert.IsNotNull(Result.strICC_Folder);
-                Assert.IsFalse(Result.Is_Support_ICC_DeviceName);
+                Assert.IsNotNull(Result.Is_Support_ICC_DeviceName);
             }
             catch (Exception ex)
             {

@@ -7,6 +7,7 @@ using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Windows;
@@ -327,5 +328,56 @@ namespace DDPM.UI.Common
 
             return breakPoints;
         }
+
+        #region Save UI Element to a .PNG imgae file
+        //Robert_Lin, 2024-11-6
+        //Two steps to save an FrameworkElement derived object to a .PNG image file
+        //Requirements:
+        //1 The UI element must be rendered already. You can check it by its ActualWidth and ActualHeight.
+        //2 Step 1 CreateBitmapSource() must be called at UI thread, for example, in 
+
+
+        public static BitmapSource? CreateBitmapSource(FrameworkElement ele)
+        {
+            double pxWidth = ele.ActualWidth + 1;
+            double pxHeight = ele.ActualHeight + 1;
+
+            if ((pxWidth <= 0) && (pxHeight <= 0))
+                return null;
+
+            System.Windows.Size sizeImg = new System.Windows.Size(pxWidth, pxHeight);
+            ele.Measure(sizeImg);
+            System.Windows.Rect rectImg = new System.Windows.Rect(new System.Windows.Size(pxWidth, pxHeight));
+            ele.Arrange(rectImg);
+
+            //Draw background
+            //
+            //SolidColorBrush brBackground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0,0,0,0));
+            //DrawingVisual drawingVisual = new DrawingVisual();
+            //DrawingContext dc = drawingVisual.RenderOpen();
+            //dc.DrawRectangle(brBackground, null, rectImg);
+            //dc.Close();
+
+             RenderTargetBitmap rtb = new RenderTargetBitmap((int)pxWidth, (int)pxHeight,
+                96d, 96d, System.Windows.Media.PixelFormats.Default);
+
+            
+            rtb.Render(ele);
+            return rtb;
+        }
+
+        public static bool SaveBitmapSourceAsPngFile(BitmapSource bmpSrc, string pathName)
+        {
+            BitmapFrame bmpFrame = BitmapFrame.Create(bmpSrc);
+            PngBitmapEncoder pngEnc = new PngBitmapEncoder();
+            pngEnc.Frames.Add(bmpFrame);
+
+            FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None);
+            pngEnc.Save(fs);
+            fs.Close();
+            return true;
+        }
+
+        #endregion
     }
 }
