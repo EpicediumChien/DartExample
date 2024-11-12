@@ -117,7 +117,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo requested ...");
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo ET : " + EventTag);
             _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo EV :\n" + EventValue);
-            _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo Frequency : " + nameof(Frequency));
+            _logs.DebugMsg("[TelementryScheduler] received ReceiveTelemetryInfo Frequency : " + Frequency.ToString("G"));
 
             var r = false;
 

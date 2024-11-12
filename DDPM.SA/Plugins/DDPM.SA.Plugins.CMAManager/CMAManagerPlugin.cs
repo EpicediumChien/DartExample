@@ -5,6 +5,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -301,6 +302,7 @@ namespace DDPM.SA.Plugins.CMAManager
             if (Params.DeviceType.DOCK.ToLower().Equals(task.devicetype.ToLower()))
             {
                 command = command + ("dock=silentfwupdate");
+                command = command + (" value=" + task.value);
             }
             else
             {
@@ -347,13 +349,25 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (option.minversion != null && option.minversion.Length > 0)
                 {
-                    command = command + (" value=" + option.minversion + ",minversion");
+                    command = command + (" value=" + option.minversion + ",miniversion");
                 }
 
                 if (option.model != null && option.model.Length > 0)
                 {
-                    command = command + (" value=\"" + option.model + "\",model");
+                    command = command + (" value=" + option.model + ",model");
                 }
+
+                // add start @ 20241110 stephen
+                if (option.upgradetolatest)
+                {
+                    command = command + (" upgradetolatest=" + option.upgradetolatest);
+                }
+                // *****CLI use 'miniversion'*****
+                if (command.Contains("miniversion") && command.Contains("upgradetolatest"))
+                {
+                    throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
+                }
+                // add end @ 20241110
             }
 
             return command;
@@ -584,7 +598,16 @@ namespace DDPM.SA.Plugins.CMAManager
                     taskInfo = taskInfoQueue.Peek();
 
                     iCLICommandTable = new ICLICommandTable(null);
-                    commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.Split(' '));
+                    commandLineInput = iCLICommandTable.StringProcessing(taskInfo.command.ToUpper().Split(' '));
+
+                    WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Count = {commandLineInput.Options.Count}");
+
+                    foreach (CommandType_Option s in commandLineInput.Options) {
+                        WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Option_Name = {s.Option_Name.ToString()}");
+                        WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Option_Value = {s.Option_Value.ToString()}");
+                    }
+
+
                     commandLineInput.isCliRunAdmin = true;
                     commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
 

@@ -121,6 +121,8 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public double LockPowerNap_Opacity { get; set; } = 1;
 
+        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip1;
+
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -342,6 +344,7 @@ namespace DDPM.UI.Module.DisplayOthers
             OnPropertyChanged("isLockPowerNapEnable");
             OnPropertyChanged("LockPowerNap_Visibility");
             OnPropertyChanged("LockPowerNap_Opacity");
+            OnPropertyChanged("Tooltip_Settings");
         }
 
         private static LoadingScreen _dlg_loading = null;

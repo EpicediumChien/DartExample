@@ -56,23 +56,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     {
         //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
-        {
-            return ShowWindow(hWnd, nCmdShow);
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        private static bool _SetForegroundWindow(IntPtr hWnd)
-        {
-            return SetForegroundWindow(hWnd);
-        }
         public static string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
         #region Private Members
 
@@ -298,7 +282,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 foreach (DeviceInfo deviceInfo in DeviceInfos)
                 {
-                    if (GetDevicePNPDeviceID(deviceInfo.ModelNumber).Equals(UODFWUInfo.FWUpdateInfo.PNPDeviceID))
+                    if (deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
                     {
                         string Ver = deviceInfo.FirmwareVersion;
                         if (!int.TryParse(Ver, out _))
@@ -321,7 +305,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
             }
-            else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.PNPDeviceID))
+            else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
             {
                 TimeSpan difference = new TimeSpan(0);
                 if (UODFWUInfo.SaveTime != null)
@@ -433,12 +417,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            {
-                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            }
+                            //if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
+                            //{
+                            //    _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
+                            //    //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
+                            //    updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
+                            //}
                         }
                         if (deviceTypeList == null)
                         {
@@ -465,7 +449,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 IsDisplay = false,
                                 SupplierID = deviceSupplierID,
                                 Connectivity = deviceConnectivity,
-                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
+                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                                ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
+
                             };
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                             _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -500,7 +487,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     IsDisplay = false,
                                     SupplierID = deviceSupplierID,
                                     Connectivity = deviceConnectivity,
-                                    Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
+                                    Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                                    ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
                                 };
                                 _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                                 _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -611,6 +600,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage delayFUpdateInfo.Model : {delayFUpdateInfo.Model}");
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
+                                    fwUpdateInfo.IsUOD = delayFUpdateInfo.IsUOD;
+                                    fwUpdateInfo.Available_date = delayFUpdateInfo.Available_date;
                                     if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable > 0)
                                     {
                                         _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.DelayTimesAvailable : {_DelayFWUpdateInfoPackage.DelayTimesAvailable}");
@@ -974,9 +965,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay)
+        public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType)
         {
             _logs.DebugMsg_1($"{nameof(Install)} start");
+            _logs.DebugMsg_1($"{nameof(Install)} installPath : {installPath}");
+            _logs.DebugMsg_1($"{nameof(Install)} deviceType : {deviceType}");
             FWUErrorCode ret = FWUErrorCode.Unknow;
             if (!string.IsNullOrEmpty(installPath))
             {
@@ -986,6 +979,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
+                            DeviceType = deviceType,
                             InstallPaths = installPath,
                             IsDisplay = isOnlyDisplay
                         };
@@ -1448,10 +1442,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!string.IsNullOrEmpty(AppDataPath))
                 {
                     string path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
-                    if (fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock || fwUpdateInfo.DeviceType == DeviceType.LogicalDock)
-                    {
-                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\Dock_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
-                    }
 
                     if (!Directory.Exists(path))
                     {
@@ -1628,6 +1618,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll :{fwUpdateInfo.Model}");
                     _DelayFWUpdateInfoPackage.FWUpdateInfo.RemoveAll(obj => obj.Equals(fwUpdateInfo));
                 }
+                resetState();
                 _logs.DebugMsg_1($"{nameof(Install)} _notificationStr {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 return _updateErrorCode;
@@ -1815,11 +1806,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             else
             {
-                progressNode = xmlDoc.SelectSingleNode("Root/Progress");
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/Button-Caption");
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/Button-State");
-                stateFlowNode = xmlDoc.SelectSingleNode("Root/StateFlow");
-                timeOut = xmlDoc.SelectSingleNode("Root/Timeout");//新的FW安裝包都有
+                progressNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='progress']");
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-caption']");
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-state']");
+                stateFlowNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='stateflow']");
+                timeOut = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='timeout']");
 
                 if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null)
                 {
@@ -2016,7 +2007,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
-            _logs.DebugMsg_1("sendMessageToEvent" + " " + fWUpdateInfo.ProcessName + " " + fWUpdateInfo.ProcessProgress + " " + DateTime.Now);
+            _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
         }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {

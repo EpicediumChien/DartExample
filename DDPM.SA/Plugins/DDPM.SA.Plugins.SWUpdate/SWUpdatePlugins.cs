@@ -90,6 +90,9 @@ namespace DDPM.SA.Plugins.SWUpdate
         private bool _isDefer = false;
         private bool _isForce = false;
         private bool _IsUITrigger = false;
+        private bool _bFirstInstance;
+        private Mutex? _instanceMutex;
+        private string? _applicationName;
 
         #region Events
 
@@ -401,6 +404,21 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _IsUITrigger = isUITrigger;
                 string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
+                string appName = "DdpmSwUpdater.exe";
+                _logs.DebugMsg_1($"appName : {appName}");
+                _instanceMutex = new Mutex(false, appName, out _bFirstInstance);
+                if (!_bFirstInstance)
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
+                    {
+                        _logs.DebugMsg_1($"The program is already running and a new instance cannot be started");
+                        swUpdateInfo.SWUErrorCode = SWUErrorCode.ServiceNotRunning;
+                    }
+                    return Task.FromResult(swUpdateInfos);
+                }
+                _logs.DebugMsg_1($"_instanceMutex?.Dispose() go");
+                _instanceMutex?.Dispose();
+                _logs.DebugMsg_1($"_instanceMutex?.Dispose() done");
                 string saveFolderName = Guid.NewGuid().ToString();
                 string savePath;
                 CertificateCheck caCheck = new CertificateCheck(_logs);

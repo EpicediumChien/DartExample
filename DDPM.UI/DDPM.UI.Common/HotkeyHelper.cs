@@ -100,7 +100,7 @@ namespace DDPM.UI.Common
                     break;
 
                 case HotkeyWarning.ConflictInbox:
-                    result = DdpmCommonHelper.DDPMMesssageBox("Hotkey Warning", "The hotkey conflicts with a hotkey configured in another application.Use a different hotkey combination.");
+                    result = DdpmCommonHelper.DDPMMesssageBox("Hotkey Warning", "This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it?");
                     break;
             }
             return result;

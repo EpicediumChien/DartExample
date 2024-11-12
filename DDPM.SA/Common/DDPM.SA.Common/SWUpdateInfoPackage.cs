@@ -94,6 +94,7 @@ namespace DDPM.SA.Common
         CAFail = 12,
         NamedPipeServerIsNoSafe = 13,
         FileCheckFail = 14,
+        ServiceNotRunning = 15,
         Unknow = 99
     }
 

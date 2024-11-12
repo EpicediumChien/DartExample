@@ -20,6 +20,7 @@ namespace DDPM.Easy.Common
                 OnPropertyChanged("IsEditMode");
                 OnPropertyChanged("IsWorkMode");
                 OnPropertyChanged("IsIconMode");
+                OnPropertyChanged("IsAwsMode");
             }
         }
 

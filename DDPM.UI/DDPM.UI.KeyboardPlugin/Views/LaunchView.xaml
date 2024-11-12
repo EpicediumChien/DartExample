@@ -146,7 +146,7 @@
                                             SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
         <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged" />
       </Grid>
-      <!-- Layer 2 : Nav and Vbar -->
+      <!-- Layer 2 : Nav -->
       <Grid Grid.Column="0">
         <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
@@ -316,28 +316,14 @@
             </Grid>
           </Viewbox>
         </Grid>
-        <!-- Vbar -->
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-          <ItemsControl Name="vbarList" Margin="0,10,0,0"
-                                  HorizontalAlignment="Right" VerticalAlignment="Top"
-                                  ItemsSource="{Binding VbarItems}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Grid>
-                  <ContentPresenter />
-                </Grid>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </Grid>
       </Grid>
       <!--Name & Model-->
-      <Grid Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="200">
+      <Grid Grid.Column="0" VerticalAlignment="Top" Height="200">
         <Border Background="Transparent" MouseDown="PushBack"></Border>
         <StackPanel Orientation="Vertical">
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" MouseDown="PushBack">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
-                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24">
               <Image.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
               </Image.InputBindings>
@@ -378,6 +364,20 @@
           </StackPanel>
           <UXControls:UXTextBlock Name="txtEOL" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" />
         </StackPanel>
+      </Grid>
+      <!-- Vbar -->
+      <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+        <ItemsControl Name="vbarList" Margin="0,10,0,0"
+                                  HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  ItemsSource="{Binding VbarItems}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <ContentPresenter />
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </Grid>
       <!--Battery-->
       <Grid VerticalAlignment="Bottom" Height="200">

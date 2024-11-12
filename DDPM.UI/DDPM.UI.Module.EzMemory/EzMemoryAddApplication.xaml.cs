@@ -44,9 +44,6 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         #endregion Private Members
 
-        private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
-        private ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps { get; set; } = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
-        private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
         public EzMemoryAddApplication(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
         {
             _vmDisplay = vmDisplay;
@@ -57,16 +54,15 @@ namespace DDPM.UI.Module.EzMemory
             _log.Info($"{nameof(EzMemoryAddApplication)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
-            InitializeComponent();
 
             if (_homeDevice.vmEzArrange == null)
             {
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
             _vm = vm;
-
             DataContext = vm;
-
+            
+            InitializeComponent();
         }
 
         /// <summary>
@@ -77,22 +73,22 @@ namespace DDPM.UI.Module.EzMemory
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             List<Bind_AddFullPage_AppCollectionData> TempFiltered;
-            TempFiltered = _apps_all.Where(contact => contact.AppName.Contains(edFilter.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            TempFiltered = _vm._apps_all.Where(contact => contact.AppName.Contains(edFilter.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-            for (int i = _bind_apps.Count - 1; i >= 0; i--)
+            for (int i = _vm._bind_apps.Count - 1; i >= 0; i--)
             {
-                var item = _bind_apps[i];
+                var item = _vm._bind_apps[i];
                 if (!TempFiltered.Contains(item))
                 {
-                    _bind_apps.Remove(item);
+                    _vm._bind_apps.Remove(item);
                 }
             }
 
             foreach (var item in TempFiltered)
             {
-                if (!_bind_apps.Contains(item))
+                if (!_vm._bind_apps.Contains(item))
                 {
-                    _bind_apps.Add(item);
+                    _vm._bind_apps.Add(item);
                 }
             }
         }
@@ -104,20 +100,17 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyName_Ascending_Click(object sender, EventArgs e)
         {
-            //btnSortbyName_Ascending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyName_Descending.Visibility = System.Windows.Visibility.Visible;
-
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
-            TempSorted = _bind_apps.OrderBy(x => x.AppName).ToList();
+            TempSorted = _vm._bind_apps.OrderBy(x => x.AppName).ToList();
 
-            _bind_apps.Clear();
+            _vm._bind_apps.Clear();
 
             foreach (var item in TempSorted)
             {
-                if (!_bind_apps.Contains(item))
+                if (_vm._bind_apps.Contains(item))
                 {
-                    _bind_apps.Add(item);
+                    _vm._bind_apps.Add(item);
                 }
             }
         }
@@ -129,20 +122,17 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyName_Descending_Click(object sender, EventArgs e)
         {
-            //btnSortbyName_Descending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyName_Ascending.Visibility = System.Windows.Visibility.Visible;
-
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
-            TempSorted = _bind_apps.OrderByDescending(x => x.AppName).ToList();
+            TempSorted = _vm._bind_apps.OrderByDescending(x => x.AppName).ToList();
 
-            _bind_apps.Clear();
+            _vm._bind_apps.Clear();
 
             foreach (var item in TempSorted)
             {
-                if (!_bind_apps.Contains(item))
+                if (_vm._bind_apps.Contains(item))
                 {
-                    _bind_apps.Add(item);
+                    _vm._bind_apps.Add(item);
                 }
             }
         }
@@ -154,20 +144,17 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyDate_Ascending_Click(object sender, EventArgs e)
         {
-            //btnSortbyDate_Ascending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyDate_Descending.Visibility = System.Windows.Visibility.Visible;
-
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
-            TempSorted = _bind_apps.OrderBy(x => x.InstalledDate).ToList();
+            TempSorted = _vm._bind_apps.OrderBy(x => x.InstalledDate).ToList();
 
-            _bind_apps.Clear();
+            _vm._bind_apps.Clear();
 
             foreach (var item in TempSorted)
             {
-                if (!_bind_apps.Contains(item))
+                if (_vm._bind_apps.Contains(item))
                 {
-                    _bind_apps.Add(item);
+                    _vm._bind_apps.Add(item);
                 }
             }
         }
@@ -179,20 +166,18 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyDate_Descending_Click(object sender, EventArgs e)
         {
-            //btnSortbyDate_Descending.Visibility = System.Windows.Visibility.Collapsed;
-            //btnSortbyDate_Ascending.Visibility = System.Windows.Visibility.Visible;
 
             List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
-            TempSorted = _bind_apps.OrderByDescending(x => x.InstalledDate).ToList();
+            TempSorted = _vm._bind_apps.OrderByDescending(x => x.InstalledDate).ToList();
 
-            _bind_apps.Clear();
+            _vm._bind_apps.Clear();
 
             foreach (var item in TempSorted)
             {
-                if (!_bind_apps.Contains(item))
+                if (_vm._bind_apps.Contains(item))
                 {
-                    _bind_apps.Add(item);
+                    _vm._bind_apps.Add(item);
                 }
             }
         }
@@ -204,39 +189,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
-
-
-            string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
-            strFolder += "\\";
-
-            if (!System.IO.Directory.Exists(strFolder))
-                System.IO.Directory.CreateDirectory(strFolder);
-
-            foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
-            {
-                Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
-
-                new_Appdata.AppName = kvp.Value.AppName;
-                new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
-                new_Appdata.AppPath = kvp.Value.AppInstallPath;
-                new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
-                new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
-
-                if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
-                {
-                    new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
-                }
-                else
-                {
-                    new_Appdata.AppIcon = "Assets/palette.png";
-                }
-
-                _bind_apps.Add(new_Appdata);
-                _apps_all.Add(new_Appdata);
-
-            }
-            lb_Installed_App.ItemsSource = _bind_apps;
+            lb_Installed_App.ItemsSource = _vm._bind_apps;
         }
 
         /// <summary>

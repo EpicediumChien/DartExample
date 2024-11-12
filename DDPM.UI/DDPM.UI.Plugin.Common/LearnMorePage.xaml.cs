@@ -14,12 +14,12 @@ namespace DDPM.UI.Plugin.Common
 
         public string Parameter { get; private set; } = "";
 
-        public LearnMorePage(double width, double height, string parameter = "")
+        public LearnMorePage(double width, double height, string parameter)
         {
             InitializeComponent();
             this.Width = width;
             this.Height = height;
-            Caption = DownloadPage;
+            Caption = parameter;
             txtTitleBar.Text = Caption;
             txtCaption.Text = Caption;
         }
