@@ -84,7 +84,7 @@ namespace DDPM.UI.Module.EzMemory
             if (startEAProfileDDPM != null)
             {
                 // 找相同 ID 的 Profile ID
-                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrentSelectspItem.LayoutID);
+                EAProfileDDPM profileTostart = startEAProfileDDPM.FirstOrDefault(p => p.ID == _vm.CurrentSelectspItem.ProfileID);
 
                 if (profileTostart != null)
                 {
@@ -126,18 +126,18 @@ namespace DDPM.UI.Module.EzMemory
                 if (clickedEAProfileDDPM != null)
                 {
                     // 找相同 ID 的 Profile ID
-                    EAProfileDDPM profileToRemove = clickedEAProfileDDPM.FirstOrDefault(p => p.ID == spItem.LayoutID);
+                    EAProfileDDPM profileToRemove = clickedEAProfileDDPM.FirstOrDefault(p => p.ID == spItem.ProfileID);
 
                     if (profileToRemove != null)
                     {
                         clickedEAProfileDDPM.Remove(profileToRemove);
                         DdpmCommonHelper.DeviceManagerSA.WriteUserListEAProfileDDPM(clickedEAProfileDDPM);
                         splitListView_RecentForEzM.DeleteSplitItem(spItem);
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, Profile with ID {spItem.LayoutID} removed from UserSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, Profile with ID {spItem.ProfileID} removed from UserSettings.");
                     }
                     else
                     {
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, Profile with ID {spItem.LayoutID} not found in UserSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, Profile with ID {spItem.ProfileID} not found in UserSettings.");
                     }
                 }
                 else
@@ -158,18 +158,18 @@ namespace DDPM.UI.Module.EzMemory
                 if (_easyArrangementDDPM != null && _easyArrangementDDPM.Desktops.Count > 0)
                 {
                     // 找相同 ID
-                    EzProfileSettingDDPM profileSettingToRemove = _easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == spItem.LayoutID);
+                    EzProfileSettingDDPM profileSettingToRemove = _easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == spItem.ProfileID);
 
                     if (profileSettingToRemove != null)
                     {
                         // 找到，則移除
                         _easyArrangementDDPM.Desktops[0].ProfileSettings.Remove(profileSettingToRemove);
                         DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(_homeDevice.MonitorInfo, _easyArrangementDDPM);
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.LayoutID} removed from MonitorSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.ProfileID} removed from MonitorSettings.");
                     }
                     else
                     {
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.LayoutID} not found in MonitorSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.ProfileID} not found in MonitorSettings.");
                     }
                 }
                 else
@@ -283,8 +283,8 @@ namespace DDPM.UI.Module.EzMemory
                 EAProfileDDPM matchingProfile;
                 if (clickedEAProfileDDPM != null)
                 {
-                    // 在Iser中找相同的 ID
-                    matchingProfile = clickedEAProfileDDPM.FirstOrDefault(profile => profile.ID == spItem.CustomId);
+                    // 在User中找相同的 ID
+                    matchingProfile = clickedEAProfileDDPM.FirstOrDefault(profile => profile.ID == spItem.ProfileID);
 
                     if (matchingProfile != null)
                     {
@@ -301,7 +301,7 @@ namespace DDPM.UI.Module.EzMemory
                     }
                     else
                     {
-                        _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, Profile with ID {spItem.CustomId} not found in UserSettings.");
+                        _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, Profile with ID {spItem.ProfileID} not found in UserSettings.");
                         return;
                     }
                 }
@@ -555,18 +555,18 @@ namespace DDPM.UI.Module.EzMemory
                             if (profileSetting != null)
                             {
                                 // 找到才繼續處理
-                                (int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
-                                ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
-
+                                //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
+                                //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
+                                ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
                                 if (spCtrl != null)
                                 {
                                     SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
                                     item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-                                    item.CustomId = profile.ID;
+                                    item.ProfileID = profile.ID;
                                     item.IsHoverable = true;
                                     item.IsDeleteEnabled = true;
                                     item.IsEditEnabled = true;
-                                    item.LayoutID = profile.ID;
+                                    item.LayoutID = profile.Layout;
                                 }
                             }
                             else

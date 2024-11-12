@@ -2660,6 +2660,140 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> SetBand1GainAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Band1Gain", newValue);
+                    writelog(" [Headset] SetBand1GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBand1GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand2GainAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Band2Gain", newValue);
+                    writelog(" [Headset] SetBand2GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBand2GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand3GainAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Band3Gain", newValue);
+                    writelog(" [Headset] SetBand3GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBand3GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand4GainAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Band4Gain", newValue);
+                    writelog(" [Headset] SetBand4GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBand4GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetBand5GainAsync(string guidString, int newValue)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "Band5Gain", newValue);
+                    writelog(" [Headset] SetBand5GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($" [Headset] SetBand5GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
         public async Task<bool> SetAncModeAsync(string guidString, int newValue)
         {
             try
@@ -3924,6 +4058,131 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"[Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
+            }
+        }
+
+        public async Task<int> GetBand1GainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band1Gain");
+                    writelog($"[Headset] GetBand1GainAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetBand1GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand2GainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band2Gain");
+                    writelog($"[Headset] GetBand2GainAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetBand2GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand3GainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band3Gain");
+                    writelog($"[Headset] GetBand3GainAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetBand3GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand4GainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band4Gain");
+                    writelog($"[Headset] GetBand4GainAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetBand4GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetBand5GainAsync(string guid)
+        {
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_headsetInterfaceType, commodity, "Band5Gain");
+                    writelog($"[Headset] GetBand5GainAsync succeeded for {guid}");
+                    return (int)value;
+                }
+
+                writelog($"[Headset] GetBand5GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
             }
         }
 

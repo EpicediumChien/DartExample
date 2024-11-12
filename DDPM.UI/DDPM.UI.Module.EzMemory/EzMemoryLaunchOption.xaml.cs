@@ -177,8 +177,8 @@ namespace DDPM.UI.Module.EzMemory
                 bool isEditMode = _vm.IsEditProfile;
                 int profileID = isEditMode ? _vm.currentEditprofile.ID : GetNewProfileID();
                 string profileName = _vm.InputText;
-                int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
-
+                //int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+                int layout = _vm.ispCtrlForEm!.EAID;
                 if (_vm._sortApps.Count < 2)
                     return; // Proceed only if there are two or more apps
 
@@ -317,17 +317,18 @@ namespace DDPM.UI.Module.EzMemory
 
         private void UpdateSplitListUI(int profileID, int layout, bool isEditMode)
         {
-            ISplitCtrl? splitCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+            //ISplitCtrl? splitCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+            ISplitCtrl? splitCtrl = ISplitCtrl.Create(layout);
             splitCtrl.FriendlyName = "Off"; // Need multilingual support
             splitCtrl.SplitMode = eSplitModes.Icon;
 
             SplitItem newItem = _vm.splitListRightView.AddItemToList(splitCtrl.UC);
             newItem.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-            newItem.CustomId = profileID;
+            newItem.ProfileID = profileID;
             newItem.IsHoverable = true;
             newItem.IsDeleteEnabled = true;
             newItem.IsEditEnabled = true;
-            newItem.LayoutID = profileID;
+            newItem.LayoutID = layout;
 
             if (isEditMode)
             {

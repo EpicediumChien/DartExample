@@ -2820,6 +2820,76 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+        public async Task<bool> SetBand1GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBand1GainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetBand2GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBand2GainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetBand3GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetBand3GainAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetBand4GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> SetBand5GainAsync(string guid, int newValue)
+        {
+            try
+            {
+                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync success, value is {newValue.ToString()}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
 
         public async Task<bool> SetAncModeAsync(string guid, int newValue)
         {
@@ -3577,6 +3647,77 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
                 return null;
+            }
+        }
+
+        public async Task<int> GetBand1GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand1GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+        public async Task<int> GetBand2GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand2GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+        public async Task<int> GetBand3GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+        public async Task<int> GetBand4GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+        public async Task<int> GetBand5GainAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync succeeded for {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -1;
             }
         }
 
@@ -14261,6 +14402,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+            else
+                return null;
+        }
+        public Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.CheckEAIDExit(moinfo, eAID).Result);
+            else
+                return null;
+        }
+        public Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.DeleteEAID(moinfo, eAID).Result);
             else
                 return null;
         }

@@ -37,32 +37,32 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             _vm = vm;
             converter.ViewModel = _vm;
             _vm.Invoke_PleaseWait(_vm.Model, _vm);
-            if (_vm.CurrentDeviceInfo!.IsPresetsSupported)
+            if (_vm.DeviceInfoDTP!.IsPresetsSupported)
             {
-                if(_vm.CurrentDeviceInfo!.Band1Gain > 4 || _vm.CurrentDeviceInfo!.Band1Gain < -6)
+                if(_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
                     SetNodeValue(Node1, 0);
                 else
                     SetNodeValue(Node1, _vm.CurrentDeviceInfo!.Band1Gain);
 
-                if (_vm.CurrentDeviceInfo!.Band2Gain > 4 || _vm.CurrentDeviceInfo!.Band2Gain < -6)
+                if (_vm.DeviceInfoDTP!.Band2Gain > 4 || _vm.DeviceInfoDTP!.Band2Gain < -6)
                     SetNodeValue(Node2, 0);
                 else
-                    SetNodeValue(Node2, _vm.CurrentDeviceInfo!.Band2Gain);
+                    SetNodeValue(Node2, _vm.DeviceInfoDTP!.Band2Gain);
 
-                if (_vm.CurrentDeviceInfo!.Band3Gain > 4 || _vm.CurrentDeviceInfo!.Band3Gain < -6)
+                if (_vm.DeviceInfoDTP!.Band3Gain > 4 || _vm.DeviceInfoDTP!.Band3Gain < -6)
                     SetNodeValue(Node3, 0);
                 else
-                    SetNodeValue(Node3, _vm.CurrentDeviceInfo!.Band3Gain);
+                    SetNodeValue(Node3, _vm.DeviceInfoDTP!.Band3Gain);
 
-                if (_vm.CurrentDeviceInfo!.Band4Gain > 4 || _vm.CurrentDeviceInfo!.Band4Gain < -6)
+                if (_vm.DeviceInfoDTP!.Band4Gain > 4 || _vm.DeviceInfoDTP!.Band4Gain < -6)
                     SetNodeValue(Node4, 0);
                 else
-                    SetNodeValue(Node4, _vm.CurrentDeviceInfo!.Band4Gain);
+                    SetNodeValue(Node4, _vm.DeviceInfoDTP!.Band4Gain);
 
-                if (_vm.CurrentDeviceInfo!.Band5Gain > 4 || _vm.CurrentDeviceInfo!.Band5Gain < -6)
+                if (_vm.DeviceInfoDTP!.Band5Gain > 4 || _vm.DeviceInfoDTP!.Band5Gain < -6)
                     SetNodeValue(Node5, 0);
                 else
-                    SetNodeValue(Node5, _vm.CurrentDeviceInfo!.Band5Gain);
+                    SetNodeValue(Node5, _vm.DeviceInfoDTP!.Band5Gain);
             }
             //_vm.Invoke_PleaseWait(_vm.Model);
             //_vm.DetectPageShow(_vm.Model);
@@ -227,23 +227,23 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 switch (currentNode.Name)
                 {
                     case "Node1":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node1Text.Text), _vm.CurrentDeviceInfo!.ID, "band1gain").Wait();
+                        _vm._deviceManager.SetBand1GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text)).Wait();
                         break;
 
                     case "Node2":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node2Text.Text), _vm.CurrentDeviceInfo!.ID, "band2gain").Wait();
+                        _vm._deviceManager.SetBand2GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text)).Wait();
                         break;
 
                     case "Node3":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node3Text.Text), _vm.CurrentDeviceInfo!.ID, "band3gain").Wait();
+                        _vm._deviceManager.SetBand3GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text)).Wait();
                         break;
 
                     case "Node4":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node4Text.Text), _vm.CurrentDeviceInfo!.ID, "band4gain").Wait();
+                        _vm._deviceManager.SetBand4GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node4Text.Text)).Wait();
                         break;
 
                     case "Node5":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node5Text.Text), _vm.CurrentDeviceInfo!.ID, "band5gain").Wait();
+                        _vm._deviceManager.SetBand5GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node5Text.Text)).Wait();
                         break;
                 }
 
