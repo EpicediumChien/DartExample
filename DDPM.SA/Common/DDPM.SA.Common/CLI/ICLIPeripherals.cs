@@ -1,6 +1,5 @@
 ﻿using DDPM.SA.Common.Settings;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace DDPM.SA.Common
@@ -14,6 +13,7 @@ namespace DDPM.SA.Common
     {
         public string Name { get; set; }
         public string Model { get; set; }
+        public string ServiceTag { get; set; }
         public string Guid { get; set; }
         public string Command { get; set; }
         public string TargetFeature { get; set; }
@@ -23,15 +23,23 @@ namespace DDPM.SA.Common
 
         private IDeviceManagerSA _devMgr;
 
-        public CLI_PeripheralRESPONSE(string id, string command, string targetFeature, string result = "", string message = "", string name = "", string model = "")
+        public CLI_PeripheralRESPONSE(string id, 
+                                      string command, 
+                                      string targetFeature, 
+                                      string result = "", 
+                                      string message = "", 
+                                      string name = "N/A", 
+                                      string model = "N/A", 
+                                      string serviceTag = "N/A")
         {
             Guid = id;
             Command = command;
             TargetFeature = targetFeature;
             Result = result;
             Message = message;
-            Name = name;
-            Model = model;
+            Name = name ?? "N/A";
+            Model = model ?? "N/A";
+            ServiceTag = serviceTag ?? "N/A";
         }
 
         public CLI_PeripheralRESPONSE(IDeviceManagerSA devMgr, DeviceInfo di, string deviceType, string targetFeature)
@@ -42,9 +50,18 @@ namespace DDPM.SA.Common
             Name = di.Name;
             Model = di.ModelNumber;
             Guid = di.ID.ToString();
+            ServiceTag = di.DockServiceTag ?? "N/A";
             //Guid = "DellPeripheral.Webcam.0";
             Command = "GET";
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
+
+            if (data == null)
+            {
+                Value = "N/A";
+                Result = "FAIL";
+                Message = "Fail to get DDPMSettings";
+                return;
+            }
 
             switch (targetFeature)
             {

@@ -356,7 +356,7 @@ namespace DDPM.SA.Common.CLI
                 return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
             }
             string value = op.Option_Value;
-            if (value.ToUpper().Equals("LOCK"))
+            if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("ENABLE"))
             {
                 if (data_IT != null)
                 {
@@ -467,7 +467,7 @@ namespace DDPM.SA.Common.CLI
                     }
                 }
             }
-            else if (value.ToUpper().Equals("UNLOCK"))
+            else if (value.ToUpper().Equals("UNLOCK") || value.ToUpper().Equals("DISABLE"))
             {
                 if (data_IT != null)
                 {

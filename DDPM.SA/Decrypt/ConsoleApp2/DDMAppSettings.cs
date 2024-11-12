@@ -18,7 +18,17 @@ namespace DdmLibrary.Utility
 
         public static bool restoreDDMAppSettings(ref DDMAppSettings appSettings, string filePath)
         {
-            byte[] content = File.ReadAllBytes(filePath);
+            byte[] content = default;
+
+            try
+            {
+                content = File.ReadAllBytes(filePath);
+            }
+            catch
+            {
+                return false;
+            }
+
             //Decrypted with AESKey in new setting file
             var key = Decryption.GetAESKeyFromKeyContainer();
             var decryptAES = Decryption.Decrypt(content, key);

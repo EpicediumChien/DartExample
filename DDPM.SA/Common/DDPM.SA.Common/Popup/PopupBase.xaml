@@ -9,9 +9,17 @@
         Width="417" Height="252"
         WindowStyle="None"
         AllowsTransparency="True"
+        WindowStartupLocation="CenterOwner"
         Topmost="True"
         Closed="Window_Closed"
         Background="Transparent">
+    <!-- Robert_Lin, 2024-11-8, add WindowStartupLocation="CenterOwner"
+    If you would like to let the PopBase show in center of DDPM, then you should:
+         PopBase pop = new PopBase( . . . );
+         Window mainWindow = System.Windows.Application.Current.MainWindow;
+         pop.Owner = mainWindow;
+         pop.Show();    or pop.ShowDialog();
+    -->
     <Border Background="#0D121A" BorderThickness="0" CornerRadius="5">
         <Grid>
             <Grid.RowDefinitions>

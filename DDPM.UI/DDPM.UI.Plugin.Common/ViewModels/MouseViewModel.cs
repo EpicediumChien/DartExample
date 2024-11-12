@@ -207,7 +207,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             //IsDPIValueVisible = CurrentDeviceInfo.IsDPIValueSupported;
             //IsDPIValueVisible = false;
-            if (IsDPIValueVisible && !EOLList.Contains(Model))
+            if (IsDPIValueVisible && !EOLMouseList.Contains(Model))
             {
                 //DPIMax = CurrentDeviceInfo.DpiMax;
                 //DPIMin = CurrentDeviceInfo.DpiMin;
@@ -334,7 +334,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             CheckRestoreStatus();
-            OnPropertyChanged(nameof(IsRestoreEnable));
+            //OnPropertyChanged(nameof(IsRestoreEnable));
         }
 
         public Visibility WordVisibility { get; set; } = Visibility.Collapsed;

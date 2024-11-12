@@ -41,7 +41,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Margin="50,0,0,0">
-                <UXControls:UXTextBox x:Name="edFilter" Text="{Binding [Search], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontSize="14" Width="487" Height="40" Background="#141D28" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
+                <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" Background="#141D28" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
             </Grid>
 
             <!-- 排序按鈕 -->

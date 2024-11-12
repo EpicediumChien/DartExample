@@ -71,7 +71,15 @@ namespace DDPM.UI.Module.EzMemory
         private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
         {
             List<EAProfileDDPM> startEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            List<object> rc = new List<object>();
 
+            if (_vm.CurrentSelectspItem != null)
+            {
+                foreach (var relist in _vm.CurrentSelectspItem.ISplitCtrl.CellList)
+                {
+                    rc.Add(relist);
+                }
+            }
 
             if (startEAProfileDDPM != null)
             {

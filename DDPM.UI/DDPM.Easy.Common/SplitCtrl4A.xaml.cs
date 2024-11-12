@@ -89,6 +89,61 @@ namespace DDPM.Easy.Common
         /// <summary>
         /// Convert ISplitCtrl.Settings to CellList[i].rcRect
         /// </summary>
+        public void UpdateRatioRectsFromSettings()
+        {
+            if (VM.Settings_Double.Count < 4)
+                return;
+
+            if (VM.IsVertical)
+            {
+                if (cellListV.Count < 4)
+                    return;
+
+                double cx = VM.Settings_Double[1] + VM.Settings_Double[0];
+                double cy = VM.Settings_Double[2] + VM.Settings_Double[3];
+                if ((cx > 0) && (cy > 0))
+                {
+                    double w = VM.Settings_Double[1] / cx;
+                    double h = VM.Settings_Double[2] / cy;
+                    //4A3
+                    cellListV[2].rcRatio = new Rect(0, 0, w, h);
+                    //4A4
+                    cellListV[3].rcRatio = new Rect(0, cellListV[2].rcRatio.Bottom, w, VM.Settings_Double[3] / cy);
+                    double x = cellListV[2].rcRatio.Right;
+                    w = VM.Settings_Double[0] / cx;
+                    //4A1
+                    cellListV[0].rcRatio = new Rect(x, 0, w, VM.Settings_Double[2] / cy);
+                    //4A2
+                    cellListV[1].rcRatio = new Rect(x, cellListV[0].rcRatio.Bottom, w, VM.Settings_Double[3] / cy);
+                }
+            }
+            else //Horz
+            {
+                if (cellListH.Count < 4)
+                    return;
+
+                double cx = VM.Settings_Double[2] + VM.Settings_Double[3];
+                double cy = VM.Settings_Double[0] + VM.Settings_Double[1];
+                if ((cx > 0) && (cy > 0))
+                {
+                    double h = VM.Settings_Double[0] / cy;
+                    //4a1
+                    cellListH[0].rcRatio = new Rect(0, 0, VM.Settings_Double[2] / cx, h);
+                    //4a2
+                    cellListH[1].rcRatio = new Rect(cellListH[0].rcRatio.Right, 0, VM.Settings_Double[3] / cx, h);
+                    h = VM.Settings_Double[1] / cy;
+                    double y = cellListH[0].rcRatio.Bottom;
+                    //4a3
+                    cellListH[2].rcRatio = new Rect(0, y, VM.Settings_Double[2] / cx, h);
+                    //4a4
+                    cellListH[3].rcRatio = new Rect(cellListH[2].rcRatio.Right, y, VM.Settings_Double[3] / cx, h);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to CellList[i].rcRect
+        /// </summary>
         public void UpdateToCellListFromSettings()
         {
             if (cellListH.Count >= 4)
@@ -214,8 +269,8 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 4.1 4 quadrant splits.";
-        private string _defaultVertName = "Option 4.1 4 quadrant splits.";
+        private string _defaultHorzName = "Option 4.1: 4 quadrants.";
+        private string _defaultVertName = "Option 4.1: 4 quadrants.";
         public string FriendlyName
         {
             get

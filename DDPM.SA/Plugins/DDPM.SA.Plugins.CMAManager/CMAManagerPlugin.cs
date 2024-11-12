@@ -5,6 +5,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -348,6 +349,13 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (option.minversion != null && option.minversion.Length > 0)
                 {
+                    // add start @ 20241111 stephen
+                    if (option.upgradetolatest)
+                    {
+                        throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
+                    }
+                    // add end @ 20241111 stephen
+
                     command = command + (" value=" + option.minversion + ",miniversion");
                 }
 
@@ -355,6 +363,18 @@ namespace DDPM.SA.Plugins.CMAManager
                 {
                     command = command + (" value=" + option.model + ",model");
                 }
+
+                /*                // add start @ 20241110 stephen
+                                if (option.upgradetolatest)
+                                {
+                                    command = command + (" upgradetolatest=" + option.upgradetolatest);
+                                }
+                                // *****CLI use 'miniversion'*****
+                                if (command.Contains("miniversion") && command.Contains("upgradetolatest"))
+                                {
+                                    throw new ArgumentException("Command 'minversion' and 'upgradetolatest' can't be exist in the same task");
+                                }
+                                // add end @ 20241110*/
             }
 
             return command;
@@ -589,7 +609,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Count = {commandLineInput.Options.Count}");
 
-                    foreach (CommandType_Option s in commandLineInput.Options) {
+                    foreach (CommandType_Option s in commandLineInput.Options)
+                    {
                         WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Option_Name = {s.Option_Name.ToString()}");
                         WriteLog($"[CMA] runCommandTaskAsync CommandType_Option.Option_Value = {s.Option_Value.ToString()}");
                     }
@@ -676,7 +697,15 @@ namespace DDPM.SA.Plugins.CMAManager
                 }
             } while (index > 0);
 
-            src = "[" + src + "]";
+            // modified @ 20241111 stepohen
+            //src = "[" + src + "]";
+
+            if (!src.StartsWith("["))
+            {
+                src = "[" + src + "]";
+            }
+            // modified end @ 20241111
+
 
             WriteLog($"[CMA] checkResult fixed src = {src}");
 
@@ -750,7 +779,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 initCommandTask(uniqueAgentGuid.ToString(), request.remote_request);
 
                 TaskInfo taskInfo = taskInfoQueue.Peek();
-                WriteLog($"[CMA]  before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
                 _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
             }
             catch (Exception e)
@@ -857,6 +886,11 @@ namespace DDPM.SA.Plugins.CMAManager
 
             // TODO: implement decice connect/disconnect information
             WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed data.type = " + data.type);
+
+            if (!data.type.ToLower().Equals("display"))
+            {
+                return Task.CompletedTask;
+            }
 
             if (data.mos != null)
             {

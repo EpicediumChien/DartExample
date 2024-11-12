@@ -50,11 +50,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex) 
+                { 
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }
+                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -130,11 +139,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }
+                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -436,11 +454,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }
+                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -478,11 +505,19 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -517,10 +552,18 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
                 }
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));

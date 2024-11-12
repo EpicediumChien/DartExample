@@ -80,10 +80,48 @@ namespace DDPM.Easy.Common
             cellListV.Clear();
             cellListV.Add(new CellObj("2A1", cell_2A1) { rcRatio = new Rect(0, 0, 1, 0.5) });
             cellListV.Add(new CellObj("2A2", cell_2A2) { rcRatio = new Rect(0, 0.5, 1, 0.5) });
+        }
 
-            //celBordersH.Clear();
-            //celBordersH.Add(cellBd_2a1);
-            //celBordersH.Add(cellBd_2a2);
+        /// <summary>
+        /// Convert ISplitCtrl.Settings to CellList[i].rcRect
+        /// </summary>
+        public void UpdateRatioRectsFromSettings()
+        {
+            if (VM.Settings_Double.Count < 2)
+                return;
+
+            if (VM.IsVertical)
+            {
+                if (cellListV.Count < 2)
+                    return;
+
+                //double cx = VM.Settings_Double[1] + VM.Settings_Double[0];
+                double cy = VM.Settings_Double[0] + VM.Settings_Double[1];
+                if (cy > 0)
+                {
+                    //double w = VM.Settings_Double[1] / cx;
+                    //2A1
+                    cellListV[0].rcRatio = new Rect(0, 0, 1, VM.Settings_Double[0] / cy);
+                    //2A2
+                    cellListV[1].rcRatio = new Rect(0, cellListV[0].rcRatio.Bottom, 1, VM.Settings_Double[1] / cy);
+                }
+            }
+            else //Horz
+            {
+                if (cellListH.Count < 2)
+                    return;
+
+                double cx = VM.Settings_Double[0] + VM.Settings_Double[1];
+                //double cy = VM.Settings_Double[0] + VM.Settings_Double[1];
+                if (cx > 0)
+                {
+                    //double h = VM.Settings_Double[0] / cy;
+                    //2a1
+                    cellListH[0].rcRatio = new Rect(0, 0, VM.Settings_Double[0] / cx, 1);
+                    //2a2
+                    cellListH[1].rcRatio = new Rect(cellListH[0].rcRatio.Right, 0, VM.Settings_Double[1] / cx, 1);
+                }
+            }
         }
 
         public void UpdateSettingsToCells()
@@ -142,8 +180,8 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 2.1 2 columns, equal splits.";
-        private string _defaultVertName = "Option 2.1 2 rows, equal splits.";
+        private string _defaultHorzName = "Option 2.1: 2 columns, split equally.";
+        private string _defaultVertName = "Option 2.1: 2 rows, split equally.";
         public string FriendlyName 
         { 
             get

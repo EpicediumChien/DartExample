@@ -900,7 +900,7 @@ namespace DDPM.UI.Module.Color
                     }
                 }
 
-                DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
+                //DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
 
                 //Robert_Lin, 20240528
                 //NEW Added code:
@@ -911,7 +911,8 @@ namespace DDPM.UI.Module.Color
                 _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                {                    
+                {
+                    DdpmCommonHelper.DeviceManagerSA.SyncNightlightStatus();
                     update_ui_over_runtype(config);
                     RefreshUI();
                 }));

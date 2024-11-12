@@ -1579,7 +1579,16 @@ namespace NetworkKVM.Plugins
         {
             _logs.DebugMsg("[NetworkKVM] WriteAsync : " + message);
             byte[] buffer = Encoding.UTF8.GetBytes(message);
-            await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            try
+            {
+                await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[NetworkKVM] WriteAsync exception, message: " + ex.Message);
+            }
+
             await pipeServer.FlushAsync();
             pipeServer.WaitForPipeDrain();
         }
@@ -1587,7 +1596,20 @@ namespace NetworkKVM.Plugins
         private async Task<string> ReadAsync()
         {
             byte[] buffer = new byte[2048];
-            int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            int bytesRead = default;
+
+            try
+            {
+                bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            }
+            catch (Exception ex) 
+            { 
+                _logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
+                return string.Empty;
+            }
+
             string readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
             _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
             return readmessage;
