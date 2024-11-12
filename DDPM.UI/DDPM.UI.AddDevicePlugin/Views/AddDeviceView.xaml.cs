@@ -240,21 +240,15 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     {
                         WaitingModalDialog waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {_vm.RequestDeviceName}", WaitingAlert);
                         Window parentWindow = Window.GetWindow(this);
+                        waitingModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                         if (parentWindow != null)
                         {
                             waitingModalDialog.Owner = parentWindow;
+                            waitingModalDialog.Left = parentWindow.Left + (parentWindow.ActualWidth - 587) / 2;
+                            waitingModalDialog.Top = parentWindow.Top + (parentWindow.ActualHeight - 349) / 2;
                         }
                         waitingModalDialog.ShowDialog();
-                        if (_vm.NewDevice == null)
-                        {
-                            //ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
-                            _vm!.StopPairing();
-                            rightViewHeaderCtrl.SelectedIndex = 0;
-                        }
-                        else
-                        {
-                            _vm.GotoNewDevice();
-                        }
+                        _vm.GotoNewDevice();
                     }
                     break;
 
