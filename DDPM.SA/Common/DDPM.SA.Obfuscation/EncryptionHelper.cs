@@ -8,8 +8,19 @@ using System.Threading.Tasks;
 
 namespace DDPM.SA.Obfuscation
 {
-    public class EncryptionHelper
+    public class EncryptionHelper //: BaseAgentPlugin
     {
+        // refer to RsaEncrypt
+        //private static Logs _logs;
+        //private IAgent _agent;
+        //private const string PluginLogId = "RsaEncrypt";
+
+        //protected EncryptionHelper(IAgent agent, string logId) : base(agent, logId)
+        //{
+        //    _logs ??= new Logs(Log);
+        //    _agent = agent;
+        //}
+
         public static byte[] EncryptJsonToBytes(string json_string, string secretKey)
         {
             byte[] encryptedData = EncryptStringToBytes_Aes2(json_string, secretKey);
@@ -22,7 +33,7 @@ namespace DDPM.SA.Obfuscation
             string decryptedJson = DecryptStringFromBytes_Aes2(encryptedData, secretKey);
             return decryptedJson;
         }
-
+    
         private static byte[] EncryptStringToBytes_Aes(string plainText, string secretKey)
         {
             using (Aes aesAlg = Aes.Create())
@@ -105,17 +116,27 @@ namespace DDPM.SA.Obfuscation
                 }
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
+                
+                try
                 {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (MemoryStream msEncrypt = new MemoryStream())
                     {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                         {
-                            swEncrypt.Write(plainText);
+                            using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                            {
+                                swEncrypt.Write(plainText);
+                            }
+                            return msEncrypt.ToArray();
                         }
-                        return msEncrypt.ToArray();
                     }
+                }
+                catch (Exception ex) 
+                {
+                    //WriteLog($"[EncryptStringToBytes_Aes] exception, message: {ex.Message}", log_type.error);
+
+                    Console.WriteLine($"[EncryptStringToBytes_Aes] exception, message: {ex.Message}");
+                    return default;
                 }
             }
         }
