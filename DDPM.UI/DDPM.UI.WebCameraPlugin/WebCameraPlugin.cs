@@ -182,8 +182,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow Activate event");
             if (_viewModel == null) return;
-            _viewModel.running_state = true;
-            _viewModel.webcamera_restart();
+            _viewModel.running_state = true;            
         }
 
         private void MainWindowDeActivate(object sender, EventManagerArgs e)
@@ -192,7 +191,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (_viewModel == null) return;
             _viewModel.running_state = false;
-            _viewModel.webcamera_stop();
         }
     }
 }

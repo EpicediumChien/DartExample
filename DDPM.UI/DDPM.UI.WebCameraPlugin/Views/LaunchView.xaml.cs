@@ -49,6 +49,7 @@ using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.UI.Common.WebcamProfile;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -84,6 +85,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private string EditMode = string.Empty;
         private string EditingProfileName = string.Empty;
         private static PowerEventControl _pwr_Mon = null;
+
+        //每一秒偵測前後景狀態是否改變,以切換相機狀態
+        private DispatcherTimer timer_ststus;
 
         public LaunchView()
         {
@@ -156,8 +160,58 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
             _vm!.ProfilePropertyChanged += ProfilePropertyChanged;
 
+            imgDevice.Visibility = Visibility.Hidden;
             Preview();
             EnableMonitorOnEvent();
+
+            timer_ststus = new DispatcherTimer();
+            timer_ststus.Tick += status_Tick;
+            timer_ststus.Interval = TimeSpan.FromMilliseconds(1);
+            timer_ststus.Start();
+
+
+
+
+        }
+
+        private void status_Tick(object? sender, EventArgs e)
+        {
+            //每一秒檢測一下前警景與背景狀態,以及Camera狀態
+            if (_vm.running_state)
+            {
+                if (_vm!.MediaCapture == null)
+                {
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        imgDevice.Visibility = Visibility.Hidden;
+                        Preview();
+                        CameraImage.Visibility = Visibility.Visible;
+                    });
+
+                }
+            }
+            else
+            {
+                if (_vm!.MediaCapture != null)
+                {
+                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
+                    {
+                        CameraImage.Visibility = Visibility.Hidden;
+                        _ = CleanupMediaCaptureAsync();
+
+                        imgDevice.Visibility = Visibility.Visible;
+                        DoubleAnimation visibilityAnimation = new()
+                        {
+                            From = 0,
+                            To = 1,
+                            Duration = new Duration(TimeSpan.FromSeconds(0.3))
+                        };
+                        visibilityAnimation.Completed += ShowGrid;
+                        imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+
+                    });
+                }
+            }
         }
 
         private void EnableMonitorOnEvent()
@@ -284,14 +338,26 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 await _vm.MediaFrameReader.StartAsync();
 
-                DoubleAnimation visibilityAnimation = new()
+                try
+                {
+                    //Camera被其他process搶先佔據情況下,初始化會失敗,跟據IL提供範例,也是用檢測初始化是否成功為判斷
+                    uint _t = mediaFrameSource.CurrentFormat.VideoFormat.Width;
+                }
+                catch
+                {
+                    _vm.AlertType = WebcamAlert.Alert2;
+                    _vm.AlertVisibility = Visibility.Visible;
+                    return;
+                }
+
+                /*DoubleAnimation visibilityAnimation = new()
                 {
                     From = 1,
                     To = 0,
                     Duration = new Duration(TimeSpan.FromSeconds(0.3))
                 };
                 visibilityAnimation.Completed += ShowGrid;
-                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);*/
 
                 writeableBitmap = new(
                     (int)mediaFrameSource.CurrentFormat.VideoFormat.Width,
@@ -305,6 +371,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CameraImage.Source = writeableBitmap;
                 before_width = (int)mediaFrameSource.CurrentFormat.VideoFormat.Width;
                 before_height = (int)mediaFrameSource.CurrentFormat.VideoFormat.Height;
+
+                _vm.AlertVisibility = Visibility.Hidden;
             }
             catch (Exception Exc)
             {
@@ -576,20 +644,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             _running = true;
 
-            if(cameraimage_hide)
+            SoftwareBitmap softwareBitmap = null;
+
+            try
             {
-                if (_vm.running_state)
-                {
-                    
-                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
-                    {
-                        CameraImage.Visibility = Visibility.Visible;
-                    });
-                    cameraimage_hide = false;
-                }
+                softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
+            }
+            catch
+            {
+                _running = false;
+                return;
             }
 
-            var softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
 
             Thread.Sleep(60);
 
@@ -637,21 +703,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     writeableBitmap.Unlock();
                 });
             }
-            else
-            {
-                if (!_vm.running_state)
-                {
-                    _ = CameraImage.Dispatcher.BeginInvoke(() =>
-                    {
-                        CameraImage.Visibility = Visibility.Hidden;
-                    });
-                    cameraimage_hide = true;
-                }
-            }
 
             _running = false;
         }
-        public bool cameraimage_hide = false;
 
         /// <summary>
         /// MediaFrameReader FrameArrived event
