@@ -692,7 +692,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
-        
+
 
 
         private bool _isPrioritizeExternalWebcam = false;
@@ -931,6 +931,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsFocusOnText));
+                    if (!value)
+                        SetFocus();
                 }
             }
         }
@@ -1530,14 +1532,16 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool running_state = true;
         public void webcamera_stop()
         {
-            if (MediaFrameReader == null) return;
+            if (MediaFrameReader == null)
+                return;
             MediaFrameReader.StopAsync();
-            
+
         }
 
         public void webcamera_restart()
         {
-            if (MediaFrameReader == null) return;
+            if (MediaFrameReader == null)
+                return;
             MediaFrameReader.StartAsync();
         }
     }
