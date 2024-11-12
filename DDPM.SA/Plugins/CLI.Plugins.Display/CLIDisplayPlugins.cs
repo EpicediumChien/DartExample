@@ -91,8 +91,8 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     Command = commandLineInput.Command,
                     TargetFeature = commandLineInput.TargetFeature,
-                    Result = "FAIL",
-                    Message = "No monitor connected",
+                    // Result = "FAIL",
+                    Message = "No devices found",
                 };
                 result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
@@ -974,6 +974,7 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, CommandLineInput commandLineInput, string value = "")
         {
             ConnectedDevices G_ConnectedDevices_RESPONSE = new ConnectedDevices();
+            G_ConnectedDevices_RESPONSE.Message = "No devices found";
 
             //if (devMgr == null)
             //{
@@ -1315,6 +1316,8 @@ namespace DDPM.CLI.Plugins.Display
 
                         }
                     }
+                    if (_deviceinfo == null || _deviceinfo.Count == 0)
+                        return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                 }
                 else if (commandLineInput.Options.Count == 0)
                 {
@@ -1452,6 +1455,8 @@ namespace DDPM.CLI.Plugins.Display
                         recode_per = true;
                         output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
                     }
+                    if ((_deviceinfo == null || _deviceinfo.Count == 0) && (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
+                        return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
@@ -3924,6 +3929,7 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> GetMonitors(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_MONITORS_RESPONSE G_Monitos_RESPONSE = new CLI_Get_MONITORS_RESPONSE();
+            G_Monitos_RESPONSE.Message = "No devices found";
 
             //if (devMgr == null)
             //{
@@ -9276,7 +9282,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (displayProperties.isCurrent)
                                         resolution = $"{displayProperties.Resolutions_Width} x {displayProperties.Resolutions_High} at {displayProperties.Frequency.ToString("0.00")}Hz";
                                 }
-
+                                
                                 get_DeviceData.OptimalResolution = $"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz";
                                 get_DeviceData.Resolution = resolution;
                                 writelog($"OptimalResolution, Resolution Exit return value: OptimalResolution{$"{MaxWidth} x {MaxHigh} at {Frequency.ToString("0.00")}Hz"} Resolution{resolution}");
@@ -9356,7 +9362,7 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                                 if (displayPropertiesInfo.SupportedUSBCPrioritization)
                                 {
-                                    get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
+                                    get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
                                 }
                                 else
                                     get_DeviceData.USB_CPrioritization = "NOT SUPPORT";
@@ -9628,7 +9634,7 @@ namespace DDPM.CLI.Plugins.Display
                     MonitorInfo monitor = _AllInfoMonitors[idx];
                     Get_DeviceData get_DeviceData = new Get_DeviceData();
 
-
+                    
                     get_DeviceData.Model = monitor.modelName;
                     get_DeviceData.SerialNumber = monitor.edid.SerialNumber;
                     get_DeviceData.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -9763,7 +9769,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"USB_CPrioritization, USBCPrioritizationType Entry");
                     if (displayPropertiesInfo.SupportedUSBCPrioritization)
                     {
-                        get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Speed" : "High Resolution";
+                        get_DeviceData.USB_CPrioritization = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
                     }
                     else
                         get_DeviceData.USB_CPrioritization = "NOT SUPPORT";

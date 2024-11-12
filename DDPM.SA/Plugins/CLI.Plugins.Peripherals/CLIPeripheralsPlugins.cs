@@ -86,6 +86,16 @@ namespace DDPM.CLI.Plugins.Peripherals
             CLIEventResult result = new CLIEventResult();
             result.command_guid_string = input.command_guid_string;
             result.ticket = DateTime.Now;
+            if (_devMgr.GetDevices().Result.deviceInfo.Count == 0)
+            {
+                CLI_RESPONSE rsp = new CLI_RESPONSE()
+                {
+                    Message = "No devices found"
+                };
+                result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
+                result.ExitCode = (int)CLI_ExitCode.null_device_manager;
+                return result;
+            }
             int exitcode = 0;
             if (commandLineInput != null)
             {
