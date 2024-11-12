@@ -3130,6 +3130,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rename Input Source.
+        /// </summary>
+        internal static string InputSource_5 {
+            get {
+                return ResourceManager.GetString("InputSource.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid URL.
         /// </summary>
         internal static string InvalidURL {

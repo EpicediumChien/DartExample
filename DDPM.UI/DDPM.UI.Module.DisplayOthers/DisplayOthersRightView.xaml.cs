@@ -238,7 +238,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 return;
             string result_success = "result_success_";
             string model = string.Empty;
-            if (e.Contains("result_success") && e.Length > result_success.Length)
+            if (e.Contains("result_success_") && e.Length > result_success.Length)
             {
                 //retrieve model name
                 model = e.Substring(result_success.Length);
