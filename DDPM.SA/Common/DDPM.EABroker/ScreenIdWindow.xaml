@@ -1,0 +1,42 @@
+﻿<Window x:Class="DDPM.EABroker.ScreenIdWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DDPM.EABroker"
+        mc:Ignorable="d"
+        Title="ScreenIdWindow" Height="450" Width="800"
+        AllowsTransparency="True" Topmost="True"
+        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False" Loaded="Window_Loaded" 
+        >
+    <Window.Resources>
+        <SolidColorBrush x:Key="ActiveColor" Color="#FF6EA204"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Visibility" Value="Hidden"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsScreenIdWindowsVisible}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+        <Border BorderBrush="Green" BorderThickness="8">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    
+                </Style>
+            </Border.Style>
+            <Border BorderBrush="Green" BorderThickness="0,6,6,0"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    Width="96" Height="96">
+                <TextBlock Name="idText" Text="1" FontSize="56" Foreground="Green" FontFamily="Roboto"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </Border>
+        
+    </Grid>
+</Window>

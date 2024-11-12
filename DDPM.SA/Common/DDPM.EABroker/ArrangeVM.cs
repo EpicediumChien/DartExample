@@ -86,6 +86,10 @@ namespace DDPM.EABroker
         private bool _isWorkUIEnabled = true;
         private bool _isWorkWindowVisible = false;
         private ObservableCollection<string> _workWinCellInfos = new ObservableCollection<string>();
+
+        //ScreenIdWindows
+        private List<ScreenIdWindow> _screenIdWindows = new List<ScreenIdWindow>();
+        private bool _isScreenIdWindowsVisible = false;
         #endregion Private members
 
         #region Constants
@@ -216,6 +220,7 @@ namespace DDPM.EABroker
 
             return false;
         }
+        public Rect rcWndForeground { get; set; }
         #endregion Foreground Window Info
 
         #region Window Moving
@@ -252,11 +257,15 @@ namespace DDPM.EABroker
         public double RefreshScreenScale()
         {
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            var varX = (int)dpiXProperty.GetValue(null, null);
-            double dpiX = (double)varX / (double)96;
-            if (dpiX >= 1.0000)
-                _screenScale = dpiX;
-            OnPropertyChanged("ScreenScale");
+            if (dpiXProperty != null)
+            {
+                var varX = (int)dpiXProperty.GetValue(null, null);
+                double dpiX = (double)varX / (double)96;
+                if (dpiX >= 1.0000)
+                    _screenScale = dpiX;
+                OnPropertyChanged("ScreenScale");
+            }
+
             return ScreenScale;
         }
 
@@ -310,7 +319,7 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        #region Moving Support
+        #region Refresh Cell Rects
         public void RefreshCellRects(bool calledByFadeFinished = false)
         {
             if (IsAwsWindowVisible)
@@ -333,39 +342,76 @@ namespace DDPM.EABroker
             }
             RefreshWorkWinInfos();
         }
+        #endregion Refresh Cell Rects
+
+        #region Determine Hovering
 
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
             CellObj? hoveringCell = null;
             HoveringWindow = "";
+
             if (IsAwsWindowVisible)
             {
                 if (_awsWindow != null)
                 {
                     if (IsAwsWindowVisible)
                     {
-                        CellObj? cellObj = _awsWindow.DetermineHoveringCellObj(x, y);
-                        if (cellObj != null)
+                        hoveringCell = _awsWindow.DetermineHoverigCellObj_Icon0(x, y);
+                        if (hoveringCell != null)
                         {
-                            HoveringWindow = "aws";
-                            HoveringCellObj = cellObj;
+                            HoveringWindow = "scr";
+                            HoveringCellObj = hoveringCell;
                             HoveringSplit = HoveringAwsIcon;
-                            HoveringAwsCellObj = cellObj;
+                            HoveringAwsCellObj = hoveringCell;
 
-                            hoveringCell = cellObj;
-                            WriteLog($" * HoveringCell=AWS{cellObj.Name}");
+                            //IsScreenIdWindowsVisible = true;
 
-                            if (_awsBuddyWindow != null)
-                            {
-                                _awsBuddyWindow.MoveToScreen(_awsWindow.HoveringScreen);
-                                _awsBuddyWindow.SetWorkSplit(HoveringSplit, cellObj.Name);
-                                //_awsBuddyWindow.RefreshCellRects();
-                            }
-                            return cellObj;
+                            //foreach (ScreenIdWindow scrIdWnd in _screenIdWindows)
+                            //{
+                            //    int scrId = scrIdWnd.GetScreenId();
+                            //    if (scrId.ToString() == hoveringCell.Name)
+                            //        scrIdWnd
+                            //}
+                            return hoveringCell;
                         }
                         else
-                            HoveringWindow = "";
+                            IsScreenIdWindowsVisible = false;
                     }
+                    else
+                    {
+                        IsScreenIdWindowsVisible = false;
+                    }
+
+                    hoveringCell = _awsWindow.DetermineHoveringCellObj(x, y);
+                    if (hoveringCell != null)
+                    {
+                        HoveringWindow = "aws";
+                        HoveringCellObj = hoveringCell;
+                        HoveringSplit = HoveringAwsIcon;
+                        HoveringAwsCellObj = hoveringCell;
+
+                        if (HoveringCellObj == AwsIcon0)
+                        {
+                            IsScreenIdWindowsVisible = true;
+                        }
+                        else
+                        {
+                            IsScreenIdWindowsVisible = false;
+                        }
+                        WriteLog($" * HoveringCell=AWS{hoveringCell.Name}");
+
+                        if (_awsBuddyWindow != null)
+                        {
+                            _awsBuddyWindow.MoveToScreen(_awsWindow.HoveringScreen);
+                            _awsBuddyWindow.SetWorkSplit(HoveringSplit, hoveringCell.Name);
+                            //_awsBuddyWindow.RefreshCellRects();
+                        }
+                        return hoveringCell;
+                    }
+                    else
+                        HoveringWindow = "";
+                    
                 }
             }
             if (IsWorkWindowVisible)
@@ -378,7 +424,7 @@ namespace DDPM.EABroker
                         continue;
 
                     CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
-                    if (cellObj != null)
+                    if (hoveringCell != null)
                     {
                         //HoveringScreen = workWin.ScreenDeviceName;
                         HoveringCellObj = cellObj;
@@ -422,7 +468,7 @@ namespace DDPM.EABroker
                 return _hoveringCellObj.Name;
             }
         }
-        #endregion
+        #endregion Determine Hovering
 
         #region EzSettings
         public bool IsOnlyShift
@@ -656,6 +702,7 @@ namespace DDPM.EABroker
                     }, null, 2000, Timeout.Infinite);
                 }
             }
+
         }
 
         private EAWorkWindow? GetUnusedWorkWindow()
@@ -997,10 +1044,13 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon1 == null)
                     return "(null)";
-                if (_awsIcon1.IsAddedCustomLayout)
-                    return $"{_awsIcon1.FriendlyName}, Cells: Cells: {CellListText(_awsIcon1.CellList)}";
-                else
-                    return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
+
+                return $"[{_awsIcon1.EAID}], Cells: {CellListText(_awsIcon1.CellList)}";
+
+                //if (_awsIcon1.IsAddedCustomLayout)
+                //    return $"{_awsIcon1.FriendlyName}, Cells: Cells: {CellListText(_awsIcon1.CellList)}";
+                //else
+                //    return $"{_awsIcon1.FriendlyName}, Cells: {CellListText(_awsIcon1.CellList)}";
             }
         }
         public string AwsIcon2Info
@@ -1009,10 +1059,11 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon2 == null)
                     return "(null)";
-                if (_awsIcon2.IsAddedCustomLayout)
-                    return $"{_awsIcon2.FriendlyName}, Cells: {CellBordersText(_awsIcon2.CellBorders)}";
-                else
-                    return $"{_awsIcon2.FriendlyName}, Cells: {CellListText(_awsIcon2.CellList)}";
+                return $"[{_awsIcon2.EAID}], Cells: {CellListText(_awsIcon2.CellList)}";
+                //if (_awsIcon2.IsAddedCustomLayout)
+                //    return $"{_awsIcon2.FriendlyName}, Cells: {CellBordersText(_awsIcon2.CellBorders)}";
+                //else
+                //    return $"{_awsIcon2.FriendlyName}, Cells: {CellListText(_awsIcon2.CellList)}";
             }
         }
         public string AwsIcon3Info
@@ -1021,10 +1072,11 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon3 == null)
                     return "(null)";
-                if (_awsIcon3.IsAddedCustomLayout)
-                    return $"{_awsIcon3.FriendlyName}, Cells: {CellBordersText(_awsIcon3.CellBorders)}";
-                else
-                    return $"{_awsIcon3.FriendlyName}, Cells: {CellListText(_awsIcon3.CellList)}";
+                return $"[{_awsIcon3.EAID}], Cells: {CellListText(_awsIcon3.CellList)}";
+                //if (_awsIcon3.IsAddedCustomLayout)
+                //    return $"{_awsIcon3.FriendlyName}, Cells: {CellBordersText(_awsIcon3.CellBorders)}, Bd: ";
+                //else
+                //    return $"{_awsIcon3.FriendlyName}, Cells: {CellListText(_awsIcon3.CellList)}";
             }
         }
         public string AwsIcon4Info
@@ -1033,10 +1085,11 @@ namespace DDPM.EABroker
             {
                 if (_awsIcon4 == null)
                     return "(null)";
-                if (_awsIcon4.IsAddedCustomLayout)
-                    return $"{_awsIcon4.FriendlyName}, Cells: {CellBordersText(_awsIcon4.CellBorders)}";
-                else
-                    return $"{_awsIcon4.FriendlyName}, Cells: {CellListText(_awsIcon4.CellList)}";
+                return $"[{_awsIcon4.EAID}], Cells: {CellListText(_awsIcon4.CellList)}";
+                //if (_awsIcon4.IsAddedCustomLayout)
+                //    return $"{_awsIcon4.FriendlyName}, Cells: {CellBordersText(_awsIcon4.CellBorders)}";
+                //else
+                //    return $"{_awsIcon4.FriendlyName}, Cells: {CellListText(_awsIcon4.CellList)}";
             }
         }
 
@@ -1054,7 +1107,7 @@ namespace DDPM.EABroker
                 }
                 else
                 {
-                    outString += $"{{\"{objCell.Name}\":{ArrangeVM.FormatRect(objCell.rc)}}} ";
+                    outString += $"{{\"{objCell.Name}\":{FormatRect(objCell.rc)},{FormatRect(objCell.CellBd.rect)}}} ";
                 }
             }
             outString += "]";
@@ -1217,9 +1270,59 @@ namespace DDPM.EABroker
 
         public Rect GetHoveringRectFromAwsBuddyWindow()
         {
+            int screenId = 0;
+            if (int.TryParse(HoveringCell, out screenId))
+            {
+                if ((screenId >= 1) && (screenId <= Screen.AllScreens.Length))
+                {
+                    Screen targetScreen = Screen.AllScreens[screenId-1];
+                    if (!targetScreen.Equals(_workScreen))
+                    {
+                        double xWorkScreen = 0;
+                        double yWorkScreen = 0;
+                        if (WorkScreen != null)
+                        {
+                            xWorkScreen = WorkScreen.Bounds.X;
+                            yWorkScreen = WorkScreen.Bounds.Y;
+                        }
+                        double dx = rcWndForeground.Left - xWorkScreen;
+                        double dy = rcWndForeground.Top - yWorkScreen;
+                        double x = (double)targetScreen.WorkingArea.Left;
+                        if (dx > 0)
+                            x += dx;
+                        double y = (double)targetScreen.WorkingArea.Top;
+                        if (dy > 0)
+                            y += dy;
+                        Rect rcOut = new Rect(x, y, rcWndForeground.Width, rcWndForeground.Height);
+                        return rcOut;
+                    }
+                }
+                return Rect.Empty;
+            }
+
             if (_awsBuddyWindow != null)
                 return _awsBuddyWindow.GetHoveringCellRect();
             return Rect.Empty;
+        }
+        #endregion
+
+        #region Screen ID Window
+        public void InitScreenIdWindows()
+        {
+            int id = 1;
+            foreach (Screen scr in Screen.AllScreens)
+            {
+                ScreenIdWindow screenIdWindow = new ScreenIdWindow(id, scr, this);
+                _screenIdWindows.Add(screenIdWindow);
+                screenIdWindow.Show();
+                id++;
+            }
+        }
+
+        public bool IsScreenIdWindowsVisible
+        {
+            get => _isScreenIdWindowsVisible;
+            set => SetProperty(ref _isScreenIdWindowsVisible, value);
         }
         #endregion
 

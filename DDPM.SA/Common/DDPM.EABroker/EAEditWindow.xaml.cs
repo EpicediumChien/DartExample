@@ -163,13 +163,13 @@ namespace DDPM.EABroker
         public bool ShowAndEdit(EAArgs args, Screen scr)
         {
             _inputArgs = args;
-            if ((args.SplitJson.CellCount == 0) && (args.SplitJson.SplitKey == 'B'))
+            if ((args.SplitJson.IsOverlapLayout))
             {
-                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_AddedCustom(args, scr); });
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_OverlapCustom(args, scr); });
             }
             else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
             {
-                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_PredefinedCustom(args, scr); });
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_NonOverlapCustom(args, scr); });
             }
             else
             {
@@ -178,7 +178,7 @@ namespace DDPM.EABroker
             return true;
         }
 
-        private void UI_ShowAndEdit_PredefinedCustom(EAArgs args, Screen scr)
+        private void UI_ShowAndEdit_NonOverlapCustom(EAArgs args, Screen scr)
         {
             //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
             ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
@@ -201,7 +201,7 @@ namespace DDPM.EABroker
             _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
+            double dpiX = 1.00;
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             if (dpiXProperty != null)
             {
@@ -219,7 +219,7 @@ namespace DDPM.EABroker
 
             Show();
         }
-        private void UI_ShowAndEdit_AddedCustom(EAArgs args, Screen scr)
+        private void UI_ShowAndEdit_OverlapCustom(EAArgs args, Screen scr)
         {
             splitCtrl.Visibility = Visibility.Collapsed;
             _orgFriendlyName = args.CustomName;

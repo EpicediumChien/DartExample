@@ -116,8 +116,7 @@ namespace DDPM.Easy.Common
         /// <summary>
         /// Create a ISplitCtrl by EAID
         /// </summary>
-        /// <param name="cellCount"></param>
-        /// <param name="splitKey"></param>
+        /// <param name="eaId"></param>
         /// <returns></returns>
         public static ISplitCtrl? Create(int eaId)
         {
@@ -290,9 +289,14 @@ namespace DDPM.Easy.Common
         #endregion Bitmap - Currently is not used in DDPM
 
         #region Added Custom Layout
+        //IsAddedCustomLayout will be removed, please use IsOverlapCustomLayout instead
         public bool IsAddedCustomLayout
         {
             get { return ((CellCount==0) && (SplitKey=='B')); }
+        }
+        public bool IsOverlapCustomLayout
+        {
+            get { return ((CellCount == 0) && (SplitKey == 'B')); }
         }
         #endregion
 

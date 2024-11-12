@@ -17,6 +17,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Window = System.Windows.Window;
 
 namespace DDPM.EABroker
 {
@@ -399,96 +401,48 @@ namespace DDPM.EABroker
             if (_workingSplit == null)
                 return null;
 
-
-            DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
-            double scale = dpiScale.PixelsPerDip;
-
-            bool isHandled = false;
-
-            _workingSplit.HoveringCell = "";
-
-            //For AddedCustomLayout
-            if (_workingSplit.IsAddedCustomLayout)
+            CellObj? hoverCell = null;
+            ISplitCtrl localSplit = _workingSplit as ISplitCtrl;
+            if (localSplit != null)
             {
-                CellObj? hoverCell = null;
-                //Detect from CellList
-                //
-                
-                foreach (CellObj objCell in _workingSplit.CellList)
+                foreach(CellObj objCell in localSplit.CellList)
                 {
-                    string tag = "N";
+                    //If the hoverCell is not determined now
                     if (hoverCell == null)
                     {
+                        //If this CellObj will be a hovering cell
                         if (objCell.rc.Contains(x, y))
                         {
                             hoverCell = objCell;
-                            tag = "H";
-                            _workingSplit.HoveringCell = objCell.Name;
-                            isHandled = true;
-                        }
-                    }
-
-                    //this.Dispatcher.Invoke(() =>
-                    //{
-                    //    objCell.bd.Tag = tag;
-                    //});
-
-                }
-                if (_workingSplit.IsAddedCustomLayout)
-                {
-                    SplitCtrl0B sp0B = (SplitCtrl0B)_workingSplit;
-                    foreach (CellBorder cellBd in sp0B.CellBorders)
-                    {
-                        //if (cellBd.rect.Contains(x, y))
-                        //{
-                        //    cellBd.IsHover = true;
-                        //    //Convert to CellObj
-                        //    hoverCell = new CellObj(cellBd.Name, cellBd.Border);
-                        //    hoverCell.rc = cellBd.rect;
-                        //}
-                        //else
-                        //    cellBd.IsHover = false;
-                        if (hoverCell != null)
-                        {
-                            if (cellBd.CellName.Equals(hoverCell.Name))
-                                cellBd.Dispatcher_SetIsHover(true);
+                            localSplit.HoveringCell = hoverCell.Name;
+                            if (localSplit.IsOverlapCustomLayout)
+                            {
+                                hoverCell.CellBd.Dispatcher_SetIsHover(true);
+                            }
                             else
-                                cellBd.Dispatcher_SetIsHover(false);
+                            {
+                                return hoverCell;
+                            }
                         }
                         else
                         {
-                            cellBd.Dispatcher_SetIsHover(false);
+                            if (localSplit.IsOverlapCustomLayout)
+                            {
+                                hoverCell.CellBd.Dispatcher_SetIsHover(false);
+                            }
                         }
                     }
-                 }
-
-                //Detect from CellBorders
-                 return hoverCell; ;
-            }
-            else if (_workingSplit.CellCount == 5)
-            {
-                foreach (CellObj objCell in _workingSplit.CellList)
-                {
-                    if (objCell.rc.Contains(x, y))
+                    else
                     {
-                        _workingSplit.HoveringCell = objCell.Name;
-                        return objCell;
+                        if (localSplit.IsOverlapCustomLayout)
+                        {
+                            hoverCell.CellBd.Dispatcher_SetIsHover(false);
+                        }
                     }
                 }
             }
-            else
-            {
-                //For other layouts
-                foreach (CellObj objCell in _workingSplit.CellList)
-                {
-                    if (objCell.rc.Contains(x, y))
-                    {
-                        _workingSplit.HoveringCell = objCell.Name;
-                        return objCell;
-                    }
-                }
 
-            }
+
             return null;
         }
 
