@@ -1448,6 +1448,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response2.FirmwareVersion = g.FirmwareVersion;
                         cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
                         cli_Response2.BatteryStatus = g.BatteryStatus;
+                        cli_Response2.ServiceTag = g.DockServiceTag ?? "N/A";
 
                         recode_per = true;
                         output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
