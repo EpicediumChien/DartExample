@@ -47,7 +47,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchPCsKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleInputSource);
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmSwitchInputSource);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
                 if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
@@ -140,7 +140,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchKbMsKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleInputSource);
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmSwitchKbMsKey);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
                 if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
@@ -213,7 +213,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbChangePipKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleInputSource);
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmChangePIPPosition);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
                 if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
