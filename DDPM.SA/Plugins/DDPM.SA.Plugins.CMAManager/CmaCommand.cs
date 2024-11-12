@@ -97,7 +97,12 @@ namespace DDPM.SA.Plugins.CMAManager
                 model = (string)options["model"];
 
                 // add @ 20241110 stephen
-                upgradetolatest = (bool)options["upgradetolatest"];
+                try
+                {
+                    upgradetolatest = (bool)options["upgradetolatest"];
+                }
+                catch 
+                { }
 
             }
 

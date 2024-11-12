@@ -1,0 +1,2 @@
+/get -app=Update
+/get -app=UpdateSourceLocation
