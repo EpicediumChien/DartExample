@@ -333,7 +333,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //2024-6-20 move refresh device form HomeView to here
                     //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
                     if (_deviceManager != null)
-                        _ = GetDdpmDevicesAsync(_deviceManager, e.changedProperty.ToLower());
+                        _ = GetDdpmDevicesAsync(_deviceManager, e, e.changedProperty.ToLower());
 
                     if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
                     {
@@ -486,7 +486,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private static List<DeviceInfo> _deviceInfos = null;
         private static List<MonitorInfo> _monitorInfos = null;
 
-        private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, string condition = "all")
+        private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, DeviceChangedEventArgs e = null, string condition = "all")
         {
             if (!SpinWait.SpinUntil(() =>
             (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
@@ -510,6 +510,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (condition.Equals("all") || !condition.Equals("displaychanged"))
                 {
                     DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
+                    if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                    {
+                        deviceHelper = deviceManager.GetDevices(true).Result;
+                    }
                     //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
                     _deviceInfos = new List<DeviceInfo>();
                     if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
