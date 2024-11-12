@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Plugin.Common;
+using System.IO;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -121,6 +122,8 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public double LockPowerNap_Opacity { get; set; } = 1;
 
+        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip1;
+
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -226,9 +229,11 @@ namespace DDPM.UI.Module.DisplayOthers
             string ImpExppath = e.Argument.ToString();
             if (ImpExppath.Substring(0, 3) == "Imp")
             {
-                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, ImpExppath.Substring(3)).Result)
+                string impPath = ImpExppath.Substring(3);
+                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                 {
-                    OnMessageDlgInvoke("close_loading");
+                    string fileName = Path.GetFileNameWithoutExtension(ImpExppath);
+                    OnMessageDlgInvoke("close_loading_" + fileName);
                     OnMessageDlgInvoke("result_success");
                 }
                 else
@@ -342,6 +347,7 @@ namespace DDPM.UI.Module.DisplayOthers
             OnPropertyChanged("isLockPowerNapEnable");
             OnPropertyChanged("LockPowerNap_Visibility");
             OnPropertyChanged("LockPowerNap_Opacity");
+            OnPropertyChanged("Tooltip_Settings");
         }
 
         private static LoadingScreen _dlg_loading = null;

@@ -574,6 +574,8 @@ namespace DDPM.UI.Common
         public static readonly string ImpExp_SuccessMsg1 = GetString("ImpExp_SuccessMsg.1");
         public static readonly string ImpExp_WarningMsg0 = GetString("ImpExp_WarningMsg.0");
         public static readonly string ImpExp_WarningMsg1 = GetString("ImpExp_WarningMsg.1");
+        public static readonly string ImpExp_Tooltip1 = GetString("DisplayOthers.7");
+        public static readonly string ImpExp_Tooltip2 = GetString("DisplayOthers.8");
 
         // Pair/Unpair
         public static readonly string Caption = "Are you sure?";
@@ -595,5 +597,9 @@ namespace DDPM.UI.Common
         public static readonly string BrightnessPageWarning = GetString("Warning");
         public static readonly string BrightnessPageNotice0 = GetString("Brightness.19");
         public static readonly string BrightnessPageNotice1 = GetString("Brightness.20");
+
+        //InputSource
+        public static readonly string InputTitle0 = GetString("InputSource.1");
+        public static readonly string InputTitle1 = GetString("InputSource.5");
     }
 }
