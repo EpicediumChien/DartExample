@@ -785,6 +785,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             _vm!.IsRecording = true;
 
+            //關閉前後景處理機制
+            timer_ststus.Stop();
+
             if (_vm!.WebcamCountdown)
             {
                 //_countdownValue = 3; // 設置倒數起始值
@@ -793,10 +796,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _timer.Interval = TimeSpan.FromSeconds(3);
                 _timer.Tick += Timer_Tick;
                 _timer.Start();
-
-                //關閉前後景處理機制
-                timer_ststus.Stop();
-
                 DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
             }
             else
