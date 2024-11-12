@@ -1166,6 +1166,9 @@ namespace DDPM.EABroker
                     return;
 
                 System.Drawing.Rectangle rcVirtualScreen = SystemInformation.VirtualScreen;
+                if ((rcVirtualScreen.Width <= 0) || (rcVirtualScreen.Height <= 0))
+                    return;
+                
                 double cxView = 1.000;
                 double cyView = 1.000;
                 double ratioX = icon0Canvas.ActualWidth / (double)rcVirtualScreen.Width;
