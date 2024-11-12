@@ -207,14 +207,30 @@ namespace nsWinEventHook
             //const int HWND_TOPMOST = -1;
             const int SWP_FRAMECHANGED = 0x0020;
 
-            _SetWindowPos(hWnd, 0, (int)rect.Left, (int)rect.Top,
-                (int)rect.Width, (int)rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+            bool isNoSize = (rect.Width ==0 || rect.Height == 0);
 
-            _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
-                (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW);
+            if (isNoSize)
+            {
+                _SetWindowPos(hWnd, 0, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED | SWP_NOSIZE);
 
-            _MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
-                (int)rect.Width, (int)rect.Height, true);
+                _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW | SWP_NOSIZE);
+
+                //_MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
+                //    (int)rect.Width, (int)rect.Height, true);
+            }
+            else
+            {
+                _SetWindowPos(hWnd, 0, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+
+                _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW);
+
+                _MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, true);
+            }
 
             /*
             Rectangle rcWnd = new Rectangle();

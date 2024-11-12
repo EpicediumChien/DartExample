@@ -106,6 +106,8 @@ namespace DDPM.EABroker
                         _infoWindow = new InfoWindow(_vm);
                         WriteLog("After new InfoWindow");
                         _infoWindow.Show();
+
+                        _vm.InitScreenIdWindows();
                     }
                     catch (Exception exIn)
                     {

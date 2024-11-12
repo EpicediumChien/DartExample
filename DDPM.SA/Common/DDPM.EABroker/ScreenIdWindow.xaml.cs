@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace DDPM.EABroker
+{
+    /// <summary>
+    /// Interaction logic for ScreenIdWindow.xaml
+    /// </summary>
+    public partial class ScreenIdWindow : Window
+    {
+        private int _screenId;
+        private Screen _screen;
+        private ArrangeVM _vm;
+
+        public ScreenIdWindow(int screenId, Screen scr, ArrangeVM vm)
+        {
+            InitializeComponent();
+            _screenId = screenId;
+            _screen = scr;
+            _vm = vm;
+            DataContext = _vm;
+
+            _vm.RefreshScreenScale();
+            Left = scr.WorkingArea.Left / _vm.ScreenScale;
+            Top = scr.WorkingArea.Top / _vm.ScreenScale;
+            Width = scr.WorkingArea.Width / _vm.ScreenScale;
+            Height = scr.WorkingArea.Height / _vm.ScreenScale;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            idText.Text=_screenId.ToString();
+        }
+
+        public int GetScreenId()
+        {
+            return _screenId;
+
+        }
+
+        public void SetActive(bool isActive)
+        {
+
+        }
+    }
+}

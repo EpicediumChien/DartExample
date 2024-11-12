@@ -102,7 +102,7 @@ namespace DDPM.EABroker
                     //Create a new ISplitCtrl to the AwsBuddyWindow
                     localSplit = splitCtrl.Clone();
 
-                    if (localSplit.IsAddedCustomLayout) //SplitCtrl0B
+                    if (localSplit.IsOverlapCustomLayout) //SplitCtrl0B
                     {
                         SplitCtrl0B sp0B = (SplitCtrl0B)localSplit;
 
