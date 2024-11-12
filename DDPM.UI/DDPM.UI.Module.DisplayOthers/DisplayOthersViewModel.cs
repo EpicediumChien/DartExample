@@ -232,7 +232,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 string impPath = ImpExppath.Substring(3);
                 if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(ImpExppath);
+                    string fileName = Path.GetFileNameWithoutExtension(impPath);
                     OnMessageDlgInvoke("close_loading_" + fileName);
                     OnMessageDlgInvoke("result_success");
                 }
