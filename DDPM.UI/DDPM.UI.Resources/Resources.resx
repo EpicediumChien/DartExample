@@ -2364,4 +2364,7 @@
   <data name="hotkey.9" xml:space="preserve">
     <value>This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it?</value>
   </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
 </root>
