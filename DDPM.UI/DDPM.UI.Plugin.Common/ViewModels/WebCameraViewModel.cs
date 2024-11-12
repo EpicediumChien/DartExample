@@ -86,6 +86,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public List<WebcamOperation> WCOperations = new();
         private int OPIndex = -1;
         const int MaxOPs = 30;
+        public List<string> MicList = new() { "WB5023", "WB3023" };
 
         // 20240926 jim add
         private bool showLockMask = false;
@@ -691,6 +692,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
+        
 
 
         private bool _isPrioritizeExternalWebcam = false;
@@ -831,7 +833,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
                     IsFocusOn = true;
                 }
-   
+
             }
         }
 
@@ -1525,6 +1527,19 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public Visibility MessageBoxVisibility { get; set; } = Visibility.Collapsed;
 
+        public bool running_state = true;
+        public void webcamera_stop()
+        {
+            if (MediaFrameReader == null) return;
+            MediaFrameReader.StopAsync();
+            
+        }
+
+        public void webcamera_restart()
+        {
+            if (MediaFrameReader == null) return;
+            MediaFrameReader.StartAsync();
+        }
     }
 
     public class StreamResolution

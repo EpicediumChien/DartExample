@@ -209,12 +209,16 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void writelog(string text, log_type log_type = log_type.info)
+        private void writelog(string text,
+           [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+           [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+           [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0,
+           log_type log_type = log_type.info)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = "[Hotkey] " + text;
+            text = $"[Hotkey] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (Log != null)
             {
@@ -224,6 +228,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
                     Log.Error(text);
             }
         }
+
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {

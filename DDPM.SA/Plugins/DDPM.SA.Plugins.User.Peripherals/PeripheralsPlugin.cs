@@ -1420,7 +1420,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                 info.DockData = dockData;
                                                 info.DockType = dockData.DockType;
                                                 info.ModelNumber = dockData.MarketingName;
-                                                info.Name = $"Dell Dock";
+                                                //info.Name = $"Dell Dock";
                                                 if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
                                                 {
                                                     info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
@@ -1842,13 +1842,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     PhysicalDevices1.Remove(iPhysicalDevice.Id);
 
-                    if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
-                    {
-                        DeviceChangedEventArgs _EventArgs = new();
-                        _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
-                        _EventArgs.changedProperty = "PhysicalDeviceRemoved";
-                        OnNotify(_EventArgs);
-                    }
+                }
+                if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
+                    _EventArgs.changedProperty = "PhysicalDeviceRemoved";
+                    OnNotify(_EventArgs);
                 }
             }
         }
@@ -1874,6 +1874,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IPhysicalDevice_DeviceRemovedEvent(ILogicalDevice iLogicalDevice)
         {
+            Debug.WriteLine($"ID: {iLogicalDevice.Id}, Type:{iLogicalDevice.Type}");
+            Debug.WriteLine($"DeviceCount: {_deviceHelper.deviceInfo.Count}");
             _deviceHelper.deviceInfo.Where(x => x.ID == iLogicalDevice.Id).ToList().ForEach(device =>
             {
                 device.IsConnected = false;
@@ -2585,12 +2587,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
 
         #endregion
-        private void writelog(string text, log_type log_type = log_type.info)
+        private void writelog(string text,
+                [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+                [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+                [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0,
+                log_type log_type = log_type.info)
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
 
-            text = "[PeripheralsPlugin] " + text;
+            text = $"[PeripheralsPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
             if (Log != null)
             {
