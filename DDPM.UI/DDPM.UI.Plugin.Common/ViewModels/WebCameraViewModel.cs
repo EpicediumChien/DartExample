@@ -146,12 +146,67 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isChecked_ProximitySensor; }
             set
             {
-                _isChecked_ProximitySensor = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
-                OnPropertyChanged("IsChecked_ProximitySensor");
-                OnPropertyChanged("ProximitySensorStatus_String");
+                if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
+                {
+                    _isChecked_ProximitySensor = value;
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                    OnPropertyChanged("IsChecked_ProximitySensor");
+                    OnPropertyChanged("ProximitySensorStatus_String");
 
+                    //Derek 11/12
+                    //PIMS - 319099
+                    //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
+                    //Internal Presence Sensor. DUT is with HPD_MPS FW
+                    ChangeUPDStatus();
+                }
+            }
+        }
+
+        private bool _isWALTimerEnable = false;
+        public bool IsWALTimerEnable
+        {
+            get { return _isWALTimerEnable; }
+
+            set
+            {
+                if (value != _isWALTimerEnable)
+                {
+                    _isWALTimerEnable = value;
+
+                    OnPropertyChanged("IsWALTimerEnable");
+                }
+            }
+        }
+
+        private bool _isSnoozeEnable = false;
+        public bool IsSnoozeEnable
+        {
+            get { return _isSnoozeEnable; }
+
+            set
+            {
+                if (value != _isSnoozeEnable)
+                {
+                    _isSnoozeEnable = value;
+
+                    OnPropertyChanged("IsSnoozeEnable");
+                }
+            }
+        }
+
+        private void ChangeUPDStatus()
+        {
+            if (_isChecked_ProximitySensor) 
+            {
+                IsWALTimerEnable = IsChecked_WalkAwayLock;
+                IsSnoozeEnable = IsChecked_WalkAwayLock;
+            }
+            else 
+            {
+                IsWALTimerEnable = false;
+                IsChecked_Snooze = false;
+                IsSnoozeEnable = false;
             }
         }
 
@@ -196,6 +251,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
                 OnPropertyChanged("IsChecked_WalkAwayLock");
                 OnPropertyChanged("WalkAwayLockStatus_String");
+
+                IsWALTimerEnable = value;
+                IsSnoozeEnable = value;
             }
         }
 
