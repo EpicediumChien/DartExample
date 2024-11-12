@@ -877,6 +877,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
+        Task<bool> GetIsESISupported(string Guid);
+
         #endregion Webcam
 
         #region Headset

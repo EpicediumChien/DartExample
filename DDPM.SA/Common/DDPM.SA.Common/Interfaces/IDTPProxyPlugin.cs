@@ -164,6 +164,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
+        Task<bool> GetIsESISupported(string Guid);
+
         #endregion
 
         #region Headset
