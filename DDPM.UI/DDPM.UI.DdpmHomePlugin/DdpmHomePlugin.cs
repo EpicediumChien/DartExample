@@ -33,9 +33,11 @@ using static Dell.Client.Framework.Security.LocalAccounts;
 using static Dell.Client.Framework.UX.WPF.WinApi;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using DDPMConstants = DDPM.UI.Common.Constants;
+using User32 = DDPM.UI.Common.User32;
 
 //using VcpCore.Interfaces;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
+using static DDPM.UI.Common.User32;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -539,6 +541,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         {
                             //The "PleaseWait" UI will be displayed and auto closed after timeout (=12 sec)
                             viewModel.Invoke_PleaseWait();
+
+                            //Robert_Lin, 2024-11-9 for Developer debug, check if C:\temp\DDPMDebug.txt contains
+                            //[DDPMDebug]
+                            //HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty=1
+                            if (File.Exists(@"C:\temp\DDPMDebug.txt"))
+                            {
+                                if (User32.IniReadInt("DDPMDebug", "HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                                {
+                                    //Add a Fake monitor to the listView of Homepage
+                                    _viewModel?.AddFakeMonitorToListView();
+                                }
+                            }
+
                         }
                         else
                         {
@@ -682,6 +697,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         #endregion Interface IConsolePluginSupportsActivations
 
+        #region HomeDevices
+        /// <summary>
+        /// Called from other plugins to get the HomeDevices from DdpmHomePlugin's ViewModel
+        /// </summary>
+        /// <returns></returns>
         public static List<HomeDevice> GetHomeDevices()
         {
             IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
@@ -692,6 +712,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return new List<HomeDevice>();
         }
 
+        /// <summary>
+        /// Called from other plugins to get the SelectedHomeDevices from DdpmHomePlugin's ViewModel
+        /// For the modules of DisplayPlugin, can get this list from their IModuleOwner 
+        /// because that DisplayPlugin will call this method and copy/update to IModuleOwner.
+        /// NOTE. for Display, this return object is the one user click from homepage.
+        /// But not the selected item from Display Landing Page combobox.
+        /// </summary>
+        /// <returns></returns>
         public static HomeDevice? GetSelectedHomeDevice()
         {
             IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
@@ -702,6 +730,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             else
                 return null;
         }
+        #endregion
 
         #region Icons on Masthead
 

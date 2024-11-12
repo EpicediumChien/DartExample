@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="AwsBuddyWindow" Height="450" Width="800"
         AllowsTransparency="True" Topmost="True"
-        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False" Loaded="Window_Loaded" 
+        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False" 
+        Loaded="Window_Loaded" 
         >
     <Grid>
         <Border BorderBrush="Blue" BorderThickness="0">
