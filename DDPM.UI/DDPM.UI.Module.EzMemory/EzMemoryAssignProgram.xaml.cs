@@ -224,6 +224,8 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm._sortApps.Count < _vm.SelectedValue)
+                return;
             _vm._currentPageIndex++;
             EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
