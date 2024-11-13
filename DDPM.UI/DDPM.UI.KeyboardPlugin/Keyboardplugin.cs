@@ -57,7 +57,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {

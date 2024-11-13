@@ -50,11 +50,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex) 
+                { 
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }
+                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -130,11 +139,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }
+                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -297,6 +315,7 @@ namespace DDPM.SA.Common
 
     public class CLI_FWU_RESPONSE : CLI_RESPONSE
     {
+        public string FWVersion { get; set; }
         public List<string> FWUpdateRESPONSE { get; set; }
 
         public CLI_FWU_RESPONSE(CLI_RESPONSE cli_RESPONSE)
@@ -436,11 +455,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }
+                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -455,6 +483,7 @@ namespace DDPM.SA.Common
         public string Model { get; set; }
         public string Connectiontype { get; set; }
         public string BatteryStatus { get; set; }
+        public string ServiceTag { get; set; } = "N/A";
 
         public CLI_RESPONSE2()
         {
@@ -478,11 +507,19 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+                }                
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
             return JsonConvert.SerializeObject(o, Formatting.Indented);
@@ -517,10 +554,18 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
                 }
             }
             System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));

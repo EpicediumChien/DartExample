@@ -1,0 +1,38 @@
+/get -Webcam=FWVersion
+/get -Webcam=FieldOfView
+/get -Webcam=hdr
+/set -Webcam=hdr -value=off
+/get -Webcam=AntiFlicker
+/set -Webcam=AntiFlicker -value=50
+/get -Webcam=MicSwitch
+/set -Webcam=MicSwitch -value=off
+/get -Webcam=AIAutoFraming
+/set -Webcam=AIAutoFraming -value=off
+/get -Webcam=PresenceDetection
+/set -Webcam=PresenceDetection -value=disable
+/get -Audio=FWVersion
+/get -Audio=ancMode
+/set -Audio=ancMode -value=disable
+/get -Audio=micNoiseCancellation
+/set -Audio=micNoiseCancellation -value=off
+/get -Audio=wearDetection
+/set -Audio=wearDetection -value=disable
+/get -Keyboard=FWVersion
+/set -Keyboard=RestoreFactoryDefaults
+/get -Keyboard=CollabCameraEnable
+/get -Keyboard=CollabMicMute
+/get -Keyboard=CollabScreenShare
+/set -Keyboard=CollabScreenShare -value=off
+/get -Keyboard=CollabChatEnable
+/get -Mouse=FWVersion
+/set -Mouse=RestoreFactoryDefaults
+/get -Dock=FWVersion
+/set -Webcam=hdr -value=on
+/set -Webcam=AntiFlicker -value=60
+/set -Webcam=MicSwitch -value=on
+/set -Webcam=AIAutoFraming -value=on
+/set -Webcam=PresenceDetection -value=enable
+/set -Audio=ancMode -value=enable
+/set -Audio=micNoiseCancellation -value=on
+/set -Audio=wearDetection -value=enable
+/set -Keyboard=CollabScreenShare -value=on

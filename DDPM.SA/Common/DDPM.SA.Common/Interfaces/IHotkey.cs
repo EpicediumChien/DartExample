@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.Common;
+using System;
 using System.Windows.Forms;
 
 namespace DDPM.SA.Common
@@ -12,5 +13,7 @@ namespace DDPM.SA.Common
         event KeyEventHandler KeyUp;
 
         bool IsKeyPushedDown(System.Windows.Forms.Keys vKey);
+
+        IntPtr GetHookHandle();
     }
 }
