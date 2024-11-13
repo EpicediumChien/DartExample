@@ -71,7 +71,7 @@ namespace DDPM.SA.Common.Security
             {
                 try
                 {
-                    if (!DDPMFileSecurity.VerifyExecutableFileSignature(CertificateFilePath, out Info))
+                    if (!DDPMFileSecurity.VerifyExecutableFileSignature(CertificateFilePath, out Info)) //SDL CheckMarx
                     {
 #if DEBUG
                         Console.WriteLine(Info);
@@ -80,13 +80,9 @@ namespace DDPM.SA.Common.Security
                     }
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
-
-                    //if(!CheckCertificateIsVaild(certificate))
-                    //{
-                    //    return ret;
-                    //}
-
                     ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
+                    if(!ret)
+                        Info = "Load file cert to check thumbprint and the result is not matched";
                 }
                 catch (Exception ex)
                 {
@@ -113,11 +109,6 @@ namespace DDPM.SA.Common.Security
                     // 讀取憑證檔案並創建 X509Certificate2 物件
                     X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
 
-                    //if(!CheckCertificateIsVaild(certificate))
-                    //{ 
-                    //    return ret; 
-                    //}
-
                     for (int i = 0; i < Stande_Thumbprint.Count; i++)
                     {
                         ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint[i].ToLower());
@@ -126,6 +117,8 @@ namespace DDPM.SA.Common.Security
                             break;
                         }
                     }
+                    if (!ret)
+                        Info = "Load file cert to check thumbprint and the result is not matched";
                 }
                 catch (Exception ex)
                 {
