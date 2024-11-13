@@ -511,7 +511,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                     if (IsTimeToLaunch(autoStartTime))
                                     {
                                         _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.Auto match, MonitorInfo {monitorInfo.modelName} Auto = " + ps.Auto.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
-                                        LaunchAndArrangeApps(ps.ID);
+                                        LaunchAndArrangeApps(ps.ID, monitorInfo);
                                         _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsTimeToLaunch, LaunchAndArrangeApps {ps.ID}");
                                     }
                                 }
@@ -521,7 +521,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                     if (IsStartupRecently(startupTime))
                                     {
                                         _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor ps.StartUpLaunch match, MonitorInfo {monitorInfo.modelName} " + ", StartupTime : " + startupTime.ToString() + ", StartUpLaunch = " + ps.StartUpLaunch.ToString());
-                                        LaunchAndArrangeApps(ps.ID);
+                                        LaunchAndArrangeApps(ps.ID, monitorInfo);
                                         _logs.DebugMsg_1($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor IsStartupRecently, LaunchAndArrangeApps {ps.ID}");
                                     }
                                 }
@@ -552,7 +552,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return currentTime.Hours == autoStartTime.Hours && currentTime.Minutes == autoStartTime.Minutes;
         }
 
-        private void LaunchAndArrangeApps(int profileId)
+        private void LaunchAndArrangeApps(int profileId, MonitorInfo monitorInfo)
         {
             try
             {
@@ -584,7 +584,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         }
 
                         bool result = LaunchAndArrangeApps(launchApp).Result;
-
+                        //bool result = LaunchAndArrangeAppsWithEzArrange(launchApp, monitorInfo, profile.Layout).Result;
                         if (result)
                         {
                             _logs.DebugMsg_1($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Apps launched and arranged successfully for profile: {profile.Name}");
