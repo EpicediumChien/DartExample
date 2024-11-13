@@ -294,7 +294,6 @@ namespace DDPM.UI.Module.Brightness
         {
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
-            Thread.Sleep(5000);
             bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
             if (saveSettings)
             {
