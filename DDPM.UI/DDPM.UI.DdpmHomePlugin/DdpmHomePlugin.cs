@@ -510,7 +510,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 if (condition.Equals("all") || !condition.Equals("displaychanged"))
                 {
-                    DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
+                    DeviceHelper deviceHelper = deviceManager.GetDevices(true).Result;
                     //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
                     _deviceInfos = new List<DeviceInfo>();
                     if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))

@@ -267,7 +267,8 @@ namespace DDPM.ColorApp
             ///////logger.WriteLog($"[Watcher-Focus] found:{forgroundTitle}");
             ///
             string strlog;
-            strlog = String.Format($"[Watcher-Focus] found:{forgroundTitle}");
+            //strlog = String.Format($"[Watcher-Focus] found:{forgroundTitle}");
+            strlog =$"[Watcher-Focus] found:{forgroundTitle}";
             writelog(strlog);
 
             //Screen screen = Screen.FromHandle(hWnd);
@@ -276,7 +277,7 @@ namespace DDPM.ColorApp
             if (!string.IsNullOrEmpty(_LastforgroundTitle) && String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 //string strlog;
-                strlog = String.Format($"[Watcher-Focus]  Same as last app, drop event");
+                strlog = $"[Watcher-Focus]  Same as last app, drop event";
                 writelog(strlog);
 
                 ///////logger.WriteLog($"[Watcher-Focus]  Same as last app, drop event");

@@ -80,7 +80,7 @@
             <!-- #endregion IO Dongle -->
         </Viewbox>
 
-        <Viewbox Stretch="Uniform" MaxHeight="120">
+        <Viewbox Stretch="Uniform" MaxHeight="120" MaxWidth="200">
             <!-- IO BLE -->
             <!--
             1 {BLE_Icon} Windows Machine A

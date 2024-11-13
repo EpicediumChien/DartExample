@@ -33,6 +33,7 @@ namespace DDPM.EABroker
         private IntPtr _hWnd;
         private SplitJson[] _savedCustomList; //Will be update/reloaded at ShowAndEdit()
         private SplitJson _inputSplit; //The copy from EAArgs when entering ShowAndEdit()
+        private Screen _workScreen;
         #endregion Private Members
 
         #region Multiligual Strings
@@ -42,6 +43,8 @@ namespace DDPM.EABroker
         private string _updateToEmProfilePrompt = "There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?";
         private string _yesButton = "Yes";
         private string _noButton = "No";
+        private string _arrangeWindows = "Arrange Windows";
+        private string _adjust = "Adjust your current window arrangement, edit the name (if desired), and click &#34;Save&#34; to store the arrangement.";
         #endregion
 
         #region Input/Output
@@ -60,6 +63,7 @@ namespace DDPM.EABroker
             get {  return _viewModel.SelectedCustomItem; }
         }
 
+        public Screen WorkScreen { get { return _workScreen; } }
         #endregion Input/Output
 
         #region Init
@@ -67,7 +71,8 @@ namespace DDPM.EABroker
         {
             InitializeComponent();
             _deviceManagerSA = deviceManager;
-            _viewModel = new SaveCustomWindowViewModel(_deviceManagerSA);
+            //_viewModel = new SaveCustomWindowViewModel(_deviceManagerSA);
+            _viewModel = new SaveCustomWindowViewModel();
             DataContext = _viewModel;
         }
 
@@ -93,7 +98,7 @@ namespace DDPM.EABroker
 
         private void UpdateMultilingualUiText()
         {
-            txtCustomLayout.Text = _customLayout;
+            //txtCustomLayout.Text = _customLayout;
             saveBtn.Content = _saveButton;
             cancelBtn.Content = _cancelButton;
 
@@ -104,10 +109,24 @@ namespace DDPM.EABroker
         public void ShowAndEdit(EAArgs arg, Screen scr)
         {
             _inputSplit = arg.SplitJson;
+            _workScreen = scr;
 
             this.Dispatcher.Invoke(() =>
             {
                 Trace.WriteLine($"  * EAArgs.CustomName=[{arg.SplitJson.CustomName}]");
+
+                //Update UI
+                _viewModel.IsOverlapLayout = arg.SplitJson.IsOverlapLayout;
+                if (_viewModel.IsOverlapLayout)
+                {
+                    _viewModel.WindowTitle = _arrangeWindows;
+                    _viewModel.IsAdjustTextVisible = true;
+                }
+                else
+                {
+                    _viewModel.WindowTitle = _customLayout;
+                    _viewModel.IsAdjustTextVisible = false;
+                }
 
                 //Build ComboBox ItemsSource and determine SelectedItem
                 //
@@ -258,8 +277,23 @@ namespace DDPM.EABroker
                     dpiX = (double)varX / (double)96;
                 }
 
-                Left = scr.WorkingArea.Left / (double)dpiX;
-                Top = scr.WorkingArea.Top / (double)dpiX;
+ 
+                if (_viewModel.IsOverlapLayout)
+                {
+                    Height = 284;
+                    double x = scr.WorkingArea.Left + scr.WorkingArea.Width/2 - Width/2;
+                    double y = scr.WorkingArea.Top + scr.WorkingArea.Height/2 - Height/2;
+
+                    Left = x / (double)dpiX; ; 
+                    Top = y / (double)dpiX; ;
+                }
+                else
+                {
+                    Height = 196;
+                    Left = scr.WorkingArea.Left / (double)dpiX;
+                    Top = scr.WorkingArea.Top / (double)dpiX;
+
+                }
 
                 Show();
                 Topmost = true;
