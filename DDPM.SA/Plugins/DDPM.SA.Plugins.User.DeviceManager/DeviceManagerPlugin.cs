@@ -6772,13 +6772,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[SW_CheckSWUpdate], start.");
             bool ret = false;
-            if (_SWUpdatePlugin == null)
-                return Task.FromResult(ret);
             try
             {
-                SW_SetDelaySWUpdateInfoPackage();
-                SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(true, false, false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true, false).Result;
-                ret = true;
+                if (_SWUpdatePlugin != null && _GlobalSettingParam != null &&
+                    _GlobalSettingParam.GlobalSetting_About != null &&
+                    !string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
+                {
+                    SW_SetDelaySWUpdateInfoPackage();
+                    SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(true, false, false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true, false).Result;
+                    ret = true;
+                }
+                else
+                {
+                    writelog($"[SW_CheckSWUpdate], _SWUpdatePlugin is null = {(_SWUpdatePlugin == null ? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam is null = {(_GlobalSettingParam == null ? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About is null = {(_GlobalSettingParam.GlobalSetting_About == null ? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About.SWVersion Is NullOrEmpty = {(string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion)? "Yes" : "No")}");
+                }
             }
             catch (Exception ex)
             {

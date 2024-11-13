@@ -1804,6 +1804,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _iDeviceManager = _iClient.DeviceManager;
                 _iDeviceManager.DeviceAddedEvent += _iDeviceManager_DeviceAddedEvent;
                 _iDeviceManager.DeviceRemovedEvent += _iDeviceManager_DeviceRemovedEvent;
+
+                foreach (var device in _iDeviceManager.Devices)
+                {
+                    device.DeviceAddedEvent += IPhysicalDevice_DeviceAddedEvent;
+                    device.DeviceRemovedEvent += IPhysicalDevice_DeviceRemovedEvent;
+                }
+
                 ScanDevices();
 
                 _iUpdateManager = _iClient.UpdateManager;
@@ -1889,6 +1896,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             iPhysicalDevice.DeviceAddedEvent += IPhysicalDevice_DeviceAddedEvent;
             iPhysicalDevice.DeviceRemovedEvent += IPhysicalDevice_DeviceRemovedEvent;
             PhysicalDevices.Add(iPhysicalDevice.Id);
+            ScanDevices();
+            DeviceChangedEventArgs _EventArgs = new();
+            _EventArgs.type = DeviceChangedType.Peripherals_PlugIn;
+            _EventArgs.changedProperty = "PhysicalDeviceAdded";
+            OnNotify(_EventArgs);
         }
 
         private void _iDeviceManager_DeviceRemovedEvent(IPhysicalDevice iPhysicalDevice)
@@ -2527,6 +2539,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
+                    Debug.WriteLine($"{deviceInfo.PairingStatusName}");
                     OnNotify(_EventArgs);
                 }
             }
