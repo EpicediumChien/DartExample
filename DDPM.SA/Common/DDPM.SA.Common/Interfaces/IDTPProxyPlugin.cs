@@ -270,5 +270,9 @@ namespace DDPM.SA.Common
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
         #endregion
+
+        #region Dock
+        Task<DockData> GetDockData(string guid);
+        #endregion
     }
 }

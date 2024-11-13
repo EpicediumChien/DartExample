@@ -1,0 +1,982 @@
+2024 Nov 12 14:05:33.829	out_cli_display.txt Start test.
+
+Test Json = {"sid":"1731380055","req":[{"tid":1,"active":"get","devicetype":"app","command":"connecteddevices","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380055","gid": "b630c8bf-c31c-4ca2-bdec-1597df71f9d9","response": [{"tid": 1,"result": 503,"msg": "Exception: Unknow Result System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than or equal to the size of the collection. (Parameter 'startIndex')
+   at System.Globalization.CompareInfo.IndexOf(String source, String value, Int32 startIndex, Int32 count, CompareOptions options)
+   at System.String.IndexOf(String value, Int32 startIndex, Int32 count, StringComparison comparisonType)
+   at System.String.IndexOf(String value, Int32 startIndex)
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.checkResult(String src, String& msg) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 693
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.runCommandTaskAsync(String sid, String gid) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 640","data": []}]}
+Test Json = {"sid":"1731380056","req":[{"tid":1,"active":"get","devicetype":"display","command":"detectmonitors","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380056","gid": "7876be08-5a64-41c2-ab14-28447da0839e","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "DETECTMONITORS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380057","req":[{"tid":1,"active":"get","devicetype":"display","command":"fwversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380057","gid": "4fbd9e63-d0e6-4a0f-b753-6d09aca01f55","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "FWVERSION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380058","req":[{"tid":1,"active":"get","devicetype":"display","command":"monitorcount","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380058","gid": "5c0cd061-06c6-440e-a105-bbfd52c6d36f","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "MONITORCOUNT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380059","req":[{"tid":1,"active":"get","devicetype":"display","command":"brightnesslevel","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380059","gid": "ca35cac7-46c6-4ea1-b40f-b79738e19f22","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "BRIGHTNESSLEVEL",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380060","req":[{"tid":1,"active":"set","devicetype":"display","command":"brightnesslevel","value":"25","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380060","gid": "eb5c5bb1-53e8-450e-9ae5-cc2c6d69ec25","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "BRIGHTNESSLEVEL",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380061","req":[{"tid":1,"active":"get","devicetype":"display","command":"contrastlevel","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380061","gid": "68882878-b88a-4b88-822d-4849de29ef51","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "CONTRASTLEVEL",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380062","req":[{"tid":1,"active":"set","devicetype":"display","command":"contrastlevel","value":"25","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380062","gid": "93501042-c958-46ab-95d3-a25e39319169","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "CONTRASTLEVEL",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380063","req":[{"tid":1,"active":"get","devicetype":"display","command":"colorpreset","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380063","gid": "6041e3e8-a199-4f32-8c0a-b3d75158a553","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "COLORPRESET",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380064","req":[{"tid":1,"active":"set","devicetype":"display","command":"colorpreset","value":"native","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380064","gid": "3da0aa7b-1599-4afe-bbf5-598868e4e4df","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "COLORPRESET",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380065","req":[{"tid":1,"active":"get","devicetype":"display","command":"autocolorpreset","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380065","gid": "4abb2ec3-1e43-4c81-a5d5-8b44183f2cd6","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "AUTOCOLORPRESET",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380066","req":[{"tid":1,"active":"set","devicetype":"display","command":"autocolorpreset","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380066","gid": "c28acaf3-3ba2-4086-aba6-071e58f83453","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "AUTOCOLORPRESET",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380067","req":[{"tid":1,"active":"get","devicetype":"display","command":"activeinputsource","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380067","gid": "d1846afa-37f6-4b38-87aa-52432d103c3a","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "ACTIVEINPUTSOURCE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380068","req":[{"tid":1,"active":"set","devicetype":"display","command":"activeinputsource","value":"usbc","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380068","gid": "01c53818-a964-426f-8359-219f7be427dc","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "ACTIVEINPUTSOURCE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380069","req":[{"tid":1,"active":"get","devicetype":"display","command":"powersetting","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380069","gid": "ef153aa0-b5d1-4e12-bbfa-e4f82902fd7f","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "POWERSETTING",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380070","req":[{"tid":1,"active":"set","devicetype":"display","command":"powersetting","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380070","gid": "062e29a3-7ce0-4fd0-9e8a-aa040554195f","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "POWERSETTING",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380071","req":[{"tid":1,"active":"get","devicetype":"display","command":"osdlanguage","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380071","gid": "c8505ac2-90df-4f8e-a34f-d13a54e09595","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "OSDLANGUAGE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380072","req":[{"tid":1,"active":"set","devicetype":"display","command":"osdlanguage","value":"japan","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380072","gid": "99c56ab3-9a6b-4d45-8d03-04ee776a36a3","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "OSDLANGUAGE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380073","req":[{"tid":1,"active":"get","devicetype":"display","command":"osdaccess","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380073","gid": "38f93148-4812-42db-8d5a-28f111efaf67","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "OSDACCESS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380074","req":[{"tid":1,"active":"set","devicetype":"display","command":"osdaccess","value":"osdlock","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380074","gid": "b25119c7-91a6-420a-b53f-8523d6a1a32e","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "OSDACCESS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380075","req":[{"tid":1,"active":"get","devicetype":"display","command":"autobrightness","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380075","gid": "5b634cc1-1345-407c-9bfd-c9727a8e62ff","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "AUTOBRIGHTNESS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380076","req":[{"tid":1,"active":"set","devicetype":"display","command":"autobrightness","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380076","gid": "c7bf5a26-d9a6-45e9-9d14-22aa16b608c6","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "AUTOBRIGHTNESS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380077","req":[{"tid":1,"active":"get","devicetype":"display","command":"autobrightnessrangelevel","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380077","gid": "d3cf5ff7-78cd-49cd-842b-cd25d1be0c81","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "AUTOBRIGHTNESSRANGELEVEL",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380078","req":[{"tid":1,"active":"set","devicetype":"display","command":"autobrightnessrangelevel","value":"low","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380078","gid": "c9ae133c-c50b-4620-b739-6395a548fa63","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "AUTOBRIGHTNESSRANGELEVEL",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380079","req":[{"tid":1,"active":"get","devicetype":"display","command":"autocolortemp","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380079","gid": "d5e93897-a9da-4e4b-83e3-6d086a6e8adb","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "AUTOCOLORTEMP",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380080","req":[{"tid":1,"active":"set","devicetype":"display","command":"autocolortemp","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380080","gid": "05635214-68e2-435f-93d5-ef38b21dfe49","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "AUTOCOLORTEMP",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380081","req":[{"tid":1,"active":"get","devicetype":"display","command":"primarymonitorsync","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380081","gid": "521d7f2a-42db-4de2-9a0f-5617b22c624c","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "PRIMARYMONITORSYNC",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380082","req":[{"tid":1,"active":"set","devicetype":"display","command":"primarymonitorsync","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380082","gid": "450b6ed9-d1be-410a-aad4-c474dffeb2bf","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "PRIMARYMONITORSYNC",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380083","req":[{"tid":1,"active":"get","devicetype":"display","command":"usbcprioritization","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380083","gid": "effb3043-9bc2-48a6-b013-dab1d5d2dfa1","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "USBCPRIORITIZATION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380084","req":[{"tid":1,"active":"set","devicetype":"display","command":"usbcprioritization","value":"highdataspeed","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380084","gid": "a0d6326a-8d5c-44e4-b53a-1f8e30a0f0b9","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "USBCPRIORITIZATION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380085","req":[{"tid":1,"active":"get","devicetype":"display","command":"speakermicrophone","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380085","gid": "ee398aca-0014-4e08-bd17-4116b15d846c","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "SPEAKERMICROPHONE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380086","req":[{"tid":1,"active":"set","devicetype":"display","command":"speakermicrophone","value":"osddisable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380086","gid": "f5e4ea13-b875-48ad-9d8a-a51dcb718e7f","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SPEAKERMICROPHONE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380087","req":[{"tid":1,"active":"get","devicetype":"display","command":"speakervolume","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380087","gid": "36b5d989-9e3a-4817-a89e-72941148bc12","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "SPEAKERVOLUME",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380088","req":[{"tid":1,"active":"set","devicetype":"display","command":"speakervolume","value":"osddisable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380088","gid": "3cfb95ba-0c77-451c-b69f-672477b68e10","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SPEAKERVOLUME",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380089","req":[{"tid":1,"active":"get","devicetype":"display","command":"microphone","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380089","gid": "58dc764f-2bee-4b93-9c3f-343e052a3179","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "MICROPHONE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380090","req":[{"tid":1,"active":"set","devicetype":"display","command":"microphone","value":"osddisable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380090","gid": "6aa59bbc-3bed-4598-bb37-81ee591ef506","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "MICROPHONE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380091","req":[{"tid":1,"active":"get","devicetype":"display","command":"powernap","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380091","gid": "187378ea-a6de-466f-ba3c-d0889141b2cb","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "POWERNAP",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380092","req":[{"tid":1,"active":"set","devicetype":"display","command":"powernap","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380092","gid": "c04d34b4-4765-4f3b-887e-6f162db6836b","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "POWERNAP",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380093","req":[{"tid":1,"active":"get","devicetype":"display","command":"colormanagement","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380093","gid": "6d582eeb-1b8a-4686-b661-a9f5a7479205","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "COLORMANAGEMENT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380094","req":[{"tid":1,"active":"set","devicetype":"display","command":"colormanagement","value":"off","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380094","gid": "1e8613dc-f881-47ea-9640-0c380ab76ba9","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "COLORMANAGEMENT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380095","req":[{"tid":1,"active":"get","devicetype":"display","command":"activehours","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380095","gid": "462b8c87-37f6-4b45-88ca-9d3ba60746f9","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "ACTIVEHOURS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380096","req":[{"tid":1,"active":"get","devicetype":"display","command":"exportsettings","value":"d:\ddpm_cli\settings.json","options":{}}]}
+CMA Notification Alert eventtype : 99
+CMA Notification Alert eventtype : Newtonsoft.Json.JsonReaderException: Bad JSON escape sequence: \d. Path 'req[0].value', line 1, position 114.
+   at Newtonsoft.Json.JsonTextReader.ReadStringIntoBuffer(Char quote)
+   at Newtonsoft.Json.JsonTextReader.ParseValue()
+   at Newtonsoft.Json.Linq.JContainer.ReadContentFrom(JsonReader r, JsonLoadSettings settings)
+   at Newtonsoft.Json.Linq.JObject.Parse(String json, JsonLoadSettings settings)
+   at DDPM.SA.Plugins.CMAManager.CmaCommand..ctor(String _gid, String json) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CmaCommand.cs:line 25
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.initCommandTask(String guid, String request) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 511
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.Info(RemoteRequestArgs request) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 779; {"sid":"1731380096","req":[{"tid":1,"active":"get","devicetype":"display","command":"exportsettings","value":"d:\ddpm_cli\settings.json","options":{}}]}
+Test Json = {"sid":"1731380097","req":[{"tid":1,"active":"set","devicetype":"display","command":"importsettings","value":"d:\ddpm_cli\settings.json","options":{}}]}
+CMA Notification Alert eventtype : 99
+CMA Notification Alert eventtype : Newtonsoft.Json.JsonReaderException: Bad JSON escape sequence: \d. Path 'req[0].value', line 1, position 114.
+   at Newtonsoft.Json.JsonTextReader.ReadStringIntoBuffer(Char quote)
+   at Newtonsoft.Json.JsonTextReader.ParseValue()
+   at Newtonsoft.Json.Linq.JContainer.ReadContentFrom(JsonReader r, JsonLoadSettings settings)
+   at Newtonsoft.Json.Linq.JObject.Parse(String json, JsonLoadSettings settings)
+   at DDPM.SA.Plugins.CMAManager.CmaCommand..ctor(String _gid, String json) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CmaCommand.cs:line 25
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.initCommandTask(String guid, String request) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 511
+   at DDPM.SA.Plugins.CMAManager.CMAManagerPlugin.Info(RemoteRequestArgs request) in C:\Users\WitsUser\Documents\Case_DDPM_Git\Git\20241111\DDPM\DDPM.SA\Plugins\DDPM.SA.Plugins.CMAManager\CMAManagerPlugin.cs:line 779; {"sid":"1731380097","req":[{"tid":1,"active":"set","devicetype":"display","command":"importsettings","value":"d:\ddpm_cli\settings.json","options":{}}]}
+Test Json = {"sid":"1731380098","req":[{"tid":1,"active":"get","devicetype":"display","command":"inappexportimport","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380098","gid": "944bdb8d-9b34-4b8d-9fd1-9854a55e33b0","response": [{"tid": 1,"result": 0,"msg": "","data": [{
+  "Command": "GET",
+  "TargetFeature": "INAPPEXPORTIMPORT",
+  "Value": "Unlock",
+  "Result": "Pass",
+  "Message": "Operation Completed"
+}]}]}
+Test Json = {"sid":"1731380099","req":[{"tid":1,"active":"set","devicetype":"display","command":"inappexportimport","value":"lock","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380099","gid": "96327bed-26ca-4136-8329-213be2fbeeba","response": [{"tid": 1,"result": 0,"msg": "","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "INAPPEXPORTIMPORT",
+  "Value": "N/A",
+  "Result": "Pass",
+  "Message": "Operation Completed"
+}]}]}
+Test Json = {"sid":"1731380100","req":[{"tid":1,"active":"get","devicetype":"display","command":"easyarrangelayout","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380100","gid": "09e2854f-f4c4-4952-8312-1079a524851b","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "EASYARRANGELAYOUT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380101","req":[{"tid":1,"active":"set","devicetype":"display","command":"easyarrangelayout","value":"disable","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380101","gid": "ae75ed22-1c2f-4ee9-9726-b7a1d1037208","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "EASYARRANGELAYOUT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380102","req":[{"tid":1,"active":"get","devicetype":"display","command":"allresolutionrefreshrate","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380102","gid": "c921f98d-3349-4b6d-8930-3ff816c9f062","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "ALLRESOLUTIONREFRESHRATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380103","req":[{"tid":1,"active":"get","devicetype":"display","command":"currentresolutionrefreshrate","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380103","gid": "9c0100e9-b25a-4987-aabe-4d5b13e4fb7c","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "CURRENTRESOLUTIONREFRESHRATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380104","req":[{"tid":1,"active":"set","devicetype":"display","command":"resolutionrefreshrate","value":"1920x1080@60","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380104","gid": "c86f4f5f-b1ed-4d5b-8f98-9caa16bb1654","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESOLUTIONREFRESHRATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380105","req":[{"tid":1,"active":"set","devicetype":"display","command":"resolution","value":"1920x1080","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380105","gid": "02078bfa-fb21-4b50-8b5a-a172fb42a44c","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESOLUTION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380106","req":[{"tid":1,"active":"set","devicetype":"display","command":"refreshrate","value":"60","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380106","gid": "62e86162-ec38-42a2-a69f-84201c3257fc","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "REFRESHRATE",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380107","req":[{"tid":1,"active":"get","devicetype":"display","command":"orientation","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380107","gid": "373df003-ea75-4019-8cd7-655f65fb44c8","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "ORIENTATION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380108","req":[{"tid":1,"active":"set","devicetype":"display","command":"orientation","value":"portrait","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380108","gid": "dc040325-deaa-495d-b095-c5b7d5fdc221","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "ORIENTATION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380109","req":[{"tid":1,"active":"get","devicetype":"display","command":"networkkvmversion","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380109","gid": "21db8cea-1b6c-4dff-82e9-2e938bffc306","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "NETWORKKVMVERSION",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380110","req":[{"tid":1,"active":"get","devicetype":"display","command":"networkkvm","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380110","gid": "a979637c-9a7a-46b6-9d5e-601075bf8746","response": [{"tid": 1,"result": 501,"msg": "N/A","data": [
+{
+  "Command": "GET",
+  "TargetFeature": "NETWORKKVM",
+  "Value": "N/A",
+  "Result": "N/A",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380111","req":[{"tid":1,"active":"set","devicetype":"display","command":"networkkvm","value":"on","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380111","gid": "79f80b61-14fe-48cd-9296-7020c5873c5a","response": [{"tid": 1,"result": 0,"msg": "","data": [
+{
+  "Command": "SET",
+  "TargetFeature": "NETWORKKVM",
+  "Value": "ON",
+  "Result": "PASS",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380112","req":[{"tid":1,"active":"get","devicetype":"display","command":"inappnetworkkvm","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380112","gid": "8ea6bfa0-cc35-4547-9821-8df20ccc14b3","response": [{"tid": 1,"result": 0,"msg": "","data": [{
+  "Command": "GET",
+  "TargetFeature": "INAPPNETWORKKVM",
+  "Value": "Unlock",
+  "Result": "Pass",
+  "Message": "Operation Completed"
+}]}]}
+Test Json = {"sid":"1731380113","req":[{"tid":1,"active":"set","devicetype":"display","command":"inappnetworkkvm","value":"unlock","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380113","gid": "db593759-ac8f-4d55-a463-6ff292a45f9d","response": [{"tid": 1,"result": 0,"msg": "","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "INAPPNETWORKKVM",
+  "Value": "N/A",
+  "Result": "Pass",
+  "Message": "Operation Completed"
+}]}]}
+Test Json = {"sid":"1731380114","req":[{"tid":1,"active":"get","devicetype":"display","command":"networkkvmautoconnect","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380114","gid": "5ed43f43-aad3-4600-8386-2096c54a6492","response": [{"tid": 1,"result": 501,"msg": "N/A","data": [
+{
+  "Command": "GET",
+  "TargetFeature": "NETWORKKVMAUTOCONNECT",
+  "Value": "N/A",
+  "Result": "N/A",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380115","req":[{"tid":1,"active":"get","devicetype":"display","command":"networkkvmcontenttransfer","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380115","gid": "2806befa-f1da-4184-ad78-ea8c30ac1f5e","response": [{"tid": 1,"result": 501,"msg": "N/A","data": [
+{
+  "Command": "GET",
+  "TargetFeature": "NETWORKKVMCONTENTTRANSFER",
+  "Value": "N/A",
+  "Result": "N/A",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380116","req":[{"tid":1,"active":"get","devicetype":"display","command":"getnetworkkvmincomingport","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380116","gid": "b3a04d1b-4521-4442-a86d-625d8bddc295","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "GETNETWORKKVMINCOMINGPORT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380117","req":[{"tid":1,"active":"get","devicetype":"display","command":"getnetworkkvmoutgoingport","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380117","gid": "5bac1726-2f28-4ffc-b53d-1710d2e4e59c","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "GETNETWORKKVMOUTGOINGPORT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380118","req":[{"tid":1,"active":"get","devicetype":"display","command":"getnetworkkvmcontenttransferport","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380118","gid": "bcc4b400-73e7-44ff-8a7d-fc739084424d","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "GETNETWORKKVMCONTENTTRANSFERPORT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380119","req":[{"tid":1,"active":"set","devicetype":"display","command":"networkkvmcontenttransferport","value":"33331","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380119","gid": "ad857434-551a-4d6c-9e7c-84ceeec97756","response": [{"tid": 1,"result": 0,"msg": "","data": [
+{
+  "Command": "SET",
+  "TargetFeature": "NETWORKKVMCONTENTTRANSFERPORT",
+  "Value": "33331",
+  "Result": "PASS",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380120","req":[{"tid":1,"active":"set","devicetype":"display","command":"networkkvmaccessreset","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380120","gid": "e254a394-9536-4167-a65d-8317aa45a3b1","response": [{"tid": 1,"result": 0,"msg": "","data": [
+{
+  "Command": "SET",
+  "TargetFeature": "NETWORKKVMACCESSRESET",
+  "Value": "Networkkvmaccessreset",
+  "Result": "PASS",
+  "Message": "N/A"
+}]}]}
+Test Json = {"sid":"1731380121","req":[{"tid":1,"active":"get","devicetype":"display","command":"pxp","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380121","gid": "695ff936-d873-46c4-b8b5-00e4b5743756","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "PXP",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380122","req":[{"tid":1,"active":"set","devicetype":"display","command":"pxp","value":"pip","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380122","gid": "45315e88-689e-4b7a-833f-bd8f356c9460","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "PXP",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380123","req":[{"tid":1,"active":"get","devicetype":"display","command":"subinput","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380123","gid": "450f24ca-1f5f-448f-a965-c4652a2f2b6f","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "SUBINPUT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380124","req":[{"tid":1,"active":"set","devicetype":"display","command":"subinput","value":"usbc","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380124","gid": "9b40019f-b933-46db-be1b-d8eda062a8b4","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SUBINPUT",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380125","req":[{"tid":1,"active":"set","devicetype":"display","command":"swapvideo","value":"main,sub1","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380125","gid": "a4124890-a627-4a16-9f69-caab5782256b","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SWAPVIDEO",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380126","req":[{"tid":1,"active":"set","devicetype":"display","command":"swapusb","value":"1","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380126","gid": "9a259229-7845-4c0a-9d00-fb2430a3cd22","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "SWAPUSB",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380127","req":[{"tid":1,"active":"get","devicetype":"display","command":"pxpzoom","options":{}}]}
+CMA Notification Alert eventtype : 1
+CMA Notification Alert eventtype : {"sid": "1731380127","gid": "0729d641-7aa5-4d2e-93b2-3fc4ef59b3d9","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "GET",
+  "TargetFeature": "PXPZOOM",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380128","req":[{"tid":1,"active":"set","devicetype":"display","command":"pxpzoom","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380128","gid": "5a9548f2-ed16-4a8b-a524-9980865c5cc4","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "PXPZOOM",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380129","req":[{"tid":1,"active":"set","devicetype":"display","command":"restorefactorydefaults","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380129","gid": "65820b53-14fa-44da-a36d-302a37264635","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESTOREFACTORYDEFAULTS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380130","req":[{"tid":1,"active":"set","devicetype":"display","command":"restoreleveldefaults","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380130","gid": "2bcc3736-1596-4ab8-a2ab-d0987bccc6dd","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESTORELEVELDEFAULTS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380131","req":[{"tid":1,"active":"set","devicetype":"display","command":"restorecolordefaults","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380131","gid": "7ed8d969-3739-4c89-b59b-f8646c7d0c7c","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "RESTORECOLORDEFAULTS",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+Test Json = {"sid":"1731380132","req":[{"tid":1,"active":"set","devicetype":"display","command":"changemonitorid","options":{}}]}
+CMA Notification Alert eventtype : 2
+CMA Notification Alert eventtype : {"sid": "1731380132","gid": "ebba5aaf-4f0b-4e8f-9f92-faba865141e0","response": [{"tid": 1,"result": 501,"msg": "No monitor connected","data": [{
+  "Model": "N/A",
+  "SerialNumber": "N/A",
+  "Index": "N/A",
+  "ServiceTag": "N/A",
+  "Command": "SET",
+  "TargetFeature": "CHANGEMONITORID",
+  "Value": "N/A",
+  "Result": "FAIL",
+  "Message": "No monitor connected"
+}]}]}
+2024 Nov 12 14:11:00.176	out_cli_display.txt End test.
+
+

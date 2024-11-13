@@ -658,19 +658,22 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         /// <summary>
         /// EditCommand() function which is running under STA thread.
+        /// In this method, it must return a EditStarted event to UI, to tell UI
+        /// 1) The EditWindow is shown and start edit with "" (empty string) argument,
+        /// 2) Something wrong so caould not start the edit with error message as the argument.
         /// </summary>
         /// <param name="monitorInfo"></param>
         /// <param name="args"></param>
         /// <returns></returns>
         private bool STA_EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
-            //Should be never
+            //Should be never, these flags are checked alaredy in EditCommand()
             if (_eaBroker == null) 
                 return false;
             if (_editWindow == null)
                 return false;
             if (_saveCustomWindow == null)
-                return true;
+                return false;
 
             Trace.WriteLine("@ UI_EditCommand()");
             Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
@@ -1735,7 +1738,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     LogInfo("After new EAEditWindow");
                     _editWindow.Show();
 
-                    _saveCustomWindow = new DDPM.EABroker.SaveCustomWindow();
+                    _saveCustomWindow = new DDPM.EABroker.SaveCustomWindow(_deviceManagerPlugin);
                     _saveCustomWindow.Owner = _editWindow;
                     _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
                     _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
@@ -1779,13 +1782,34 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EAArgs retArgs = new EAArgs(_eaArgs);
                 retArgs.Command = "EditReturn";
                 retArgs.Result = true;
-
-                retArgs.SplitJson.CustomName = e;
                 retArgs.SplitJson.Settings = _editWindow.GetSettings();
 
+                if (_saveCustomWindow != null)
+                {
+                    if (_saveCustomWindow.SelectedCustomItem != null)
+                    {
+                        //CustomName will copy from SaveCustomWindow
+                        retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+
+                        //If user has selected an existed custom layout
+                        if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+                        {
+                            retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+
+                        }
+                        else
+                        {
+                            //The SplitClass will update from SaveCustomWindow
+
+                            //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+                        }
+                    }
+                }
+
                 //Can be removed
-                retArgs.CustomName = e;
-                retArgs.Settings = _editWindow.GetSettings();
+                //retArgs.CustomName = e;
+                //retArgs.Settings = _editWindow.GetSettings();
 
                 EditReturn(this, retArgs);
             }

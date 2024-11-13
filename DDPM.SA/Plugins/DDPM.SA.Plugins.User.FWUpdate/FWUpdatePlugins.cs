@@ -414,17 +414,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         string deviceSupplierID = string.Empty;
                         if (deviceInfo != null)
                         {
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} is no null");
+                            _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            //if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            //{
-                            //    _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                            //    //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                            //    updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            //}
+                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
+                            {
+                                _logs.DebugMsg_1($"{nameof(CheckUpdate)} deviceInfo.DeviceName : {deviceInfo.Name}");
+                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
+                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
+                            }
                         }
-                        if (deviceTypeList == null)
+                        if (deviceTypeList == null && !isOnlyDisplay)
                         {
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
