@@ -7079,13 +7079,23 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0 && commandLineInput.Model.Count <= 0)
             {
                 bool flag = true;
+                var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+                Trace.WriteLine(serviceTagList.Count);
+                List<string> swapIsDone = new List<string>();
                 while (flag)
                 {
-                    int i = 0;
-                    output = string.Empty;
-                    ret = 0;
-                    foreach (MonitorInfo mo in _AllInfoMonitors.ToList())
+                    for (int i = 0; i < serviceTagList.Count; i++)
                     {
+                        Trace.WriteLine(serviceTagList[i]);
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
                         cLI_RESPONSE = new CLI_RESPONSE();
                         cLI_RESPONSE.Command = commandLineInput.Command;
                         cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
@@ -7093,22 +7103,49 @@ namespace DDPM.CLI.Plugins.Display
                         cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
                         cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
                         cLI_RESPONSE.Model = mo.edid.ModelName;
-
                         var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
                         if (tmpRet.code == 3)
                         {
                             _AllInfoMonitors = devMgr.GetMonitors().Result;
                             break;
                         }
+                        swapIsDone.Add(mo.edid.ServiceTag);
                         ret += tmpRet.code;
                         output += "\n" + tmpRet.result;
                     }
-                    if (i == monitorCount)
-                    {
+                    if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
-                        break;
-                    }
                 }
+                //while (flag)
+                //{
+                //    int i = 0;
+                //    output = string.Empty;
+                //    ret = 0;
+                //    foreach (MonitorInfo mo in _AllInfoMonitors.ToList())
+                //    {
+                //        cLI_RESPONSE = new CLI_RESPONSE();
+                //        cLI_RESPONSE.Command = commandLineInput.Command;
+                //        cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                //        cLI_RESPONSE.Index = change_0base_to_1base(i++.ToString()) + ",";
+                //        cLI_RESPONSE.ServiceTag = mo.edid.ServiceTag.ToString() + ",";
+                //        cLI_RESPONSE.SerialNumber = mo.edid.SerialNumber;
+                //        cLI_RESPONSE.Model = mo.edid.ModelName;
+
+                //        var tmpRet = PropertiesFunc(devMgr, mo, commandLineInput, cLI_RESPONSE);
+                //        if (tmpRet.code == 3)
+                //        {
+                //            _AllInfoMonitors = devMgr.GetMonitors().Result;
+                //            break;
+                //        }
+                //        ret += tmpRet.code;
+                //        output += "\n" + tmpRet.result;
+                //    }
+                //    if (i == monitorCount)
+                //    {
+                //        flag = false;
+                //        break;
+                //    }
+                //}
             }
             else
             {
