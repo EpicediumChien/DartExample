@@ -17,5 +17,6 @@ namespace DDPM.SA.Common.Display
 
         //The EAID of the first Custom Layout, =1000 => The EAID of the first Custom layout is 1000
         public const int EAID_FirstCustom = 1000;
+
     }
 }

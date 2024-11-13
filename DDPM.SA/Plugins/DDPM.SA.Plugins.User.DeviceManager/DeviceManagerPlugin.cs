@@ -30,6 +30,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
@@ -173,6 +174,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private JobQueue _hotkeyJobQueue = new JobQueue();
 
         private static MonitorInfo lastSelectedMonitor_UI = null;
+        private bool isBypassHotkey { get; set; } = false;
 
         //powerNap
         private JobQueue _powerNapJobQueue = new JobQueue();
@@ -244,6 +246,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private string debugPreMsg = string.Empty;
         private System.Drawing.Point previousCursorPosition = new System.Drawing.Point { X = 0, Y = 0 };
         private bool isKvm_Auto_SwitchKbMsKey = false;
+        private bool isKvm_Auto_SwitchKbMsWideMove = false;
         private int KvmAutoSwitchCounter = 0;
         private void OnUsbKvmAutoSwitchTimedRaise(object sender, ElapsedEventArgs e)
         {
@@ -255,6 +258,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (monitorInfo != null)
             {
                 string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+
+                if (isKvm_Auto_SwitchKbMsWideMove)
+                {
+                    if ((cursorPosition.X <= (previousCursorPosition.X - 50)) || (cursorPosition.X >= (previousCursorPosition.X + 50)) ||
+                        (cursorPosition.Y <= (previousCursorPosition.Y - 50)) || (cursorPosition.Y >= (previousCursorPosition.Y + 50)))
+                    {
+                        isKvm_Auto_SwitchKbMsWideMove = false;
+                    }
+                    return;
+                }
                 if (isUsbKvmCursorEdge(monitorInfo, currentScreen, cursorPosition))
                 {
                     KvmAutoSwitchCounter += 1;
@@ -283,6 +296,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //send usbKvm switch
 
                     isKvm_Auto_SwitchKbMsKey = true;
+                    isKvm_Auto_SwitchKbMsWideMove = true;
                     KvmAutoSwitchCounter = 0;
                     previousCursorPosition = cursorPosition;
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_Auto_SwitchKbMsKey));
@@ -573,8 +587,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (_pwr_Mon == null)
                 {
                     _pwr_Mon = new PowerEventControl(Log);
-                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
+                    _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;                    
                     _pwr_Mon.Enable_Event();
+                    _pwr_Mon.HotkeyPressed += HotkeyPressed;
+                    _pwr_Mon.Enable_HotkeyHook();
                 }
                 System.Windows.Threading.Dispatcher.Run();
             });
@@ -583,6 +599,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
+        }
+
+        private void HotkeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            Debug.WriteLine($"HotkeyPressed===>id:{e.HotkeyInfo.ID}");
+            if (isBypassHotkey)
+            {
+                writelog($"bypass HotkeyPressed,id={e.HotkeyInfo.ID}");
+                return;
+            }
+            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+            {
+                _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
+            }
+            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+            {
+                foreach (var settings in _hotkeySettings)
+                {
+                    foreach (var hotkeyInfo in settings.HotkeyInfo)
+                    {
+                        {
+                            Debug.WriteLine($"job={hotkeyInfo.Job},id={hotkeyInfo.ID}");
+                            if (hotkeyInfo.ID.Equals(e.HotkeyInfo.ID))
+                            {
+                                Debug.WriteLine($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey(id:{hotkeyInfo.ID}) => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey(id:{hotkeyInfo.ID}) => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                HotkeyType job = hotkeyInfo.Job;
+                                ExecHotkeyJob(settings, job);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (_hotkeySettings != null)
+                {
+                    Debug.WriteLine($"HotkeyPressed[job fail],id:{e.HotkeyInfo.ID} ==> _hotkeySettings :count = {_hotkeySettings.Count}");
+                }
+                else
+                {
+                    Debug.WriteLine($"HotkeyPressed[job fail],id{e.HotkeyInfo.ID} ==> _hotkeySettings is null");
+                }
+            }
         }
 
         #endregion
@@ -817,7 +878,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, null, colorPresetRunType).Result;
             else
+            {
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin, colorPresetRunType).Result;
+
+                if (r == false)
+                {
+                    PopupContentPackage popupContentPackage = new PopupContentPackage()
+                    {
+                        Title = Strings.Dell_Display_and_Peripheral_Manager0,
+                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + m.modelName,
+                        IsInfo = true,
+                        IsOnlyUpdate = false,
+                        StayOpen = false,
+                        Timeout = 5,
+                    };
+                    CallPopup(this, popupContentPackage);
+                }
+            }
             //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
             //write back to settings
@@ -7952,6 +8029,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyAutoFramingSupported(Guid));
         }
 
+        public async Task<bool> GetIsESISupported(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsESISupported(Guid));
+        }
+
         public async Task<bool> GetIsAutoFramingOn(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOn(Guid));
@@ -8290,6 +8372,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
         }
 
+        public Task<DockData> GetDockData(string guid)
+        {
+            return Task.FromResult(_DTPProxyPlugin.GetDockData(guid).Result);
+        }
+
         #endregion
 
         #endregion
@@ -8557,6 +8644,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             foreach (var monitor in _AllInfoMonitors)
             {
                 Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+            }
+            //register hotkey
+            RegistHotkey(false);
+        }
+
+        private void RegistHotkey(bool unRegisterAll)
+        {
+            if (unRegisterAll) _pwr_Mon.UnRegisterAllHotKey();
+            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+            {
+                _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
+            }
+            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+            {
+                foreach (var settings in _hotkeySettings)
+                {
+                    if (settings.HotkeyInfo.Count > 0)
+                    {
+                        _pwr_Mon.RegisterHotKey(settings.HotkeyInfo);
+                    }
+                }
+            }
+            else
+            {
+                if (_hotkeySettings != null)
+                {
+                    Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
+                }
+                else
+                {
+                    Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
+                }
             }
         }
 
@@ -9497,7 +9616,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return;
             }
-            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
+            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
 
             // 2024-08-07 Elie, fix got exception while don't check this is null or not.
             if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
@@ -10890,6 +11009,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             ReloadHotkeyConfigData();
+            //RegistHotkey
+            RegistHotkey(true);
             //Telementry Collection
             var rt = false;
             var applicationSettings_Function = new ApplicationSettings_Function();
@@ -11016,14 +11137,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool _OSDKeyLock = false;
 
+
+        private bool isReg = false;
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
             Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
-
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+            //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z"))
             {
                 CallQAM_UI(this);
@@ -11108,49 +11232,65 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //osd
-            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
-            {
-                _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
-            }
-            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
-            {
-                foreach (var settings in _hotkeySettings)
-                {
-                    foreach (var hotkeyInfo in settings.HotkeyInfo)
-                    {
-                        var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
-                        var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
-                        Debug.WriteLine($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                        Debug.WriteLine($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
-                        if (_ctrlPressed || _altPressed || _shiftPressed)
+            /*            if (_hotkeySettings != null && _hotkeySettings.Count == 0)
                         {
-                            writelog($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                            writelog($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                            _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
                         }
-                        if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
-                        && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
-                        && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
-                        && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
+                        if (_hotkeySettings != null && _hotkeySettings.Count > 0)
                         {
-                            Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
-                            writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
-                            HotkeyType job = hotkeyInfo.Job;
-                            ExecHotkeyJob(settings, job);
+                            foreach (var settings in _hotkeySettings)
+                            {
+                                foreach (var hotkeyInfo in settings.HotkeyInfo)
+                                {
+
+                                    if (!isReg)
+                                    {
+                                        var key = new HotKey(
+                                              hotkeyInfo.ModifiersEnum,
+                                              hotkeyInfo.KeyCode,
+                                              _HotkeyPlugin.GetHookHandle(),
+                                              (hotkey) =>
+                                              {
+                                                  Debug.WriteLine("hotkey was pressed======================================!");
+                                              });
+                                        isReg = true;
+
+                                    }
+
+
+                                    var xx = hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu);
+                                    var b1 = hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue);
+                                    Debug.WriteLine($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                    Debug.WriteLine($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                                    if (_ctrlPressed || _altPressed || _shiftPressed)
+                                    {
+                                        writelog($"{hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                        writelog($"key _ctrlPressed={_ctrlPressed}; _altPressed={_altPressed}; _shiftPressed={_shiftPressed}; current pressed:{e.KeyValue}={e.KeyCode},isUsing={b1}");
+                                    }
+                                    if (hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Control) == _ctrlPressed
+                                    && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Menu) == _altPressed
+                                    && hotkeyInfo.Hotkey.Any(x => x == VirtualKey.Shift) == _shiftPressed
+                                    && hotkeyInfo.Hotkey.Any(x => (int)x == e.KeyValue))
+                                    {
+                                        Debug.WriteLine($"job matched:{hotkeyInfo.Job}");
+                                        writelog($"Job matched:{hotkeyInfo.Job} => {hotkeyInfo.Description}: Hotkey => : {string.Join("+", hotkeyInfo.Hotkey.Select(x => x + "(" + (int)x + ")").ToList())}");
+                                        HotkeyType job = hotkeyInfo.Job;
+                                        ExecHotkeyJob(settings, job);
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            else
-            {
-                if (_hotkeySettings != null)
-                {
-                    Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
-                }
-                else
-                {
-                    Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
-                }
-            }
+                        else
+                        {
+                            if (_hotkeySettings != null)
+                            {
+                                Debug.WriteLine($"Keyboard_KeyUpProc ==> _hotkeySettings :count = {_hotkeySettings.Count}");
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"Keyboard_KeyUpProc==> _hotkeySettings is null");
+                            }
+                        }*/
         }
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo)
@@ -14259,6 +14399,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_DisplayManagerPlugin != null)
                 rc = _DisplayManagerPlugin.GetMonitorMaxResolution(monitor).Result;
             return rc;
+        }
+
+        public Task<bool> ByPassHotkey(bool bypass)
+        {
+            isBypassHotkey = bypass;
+            return Task.FromResult(isBypassHotkey);
+        }
+
+        public Task<bool> UnRegistAllHotkey()
+        {
+            _pwr_Mon.UnRegisterAllHotKey();
+            return Task.FromResult(true);
         }
     }
 }

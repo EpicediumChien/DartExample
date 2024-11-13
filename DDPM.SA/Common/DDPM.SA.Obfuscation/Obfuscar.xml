@@ -2,15 +2,10 @@
 <Obfuscator>
 		<Var name="InPath" value="." />
 		<Var name="OutPath" value=".\Obfuscar" />
-		<Var name="KeepPublicApi" value="true" />
 		<Var name="HidePrivateApi" value="true" />
 		<Var name="HideStrings" value="true" />
-		<Var name="RenameProperties" value="true" />
-		<Var name="RenameMethods" value="true" />
-		<Var name="RenameFields" value="true" />
-		<Var name="SuppressIldasm" value="true" />
-		<Var name="RegenerateDebugInfo" value="true" />
-		<Var name="UseUnicodeNames" value="true" />
-		<Var name="ReuseNames" value="true" />
+		<Var name="UseControlFlow" value="true" />
+		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.netcore.app\8.0.10" />
+		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.aspnetcore.app\8.0.10" />
 		<Module file="$(InPath)\DDPM.SA.Obfuscation.dll" />
 </Obfuscator>

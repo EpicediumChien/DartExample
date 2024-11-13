@@ -2110,38 +2110,44 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             bool ret = false;
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus start");
-            _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off:{onoff}");
-            if (onoff)
+            if (_DisplayPropertiesPlugin != null)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode go");
-                _DisplayPropertiesPlugin.SetExtendMode(monitorInfos);
-                if (monitorInfos.CapabilityString != "" && monitorInfos.CapabilityString.Length > 10)
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus on/off:{onoff}");
+                if (onoff)
                 {
-                    string desktop_E2 = "27";
-                    string desktop_F0 = "34";
-                    string[] ss = monitorInfos.CapabilityString.Split("E2(");
-                    ss = ss[1].Split(")");
-                    ss = ss[0].Split(" ");
-                    for (int i = 0; i < ss.Length; i++)
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode go");
+                    _DisplayPropertiesPlugin.SetExtendMode(monitorInfos);
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode done");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus go");
+                    ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
+                    if (ret)
                     {
-                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus ss:{ss[i]}");
-                        if (ss[i].Equals(desktop_E2))
-                        {
-                            var hexStyle = System.Globalization.NumberStyles.HexNumber;
-                            int number;
-                            if (int.TryParse(desktop_F0, hexStyle, CultureInfo.CurrentCulture, out number))
-                            {
-                                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
-                                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability(monitorInfos, {0xF0},{(uint)number} )");
-                                SetVCPCapability(monitorInfos, 0xF0, (uint)number).Wait();
-                                break;
-                            }
-                        }
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability({monitorInfos.modelName}, {0xEA}, {0xFE01})");
+                        ret = SetVCPCapability(monitorInfos, 0xEA, 0xFE01).Result;
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done ret : {ret}");
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus go");
+                    ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
+                    _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
+                    if (ret)
+                    {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability({monitorInfos.modelName}, {0xF0}, {0xFE00})");
+                        ret = SetVCPCapability(monitorInfos, 0xEA, 0xFE00).Result;
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done ret : {ret}");
                     }
                 }
             }
+            else
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin is null");
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus done");
-            ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
             return Task.FromResult(ret);
         }
 

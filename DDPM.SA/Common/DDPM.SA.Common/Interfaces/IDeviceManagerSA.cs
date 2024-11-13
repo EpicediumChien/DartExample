@@ -508,6 +508,10 @@ namespace DDPM.SA.Common
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
+        public Task<bool> ByPassHotkey(bool bypass);
+
+        public Task<bool> UnRegistAllHotkey();
+
         #endregion public for hotkey
 
         #region public for PowerNap
@@ -877,6 +881,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
+        Task<bool> GetIsESISupported(string Guid);
+
         #endregion Webcam
 
         #region Headset
@@ -1066,6 +1072,10 @@ namespace DDPM.SA.Common
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
         #endregion Dongle
+
+        #region Dock
+        Task<DockData> GetDockData(string guid);
+        #endregion
 
         #endregion public for DTPProxy
 

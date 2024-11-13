@@ -1,0 +1,78 @@
+/get -app=CONNECTEDDEVICES
+/get -display=DETECTMONITORS
+/get -Display=FWVersion
+/get -Display=MonitorCount
+/get -Display=BrightnessLevel
+/set -Display=BrightnessLevel -value=25
+/get -Display=ContrastLevel
+/set -Display=ContrastLevel -value=25
+/get -Display=ColorPreset
+/set -Display=ColorPreset -value=Native
+/get -Display=AutoColorPreset
+/set -Display=AutoColorPreset -value=off
+/get -Display=ActiveInputSource
+/set -Display=ActiveInputSource -value=USB-C
+/get -Display=PowerSetting
+/set -Display=PowerSetting -value=on
+/get -Display=OSDLanguage
+/set -Display=OSDLanguage -value=Japan
+/get -Display=OSDAccess
+/set -Display=OSDAccess -value=osdlock
+/get -Display=AutoBrightness
+/set -Display=AutoBrightness -value=off
+/get -Display=AutoBrightnessRangeLevel
+/set -Display=AutoBrightnessRangeLevel -value=low
+/get -Display=AutoColorTemp
+/set -Display=AutoColorTemp -value=off
+/get -Display=PrimaryMonitorSync
+/set -Display=PrimaryMonitorSync -value=off
+/get -Display=USBCPrioritization
+/set -Display=USBCPrioritization -value=HighDataSpeed
+/get -Display=SpeakerMicrophone
+/set -Display=SpeakerMicrophone -value=osddisable
+/get -Display=SpeakerVolume
+/set -Display=SpeakerVolume -value=osddisable
+/get -Display=Microphone
+/set -Display=Microphone -value=osddisable
+/get -Display=PowerNap
+/set -Display=PowerNap -value=off
+/get -Display=ColorManagement
+/set -Display=ColorManagement -value=off
+/get -Display=ActiveHours
+/get -display=ExportSettings -value=D:\DDPM_CLI\settings.json
+/set -display=ImportSettings -value=D:\DDPM_CLI\settings.json
+/get -display=InAppExportImport
+/set -display=InAppExportImport -value=lock
+/get -Display=EasyArrangeLayout
+/set -Display=EasyArrangeLayout -value=disable
+/get -Display=AllResolutionRefreshRate
+/get -Display=CurrentResolutionRefreshRate
+/set -Display=ResolutionRefreshRate -value=1920x1080@60
+/set -Display=Resolution -value=1920x1080
+/set -Display=RefreshRate -value=60
+/get -Display=Orientation
+/set -Display=Orientation -value=portrait
+/get -Display=NetworkKVMVersion
+/get -Display=NetworkKVM
+/set -Display=NetworkKVM -value=on
+/get -Display=InAppNetworkKVM
+/set -Display=InAppNetworkKVM -value=unlock
+/get -Display=NetworkKVMAutoConnect
+/get -Display=NetworkKVMContentTransfer
+/get -Display=GetNetworkKVMIncomingPort
+/get -Display=GetNetworkKVMOutgoingPort
+/get -Display=GetNetworkKVMContentTransferPort
+/set -Display=NetworkKVMContentTransferPort -value=33331
+/set -Display=NetworkKVMAccessReset
+/get -Display=PxP
+/set -Display=PxP -value=pip
+/get -Display=SubInput
+/set -Display=SubInput -value=USB-C
+/set -Display=SwapVideo -value=main,sub1
+/set -Display=SwapUSB -value=1
+/get -Display=PxPZoom
+/set -Display=PxPZoom
+/set -Display=RestoreFactoryDefaults
+/set -Display=RestoreLevelDefaults
+/set -Display=RestoreColorDefaults
+/set -Display=ChangeMonitorId

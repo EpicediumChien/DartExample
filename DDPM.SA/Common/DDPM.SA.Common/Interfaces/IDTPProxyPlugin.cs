@@ -164,6 +164,8 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
         Task<bool> GetIsPrioritizeExternalWebcam(string Guid);
 
+        Task<bool> GetIsESISupported(string Guid);
+
         #endregion
 
         #region Headset
@@ -267,6 +269,10 @@ namespace DDPM.SA.Common
         Task<string> GetPluginIdAsyncForDongle(string Guid);
         Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid);
 
+        #endregion
+
+        #region Dock
+        Task<DockData> GetDockData(string guid);
         #endregion
     }
 }

@@ -1,4 +1,4 @@
-﻿using DDPM.Easy.Common;
+﻿//using DDPM.Easy.Common;
 using nsWinEventHook;
 using System.Diagnostics;
 using System.Reflection;
@@ -7,6 +7,7 @@ using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
+    //Unused class to be deleted.
     /// <summary>
     /// Interaction logic for InfoWindow.xaml
     /// </summary>
@@ -28,41 +29,26 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            bool IsInfoWindowVsible = Win32Lib.Win32.IniReadInt(
-                "DDPMDebug", "DDPM.SA.EAPlugin.InfoWindow.IsVisible", 0, @"C:\temp\DDPMDebug.txt") == 1;
-            if (IsInfoWindowVsible)
-            {
-                Left = 100;
-                Top = 50;
-                //Opacity = 1;
-            }
-            else
-            {
-                //Left = -99999;
-                //Top = -99999;
-                //Visibility = Visibility.Hidden;
-            }
-            WinEventHook_Start();
-
-            //Hide window from Alt+tab
-            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
-            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
-
-            //Test if a open window can create another window in a Dispatcher
-            //Result: OK
-            //this.Dispatcher.Invoke(() =>
+            //bool IsInfoWindowVsible = Win32Lib.Win32.IniReadInt(
+            //    "DDPMDebug", "DDPM.SA.EAPlugin.InfoWindow.IsVisible", 0, @"C:\temp\DDPMDebug.txt") == 1;
+            //if (IsInfoWindowVsible)
             //{
-            //    SaveCustomWindow w = new SaveCustomWindow(this);
-            //    w.Show();
-            //});
-
-            //InitWorkWindows();
-            //this.Dispatcher.Invoke(() =>
+            //    Left = 100;
+            //    Top = 50;
+            //    //Opacity = 1;
+            //}
+            //else
             //{
-            //    _vmArrange.InitWorkWindows();
-            //});
+            //    //Left = -99999;
+            //    //Top = -99999;
+            //    //Visibility = Visibility.Hidden;
+            //}
+            //WinEventHook_Start();
 
-            //RefreshWorkWindows();
+            ////Hide window from Alt+tab
+            //System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            //Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
         }
 
         #endregion Init
@@ -123,6 +109,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void OnWindowStartMovingProc(IntPtr hWnd)
         {
+            /*
             //if (_isDebuggingOnWindowStartMoving)
             //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
 
@@ -197,10 +184,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _vmArrange.RefreshCellRects();
             _isRefresCellsCountAfterStartMoving = 0;
+            */
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
         {
+            /*
             bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
 
             if (!_vmArrange.IsMoving)
@@ -241,10 +230,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             if (!rcArrange.IsEmpty)
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            */
         }
 
         private void OnLocationChangedProc(int x, int y)
         {
+            /*
             if (_vmArrange == null)
                 return;
 
@@ -289,6 +280,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    _workingSplit.VM.HoveringCell = vm.HoveringCell;
 
             //Set WorkWins to topmost
+            */
         }
 
         #endregion Window Event Handlers

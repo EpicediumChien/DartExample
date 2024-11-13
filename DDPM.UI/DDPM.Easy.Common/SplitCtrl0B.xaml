@@ -73,8 +73,15 @@
 
                     <!--<DataTrigger Binding="{Binding IsHover, ElementName=uc}" Value="True">
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}" />
-                    </DataTrigger>-->
-                   <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                    </DataTrigger>
+                    
+                     <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                        <Setter Property="BorderThickness" Value="1.5"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
+                    </DataTrigger>
+                  
+                    -->
+                    <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
                         <Setter Property="BorderThickness" Value="1.5"/>
                         <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_OuterBorder_BdColor_Aws_Normal}"/>
                     </DataTrigger>

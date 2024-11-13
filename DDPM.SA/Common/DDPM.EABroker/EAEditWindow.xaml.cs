@@ -55,6 +55,8 @@ namespace DDPM.EABroker
         {
             this.Dispatcher.Invoke(() =>
             {
+                //Robert_Lin, clear the previous editing SplitCtrl before Hode
+                splitCtrl.Content = null;
                 Hide();
             });
         }
@@ -163,13 +165,13 @@ namespace DDPM.EABroker
         public bool ShowAndEdit(EAArgs args, Screen scr)
         {
             _inputArgs = args;
-            if ((args.SplitJson.CellCount == 0) && (args.SplitJson.SplitKey == 'B'))
+            if ((args.SplitJson.IsOverlapLayout))
             {
-                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_AddedCustom(args, scr); });
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_OverlapCustom(args, scr); });
             }
             else if (ISplitCtrl.IsExisted(args.SplitJson.CellCount, args.SplitJson.SplitKey))
             {
-                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_PredefinedCustom(args, scr); });
+                this.Dispatcher.Invoke(() => { UI_ShowAndEdit_NonOverlapCustom(args, scr); });
             }
             else
             {
@@ -178,7 +180,7 @@ namespace DDPM.EABroker
             return true;
         }
 
-        private void UI_ShowAndEdit_PredefinedCustom(EAArgs args, Screen scr)
+        private void UI_ShowAndEdit_NonOverlapCustom(EAArgs args, Screen scr)
         {
             //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
             ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
@@ -201,7 +203,7 @@ namespace DDPM.EABroker
             _orgFriendlyName = args.SplitJson.CustomName;
 
             //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
+            double dpiX = 1.00;
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             if (dpiXProperty != null)
             {
@@ -219,7 +221,7 @@ namespace DDPM.EABroker
 
             Show();
         }
-        private void UI_ShowAndEdit_AddedCustom(EAArgs args, Screen scr)
+        private void UI_ShowAndEdit_OverlapCustom(EAArgs args, Screen scr)
         {
             splitCtrl.Visibility = Visibility.Collapsed;
             _orgFriendlyName = args.CustomName;
@@ -303,6 +305,13 @@ namespace DDPM.EABroker
                 if (!screenOfhWnd.Equals(screen))
                 {
                     WriteLog($"    [{idx}] Abandon: Not in target screen.");
+                    continue;
+                }
+
+                //Check if the window is totally inside screen
+                if (!screen.Bounds.Contains(rcWnd))
+                {
+                    WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
                     continue;
                 }
 
@@ -437,6 +446,9 @@ namespace DDPM.EABroker
             bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
             if (isMinimized)
                 return false;
+
+            //Check if the window across screen boundary
+            //It need Screen rect, will be check after returned
 
             return true;
         }

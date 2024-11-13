@@ -66,6 +66,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             //0821 Bruce Add show Dock Fw Version
             Model = Model.Replace("_", " ");
+            _deviceManager.GetDockData(instanceID).Wait();
             FirmwareVersion2 = $"{Strings.FirmwareVersion}";
             if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockPackageFwVersion))
             {
