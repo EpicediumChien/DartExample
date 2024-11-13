@@ -7441,75 +7441,84 @@ namespace DDPM.CLI.Plugins.Display
                     CurrentOrientation_RESPONSE = new CLI_Get_Properties_Orientation_RESPONSE(cLI_RESPONSE);
                     try
                     {
-                        if (commandLineInput.Command.Equals("GET"))
+                        if (monitorInfo.CapabilityDic.ContainsKey("AA"))
                         {
-                            writelog("ORIENTATION get entry");
-                            if (commandLineInput.Options.Count > 0)
+                            if (commandLineInput.Command.Equals("GET"))
                             {
-                                cLI_RESPONSE.Result = "FAIL";
-                                cLI_RESPONSE.Message = "Bring in extra strings:";
+                                writelog("ORIENTATION get entry");
+                                if (commandLineInput.Options.Count > 0)
+                                {
+                                    cLI_RESPONSE.Result = "FAIL";
+                                    cLI_RESPONSE.Message = "Bring in extra strings:";
+                                    for (int i = 0; i < commandLineInput.Options.Count; i++)
+                                    {
+                                        cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    }
+                                    break;
+                                }
+                                ret = GetCurrentDisplayProperties(displayPropertiesInfo, CurrentOrientation_RESPONSE) == 0 ? true : false;
+                            }
+                            else if (commandLineInput.Command.Equals("SET"))
+                            {
+                                writelog("ORIENTATION set entry");
+                                if (commandLineInput.Options.Count > 1)
+                                {
+                                    cLI_RESPONSE.Result = "FAIL";
+                                    cLI_RESPONSE.Message = "Bring in extra strings:";
+                                    for (int i = 0; i < commandLineInput.Options.Count; i++)
+                                    {
+                                        cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    }
+                                    break;
+                                }
+                                displayProperties = new Properties()
+                                {
+                                    Resolutions_Width = 0,
+                                    Resolutions_High = 0,
+                                    Frequency = 0
+                                };
                                 for (int i = 0; i < commandLineInput.Options.Count; i++)
                                 {
-                                    cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                                    if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                                    {
+                                        CurrentOrientation_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                        DisplayOrientation? displayOrientation = null;
+                                        switch (commandLineInput.Options[i].Option_Value)
+                                        {
+                                            case "LANDSCAPE":
+                                                displayOrientation = DisplayOrientation.Angle0;
+                                                break;
+
+                                            case "PORTRAIT":
+                                                displayOrientation = DisplayOrientation.Angle90;
+                                                break;
+
+                                            case "LANDSCAPE_FLIPPED":
+                                                displayOrientation = DisplayOrientation.Angle180;
+                                                break;
+
+                                            case "PORTRAIT_FLIPPED":
+                                                displayOrientation = DisplayOrientation.Angle270;
+                                                break;
+
+                                            default:
+                                                ret = false;
+                                                break;
+                                        }
+                                        if (displayOrientation != null)
+                                        {
+                                            ret = _devMgr.SetDisplayPropertiest(monitorInfo, displayProperties, (DisplayOrientation)displayOrientation).Result;
+                                        }
+                                    }
                                 }
-                                break;
                             }
-                            ret = GetCurrentDisplayProperties(displayPropertiesInfo, CurrentOrientation_RESPONSE) == 0 ? true : false;
                         }
-                        else if (commandLineInput.Command.Equals("SET"))
+                        else
                         {
-                            writelog("ORIENTATION set entry");
-                            if (commandLineInput.Options.Count > 1)
-                            {
-                                cLI_RESPONSE.Result = "FAIL";
-                                cLI_RESPONSE.Message = "Bring in extra strings:";
-                                for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                {
-                                    cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
-                                }
-                                break;
-                            }
-                            displayProperties = new Properties()
-                            {
-                                Resolutions_Width = 0,
-                                Resolutions_High = 0,
-                                Frequency = 0
-                            };
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
-                                {
-                                    CurrentOrientation_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    DisplayOrientation? displayOrientation = null;
-                                    switch (commandLineInput.Options[i].Option_Value)
-                                    {
-                                        case "LANDSCAPE":
-                                            displayOrientation = DisplayOrientation.Angle0;
-                                            break;
-
-                                        case "PORTRAIT":
-                                            displayOrientation = DisplayOrientation.Angle90;
-                                            break;
-
-                                        case "LANDSCAPE_FLIPPED":
-                                            displayOrientation = DisplayOrientation.Angle180;
-                                            break;
-
-                                        case "PORTRAIT_FLIPPED":
-                                            displayOrientation = DisplayOrientation.Angle270;
-                                            break;
-
-                                        default:
-                                            ret = false;
-                                            break;
-                                    }
-                                    if (displayOrientation != null)
-                                    {
-                                        ret = _devMgr.SetDisplayPropertiest(monitorInfo, displayProperties, (DisplayOrientation)displayOrientation).Result;
-                                    }
-                                }
-                            }
+                            writelog($"ORIENTATION VCP not support");
+                            output += $"\n  \"Result: \": \"ORIENTATION VCP not support\"";
                         }
+
                     }
                     catch
                     {
@@ -12864,7 +12873,7 @@ namespace DDPM.CLI.Plugins.Display
             List<int> _monitorIndeies = new List<int>();
 
             if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
             foreach (int idx in _monitorIndeies)
@@ -12986,7 +12995,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             somethingfail |= 0x10;
                         }
-                        break;
+                    break;
                 }
 
                 if (retcode)
