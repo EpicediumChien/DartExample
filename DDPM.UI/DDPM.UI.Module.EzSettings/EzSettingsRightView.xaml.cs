@@ -88,23 +88,19 @@ namespace DDPM.UI.Module.EzSettings
 
         private void tbRecentHotkey_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                //_strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
-                _strPreviousKey = _viewModel.RecentHotkey;
-                //vm.ToggleInputSourceKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(_viewModel.RecentHotkey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            //_strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
+            _strPreviousKey = _viewModel.RecentHotkey;
+            //vm.ToggleInputSourceKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(_viewModel.RecentHotkey.Length, 1);
         }
 
         private void tbRecentHotkey_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbRecentHotkey_ContextMenuOpening(object sender, ContextMenuEventArgs e)
