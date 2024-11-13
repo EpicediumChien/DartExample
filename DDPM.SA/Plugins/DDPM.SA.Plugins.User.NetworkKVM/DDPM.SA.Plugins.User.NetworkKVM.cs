@@ -1517,11 +1517,11 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] Client Connect....");
             try
             {
-#if RELEASE
+//#if RELEASE
             string info;
             if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
             {
-#endif
+//#endif
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 if (isMonintorChange)
                 {
@@ -1530,7 +1530,7 @@ namespace NetworkKVM.Plugins
                 }
                 ResponseSupportedMonitor().Wait();
                 OnNKVM().Wait();
-#if RELEASE
+//#if RELEASE
             }
             else
             {
@@ -1538,7 +1538,7 @@ namespace NetworkKVM.Plugins
                 Disconnect();
                 CreateNamedPipe_init();
             }
-#endif
+//#endif
             }
             catch (Exception ex)
             {
