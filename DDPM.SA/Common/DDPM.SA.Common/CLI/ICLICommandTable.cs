@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -225,7 +226,7 @@ namespace DDPM.SA.Common
                 }
                 if (arg.Length > 260)
                 {
-                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + arg.ToString());
+                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + System.Security.SecurityElement.Escape(arg.ToString().Substring(0,500)));
                     return null;
                 }
             }
@@ -310,7 +311,7 @@ namespace DDPM.SA.Common
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
                             {
-                                _Log.Warning($"[CLI] ignore a part of commands => {tmp}");
+                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp.Substring(0, 500))}");
                                 continue;
                             }
 
@@ -368,7 +369,7 @@ namespace DDPM.SA.Common
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
                             {
-                                _Log.Warning($"[CLI] ignore a part of commands => {tmp}");
+                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp.Substring(0, 500))}");
                                 continue;
                             }
                             if (!tmpSS[1].Contains(".txt"))
