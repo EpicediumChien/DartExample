@@ -1459,20 +1459,6 @@ namespace DDPM.CLI.Plugins.Display
                     if ((_deviceinfo == null || _deviceinfo.Count == 0) && (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                 }
-
-                if (string.IsNullOrWhiteSpace(output))
-                {
-                    CLI_RESPONSE rsp = new CLI_RESPONSE()
-                    {
-                        Command = commandLineInput.Command,
-                        TargetFeature = commandLineInput.TargetFeature,
-                        Message = "No Device connected",
-                    };
-
-                    recode_per = true;
-                    output += "\n" + JsonConvert.SerializeObject(rsp, Formatting.Indented);
-                }
-
                 return ((int)CLI_ExitCode.success, output);
             }
             else
