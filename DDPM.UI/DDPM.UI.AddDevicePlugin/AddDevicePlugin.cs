@@ -137,7 +137,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     GetRFDongleAsync();
                     return;
                 }
-                if (_viewModel!.CurrentDongle != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
+                if (_viewModel!.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)

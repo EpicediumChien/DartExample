@@ -66,6 +66,7 @@ namespace DDPM.UI.Plugin.Common
                     txtKeystroke.Text = parameter;
                     txtDescription.Text = Strings.OpenWebPageDesc;
                     spKeystroke.Visibility = Visibility.Visible;
+                    txtKeystroke.Watermark = LangHelper.Instance["URL"];
                     txtKeystroke.IsEnabled = true;
                     break;
             }
