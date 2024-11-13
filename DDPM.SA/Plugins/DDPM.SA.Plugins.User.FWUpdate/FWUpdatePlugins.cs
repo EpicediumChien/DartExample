@@ -1635,6 +1635,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = $"Service not running. Try again.";
+                _namedPipeServer.Dispose();
                 return _updateErrorCode;
             }
         }
