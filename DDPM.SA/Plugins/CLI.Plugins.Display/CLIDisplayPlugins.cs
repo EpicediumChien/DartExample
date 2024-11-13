@@ -10970,19 +10970,25 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                if (commandLineInput.Options.Count == 1)
-                {
-                    return DiagnosticReportv2(devMgr, commandLineInput).Result;
-                }
-                else
-                {
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Result = "FAIL";
-                    cli_Response.Message = "Invalid command line syntax.";
-                    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-                }
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax.";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                //if (commandLineInput.Options.Count == 1)
+                //{
+                //    return DiagnosticReportv2(devMgr, commandLineInput).Result;
+                //}
+                //else
+                //{
+                //    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                //    cli_Response.Command = commandLineInput.Command;
+                //    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //    cli_Response.Result = "FAIL";
+                //    cli_Response.Message = "Invalid command line syntax.";
+                //    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                //}
             }
         }
 
@@ -11101,8 +11107,8 @@ namespace DDPM.CLI.Plugins.Display
             string folderinfo = string.Empty;
             string symblinkinfo = string.Empty;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            //    _AllInfoMonitors = await devMgr.GetMonitors();
 
             DDPMFileSecurity.CheckFold(filepath, out folderinfo, out symblinkinfo);
             if (!Directory.Exists(filepath))
@@ -11121,84 +11127,81 @@ namespace DDPM.CLI.Plugins.Display
                 message = "file is not exist.";
             }
 
-            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
-            {
-                foreach (MonitorInfo monitor in _AllInfoMonitors)
-                {
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.modelName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Result = result;
-                    cli_Response.Message = message;
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
-            }
-            else
-            {
-                foreach (string idx in commandLineInput.DeviceIndex)
-                {
-                    MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
-                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                    cli_Response.Command = commandLineInput.Command;
-                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                    cli_Response.Model = monitor.modelName;
-                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                    cli_Response.Index = change_0base_to_1base(idx);
-                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Result = result;
-                    cli_Response.Message = message;
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                }
-                foreach (string tag in commandLineInput.ServiceTag)
-                {
-                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                    foreach (MonitorInfo monitor in tmp)
-                    {
-                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.modelName;
-                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                        cli_Response.Result = result;
-                        cli_Response.Message = message;
-                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                    }
-                }
-                foreach (string modelName in commandLineInput.Model)
-                {
-                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
-                    foreach (MonitorInfo monitor in tmp)
-                    {
-                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Model = monitor.edid.ModelName;
-                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
-                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
-                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                        cli_Response.Result = result;
-                        cli_Response.Message = message;
-                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-                    }
-                }
-            }
+            //if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0 && commandLineInput.Model.Count == 0)
+            //{
+            //    foreach (MonitorInfo monitor in _AllInfoMonitors)
+            //    {
+            //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //        cli_Response.Command = commandLineInput.Command;
+            //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //        cli_Response.Model = monitor.modelName;
+            //        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+            //        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //        cli_Response.Result = result;
+            //        cli_Response.Message = message;
+            //        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (string idx in commandLineInput.DeviceIndex)
+            //    {
+            //        MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+            //        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //        cli_Response.Command = commandLineInput.Command;
+            //        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //        cli_Response.Model = monitor.modelName;
+            //        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //        cli_Response.Index = change_0base_to_1base(idx);
+            //        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //        cli_Response.Result = result;
+            //        cli_Response.Message = message;
+            //        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //    }
+            //    foreach (string tag in commandLineInput.ServiceTag)
+            //    {
+            //        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+            //        foreach (MonitorInfo monitor in tmp)
+            //        {
+            //            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //            cli_Response.Command = commandLineInput.Command;
+            //            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //            cli_Response.Model = monitor.modelName;
+            //            cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //            cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+            //            cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //            cli_Response.Result = result;
+            //            cli_Response.Message = message;
+            //            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //        }
+            //    }
+            //    foreach (string modelName in commandLineInput.Model)
+            //    {
+            //        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ModelName.ToUpper().Equals(modelName.ToUpper()));
+            //        foreach (MonitorInfo monitor in tmp)
+            //        {
+            //            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            //            cli_Response.Command = commandLineInput.Command;
+            //            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //            cli_Response.Model = monitor.edid.ModelName;
+            //            cli_Response.SerialNumber = monitor.edid.SerialNumber;
+            //            cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+            //            cli_Response.ServiceTag = monitor.edid.ServiceTag;
+            //            cli_Response.Result = result;
+            //            cli_Response.Message = message;
+            //            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //        }
+            //    }
+            //}
             
-            if (string.IsNullOrWhiteSpace(output))
-            {
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                cli_Response.Result = result;
-                cli_Response.Message = message;
-                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
-            }
-
+            CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = result;
+            cli_Response.Message = message;
+            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            
             return ((int)CLI_ExitCode.success, output);
         }
 
