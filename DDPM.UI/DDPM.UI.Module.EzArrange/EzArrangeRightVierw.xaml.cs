@@ -132,6 +132,7 @@ namespace DDPM.UI.Module.EzArrange
 
             DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
+            _vm.LogInfo($"@InitListViewItems, GetDisplayOrientation() return {orient}, IsVertical={_vm.IsVertical}");
 
             //Update IsVertical to listViews
             splitListView_Recent.IsVertical = _vm.IsVertical;
@@ -771,7 +772,8 @@ namespace DDPM.UI.Module.EzArrange
             }
 #endif
         }
-
+        //Robert_Lin, 2024-11-10, 
+        // Rewite this method after study DDM and DDPM stories
         //Robert_Lin, 2024-8-4
         /// <summary>
         /// Handle the 'EditReturn' message from DDPM.SA.EAPlugin, after EasyArrange EditWindow has finished its job.
@@ -807,41 +809,51 @@ namespace DDPM.UI.Module.EzArrange
 
             Dispatcher.Invoke(new Action(() =>
             {
-                //Find in CustomList, for the item with the same CustomName
-                SplitItem? itemCustom = splitListView_Custom.FindItemByFriendlyName(e.SplitJson.CustomName);
-                //If found in CustomList
-                if ((itemCustom != null) && (itemCustom.ISplitCtrl != null))
-                {
-                    //Reuse the EAID of the Replaced item
-                    int eaid = itemCustom.ISplitCtrl.EAID;
-                    e.SplitJson.EAID = eaid;
-                    //Replace data from return data
-                    itemCustom.ReplaceByEAArgs(e);
+                bool isHandled = false;
+                SplitItem? itemCustom = null;
 
-                    //Check if itemCustom has Buddy (in RecentList)
-                    SplitItem? itemRecent = null;
-                    if (itemCustom.Buddy != null)
-                    {
-                        itemRecent = itemCustom.Buddy;
-                        //Validation: itemRecent should be owned by ReceList
-                        bool shouleBeTrue = (itemRecent.SplitOwner == Common.EAEM.eSplitOwner.EaRecent);
-                        //Replace with returned data
-                        itemCustom.Buddy.ReplaceByEAArgs(e);
-                    }
-                    else //No buddy in RecentList, need to add
-                    {
-                        itemRecent = AddNewItemToRecentList2ndPosition(itemCustom);
-                    }
-                    //Set it as current selected
-                    _vm.SelectedSplitItem = itemCustom;
-                    //splitListView_Recent.MoveSelectedItemToSecondPosition();
-                    //_vm.SetWorkSplit(itemCustom.CellCount, itemCustom.SplitKey, itemCustom.Settings);
-                }
-                else //itemCustom==null
+                //Check if returned layout is edited from Preset Custom Layout (EAID=[1000~1004]
+                //then we will replace to the existing ListViewItem
+                if (e.SplitJson.EAID >= EAEMConstants.EAID_FirstCustom)
                 {
-                    //Returned layout do not have same CustomName item in CustomList
+                    //Find the customItem to be replaced
+                    itemCustom = splitListView_Custom.FindItemByEAID(e.SplitJson.EAID);
+                    //If found in CustomList
+                    if ((itemCustom != null) && (itemCustom.ISplitCtrl != null))
+                    {
+                        //Replace data from return data
+                        itemCustom.ReplaceByEAArgs(e);
+
+                        //Check if itemCustom has Buddy (in RecentList)
+                        SplitItem? itemRecent = null;
+                        if (itemCustom.Buddy != null)
+                        {
+                            itemRecent = itemCustom.Buddy;
+                            //Validation: itemRecent should be owned by ReceList
+                            bool shouleBeTrue = (itemRecent.SplitOwner == Common.EAEM.eSplitOwner.EaRecent);
+                            //Replace with returned data
+                            itemCustom.Buddy.ReplaceByEAArgs(e);
+                        }
+                        else //No buddy in RecentList, need to add
+                        {
+                            itemRecent = AddNewItemToRecentList2ndPosition(itemCustom);
+                        }
+                        //Set it as current selected
+                        _vm.SelectedSplitItem = itemCustom;
+                        isHandled = true;
+                    }
+                    else //return layout not found in CustomListView
+                    {
+                        //will add a new item to CustomListVew
+                    }
+                }
+
+                if (!isHandled)
+                {
+                    //Returned layout do not have same EAID item in CustomList
                     //We will add a new one or replace to first one if reach the maximum count
 
+                    //If the CustomListView count < 5, We can add one new item to tail of the list 
                     if (splitListView_Custom.ItemCount < EAEMConstants.MaxCustomItems)
                     {
                         //Create a custom item
@@ -868,36 +880,67 @@ namespace DDPM.UI.Module.EzArrange
                         }
                         //Set it as current selected
                         _vm.SelectedSplitItem = itemCustom;
-                        //_vm.SetWorkSplit(itemCustom.CellCount, itemCustom.SplitKey, itemCustom.Settings);
-                        //SaveEaSettings();
+                        isHandled = true;
                     }
-                    else //CustomList Count >= max, we cannot add new item, will replace the first item
+                    else //CustomList Count >= max, we cannot add new item, will replace the latest item
                     {
-                        itemCustom = splitListView_Custom.GetAt(0);
-                        if (itemCustom == null) return;
-                        if (itemCustom.ISplitCtrl == null) return;
-
-                        //Reuse the EAID of the Replaced item
-                        int eaid = itemCustom.ISplitCtrl.EAID;
-                        e.SplitJson.EAID = eaid;
-                        //Replace data from return data
-                        itemCustom.ReplaceByEAArgs(e);
-
-                        //Check if itemCustom has Buddy (in RecentList)
-                        if (itemCustom.Buddy != null)
+                        SplitItem? delCustom = splitListView_Custom.GetLatestItem();
+                        if (delCustom != null)
                         {
-                            //Replace with returned data
-                            itemCustom.Buddy.ReplaceByEAArgs(e);
+                            //Delete its Buddy from RecentList
+                            if (itemCustom.Buddy != null)
+                            {
+                                splitListView_Recent.DeleteSplitItem(itemCustom.Buddy);
+                            }
+                            //Remove the CustomItem
+                            splitListView_Custom.DeleteSplitItem(itemCustom);
+                        }
+
+                        //Create a new custom item
+                        ISplitCtrl ispCustom = ISplitCtrl.Create(e.SplitJson.CellCount, e.SplitJson.SplitKey);
+                        if (ispCustom == null)
+                        {
+                            return;
+                        }
+                        ispCustom.Settings = e.SplitJson.Settings;
+                        ispCustom.FriendlyName = e.SplitJson.CustomName;
+                        int newEAID = GetUnusedCustomEAID();
+                        ispCustom.EAID = newEAID;
+                        //Insert to the first (DDPMW-861)
+                        itemCustom = splitListView_Custom.InsertSplitCtrlToList(ispCustom, 0);
+                        if (itemCustom == null) return;
+                        itemCustom.CustomId = GenerateCustomId();
+
+                        //Add a Buddy to Recent List
+                        SplitItem? itemRecent = AddNewItemToRecentList2ndPosition(itemCustom);
+                        if (itemRecent != null)
+                        {
+                            //Setup Buddy
+                            itemCustom.Buddy = itemRecent;
+                            itemRecent.Buddy = itemCustom;
                         }
                         //Set it as current selected
                         _vm.SelectedSplitItem = itemCustom;
-                        //splitListView_Recent.MoveSelectedItemToSecondPosition();
-                        //_vm.SetWorkSplit(itemCustom.CellCount, itemCustom.SplitKey, itemCustom.Settings);
+                        isHandled = true;
+
+                        ////Check if itemCustom has Buddy (in RecentList)
+                        //if (itemCustom.Buddy != null)
+                        //{
+                        //    //Replace with returned data
+                        //    itemCustom.Buddy.ReplaceByEAArgs(e);
+                        //}
+                        //Set it as current selected
+                        _vm.SelectedSplitItem = itemCustom;
+                        isHandled = true;
                     } //if (splitListView_Custom.ItemCount < EAEMConstants.MaxCustomItems)
                 }
+                //Returned item has been add/replace to CustomListView
 
-                //For AddedCustom, convert the Settings to RatioRects and store in CellBorder.rcRatio
-                if (itemCustom.IsAddedCustomLayout)
+                //For OverlapLayout, convert the Settings to RatioRects and store in CellBorder.rcRatio
+                if (itemCustom == null)
+                    return;
+
+                if (itemCustom.IsOverlapCustomLayout)
                 {
                     if (itemCustom.ISplitCtrl != null)
                     {
@@ -914,27 +957,12 @@ namespace DDPM.UI.Module.EzArrange
                                 cellBorders.Add(cellBorder);
                             }
                         }
-                        //List<System.Windows.Rect>? ratioRects = sp0B.ConvertSettingsToRatioRects(new System.Windows.Rect(0, 0, 1, 1));
-                        //if (ratioRects != null)
-                        //{
-                        //    //To create CellBorders for SplitCtrl
-                        //    int idx = 0;
-                        //    foreach (Rect rc in ratioRects)
-                        //    {
-                        //        idx++;
-                        //        CellBorder cellBorder = new CellBorder();
-                        //        cellBorder.rcRatio = rc;
-                        //        cellBorder.Name = $"Cb{idx}";
-                        //        cellBorders.Add(cellBorder);
-                        //    }
-                        //}
                         sp0B.CellBorders.Clear();
                         sp0B.CellBorders.AddRange(cellBorders);
                     }
                 }
                 
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
-                //_vm.SetWorkSplit(e.CellCount, e.SplitKey, e.Settings);
                 _vm.NotifySelectedLayoutChangedToSA();
                 SaveEaSettings(true);
 

@@ -2194,7 +2194,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Error 的當地語系化字串。
+        ///   查詢類似 Please enter profile name. 的當地語系化字串。
         /// </summary>
         internal static string EazyMemory_40 {
             get {
@@ -2995,7 +2995,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Do not prompt again for the same model 的當地語系化字串。
+        ///   查詢類似 To change the brightness level, press the F8 key 的當地語系化字串。
         /// </summary>
         internal static string Illumination_2 {
             get {
@@ -5079,6 +5079,15 @@ namespace DDPM.UI.Resources {
         internal static string Updates_6 {
             get {
                 return ResourceManager.GetString("Updates.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 URL 的當地語系化字串。
+        /// </summary>
+        internal static string URL {
+            get {
+                return ResourceManager.GetString("URL", resourceCulture);
             }
         }
         

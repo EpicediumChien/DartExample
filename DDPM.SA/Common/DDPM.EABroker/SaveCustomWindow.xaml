@@ -32,17 +32,31 @@
             <Grid>
                 <StackPanel Margin="32">
                     <Grid Height="28">
-                        <TextBlock Text="Custom layout" FontFamily="Roboto" Foreground="White" FontSize="20"
+                        <TextBlock Name="txtCustomLayout" Text="Custom layout" FontFamily="Roboto" Foreground="White" FontSize="20"
                                    VerticalAlignment="Center" HorizontalAlignment="Left" />
                     </Grid>
                     <ComboBox Name="cbNames" Height="40" Margin="0,8,0,16"
                               Style="{StaticResource DdpmComboBoxStyle}"
                               IsEditable="True" 
-                              TextBoxBase.TextChanged="cbNames_TextChanged"  Loaded="cbNames_Loaded"/>
+                              ItemsSource="{Binding CustomList}" 
+                              DisplayMemberPath="CustomName"
+                              SelectedItem="{Binding SelectedCustomItem, Mode=TwoWay}"
+                              IsTextSearchEnabled="False" IsTextSearchCaseSensitive="False"
+                              TextBoxBase.TextChanged="cbNames_TextChanged" 
+                              IsReadOnly="{Binding IsComboBoxReadOnly}"
+                              Loaded="cbNames_Loaded">
+                        <ComboBox.Text>
+                            <Binding Path="SelectedCustomItem.CustomName" Mode="TwoWay">
+                                <Binding.ValidationRules>
+                                    <local:CustomNameValidationRule MaxChars="30"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </ComboBox.Text>
+                   </ComboBox>
 
                     <StackPanel Orientation="Horizontal" Margin="0">
-                        <Button Content="Cancel" Style="{StaticResource SecondaryButtonStyle}" Click="cancelButton_Click" />
-                        <Button Name="saveBtn" Content="Save"  Style="{StaticResource PrimaryButtonStyle}"
+                        <Button Name="cancelBtn" Content="Cancel" Style="{StaticResource SecondaryButtonStyle}" Click="cancelButton_Click" />
+                        <Button Name="saveBtn" Content="Save"  Style="{StaticResource PrimaryButtonStyle}" IsEnabled="{Binding IsSaveButtonEnabled}"
                                 Margin="7,0,0,0" Click="saveButton_Click" />
                     </StackPanel>
                 </StackPanel>

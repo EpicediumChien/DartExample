@@ -74,7 +74,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <summary>
         /// Handle to the hook, need this to unhook and call the next hook
         /// </summary>
-        private IntPtr hhook = IntPtr.Zero;
+        private IntPtr hhook { get; set; } = IntPtr.Zero;
 
         #endregion Instance Variables
 
@@ -343,6 +343,11 @@ namespace DDPM.SA.Plugins.User.Hotkey
             return 0 != (_GetAsyncKeyState(vKey) & 0x8000);
         }
 
+        public IntPtr GetHookHandle()
+        {
+
+            return IntPtr.Zero;
+        }
         #endregion public Methods
 
         #region DLL imports
