@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Common
 {
@@ -9,9 +12,11 @@ namespace DDPM.UI.Common
     /// </summary>
     public partial class VbarItem : System.Windows.Controls.UserControl
     {
+        private SolidColorBrush whiteBrush = new SolidColorBrush(Colors.White);
         private VbarItemViewModel vm = new VbarItemViewModel();
+        private Canvas? canvas = null;
 
-        public VbarItem(int id, ImageSource icon, string text)
+        public VbarItem(int id, ImageSource icon, string text, Canvas? iconCanvas = null)
         {
             InitializeComponent();
             vm.Id = id;
@@ -19,6 +24,12 @@ namespace DDPM.UI.Common
             vm.Text = text;
             //vm.Command = command;
             this.DataContext = vm;
+            if (iconCanvas != null)
+            {
+                iconCanvas.Tag = (SolidColorBrush)System.Windows.Application.Current.Resources["DefaultTheme_PathColor"];
+                canvas = iconCanvas;
+                CanvasContainer.Content = canvas;
+            }
         }
 
         public int Id => vm.Id;
@@ -56,25 +67,16 @@ namespace DDPM.UI.Common
         {
             bdRoot.Focus();
 
-            //Robert_Lin 2024-5-30, unused, Please remove to avoid duplicate event issue
-            //Use ClickCommand instead. Click may always null
-            //if (Click != null)
-            //{
-            //    Click(this, new RoutedEventArgs());
-            //    return;
-            //}
+            SelectBarItem();
 
             if (ClickCommand != null)
                 ClickCommand?.Execute(this);
-
-            //vm.IsSelected = true;
         }
 
         private void bdRoot_GotFocus(object sender, RoutedEventArgs e)
         {
             if (ClickCommand != null)
                 ClickCommand?.Execute(this);
-            //vm.IsSelected = true;
         }
 
         public void SetLadningMode(bool isLandingMode)
@@ -96,6 +98,25 @@ namespace DDPM.UI.Common
         {
             get => vm.TooltipVisibility;
             set => vm.TooltipVisibility = value;
+        }
+
+        public void RenewBarItem()
+        {
+            IconName.ClearValue(TextBlock.ForegroundProperty);
+            if (canvas != null)
+            {
+                canvas.Tag = (SolidColorBrush)System.Windows.Application.Current.Resources["DefaultTheme_PathColor"];
+            }
+
+        }
+
+        public void SelectBarItem()
+        {
+            IconName.Foreground = whiteBrush;
+            if (canvas != null) 
+            {
+                canvas.Tag = whiteBrush;
+            }
         }
     }
 }

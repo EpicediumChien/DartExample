@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Foreground" Value="{DynamicResource AddDeviceTextStyle1_TxtColor}" />
                 <Setter Property="FontFamily" Value="Roboto" />
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="FontWeight" Value="Normal" />
@@ -37,13 +37,13 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
             <Style x:Key="Border1" TargetType="Border">
-                <Setter Property="Background" Value="#99132F54" />
+                <Setter Property="Background" Value="{DynamicResource AddDeviceBorder1_BgColor}" />
                 <Setter Property="CornerRadius" Value="13" />
                 <!--Setter Property="Width" Value="303" /-->
                 <!--Setter Property="Height" Value="240" /-->
                 <Setter Property="VerticalAlignment" Value="Top" />
                 <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="BorderBrush" Value="#132F54" />
+                <Setter Property="BorderBrush" Value="{DynamicResource Border1BorderBrush}" />
                 <Setter Property="Margin" Value="7,7,0,7"/>
             </Style>
         </ResourceDictionary>
@@ -52,13 +52,13 @@
         <UXControls:UXScrollViewer>
             <Border>
                 <StackPanel Orientation="Vertical">
-                    <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">
+                    <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="{DynamicResource bdrAlert_BgColor}" Visibility="{Binding DongleAlertHeadsetVisibility}">
                         <StackPanel Orientation="Horizontal">
                             <Grid>
                                 <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                                 </Image>
-                                <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" 
+                                <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="{DynamicResource bdrAlert_BgColor}" Foreground="{DynamicResource bdrAlert_FgColor}" 
                                                 TextWrapping="WrapWithOverflow"
                                                 Margin="36,16,0,13" LineHeight="19.5" Padding="0,3" 
                                                 Text="{Binding DongleAlertHeadset}" FontFamily="Roboto" FontWeight="Normal" />

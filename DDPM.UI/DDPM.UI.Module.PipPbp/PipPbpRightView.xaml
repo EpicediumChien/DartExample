@@ -19,7 +19,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-                <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
@@ -54,11 +54,13 @@
                     <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
                             <!-- PipPbpSectionHeader -->
-                            <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
+                            <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                     FontSize="20" />
 
                             <!-- FullScreen divTitle-->
-                            <UXControls:UXTextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="0,12"
                                                     FontSize="14" />
                             <!-- Fullscreen SplitItem List -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -67,7 +69,8 @@
                              </StackPanel>
 
                             <!-- PIP divTitle-->
-                            <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="0,12"
                                                     FontSize="14" />
                             <!-- PIP SplitItem List -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -91,7 +94,8 @@
                             </StackPanel>
 
                             <!-- PBP divTitle-->
-                            <UXControls:UXTextBlock Text="{Binding [PipPbp.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [PipPbp.1], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="0,12"
                                                     FontSize="14" />
                             <!-- PBP SplitItem List -->
                             <commonCtrl:SplitListView Name="spliListView_Pbp" Margin="0,4"
@@ -106,7 +110,7 @@
                         <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="{x:Type UXControls:UXTextBlock}">
-                                    <Setter Property="Foreground" Value="White" />
+                                    <!--<Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />-->
                                     <Setter Property="FontSize" Value="16" />
                                     <Setter Property="Margin" Value="16,12,0,12" />
                                     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -123,7 +127,8 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}"
+                                                        Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0,8" DisplayMemberPath="Name"
                                           ItemsSource="{Binding InputSourceList}"

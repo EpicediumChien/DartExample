@@ -6,6 +6,7 @@ using System.IO;
 using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace DDPM.UI.Module.DisplayOthers
@@ -58,6 +59,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     }
                 }
             }
+            DdpmCommonHelper.BitmapImageUpdated += ArrowCornerImageUpdated;
         }
 
         ~DisplayOthersRightView()
@@ -70,6 +72,15 @@ namespace DDPM.UI.Module.DisplayOthers
             if (vm != null)
             {
                 vm.ImportExportResult -= ImportExportNotify;
+            }
+        }
+
+        private void ArrowCornerImageUpdated(string resourceKey)
+        {
+            if (resourceKey == "popup_ArrowCorner")
+            {
+                popup_ArrowCorner.Source = null;
+                popup_ArrowCorner.Source = (BitmapImage)Application.Current.Resources[resourceKey];
             }
         }
 

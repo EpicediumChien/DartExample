@@ -11,32 +11,8 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DesignHeight="72" d:DesignWidth="232"
              Height="73">
-  <UserControl.Resources>
-    <ResourceDictionary>
-    <ResourceDictionary.MergedDictionaries>
-      <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-      
-    <local:VbarItemViewModel x:Key="vmDesign"
-                                 Text="Robert" />
-    <SolidColorBrush x:Key="VbarItem_BkColor" Color="#99193457" />
-    <SolidColorBrush x:Key="VbarItem_BkDisableColor" Color="#596067" />
-    <SolidColorBrush x:Key="VbarItem_TextColor" Color="White" />
 
-    <LinearGradientBrush x:Key="VbarItem_HiBkColor" StartPoint="0,0" EndPoint="1,1">
-      <GradientStop Offset="0" Color="#FF0672CB" />
-      <GradientStop Offset="0.5" Color="#FF0078D2" />
-      <GradientStop Offset="1" Color="#FF6E69CF" />
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="VbarItem_HiBdColor" StartPoint="0,0" EndPoint="1,1">
-      <GradientStop Offset="0" Color="#FF55B4FD" />
-      <GradientStop Offset="1" Color="#FF6E69CF" />
-    </LinearGradientBrush>
-    </ResourceDictionary>
-  </UserControl.Resources>
-
-  <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,12,0" HorizontalAlignment="Right"
+    <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,12,0" HorizontalAlignment="Right"
           MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave"
           MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
 
@@ -62,24 +38,8 @@
     </VisualStateManager.VisualStateGroups>
 
     <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" ToolTipService.ShowOnDisabled="True"
-                Focusable="True" BorderBrush="{StaticResource VbarItem_BkColor}"
+                Focusable="True" Style="{StaticResource VBar_BorderStyle}"
                 GotFocus="bdRoot_GotFocus">
-      <Border.Style>
-        <Style TargetType="Border">
-          <Setter Property="Background" Value="{StaticResource VbarItem_BkColor}" />
-          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_BkColor}" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding IsSelected}"  Value="True">
-              <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-            </DataTrigger>
-            <Trigger Property="IsEnabled"  Value="False">
-              <Setter Property="Background"  Value="{StaticResource VbarItem_BkDisableColor}" />
-              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_BkDisableColor}" />
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Border.Style>
       <Border.ToolTip>
         <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="0" HorizontalOffset="0" Visibility="{Binding TooltipVisibility}">
           <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />
@@ -94,10 +54,11 @@
         <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"
                        Source="{Binding Icon}" >
         </Image>
-        <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
+        <ContentControl x:Name="CanvasContainer" />
+        <UXControls:UXTextBlock x:Name="IconName" Grid.Column="1" Text="{Binding Text}" FontSize="14"
                                         VerticalAlignment="Center" HorizontalAlignment="Left"
                                         TextBlockType="Subtitle2" TextBlockSemanticColorType="Light"
-                                        Foreground="{StaticResource VbarItem_TextColor}" />
+                                        Foreground="{DynamicResource Vbar_TextColor_Normal}" />
       </Grid>
     </Border>
   </Grid>

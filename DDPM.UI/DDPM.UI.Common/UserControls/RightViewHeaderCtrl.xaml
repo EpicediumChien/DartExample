@@ -10,12 +10,7 @@
              Visibility="{Binding CtrlVisibility}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-            </ResourceDictionary.MergedDictionaries>
-
             <SolidColorBrush x:Key="RightView_BkColor" Color="#99193457" />
-            <SolidColorBrush x:Key="RightView_Header_BkColor" Color="#FF0A2343" />
 
             <!-- Unused -->
             <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,1">
@@ -23,17 +18,11 @@
                 <GradientStop Offset="1" Color="#FF6E69CF" />
             </LinearGradientBrush>
 
-            <Style x:Key="TextBlock_HeaderTextStyle" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontSize" Value="14" />
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Border Grid.Row="0" CornerRadius="4" Background="{StaticResource RightView_Header_BkColor}"
+        <Border Grid.Row="0" CornerRadius="4" Background="{DynamicResource RightView_Header_BkColor}"
                 Height="30" Margin="0,0,0,12">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -49,7 +38,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
+                                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
+                                            <Setter Property="Foreground" Value="{DynamicResource RightView_Header_Text_HighlightColor}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <Image Grid.Column="1" Visibility="{Binding Locker1}" Margin="0,0,20,0"
                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
@@ -88,7 +88,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
+                                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
+                                            <Setter Property="Foreground" Value="{DynamicResource RightView_Header_Text_HighlightColor}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <Image Grid.Column="1" Visibility="{Binding Locker2}" Margin="0,0,20,0"
                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
@@ -107,7 +118,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
-                    </Grid>                    
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
@@ -127,7 +138,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
+                                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
+                                            <Setter Property="Foreground" Value="{DynamicResource RightView_Header_Text_HighlightColor}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <Image Grid.Column="1" Visibility="{Binding Locker3}" Margin="0,0,20,0"
                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
@@ -146,7 +168,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
-                    </Grid>                    
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
