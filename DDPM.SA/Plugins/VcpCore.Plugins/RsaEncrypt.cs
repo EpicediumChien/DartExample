@@ -52,7 +52,7 @@ namespace VcpCore.Plugins
 
                     try
                     {
-                        ms.Write(rsa.Encrypt(buffer, false), 0, decryptionBufferSize);
+                        ms.Write(rsa.Encrypt(buffer, true), 0, decryptionBufferSize);
                     }
                     catch (Exception ex) 
                     {
@@ -138,7 +138,7 @@ namespace VcpCore.Plugins
 
             UnicodeEncoding ByteConverter = new UnicodeEncoding();
             byte[] DataToEncrypt = ByteConverter.GetBytes(content);
-            byte[] resultBytes = rsaProvider.Encrypt(DataToEncrypt, false);
+            byte[] resultBytes = rsaProvider.Encrypt(DataToEncrypt, true);
             return Convert.ToBase64String(resultBytes);
         }
     }
