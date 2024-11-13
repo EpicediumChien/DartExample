@@ -399,38 +399,41 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
                         string newVer = updateHelper.UpdateItems[i].NewVersion;
                         string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
-                        if (!int.TryParse(newVer, out _))
+                        if (!string.IsNullOrEmpty(newVer))
                         {
-                            newVer = Convert.ToInt32(newVer, 16).ToString();
+                            newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
                         }
-                        if (!int.TryParse(oldVer, out _))
+                        if (!string.IsNullOrEmpty(oldVer))
                         {
-                            oldVer = Convert.ToInt32(oldVer, 16).ToString();
+                            oldVer = Regex.Replace(updateHelper.UpdateItems[i].CurrentVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].CurrentVersion.Length * 2) - 1);
                         }
                         DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
                         string deviceConnectivity = string.Empty;
                         string deviceSupplierID = string.Empty;
                         if (deviceInfo != null)
                         {
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} is no null");
+                            _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            //if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            //{
-                            //    _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                            //    //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                            //    updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            //}
+                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
+                            {
+                                _logs.DebugMsg_1($"{nameof(CheckUpdate)} deviceInfo.DeviceName : {deviceInfo.Name}");
+                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
+                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
+                            }
                         }
-                        if (deviceTypeList == null)
+                        if (deviceTypeList == null && !isOnlyDisplay)
                         {
                             _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                             FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                             {
-                                TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                                DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
+                                TheLatestVersion = newVer,
+                                DeviceVersion = oldVer,
                                 NeedUpdated = true,
                                 ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                 FileSavepath = updateHelper.UpdateItems[i].InstallPath,
@@ -467,8 +470,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                                 {
-                                    TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
-                                    DeviceVersion = Regex.Replace(Convert.ToInt32(oldVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(oldVer).ToString("D4").Length * 2) - 1),
+                                    TheLatestVersion = newVer,
+                                    DeviceVersion = oldVer,
                                     NeedUpdated = true,
                                     ServerPath = updateHelper.UpdateItems[i].ServerPath,
                                     FileSavepath = updateHelper.UpdateItems[i].InstallPath,
@@ -502,6 +505,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(displayUpdateHelper.Firmwares.Count)} = {displayUpdateHelper.Firmwares.Count}");
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
                             TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,

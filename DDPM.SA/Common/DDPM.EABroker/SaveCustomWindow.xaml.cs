@@ -15,6 +15,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Collections.ObjectModel;
+using DDPM.SA.Common.Popup;
+using System.Printing;
+using System.Security.AccessControl;
 
 namespace DDPM.EABroker
 {
@@ -23,76 +27,227 @@ namespace DDPM.EABroker
     /// </summary>
     public partial class SaveCustomWindow : Window
     {
+        #region Private Members
+        private readonly IDeviceManagerSA _deviceManagerSA;
+        private readonly SaveCustomWindowViewModel _viewModel;
+        private IntPtr _hWnd;
+        private SplitJson[] _savedCustomList; //Will be update/reloaded at ShowAndEdit()
+        private SplitJson _inputSplit; //The copy from EAArgs when entering ShowAndEdit()
+        #endregion Private Members
+
+        #region Multiligual Strings
+        private string _customLayout = "Custom layout";
+        private string _saveButton = "Save";
+        private string _cancelButton = "Cancel";
+        private string _updateToEmProfilePrompt = "There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?";
+        private string _yesButton = "Yes";
+        private string _noButton = "No";
+        #endregion
+
         #region Input/Output
 
-        //Setup before calling Show()
+        //Input:
+        //Setup before calling ShowAndEdit()
         public EventHandler<string>? SaveButtonClick;
-
         public EventHandler<string>? CancelButtonClick;
-        public string CustomName;
-        public List<string> CustomNames;
+        //Robert_Lin, 2024-11-10, not need any more, will load from UserSettings.CustomList
+        //public string CustomName;
+        //public List<string> CustomNames;
+
+        //Output:
+        public SplitJson SelectedCustomItem
+        {
+            get {  return _viewModel.SelectedCustomItem; }
+        }
 
         #endregion Input/Output
 
         #region Init
-        public SaveCustomWindow()
+        public SaveCustomWindow(IDeviceManagerSA deviceManager)
         {
             InitializeComponent();
+            _deviceManagerSA = deviceManager;
+            _viewModel = new SaveCustomWindowViewModel(_deviceManagerSA);
+            DataContext = _viewModel;
         }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Add CustomNames to the ComboBox.Items
-            if (CustomNames != null)
-            {
-                foreach (string name in CustomNames)
-                {
-                    cbNames.Items.Add(name);
-                }
-                //Determine the selection
-                cbNames.SelectedIndex = CustomNames.IndexOf(CustomName);
-            }
+            //if (CustomNames != null)
+            //{
+            //    foreach (string name in CustomNames)
+            //    {
+            //        cbNames.Items.Add(name);
+            //    }
+            //    //Determine the selection
+            //    cbNames.SelectedIndex = CustomNames.IndexOf(CustomName);
+            //}
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
-            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+            _hWnd = wndHelper.Handle;
+            Win32Lib.Win32.HideWinFromAltTab(_hWnd);
+
+            UpdateMultilingualUiText();
         }
 
+        private void UpdateMultilingualUiText()
+        {
+            txtCustomLayout.Text = _customLayout;
+            saveBtn.Content = _saveButton;
+            cancelBtn.Content = _cancelButton;
+
+        }
         #endregion
 
         #region ShowAndEdit
         public void ShowAndEdit(EAArgs arg, Screen scr)
         {
+            _inputSplit = arg.SplitJson;
+
             this.Dispatcher.Invoke(() =>
             {
                 Trace.WriteLine($"  * EAArgs.CustomName=[{arg.SplitJson.CustomName}]");
 
-                cbNames.Items.Clear();
-                string selectedName = arg.SplitJson.CustomName;
-                if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
+                //Build ComboBox ItemsSource and determine SelectedItem
+                //
+
+                //1 Load CustomList from UserSettings file
+                int customId = 1;
+                ObservableCollection<SplitJson> tempList = new ObservableCollection<SplitJson>();
+                _savedCustomList = _deviceManagerSA.ReadEACustomList().Result;
+                if (_savedCustomList != null && _savedCustomList.Length > 0)
                 {
-                    int addCount = 0;
-                    foreach (string name in arg.CustomNames)
+                    //A2 Add saved custom into ComboBoxItems
+                    foreach (SplitJson custom in _savedCustomList)
                     {
-                        string addName = name;
-                        //Check length of name
-                        if (addName.Length > EAEMConstants.MaxCustomNameLenth)
-                            addName = addName.Substring(0, EAEMConstants.MaxCustomNameLenth);
-                        cbNames.Items.Add((string)addName);
-                        addCount++;
-                        if (addCount >= EAEMConstants.MaxCustomItems)
-                            break;
+                        if (custom.CustomId == 0)
+                            custom.CustomId = customId;
+                        SplitJson cbItem = custom.Clone();
+                        tempList.Add(cbItem);
+                        customId++;
                     }
-                    cbNames.SelectedItem = selectedName;
                 }
-                else //CustomNames is empty
+
+                //2 If the tempList.Count>=5, to determine the selectedItem
+                // caseNo                   SelectedItem
+                // 1_Add from Preset        The oldest of saved custom list
+                // 2_Add from Overlap       The oldest of saved custom list
+                // 3_Edit from PresetCustom Current item (in EAArgs, find the matched EAID)
+                //
+                //Where 'the oldest of saved custom list' will be the first item of the list
+                //that is: savedCustomList[0] = tempList[0]
+                int caseNo = 1;
+                if (arg.SplitJson.EAID >= EAEMConstants.EAID_FirstCustom)
+                    caseNo = 3;
+                if (arg.SplitJson.IsOverlapLayout)
+                    caseNo = 2;
+                if (tempList.Count >= EAEMConstants.MaxCustomItems)
                 {
-                    //Add one item to ComboBox
-                    if (String.IsNullOrWhiteSpace(selectedName))
+                    _viewModel.CustomList = tempList;
+                    if (caseNo == 3)
                     {
-                        selectedName = "Custom Layout (1)";
+                        SplitJson? selItem = tempList.FirstOrDefault(x => x.EAID == arg.SplitJson.EAID);
+                        if (selItem != null) 
+                            _viewModel.SelectedCustomItem = selItem;
                     }
-                    cbNames.Items.Add(selectedName);
+                    else //Case 1 and 2
+                    {
+                        //Select null, but set a default name
+                        _viewModel.SelectedCustomItem = null;
+                        //cbNames.IsReadOnly = true;
+                        //cbNames.Text = "Please select from drop-down list";
+                    }
                 }
-                cbNames.SelectedValue = selectedName;
+                else
+                {
+                    //3 tempList.Count<5, 
+                    //3.1 Add unused default CustomNames to list
+                    //3.2 Determine the selected item
+
+                    //3.1 Add default custom names: ["Custom Layout (1)" ... "Custom Layout (5)"]
+                    //    Add the the names which is not in saved custom list, until item count == 5
+                    int nameNo = 1;
+                    bool isTheFirstDefaultName = true;
+                    string selName = "Custom Layout (1))";
+                    while (tempList.Count < EAEMConstants.MaxCustomItems)
+                    {
+                        //generate the default custom name
+                        string customName = $"Custom Layout ({nameNo})";
+                        //Check if the name is existed
+                        if (tempList.FirstOrDefault(x => x.CustomName.Equals(customName)) == null)
+                        {
+                            //Not exist (not in-used) => Add into list 
+                            //EAID=0 in ComboBox means this SplitJson is not in-used layout
+                            SplitJson splitJson = new SplitJson()
+                            {
+                                CustomName = customName,
+                                CustomId = customId,
+                                EAID = 0
+                            };
+                            customId++;
+                            tempList.Add(splitJson);
+                            if (isTheFirstDefaultName)
+                            {
+                                selName = customName;
+                                //_viewModel.SelectedCustomItem = splitJson;
+                                isTheFirstDefaultName = false;
+                            }
+                        }
+                        nameNo++;
+                    }
+                    _viewModel.CustomList.Clear();
+                    _viewModel.CustomList = new ObservableCollection<SplitJson>(tempList);
+                    _viewModel.SelectedCustomItem = _viewModel.CustomList.FirstOrDefault(x => x.CustomName.Equals(selName));
+
+                    //3.2 Determine the selected item
+                    //
+                    // caseNo                   SelectedItem
+                    // 1_Add from Preset        The first item of default custom name
+                    // 2_Add from Overlap       The first item of default custom name
+                    // 3_Edit from PresetCustom Current item (in EAArgs, find the matched EAID)
+
+                    if (caseNo == 3)
+                    {
+                        SplitJson? selItem = tempList.FirstOrDefault(x => x.EAID == arg.SplitJson.EAID);
+                        if (selItem != null)
+                            _viewModel.SelectedCustomItem = selItem;
+                    }
+                    else //Case 1 and 2
+                    {
+                        //Already selected
+                    }
+
+
+                }
+                //cbNames.Items.Clear();
+                //string selectedName = arg.SplitJson.CustomName;
+                //if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
+                //{
+                //    int addCount = 0;
+                //    foreach (string name in arg.CustomNames)
+                //    {
+                //        string addName = name;
+                //        //Check length of name
+                //        if (addName.Length > EAEMConstants.MaxCustomNameLenth)
+                //            addName = addName.Substring(0, EAEMConstants.MaxCustomNameLenth);
+                //        cbNames.Items.Add((string)addName);
+                //        addCount++;
+                //        if (addCount >= EAEMConstants.MaxCustomItems)
+                //            break;
+                //    }
+                //    cbNames.SelectedItem = selectedName;
+                //}
+                //else //CustomNames is empty
+                //{
+                //    //Add one item to ComboBox
+                //    if (String.IsNullOrWhiteSpace(selectedName))
+                //    {
+                //        selectedName = "Custom Layout (1)";
+                //    }
+                //    cbNames.Items.Add(selectedName);
+                //}
+                //cbNames.SelectedValue = selectedName;
 
                 //Calculate the position/size of EditWindow
                 double dpiX = 1.000;
@@ -124,17 +279,52 @@ namespace DDPM.EABroker
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            //If it's empty
-            if (String.IsNullOrWhiteSpace(cbNames.Text))
+            //Required: SelectedCustomItem cannot be null
+            if (SelectedCustomItem == null)
                 return;
-            //Trunk the string if it too long
-            string retName = cbNames.Text;
-            if (retName.Length > EAEMConstants.MaxCustomNameLenth)
-                retName = retName.Substring(0, EAEMConstants.MaxCustomNameLenth);
-            CustomName = retName;
+
+            int selEaId = SelectedCustomItem.EAID;
+
+            //Check if the EasyMemory Profile may be conflict
+            //1 If the SelectedCustomItem is associated with EasyMemory profile
+            //  
+
+            bool isEaIdUsedByEmProfile = false;
+            if (isEaIdUsedByEmProfile)
+            {
+                //Pop up a meesgaeBox to confirm 
+                PopupBase msgBox = new PopupBase("", _updateToEmProfilePrompt, _noButton, _yesButton, null, false, 0);
+                msgBox.Owner = this;
+                if (msgBox.ShowDialog() != true)
+                {
+                    if (CancelButtonClick != null)
+                    {
+                        CancelButtonClick(this, "");
+                    }
+                    Hide();
+                    return;
+                }
+            }
+
+            //DDPMW-861 Item 2, If the input CustomName is duplicated with SavedCustomList
+            // Rename the CustomName to {CustomName}_{No} where No is 1,2,3...
+            string selCustomName = FixCustomNameFor_DDPMW861();
+            if (!String.IsNullOrEmpty(selCustomName))
+            {
+                SelectedCustomItem.CustomName = selCustomName;
+            }
+
+            ////If it's empty
+            //if (String.IsNullOrWhiteSpace(cbNames.Text))
+            //    return;
+            ////Trunk the string if it too long
+            //string retName = cbNames.Text;
+            //if (retName.Length > EAEMConstants.MaxCustomNameLenth)
+            //    retName = retName.Substring(0, EAEMConstants.MaxCustomNameLenth);
+            //CustomName = retName;
             if (SaveButtonClick != null)
             {
-                SaveButtonClick(this, CustomName);
+                SaveButtonClick(this, selCustomName);
             }
             Hide();
         }
@@ -158,15 +348,26 @@ namespace DDPM.EABroker
         }
         private void cbNames_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string custName = cbNames.Text;
-            if (String.IsNullOrWhiteSpace(custName))
+            if (_viewModel != null)
+                _viewModel.RefreshIsSaveButtonEnabled();
+
+            //string custName = cbNames.Text;
+            //if (String.IsNullOrWhiteSpace(custName))
+            //{
+            //    saveBtn.IsEnabled = false;
+            //}
+            //else
+            //{
+            //    saveBtn.IsEnabled = true;
+            //}
+        }
+        private void closeGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CancelButtonClick != null)
             {
-                saveBtn.IsEnabled = false;
+                CancelButtonClick(this, "");
             }
-            else
-            {
-                saveBtn.IsEnabled = true;
-            }
+            Hide();
         }
         #endregion UI Event handlers
 
@@ -186,13 +387,63 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        private void closeGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        #region CustomName
+        private string FixCustomNameFor_DDPMW861()
         {
-            if (CancelButtonClick != null)
+            //_inputSplit must has stored
+            if (_inputSplit == null)
+                return String.Empty;
+
+            //SelectedCustomItem must have data
+            if (SelectedCustomItem == null)
+                return String.Empty;
+
+
+            //The default return CustomName will be the user edited
+            //But if SelectedCustomItem is nu
+            string selCustomName = SelectedCustomItem.CustomName;
+            long selCustomId = SelectedCustomItem.CustomId;
+
+            //DDPMW-861 Item 2 "Given"
+            // User rename the predefined custom layout name
+            //=> Currently, we will not allow duplicate name for all cases
+            //if ((!_inputSplit.IsOverlapLayout) && //Edit a predefine layout
+            //    (_inputSplit.EAID < EAEMConstants.EAID_FirstCustom)) //It's not added from Preset list
             {
-                CancelButtonClick(this, "");
+                //In case of user edit a preset custom layout
+                //
+
+                //Check if duplicated with saved custom list
+                SplitJson? spDup = Array.Find(_savedCustomList, x => x.CustomName == selCustomName);
+                //If duplicate name found
+                if (spDup != null)
+                {
+                    //But it's the inputSplit itself, user did not change CustomName
+                    if (spDup.CustomId == selCustomId)
+                    //if (spDup.EAID == _inputSplit.EAID)
+                    {
+                        //Used the user selected name
+                        return selCustomName;
+                    }
+                    else
+                    {
+                        //Not original input item and dupliacte with other item, need to rename
+                        for (int i = 0; i < EAEMConstants.MaxCustomNameLenth; i++)
+                        {
+                            string newName = selCustomName + $"_{i + 1}";
+                            spDup = Array.Find(_savedCustomList, x => x.CustomName == newName);
+                            if (spDup == null)
+                            {
+                                return newName;
+                            }
+                        } //for (i)
+                    } //if (spDup.EAID == _inputSplit.EAID) else
+                } //if (spDup != null)
             }
-            Hide();
+            return selCustomName;
         }
+
+        
+        #endregion
     }
 }

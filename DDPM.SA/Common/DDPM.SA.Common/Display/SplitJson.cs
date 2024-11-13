@@ -37,16 +37,21 @@ namespace DDPM.SA.Common.Display
         /// <returns></returns>
         public SplitJson Clone()
         {
-            return new SplitJson()
+            SplitJson returnSplit = new SplitJson()
             {
                 CellCount = this.CellCount,
                 SplitKey = this.SplitKey,
                 Settings = new List<double>(this.Settings),
                 CustomName = this.CustomName,
                 EAID = this.EAID,
-                Cells = this.Cells.Select(x => (CellJson) x.Clone()).ToArray(),
                 CustomId = this.CustomId
             };
+            //Copy Cells if this has
+            if (this.Cells != null) 
+            {
+                returnSplit.Cells = this.Cells.Select(x => (CellJson)x.Clone()).ToArray();
+            }
+            return returnSplit;
         }
         #endregion ctor and create new instance
 
@@ -147,6 +152,11 @@ namespace DDPM.SA.Common.Display
                 return presetJson.Clone();
             }
             return null;
+        }
+
+        public bool IsOverlapLayout
+        {
+            get { return ((CellCount == 0) && (SplitKey == 'B')); }
         }
     }
 }

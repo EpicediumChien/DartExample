@@ -2358,4 +2358,16 @@
   <data name="EazyMemory.40" xml:space="preserve">
     <value>Please enter profile name.</value>
   </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>Hotkey Warning</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed?</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>This hotkey is used by another Dell Display and Peripheral Manager function. Do you want to replace it?</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
 </root>

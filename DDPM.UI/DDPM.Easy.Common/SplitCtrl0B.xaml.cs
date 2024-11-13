@@ -448,6 +448,31 @@ namespace DDPM.Easy.Common
 
         #endregion FriendlyName
 
+        public string HoveringCell
+        {
+            get => VM.HoveringCell;
+            set
+            {
+                VM.HoveringCell = value;
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    foreach (CellObj objCell in CellList)
+                    {
+                        if (objCell.Name.Equals(value))
+                        {
+                            objCell.CellBd.IsHover = true;
+                        }
+                        else
+                        {
+                            objCell.CellBd.IsHover = false;
+                        }
+                    }
+                    //IsEnabled = !isHover;
+                });
+
+            }
+        }
 
     }
 }
