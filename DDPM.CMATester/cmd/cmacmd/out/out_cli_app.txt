@@ -1,0 +1,3 @@
+{"sid":"1731380053","req":[{"tid":1,"active":"get","devicetype":"app","command":"update","options":{}}]}
+{"sid":"1731380054","req":[{"tid":1,"active":"get","devicetype":"app","command":"updatesourcelocation","options":{}}]}
+

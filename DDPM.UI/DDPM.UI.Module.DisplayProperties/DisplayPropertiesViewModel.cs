@@ -72,8 +72,10 @@ namespace DDPM.UI.Module.DisplayProperties
             get => _HDRStatus;
             set
             {
-                SetProperty(ref _HDRStatus, value);
-                DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, _HDRStatus).Wait();
+                if (DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, value).Result)
+                {
+                    SetProperty(ref _HDRStatus, value);
+                }
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
                 DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
                 RefreshUI();

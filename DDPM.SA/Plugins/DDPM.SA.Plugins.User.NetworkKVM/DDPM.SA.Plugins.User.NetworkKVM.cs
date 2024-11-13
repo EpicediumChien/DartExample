@@ -1579,7 +1579,16 @@ namespace NetworkKVM.Plugins
         {
             _logs.DebugMsg("[NetworkKVM] WriteAsync : " + message);
             byte[] buffer = Encoding.UTF8.GetBytes(message);
-            await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+            try
+            {
+                await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[NetworkKVM] WriteAsync exception, message: " + ex.Message);
+            }
+
             await pipeServer.FlushAsync();
             pipeServer.WaitForPipeDrain();
         }

@@ -173,35 +173,46 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void TestWriteColorPreset()
         {
             //_ColorPresetPlugin == null
+            IColorPresetSA? ColorPresetPlugin = null;
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", ColorPresetPlugin);
             var result = deviceMangerPlugin.WriteColorPreset(monitorInfo, "").Result;
             Assert.That(result, Is.EqualTo(false));
 
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
-            var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
             _ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<ISettingsManagerDev>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
-            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
-            var _SettingsPlugin = _SettingsPluginMock.Object;
-            _SettingsPluginMock.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
-            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
+
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
-            var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _DisplayManagerPluginMock.Setup(x => x.GetMonitorCurrentResolution(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("1920*1080"));
+            _DisplayManagerPluginMock.Setup(x => x.GetMonitorMaxResolution(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("1920*1080"));
+            var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
+
+            var TelementryScheduler = new Mock<ITelementryScheduler>();
+            TelementryScheduler.Setup(x => x.ReceiveTelemetryInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Telementry_Frequency>())).Returns(Task.FromResult(true));
+            var TelementrySchedulerPlugin = TelementryScheduler.Object;
+            privateObject.SetFieldOrProperty("_TelementryScheduler", TelementrySchedulerPlugin);
+
             int colorPresetRunType = 0;
             string colorPreset_Name = "Game";
             int colorPresetRunType2 = (int)ColorPresetRunType.Auto;
+
             if (colorPresetRunType == 0)
             {
                 result = deviceMangerPlugin.WriteColorPreset(monitorInfo, colorPreset_Name, colorPresetRunType).Result;
                 Assert.That(result, Is.EqualTo(true));
             }
 
+            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<ISettingsManagerDev>(), It.IsAny<int>())).Returns(Task.FromResult(true));
+            var _ColorPresetPlugin2 = _ColorPresetPluginMock.Object;
+            privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin2);
+
             if (colorPresetRunType2 == (int)ColorPresetRunType.Auto)
             {
-                var result2 = deviceMangerPlugin.WriteColorPreset(monitorInfo, colorPreset_Name, colorPresetRunType2).Result;
+                var result2 = deviceMangerPlugin.WriteColorPreset(monitorInfo, colorPreset_Name, colorPresetRunType2, "TestreqAppName").Result;
                 Assert.That(result2, Is.EqualTo(true));
             }
         }
@@ -1630,7 +1641,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true,false,false,null, false), $"GetFWUpdateInfo() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false, false, null, false), $"GetFWUpdateInfo() returns null");
         }
 
         [Test]
@@ -1642,7 +1653,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(),false, ""), $"DownloadAndInstall() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), false, ""), $"DownloadAndInstall() returns null");
         }
 
         [Test]

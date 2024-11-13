@@ -62,8 +62,14 @@ namespace DDPM.UI.Module.EzSettings
 
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
+                        _viewModel.IsBusy = true;
                         bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(_viewModel._homeDevice.MonitorInfo, hotkeyInfo).Result;
                         //vm.Invoke_RefreshData();
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                            _viewModel.IsBusy = false;
+                        }
                     }
                     else
                     {

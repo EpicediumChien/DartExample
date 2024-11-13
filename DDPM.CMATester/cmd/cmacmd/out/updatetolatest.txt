@@ -1,0 +1,4 @@
+{"sid":"1731245527","req":[{"tid":1,"active":"get","devicetype":"app","command":"DiagnosticsReport","value":"c:\temp","options":{"index":"1","servicetag":"aaaaa","model":"dell ea","minversion":"1.0.0.5","upgratetolatest":true}}]}
+{"sid":"1731245527","req":[{"tid":1,"active":"fw","devicetype":"keyboard","value":"forcewithnotice","options":{"upgradetolatest":true,"minversion":"0010"}}]}
+{"sid":"1731380147","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"upgradetolatest":false,"minversion":"0010"}}]}
+{"sid":"1731380148","req":[{"tid":1,"active":"fw","devicetype":"display","value":"forcewithnotice","options":{"minversion":"0010"}}]}
