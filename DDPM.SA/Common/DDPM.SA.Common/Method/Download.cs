@@ -55,9 +55,6 @@ namespace DDPM.SA.Common.Method
                     DownloadFileStream = File.Create(savePath);
                     // 將串流的內容複製到檔案中
                     stream.CopyToAsync(DownloadFileStream).Wait();
-                    DownloadFileStream.Close();
-                    DownloadFileSize = null;
-                    DownloadFileStream = null;
                 }
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " done");
                 FailInfo = "Pass";
@@ -68,6 +65,12 @@ namespace DDPM.SA.Common.Method
                 FailInfo = $"Network fail : {ex.Message}";
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.Message);
                 return false;
+            }
+            finally
+            {
+                DownloadFileStream.Close();
+                DownloadFileSize = null;
+                DownloadFileStream = null;
             }
         }
         public bool DownloadFile_OnLocal(string URLPath, string SavePath, out string FailInfo)
@@ -87,6 +90,7 @@ namespace DDPM.SA.Common.Method
             {
                 FailInfo = "Network fail";
                 _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " fail:" + ex.ToString());
+                DownloadFileStream.Close();
                 return false;
             }
         }

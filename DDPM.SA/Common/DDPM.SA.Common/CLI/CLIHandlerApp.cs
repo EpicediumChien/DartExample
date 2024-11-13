@@ -269,20 +269,22 @@ namespace DDPM.SA.Common.CLI
             WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
             ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
             IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
-
-            if(_DeviceManagerPlugin.GetMonitors().Result.Count == 0 && commandLineInput.PluginsType.ToUpper() == "DISPLAY")
+            if(_DeviceManagerPlugin != null)
             {
-                response.Message = "No devices found";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                if (_DeviceManagerPlugin.GetMonitors().Result.Count == 0 && commandLineInput.PluginsType.ToUpper() == "DISPLAY")
+                {
+                    response.Message = "No devices found";
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
-                return result;
-            }
-            if (_DeviceManagerPlugin.GetDevices().Result.deviceInfo.Count == 0 && commandLineInput.PluginsType.ToUpper() != "DISPLAY")
-            {
-                response.Message = "No devices found";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.null_device_manager;
-                return result;
+                    return result;
+                }
+                if (_DeviceManagerPlugin.GetDevices().Result.deviceInfo.Count == 0 && commandLineInput.PluginsType.ToUpper() != "DISPLAY")
+                {
+                    response.Message = "No devices found";
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                    result.ExitCode = (int)CLI_ExitCode.null_device_manager;
+                    return result;
+                }
             }
             if (commandLineInput.Command.Equals("GET"))
             {

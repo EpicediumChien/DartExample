@@ -80,6 +80,7 @@
             <!-- #endregion IO Dongle -->
         </Viewbox>
 
+        <!-- Robert_Lin, 2024-11-13 fix PIMS-319659 Add MaxWidth to fix UI too large issue -->
         <Viewbox Stretch="Uniform" MaxHeight="120" MaxWidth="200">
             <!-- IO BLE -->
             <!--
