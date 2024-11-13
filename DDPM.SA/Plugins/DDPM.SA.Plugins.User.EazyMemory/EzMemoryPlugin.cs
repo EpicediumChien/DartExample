@@ -24,6 +24,7 @@ using Microsoft.VisualBasic.Logging;
 using System.Diagnostics;
 using DPeMPublic.Common;
 using System.Threading;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
@@ -163,6 +164,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         public const string PluginLogId = "EzMemoryManager";
         private IDisplayService _DisplayManagerPlugin;
         private ISettingsManagerDev _SettingsPlugin;
+        private IDeviceManagerSA _DeviceManagerPlugin;
         private static readonly object _PluginConditionLock_Display = new object();
         private static readonly object _PluginConditionLock_Settings = new object();
         private static List<MonitorInfo> _AllInfoMonitors;
@@ -195,6 +197,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             PluginCondition = new PluginStartedCondition();
             InitializeSettingsPlugin();
             InitializeDisplayManagerPlugin();
+            InitializeDeviceManagerPlugin();
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] Starting");
         }
 
@@ -285,6 +288,20 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
         }
 
+        private void InitializeDeviceManagerPlugin()
+        {
+            if (_DeviceManagerPlugin != null)
+                return;
+
+            _DeviceManagerPlugin = _agent.PluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+
+            if (_SettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnDeviceManagerPluginConditionChangeHandler;
+                GetCurrentDeviceManagerPluginCondition();
+            }
+        }
+
         private void GetCurrentDisplayManagerCondition()
         {
             _ = Task.Run(async () =>
@@ -337,6 +354,29 @@ namespace DDPM.SA.Plugins.User.EzMemory
             });
         }
 
+        private void GetCurrentDeviceManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_DeviceManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_Settings)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        _logs.DebugMsg_1($"{nameof(GetCurrentDeviceManagerPluginCondition)} - Settings Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        _logs.DebugMsg_1($"{nameof(GetCurrentDeviceManagerPluginCondition)} - Settings Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        _logs.DebugMsg_1($"{nameof(GetCurrentDeviceManagerPluginCondition)} - Settings Plugin is in a started condition");
+                    }
+                }
+            });
+        }
+      
         #endregion
 
         #region IDisposableObservable Support
@@ -380,6 +420,11 @@ namespace DDPM.SA.Plugins.User.EzMemory
             GetCurrentSettingsPluginCondition();
         }
 
+        private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentDeviceManagerPluginCondition();
+        }
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -394,6 +439,10 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
             if (e.ChangedPlugins.OfType<IDisplayService>().Any())
                 InitializeDisplayManagerPlugin();
+
+            if (e.ChangedPlugins.OfType<IDeviceManagerSA>().Any())
+                InitializeDeviceManagerPlugin();
+
         }
 
         #endregion
@@ -806,68 +855,6 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return filename;
         }
 
-        /// <summary>
-        /// 兩個UWPOK
-        /// </summary>
-        /// <param name="appData"></param>
-        /// <returns></returns>
-        //public void LaunchAndArrangeApps()
-        //{
-        //    //if (_vm._seletcApps.Count < 2)
-        //    //    return;
-
-
-        //    var sortedByKey = _vm._sortApps.OrderBy(x => x.Key).ToList();
-        //    _vm._seletcApps = sortedByKey.Select(x => x.Value).ToList();
-
-        //    var firstApp = _vm._seletcApps[0];
-        //    var secondApp = _vm._seletcApps[1];
-
-        //    Task.Delay(3000).ContinueWith(async t =>
-        //    {
-        //        IntPtr firstHandle = IntPtr.Zero;
-        //        IntPtr secondHandle = IntPtr.Zero;
-        //        Process firstProcess = LaunchApp(firstApp);
-        //        for (int i = 0; i < 10; i++)
-        //        {
-        //            firstHandle = GetWindowHandle(firstApp);
-        //            //secondHandle = GetWindowHandle(secondApp);
-
-        //            if (firstHandle != IntPtr.Zero)
-        //                break;
-
-        //            await Task.Delay(1000);
-        //        }
-        //        Process secondProcess = LaunchApp(secondApp);
-        //        for (int i = 0; i < 10; i++)
-        //        {
-        //            secondHandle = GetWindowHandle(secondApp);
-
-        //            if (secondHandle != IntPtr.Zero && secondHandle != firstHandle)
-        //                break;
-
-        //            await Task.Delay(1000);
-        //        }
-
-        //        if (firstHandle == IntPtr.Zero || secondHandle == IntPtr.Zero)
-        //        {
-        //            //Debug
-        //            return;
-        //        }
-
-        //        Application.Current.Dispatcher.Invoke(() =>
-        //        {
-        //            double screenWidth = SystemParameters.PrimaryScreenWidth;
-        //            double screenHeight = SystemParameters.PrimaryScreenHeight;
-
-        //            SetWindowPos(firstHandle, IntPtr.Zero, 0, 0, (int)(screenWidth / 2), (int)screenHeight, SWP_SHOWWINDOW);
-
-        //            SetWindowPos(secondHandle, IntPtr.Zero, (int)(screenWidth / 2), 0, (int)(screenWidth / 2), (int)screenHeight, SWP_SHOWWINDOW);
-        //        });
-
-        //    });
-        //}
-
         public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
         {
             try
@@ -1136,6 +1123,63 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 _logs.Error($"[EzMemoryManagerPlugin] GetWindowClassName, Exception while getting window class name, Error: {ex}");
             }
             return className.ToString();
+        }
+
+        public Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID)
+        {
+            bool exists = false;
+            try
+            {               
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    List<EAProfileDDPM> checkEAID = ddpmSettings.UserSettings.EAProfile;
+                    if (checkEAID.Count > 0)
+                    {
+                        exists = checkEAID.Any(profile => profile.Layout == eAID);
+                        _logs.Info($"[EzMemoryManagerPlugin] CheckEAIDExit Success");
+                    }
+                    return Task.FromResult(exists);
+                }
+                else
+                {
+                    return Task.FromResult(exists);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.Error($"[EzMemoryManagerPlugin] CheckEAIDExit, Exception  Error: {ex}");
+            }
+            return Task.FromResult(exists);
+        }
+
+        public Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID)
+        {
+            bool result = false;
+            try
+            {             
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    List<EAProfileDDPM> delEAID = ddpmSettings.UserSettings.EAProfile;
+                    if (delEAID.Count > 0)
+                    {
+                        result = delEAID.RemoveAll(profile => profile.Layout == eAID) > 0;
+                        _DeviceManagerPlugin.WriteUserListEAProfileDDPM(delEAID);
+                        _logs.Info($"[EzMemoryManagerPlugin] DeleteEAID Success");
+                    }
+                    return Task.FromResult(result);
+                }
+                else
+                {
+                    return Task.FromResult(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.Error($"[EzMemoryManagerPlugin] DeleteEAID, Exception  Error: {ex}");
+            }
+            return Task.FromResult(result);
         }
     }
 }
