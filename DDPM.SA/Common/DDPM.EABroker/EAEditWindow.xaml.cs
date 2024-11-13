@@ -182,6 +182,9 @@ namespace DDPM.EABroker
 
         private void UI_ShowAndEdit_NonOverlapCustom(EAArgs args, Screen scr)
         {
+            canvas.Children.Clear();
+            splitCtrl.Visibility = Visibility.Visible;
+
             //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
             ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.SplitJson.CellCount, args.SplitJson.SplitKey);
             if (ispCtrl == null)
@@ -411,6 +414,13 @@ namespace DDPM.EABroker
                 ///spCtrl0B.RatioRects.Add(new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h));
             }
 
+            //Set a timeer to finished edit process
+            System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+            {
+                if (EditReturn != null)
+                    EditReturn(this, _inputArgs);
+                //Hide();
+            }, null, 3000, Timeout.Infinite);
         }
 
         //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
