@@ -284,15 +284,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                         break;
                 }
-
-
-
-
             }
-
-
-
-
         }
 
         public void Invoke_RefreshData()
@@ -569,7 +561,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
         {
             //Handling the result and final process
             IsBusy = false;
-            OnPropertyChanged("IsBusy");
             Debug.WriteLine("InputSource-->Hotkey tab data refresh done");
         }
         #region UI Enable Flags
@@ -579,7 +570,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
         public bool IsBusy
         {
             get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
+            set
+            {
+                SetProperty(ref _isBusy, value);
+                OnPropertyChanged("IsBusy");
+            }
+
         }
 
         #endregion UI Enable Flags

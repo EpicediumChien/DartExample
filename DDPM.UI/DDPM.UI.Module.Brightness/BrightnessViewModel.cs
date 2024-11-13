@@ -290,6 +290,19 @@ namespace DDPM.UI.Module.Brightness
 
         #endregion hotkey property
 
+        public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
+        {
+            IsBusy = true;
+            NotifyPropertyChanged("IsBusy");
+            Thread.Sleep(5000);
+            bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+            if (saveSettings)
+            {
+                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                IsBusy = false;
+                NotifyPropertyChanged("IsBusy");
+            }
+        }
         public void Invoke_RefreshHotkeySettings()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -299,7 +312,7 @@ namespace DDPM.UI.Module.Brightness
             };
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
-            bw.RunWorkerAsync(ApartmentState.STA);
+            bw.RunWorkerAsync();
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -2947,7 +2960,7 @@ namespace DDPM.UI.Module.Brightness
                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                     {
                         if (hd.MonitorInfo.IsDellMonitor)
-                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, null,false);
+                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, strSync_CurrentColorPreset, 0, null, false);
                     }
                 });
 

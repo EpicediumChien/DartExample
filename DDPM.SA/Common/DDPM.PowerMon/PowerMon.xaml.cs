@@ -233,7 +233,7 @@ namespace DDPM.PowerMon
                 _UnregisterPowerSettingNotification(m_hPowerNotify);
                 m_hPowerNotify = IntPtr.Zero;
             }
-            if(isHotkeyHooked)
+            if (isHotkeyHooked)
                 UnRegisterAllHotKey();
 
             isWindowLoaded = false;
@@ -295,6 +295,7 @@ namespace DDPM.PowerMon
                     ModifierKeys modifier = (ModifierKeys)((int)lParam & 0xFFFF);
                     int hotkeyId = (int)wParam;
                     keyPressedEventArgs.HotkeyInfo.ID = (ushort)hotkeyId;
+                    keyPressedEventArgs.KeyString = $"{modifier.ToString()} + {key.ToString()}";
                     Task.Run(() =>
                     {
                         HotkeyPressed?.Invoke(this, keyPressedEventArgs);

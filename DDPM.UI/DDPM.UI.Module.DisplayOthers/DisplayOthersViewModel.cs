@@ -23,7 +23,7 @@ namespace DDPM.UI.Module.DisplayOthers
         public IModuleOwner? ModuleOwner { get; set; }
         public DisplayOthersModule DisplayOthersModule { get; set; }
 
-        private string _powerNapText;
+        private string _powerNapText = Strings.Off;
 
         public string PowerNap_text
         {
@@ -46,6 +46,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 SetProperty(ref _powerNapEnabled, value);
                 PowerNap_text = _powerNapEnabled ? Strings.On : Strings.Off;
                 OnPropertyChanged("PowerNap_Enable");
+                OnPropertyChanged("PowerNap_text");
                 savePowerNapSetting();
             }
         }
@@ -99,11 +100,11 @@ namespace DDPM.UI.Module.DisplayOthers
 
         private bool _autoApply_Checked;
 
-        public bool AutoApply_Checked 
+        public bool AutoApply_Checked
         {
             get => _autoApply_Checked;
             set
-            { 
+            {
                 SetProperty(ref _autoApply_Checked, value);
                 DdpmCommonHelper.DeviceManagerSA.SetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, _autoApply_Checked).Wait();
             }
@@ -121,7 +122,7 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public double LockPowerNap_Opacity { get; set; } = 1;
 
-        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip1;
+        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip2;
 
         #region UI Enable Flags
 
@@ -145,6 +146,7 @@ namespace DDPM.UI.Module.DisplayOthers
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
+            IsBusy = true;
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -197,6 +199,7 @@ namespace DDPM.UI.Module.DisplayOthers
                         break;
                 }
             }
+            OnPropertyChanged("PowerNap_text");
             OnPropertyChanged("PowerNap_Enable");
             OnPropertyChanged("Reducebrt_Checked");
             OnPropertyChanged("PutTosleep_Checked");
@@ -205,6 +208,7 @@ namespace DDPM.UI.Module.DisplayOthers
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
+            IsBusy = false;
         }
 
         #region Imp/Exp Loading
@@ -278,8 +282,8 @@ namespace DDPM.UI.Module.DisplayOthers
                     OnMessageDlgInvoke("close_loading");
                     OnPropertyChanged("IsBusy");
                 }
-                else 
-                { 
+                else
+                {
                     ImpExpSettings("Exp", filename);
                     return true;
                 }
