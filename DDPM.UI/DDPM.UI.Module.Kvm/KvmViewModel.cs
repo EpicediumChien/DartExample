@@ -469,15 +469,19 @@ namespace DDPM.UI.Module.Kvm
 
         public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
         {
-            IsBusy = true;
-            OnPropertyChanged("IsBusy");
-            bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
-            if (saveSettings)
+            if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                IsBusy = false;
+                IsBusy = true;
                 OnPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
             }
+            Invoke_RefreshHotkeySettings();
         }
         private void saveKvmHotkeyOption()
         {

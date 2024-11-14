@@ -292,15 +292,19 @@ namespace DDPM.UI.Module.Brightness
 
         public void SaveHotkeySettings(MonitorInfo monitorInfo, HotkeyInfo hotkeyInfo)
         {
-            IsBusy = true;
-            NotifyPropertyChanged("IsBusy");
-            bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
-            if (saveSettings)
+            if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                IsBusy = false;
+                IsBusy = true;
                 NotifyPropertyChanged("IsBusy");
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                if (saveSettings)
+                {
+                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                    IsBusy = false;
+                    NotifyPropertyChanged("IsBusy");
+                }
             }
+            Invoke_RefreshHotkeySettings();
         }
         public void Invoke_RefreshHotkeySettings()
         {

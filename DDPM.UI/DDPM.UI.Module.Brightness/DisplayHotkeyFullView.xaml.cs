@@ -15,7 +15,6 @@ namespace DDPM.UI.Module.Brightness
     /// </summary>
     public partial class DisplayHotkeyFullView : UserControl
     {
-        private ILog? _log;
         private bool alphabetKey = false;
         private string _strPreviousKey = string.Empty;
         private List<VirtualKey> newKeys = new List<VirtualKey>();
@@ -31,11 +30,6 @@ namespace DDPM.UI.Module.Brightness
         public DisplayHotkeyFullView()
         {
             InitializeComponent();
-            if (DdpmCommonHelper.MyConsole != null)
-            {
-                _log = DdpmCommonHelper.MyConsole.CreateLog("DisplayHotkeyFullView");
-                _log.Info("DisplayHotkeyFullView");
-            }
         }
 
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -52,10 +46,17 @@ namespace DDPM.UI.Module.Brightness
         {
             tbCleanFocus.Focus();
             BrightnessViewModel dataContext = (BrightnessViewModel)DataContext;
-            Task.Run(() =>
+            if (dataContext != null)
             {
-                dataContext.SaveHotkeySettings(dataContext.SelectedHomeDevice.MonitorInfo, hotkeyInfo);
-            });
+                Common.Models.HomeDevice? selectedHomeDevice = dataContext.SelectedHomeDevice;
+                if (selectedHomeDevice?.MonitorInfo != null)
+                {
+                    Task.Run(() =>
+                    {
+                        dataContext.SaveHotkeySettings(selectedHomeDevice.MonitorInfo, hotkeyInfo);
+                    });
+                }
+            }
         }
         private void tbBrightnessMins_PreviewKeyUp(object sender, KeyEventArgs e)
         {

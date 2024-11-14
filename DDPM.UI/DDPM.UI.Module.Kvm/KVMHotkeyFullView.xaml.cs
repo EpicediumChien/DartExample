@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using VcpCore.Common;
 using Windows.System;
 
 namespace DDPM.UI.Module.Kvm
@@ -49,10 +50,18 @@ namespace DDPM.UI.Module.Kvm
         {
             tbCleanFocus.Focus();
             KvmViewModel dataContext = (KvmViewModel)DataContext;
-            Task.Run(() =>
+            if (dataContext != null)
             {
-                dataContext.SaveHotkeySettings(dataContext.KvmModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo);
-            });
+                Common.Models.HomeDevice? selectedHomeDevice = dataContext.KvmModule.SelectedHomeDevice;
+                if (selectedHomeDevice?.MonitorInfo != null)
+                {
+                    Task.Run(() =>
+                    {
+                        dataContext.SaveHotkeySettings(selectedHomeDevice.MonitorInfo, hotkeyInfo);
+                    });
+                }
+            }
+
         }
         private void tbSwitchPCsKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
@@ -97,7 +106,6 @@ namespace DDPM.UI.Module.Kvm
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
                         SaveHotkeySettings(hotkeyInfo);
-                        vm.Invoke_RefreshHotkeySettings();
                     }
                     else
                     {
@@ -162,7 +170,6 @@ namespace DDPM.UI.Module.Kvm
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
                         SaveHotkeySettings(hotkeyInfo);
-                        vm.Invoke_RefreshHotkeySettings();
                     }
                     else
                     {
@@ -225,7 +232,6 @@ namespace DDPM.UI.Module.Kvm
                     if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
                     {
                         SaveHotkeySettings(hotkeyInfo);
-                        vm.Invoke_RefreshHotkeySettings();
                     }
                     else
                     {

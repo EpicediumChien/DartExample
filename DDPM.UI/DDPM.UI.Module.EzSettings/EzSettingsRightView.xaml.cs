@@ -64,15 +64,21 @@ namespace DDPM.UI.Module.EzSettings
                     {
                         tbCleanFocus.Focus();
                         EzSettingsViewModel dataContext = (EzSettingsViewModel)DataContext;
-                        dataContext.IsBusy = true;
-                        Task.Run(() =>
+                        if (dataContext != null)
                         {
-                            bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(dataContext._homeDevice.MonitorInfo, hotkeyInfo).Result;
-                            if (saveSettings)
+                            dataContext.IsBusy = true;
+                            Task.Run(() =>
                             {
-                                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                            }
-                        }).ContinueWith((t) => { dataContext.IsBusy = false; });
+                                if (DdpmCommonHelper.DeviceManagerSA != null)
+                                {
+                                    bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(dataContext._homeDevice.MonitorInfo, hotkeyInfo).Result;
+                                    if (saveSettings)
+                                    {
+                                        DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                                    }
+                                }
+                            }).ContinueWith((t) => { dataContext.IsBusy = false; });
+                        }
                     }
                     else
                     {

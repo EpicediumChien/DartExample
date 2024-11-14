@@ -46,15 +46,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
         {
             tbCleanFocus.Focus();
             DisplayHotkeysViewModel dataContext = (DisplayHotkeysViewModel)DataContext;
-            dataContext.IsBusy = true;
-            Task.Run(() =>
+            if (dataContext != null)
             {
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(dataContext.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                if (saveSettings)
+                dataContext.IsBusy = true;
+                Task.Run(() =>
                 {
-                    DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
-                }
-            }).ContinueWith((t) => { dataContext.IsBusy = false; });
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(dataContext.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                        }
+                    }
+
+                }).ContinueWith((t) => { dataContext.IsBusy = false; });
+            }
+
         }
         private void tbToggleInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
         {

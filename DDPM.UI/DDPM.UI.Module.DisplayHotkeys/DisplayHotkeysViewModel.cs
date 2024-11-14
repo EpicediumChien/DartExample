@@ -4,6 +4,8 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -308,6 +310,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 inputList = new Dictionary<string, InputInfo>();
                 //load hotkey setting
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                {
+                    return;
+                }
                 var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
                 HotkeySettings curHotkey = temp.Item1;
                 List<HotkeyData> list = temp.Item2;
@@ -319,6 +325,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"InputSource caused crash = {ex.Message}");
+                    _log?.Error($"[DisplayHotkeysViewModel] InputSource caused crash :{ex.Message}");
                     inputList = null;
                 }
                 if (inputList != null)
@@ -502,8 +509,15 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 OnPropertyChanged("SwitchInput1_Selected");
                 OnPropertyChanged("SwitchInput2_Selected");
                 //OnPropertyChanged("FavoriteInput_Selected_Index");
+
+                MonitorInfo? monitorInfo = DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo;
+                if (monitorInfo != null)
+                {
+                    PxPkeySettings_Visibility = monitorInfo.CapabilityDic.ContainsKey("E9") ? Visibility.Visible : Visibility.Collapsed;
+                }
+                OnPropertyChanged("PxPkeySettings_Visibility");
                 string swHortcutText = string.Empty;
-                if (curHotkey.HotkeyInfo.Count > 0)
+                if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                 {
                     foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                     {
@@ -551,9 +565,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     ChangePIPPositionKey = "None";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ;
+                _log?.Error($"[DisplayHotkeysViewModel]catch :{ex.Message}");
             }
         }
 
@@ -579,5 +593,22 @@ namespace DDPM.UI.Module.DisplayHotkeys
         }
 
         #endregion UI Enable Flags
+        #region Log
+        private ILog? _log;
+        public void InitLog()
+        {
+            IConsole console = DdpmCommonHelper.MyConsole;
+            if (console != null)
+            {
+                _log = console.CreateLog("DisplayHotkeyPage");
+            }
+        }
+        public void LogInfo(string msg)
+        {
+            if (_log != null)
+                _log.Info(msg);
+        }
+        #endregion
+
     }
 }

@@ -6787,7 +6787,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"[SW_CheckSWUpdate], _SWUpdatePlugin is null = {(_SWUpdatePlugin == null ? "Yes" : "No")}");
                     writelog($"[SW_CheckSWUpdate], _GlobalSettingParam is null = {(_GlobalSettingParam == null ? "Yes" : "No")}");
                     writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About is null = {(_GlobalSettingParam.GlobalSetting_About == null ? "Yes" : "No")}");
-                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About.SWVersion Is NullOrEmpty = {(string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion)? "Yes" : "No")}");
+                    writelog($"[SW_CheckSWUpdate], _GlobalSettingParam.GlobalSetting_About.SWVersion Is NullOrEmpty = {(string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion) ? "Yes" : "No")}");
                 }
             }
             catch (Exception ex)
@@ -11361,7 +11361,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             }
-            writelog($"ExecHotkeyJob[{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+            writelog($"ExecHotkeyJob[befrore:{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
@@ -11372,7 +11372,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Brightness_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -11384,7 +11391,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Brightness_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -11396,7 +11410,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -11408,7 +11429,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                        if (!isAutoBrightnessOn(monitorInfo))
+                        {
+                            _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
+                        }
+                        else
+                        {
+                            writelog($"ExecHotkeyJob[ Skip {job}:{hotkeyStr} ,cause AutoBrightness is On] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        }
                     }
                     break;
 
@@ -11492,7 +11520,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-
+        private bool isAutoBrightnessOn(MonitorInfo mo)
+        {
+            scheduleInfo result = ReadScheduleMonitorSettings(mo).Result;
+            return result.IsEnable;
+        }
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
             //Validation

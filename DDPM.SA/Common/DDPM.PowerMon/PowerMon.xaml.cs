@@ -102,6 +102,10 @@ namespace DDPM.PowerMon
             {
                 if (hotkeyInfo != null && hotkeyInfo.Hotkey.Count > 0)
                 {
+                    if (hotkeyInfo.KeyCode.Equals(VirtualKey.None))
+                    {
+                        continue;
+                    }
                     string uniqueID = Guid.NewGuid().ToString("N");
                     _currentId = GlobalAddAtom(uniqueID);
                     int lastError = -1;
