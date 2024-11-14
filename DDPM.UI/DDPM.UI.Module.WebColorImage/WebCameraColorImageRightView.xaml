@@ -59,7 +59,7 @@
                 <Border Background="#99132F54" CornerRadius="6">
                   <Grid Margin="16,0,16,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,25">
-                      <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                      <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}"/>
                       <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                         <Image.ToolTip>
                           <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
