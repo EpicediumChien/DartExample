@@ -197,6 +197,7 @@
                                                    Content="{Binding Path=IsAwsEnabled_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
                                                    Foreground="White" />
                         </Grid>
+                        <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
                     </StackPanel>
 
                     <!-- Show BusyIndicator over the page -->

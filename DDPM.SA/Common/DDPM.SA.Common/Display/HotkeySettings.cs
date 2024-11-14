@@ -81,6 +81,7 @@ namespace DDPM.SA.Common.Display
     public class KeyPressedEventArgs : EventArgs
     {
         public HotkeyInfo HotkeyInfo { get; set; } = new HotkeyInfo();
+        public string KeyString { get; set; }
     }
     public enum HotkeyOption
     {
