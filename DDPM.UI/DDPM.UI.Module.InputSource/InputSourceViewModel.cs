@@ -53,6 +53,7 @@ namespace DDPM.UI.Module.InputSource
         public string NameHWidth { get; set; } = "0.5*";
         public string USBHWidth { get; set; } = "1.5*";
         public string NameHColumn { get; set; } = "1";
+        public string InputTitle { get; set; } = Strings.InputTitle1;
 
         public List<InputSourceList> InputsList
         {
@@ -135,9 +136,11 @@ namespace DDPM.UI.Module.InputSource
                 NameHWidth = "0.5*";
                 USBHWidth = "1.5*";
                 NameHColumn = "1";
+                InputTitle = Strings.InputTitle1;
 
                 if (InputSourceModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("EE"))
                 {
+                    InputTitle = Strings.InputTitle0;
                     IsUSBH = Visibility.Visible;
                     NameHWidth = "1*";
                     USBHWidth = "1*";

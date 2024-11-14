@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Windows;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Plugin.Common;
+using System.IO;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -228,9 +229,11 @@ namespace DDPM.UI.Module.DisplayOthers
             string ImpExppath = e.Argument.ToString();
             if (ImpExppath.Substring(0, 3) == "Imp")
             {
-                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, ImpExppath.Substring(3)).Result)
+                string impPath = ImpExppath.Substring(3);
+                if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, impPath).Result)
                 {
-                    OnMessageDlgInvoke("close_loading");
+                    string fileName = Path.GetFileNameWithoutExtension(impPath);
+                    OnMessageDlgInvoke("close_loading_" + fileName);
                     OnMessageDlgInvoke("result_success");
                 }
                 else

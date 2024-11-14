@@ -59,13 +59,15 @@ namespace DDPM.UI.Module.EzMemory
             InitializePage();
 
             // 這裡排編號
-            _vm.ispCtrl = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
-            _vm.ispCtrl!.IsEditable = true;
-            _vm.ispCtrl.SplitMode = eSplitModes.Em;
-            EMsplitCtrl.Content = _vm.ispCtrl.UC;
+            //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
+            _vm.ispCtrlForEm = ISplitCtrl.Create(_vm.CurrentSelectsEAID);
+            //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.);
+            _vm.ispCtrlForEm!.IsEditable = true;
+            _vm.ispCtrlForEm.SplitMode = eSplitModes.Em;
+            EMsplitCtrl.Content = _vm.ispCtrlForEm.UC;
 
             int _no = 1;
-            foreach (var cellBorder in _vm.ispCtrl.CellList)
+            foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
             {
                 cellBorder.CellBd.CellNumber = _no;
                 cellBorder.CellBd.MemoryText = _no.ToString();
@@ -222,6 +224,8 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm._sortApps.Count < _vm.SelectedValue)
+                return;
             _vm._currentPageIndex++;
             EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
@@ -313,7 +317,7 @@ namespace DDPM.UI.Module.EzMemory
                         int cellno = _vm.GetTextBlockNumber(buttonName);
 
                         int _no = 1;
-                        foreach (var cellBorder in _vm.ispCtrl.CellList)
+                        foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
                         {
                             if(_no == cellno)
                             {
