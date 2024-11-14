@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 namespace DDPM.SA.Common
 {
     /*public class IT_Command_Global
@@ -226,7 +225,11 @@ namespace DDPM.SA.Common
                 }
                 if (arg.Length > 260)
                 {
-                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + System.Security.SecurityElement.Escape(arg.ToString().Substring(0,500)));
+                    string logString = arg;
+                    if (logString.Length >= 500)
+                        logString = logString.Substring(0, 500);
+
+                    _Log.Error("[ICLICommandTable] Exception error: string too long. Arg:" + System.Security.SecurityElement.Escape(logString));
                     return null;
                 }
             }
@@ -311,7 +314,9 @@ namespace DDPM.SA.Common
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
                             {
-                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp.Substring(0, 500))}");
+                                if (tmp.Length >= 500)
+                                    tmp = tmp.Substring(0, 500);
+                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp)}");
                                 continue;
                             }
 
@@ -369,7 +374,10 @@ namespace DDPM.SA.Common
                             string[] tmpSS = args[i].Split("=");
                             if (tmpSS.Length != 2)
                             {
-                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp.Substring(0, 500))}");
+                                if (tmp.Length >= 500)
+                                    tmp = tmp.Substring(0, 500);
+
+                                _Log.Warning($"[CLI] ignore a part of commands => {System.Security.SecurityElement.Escape(tmp)}");
                                 continue;
                             }
                             if (!tmpSS[1].Contains(".txt"))
