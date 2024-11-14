@@ -144,6 +144,10 @@ namespace DDPM.SA.Common
 
         public class CommandLineInput
         {
+            //Remote management guid assign (ex:CMA command)
+            //If this item has value, it means the subscription does not from cli.subagent, then no need to generate new GUID at runtime.
+            public string remote_mgr_guid { get; set; } = string.Empty;
+
             //Used to judge target command support or not (please everyone refer to your own JIRA story)
             public bool isCliRunAdmin { get; set; } = false;
 

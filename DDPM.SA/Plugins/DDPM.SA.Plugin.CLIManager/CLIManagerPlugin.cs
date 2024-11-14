@@ -176,7 +176,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
             CLIEventArgs arg = new CLIEventArgs()
             {
-                command_guid_string = Guid.NewGuid().ToString(),
+                command_guid_string = string.IsNullOrEmpty(commandLineInput.remote_mgr_guid) ? Guid.NewGuid().ToString() : commandLineInput.remote_mgr_guid, //support remote command GUID
                 commandLineInput = commandLineInput
             };
 
@@ -469,6 +469,8 @@ namespace DDPM.SA.Plugin.CLIManager
             });
         }
 
+        public event EventHandler<CLIEventResult> CLIActionResult;
+
         public Task WriteCommandResult(CLIEventResult result)
         {
             if (result == null)
@@ -486,6 +488,10 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     WriteLog($"Duplicated result from Proxy: ID:{result.command_guid_string}");
                 }
+                Task.Run(() => {
+                    EventHandler<CLIEventResult> handler = CLIActionResult;
+                    handler?.Invoke(this, result);
+                });
                 return Task.FromResult(true);
             }
         }

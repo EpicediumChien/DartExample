@@ -109,6 +109,8 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 if (disposing)
                 {
+                    if(_CliManagerPlugin != null)
+                        _CliManagerPlugin.CLIActionResult -= OnCLIManagerResultHandler;
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
@@ -919,9 +921,15 @@ namespace DDPM.SA.Plugins.CMAManager
                          {
                              DoRelayRegister();
                          }*/
+                        _CliManagerPlugin.CLIActionResult += OnCLIManagerResultHandler;
                     }
                 }
             });
+        }
+
+        private void OnCLIManagerResultHandler(object sender, CLIEventResult e)
+        {
+            //Paring the result
         }
 
 
