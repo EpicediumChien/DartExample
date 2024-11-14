@@ -594,6 +594,9 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
+                SupportNKVM = Visibility.Collapsed;
+                SupportUSBKVM = Visibility.Collapsed;
+
                 var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                 directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";

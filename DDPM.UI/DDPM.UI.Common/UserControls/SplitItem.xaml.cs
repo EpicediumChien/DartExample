@@ -415,6 +415,16 @@ namespace DDPM.UI.Common.UserControls
         #endregion Add Custom Layout Button
 
         #region For EzMemory
+
+        private int _profileID;
+        public int ProfileID
+        {
+            get => _profileID;
+            set
+            {
+                _profileID = value;
+            }
+        }
         private int _layoutID;
         public int LayoutID
         {

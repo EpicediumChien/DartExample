@@ -128,32 +128,39 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
                             if (dDPMImpExpSettings != null)
                             {
-                                if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                                if (dDPMImpExpSettings.MonitorSettings != null)
                                 {
-                                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                                    if (settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result)
+                                    if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                     {
-                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
+                                        DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                                        if (settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result)
+                                        {
+                                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
+                                        }
+                                        else
+                                        {
+                                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
+                                        }
                                     }
                                     else
                                     {
-                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
+                                        desc = desc.Replace("%1", model);
+                                        DisplayImportToast(
+                                            new DisplayWindowsToast()
+                                            {
+                                                Title = LangHelper.Instance["App_Name"], //string table: App_Name
+                                                Description = desc,
+                                                Model = model,
+                                                ServiceTag = serviceTag,
+                                                left_btn = LangHelper.Instance["Yes"],        //string table: Yes
+                                                right_btn = LangHelper.Instance["No"]       //string table: No
+                                            }
+                                        );
                                     }
                                 }
                                 else
                                 {
-                                    desc = desc.Replace("%1", model);
-                                    DisplayImportToast(
-                                        new DisplayWindowsToast()
-                                        {
-                                            Title = LangHelper.Instance["App_Name"], //string table: App_Name
-                                            Description = desc,
-                                            Model = model,
-                                            ServiceTag = serviceTag,
-                                            left_btn = LangHelper.Instance["Yes"],        //string table: Yes
-                                            right_btn = LangHelper.Instance["No"]       //string table: No
-                                        }
-                                    );
+                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings is null.");
                                 }
                             }
                             else

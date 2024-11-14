@@ -44,7 +44,7 @@
                             </Grid>
                             <Grid Height="50">
                                 <UXControls:UXTextBlock AutomationProperties.Name="TextDisplay1"
-                                                        Text="{Binding [InputSource.1], Source={x:Static lang:LangHelper.Instance}}"
+                                                        Text="{Binding InputTitle}"
                                                         VerticalAlignment="Center"
                                                         FontSize="16" HorizontalAlignment="Left" />
                             </Grid>
