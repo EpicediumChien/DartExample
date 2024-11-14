@@ -76,20 +76,31 @@ namespace DDPM.UI.Module.WebCameraCapture
             var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
             switch (FPS.Count)
             {
+                case 1:
+                    btnFPS0.Width = 402;
+                    txtFPS0.Text = FPS[0];
+                    btnFPS0.CornerRadius = new CornerRadius(5, 5, 5, 5);
+                    btnFPS1.Visibility = Visibility.Collapsed;
+                    btnFPS2.Visibility = Visibility.Collapsed;
+                    break;
                 case 2:
                     btnFPS0.Width = 201;
                     txtFPS0.Text = FPS[0];
+                    btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
                     btnFPS1.Width = 201;
                     txtFPS1.Text = FPS[1];
                     btnFPS1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnFPS1.Visibility = Visibility.Visible;
                     btnFPS2.Visibility = Visibility.Collapsed;
                     break;
                 case 3:
                     btnFPS0.Width = 134;
                     txtFPS0.Text = FPS[0];
+                    btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
                     btnFPS1.Width = 134;
                     txtFPS1.Text = FPS[1];
                     btnFPS1.CornerRadius = new CornerRadius(0);
+                    btnFPS1.Visibility = Visibility.Visible;
                     btnFPS2.Width = 134;
                     txtFPS2.Text = FPS[2];
                     btnFPS2.Visibility = Visibility.Visible;
@@ -103,9 +114,11 @@ namespace DDPM.UI.Module.WebCameraCapture
             if (sender is Border bdr)
             {
                 int idx;
-                if (!(bdr.Tag is string)) return;
+                if (!(bdr.Tag is string))
+                    return;
                 bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
-                if (!r) return;
+                if (!r)
+                    return;
                 _vm.SetResolution_Selected(idx);
                 InitializeFPS();
                 foreach (var property in _vm.allProperties)
@@ -142,9 +155,11 @@ namespace DDPM.UI.Module.WebCameraCapture
             if (sender is Border bdr)
             {
                 int idx;
-                if (!(bdr.Tag is string)) return;
+                if (!(bdr.Tag is string))
+                    return;
                 bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
-                if (!r) return;
+                if (!r)
+                    return;
                 _vm.SetFPS_Selected(idx);
                 foreach (var property in _vm.allProperties)
                 {

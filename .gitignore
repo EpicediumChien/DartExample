@@ -300,3 +300,7 @@ testcoverage/
 /DDPM.SA/dll/Dell.TechHub.Plugins.PenCommodity.dll
 /DDPM.SA/dll/Dell.TechHub.Plugins.SpeakerCommodity.dll
 /DDPM.SA/dll/Dell.TechHub.Plugins.WebcamCommodity.dll
+/DDPM.UI/CommonDll/Obfuscar.xml
+/DDPM.SA/dll/DdmLibrary.deps.json
+/DDPM.UI/CommonDll/DDPM.PowerMon.deps.json
+/DDPM.UI/NGA.ThickClient/MainWindow.xaml

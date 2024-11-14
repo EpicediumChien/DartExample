@@ -189,6 +189,13 @@ namespace DDPM.EABroker
             if (_vm != null)
                 _vm.ReloadEzSettingsFromUserSettingsFile();
         }
+
+        public void TestForRobert_EzArrange()
+        {
+            MonitorInfo moinfo = new MonitorInfo();
+            _deviceManagerSA.CheckEAIDExit( moinfo, 0);
+            _deviceManagerSA.DeleteEAID(moinfo, 0);
+        }
     }
 
 }

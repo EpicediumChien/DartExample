@@ -1418,6 +1418,11 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
+                //Robert_Lin, 2024-11-13, allow to set it always true from INI file for debugging
+                if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "PipPbp.VideoSwapComboBox.AlwaysVisible", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                {
+                    return true;
+                }
                 //Robert_Lin, 2024-8-28 update rule:
                 //If SplitCount >= 3 then IsVideoSwapComboBoxesVisible is true
                 //Return true when: (InputSource.Count >= 3)

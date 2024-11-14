@@ -247,12 +247,13 @@ namespace DDPM.UI.Module.WebCameraSettings
             if (sender is Border bdr)
             {
                 var index = int.Parse(bdr.Tag.ToString()!);
-                var val = _vm.FOVs[index];
-                if (val == _vm.FieldOfView)
+                //var val = _vm.FOVs[index];
+                if (index == _vm.SelectedFovIndex)
                 { return; }
 
+                _vm.SelectedFovIndex = index;
                 _vm.SetFOV_Selected(index);
-                _vm.FieldOfView = val;
+                //_vm.FieldOfView = val;
             }
         }
 
