@@ -14,6 +14,7 @@ namespace DDPM.SA.Obfuscation
     {
         private const int iterations = 100;
         private const int keyLength = 128;
+        private static string salt = "841c87c9f5a679dcdba8a9c7f743847d157cd598";
 
         /*
             //Example:
@@ -315,11 +316,22 @@ namespace DDPM.SA.Obfuscation
             // Perform XOR operation
             try
             {
-                if (guid.Length > randomBytes.Length) throw new Exception("The length of the GUID and Random Bytes are not equal.");
-                byte[] xorResult = new byte[guid.Length];
-                for (int i = 0; i < guid.Length; i++)
+                byte[] xorResult;
+                if (guid.Length > randomBytes.Length)//throw new Exception("The length of the GUID and Random Bytes are not equal.");
                 {
-                    xorResult[i] = (byte)(guid[i] ^ randomBytes[i]);
+                    xorResult = new byte[randomBytes.Length];
+                    for (int i = 0; i < randomBytes.Length; i++)
+                    {
+                        xorResult[i] = (byte)(guid[i] ^ randomBytes[i]);
+                    }
+                }
+                else
+                {
+                    xorResult = new byte[guid.Length];
+                    for (int i = 0; i < guid.Length; i++)
+                    {
+                        xorResult[i] = (byte)(guid[i] ^ randomBytes[i]);
+                    }
                 }
 
                 // Convert the XOR result to a hexadecimal string
@@ -377,7 +389,7 @@ namespace DDPM.SA.Obfuscation
             byte[] secToken = Encoding.UTF8.GetBytes(token);
             //Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
             //password = random number XOR string
-            byte[] byteArray = ComputeBytes(secToken, Encoding.UTF8.GetBytes(hexRandomNumber));
+            byte[] byteArray = ComputeBytes(Encoding.UTF8.GetBytes(salt), Encoding.UTF8.GetBytes(hexRandomNumber));
 
             byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
                 byteArray,
@@ -405,17 +417,17 @@ namespace DDPM.SA.Obfuscation
             // Combine the timestamp and random number
             string combined = hexTimestamp + hexRandomNumber;
 
-            //Console.WriteLine("*** Timestamp (Hex): " + hexTimestamp + "," + hexTimestamp.Length);
-            //Console.WriteLine("*** Random Number (Hex): " + hexRandomNumber + "," + hexRandomNumber.Length);
-            //Console.WriteLine("*** Combined: " + combined + "," + combined.Length);
+            Console.WriteLine("*** Timestamp (Hex): " + hexTimestamp + "," + hexTimestamp.Length);
+            Console.WriteLine("*** Random Number (Hex): " + hexRandomNumber + "," + hexRandomNumber.Length);
+            Console.WriteLine("*** Combined: " + combined + "," + combined.Length);
 
             string token = content;
             byte[] secToken = Encoding.UTF8.GetBytes(token);
-            //Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
+            Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
 
             byte[] random = VerifyTimestamp(referenceTicket, combined);
             //    byte[] byteArray = Encoding.UTF8.GetBytes(token);
-            byte[] byteArray = ComputeBytes(secToken, random);
+            byte[] byteArray = ComputeBytes(Encoding.UTF8.GetBytes(salt), random);
 
             byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
                 byteArray,
