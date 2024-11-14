@@ -328,7 +328,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     _log?.Error($"[DisplayHotkeysViewModel] InputSource caused crash :{ex.Message}");
                     inputList = null;
                 }
-                if (inputList != null)
+                if (inputList != null && inputList.Count > 0)
                 {
 
                     ObservableCollection<InputSourceList> tmpInputsList = new ObservableCollection<InputSourceList>();
@@ -503,7 +503,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     }
                 }
                 else
+                {
+                    _log?.Error($"[DisplayHotkeysViewModel] InputSourceList is empty");
                     return;//temp solution 0708
+                }
                 OnPropertyChanged("InputsList");
                 OnPropertyChanged("FavoriteInput_Selected");
                 OnPropertyChanged("SwitchInput1_Selected");
