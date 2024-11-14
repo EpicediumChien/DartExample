@@ -1569,7 +1569,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     //item.update
                 }
-                _iDeviceManager_DeviceAddedEvent(device);
+                //_iDeviceManager_DeviceAddedEvent(device);
             }
             Console.WriteLine(_deviceHelper.ToString());
             writelog(_deviceHelper.ToString());
