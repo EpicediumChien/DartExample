@@ -21,15 +21,14 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Background="#99132F54"
+            <Border Style="{DynamicResource RightGroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
                     <StackPanel Margin="20,20,8,8"
                                 Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="On screen notifications"
                                                 FontSize="20"
-                                                TextBlockType="Header1"
-                                                Style="{StaticResource ModuleCaptionStyle}" />
+                                                TextBlockType="Header1"/>
                         <Grid Margin="15,0,0,0"
                               VerticalAlignment="Center"
                               Visibility="{Binding GeneralUI_LockTooltip}">
@@ -39,20 +38,19 @@
                     </StackPanel>
                     <Grid Margin="20,20,8,8"
                           >
-                        <Border Background="#132F54"
+                        <Border Style="{DynamicResource RightPartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
-                                                        Text="All Devices"
-                                                        Style="{StaticResource ModuleItemStyle}" />
+                                                        Text="All Devices" />
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
                                                        HorizontalAlignment="Left"
                                                        VerticalAlignment="Center"
                                                        Content="Low battery level"
-                                                       Foreground="#FFFFFF"
+                                                       Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
-                                                       Background="#0A0E14"
+                                                       Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Low_Battery_Level}"
                                                        Click="LowBatteryLevel_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
@@ -65,19 +63,18 @@
                     </Grid>
                     <Grid Margin="20,20,8,8"
                           >
-                        <Border Background="#132F54"
+                        <Border Style="{DynamicResource RightPartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"
-                                                        Text="Device-specific"
-                                                        Style="{StaticResource ModuleItemStyle}" />
+                                                        Text="Device-specific"/>
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
                                                        Height="{Binding checkBoxHeight}"
                                                        Content="Keyboard lock key"
-                                                       Foreground="#FFFFFF"
+                                                       Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
-                                                       Background="#0A0E14"
+                                                       Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key}"
                                                        Click="KeyboardLockKey_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
@@ -85,9 +82,9 @@
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="Webcam WB7022 Presence Detection sensor cover state"
-                                                       Foreground="#FFFFFF"
+                                                       Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
-                                                       Background="#0A0E14"
+                                                       Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State}"
                                                        Click="WB7022CoverState_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
@@ -95,9 +92,9 @@
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="Headset, speakerphone and soundbar mute/unmute"
-                                                       Foreground="#FFFFFF"
+                                                       Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
-                                                       Background="#0A0E14"
+                                                       Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_MuteState}"
                                                        Click="MuteState_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
@@ -105,9 +102,9 @@
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="Display Color Preset and Easy Memory"
-                                                       Foreground="#FFFFFF"
+                                                       Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                        FontSize="16"
-                                                       Background="#0A0E14"
+                                                       Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory}"
                                                        Click="DisplayCPAndEM_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
@@ -121,48 +118,37 @@
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="Reports"
                                                 FontSize="20"
-                                                TextBlockType="Header1"
-                                                Style="{StaticResource ModuleCaptionStyle}" />
+                                                TextBlockType="Header1" />
                     </Grid>
                     <Grid Margin="20,20,8,8">
-                        <Border Background="#132F54"
+                        <Border Style="{DynamicResource RightPartBorderStyle}"
                                 CornerRadius="6">
                             <StackPanel Orientation="Horizontal" x:Name="reportsStackPanel"
                                         Margin="15,0,0,0">
-                                <Border Style="{StaticResource BorderUnpair}"
-                                        Background="#132F54"
+                                <Button Style="{DynamicResource Button_WhiteFrame}"
                                         Width="176"
-                                        MouseLeftButtonDown="SaveDiagnosticReport_Click"
+                                        Height="40"
+                                        Click="SaveDiagnosticReport_Click"
                                         Cursor="Hand"
                                         Margin="8,15,5,15"
-                                        Visibility="Visible">
-                                    <!--0614 Bruce 修改按鈕名稱-->
-                                    <Grid>
-                                        <UXControls:UXTextBlock Foreground="#FFFFFF"
-                                                                VerticalAlignment="Center"
-                                                                HorizontalAlignment="Center"
-                                                                FontFamily="Roboto"
-                                                                FontSize="14"
-                                                                Text="Save diagnostic report" />
-                                    </Grid>
-                                </Border>
-                                <Border Style="{StaticResource BorderUnpair}"
-                                        Background="#132F54"
+                                        Visibility="Visible"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        FontFamily="Roboto"
+                                        FontSize="14"
+                                        Content="Save diagnostic report" />
+                                <Button Style="{StaticResource Button_WhiteFrame}"
                                         Width="176"
-                                        MouseLeftButtonDown="SaveMonitorAssetReport_Click"
+                                        Height="40"
+                                        Click="SaveMonitorAssetReport_Click"
                                         Cursor="Hand"
                                         Margin="8,15,5,15"
-                                        Visibility="Visible">
-                                    <!--0614 Bruce 修改按鈕名稱-->
-                                    <Grid>
-                                        <UXControls:UXTextBlock Foreground="#FFFFFF"
-                                                                VerticalAlignment="Center"
-                                                                HorizontalAlignment="Center"
-                                                                FontFamily="Roboto"
-                                                                FontSize="14"
-                                                                Text="Save monitor asset report" />
-                                    </Grid>
-                                </Border>
+                                        Visibility="Visible"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        FontFamily="Roboto"
+                                        FontSize="14"
+                                        Content="Save monitor asset report" />
                             </StackPanel>
                         </Border>
                     </Grid>
