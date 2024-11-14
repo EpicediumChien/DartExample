@@ -151,12 +151,15 @@ namespace DDPM.SA.Plugin.CLIManager
         /// <param name="log_type">0 means info, others means error</param>
         private void WriteLog(string text, log_type log_type = log_type.info)
         {
-            text = "[CLIManager] " + text;
-            Console.WriteLine(text);
+            if(text.Length >= 500) 
+                text = text.Substring(0, 500);
+            string logString = $"[CLIManager] {System.Security.SecurityElement.Escape(text)}";
+            //text = "[CLIManager] " + text;
+            Console.WriteLine(logString);
             if (log_type == log_type.info)
-                Log.Info(text);
+                Log.Info(logString);
             else
-                Log.Error(text);
+                Log.Error(logString);
         }
 
         #endregion
